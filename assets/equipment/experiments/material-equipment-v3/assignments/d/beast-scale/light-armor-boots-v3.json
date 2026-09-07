@@ -1,0 +1,39 @@
+{
+	"schemaVersion": "equipment-rank-first-assignment-v3",
+	"assignmentId": "assignment-material-equipment-v3-beast-scale-light-armor-boots-v3",
+	"targetId": "material-equipment-v3-beast-scale-light-armor-boots-v3",
+	"immutable": true,
+	"classDirection": {
+		"path": "assets/equipment/experiments/material-equipment-v3/direction/class-progressions/light-armor-hide-scale-ranks-v3.png",
+		"sha256": "4aeead1698bd2e6ba26e8c007c92248288c452b0254c4bb16fc09f4ca5e7a4a9",
+		"purpose": "Requires owner checkpoint 1 acceptance for rank escalation, silhouettes, finish, camera, and empty-set treatment."
+	},
+	"materialBrief": {
+		"path": "assets/equipment/experiments/material-equipment-v3/direction/material-briefs/d-beast-scale.json",
+		"canonicalSha256": "1fad21cece53e455704a77e017c4d79b11acfd8256ee480763db70edbd2a5a6b"
+	},
+	"finishReference": {
+		"path": "assets/equipment/experiments/material-vs-class-calibration-2026-09-02/approach-a-steel-material-cohort-v1.png",
+		"sha256": "6749ad1a65b995f48b89b0c1c8c8ee051da145315f5fd60775803f691ad7b887",
+		"purpose": "Accepted painterly finish and cross-class material-coherence reference; do not copy geometry."
+	},
+	"consistencySource": {
+		"path": "assets/equipment/experiments/material-equipment-v3/candidates/d/beast-scale/light-armor-full-set-v3.png",
+		"sha256": "c138586bfb6005373054453f4386645d2026766ec29724383f4528ab62ad2a3d",
+		"purpose": "Owner-accepted full Armor set; authoritative source for piece reconstruction."
+	},
+	"prompt": "Render only the boots item from the accepted full set. Preserve its exact material, palette, silhouette language, trim, fastenings, wear, ornament, and slot boundary. Do not redesign it.\n\nCLASS DIRECTION: Mobile hide- or scale-led protection comprising exactly Head, Torso, Legs, and Boots. Empty self-supporting full set in a consistent mild three-quarter front view; no mannequin or wearer. Use the accepted progression reference as the authoritative design for the D column while reconstructing it as a dedicated render. Preserve rank silhouette and distinctive structural cues; do not crop.\n\nMATERIAL BRIEF — Beast Scale:\nPalette: Smoky umber, gray-green, and bone-tan scale edges.\nValue: Middle-dark with directional scale highlights.\nSurface/wear: Natural overlapping scales, keratin ridges, chipped tips, worn high points, supple hide joins.\nConstruction: Sorted scale rows on flexible backing, reinforced zones, tied edges, practical closures.\nSupernatural behavior: None; biological durability is visible but grounded.\nNeutral secondary materials: Hard Leather, linen, dull steel, and dark cord.\nNeighbor distinction: More articulated and protective than Hard Leather; less plated and alien than Chitin.\n\nOne isolated boots only; no other set pieces, body part, wearer, mannequin, or display stand.\n\nSTYLE/OUTPUT: premium realistic-painterly dark fantasy equipment inventory art; grounded construction; honest material response; cold key light, restrained warm rim, midnight-charcoal studio ground with restrained floor plane. One fully visible object centered on a 1024×1024 portrait-or-square canvas, about 8% margin and never below 5%; readable at 128px. No text, labels, UI, border, watermark, signature, scenery, extra objects, hands, wielder, detached particles, uncontrolled glow, or recognizable reference copying.\n\nThe accepted full-set source is the first and authoritative visual reference. Match it exactly.",
+	"promptSha256": "481f609bd504ddc72dc69b5686bd93361740d3af5bbfca55658d720f3328eb02",
+	"permittedOutputs": {
+		"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/d/beast-scale/light-armor-boots-v3.png",
+		"resultPath": "assets/equipment/experiments/material-equipment-v3/results/d/beast-scale/light-armor-boots-v3.json"
+	},
+	"forbiddenActions": [
+		"crop-progression-sheet",
+		"overwrite-existing-output",
+		"write-outside-permitted-outputs",
+		"self-promote-to-approved",
+		"write-runtime-catalog",
+		"modify-v1-or-v2"
+	]
+}

@@ -21,7 +21,7 @@ describe('equipment content catalog', () => {
 		expect(Object.isFrozen(EQUIPMENT_DEFINITIONS_BY_ID)).toBe(true);
 
 		const counts = Object.fromEntries(
-			['metal', 'wood', 'hide-or-scale', 'cloth-or-fibre'].map((family) => [
+			['metal', 'wood', 'hide-or-scale', 'cloth-or-fiber'].map((family) => [
 				family,
 				EQUIPMENT_DEFINITIONS.filter((definition) => definition.materialFamily === family).length
 			])
@@ -30,17 +30,17 @@ describe('equipment content catalog', () => {
 			metal: 70,
 			wood: 14,
 			'hide-or-scale': 28,
-			'cloth-or-fibre': 28
+			'cloth-or-fiber': 28
 		});
 	});
 
-	it('contains 84 separate armour pieces and no set definitions', () => {
-		const armour = EQUIPMENT_DEFINITIONS.filter((definition) =>
-			['heavy-armour', 'light-armour', 'robes'].includes(definition.equipmentClass)
+	it('contains 84 separate armor pieces and no set definitions', () => {
+		const armor = EQUIPMENT_DEFINITIONS.filter((definition) =>
+			['heavy-armor', 'light-armor', 'robes'].includes(definition.equipmentClass)
 		);
-		expect(armour).toHaveLength(84);
+		expect(armor).toHaveLength(84);
 		expect(
-			armour.every((definition) => ['head', 'torso', 'legs', 'boots'].includes(definition.slot))
+			armor.every((definition) => ['head', 'torso', 'legs', 'boots'].includes(definition.slot))
 		).toBe(true);
 		expect(
 			EQUIPMENT_DEFINITIONS.some(({ definitionId }) => definitionId.includes('full-set'))
@@ -98,13 +98,13 @@ describe('equipment content catalog', () => {
 	});
 
 	it('derives one-lot Standard recipes rather than storing 140 recipe documents', () => {
-		const definition = getEquipmentDefinition('equipment-iron-heavy-armour-torso');
+		const definition = getEquipmentDefinition('equipment-iron-heavy-armor-torso');
 		expect(definition).toBeDefined();
 		const recipe = deriveStandardEquipmentRecipe(definition!);
 		expect(recipe).toStrictEqual({
 			schemaVersion: 'equipment-standard-recipe-v1',
-			recipeId: 'forge-equipment-iron-heavy-armour-torso-standard',
-			definitionId: 'equipment-iron-heavy-armour-torso',
+			recipeId: 'forge-equipment-iron-heavy-armor-torso-standard',
+			definitionId: 'equipment-iron-heavy-armor-torso',
 			material: { materialId: 'iron', lots: 1 },
 			craftsmanship: { label: 'standard', bonus: 0 }
 		});

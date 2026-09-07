@@ -725,7 +725,7 @@ describe('foundation contracts', () => {
 			summary: {
 				bundleCount: 140 as const,
 				assetCount: 280 as const,
-				armourSetReferenceCount: 0 as const,
+				armorSetReferenceCount: 0 as const,
 				cardBytes: 140_000,
 				detailBytes: 560_000,
 				totalBytes: 700_000
@@ -778,7 +778,7 @@ describe('foundation contracts', () => {
 			})
 		).toThrow();
 		expect(() =>
-			EquipmentRuntimeVisualAssetSchema.parse({ ...valid, sourceRole: 'armour-set-reference' })
+			EquipmentRuntimeVisualAssetSchema.parse({ ...valid, sourceRole: 'armor-set-reference' })
 		).toThrow();
 		expect(() => EquipmentRuntimeVisualAssetSchema.parse({ ...valid, bytes: 16_001 })).toThrow(
 			/budget/i

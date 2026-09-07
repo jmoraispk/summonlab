@@ -4,7 +4,7 @@
 	"rank": "S",
 	"materialId": "fateweave",
 	"materialName": "Fateweave",
-	"materialFamily": "cloth-fibre",
+	"materialFamily": "cloth-fiber",
 	"materialBriefPath": "assets/equipment/experiments/material-equipment-v3/direction/material-briefs/s-fateweave.json",
 	"classId": "robes",
 	"classDirectionId": "equipment-v3-robes-rank-progression",

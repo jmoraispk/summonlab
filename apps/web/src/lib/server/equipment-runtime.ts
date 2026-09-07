@@ -18,7 +18,7 @@ import runtimeVisualManifestSource from '../../../static/runtime/equipment-v1/ma
 
 export interface EquipmentApprovedSourceRecord {
 	readonly assetKey: string;
-	readonly role: 'item' | 'armour-set-reference';
+	readonly role: 'item' | 'armor-set-reference';
 	readonly approved: {
 		readonly path: string;
 		readonly sha256: string;
@@ -163,7 +163,7 @@ export function resolveEquipmentVisual(
 	if (!source) throw new Error(`Equipment approved source is missing: ${sourceAssetKey}`);
 	if (source.role !== 'item') {
 		throw new Error(
-			`Armour-set-reference keys cannot resolve as Equipment items: ${sourceAssetKey}`
+			`Armor-set-reference keys cannot resolve as Equipment items: ${sourceAssetKey}`
 		);
 	}
 	const bundle = runtime.bundles.find((candidate) => candidate.sourceAssetKey === sourceAssetKey);

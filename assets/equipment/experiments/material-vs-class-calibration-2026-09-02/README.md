@@ -10,7 +10,7 @@ The owner accepted both sheets as **direction references** for the rank-first pr
 keeping them outside candidate and runtime paths:
 
 - the Dagger progression is the benchmark for rank readability and silhouette ambition;
-- the Steel cohort is the finish reference, with its Axe, Spear, Dagger, Shield, and Heavy Armour
+- the Steel cohort is the finish reference, with its Axe, Spear, Dagger, Shield, and Heavy Armor
   called out positively;
 - rank progression is the primary design axis;
 - shared material palette, finish, and construction language are secondary coherence checks.
@@ -40,7 +40,7 @@ The prompts explicitly prohibit copying recognizable designs.
 ## Immediate observations
 
 - Approach A has strong surface, lighting, and construction cohesion. Its silhouettes remain fairly
-  conservative, and its Armour display does not yet prove the required empty-set presentation.
+  conservative, and its Armor display does not yet prove the required empty-set presentation.
 - Approach B communicates rank escalation and silhouette change much more clearly. Its seven designs
   still share enough blade-and-guard language to read as one class.
 - Neither sheet is a source for cropping. They are review evidence for choosing a production method.
@@ -50,7 +50,7 @@ The prompts explicitly prohibit copying recognizable designs.
 ```text
 Use case: stylized-concept
 Asset type: reference-only game equipment calibration sheet, Approach A — same material cohort
-Primary request: create one original concept sheet showing a coherent family of seven Standard-craftsmanship STEEL equipment designs generated as one material cohort: sword, dagger, spear, single-bit axe, long-hafted flanged mace, medium shield, and an empty self-supporting heavy armour set. The purpose is to test whether designing all equipment for one material together creates stronger material consistency.
+Primary request: create one original concept sheet showing a coherent family of seven Standard-craftsmanship STEEL equipment designs generated as one material cohort: sword, dagger, spear, single-bit axe, long-hafted flanged mace, medium shield, and an empty self-supporting heavy armor set. The purpose is to test whether designing all equipment for one material together creates stronger material consistency.
 Input images: the provided weapon images are inspiration references only for silhouette ambition, negative space, and willingness to make fantasy weapons visually exciting. Do not reproduce or closely imitate any recognizable weapon, motif, palette, or ornament from them.
 Scene/backdrop: midnight-charcoal studio presentation ground, subtle floor plane
 Style/medium: premium realistic painterly dark fantasy game concept art; grounded medieval construction; polished but not photoreal
@@ -58,7 +58,7 @@ Composition/framing: a clean 4-by-2 catalog grid with seven separate unframed ce
 Lighting/mood: cold key light with a restrained warm rim
 Color palette: honest forged steel, neutral dark leather and wood secondary components, restrained warm highlights
 Materials/textures: visibly cohesive worked-steel vocabulary across the family—shared forging logic, edge treatment, joinery, wear, and restrained ornament—while every equipment class has its own unmistakable silhouette
-Constraints: original designs; practical class readability; basic level of coolness; no item is a mere recolor of another; standard equipment rather than legendary relics; armour is empty with natural cavity shadow and no mannequin; no text, labels, borders, logos, trademarks, characters, hands, scenery, or watermark
+Constraints: original designs; practical class readability; basic level of coolness; no item is a mere recolor of another; standard equipment rather than legendary relics; armor is empty with natural cavity shadow and no mannequin; no text, labels, borders, logos, trademarks, characters, hands, scenery, or watermark
 Avoid: identical silhouettes, excessive spikes, implausible joins, tiny objects, flat orthographic blueprint presentation, copying the reference images
 ```
 

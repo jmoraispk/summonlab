@@ -40,7 +40,7 @@ describe('Equipment runtime visual exporter', () => {
 		expect(built.manifest.summary).toMatchObject({
 			bundleCount: 140,
 			assetCount: 280,
-			armourSetReferenceCount: 0
+			armorSetReferenceCount: 0
 		});
 		expect(built.generated).toHaveLength(280);
 		expect(built.manifest.bundles).toHaveLength(140);
@@ -58,7 +58,7 @@ describe('Equipment runtime visual exporter', () => {
 		).toBe(true);
 		expect(
 			built.generated.some(({ record }) =>
-				record.sourceApprovedPath.includes('armour-set-references')
+				record.sourceApprovedPath.includes('armor-set-references')
 			)
 		).toBe(false);
 	});

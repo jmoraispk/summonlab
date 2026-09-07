@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 import {
-	EQUIPMENT_ARMOUR_SLOTS,
+	EQUIPMENT_ARMOR_SLOTS,
 	EQUIPMENT_CLASSES,
 	EQUIPMENT_RANKS
 } from './equipment-rank-first-production-v3.js';
@@ -18,9 +18,9 @@ export const EQUIPMENT_PROMOTION_DESIGN_PATH =
 export const EQUIPMENT_PROMOTION_PLAN_PATH =
 	'docs/superpowers/plans/2026-09-03-equipment-promotion-runtime-integration.md' as const;
 export const EQUIPMENT_PROMOTION_APPROVED_DESIGN_SHA256 =
-	'9e81d050551d959f27f00f65ff9318752579847a483f8f6e23e578befd97a874' as const;
+	'07fae0f17afc9b72f0ad7cf31bae3e7ae4ba6df2df48ab0958a6bc878014f188' as const;
 export const EQUIPMENT_PROMOTION_APPROVED_PLAN_SHA256 =
-	'1b8d287a708ab68634b6aea4900d1976b2eeaadfdb784a0fd663f1cd93720fa3' as const;
+	'f5c1afdbfd0a3d7e9b2089a202531ce8099f3ba3088d1c192574e05ac9f153cb' as const;
 
 const Sha256Schema = z.string().regex(/^[a-f0-9]{64}$/u);
 const NonEmptySchema = z.string().trim().min(1);
@@ -41,15 +41,15 @@ const CandidatePathSchema = repositoryPath(
 );
 const CheckpointPathSchema = z.enum([
 	'assets/equipment/experiments/material-equipment-v3/checkpoints/checkpoint-2-roots.json',
-	'assets/equipment/experiments/material-equipment-v3/checkpoints/checkpoint-3-armour-pieces.json'
+	'assets/equipment/experiments/material-equipment-v3/checkpoints/checkpoint-3-armor-pieces.json'
 ]);
 const ApprovedItemPathSchema = repositoryPath(
 	`${EQUIPMENT_APPROVED_ROOT}/items/`,
 	/^assets\/equipment\/approved\/material-equipment-v1\/items\/[fedcbas]\/[a-z0-9-]+\/[a-z0-9-]+\.png$/u
 );
 const ApprovedReferencePathSchema = repositoryPath(
-	`${EQUIPMENT_APPROVED_ROOT}/armour-set-references/`,
-	/^assets\/equipment\/approved\/material-equipment-v1\/armour-set-references\/[fedcbas]\/[a-z0-9-]+\/(?:heavy-armour|light-armour|robes)\.png$/u
+	`${EQUIPMENT_APPROVED_ROOT}/armor-set-references/`,
+	/^assets\/equipment\/approved\/material-equipment-v1\/armor-set-references\/[fedcbas]\/[a-z0-9-]+\/(?:heavy-armor|light-armor|robes)\.png$/u
 );
 const JsonReferenceSchema = z
 	.object({
@@ -95,7 +95,7 @@ const ApprovedRecordCommon = {
 	materialId: z.string().regex(/^[a-z0-9-]+$/u),
 	equipmentClass: z.enum(EQUIPMENT_CLASSES),
 	artifactId: z.string().regex(/^[a-z0-9-]+$/u),
-	slot: z.enum(EQUIPMENT_ARMOUR_SLOTS).nullable(),
+	slot: z.enum(EQUIPMENT_ARMOR_SLOTS).nullable(),
 	candidate: CandidateReferenceSchema,
 	checkpoint: CheckpointReferenceSchema
 } as const;
@@ -117,13 +117,13 @@ const EquipmentApprovedItemSourceRecordV1Schema = z
 	})
 	.strict();
 
-const EquipmentApprovedArmourSetReferenceRecordV1Schema = z
+const EquipmentApprovedArmorSetReferenceRecordV1Schema = z
 	.object({
 		...ApprovedRecordCommon,
-		role: z.literal('armour-set-reference'),
+		role: z.literal('armor-set-reference'),
 		approvedPath: ApprovedReferencePathSchema,
 		slot: z.null(),
-		equipmentClass: z.enum(['heavy-armour', 'light-armour', 'robes']),
+		equipmentClass: z.enum(['heavy-armor', 'light-armor', 'robes']),
 		approved: z
 			.object({
 				path: ApprovedReferencePathSchema,
@@ -139,7 +139,7 @@ const EquipmentApprovedArmourSetReferenceRecordV1Schema = z
 export const EquipmentApprovedSourceRecordV1Schema = z
 	.discriminatedUnion('role', [
 		EquipmentApprovedItemSourceRecordV1Schema,
-		EquipmentApprovedArmourSetReferenceRecordV1Schema
+		EquipmentApprovedArmorSetReferenceRecordV1Schema
 	])
 	.superRefine((record, context) => {
 		if (record.approvedPath !== record.approved.path) {
@@ -153,7 +153,7 @@ export const EquipmentApprovedSourceRecordV1Schema = z
 		}
 		const expectedCheckpoint =
 			record.role === 'item' && record.slot !== null
-				? 'checkpoint-3-armour-pieces.json'
+				? 'checkpoint-3-armor-pieces.json'
 				: 'checkpoint-2-roots.json';
 		if (!record.checkpoint.path.endsWith(expectedCheckpoint)) {
 			context.addIssue({ code: 'custom', message: 'Record uses the wrong owner checkpoint' });
@@ -166,7 +166,7 @@ export const EquipmentApprovedSummaryV1Schema = z
 	.object({
 		total: z.literal(161),
 		items: z.literal(140),
-		armourSetReferences: z.literal(21),
+		armorSetReferences: z.literal(21),
 		totalBytes: z.number().int().positive()
 	})
 	.strict();
@@ -177,12 +177,12 @@ function validateRecordCollection(
 	context: z.RefinementCtx
 ): void {
 	const itemCount = records.filter(({ role }) => role === 'item').length;
-	const referenceCount = records.filter(({ role }) => role === 'armour-set-reference').length;
+	const referenceCount = records.filter(({ role }) => role === 'armor-set-reference').length;
 	const totalBytes = records.reduce((total, record) => total + record.approved.bytes, 0);
 	if (
 		records.length !== summary.total ||
 		itemCount !== summary.items ||
-		referenceCount !== summary.armourSetReferences ||
+		referenceCount !== summary.armorSetReferences ||
 		totalBytes !== summary.totalBytes
 	) {
 		context.addIssue({ code: 'custom', message: 'Record collection does not match its summary' });
@@ -229,7 +229,7 @@ export const EquipmentApprovedPromotionPlanV1Schema = z
 			.object({
 				directions: JsonReferenceSchema,
 				roots: JsonReferenceSchema,
-				armourPieces: JsonReferenceSchema
+				armorPieces: JsonReferenceSchema
 			})
 			.strict(),
 		summary: EquipmentApprovedSummaryV1Schema,
@@ -268,7 +268,7 @@ export const EquipmentApprovedPromotionReceiptV1Schema = z
 			.object({
 				directions: JsonReferenceSchema,
 				roots: JsonReferenceSchema,
-				armourPieces: JsonReferenceSchema
+				armorPieces: JsonReferenceSchema
 			})
 			.strict(),
 		summary: EquipmentApprovedSummaryV1Schema

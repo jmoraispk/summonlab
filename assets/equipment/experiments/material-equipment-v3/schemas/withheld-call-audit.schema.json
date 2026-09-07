@@ -4,11 +4,11 @@
 	"properties": {
 		"schemaVersion": {
 			"type": "string",
-			"const": "equipment-armour-piece-withheld-call-audit-v1"
+			"const": "equipment-armor-piece-withheld-call-audit-v1"
 		},
 		"auditId": {
 			"type": "string",
-			"const": "equipment-v3-armour-piece-withheld-calls-v1"
+			"const": "equipment-v3-armor-piece-withheld-calls-v1"
 		},
 		"auditedAt": {
 			"type": "string",

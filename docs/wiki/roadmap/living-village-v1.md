@@ -55,7 +55,7 @@ The immutable legacy inventory preserves all 520 supplied definitions. The
 | Other Martial skills | `off` | Catalog and concept work allowed; runtime acquisition and actions rejected |
 | Selected Magical families | `on` | Use a reviewed allowlist drawn from one or two Magical families; exact selection remains a combat-owner decision |
 | Other Magical skills | `off` | Catalog and concept work allowed; runtime acquisition and actions rejected |
-| Forging | `on` | One of the only two enabled Craft families; produces the scoped prototype Weapons and Armour |
+| Forging | `on` | One of the only two enabled Craft families; produces the scoped prototype Weapons and Armor |
 | Alchemy | `off` | No brewing, reagents, potions, poisons, Alchemy UI, or Alchemy reward |
 | Cooking | `off` | No food/upkeep loop, meals, buffs, or Cooking assignment |
 | Gathering | `partial` | One of the only two enabled Craft families; runtime-v1 proves its material-lot contract with seeded lots while node and harvest actions remain deferred |
@@ -78,7 +78,7 @@ runtime command is a deterministic rejection, not a hidden no-op.
 | Expedition navigation and discoveries | `off` | Mission selection leads directly to resolution/presentation |
 | Multiple parties | `off` | One party proves reservation and return |
 | Advanced and Special summon channels | `off` | The fixed six-person Normal sequence is the complete prototype roster |
-| Equipment crafting | `on` | A bounded Forging selection proves seeded material lot → Standard Weapon, Armour piece, Shield, or Staff → persisted inventory |
+| Equipment crafting | `on` | A bounded Forging selection proves seeded material lot → Standard Weapon, Armor piece, Shield, or Staff → persisted inventory |
 | Enchanting, set bonuses, wear, and repair | `off` | The prototype proves ordinary equipment creation before adding overlays or maintenance |
 | Hero affinity awakening, affinity ranks, dual affinity, and derived affinity | `off` | Every 1★ prototype hero remains Unaligned; a base affinity may appear only in an explicitly enabled monster fixture |
 | Hero promotion above the first band | `off` | Runtime remains 1★ and levels 1–10 |

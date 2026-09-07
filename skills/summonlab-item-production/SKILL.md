@@ -1,6 +1,6 @@
 ---
 name: summonlab-item-production
-description: Use when adding or expanding a Summonlab item, equipment class, material family, rank ladder, armour set, weapon, consumable, loot item, or item visual in the repository.
+description: Use when adding or expanding a Summonlab item, equipment class, material family, rank ladder, armor set, weapon, consumable, loot item, or item visual in the repository.
 ---
 
 # Summonlab item production
@@ -67,7 +67,7 @@ instance, not in duplicate catalogs.
 
 ## Ground functional proportions before the first pixels
 
-For any real-world-derived weapon, armour, tool, garment, vessel, or other item whose recognition
+For any real-world-derived weapon, armor, tool, garment, vessel, or other item whose recognition
 depends on functional anatomy, complete a proportion gate before the first pixel-producing call:
 
 1. Identify the functional landmarks and ratios that control class recognition, handling, fit, or
@@ -118,7 +118,7 @@ review decision names its exact path and hash.
 ## Sets require a continuity anchor
 
 Anything presented as a set first needs one complete-set image showing every member together. After
-acceptance, generate dedicated individual renders bound to that anchor. Current Armour is one empty,
+acceptance, generate dedicated individual renders bound to that anchor. Current Armor is one empty,
 self-supporting full set followed by Head, Torso, Legs, and Boots. The set is continuity evidence;
 the four pieces are item sources. Never substitute crops.
 

@@ -89,7 +89,7 @@ The defects are not one alpha-channel problem.
 | Power Draw | E | Crest seating exposes the checker review ground above it | Use the exact E crest/frame; no repaint is required solely for the checker |
 | Archery | F | Crest seating exposes the checker review ground above it | Use the exact F crest/frame; no opaque-white cleanup is required |
 | Wall of Points | D | Generated outer rails leave conspicuous transparent side runs | Replace with the exact D frame after clipping art to the aperture |
-| Rend Armour | E | Frame is usable, but the generated art and semantic overlay approach the lower rail | Recompose under the exact E frame and remove the chevrons |
+| Rend Armor | E | Frame is usable, but the generated art and semantic overlay approach the lower rail | Recompose under the exact E frame and remove the chevrons |
 
 The review also shows harmless rank-to-rank geometry variation throughout the catalog. Rather than
 hand-list every small rail deviation, frame standardization applies deterministically to all 456
@@ -108,7 +108,7 @@ tool, material, or magical operation remains; only the small explanatory glyph i
 | Assassin's Certainty | Broken-heart badge |
 | Severed Thread | Crossed medical symbol |
 | Hewing Blow | Red circular gauge |
-| Rend Armour | Three stacked chevrons |
+| Rend Armor | Three stacked chevrons |
 | Berserk Swing | Lower-left circular gauge |
 | Reaping Arc | Lower-left circular gauge |
 | Red Harvest | Red medical cross |

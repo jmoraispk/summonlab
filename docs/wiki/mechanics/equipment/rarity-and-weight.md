@@ -44,7 +44,7 @@ but they do not recalculate rank.
 | **A** Fabled | Three slots, an attribute bonus, and a real chance of granting an active skill |
 | **S** Legendary | Grants an active skill, multiple attribute bonuses, and a property nothing else has |
 
-Attribute bonuses stay rare by design. Most armour gives health and mitigation; gear should
+Attribute bonuses stay rare by design. Most armor gives health and mitigation; gear should
 supplement a build, not define one.
 
 ## Weight classes
@@ -55,12 +55,12 @@ supported by Vitality in the source draft.
 | Class | Typical wearer | Penalty if over tolerance |
 | --- | --- | --- |
 | **Light** | Dagger, Robes, Accessory | Rarely an issue |
-| **Medium** | One-handed Weapon, Spear, Bow, Light Armour, Shield, Staff, Tool | Movement and evasion loss |
-| **Heavy** | Two-handed Sword, Axe, Mace, or Heavy Armour | Movement, evasion, attack speed and initiative loss |
+| **Medium** | One-handed Weapon, Spear, Bow, Light Armor, Shield, Staff, Tool | Movement and evasion loss |
+| **Heavy** | Two-handed Sword, Axe, Mace, or Heavy Armor | Movement, evasion, attack speed and initiative loss |
 | **Very Heavy** | Exceptional named Equipment only | Severe penalties across all Agility-driven stats |
 
 **Weightless Craft** (Forging, Rare) lowers an item one weight class at the same protection level,
-which is one of the main reasons a roster wants a good armoursmith.
+which is one of the main reasons a roster wants a good armorsmith.
 
 ## Open implementation questions
 

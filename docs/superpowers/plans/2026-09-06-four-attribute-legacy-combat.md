@@ -213,9 +213,9 @@ git commit -m "feat(engine): add v25 capability state"
 - Modify: `packages/content/src/index.ts`
 - Modify: `packages/engine/src/index.ts`
 
-- [ ] Add tests for intrinsic/effective separation, typed modifier scope, stacking order, Might-only physical scaling, Spirit-only magical scaling, Vitality Health and regeneration, armour-only general mitigation, named resistance caps, and the bounded cognitive factor.
+- [ ] Add tests for intrinsic/effective separation, typed modifier scope, stacking order, Might-only physical scaling, Spirit-only magical scaling, Vitality Health and regeneration, armor-only general mitigation, named resistance caps, and the bounded cognitive factor.
 - [ ] Define `AttributeModifier`, `ResistanceTag`, `DamageTag`, `CombatRulesV1`, and typed source receipts. Use basis points and integers in authoritative math.
-- [ ] Publish `combat-rules-v1` from content with these first harness candidates: base Health `100`, Health per Vitality `4`, base Mana `40`, Mana per Spirit `2`, combat Health regeneration delay `50` ticks, combat recovery at one-fifth safe-rest recovery, armour curve constant `100`, resistance cap `7500` basis points, cognitive factor from `9000..11000` basis points, and affinity contribution nudge capped at `1000` basis points.
+- [ ] Publish `combat-rules-v1` from content with these first harness candidates: base Health `100`, Health per Vitality `4`, base Mana `40`, Mana per Spirit `2`, combat Health regeneration delay `50` ticks, combat recovery at one-fifth safe-rest recovery, armor curve constant `100`, resistance cap `7500` basis points, cognitive factor from `9000..11000` basis points, and affinity contribution nudge capped at `1000` basis points.
 - [ ] Implement pure functions with explicit rules input:
 
 ```ts
@@ -225,7 +225,7 @@ maximumHealth(vitality, rules): number
 healthRegeneration(vitality, context, rules): number
 maximumMana(spirit, rules): number
 manaRegeneration(spirit, context, rules): number
-armourReduction(armour, penetration, rules): number
+armorReduction(armor, penetration, rules): number
 namedResistanceReduction(tags, resistances, rules): number
 learningGain(evidence, profile, context, rules): LearningGainReceipt
 ```
@@ -280,7 +280,7 @@ git add packages/contracts/src/engine packages/contracts/src/event.ts packages/e
 git commit -m "feat(progression): add intrinsic attribute allocation"
 ```
 
-### Task 7: Version skill delivery, mastery, armour training, and named resistances
+### Task 7: Version skill delivery, mastery, armor training, and named resistances
 
 **Files:**
 
@@ -296,7 +296,7 @@ git commit -m "feat(progression): add intrinsic attribute allocation"
 
 - [ ] Add failing tests that reject an attack unless equipped-family tags intersect both the skill's delivery tags and the hero's trained tags. Test related-family familiarization explicitly rather than accepting a specific item instance.
 - [ ] Add `EquipmentFamilyTagSchema` (`unarmed`, `one-handed-blade`, `two-handed-blade`, `bow`, `staff-focus`, `shield`), per-skill mastery, trained delivery tags, authored accuracy/reliability progression, and optional refinement unlocks.
-- [ ] Add equipment load, Might load tolerance, explicit heavy-item Might requirements, and `armour-training` proficiency. Do not add Vitality requirements.
+- [ ] Add equipment load, Might load tolerance, explicit heavy-item Might requirements, and `armor-training` proficiency. Do not add Vitality requirements.
 - [ ] Add named `cut`, `pierce`, `impact`, `burn`, `frost`, `shock`, and `arcane` resistance grants to equipment/passive skills/physiology records. Do not add a universal poise field. Permit only explicitly authored `breakMeter` mechanics on content that owns them.
 - [ ] Adapt the current sword and bow runtime records to the new tags while keeping all old catalog IDs stable.
 - [ ] Verify:
@@ -367,9 +367,9 @@ git commit -m "feat(combat): make legacy mode operator controlled"
 - Create: `docs/evidence/combat-balance-v1.json`
 - Modify: `package.json`
 
-- [ ] Write failing invariant tests for levels 10, 40, 70, and 99 across low/mid/high attribute spreads and Fire-caster, Water-martial, armoured, unarmoured, novice, trained, and mastered fixtures.
+- [ ] Write failing invariant tests for levels 10, 40, 70, and 99 across low/mid/high attribute spreads and Fire-caster, Water-martial, armored, unarmored, novice, trained, and mastered fixtures.
 - [ ] Simulate at least 10,000 seeded trials per matchup. Emit rates and percentile bands, not only averages.
-- [ ] Enforce these promotion gates: novice peer hit rate `65..70%`, trained peer `77..83%`, mastered peer `90..95%`; relative Agility changes peer hit chance by at most 10 percentage points; passive combat regeneration never matches sustained peer damage; off-affinity archetypes remain within 15% median completion time of their matched-affinity controls; armour reduction is monotonic and remains below 75% without an explicit resistance.
+- [ ] Enforce these promotion gates: novice peer hit rate `65..70%`, trained peer `77..83%`, mastered peer `90..95%`; relative Agility changes peer hit chance by at most 10 percentage points; passive combat regeneration never matches sustained peer damage; off-affinity archetypes remain within 15% median completion time of their matched-affinity controls; armor reduction is monotonic and remains below 75% without an explicit resistance.
 - [ ] Add `pnpm export:combat-balance` (`--write`) and `pnpm validate:combat-balance` (`--check`). Generate the committed evidence JSON with rules/content hashes and seed set.
 - [ ] Run twice and confirm the second run is byte-identical:
 
@@ -400,15 +400,15 @@ git commit -m "test(combat): gate four-attribute balance"
 - Modify: `docs/wiki/mechanics/affinities/water.md`
 - Modify: `docs/wiki/mechanics/skills/framework.md`
 - Modify: `docs/wiki/mechanics/equipment/README.md`
-- Modify: `docs/wiki/mechanics/equipment/armour-and-shields.md`
+- Modify: `docs/wiki/mechanics/equipment/armor-and-shields.md`
 - Modify: `docs/wiki/mechanics/equipment/rarity-and-weight.md`
 - Modify: `docs/wiki/mechanics/equipment/weapons.md`
 - Modify: `docs/wiki/systems/summoning-progression-combat.md`
 - Create: `docs/decisions/0072-four-attributes-and-operator-owned-combat-modes.md`
 - Modify: `docs/superpowers/specs/2026-09-06-attributes-and-combat-modes-design.md`
 
-- [ ] Replace six-stat language with the four-column ownership table and intrinsic/effective distinction. Explicitly remove Dexterity, Intellect, universal poise, attribute mitigation, Spirit morale/control/learning, and Vitality armour requirements.
-- [ ] Document Health/Mana regeneration safeguards, hidden bounded cognitive learning, domain aptitudes, one point per level as the initial new-growth rule, the four affinity nudges, per-skill mastery, delivery tags, armour training, and named resistances.
+- [ ] Replace six-stat language with the four-column ownership table and intrinsic/effective distinction. Explicitly remove Dexterity, Intellect, universal poise, attribute mitigation, Spirit morale/control/learning, and Vitality armor requirements.
+- [ ] Document Health/Mana regeneration safeguards, hidden bounded cognitive learning, domain aptitudes, one point per level as the initial new-growth rule, the four affinity nudges, per-skill mastery, delivery tags, armor training, and named resistances.
 - [ ] Document that `legacy-auto-v1` is operator-selected, beta-default, attempt-locked, automatic, and not player-visible. Link the second implementation plan for `agent-readiness-v1` rather than documenting it as shipped.
 - [ ] Add ADR 0072 with context, decision, compatibility projection, release ownership, replay consequences, and superseded wiki statements. Change the design spec status to `accepted; implementation planned` and link both plan files.
 - [ ] Validate links, terminology, and generated catalogs:

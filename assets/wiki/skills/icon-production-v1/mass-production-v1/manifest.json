@@ -5,7 +5,7 @@
 	"authorities": {
 		"catalog": {
 			"path": "assets/wiki/skills/icon-production-v1/catalog.json",
-			"contentHash": "71add63ae46e6e0b68d807bb5bca6060b101213682fc8e1c9037ad1fe3744aaf"
+			"contentHash": "c3505a68a38909927127e53233e12adbebfc1f65c98c7bd6fb449f13986c92a1"
 		},
 		"motifMap": {
 			"path": "assets/wiki/skills/icon-production-v1/motif-map.json",
@@ -35,11 +35,7 @@
 	"expected": {
 		"families": 124,
 		"skills": 456,
-		"domains": {
-			"Martial": 258,
-			"Magical": 124,
-			"Craft": 74
-		}
+		"domains": { "Martial": 258, "Magical": 124, "Craft": 74 }
 	},
 	"families": [
 		{
@@ -128,10 +124,7 @@
 			"slug": "blade-draw-cut",
 			"domain": "Martial",
 			"family": "Blade",
-			"memberTargetIds": [
-				"martial:blade:quick-draw",
-				"martial:blade:drawing-cut"
-			],
+			"memberTargetIds": ["martial:blade:quick-draw", "martial:blade:drawing-cut"],
 			"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/families/blade-draw-cut.json",
 			"referenceSheetPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/blade-draw-cut.png",
 			"cellMapPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheet-maps/blade-draw-cut.json",
@@ -145,9 +138,7 @@
 			"slug": "blade-thrust",
 			"domain": "Martial",
 			"family": "Blade",
-			"memberTargetIds": [
-				"martial:blade:piercing-thrust"
-			],
+			"memberTargetIds": ["martial:blade:piercing-thrust"],
 			"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/families/blade-thrust.json",
 			"referenceSheetPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/blade-thrust.png",
 			"cellMapPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheet-maps/blade-thrust.json",
@@ -161,9 +152,7 @@
 			"slug": "blade-feinting-cut",
 			"domain": "Martial",
 			"family": "Blade",
-			"memberTargetIds": [
-				"martial:blade:feinting-cut"
-			],
+			"memberTargetIds": ["martial:blade:feinting-cut"],
 			"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/families/blade-feinting-cut.json",
 			"referenceSheetPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/blade-feinting-cut.png",
 			"cellMapPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheet-maps/blade-feinting-cut.json",
@@ -259,9 +248,7 @@
 			"slug": "blade-cut-purse",
 			"domain": "Martial",
 			"family": "Blade",
-			"memberTargetIds": [
-				"martial:blade:cut-purse"
-			],
+			"memberTargetIds": ["martial:blade:cut-purse"],
 			"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/families/blade-cut-purse.json",
 			"referenceSheetPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/blade-cut-purse.png",
 			"cellMapPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheet-maps/blade-cut-purse.json",
@@ -275,9 +262,7 @@
 			"slug": "blade-grit-throw",
 			"domain": "Martial",
 			"family": "Blade",
-			"memberTargetIds": [
-				"martial:blade:grit-throw"
-			],
+			"memberTargetIds": ["martial:blade:grit-throw"],
 			"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/families/blade-grit-throw.json",
 			"referenceSheetPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/blade-grit-throw.png",
 			"cellMapPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheet-maps/blade-grit-throw.json",
@@ -332,9 +317,7 @@
 			"slug": "blade-coated-edge",
 			"domain": "Martial",
 			"family": "Blade",
-			"memberTargetIds": [
-				"martial:blade:coated-blade"
-			],
+			"memberTargetIds": ["martial:blade:coated-blade"],
 			"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/families/blade-coated-edge.json",
 			"referenceSheetPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/blade-coated-edge.png",
 			"cellMapPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheet-maps/blade-coated-edge.json",
@@ -406,10 +389,7 @@
 			"slug": "blade-ground-impact",
 			"domain": "Martial",
 			"family": "Blade",
-			"memberTargetIds": [
-				"martial:blade:ground-slam",
-				"martial:blade:earthbreaker"
-			],
+			"memberTargetIds": ["martial:blade:ground-slam", "martial:blade:earthbreaker"],
 			"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/families/blade-ground-impact.json",
 			"referenceSheetPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/blade-ground-impact.png",
 			"cellMapPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheet-maps/blade-ground-impact.json",
@@ -423,9 +403,7 @@
 			"slug": "blade-execution-drop",
 			"domain": "Martial",
 			"family": "Blade",
-			"memberTargetIds": [
-				"martial:blade:executioner-s-drop"
-			],
+			"memberTargetIds": ["martial:blade:executioner-s-drop"],
 			"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/families/blade-execution-drop.json",
 			"referenceSheetPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/blade-execution-drop.png",
 			"cellMapPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheet-maps/blade-execution-drop.json",
@@ -519,9 +497,7 @@
 			"slug": "polearm-butt-strike",
 			"domain": "Martial",
 			"family": "Polearm",
-			"memberTargetIds": [
-				"martial:polearm:butt-strike"
-			],
+			"memberTargetIds": ["martial:polearm:butt-strike"],
 			"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/families/polearm-butt-strike.json",
 			"referenceSheetPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/polearm-butt-strike.png",
 			"cellMapPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheet-maps/polearm-butt-strike.json",
@@ -610,19 +586,19 @@
 			"resultHash": "49783c73ec857c266cab65ffa056065a721261ea6fc605191e275ae7c56cbf5b"
 		},
 		{
-			"familyId": "polearm.armour-rend",
-			"slug": "polearm-armour-rend",
+			"familyId": "polearm.armor-rend",
+			"slug": "polearm-armor-rend",
 			"domain": "Martial",
 			"family": "Polearm",
 			"memberTargetIds": [
-				"martial:polearm:rend-armour",
+				"martial:polearm:rend-armor",
 				"martial:polearm:bloodletting",
 				"martial:polearm:ruin"
 			],
-			"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/families/polearm-armour-rend.json",
-			"referenceSheetPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/polearm-armour-rend.png",
-			"cellMapPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheet-maps/polearm-armour-rend.json",
-			"resultPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/results/families/polearm-armour-rend.json",
+			"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/families/polearm-armor-rend.json",
+			"referenceSheetPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/polearm-armor-rend.png",
+			"cellMapPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheet-maps/polearm-armor-rend.json",
+			"resultPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/results/families/polearm-armor-rend.json",
 			"status": "candidate",
 			"referenceSheetHash": "88b98f536c67d099baa7a3af72db24e751aea9455abdd9ddac1cf8eb4e906880",
 			"resultHash": "1c1db0083a168ec9118a31669d0a8133dceb59debdcee4ed8482c2c684d5421f"
@@ -736,10 +712,7 @@
 			"slug": "ranged-arrow-craft",
 			"domain": "Martial",
 			"family": "Ranged",
-			"memberTargetIds": [
-				"martial:ranged:fletching",
-				"martial:ranged:split-arrow"
-			],
+			"memberTargetIds": ["martial:ranged:fletching", "martial:ranged:split-arrow"],
 			"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/families/ranged-arrow-craft.json",
 			"referenceSheetPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/ranged-arrow-craft.png",
 			"cellMapPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheet-maps/ranged-arrow-craft.json",
@@ -753,9 +726,7 @@
 			"slug": "ranged-hunters-mark",
 			"domain": "Martial",
 			"family": "Ranged",
-			"memberTargetIds": [
-				"martial:ranged:hunter-s-mark"
-			],
+			"memberTargetIds": ["martial:ranged:hunter-s-mark"],
 			"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/families/ranged-hunters-mark.json",
 			"referenceSheetPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/ranged-hunters-mark.png",
 			"cellMapPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheet-maps/ranged-hunters-mark.json",
@@ -825,9 +796,7 @@
 			"slug": "ranged-trick-bolt",
 			"domain": "Martial",
 			"family": "Ranged",
-			"memberTargetIds": [
-				"martial:ranged:trick-bolt"
-			],
+			"memberTargetIds": ["martial:ranged:trick-bolt"],
 			"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/families/ranged-trick-bolt.json",
 			"referenceSheetPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/ranged-trick-bolt.png",
 			"cellMapPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheet-maps/ranged-trick-bolt.json",
@@ -841,9 +810,7 @@
 			"slug": "ranged-sling",
 			"domain": "Martial",
 			"family": "Ranged",
-			"memberTargetIds": [
-				"martial:ranged:sling"
-			],
+			"memberTargetIds": ["martial:ranged:sling"],
 			"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/families/ranged-sling.json",
 			"referenceSheetPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/ranged-sling.png",
 			"cellMapPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheet-maps/ranged-sling.json",
@@ -920,10 +887,7 @@
 			"slug": "shield-deflection",
 			"domain": "Martial",
 			"family": "Shield",
-			"memberTargetIds": [
-				"martial:shield:deflect",
-				"martial:shield:retaliation-ward"
-			],
+			"memberTargetIds": ["martial:shield:deflect", "martial:shield:retaliation-ward"],
 			"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/families/shield-deflection.json",
 			"referenceSheetPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/shield-deflection.png",
 			"cellMapPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheet-maps/shield-deflection.json",
@@ -937,9 +901,7 @@
 			"slug": "shield-throw",
 			"domain": "Martial",
 			"family": "Shield",
-			"memberTargetIds": [
-				"martial:shield:shield-throw"
-			],
+			"memberTargetIds": ["martial:shield:shield-throw"],
 			"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/families/shield-throw.json",
 			"referenceSheetPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/shield-throw.png",
 			"cellMapPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheet-maps/shield-throw.json",
@@ -953,10 +915,7 @@
 			"slug": "shield-attention",
 			"domain": "Martial",
 			"family": "Shield",
-			"memberTargetIds": [
-				"martial:shield:taunt",
-				"martial:shield:draw-attention"
-			],
+			"memberTargetIds": ["martial:shield:taunt", "martial:shield:draw-attention"],
 			"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/families/shield-attention.json",
 			"referenceSheetPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/shield-attention.png",
 			"cellMapPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheet-maps/shield-attention.json",
@@ -1028,9 +987,7 @@
 			"slug": "body-sidestep",
 			"domain": "Martial",
 			"family": "Body",
-			"memberTargetIds": [
-				"martial:body:sidestep"
-			],
+			"memberTargetIds": ["martial:body:sidestep"],
 			"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/families/body-sidestep.json",
 			"referenceSheetPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/body-sidestep.png",
 			"cellMapPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheet-maps/body-sidestep.json",
@@ -1044,9 +1001,7 @@
 			"slug": "body-disarm",
 			"domain": "Martial",
 			"family": "Body",
-			"memberTargetIds": [
-				"martial:body:disarm"
-			],
+			"memberTargetIds": ["martial:body:disarm"],
 			"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/families/body-disarm.json",
 			"referenceSheetPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/body-disarm.png",
 			"cellMapPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheet-maps/body-disarm.json",
@@ -1060,9 +1015,7 @@
 			"slug": "body-called-shot",
 			"domain": "Martial",
 			"family": "Body",
-			"memberTargetIds": [
-				"martial:body:called-shot"
-			],
+			"memberTargetIds": ["martial:body:called-shot"],
 			"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/families/body-called-shot.json",
 			"referenceSheetPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/body-called-shot.png",
 			"cellMapPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheet-maps/body-called-shot.json",
@@ -1076,9 +1029,7 @@
 			"slug": "body-second-wind",
 			"domain": "Martial",
 			"family": "Body",
-			"memberTargetIds": [
-				"martial:body:second-wind"
-			],
+			"memberTargetIds": ["martial:body:second-wind"],
 			"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/families/body-second-wind.json",
 			"referenceSheetPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/body-second-wind.png",
 			"cellMapPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheet-maps/body-second-wind.json",
@@ -1191,11 +1142,7 @@
 			"slug": "body-acrobatics",
 			"domain": "Martial",
 			"family": "Body",
-			"memberTargetIds": [
-				"martial:body:climb",
-				"martial:body:vault",
-				"martial:body:wall-run"
-			],
+			"memberTargetIds": ["martial:body:climb", "martial:body:vault", "martial:body:wall-run"],
 			"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/families/body-acrobatics.json",
 			"referenceSheetPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/body-acrobatics.png",
 			"cellMapPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheet-maps/body-acrobatics.json",
@@ -1229,10 +1176,7 @@
 			"slug": "body-endurance",
 			"domain": "Martial",
 			"family": "Body",
-			"memberTargetIds": [
-				"martial:body:set-jaw",
-				"martial:body:undying"
-			],
+			"memberTargetIds": ["martial:body:set-jaw", "martial:body:undying"],
 			"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/families/body-endurance.json",
 			"referenceSheetPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/body-endurance.png",
 			"cellMapPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheet-maps/body-endurance.json",
@@ -1305,10 +1249,7 @@
 			"slug": "elemental-fire-trail",
 			"domain": "Magical",
 			"family": "Elemental",
-			"memberTargetIds": [
-				"magical:elemental:cinder-trail",
-				"magical:elemental:flame-jet"
-			],
+			"memberTargetIds": ["magical:elemental:cinder-trail", "magical:elemental:flame-jet"],
 			"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/families/elemental-fire-trail.json",
 			"referenceSheetPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/elemental-fire-trail.png",
 			"cellMapPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheet-maps/elemental-fire-trail.json",
@@ -1322,10 +1263,7 @@
 			"slug": "elemental-fire-form",
 			"domain": "Magical",
 			"family": "Elemental",
-			"memberTargetIds": [
-				"magical:elemental:flame-shroud",
-				"magical:elemental:phoenix-form"
-			],
+			"memberTargetIds": ["magical:elemental:flame-shroud", "magical:elemental:phoenix-form"],
 			"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/families/elemental-fire-form.json",
 			"referenceSheetPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/elemental-fire-form.png",
 			"cellMapPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheet-maps/elemental-fire-form.json",
@@ -1415,10 +1353,7 @@
 			"slug": "elemental-water-obscure",
 			"domain": "Magical",
 			"family": "Elemental",
-			"memberTargetIds": [
-				"magical:elemental:mist",
-				"magical:elemental:drowning-grasp"
-			],
+			"memberTargetIds": ["magical:elemental:mist", "magical:elemental:drowning-grasp"],
 			"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/families/elemental-water-obscure.json",
 			"referenceSheetPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/elemental-water-obscure.png",
 			"cellMapPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheet-maps/elemental-water-obscure.json",
@@ -1527,10 +1462,7 @@
 			"slug": "elemental-earth-rise",
 			"domain": "Magical",
 			"family": "Elemental",
-			"memberTargetIds": [
-				"magical:elemental:earthen-wall",
-				"magical:elemental:mountain-rise"
-			],
+			"memberTargetIds": ["magical:elemental:earthen-wall", "magical:elemental:mountain-rise"],
 			"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/families/elemental-earth-rise.json",
 			"referenceSheetPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/elemental-earth-rise.png",
 			"cellMapPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheet-maps/elemental-earth-rise.json",
@@ -1584,10 +1516,7 @@
 			"slug": "ward-elemental-guard",
 			"domain": "Magical",
 			"family": "Ward",
-			"memberTargetIds": [
-				"magical:ward:elemental-guard",
-				"magical:ward:absorption"
-			],
+			"memberTargetIds": ["magical:ward:elemental-guard", "magical:ward:absorption"],
 			"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/families/ward-elemental-guard.json",
 			"referenceSheetPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/ward-elemental-guard.png",
 			"cellMapPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheet-maps/ward-elemental-guard.json",
@@ -1640,7 +1569,7 @@
 			"memberTargetIds": [
 				"magical:enchantment:imbuing",
 				"magical:enchantment:weapon-oil",
-				"magical:enchantment:armour-imbuing",
+				"magical:enchantment:armor-imbuing",
 				"magical:enchantment:elemental-attunement"
 			],
 			"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/families/enchantment-imbued-object.json",
@@ -1676,9 +1605,7 @@
 			"slug": "enchantment-light",
 			"domain": "Magical",
 			"family": "Enchantment",
-			"memberTargetIds": [
-				"magical:enchantment:light"
-			],
+			"memberTargetIds": ["magical:enchantment:light"],
 			"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/families/enchantment-light.json",
 			"referenceSheetPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/enchantment-light.png",
 			"cellMapPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheet-maps/enchantment-light.json",
@@ -1769,10 +1696,7 @@
 			"slug": "restoration-purification",
 			"domain": "Magical",
 			"family": "Restoration",
-			"memberTargetIds": [
-				"magical:restoration:cure",
-				"magical:restoration:purity"
-			],
+			"memberTargetIds": ["magical:restoration:cure", "magical:restoration:purity"],
 			"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/families/restoration-purification.json",
 			"referenceSheetPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/restoration-purification.png",
 			"cellMapPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheet-maps/restoration-purification.json",
@@ -1841,10 +1765,7 @@
 			"slug": "mind-surface-sight",
 			"domain": "Magical",
 			"family": "Mind",
-			"memberTargetIds": [
-				"magical:mind:read-surface",
-				"magical:mind:shared-sight"
-			],
+			"memberTargetIds": ["magical:mind:read-surface", "magical:mind:shared-sight"],
 			"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/families/mind-surface-sight.json",
 			"referenceSheetPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/mind-surface-sight.png",
 			"cellMapPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheet-maps/mind-surface-sight.json",
@@ -1896,10 +1817,7 @@
 			"slug": "mind-self-fortress",
 			"domain": "Magical",
 			"family": "Mind",
-			"memberTargetIds": [
-				"magical:mind:mental-fortress",
-				"magical:mind:unmaking-of-the-self"
-			],
+			"memberTargetIds": ["magical:mind:mental-fortress", "magical:mind:unmaking-of-the-self"],
 			"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/families/mind-self-fortress.json",
 			"referenceSheetPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/mind-self-fortress.png",
 			"cellMapPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheet-maps/mind-self-fortress.json",
@@ -1913,9 +1831,7 @@
 			"slug": "mind-memory-edit",
 			"domain": "Magical",
 			"family": "Mind",
-			"memberTargetIds": [
-				"magical:mind:memory-edit"
-			],
+			"memberTargetIds": ["magical:mind:memory-edit"],
 			"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/families/mind-memory-edit.json",
 			"referenceSheetPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/mind-memory-edit.png",
 			"cellMapPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheet-maps/mind-memory-edit.json",
@@ -1933,7 +1849,7 @@
 				"craft:forging:ore-sense",
 				"craft:forging:simple-smithing",
 				"craft:forging:weaponsmithing",
-				"craft:forging:armoursmithing",
+				"craft:forging:armorsmithing",
 				"craft:forging:godsmithing"
 			],
 			"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/families/forging-smithing.json",
@@ -2004,9 +1920,7 @@
 			"slug": "forging-monster-craft",
 			"domain": "Craft",
 			"family": "Forging",
-			"memberTargetIds": [
-				"craft:forging:monster-craft"
-			],
+			"memberTargetIds": ["craft:forging:monster-craft"],
 			"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/families/forging-monster-craft.json",
 			"referenceSheetPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/forging-monster-craft.png",
 			"cellMapPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheet-maps/forging-monster-craft.json",
@@ -2079,10 +1993,7 @@
 			"slug": "alchemy-volatile-delivery",
 			"domain": "Craft",
 			"family": "Alchemy",
-			"memberTargetIds": [
-				"craft:alchemy:volatiles",
-				"craft:alchemy:grenade-throw"
-			],
+			"memberTargetIds": ["craft:alchemy:volatiles", "craft:alchemy:grenade-throw"],
 			"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/families/alchemy-volatile-delivery.json",
 			"referenceSheetPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/alchemy-volatile-delivery.png",
 			"cellMapPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheet-maps/alchemy-volatile-delivery.json",
@@ -2115,10 +2026,7 @@
 			"slug": "cooking-rations",
 			"domain": "Craft",
 			"family": "Cooking",
-			"memberTargetIds": [
-				"craft:cooking:field-rations",
-				"craft:cooking:preserving"
-			],
+			"memberTargetIds": ["craft:cooking:field-rations", "craft:cooking:preserving"],
 			"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/families/cooking-rations.json",
 			"referenceSheetPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/cooking-rations.png",
 			"cellMapPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheet-maps/cooking-rations.json",
@@ -2206,10 +2114,7 @@
 			"slug": "gathering-foraging",
 			"domain": "Craft",
 			"family": "Gathering",
-			"memberTargetIds": [
-				"craft:gathering:foraging",
-				"craft:gathering:cultivation"
-			],
+			"memberTargetIds": ["craft:gathering:foraging", "craft:gathering:cultivation"],
 			"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/families/gathering-foraging.json",
 			"referenceSheetPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/gathering-foraging.png",
 			"cellMapPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheet-maps/gathering-foraging.json",
@@ -2223,10 +2128,7 @@
 			"slug": "gathering-skinning",
 			"domain": "Craft",
 			"family": "Gathering",
-			"memberTargetIds": [
-				"craft:gathering:skinning",
-				"craft:gathering:perfect-cut"
-			],
+			"memberTargetIds": ["craft:gathering:skinning", "craft:gathering:perfect-cut"],
 			"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/families/gathering-skinning.json",
 			"referenceSheetPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/gathering-skinning.png",
 			"cellMapPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheet-maps/gathering-skinning.json",
@@ -2259,9 +2161,7 @@
 			"slug": "gathering-breeding",
 			"domain": "Craft",
 			"family": "Gathering",
-			"memberTargetIds": [
-				"craft:gathering:breeding"
-			],
+			"memberTargetIds": ["craft:gathering:breeding"],
 			"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/families/gathering-breeding.json",
 			"referenceSheetPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/gathering-breeding.png",
 			"cellMapPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheet-maps/gathering-breeding.json",
@@ -2275,9 +2175,7 @@
 			"slug": "gathering-bulk-carry",
 			"domain": "Craft",
 			"family": "Gathering",
-			"memberTargetIds": [
-				"craft:gathering:bulk-carry"
-			],
+			"memberTargetIds": ["craft:gathering:bulk-carry"],
 			"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/families/gathering-bulk-carry.json",
 			"referenceSheetPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/gathering-bulk-carry.png",
 			"cellMapPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheet-maps/gathering-bulk-carry.json",
@@ -2329,10 +2227,7 @@
 			"slug": "knowledge-mapping",
 			"domain": "Craft",
 			"family": "Knowledge",
-			"memberTargetIds": [
-				"craft:knowledge:mapping",
-				"craft:knowledge:cartography"
-			],
+			"memberTargetIds": ["craft:knowledge:mapping", "craft:knowledge:cartography"],
 			"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/families/knowledge-mapping.json",
 			"referenceSheetPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/knowledge-mapping.png",
 			"cellMapPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheet-maps/knowledge-mapping.json",
@@ -2346,10 +2241,7 @@
 			"slug": "knowledge-research",
 			"domain": "Craft",
 			"family": "Knowledge",
-			"memberTargetIds": [
-				"craft:knowledge:research",
-				"craft:knowledge:the-archive"
-			],
+			"memberTargetIds": ["craft:knowledge:research", "craft:knowledge:the-archive"],
 			"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/families/knowledge-research.json",
 			"referenceSheetPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/knowledge-research.png",
 			"cellMapPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheet-maps/knowledge-research.json",
@@ -4248,17 +4140,17 @@
 			"resultHash": "2b3127c3d190083a145ffbf4d613ae95817577a2b9ceaf68edb654f269311b7d"
 		},
 		{
-			"targetId": "martial:polearm:rend-armour",
-			"slug": "martial-polearm-rend-armour",
-			"name": "Rend Armour",
+			"targetId": "martial:polearm:rend-armor",
+			"slug": "martial-polearm-rend-armor",
+			"name": "Rend Armor",
 			"domain": "Martial",
 			"family": "Polearm",
-			"motifFamily": "polearm.armour-rend",
+			"motifFamily": "polearm.armor-rend",
 			"rarity": "E",
 			"primaryVisualParent": null,
-			"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/martial-polearm-rend-armour.json",
-			"finalImagePath": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-polearm-rend-armour.png",
-			"resultPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/results/skills/martial-polearm-rend-armour.json",
+			"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/martial-polearm-rend-armor.json",
+			"finalImagePath": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-polearm-rend-armor.png",
+			"resultPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/results/skills/martial-polearm-rend-armor.json",
 			"status": "candidate",
 			"finalImageHash": "83726d3a04d4dd291b093fbd1776d924fcc6532d866c1beb8fac385e1342db58",
 			"providerSourceHash": "f818b70e717e78723b2f6e4232fd8fa1f87a8d9572290f932a9a3c3c2e8bd07c",
@@ -4304,9 +4196,9 @@
 			"name": "Bloodletting",
 			"domain": "Martial",
 			"family": "Polearm",
-			"motifFamily": "polearm.armour-rend",
+			"motifFamily": "polearm.armor-rend",
 			"rarity": "D",
-			"primaryVisualParent": "martial:polearm:rend-armour",
+			"primaryVisualParent": "martial:polearm:rend-armor",
 			"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/martial-polearm-bloodletting.json",
 			"finalImagePath": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-polearm-bloodletting.png",
 			"resultPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/results/skills/martial-polearm-bloodletting.json",
@@ -4372,7 +4264,7 @@
 			"name": "Ruin",
 			"domain": "Martial",
 			"family": "Polearm",
-			"motifFamily": "polearm.armour-rend",
+			"motifFamily": "polearm.armor-rend",
 			"rarity": "B",
 			"primaryVisualParent": "martial:polearm:bloodletting",
 			"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/martial-polearm-ruin.json",
@@ -8073,17 +7965,17 @@
 			"resultHash": "822592872342200575b678cde138cb2f20a2f63e84b41fc05a93e0eebcc5aa3a"
 		},
 		{
-			"targetId": "magical:enchantment:armour-imbuing",
-			"slug": "magical-enchantment-armour-imbuing",
-			"name": "Armour Imbuing",
+			"targetId": "magical:enchantment:armor-imbuing",
+			"slug": "magical-enchantment-armor-imbuing",
+			"name": "Armor Imbuing",
 			"domain": "Magical",
 			"family": "Enchantment",
 			"motifFamily": "enchantment.imbued-object",
 			"rarity": "E",
 			"primaryVisualParent": "magical:enchantment:weapon-oil",
-			"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/magical-enchantment-armour-imbuing.json",
-			"finalImagePath": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-enchantment-armour-imbuing.png",
-			"resultPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/results/skills/magical-enchantment-armour-imbuing.json",
+			"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/magical-enchantment-armor-imbuing.json",
+			"finalImagePath": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-enchantment-armor-imbuing.png",
+			"resultPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/results/skills/magical-enchantment-armor-imbuing.json",
 			"status": "candidate",
 			"finalImageHash": "34ca516618b8eab44c3e4814242535cb3c7d7324539df5cdff8496d55ee1d041",
 			"providerSourceHash": "5da659175fd4242d44096b54bf41c6e08504c33af1894813e0a4d08230ea2164",
@@ -8165,7 +8057,7 @@
 			"family": "Enchantment",
 			"motifFamily": "enchantment.imbued-object",
 			"rarity": "D",
-			"primaryVisualParent": "magical:enchantment:armour-imbuing",
+			"primaryVisualParent": "magical:enchantment:armor-imbuing",
 			"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/magical-enchantment-elemental-attunement.json",
 			"finalImagePath": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-enchantment-elemental-attunement.png",
 			"resultPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/results/skills/magical-enchantment-elemental-attunement.json",
@@ -8940,17 +8832,17 @@
 			"resultHash": "8aad24137ab58b141723b5087ee131ec99bdba75e2622e31fea318684adbff44"
 		},
 		{
-			"targetId": "craft:forging:armoursmithing",
-			"slug": "craft-forging-armoursmithing",
-			"name": "Armoursmithing",
+			"targetId": "craft:forging:armorsmithing",
+			"slug": "craft-forging-armorsmithing",
+			"name": "Armorsmithing",
 			"domain": "Craft",
 			"family": "Forging",
 			"motifFamily": "forging.smithing",
 			"rarity": "E",
 			"primaryVisualParent": "craft:forging:weaponsmithing",
-			"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/craft-forging-armoursmithing.json",
-			"finalImagePath": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/craft-forging-armoursmithing.png",
-			"resultPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/results/skills/craft-forging-armoursmithing.json",
+			"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/craft-forging-armorsmithing.json",
+			"finalImagePath": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/craft-forging-armorsmithing.png",
+			"resultPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/results/skills/craft-forging-armorsmithing.json",
 			"status": "candidate",
 			"finalImageHash": "6e2bfcc345bc129ce1f5fdd6cfabd9fd479e2fede60ce76f06e84cb8b06cc939",
 			"providerSourceHash": "8fb48ea69812c3702eeedd70f694a8d334affc5bca1926706e765b93a3b2c544",
@@ -9117,7 +9009,7 @@
 			"family": "Forging",
 			"motifFamily": "forging.smithing",
 			"rarity": "S",
-			"primaryVisualParent": "craft:forging:armoursmithing",
+			"primaryVisualParent": "craft:forging:armorsmithing",
 			"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/craft-forging-godsmithing.json",
 			"finalImagePath": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/craft-forging-godsmithing.png",
 			"resultPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/results/skills/craft-forging-godsmithing.json",
@@ -10280,8 +10172,8 @@
 					"contentHash": "bfa21badb7fad9726c651aed69dd3cd53f5f185e05c8183647d82d5c694ade9f"
 				},
 				{
-					"familyId": "polearm.armour-rend",
-					"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/contact-sheets/families/polearm-armour-rend.png",
+					"familyId": "polearm.armor-rend",
+					"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/contact-sheets/families/polearm-armor-rend.png",
 					"contentHash": "874e00c39feb7a96ba4b02a6c7d261d70b5a84a5969b712244bcf071fe673543"
 				},
 				{
@@ -10853,14 +10745,8 @@
 				"command": "pnpm check:skill-icon-mass-production",
 				"completedAt": "2026-09-04T03:22:47.981Z"
 			},
-			{
-				"command": "pnpm typecheck:skill-icons",
-				"completedAt": "2026-09-04T03:22:47.981Z"
-			},
-			{
-				"command": "pnpm test:skill-icons",
-				"completedAt": "2026-09-04T03:22:47.981Z"
-			}
+			{ "command": "pnpm typecheck:skill-icons", "completedAt": "2026-09-04T03:22:47.981Z" },
+			{ "command": "pnpm test:skill-icons", "completedAt": "2026-09-04T03:22:47.981Z" }
 		]
 	}
 }

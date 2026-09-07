@@ -98,7 +98,7 @@ approved PNG sources (161: 140 items + 21 set references)
 ```
 
 Candidate art, approved masters, runtime derivatives, definitions, and item instances remain
-separate states. The 21 full Armour-set images are visual continuity evidence, not inventory items.
+separate states. The 21 full Armor-set images are visual continuity evidence, not inventory items.
 Fine/Masterwork resolution, complete Gathering, broad random loot, and monster-derived Equipment
 remain outside engine-v24.
 

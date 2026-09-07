@@ -5,11 +5,11 @@
 	"status": "candidate",
 	"feedback": {
 		"path": "assets/wiki/skills/icon-production-v2/runs/reversal-cut-v4/owner-frame-feedback.json",
-		"contentHash": "8560bd033c6f505f75b8ee638941d5d0b3bfa485f6fddc62e6d842bce78a6987"
+		"contentHash": "4d317f23a0540287d0658a848e26eacb9222bc4296f7b2b815e3ddb0ab2c3dad"
 	},
 	"priorActivation": {
 		"path": "assets/wiki/skills/icon-production-v2/runs/reversal-cut-v3/activation.json",
-		"contentHash": "ac9f24595a0b2c048986e9da31d726379865390a508ecfcd5a797e7e32319f02"
+		"contentHash": "117126510b137fb92b740aeb12c5140f6e74072b1adb830bacc5305f5b624b4c"
 	},
 	"approvedArtMaster": {
 		"path": "assets/wiki/skills/icon-production-v1/masters/icons/martial-blade-reversal-cut.png",
@@ -22,7 +22,7 @@
 		},
 		"massManifest": {
 			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/manifest.json",
-			"contentHash": "22d7e61074efc43150502e82cc7947589f031cf688362c571d6eb3b99b26f0ee"
+			"contentHash": "d61b65a6acd21b1d5f40bdef6298013515ff913a027586a9756287c5e422f4ae"
 		},
 		"geometry": {
 			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",

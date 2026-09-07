@@ -6,15 +6,15 @@
 	"canonicalAuthority": {
 		"catalog": {
 			"path": "assets/wiki/skills/icon-production-v2/catalog.json",
-			"contentHash": "86f4f539743126e25f34e53a15de714ecf97645256c71658f3bd14ee00711496"
+			"contentHash": "eb637b457f0e916fd5a341ea6e94d97c869e52541f7ef22c146841d190ee86a9"
 		},
 		"motifMap": {
 			"path": "assets/wiki/skills/icon-production-v2/motif-map.json",
-			"contentHash": "2b2bcf2ca1050cfb3b26f9e054439853f25dc3102d5549327fd17acb2d5e4558"
+			"contentHash": "bf1540a7f5eb9d6686c94f1a805830086bf557e62a6183fe4d6d0110fce6a7b6"
 		},
 		"visualSpecs": {
 			"path": "assets/wiki/skills/icon-production-v2/visual-specs.json",
-			"contentHash": "8dc45ca36d8d5a1817d79fb8e34c3d9a79647e28abbb3b826e28a1582ec3f8b5"
+			"contentHash": "d4fb8f27cecc881786161b08b26bd8e83724839deaa935f3f86088e627e0e57b"
 		}
 	},
 	"calibration": {

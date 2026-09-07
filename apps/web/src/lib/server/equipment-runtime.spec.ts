@@ -76,8 +76,8 @@ describe('Equipment workshop runtime projection', () => {
 	});
 
 	it('rejects full-set references as inventory art', () => {
-		expect(() =>
-			resolveEquipmentVisual('equipment-v1-f-bronze-heavy-armour-set-reference')
-		).toThrow(/Armour-set-reference/u);
+		expect(() => resolveEquipmentVisual('equipment-v1-f-bronze-heavy-armor-set-reference')).toThrow(
+			/Armor-set-reference/u
+		);
 	});
 });

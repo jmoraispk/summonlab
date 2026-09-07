@@ -116,7 +116,7 @@ export const EquipmentIntegrationReportV1Schema = z
 			.object({
 				approvedSources: z.literal(161),
 				equippableSources: z.literal(140),
-				armourSetReferences: z.literal(21),
+				armorSetReferences: z.literal(21),
 				runtimeBundles: z.literal(140),
 				runtimeAssets: z.literal(280),
 				contentDefinitions: z.literal(140)
@@ -258,7 +258,7 @@ type ReportInput = Readonly<{
 	approvedManifest: {
 		schemaVersion: 'equipment-approved-source-manifest-v1';
 		catalogId: 'material-equipment-v1';
-		summary: { total: number; items: number; armourSetReferences: number; totalBytes: number };
+		summary: { total: number; items: number; armorSetReferences: number; totalBytes: number };
 	};
 	approvedManifestByteSha256: string;
 	approvedManifestCanonicalSha256: string;
@@ -269,7 +269,7 @@ type ReportInput = Readonly<{
 		summary: {
 			bundleCount: number;
 			assetCount: number;
-			armourSetReferenceCount: number;
+			armorSetReferenceCount: number;
 			cardBytes: number;
 			detailBytes: number;
 			totalBytes: number;
@@ -285,14 +285,14 @@ export function buildEquipmentIntegrationReport(input: ReportInput): EquipmentIn
 	if (
 		input.approvedManifest.summary.total !== 161 ||
 		input.approvedManifest.summary.items !== 140 ||
-		input.approvedManifest.summary.armourSetReferences !== 21
+		input.approvedManifest.summary.armorSetReferences !== 21
 	) {
 		throw new Error('Integration report requires exact approved Equipment counts');
 	}
 	if (
 		input.runtimeManifest.summary.bundleCount !== 140 ||
 		input.runtimeManifest.summary.assetCount !== 280 ||
-		input.runtimeManifest.summary.armourSetReferenceCount !== 0 ||
+		input.runtimeManifest.summary.armorSetReferenceCount !== 0 ||
 		input.content.definitionCount !== 140 ||
 		input.content.status !== 'valid'
 	) {
@@ -306,7 +306,7 @@ export function buildEquipmentIntegrationReport(input: ReportInput): EquipmentIn
 		counts: {
 			approvedSources: 161,
 			equippableSources: 140,
-			armourSetReferences: 21,
+			armorSetReferences: 21,
 			runtimeBundles: 140,
 			runtimeAssets: 280,
 			contentDefinitions: 140

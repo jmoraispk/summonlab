@@ -30,8 +30,8 @@
 		},
 		{
 			"index": 4,
-			"targetId": "craft:forging:armoursmithing",
-			"name": "Armoursmithing",
+			"targetId": "craft:forging:armorsmithing",
+			"name": "Armorsmithing",
 			"rarity": "E",
 			"row": 1,
 			"column": 4

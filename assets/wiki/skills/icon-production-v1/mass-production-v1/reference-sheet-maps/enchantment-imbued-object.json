@@ -22,8 +22,8 @@
 		},
 		{
 			"index": 3,
-			"targetId": "magical:enchantment:armour-imbuing",
-			"name": "Armour Imbuing",
+			"targetId": "magical:enchantment:armor-imbuing",
+			"name": "Armor Imbuing",
 			"rarity": "E",
 			"row": 1,
 			"column": 3

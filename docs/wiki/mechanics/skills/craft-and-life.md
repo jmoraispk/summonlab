@@ -8,20 +8,20 @@ Design status: **draft source import**. These definitions preserve the supplied 
 
 ## Forging
 
-Craft and Life. Weapons, armour and tools. Determines what every martial family has to work with.
+Craft and Life. Weapons, armor and tools. Determines what every martial family has to work with.
 
 | # | Skill | Label | R | T | Requires | Effect |
 | ---: | --- | --- | :---: | :---: | --- | --- |
 | 1 | **Ore Sense** | — | F | P | None | Identifies raw material quality by eye. **Foundation.** |
-| 2 | **Simple Smithing** | — | F | C | Ore Sense Novice, forge access | Produces Common weapons and armour |
+| 2 | **Simple Smithing** | — | F | C | Ore Sense Novice, forge access | Produces Common weapons and armor |
 | 3 | **Sharpening** | — | F | C | Ore Sense Novice | Restores and slightly improves a weapon's edge |
 | 4 | **Fittings** | — | F | C | Simple Smithing Intermediate | Straps, buckles, hafts; reduces an item's weight slightly |
 | 5 | **Weaponsmithing** | — | E | C | Simple Smithing Intermediate, 500 items forged | Uncommon weapons; better base stats |
-| 6 | **Armoursmithing** | — | E | C | Simple Smithing Intermediate, 500 items forged | Uncommon armour; weight becomes controllable |
+| 6 | **Armorsmithing** | — | E | C | Simple Smithing Intermediate, 500 items forged | Uncommon armor; weight becomes controllable |
 | 7 | **Fuel Craft** | — | E | C | Ore Sense Expert, Gathering prerequisite | Better fuel; raises the quality ceiling of every forging skill |
 | 8 | **Alloying** | — | D | C | Intellect threshold, either smithing at Expert | Combines materials; unlocks Rare output |
 | 9 | **Tempering** | — | D | C | Dexterity threshold, 2,000 items forged | Raises the quality roll on any forged item |
-| 10 | **Weightless Craft** | — | D | C | Armoursmithing Master, Fittings Master | Armour at a given protection level weighs substantially less |
+| 10 | **Weightless Craft** | — | D | C | Armorsmithing Master, Fittings Master | Armor at a given protection level weighs substantially less |
 | 11 | **Runic Foundation** | — | C | C | Alloying Master, Literacy Expert | Forged items gain enchantment slots |
 | 12 | **Master's Mark** | — | C | P | Tempering Master, 10,000 items forged | Items bear the smith's mark; permanent bonus to any wielder |
 | 13 | **Living Metal** | — | B | C | Runic Foundation Master, rare material, Rank III | Forged items grow with their wielder rather than staying static |

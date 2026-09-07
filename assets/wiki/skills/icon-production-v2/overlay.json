@@ -3,15 +3,15 @@
 	"base": {
 		"motifMap": {
 			"path": "assets/wiki/skills/icon-production-v1/motif-map.json",
-			"contentHash": "5cb1cc95555d1b419a3fb5e027945727655df6c287d9b7f1a35dac9188a6e283"
+			"contentHash": "7efee70336d502625ca8129b47013011391687f3730d82362314a5a8ab9db308"
 		},
 		"visualSpecs": {
 			"path": "assets/wiki/skills/icon-production-v1/visual-specs.json",
-			"contentHash": "833ffaf095ba5c0cd296aaf84fd4370c42e2077b683293ecff44d8567a000790"
+			"contentHash": "15dbb8b5d8cd5c83bec18d22015b054f2b0a0938392ec247b411d5d744f9f022"
 		},
 		"catalog": {
 			"path": "assets/wiki/skills/icon-production-v1/catalog.json",
-			"contentHash": "e9ee37b306421fc64334cc07fa19552706e98787bb1c1b702903485fcbdfcc69"
+			"contentHash": "c3505a68a38909927127e53233e12adbebfc1f65c98c7bd6fb449f13986c92a1"
 		}
 	},
 	"motifSource": {

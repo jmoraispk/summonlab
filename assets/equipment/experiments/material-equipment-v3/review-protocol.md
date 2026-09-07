@@ -6,7 +6,7 @@ Review all 11 class progression sheets at full resolution plus 128px and 256px t
 
 ## Checkpoint 2
 
-Review the 11 deterministic class audits first, then 28 material audits, then each of 77 dedicated roots. Rank clarity wins over material uniformity. A full Armour set additionally must be empty, self-supporting, and show exactly Head, Torso, Legs, and Boots before it can receive an unlock receipt.
+Review the 11 deterministic class audits first, then 28 material audits, then each of 77 dedicated roots. Rank clarity wins over material uniformity. A full Armor set additionally must be empty, self-supporting, and show exactly Head, Torso, Legs, and Boots before it can receive an unlock receipt.
 
 ## Checkpoint 3
 

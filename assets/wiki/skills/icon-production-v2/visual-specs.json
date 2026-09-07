@@ -160,7 +160,7 @@
 			"status": "authored",
 			"visualSpec": {
 				"dominantSubject": "a clearly visible sword actively performing Piercing Thrust, with the acting tool never replaced by a free-floating effect",
-				"supportingCue": "one restrained secondary cue communicating this effect: Single-target; ignores part of armour",
+				"supportingCue": "one restrained secondary cue communicating this effect: Single-target; ignores part of armor",
 				"semanticPalette": [
 					"tempered steel",
 					"charcoal black",
@@ -248,7 +248,7 @@
 			"status": "authored",
 			"visualSpec": {
 				"dominantSubject": "a clearly visible sword actively performing Half-Sword, with the acting tool never replaced by a free-floating effect",
-				"supportingCue": "one restrained secondary cue communicating this effect: Grip the blade for a short armour-splitting thrust at close range",
+				"supportingCue": "one restrained secondary cue communicating this effect: Grip the blade for a short armor-splitting thrust at close range",
 				"semanticPalette": [
 					"tempered steel",
 					"charcoal black",
@@ -1678,7 +1678,7 @@
 			"status": "authored",
 			"visualSpec": {
 				"dominantSubject": "a clearly visible blade weapon or defensive tool actively performing Scissor Cut",
-				"supportingCue": "one restrained secondary cue communicating this effect: Both blades strike the same point; bonus against unarmoured",
+				"supportingCue": "one restrained secondary cue communicating this effect: Both blades strike the same point; bonus against unarmored",
 				"semanticPalette": [
 					"tempered steel",
 					"charcoal black",
@@ -2382,7 +2382,7 @@
 			"status": "authored",
 			"visualSpec": {
 				"dominantSubject": "a clearly visible halberd actively performing Halberd Handling, with the acting tool never replaced by a free-floating effect",
-				"supportingCue": "one restrained secondary cue communicating this effect: Damage bonus with halberds; small armour-shred chance. **Foundation.**",
+				"supportingCue": "one restrained secondary cue communicating this effect: Damage bonus with halberds; small armor-shred chance. **Foundation.**",
 				"semanticPalette": [
 					"tempered steel",
 					"charcoal black",
@@ -2466,11 +2466,11 @@
 			"review": null
 		},
 		{
-			"targetId": "martial:polearm:rend-armour",
+			"targetId": "martial:polearm:rend-armor",
 			"status": "authored",
 			"visualSpec": {
-				"dominantSubject": "a clearly visible halberd actively performing Rend Armour, with the acting tool never replaced by a free-floating effect",
-				"supportingCue": "one restrained secondary cue communicating this effect: Stacking armour reduction on the target",
+				"dominantSubject": "a clearly visible halberd actively performing Rend Armor, with the acting tool never replaced by a free-floating effect",
+				"supportingCue": "one restrained secondary cue communicating this effect: Stacking armor reduction on the target",
 				"semanticPalette": [
 					"tempered steel",
 					"charcoal black",
@@ -2690,7 +2690,7 @@
 			"status": "authored",
 			"visualSpec": {
 				"dominantSubject": "a clearly visible polehammer actively performing Crush, with the acting tool never replaced by a free-floating effect",
-				"supportingCue": "one restrained secondary cue communicating this effect: Slow heavy strike; ignores a portion of armour",
+				"supportingCue": "one restrained secondary cue communicating this effect: Slow heavy strike; ignores a portion of armor",
 				"semanticPalette": [
 					"tempered steel",
 					"charcoal black",
@@ -2866,7 +2866,7 @@
 			"status": "authored",
 			"visualSpec": {
 				"dominantSubject": "a clearly visible polehammer actively performing Unmaking, with the acting tool never replaced by a free-floating effect",
-				"supportingCue": "one restrained secondary cue communicating this effect: Permanently reduces the target's armour for the encounter",
+				"supportingCue": "one restrained secondary cue communicating this effect: Permanently reduces the target's armor for the encounter",
 				"semanticPalette": [
 					"tempered steel",
 					"charcoal black",
@@ -3372,7 +3372,7 @@
 			"status": "authored",
 			"visualSpec": {
 				"dominantSubject": "a clearly visible crossbow actively performing Crossbow Handling, with the acting tool never replaced by a free-floating effect",
-				"supportingCue": "one restrained secondary cue communicating this effect: Damage and armour-penetration bonus with crossbows. **Foundation.**",
+				"supportingCue": "one restrained secondary cue communicating this effect: Damage and armor-penetration bonus with crossbows. **Foundation.**",
 				"semanticPalette": [
 					"tempered steel",
 					"charcoal black",
@@ -4736,7 +4736,7 @@
 			"status": "authored",
 			"visualSpec": {
 				"dominantSubject": "a clearly readable human body performing Focused Strike, with the decisive posture and contact point visible",
-				"supportingCue": "one restrained secondary cue communicating this effect: Damage passes through armour and barriers entirely",
+				"supportingCue": "one restrained secondary cue communicating this effect: Damage passes through armor and barriers entirely",
 				"semanticPalette": [
 					"tempered steel",
 					"charcoal black",
@@ -6188,7 +6188,7 @@
 			"status": "authored",
 			"visualSpec": {
 				"dominantSubject": "a concrete water magical operation that visibly causes Pressure Lance, expressed through recognizable elemental matter",
-				"supportingCue": "one restrained secondary cue communicating this effect: A cutting jet; ignores part of armour",
+				"supportingCue": "one restrained secondary cue communicating this effect: A cutting jet; ignores part of armor",
 				"semanticPalette": [
 					"deep blue",
 					"clear cyan",
@@ -7416,11 +7416,11 @@
 			"review": null
 		},
 		{
-			"targetId": "magical:enchantment:armour-imbuing",
+			"targetId": "magical:enchantment:armor-imbuing",
 			"status": "authored",
 			"visualSpec": {
-				"dominantSubject": "a concrete attuned magical operation that visibly causes Armour Imbuing, expressed through recognizable elemental matter",
-				"supportingCue": "one restrained secondary cue communicating this effect: Grants armour temporary resistance and a retaliation effect",
+				"dominantSubject": "a concrete attuned magical operation that visibly causes Armor Imbuing, expressed through recognizable elemental matter",
+				"supportingCue": "one restrained secondary cue communicating this effect: Grants armor temporary resistance and a retaliation effect",
 				"semanticPalette": [
 					"arcane gold",
 					"deep indigo",
@@ -8454,7 +8454,7 @@
 			"status": "authored",
 			"visualSpec": {
 				"dominantSubject": "a concrete craft tool, material, ingredient, creature, document, or finished result visibly embodying Simple Smithing",
-				"supportingCue": "one restrained secondary cue communicating this effect: Produces Common weapons and armour",
+				"supportingCue": "one restrained secondary cue communicating this effect: Produces Common weapons and armor",
 				"semanticPalette": [
 					"worked bronze",
 					"charcoal black",
@@ -8538,11 +8538,11 @@
 			"review": null
 		},
 		{
-			"targetId": "craft:forging:armoursmithing",
+			"targetId": "craft:forging:armorsmithing",
 			"status": "authored",
 			"visualSpec": {
-				"dominantSubject": "a concrete craft tool, material, ingredient, creature, document, or finished result visibly embodying Armoursmithing",
-				"supportingCue": "one restrained secondary cue communicating this effect: Uncommon armour; weight becomes controllable",
+				"dominantSubject": "a concrete craft tool, material, ingredient, creature, document, or finished result visibly embodying Armorsmithing",
+				"supportingCue": "one restrained secondary cue communicating this effect: Uncommon armor; weight becomes controllable",
 				"semanticPalette": [
 					"worked bronze",
 					"charcoal black",
@@ -8630,7 +8630,7 @@
 			"status": "authored",
 			"visualSpec": {
 				"dominantSubject": "a concrete craft tool, material, ingredient, creature, document, or finished result visibly embodying Weightless Craft",
-				"supportingCue": "one restrained secondary cue communicating this effect: Armour at a given protection level weighs substantially less",
+				"supportingCue": "one restrained secondary cue communicating this effect: Armor at a given protection level weighs substantially less",
 				"semanticPalette": [
 					"worked bronze",
 					"charcoal black",

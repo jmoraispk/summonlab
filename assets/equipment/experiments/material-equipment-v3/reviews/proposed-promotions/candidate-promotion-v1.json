@@ -5,8 +5,8 @@
 	"createdBy": "summonlab-owner",
 	"status": "proposal-only",
 	"checkpoint3": {
-		"path": "assets/equipment/experiments/material-equipment-v3/checkpoints/checkpoint-3-armour-pieces.json",
-		"canonicalSha256": "39ad1cb1fb5f8e3b7d872a80d527006e645008641bda75202033de16efc0d578"
+		"path": "assets/equipment/experiments/material-equipment-v3/checkpoints/checkpoint-3-armor-pieces.json",
+		"canonicalSha256": "f2bab5974692e751e4926f5245463e81be29f82e870f91bfb85314c811f66a10"
 	},
 	"entries": [
 		{
@@ -46,32 +46,32 @@
 			"ownerDecision": "accept"
 		},
 		{
-			"targetId": "material-equipment-v3-bronze-heavy-armour-full-set-v3",
-			"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/f/bronze/heavy-armour-full-set-v3.png",
+			"targetId": "material-equipment-v3-bronze-heavy-armor-full-set-v3",
+			"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/f/bronze/heavy-armor-full-set-v3.png",
 			"candidateSha256": "2427658c5f5aa71e236aa7e3425af0ae2234d8a4e0e518ca75b91625f3e48da5",
 			"ownerDecision": "accept"
 		},
 		{
-			"targetId": "material-equipment-v3-bronze-heavy-armour-head-v3",
-			"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/f/bronze/heavy-armour-head-v3.png",
+			"targetId": "material-equipment-v3-bronze-heavy-armor-head-v3",
+			"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/f/bronze/heavy-armor-head-v3.png",
 			"candidateSha256": "23a7ce9d73caca4aea627cd2b613b6cf7171364fadc3b7a669c96b11d2c2b0bd",
 			"ownerDecision": "accept"
 		},
 		{
-			"targetId": "material-equipment-v3-bronze-heavy-armour-torso-v3",
-			"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/f/bronze/heavy-armour-torso-v3.png",
+			"targetId": "material-equipment-v3-bronze-heavy-armor-torso-v3",
+			"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/f/bronze/heavy-armor-torso-v3.png",
 			"candidateSha256": "c2d277f59893c4ba973a4f52dfeb4a2d4aefd22350e75330feba06dceae564b4",
 			"ownerDecision": "accept"
 		},
 		{
-			"targetId": "material-equipment-v3-bronze-heavy-armour-legs-v3",
-			"candidatePath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-bronze-heavy-armour-legs-v3/attempt-2/candidate.png",
+			"targetId": "material-equipment-v3-bronze-heavy-armor-legs-v3",
+			"candidatePath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-bronze-heavy-armor-legs-v3/attempt-2/candidate.png",
 			"candidateSha256": "32279610b7b21def8a709097d8d22a2706f9bb3e526d2f14a4d180f236ded2a3",
 			"ownerDecision": "accept"
 		},
 		{
-			"targetId": "material-equipment-v3-bronze-heavy-armour-boots-v3",
-			"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/f/bronze/heavy-armour-boots-v3.png",
+			"targetId": "material-equipment-v3-bronze-heavy-armor-boots-v3",
+			"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/f/bronze/heavy-armor-boots-v3.png",
 			"candidateSha256": "5b3548746bc5de06772fdc06e98ba094929a5265858afa0a95fe55e9de42ff4d",
 			"ownerDecision": "accept"
 		},
@@ -88,32 +88,32 @@
 			"ownerDecision": "accept"
 		},
 		{
-			"targetId": "material-equipment-v3-coarse-hide-light-armour-full-set-v3",
-			"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/f/coarse-hide/light-armour-full-set-v3.png",
+			"targetId": "material-equipment-v3-coarse-hide-light-armor-full-set-v3",
+			"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/f/coarse-hide/light-armor-full-set-v3.png",
 			"candidateSha256": "b51335521e27af145621d249e597ea4e63842637b4d4469fe8eb201612f0a532",
 			"ownerDecision": "accept"
 		},
 		{
-			"targetId": "material-equipment-v3-coarse-hide-light-armour-head-v3",
-			"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/f/coarse-hide/light-armour-head-v3.png",
+			"targetId": "material-equipment-v3-coarse-hide-light-armor-head-v3",
+			"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/f/coarse-hide/light-armor-head-v3.png",
 			"candidateSha256": "e7144712943f0ee34493267ab7a335869aa167de2ab27b780a2a598bce5b5303",
 			"ownerDecision": "accept"
 		},
 		{
-			"targetId": "material-equipment-v3-coarse-hide-light-armour-torso-v3",
-			"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/f/coarse-hide/light-armour-torso-v3.png",
+			"targetId": "material-equipment-v3-coarse-hide-light-armor-torso-v3",
+			"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/f/coarse-hide/light-armor-torso-v3.png",
 			"candidateSha256": "e4e65aea4ff3d675a8ff396cf622765037b3ace533d6cc14d872c0128ceda03a",
 			"ownerDecision": "accept"
 		},
 		{
-			"targetId": "material-equipment-v3-coarse-hide-light-armour-legs-v3",
-			"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/f/coarse-hide/light-armour-legs-v3.png",
+			"targetId": "material-equipment-v3-coarse-hide-light-armor-legs-v3",
+			"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/f/coarse-hide/light-armor-legs-v3.png",
 			"candidateSha256": "73d929d3da568eafc881a6abd956487085206524dca21035eba5a6f9a2b6007d",
 			"ownerDecision": "accept"
 		},
 		{
-			"targetId": "material-equipment-v3-coarse-hide-light-armour-boots-v3",
-			"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/f/coarse-hide/light-armour-boots-v3.png",
+			"targetId": "material-equipment-v3-coarse-hide-light-armor-boots-v3",
+			"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/f/coarse-hide/light-armor-boots-v3.png",
 			"candidateSha256": "ff0dafc0db7b34022594c3c8f3be2aab66f05879de2602b35c5ba52269adf30b",
 			"ownerDecision": "accept"
 		},
@@ -184,32 +184,32 @@
 			"ownerDecision": "accept"
 		},
 		{
-			"targetId": "material-equipment-v3-iron-heavy-armour-full-set-v3",
-			"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/e/iron/heavy-armour-full-set-v3.png",
+			"targetId": "material-equipment-v3-iron-heavy-armor-full-set-v3",
+			"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/e/iron/heavy-armor-full-set-v3.png",
 			"candidateSha256": "55aedcb94ce7b5b7ba695c669c5198f752d4da3922406d61d8d52d2298f93992",
 			"ownerDecision": "accept"
 		},
 		{
-			"targetId": "material-equipment-v3-iron-heavy-armour-head-v3",
-			"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/e/iron/heavy-armour-head-v3.png",
+			"targetId": "material-equipment-v3-iron-heavy-armor-head-v3",
+			"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/e/iron/heavy-armor-head-v3.png",
 			"candidateSha256": "a788f484bae081240ea920817bd7999b4af3c10319ffc8cedb4b699cf41e34dc",
 			"ownerDecision": "accept"
 		},
 		{
-			"targetId": "material-equipment-v3-iron-heavy-armour-torso-v3",
-			"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/e/iron/heavy-armour-torso-v3.png",
+			"targetId": "material-equipment-v3-iron-heavy-armor-torso-v3",
+			"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/e/iron/heavy-armor-torso-v3.png",
 			"candidateSha256": "249f643338dc7aabf6ac58b1f7409dc2aa4c9bdee7a4dcc879567fe7d05effd8",
 			"ownerDecision": "accept"
 		},
 		{
-			"targetId": "material-equipment-v3-iron-heavy-armour-legs-v3",
-			"candidatePath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-iron-heavy-armour-legs-v3/attempt-2/candidate.png",
+			"targetId": "material-equipment-v3-iron-heavy-armor-legs-v3",
+			"candidatePath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-iron-heavy-armor-legs-v3/attempt-2/candidate.png",
 			"candidateSha256": "6028e2aa9628452f5abcefb48f308ea52a7001afb71e374f4391f0bb327cf76b",
 			"ownerDecision": "accept"
 		},
 		{
-			"targetId": "material-equipment-v3-iron-heavy-armour-boots-v3",
-			"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/e/iron/heavy-armour-boots-v3.png",
+			"targetId": "material-equipment-v3-iron-heavy-armor-boots-v3",
+			"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/e/iron/heavy-armor-boots-v3.png",
 			"candidateSha256": "f96eb7e5e4c8de51d35fd244a133702f8f1fbdf81ae7e83609f4c813c26f12f7",
 			"ownerDecision": "accept"
 		},
@@ -226,32 +226,32 @@
 			"ownerDecision": "accept"
 		},
 		{
-			"targetId": "material-equipment-v3-hard-leather-light-armour-full-set-v3",
-			"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/e/hard-leather/light-armour-full-set-v3.png",
+			"targetId": "material-equipment-v3-hard-leather-light-armor-full-set-v3",
+			"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/e/hard-leather/light-armor-full-set-v3.png",
 			"candidateSha256": "8bc83bd66fafbe29adea553914b4d682ebbcb2eff8c2e9cb85f9fa5bf776e0b8",
 			"ownerDecision": "accept"
 		},
 		{
-			"targetId": "material-equipment-v3-hard-leather-light-armour-head-v3",
-			"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/e/hard-leather/light-armour-head-v3.png",
+			"targetId": "material-equipment-v3-hard-leather-light-armor-head-v3",
+			"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/e/hard-leather/light-armor-head-v3.png",
 			"candidateSha256": "998e5a4876e26971b4c114dfafabc573e8b892160057af783d4f25f7299d1f93",
 			"ownerDecision": "accept"
 		},
 		{
-			"targetId": "material-equipment-v3-hard-leather-light-armour-torso-v3",
-			"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/e/hard-leather/light-armour-torso-v3.png",
+			"targetId": "material-equipment-v3-hard-leather-light-armor-torso-v3",
+			"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/e/hard-leather/light-armor-torso-v3.png",
 			"candidateSha256": "60893ace6cfce93d7bc120a00ad976e22e9676ab1b50245fee8757d937348919",
 			"ownerDecision": "accept"
 		},
 		{
-			"targetId": "material-equipment-v3-hard-leather-light-armour-legs-v3",
-			"candidatePath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-hard-leather-light-armour-legs-v3/attempt-2/candidate.png",
+			"targetId": "material-equipment-v3-hard-leather-light-armor-legs-v3",
+			"candidatePath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-hard-leather-light-armor-legs-v3/attempt-2/candidate.png",
 			"candidateSha256": "91793391ee3aedc3b08e7dba8afb94312847db3c88f7369e36093bb076d98373",
 			"ownerDecision": "accept"
 		},
 		{
-			"targetId": "material-equipment-v3-hard-leather-light-armour-boots-v3",
-			"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/e/hard-leather/light-armour-boots-v3.png",
+			"targetId": "material-equipment-v3-hard-leather-light-armor-boots-v3",
+			"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/e/hard-leather/light-armor-boots-v3.png",
 			"candidateSha256": "b59f3c9ccc4e482f19e3ce4421dbdc611aa26463464af9c542b46607304458a2",
 			"ownerDecision": "accept"
 		},
@@ -322,32 +322,32 @@
 			"ownerDecision": "accept"
 		},
 		{
-			"targetId": "material-equipment-v3-steel-heavy-armour-full-set-v3",
-			"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/d/steel/heavy-armour-full-set-v3.png",
+			"targetId": "material-equipment-v3-steel-heavy-armor-full-set-v3",
+			"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/d/steel/heavy-armor-full-set-v3.png",
 			"candidateSha256": "0734aa4ae775cfbbe523072f13fc666758a752bac58208da49e8181da0b92f2f",
 			"ownerDecision": "accept"
 		},
 		{
-			"targetId": "material-equipment-v3-steel-heavy-armour-head-v3",
-			"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/d/steel/heavy-armour-head-v3.png",
+			"targetId": "material-equipment-v3-steel-heavy-armor-head-v3",
+			"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/d/steel/heavy-armor-head-v3.png",
 			"candidateSha256": "715fb59f3e1671e1d42fe3daddedcbc14cda5220439384b9d6a5eef17be21ceb",
 			"ownerDecision": "accept"
 		},
 		{
-			"targetId": "material-equipment-v3-steel-heavy-armour-torso-v3",
-			"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/d/steel/heavy-armour-torso-v3.png",
+			"targetId": "material-equipment-v3-steel-heavy-armor-torso-v3",
+			"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/d/steel/heavy-armor-torso-v3.png",
 			"candidateSha256": "2fb976b894b21692145b76ae3f19324d58280493cb0bc4d213b5ba014a032757",
 			"ownerDecision": "accept"
 		},
 		{
-			"targetId": "material-equipment-v3-steel-heavy-armour-legs-v3",
-			"candidatePath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-steel-heavy-armour-legs-v3/attempt-2/candidate.png",
+			"targetId": "material-equipment-v3-steel-heavy-armor-legs-v3",
+			"candidatePath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-steel-heavy-armor-legs-v3/attempt-2/candidate.png",
 			"candidateSha256": "a6da82205d6067e46f3463130fdbf62b35310100e3db3360003ade7300ae6a63",
 			"ownerDecision": "accept"
 		},
 		{
-			"targetId": "material-equipment-v3-steel-heavy-armour-boots-v3",
-			"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/d/steel/heavy-armour-boots-v3.png",
+			"targetId": "material-equipment-v3-steel-heavy-armor-boots-v3",
+			"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/d/steel/heavy-armor-boots-v3.png",
 			"candidateSha256": "6a98cdb9e64343e85b678131b40054e672681b8f59880fe316bb17afb4666bb8",
 			"ownerDecision": "accept"
 		},
@@ -364,32 +364,32 @@
 			"ownerDecision": "accept"
 		},
 		{
-			"targetId": "material-equipment-v3-beast-scale-light-armour-full-set-v3",
-			"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/d/beast-scale/light-armour-full-set-v3.png",
+			"targetId": "material-equipment-v3-beast-scale-light-armor-full-set-v3",
+			"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/d/beast-scale/light-armor-full-set-v3.png",
 			"candidateSha256": "c138586bfb6005373054453f4386645d2026766ec29724383f4528ab62ad2a3d",
 			"ownerDecision": "accept"
 		},
 		{
-			"targetId": "material-equipment-v3-beast-scale-light-armour-head-v3",
-			"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/d/beast-scale/light-armour-head-v3.png",
+			"targetId": "material-equipment-v3-beast-scale-light-armor-head-v3",
+			"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/d/beast-scale/light-armor-head-v3.png",
 			"candidateSha256": "753cd4ba90a7424a9b20ce5a68d63e80210dd0e32391bceeeeae8191249ac102",
 			"ownerDecision": "accept"
 		},
 		{
-			"targetId": "material-equipment-v3-beast-scale-light-armour-torso-v3",
-			"candidatePath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-beast-scale-light-armour-torso-v3/attempt-2/candidate.png",
+			"targetId": "material-equipment-v3-beast-scale-light-armor-torso-v3",
+			"candidatePath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-beast-scale-light-armor-torso-v3/attempt-2/candidate.png",
 			"candidateSha256": "2e1de6072fe3d824f1fce55192d61f7128c46ea9a0a6a48f07942ebaa387c258",
 			"ownerDecision": "accept"
 		},
 		{
-			"targetId": "material-equipment-v3-beast-scale-light-armour-legs-v3",
-			"candidatePath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-beast-scale-light-armour-legs-v3/attempt-2/candidate.png",
+			"targetId": "material-equipment-v3-beast-scale-light-armor-legs-v3",
+			"candidatePath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-beast-scale-light-armor-legs-v3/attempt-2/candidate.png",
 			"candidateSha256": "91632813550ef92f0341577112b12cc41f9ce3149f28e7aee73a47e42aae0622",
 			"ownerDecision": "accept"
 		},
 		{
-			"targetId": "material-equipment-v3-beast-scale-light-armour-boots-v3",
-			"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/d/beast-scale/light-armour-boots-v3.png",
+			"targetId": "material-equipment-v3-beast-scale-light-armor-boots-v3",
+			"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/d/beast-scale/light-armor-boots-v3.png",
 			"candidateSha256": "3c892c15c3ae5e1c851ee8baa9809de0a26d8359d0bdac74bc85de251b7c9efc",
 			"ownerDecision": "accept"
 		},
@@ -460,32 +460,32 @@
 			"ownerDecision": "accept"
 		},
 		{
-			"targetId": "material-equipment-v3-blacksteel-heavy-armour-full-set-v3",
-			"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/c/blacksteel/heavy-armour-full-set-v3.png",
+			"targetId": "material-equipment-v3-blacksteel-heavy-armor-full-set-v3",
+			"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/c/blacksteel/heavy-armor-full-set-v3.png",
 			"candidateSha256": "167a303df4e54baf2bfbfd1399b30dd9bd324c473e11ef46b23b7a96f77a6072",
 			"ownerDecision": "accept"
 		},
 		{
-			"targetId": "material-equipment-v3-blacksteel-heavy-armour-head-v3",
-			"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/c/blacksteel/heavy-armour-head-v3.png",
+			"targetId": "material-equipment-v3-blacksteel-heavy-armor-head-v3",
+			"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/c/blacksteel/heavy-armor-head-v3.png",
 			"candidateSha256": "7a08a37ea98417cc9d8a00f98852e85770e6fc272c9c549c0c35f61f433661f3",
 			"ownerDecision": "accept"
 		},
 		{
-			"targetId": "material-equipment-v3-blacksteel-heavy-armour-torso-v3",
-			"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/c/blacksteel/heavy-armour-torso-v3.png",
+			"targetId": "material-equipment-v3-blacksteel-heavy-armor-torso-v3",
+			"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/c/blacksteel/heavy-armor-torso-v3.png",
 			"candidateSha256": "3e58319c95e09a8ff6b6945c4917c906e821be038f93c10c1d27771413cc8994",
 			"ownerDecision": "accept"
 		},
 		{
-			"targetId": "material-equipment-v3-blacksteel-heavy-armour-legs-v3",
-			"candidatePath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-blacksteel-heavy-armour-legs-v3/attempt-3/candidate.png",
+			"targetId": "material-equipment-v3-blacksteel-heavy-armor-legs-v3",
+			"candidatePath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-blacksteel-heavy-armor-legs-v3/attempt-3/candidate.png",
 			"candidateSha256": "21a3ce2d8da4c56f686a6d1b3075db649e18236ee2d555aa3d9cd661b202ebf0",
 			"ownerDecision": "accept"
 		},
 		{
-			"targetId": "material-equipment-v3-blacksteel-heavy-armour-boots-v3",
-			"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/c/blacksteel/heavy-armour-boots-v3.png",
+			"targetId": "material-equipment-v3-blacksteel-heavy-armor-boots-v3",
+			"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/c/blacksteel/heavy-armor-boots-v3.png",
 			"candidateSha256": "987b8a9f5db9dcc63116fe2e4efd2c6b05392655c8d71bc79d87ae2b06db392e",
 			"ownerDecision": "accept"
 		},
@@ -502,32 +502,32 @@
 			"ownerDecision": "accept"
 		},
 		{
-			"targetId": "material-equipment-v3-chitin-light-armour-full-set-v3",
-			"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/c/chitin/light-armour-full-set-v3.png",
+			"targetId": "material-equipment-v3-chitin-light-armor-full-set-v3",
+			"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/c/chitin/light-armor-full-set-v3.png",
 			"candidateSha256": "00ccb17097cbdd10bd14884d62d38976f853f1334f2c3643d663781b387ea027",
 			"ownerDecision": "accept"
 		},
 		{
-			"targetId": "material-equipment-v3-chitin-light-armour-head-v3",
-			"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/c/chitin/light-armour-head-v3.png",
+			"targetId": "material-equipment-v3-chitin-light-armor-head-v3",
+			"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/c/chitin/light-armor-head-v3.png",
 			"candidateSha256": "dcfcc7dff7c5aa098c5c33c72bac071c6115855888f4a04a423188b5a1ab6331",
 			"ownerDecision": "accept"
 		},
 		{
-			"targetId": "material-equipment-v3-chitin-light-armour-torso-v3",
-			"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/c/chitin/light-armour-torso-v3.png",
+			"targetId": "material-equipment-v3-chitin-light-armor-torso-v3",
+			"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/c/chitin/light-armor-torso-v3.png",
 			"candidateSha256": "c0ba92ef9ac2ba69e0016b9ea73178a0362ca9a7f2842272b67f18e17cdea053",
 			"ownerDecision": "accept"
 		},
 		{
-			"targetId": "material-equipment-v3-chitin-light-armour-legs-v3",
-			"candidatePath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-chitin-light-armour-legs-v3/attempt-2/candidate.png",
+			"targetId": "material-equipment-v3-chitin-light-armor-legs-v3",
+			"candidatePath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-chitin-light-armor-legs-v3/attempt-2/candidate.png",
 			"candidateSha256": "eb8af4ffcf931d36918d45dedda7ba863f896a12a31897e57e72b9e300c562f6",
 			"ownerDecision": "accept"
 		},
 		{
-			"targetId": "material-equipment-v3-chitin-light-armour-boots-v3",
-			"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/c/chitin/light-armour-boots-v3.png",
+			"targetId": "material-equipment-v3-chitin-light-armor-boots-v3",
+			"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/c/chitin/light-armor-boots-v3.png",
 			"candidateSha256": "ac80137fbc4785151661cddfacc7cf453b179c5e4ac6455e8f34e4ff0258f423",
 			"ownerDecision": "accept"
 		},
@@ -598,32 +598,32 @@
 			"ownerDecision": "accept"
 		},
 		{
-			"targetId": "material-equipment-v3-skyiron-heavy-armour-full-set-v3",
-			"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/b/skyiron/heavy-armour-full-set-v3.png",
+			"targetId": "material-equipment-v3-skyiron-heavy-armor-full-set-v3",
+			"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/b/skyiron/heavy-armor-full-set-v3.png",
 			"candidateSha256": "e9f6b7808621c16eb3d38147f99b2a27c225cd17b66c399068f16c8fae930e4b",
 			"ownerDecision": "accept"
 		},
 		{
-			"targetId": "material-equipment-v3-skyiron-heavy-armour-head-v3",
-			"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/b/skyiron/heavy-armour-head-v3.png",
+			"targetId": "material-equipment-v3-skyiron-heavy-armor-head-v3",
+			"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/b/skyiron/heavy-armor-head-v3.png",
 			"candidateSha256": "40b7a77aada2d052017205a613bf1cf4e877e341dcacfe7d16c7fc310a7c28f6",
 			"ownerDecision": "accept"
 		},
 		{
-			"targetId": "material-equipment-v3-skyiron-heavy-armour-torso-v3",
-			"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/b/skyiron/heavy-armour-torso-v3.png",
+			"targetId": "material-equipment-v3-skyiron-heavy-armor-torso-v3",
+			"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/b/skyiron/heavy-armor-torso-v3.png",
 			"candidateSha256": "04e679bc89662184cade4dfe12ac5aacb870528ae232ba9c7ef500bbfaca9985",
 			"ownerDecision": "accept"
 		},
 		{
-			"targetId": "material-equipment-v3-skyiron-heavy-armour-legs-v3",
-			"candidatePath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-skyiron-heavy-armour-legs-v3/attempt-3/candidate.png",
+			"targetId": "material-equipment-v3-skyiron-heavy-armor-legs-v3",
+			"candidatePath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-skyiron-heavy-armor-legs-v3/attempt-3/candidate.png",
 			"candidateSha256": "9a36b8f7971bd170dc55956f6f9b21b9755252ed0deee7cb886baf9654974ca5",
 			"ownerDecision": "accept"
 		},
 		{
-			"targetId": "material-equipment-v3-skyiron-heavy-armour-boots-v3",
-			"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/b/skyiron/heavy-armour-boots-v3.png",
+			"targetId": "material-equipment-v3-skyiron-heavy-armor-boots-v3",
+			"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/b/skyiron/heavy-armor-boots-v3.png",
 			"candidateSha256": "8a5e2738fadb957a083902c2e7b353eb0d8fd704ee93bf36c0734530c0c86228",
 			"ownerDecision": "accept"
 		},
@@ -640,32 +640,32 @@
 			"ownerDecision": "accept"
 		},
 		{
-			"targetId": "material-equipment-v3-drakescale-light-armour-full-set-v3",
-			"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/b/drakescale/light-armour-full-set-v3.png",
+			"targetId": "material-equipment-v3-drakescale-light-armor-full-set-v3",
+			"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/b/drakescale/light-armor-full-set-v3.png",
 			"candidateSha256": "175834e6870944b8226ad8d677ef94423a7237c82c5cfe23b9cc7c744bbb6663",
 			"ownerDecision": "accept"
 		},
 		{
-			"targetId": "material-equipment-v3-drakescale-light-armour-head-v3",
-			"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/b/drakescale/light-armour-head-v3.png",
+			"targetId": "material-equipment-v3-drakescale-light-armor-head-v3",
+			"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/b/drakescale/light-armor-head-v3.png",
 			"candidateSha256": "f603674a3c901437be96e8379d69b46e8e42ada0a4a39a57e8dd6572b4d8e2cd",
 			"ownerDecision": "accept"
 		},
 		{
-			"targetId": "material-equipment-v3-drakescale-light-armour-torso-v3",
-			"candidatePath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-drakescale-light-armour-torso-v3/attempt-2/candidate.png",
+			"targetId": "material-equipment-v3-drakescale-light-armor-torso-v3",
+			"candidatePath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-drakescale-light-armor-torso-v3/attempt-2/candidate.png",
 			"candidateSha256": "e9c0cd4b26af9813f8ad3bb330fd0a2fef5061409528b83c5a58d7a70d0413d2",
 			"ownerDecision": "accept"
 		},
 		{
-			"targetId": "material-equipment-v3-drakescale-light-armour-legs-v3",
-			"candidatePath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-drakescale-light-armour-legs-v3/attempt-2/candidate.png",
+			"targetId": "material-equipment-v3-drakescale-light-armor-legs-v3",
+			"candidatePath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-drakescale-light-armor-legs-v3/attempt-2/candidate.png",
 			"candidateSha256": "5e17cd03fbcba983e722befe042deeb3e7989f92369f675b5589e66cfd4acd0f",
 			"ownerDecision": "accept"
 		},
 		{
-			"targetId": "material-equipment-v3-drakescale-light-armour-boots-v3",
-			"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/b/drakescale/light-armour-boots-v3.png",
+			"targetId": "material-equipment-v3-drakescale-light-armor-boots-v3",
+			"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/b/drakescale/light-armor-boots-v3.png",
 			"candidateSha256": "4d0232f5d36f28b2cff6c83f096b92ec6ea10c992cfa42a1346fa28997d63381",
 			"ownerDecision": "accept"
 		},
@@ -736,32 +736,32 @@
 			"ownerDecision": "accept"
 		},
 		{
-			"targetId": "material-equipment-v3-starmetal-heavy-armour-full-set-v3",
-			"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/a/starmetal/heavy-armour-full-set-v3.png",
+			"targetId": "material-equipment-v3-starmetal-heavy-armor-full-set-v3",
+			"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/a/starmetal/heavy-armor-full-set-v3.png",
 			"candidateSha256": "6e12b9636d827113ffe1e32cd769d69bba8d5e54c9f681da9d2972879950134c",
 			"ownerDecision": "accept"
 		},
 		{
-			"targetId": "material-equipment-v3-starmetal-heavy-armour-head-v3",
-			"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/a/starmetal/heavy-armour-head-v3.png",
+			"targetId": "material-equipment-v3-starmetal-heavy-armor-head-v3",
+			"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/a/starmetal/heavy-armor-head-v3.png",
 			"candidateSha256": "af28f2afe14064ea0bd09900325995a154933ddcd89d1fa0eac63f89ba122231",
 			"ownerDecision": "accept"
 		},
 		{
-			"targetId": "material-equipment-v3-starmetal-heavy-armour-torso-v3",
-			"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/a/starmetal/heavy-armour-torso-v3.png",
+			"targetId": "material-equipment-v3-starmetal-heavy-armor-torso-v3",
+			"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/a/starmetal/heavy-armor-torso-v3.png",
 			"candidateSha256": "f3011a4134f5a2257653a9d7c7145532efed9a7019382157036070f5a29991e0",
 			"ownerDecision": "accept"
 		},
 		{
-			"targetId": "material-equipment-v3-starmetal-heavy-armour-legs-v3",
-			"candidatePath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-starmetal-heavy-armour-legs-v3/attempt-3/candidate.png",
+			"targetId": "material-equipment-v3-starmetal-heavy-armor-legs-v3",
+			"candidatePath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-starmetal-heavy-armor-legs-v3/attempt-3/candidate.png",
 			"candidateSha256": "1ac4b15690ff32acec5a1ed08c750aca87c0f3405445cd2e41568ca29b3dda04",
 			"ownerDecision": "accept"
 		},
 		{
-			"targetId": "material-equipment-v3-starmetal-heavy-armour-boots-v3",
-			"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/a/starmetal/heavy-armour-boots-v3.png",
+			"targetId": "material-equipment-v3-starmetal-heavy-armor-boots-v3",
+			"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/a/starmetal/heavy-armor-boots-v3.png",
 			"candidateSha256": "710158a9b46dd71d70add2b23a5ea08e4c3111c18e62433d6f7c2f48c0573274",
 			"ownerDecision": "accept"
 		},
@@ -778,32 +778,32 @@
 			"ownerDecision": "accept"
 		},
 		{
-			"targetId": "material-equipment-v3-wyrmscale-light-armour-full-set-v3",
-			"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/a/wyrmscale/light-armour-full-set-v3.png",
+			"targetId": "material-equipment-v3-wyrmscale-light-armor-full-set-v3",
+			"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/a/wyrmscale/light-armor-full-set-v3.png",
 			"candidateSha256": "20032eb42dc16ce8a65ce2a39cc2d00d762723fa89fcb22fd463b5165e2b1927",
 			"ownerDecision": "accept"
 		},
 		{
-			"targetId": "material-equipment-v3-wyrmscale-light-armour-head-v3",
-			"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/a/wyrmscale/light-armour-head-v3.png",
+			"targetId": "material-equipment-v3-wyrmscale-light-armor-head-v3",
+			"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/a/wyrmscale/light-armor-head-v3.png",
 			"candidateSha256": "8e9f5ffd54f5a42ac26c678c5e1a282cf63105de629f2628f689e1943e815bbc",
 			"ownerDecision": "accept"
 		},
 		{
-			"targetId": "material-equipment-v3-wyrmscale-light-armour-torso-v3",
-			"candidatePath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-wyrmscale-light-armour-torso-v3/attempt-2/candidate.png",
+			"targetId": "material-equipment-v3-wyrmscale-light-armor-torso-v3",
+			"candidatePath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-wyrmscale-light-armor-torso-v3/attempt-2/candidate.png",
 			"candidateSha256": "aa775d5324e0a43a1752ebec74700b48fe2c9882654fd0989cc0a47244f2e770",
 			"ownerDecision": "accept"
 		},
 		{
-			"targetId": "material-equipment-v3-wyrmscale-light-armour-legs-v3",
-			"candidatePath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-wyrmscale-light-armour-legs-v3/attempt-2/candidate.png",
+			"targetId": "material-equipment-v3-wyrmscale-light-armor-legs-v3",
+			"candidatePath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-wyrmscale-light-armor-legs-v3/attempt-2/candidate.png",
 			"candidateSha256": "d8ca9ef30f798bc33c25628a3bdc53c3feb45b839052f82762560a12ab580479",
 			"ownerDecision": "accept"
 		},
 		{
-			"targetId": "material-equipment-v3-wyrmscale-light-armour-boots-v3",
-			"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/a/wyrmscale/light-armour-boots-v3.png",
+			"targetId": "material-equipment-v3-wyrmscale-light-armor-boots-v3",
+			"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/a/wyrmscale/light-armor-boots-v3.png",
 			"candidateSha256": "db677d5cd79fa1d985c6878ba499eec7847e76b0ef6577e449010c6b63dca7cb",
 			"ownerDecision": "accept"
 		},
@@ -874,32 +874,32 @@
 			"ownerDecision": "accept"
 		},
 		{
-			"targetId": "material-equipment-v3-sunsteel-heavy-armour-full-set-v3",
-			"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/s/sunsteel/heavy-armour-full-set-v3.png",
+			"targetId": "material-equipment-v3-sunsteel-heavy-armor-full-set-v3",
+			"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/s/sunsteel/heavy-armor-full-set-v3.png",
 			"candidateSha256": "0d560a1d850b706578729343bf9076ee1c042b7eea17f25e9624d71b0ab9e83a",
 			"ownerDecision": "accept"
 		},
 		{
-			"targetId": "material-equipment-v3-sunsteel-heavy-armour-head-v3",
-			"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/s/sunsteel/heavy-armour-head-v3.png",
+			"targetId": "material-equipment-v3-sunsteel-heavy-armor-head-v3",
+			"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/s/sunsteel/heavy-armor-head-v3.png",
 			"candidateSha256": "867a3b8e75870bf74b06aac891800de5eb27c115f2190744cc90bc9f208db108",
 			"ownerDecision": "accept"
 		},
 		{
-			"targetId": "material-equipment-v3-sunsteel-heavy-armour-torso-v3",
-			"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/s/sunsteel/heavy-armour-torso-v3.png",
+			"targetId": "material-equipment-v3-sunsteel-heavy-armor-torso-v3",
+			"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/s/sunsteel/heavy-armor-torso-v3.png",
 			"candidateSha256": "d18679c4edbfe8b2b2a92a2c725abdba06aec35ef65642cf8b5b9b47b10f77b4",
 			"ownerDecision": "accept"
 		},
 		{
-			"targetId": "material-equipment-v3-sunsteel-heavy-armour-legs-v3",
-			"candidatePath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-sunsteel-heavy-armour-legs-v3/attempt-3/candidate.png",
+			"targetId": "material-equipment-v3-sunsteel-heavy-armor-legs-v3",
+			"candidatePath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-sunsteel-heavy-armor-legs-v3/attempt-3/candidate.png",
 			"candidateSha256": "78972e83af5b9664e8f077d07cf02db751f7b103c29d9994dd234a1e903ec85c",
 			"ownerDecision": "accept"
 		},
 		{
-			"targetId": "material-equipment-v3-sunsteel-heavy-armour-boots-v3",
-			"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/s/sunsteel/heavy-armour-boots-v3.png",
+			"targetId": "material-equipment-v3-sunsteel-heavy-armor-boots-v3",
+			"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/s/sunsteel/heavy-armor-boots-v3.png",
 			"candidateSha256": "10cffa85c253aa506ac56792806389cc1aa8ce8c23d7fe9119ed693e04cf5b07",
 			"ownerDecision": "accept"
 		},
@@ -916,32 +916,32 @@
 			"ownerDecision": "accept"
 		},
 		{
-			"targetId": "material-equipment-v3-ancient-dragon-scale-light-armour-full-set-v3",
-			"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/s/ancient-dragon-scale/light-armour-full-set-v3.png",
+			"targetId": "material-equipment-v3-ancient-dragon-scale-light-armor-full-set-v3",
+			"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/s/ancient-dragon-scale/light-armor-full-set-v3.png",
 			"candidateSha256": "83b6a6ec1854808eec44159678dc8bc0b1f10335dbca19072b08518d317f47a9",
 			"ownerDecision": "accept"
 		},
 		{
-			"targetId": "material-equipment-v3-ancient-dragon-scale-light-armour-head-v3",
-			"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/s/ancient-dragon-scale/light-armour-head-v3.png",
+			"targetId": "material-equipment-v3-ancient-dragon-scale-light-armor-head-v3",
+			"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/s/ancient-dragon-scale/light-armor-head-v3.png",
 			"candidateSha256": "129d171587beb7a47bc38bd3cb825e6eb537b32828d7692bc3fb6811cb9aa4ce",
 			"ownerDecision": "accept"
 		},
 		{
-			"targetId": "material-equipment-v3-ancient-dragon-scale-light-armour-torso-v3",
-			"candidatePath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-ancient-dragon-scale-light-armour-torso-v3/attempt-3/candidate.png",
+			"targetId": "material-equipment-v3-ancient-dragon-scale-light-armor-torso-v3",
+			"candidatePath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-ancient-dragon-scale-light-armor-torso-v3/attempt-3/candidate.png",
 			"candidateSha256": "abeead7ea9d6ff40a77dc118d04133a4a2fd1f9bb57dd2d92bf72c7accf2ffb6",
 			"ownerDecision": "accept"
 		},
 		{
-			"targetId": "material-equipment-v3-ancient-dragon-scale-light-armour-legs-v3",
-			"candidatePath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-ancient-dragon-scale-light-armour-legs-v3/attempt-2/candidate.png",
+			"targetId": "material-equipment-v3-ancient-dragon-scale-light-armor-legs-v3",
+			"candidatePath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-ancient-dragon-scale-light-armor-legs-v3/attempt-2/candidate.png",
 			"candidateSha256": "a8a3c591a1501eaefa1ae4b1f88c962248950bad4264819600aedc330e8e354e",
 			"ownerDecision": "accept"
 		},
 		{
-			"targetId": "material-equipment-v3-ancient-dragon-scale-light-armour-boots-v3",
-			"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/s/ancient-dragon-scale/light-armour-boots-v3.png",
+			"targetId": "material-equipment-v3-ancient-dragon-scale-light-armor-boots-v3",
+			"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/s/ancient-dragon-scale/light-armor-boots-v3.png",
 			"candidateSha256": "c3e138722cd7318e54bd4a0fc796351408fa784c16b042b4bd832030fdcc58d3",
 			"ownerDecision": "accept"
 		},

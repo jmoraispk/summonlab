@@ -4,16 +4,16 @@
 	"productionId": "material-equipment-v3",
 	"manifest": {
 		"path": "assets/equipment/experiments/material-equipment-v3/manifest.json",
-		"canonicalSha256": "ab8a0bac557322c97597fdaca21c08a19f5287fb4d4196bf86f593ef61d6980a"
+		"canonicalSha256": "d2899a27dccd95b91c12f0d5f8b8856321bbe969620fd9f82e2181cbb3dae12c"
 	},
 	"status": "awaiting-owner-checkpoint-1",
 	"maximumConcurrency": 16,
 	"classLaneCount": 11,
 	"rootAssignmentCountBeforeCheckpoint1": 0,
-	"armourPieceAssignmentCountBeforeSetUnlocks": 0,
+	"armorPieceAssignmentCountBeforeSetUnlocks": 0,
 	"checkpointPaths": [
 		"assets/equipment/experiments/material-equipment-v3/checkpoints/checkpoint-1-directions.json",
 		"assets/equipment/experiments/material-equipment-v3/checkpoints/checkpoint-2-roots.json",
-		"assets/equipment/experiments/material-equipment-v3/checkpoints/checkpoint-3-armour-pieces.json"
+		"assets/equipment/experiments/material-equipment-v3/checkpoints/checkpoint-3-armor-pieces.json"
 	]
 }

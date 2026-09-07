@@ -72,7 +72,7 @@ fragile.
 | Movement speed | Agility | — |
 | Evasion | Agility | Dexterity |
 | Initiative | Agility | Intellect |
-| Armour/mitigation | Vitality | Might |
+| Armor/mitigation | Vitality | Might |
 | Poise | Vitality | Might |
 | Physical-status resistance | Vitality | Spirit |
 | Mental-status resistance | Spirit | Intellect |

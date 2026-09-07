@@ -286,7 +286,7 @@ export async function buildEquipmentRuntimeCatalog(
 		summary: {
 			bundleCount: 140 as const,
 			assetCount: 280 as const,
-			armourSetReferenceCount: 0 as const,
+			armorSetReferenceCount: 0 as const,
 			cardBytes,
 			detailBytes,
 			totalBytes: cardBytes + detailBytes
@@ -431,7 +431,7 @@ async function runCli(): Promise<void> {
 				catalogVersion: built.manifest.catalogVersion,
 				bundles: built.manifest.summary.bundleCount,
 				assets: built.manifest.summary.assetCount,
-				armourSetReferences: built.manifest.summary.armourSetReferenceCount,
+				armorSetReferences: built.manifest.summary.armorSetReferenceCount,
 				cardBytes: built.manifest.summary.cardBytes,
 				detailBytes: built.manifest.summary.detailBytes,
 				totalBytes: built.manifest.summary.totalBytes,

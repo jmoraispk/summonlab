@@ -9,20 +9,20 @@
 	"completedAt": "2026-09-03T18:35:02.619Z",
 	"provider": "OpenAI image generation",
 	"model": "gpt-imagegen-2.0",
-	"promptSha256": "1f256009218c17c3cf3e8befd7c643ffc52899bdd7449cb30f97fc906ac4aecf",
+	"promptSha256": "0e82d3e3ee05c69a71ce0cc60983cdbe59b24816672c6aa5e2050442fa7bce72",
 	"references": [
 		{
 			"path": "assets/equipment/experiments/material-equipment-v3/candidates/c/spellweave/robes-full-set-v3.png",
 			"sha256": "2583be932e05edf55d70caa5864f8441d172efa2882f101f62ef710a81e89448",
-			"purpose": "Owner-accepted full Armour set; authoritative source for piece reconstruction."
+			"purpose": "Owner-accepted full Armor set; authoritative source for piece reconstruction."
 		},
 		{
 			"path": "assets/equipment/experiments/material-equipment-v3/candidates/c/spellweave/robes-torso-v3.png",
 			"sha256": "7e6fdd275fb33906dd4df1bf44c6278bd112030690c107a89591aad6eb33fb1b",
-			"purpose": "First-pass Armour-piece candidate retained as immutable evidence; correct only the stated review issue."
+			"purpose": "First-pass Armor-piece candidate retained as immutable evidence; correct only the stated review issue."
 		},
 		{
-			"path": "assets/equipment/experiments/material-equipment-v3/direction/class-progressions/robes-cloth-fibre-ranks-v3.png",
+			"path": "assets/equipment/experiments/material-equipment-v3/direction/class-progressions/robes-cloth-fiber-ranks-v3.png",
 			"sha256": "3f982275114ec66f36a3d22a4a18da4cd39a0467804c6e07ecb5e470954b9c3c",
 			"purpose": "Requires owner checkpoint 1 acceptance for rank escalation, silhouettes, finish, camera, and empty-set treatment."
 		},

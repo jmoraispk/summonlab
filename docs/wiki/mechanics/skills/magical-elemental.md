@@ -38,7 +38,7 @@ Water, and Earth preserve their imported ladders below.
 | 20 | **Water Bullet** | Water | F | A | Draw Water Novice | Compressed droplet fired at speed. Cheap, precise. |
 | 21 | **Cold Touch** | Water | F | A | Draw Water Novice | Chills a target briefly; slows attack speed |
 | 22 | **Flow** | Water | F | P | Draw Water Intermediate | Move at full speed through water; small evasion bonus |
-| 23 | **Pressure Lance** | Water | E | A | Water Bullet Expert, Rank II | A cutting jet; ignores part of armour |
+| 23 | **Pressure Lance** | Water | E | A | Water Bullet Expert, Rank II | A cutting jet; ignores part of armor |
 | 24 | **Mist** | Water | E | A | Cold Touch Expert | Obscuring fog; reduces enemy accuracy |
 | 25 | **Water Whip** | Water | E | A | Flow Expert, Dexterity threshold | Reaching strike that can also pull or trip |
 | 26 | **Torrent** | Water | D | A | Pressure Lance Master | A sustained wave that pushes everything back |

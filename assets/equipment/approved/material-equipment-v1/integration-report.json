@@ -5,7 +5,7 @@
 	"counts": {
 		"approvedSources": 161,
 		"equippableSources": 140,
-		"armourSetReferences": 21,
+		"armorSetReferences": 21,
 		"runtimeBundles": 140,
 		"runtimeAssets": 280,
 		"contentDefinitions": 140
@@ -13,18 +13,18 @@
 	"manifests": {
 		"approvedSources": {
 			"path": "assets/equipment/approved/material-equipment-v1/manifest.json",
-			"byteSha256": "db1175bbc5439f54cbedf3b9da919e0136993c7dbd0899c2e304f652c6d616ca",
-			"canonicalSha256": "3874e0b589b6f61c348620e955469813b96a08cedd9aeeef0c41488324f22b81"
+			"byteSha256": "8258837aeda9601dbf60ee1702336bd8a83d17e518d9776489cd8e4b142524ee",
+			"canonicalSha256": "ecb895016223cab3575b1f3480fe38b2de060a6967b1d75d6e09e52d704d1cff"
 		},
 		"runtimeVisuals": {
 			"path": "apps/web/static/runtime/equipment-v1/manifest.json",
-			"byteSha256": "3790f5538084228e259702a0e8b6a2d9532ed0fd816f2d423943782ee29a6cba",
-			"manifestHash": "c25e625cf569e3a626e9c6c650fa675258694a6d08d416a3758f1a4d65cd4805",
+			"byteSha256": "d25400288cc3cdc35d1ec46f42427f856557763f102d5c4e35843d9987aeb4d3",
+			"manifestHash": "6c278b86ec6a9a2e15e0b054063879ccfa9fc737d7c8fedef0f281caa0935edf",
 			"catalogVersion": "equipment-v1"
 		},
 		"content": {
 			"contentVersion": "equipment-content-v1",
-			"contentHash": "42a8ffc1899ee458ca8360d33dffbeac3713864548734b7345ce489c3599035c"
+			"contentHash": "42e64ba49543b86482f9b75d885885ba9b0681d6e68d1fc9f8f37ddcb5c0eaf9"
 		}
 	},
 	"runtime": {
@@ -55,7 +55,7 @@
 			"claim": "runtime-card-detail-budget-and-lazy-loading",
 			"gallery": {
 				"path": "assets/equipment/approved/material-equipment-v1/reviews/runtime-v1/index.html",
-				"sha256": "045a7d55ece9f148c3a4c485cfb3de2dc929fb78460052276746dcb2754775e1",
+				"sha256": "c7513d8041df8c522230270e653dfbde76c500d56bed2e522d21cbe81472215a",
 				"purpose": "All 140 card/detail runtime pairs in one review surface."
 			}
 		},

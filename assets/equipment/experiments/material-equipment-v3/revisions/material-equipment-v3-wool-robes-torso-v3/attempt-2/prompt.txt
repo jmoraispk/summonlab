@@ -21,4 +21,4 @@ REVISION PASS 2. The attached first-pass piece candidate is immutable evidence. 
 
 Correct this exact audited issue: Render only the connected Wool Robes Torso garment. Remove any separate hood, cowl, collar, mantle, or headpiece that repeats the Head slot, and do not include Legs or Boots items.
 
-The owner-accepted full set remains the first and authoritative reference. Return one new isolated torso candidate only. Do not make unrelated redesigns, add another Armour slot, add a body or mannequin, add text, or imitate recognizable copyrighted geometry.
+The owner-accepted full set remains the first and authoritative reference. Return one new isolated torso candidate only. Do not make unrelated redesigns, add another Armor slot, add a body or mannequin, add text, or imitate recognizable copyrighted geometry.

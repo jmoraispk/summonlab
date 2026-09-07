@@ -12,7 +12,7 @@ internal bounded contexts stay separate even though the player experiences them 
 - 1★ levels 1–10 with the accepted future cap table preserved in schema;
 - six attributes and the explicit Unaligned affinity state; 1★ heroes cannot awaken an affinity;
 - 8–12 runtime skills from the complete compendium;
-- 12–20 runtime equipment definitions across weapon, armour, and accessory;
+- 12–20 runtime equipment definitions across weapon, armor, and accessory;
 - direct attribute or owned-skill training;
 - a versioned seeded combat request/receipt with explanatory trace;
 - reward claims committed by their owning progression, inventory, and floor systems.

@@ -191,7 +191,7 @@ label.
 Other families use labels only where the element changes compatibility or effect:
 
 - Ward's Elemental Guard and Counter Sigil use `Element: Attuned`.
-- Enchantment's Weapon Oil, Armour Imbuing, and Elemental Attunement use `Element: Attuned`.
+- Enchantment's Weapon Oil, Armor Imbuing, and Elemental Attunement use `Element: Attuned`.
 - neutral Ward, Enchantment, Restoration, and Mind skills omit the label.
 
 Requiring any affinity to learn magic remains a prerequisite, not an Element label. Labels answer

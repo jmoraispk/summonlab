@@ -54,7 +54,7 @@ versioned combat mode a release uses; players cannot change combat rules.
 | Attribute | Owns | Does not own |
 | --- | --- | --- |
 | **Might** | physical damage; carrying capacity; equipment-load tolerance; explicit heavy-equipment requirements | accuracy; critical rate; general mitigation; action cadence |
-| **Vitality** | maximum Health; modest natural Health regeneration | armour mitigation; poise; broad physical resistance; status immunity |
+| **Vitality** | maximum Health; modest natural Health regeneration | armor mitigation; poise; broad physical resistance; status immunity |
 | **Agility** | readiness accumulation; movement capability; evasion; a bounded relative-speed contribution to hit contests | learned accuracy; critical rate; unrestricted extra actions |
 | **Spirit** | magical damage; maximum Mana; modest saturating Mana regeneration | morale; learning rate; control duration; mental resistance; decision quality |
 
@@ -166,25 +166,25 @@ The initial target retains physical and magical action types. Might scales physi
 Spirit scales magical magnitude. Skill-specific base effect, compatible equipment, affinity, and
 the defender's applicable mitigation complete the action calculation.
 
-Vitality does not supply universal mitigation. General physical mitigation belongs to armour:
+Vitality does not supply universal mitigation. General physical mitigation belongs to armor:
 
 ```text
-effective armour = max(0, armour - penetration)
-armour reduction = effective armour / (effective armour + versioned balance constant)
+effective armor = max(0, armor - penetration)
+armor reduction = effective armor / (effective armor + versioned balance constant)
 ```
 
-Attacker level is not an armour-penetration term. Stronger attackers overcome armour through
+Attacker level is not an armor-penetration term. Stronger attackers overcome armor through
 explicit skills, equipment, penetration, positioning, statuses, or other visible sources.
 
 Named resistances such as Cut or Burn belong to passive skills, equipment, affinity, physiology,
 and temporary effects. Each resistance declares its damage/status tags, conversion, stacking rule,
 and cap. No base attribute grants blanket physical or mental resistance.
 
-### Armour eligibility
+### Armor eligibility
 
-Vitality is not an armour requirement because that would combine Health, regeneration, and access
+Vitality is not an armor requirement because that would combine Health, regeneration, and access
 to mitigation in one investment. Might supplies load tolerance and may satisfy an explicit heavy
-equipment requirement. Armour Training supplies learned proficiency. Items may add other authored
+equipment requirement. Armor Training supplies learned proficiency. Items may add other authored
 requirements without making Vitality the universal tank gate.
 
 ### Poise and Break
@@ -449,7 +449,7 @@ The implementation must revise the canonical sources rather than adding a discon
 - `docs/wiki/mechanics/progression/affinities.md` and base-affinity pages for modest matching nudges;
 - `docs/wiki/mechanics/skills/framework.md` and affected skill-family pages for mastery accuracy,
   equipment delivery, resistances, and removed prerequisites;
-- equipment pages for load, armour mitigation, penetration, resistance, and delivery tags;
+- equipment pages for load, armor mitigation, penetration, resistance, and delivery tags;
 - `docs/wiki/systems/summoning-progression-combat.md` for the two versioned modes, stepped resolver,
   claims, downing, and mode ownership;
 - system architecture, integration contracts, roadmap, and relevant ADRs for configuration,
@@ -517,7 +517,7 @@ The implementation plan must include tests and fixtures for:
 
 - four-attribute parsing, migration, intrinsic/effective scoping, and legacy projection;
 - regeneration bounds, post-damage delay, and inability to revive or repair injuries;
-- armour, penetration, named resistance, and absence of Vitality mitigation;
+- armor, penetration, named resistance, and absence of Vitality mitigation;
 - mastery-led accuracy, bounded relative Agility, target conditions, misses, and criticals;
 - equipment-family compatibility and learned delivery tags;
 - one-tick readiness cohorts, differing actor views, hash binding, and concurrent provider results;

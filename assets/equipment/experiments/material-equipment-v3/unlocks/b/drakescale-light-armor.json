@@ -1,0 +1,32 @@
+{
+	"schemaVersion": "equipment-armor-set-unlock-receipt-v3",
+	"setId": "drakescale-light-armor",
+	"sourceTargetId": "material-equipment-v3-drakescale-light-armor-full-set-v3",
+	"sourceCandidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/b/drakescale/light-armor-full-set-v3.png",
+	"sourceCandidateSha256": "175834e6870944b8226ad8d677ef94423a7237c82c5cfe23b9cc7c744bbb6663",
+	"checkpoint2Receipt": {
+		"path": "assets/equipment/experiments/material-equipment-v3/checkpoints/checkpoint-2-roots.json",
+		"sha256": "2154adda493e7592a276d6c0e183b8766b4b6e251e50cdf4267da96bdbdb1922"
+	},
+	"classAudit": {
+		"path": "assets/equipment/experiments/material-equipment-v3/reviews/class-audits/final/light-armor-f-to-s-v3.png",
+		"sha256": "72df2e015d5e87538051879315267e675d04e62901d11ac743ce89a717295066"
+	},
+	"materialAudit": {
+		"path": "assets/equipment/experiments/material-equipment-v3/reviews/material-audits/final/b-drakescale-v3.png",
+		"sha256": "96f4efa7ea03733b5b9e461c3093b2811c3787eb617fc9b38799b10cff134257"
+	},
+	"classAuditDecision": "accept",
+	"materialAuditDecision": "accept",
+	"emptySetCheck": "pass",
+	"fourComponentCheck": "pass",
+	"reviewNotes": "No visible wearer or void mannequin; natural cavity shadows only. Head, torso, leg protection, and boots are all readable.",
+	"acceptedAt": "2026-09-03T17:25:08.000Z",
+	"acceptedBy": "summonlab-owner",
+	"unlocksTargetIds": [
+		"material-equipment-v3-drakescale-light-armor-head-v3",
+		"material-equipment-v3-drakescale-light-armor-torso-v3",
+		"material-equipment-v3-drakescale-light-armor-legs-v3",
+		"material-equipment-v3-drakescale-light-armor-boots-v3"
+	]
+}

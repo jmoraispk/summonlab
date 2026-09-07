@@ -45,9 +45,9 @@ Magical family. Buffs on self and others, and the imbuing of objects. Consumes c
 | 4 | **Light** | — | F | A | Imbuing Novice | Persistent light on an object or person |
 | 5 | **Greater Blessing** | — | E | A | Minor Blessing Expert, Rank II | Substantial buff on one ally; longer duration |
 | 6 | **Group Blessing** | — | E | A | Minor Blessing Master | Weaker buff applied to the whole party |
-| 7 | **Armour Imbuing** | Attuned | E | C | Weapon Oil Expert | Grants armour temporary resistance and a retaliation effect |
+| 7 | **Armor Imbuing** | Attuned | E | C | Weapon Oil Expert | Grants armor temporary resistance and a retaliation effect |
 | 8 | **Component Craft** | — | E | C | Imbuing Expert, Alchemy prerequisite | Produces enchanting components rather than buying them |
-| 9 | **Sigil Binding** | — | D | C | Armour Imbuing Master, Forging prerequisite | Applies a permanent enchantment to an item with an open slot |
+| 9 | **Sigil Binding** | — | D | C | Armor Imbuing Master, Forging prerequisite | Applies a permanent enchantment to an item with an open slot |
 | 10 | **Empowerment** | — | D | A | Greater Blessing Master, Spirit threshold | One ally's next skill is cast at greatly increased potency |
 | 11 | **Sustained Weave** | — | D | P | Group Blessing Master, 10,000 casts | Buffs the hero applies last substantially longer |
 | 12 | **Elemental Attunement** | Attuned | D | A | Weapon Oil Master, Rank III | Grants an ally the hero's affinity temporarily at reduced affinity rank. |

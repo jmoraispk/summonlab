@@ -51,7 +51,7 @@ protection, giving a settlement a reason to cultivate smiths.
 | Granted active skill | Very rare/high tier | Usable only while equipped and a major chase reward |
 | Set membership | Rare | Matching-piece bonuses |
 
-Armour should reinforce a fighting approach: plate pairs naturally with Shield and Polearm, while
+Armor should reinforce a fighting approach: plate pairs naturally with Shield and Polearm, while
 lighter gear supports Body and Ranged practice.
 
 ## Materials and sources
@@ -76,7 +76,7 @@ general material fusion exists is unresolved.
 ### Predictable material tiers
 
 Familiar item shapes repeat in ascending materials, giving the player a reliable
-Gathering/Forging floor that does not require luck. Metal, hide/scale, cloth/fibre, and wood/haft
+Gathering/Forging floor that does not require luck. Metal, hide/scale, cloth/fiber, and wood/haft
 each have one canonical material at every rank. The complete ladder lives in
 [Equipment materials](../equipment/materials.md) so this progression sketch cannot drift from it.
 

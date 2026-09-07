@@ -2,7 +2,7 @@
 	"schemaVersion": "equipment-material-brief-v3",
 	"materialId": "hemp-weave",
 	"displayName": "Hemp Weave",
-	"family": "cloth-fibre",
+	"family": "cloth-fiber",
 	"rank": "F",
 	"palette": "Natural flax beige, oatmeal, and weathered gray-brown.",
 	"valueRange": "Light-middle matte values with low contrast.",

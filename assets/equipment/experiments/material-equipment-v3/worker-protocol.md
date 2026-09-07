@@ -8,4 +8,4 @@
 6. A failed call is terminal evidence. Retry only as a separately assigned versioned attempt; never overwrite.
 7. Never edit v1/v2, approved/runtime catalogs, other visual domains, shared contracts, reviews, or checkpoint receipts.
 
-Root lanes preserve class context and run F→S. Armour pieces remain locked until a hash-bound full-set unlock receipt exists.
+Root lanes preserve class context and run F→S. Armor pieces remain locked until a hash-bound full-set unlock receipt exists.

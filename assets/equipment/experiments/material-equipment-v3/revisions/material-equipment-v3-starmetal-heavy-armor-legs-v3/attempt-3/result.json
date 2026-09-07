@@ -1,0 +1,48 @@
+{
+	"schemaVersion": "equipment-rank-first-provenance-result-v3",
+	"resultId": "result-material-equipment-v3-starmetal-heavy-armor-legs-v3-attempt-3",
+	"targetId": "material-equipment-v3-starmetal-heavy-armor-legs-v3",
+	"assignmentId": "revision-assignment-material-equipment-v3-starmetal-heavy-armor-legs-v3-attempt-3",
+	"attempt": 3,
+	"status": "succeeded",
+	"startedAt": "2026-09-03T18:25:53.161Z",
+	"completedAt": "2026-09-03T18:26:34.966Z",
+	"provider": "OpenAI image generation",
+	"model": "gpt-imagegen-2.0",
+	"promptSha256": "a306c7c336e53bd549edd9459ad9d5d26bc0ead99c351e07cb1ac68be2424edf",
+	"references": [
+		{
+			"path": "assets/equipment/experiments/material-equipment-v3/candidates/a/starmetal/heavy-armor-full-set-v3.png",
+			"sha256": "6e12b9636d827113ffe1e32cd769d69bba8d5e54c9f681da9d2972879950134c",
+			"purpose": "Owner-accepted full Armor set; authoritative source for piece reconstruction."
+		},
+		{
+			"path": "assets/equipment/experiments/rank-first-calibration-2026-09-02/heavy-armor-metal-ranks-v1.png",
+			"sha256": "e43eebe931c75330abe54d39b35a97b69bc1e18c2e349c31eff1bb0b096683da",
+			"purpose": "Rank escalation, silhouette, and finish only; production must remove mannequin/body impression."
+		},
+		{
+			"path": "assets/equipment/experiments/material-vs-class-calibration-2026-09-02/approach-a-steel-material-cohort-v1.png",
+			"sha256": "6749ad1a65b995f48b89b0c1c8c8ee051da145315f5fd60775803f691ad7b887",
+			"purpose": "Accepted painterly finish and cross-class material-coherence reference; do not copy geometry."
+		}
+	],
+	"source": {
+		"path": "/home/joao/.codex/generated_images/01a0684f-cf8d-7a13-b42b-10dd4f41adf7/exec-1aa1a41f-09c4-478b-85b2-10a1fb1e93fb.png",
+		"sha256": "b7f19c556e44197e5dc169252178bc0d79c50d6b6584af91dae4012a3f0ce409",
+		"bytes": 1844677,
+		"width": 1254,
+		"height": 1254,
+		"mediaType": "image/png"
+	},
+	"persistenceOperation": "exclusive-normalize",
+	"output": {
+		"path": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-starmetal-heavy-armor-legs-v3/attempt-3/candidate.png",
+		"sha256": "1ac4b15690ff32acec5a1ed08c750aca87c0f3405445cd2e41568ca29b3dda04",
+		"bytes": 1325418,
+		"width": 1024,
+		"height": 1024,
+		"mediaType": "image/png"
+	},
+	"error": null
+}

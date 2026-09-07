@@ -64,7 +64,7 @@ export function validateEquipmentContentBindings(input: {
 
 	const approvedItems = approvedManifest.records.filter((record) => record.role === 'item');
 	const approvedReferences = approvedManifest.records.filter(
-		(record) => record.role === 'armour-set-reference'
+		(record) => record.role === 'armor-set-reference'
 	);
 	const definitionKeys = new Set(
 		catalog.definitions.map((definition) => definition.approvedVisualAssetKey)

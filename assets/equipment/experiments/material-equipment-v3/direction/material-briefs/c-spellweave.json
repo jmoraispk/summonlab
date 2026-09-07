@@ -2,7 +2,7 @@
 	"schemaVersion": "equipment-material-brief-v3",
 	"materialId": "spellweave",
 	"displayName": "Spellweave",
-	"family": "cloth-fibre",
+	"family": "cloth-fiber",
 	"rank": "C",
 	"palette": "Deep indigo, muted violet, charcoal, and narrow cyan-violet thread accents.",
 	"valueRange": "Dark rich folds with selective luminous stitching.",

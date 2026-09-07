@@ -4,10 +4,10 @@ Wiki ID: `mechanics.equipment`
 
 Design status: **owner-approved runtime-v1 foundation**. The canonical item classes and material
 relationships are intentionally smaller than the imported compendium. The first implementation
-ships the 140 Weapon, Armour-piece, Shield, and Staff definitions; detailed combat benefits,
+ships the 140 Weapon, Armor-piece, Shield, and Staff definitions; detailed combat benefits,
 durability, Tool, Accessory, and later quality rules remain unresolved.
 
-Equipment covers materials, weapons, armour, shields, casting focuses, tools, accessories, and
+Equipment covers materials, weapons, armor, shields, casting focuses, tools, accessories, and
 sets. It is a companion to the progression and skill systems: equipment supplements a build,
 enables particular techniques, and exposes tradeoffs without replacing a hero's underlying
 capability.
@@ -22,7 +22,7 @@ supplies base rank, while craftsmanship may add zero, one, or two ranks, capped 
 - [Rarity, craftsmanship, and weight](rarity-and-weight.md)
 - [Materials](materials.md)
 - [Weapons](weapons.md)
-- [Armour and shields](armour-and-shields.md)
+- [Armor and shields](armor-and-shields.md)
 - [Staffs, tools, and accessories](focuses-tools-accessories.md)
 - [Sets, enchantment, and bound equipment](sets.md)
 
@@ -50,12 +50,12 @@ produces information. They do not receive item classes merely for symmetry.
 The Equipment stream contains thirteen canonical classes:
 
 - six Weapons: Sword, Dagger, Spear, Bow, Axe, and Mace;
-- three Armour classes: Heavy Armour, Light Armour, and Robes, each delivered as a four-item set;
+- three Armor classes: Heavy Armor, Light Armor, and Robes, each delivered as a four-item set;
 - Shield, Staff, Tool, and Accessory.
 
-The four Armour items are Head, Torso, Legs, and Boots. This produces twenty-two concrete
-equippable forms across the complete Equipment stream: six Weapons, twelve Armour items, Shield,
-Staff, Tool, and Accessory. The current production baseline covers Weapons, Armour, Shield, and
+The four Armor items are Head, Torso, Legs, and Boots. This produces twenty-two concrete
+equippable forms across the complete Equipment stream: six Weapons, twelve Armor items, Shield,
+Staff, Tool, and Accessory. The current production baseline covers Weapons, Armor, Shield, and
 Staff; Tool and Accessory remain documented for later work.
 
 ## Implemented runtime-v1 slice
@@ -92,7 +92,7 @@ contract without claiming a Gathering economy.
 | Need | Candidate items |
 | --- | --- |
 | Weapons | Sword, Dagger, Spear, Bow, Axe, Mace |
-| Defense | Head, Torso, Legs, and Boots for each of Heavy Armour, Light Armour, and Robes; Shield |
+| Defense | Head, Torso, Legs, and Boots for each of Heavy Armor, Light Armor, and Robes; Shield |
 | Magical equipment | Staff |
 | Seeded material lots | A bounded fixture selected from the canonical materials |
 
@@ -143,7 +143,7 @@ recognizable at phone-thumbnail size, but its blade, guard, head, limbs, body, c
 or ornament may change to express the material and rank.
 
 This variation does not create more mechanical item classes. Round, square, or hero-shaped Shields
-remain Shields; visually different Bows remain Bows. Armour has the stronger consistency rule:
+remain Shields; visually different Bows remain Bows. Armor has the stronger consistency rule:
 every full set and its four separated pieces must match each other, while sets made from different
 materials should be visibly distinct rather than reusing one cut.
 
@@ -158,17 +158,17 @@ silhouette ambition. The v2 root run remains review evidence rather than an appr
 
 ### Material coverage and image budget
 
-The full canonical material ladder has seven materials in each of four families. Every Armour
+The full canonical material ladder has seven materials in each of four families. Every Armor
 material requires five images in a fixed sequence: one complete-set consistency image followed by
 four separate item images for Head, Torso, Legs, and Boots. The complete set is production evidence;
 the four pieces are the item images.
 
 | Material family | Images per material | Materials | Images |
 | --- | ---: | ---: | ---: |
-| Metal | five Weapons + Shield + five-image Heavy Armour sequence | 7 | 77 |
+| Metal | five Weapons + Shield + five-image Heavy Armor sequence | 7 | 77 |
 | Wood | Bow + Staff | 7 | 14 |
-| Hide or scale | five-image Light Armour sequence | 7 | 35 |
-| Cloth or fibre | five-image Robes sequence | 7 | 35 |
+| Hide or scale | five-image Light Armor sequence | 7 | 35 |
+| Cloth or fiber | five-image Robes sequence | 7 | 35 |
 | **Total** |  | **28** | **161** |
 
 Equivalently, each rank contributes 23 images across its four materials, and seven ranks contribute
@@ -179,7 +179,7 @@ This budget assumes one image per Weapon class and material, with no additional 
 craftsmanship grades or one-handed/two-handed use. It excludes Tools, Accessories, named sets, and
 monster-derived equipment. A reduced prototype Weapon selection subtracts one image per omitted
 Weapon at every included material rank; it does not reduce the five-image requirement for an
-included Armour set.
+included Armor set.
 
 All 161 entries are owner-approved sources. The 140 isolated items each have deterministic card and
 detail runtime derivatives; the 21 full-set images remain approved continuity references and never
@@ -226,7 +226,7 @@ remain preserved rather than silently normalized:
   compatible with fixed rarity, but the mutable stats/properties need an explicit boundary.
 - Clarify whether material/monster is one source axis while enchantment and binding are independent
   overlays rather than additional item classes.
-- Armour uses four items—Head, Torso, Legs, and Boots—authored from one consistent full-set source.
+- Armor uses four items—Head, Torso, Legs, and Boots—authored from one consistent full-set source.
   Accessory begins with one slot. Exact inventory and loadout representation still requires an
   executable contract.
 - The six-weapon hand model is accepted in prose: a two-handed item occupies both hands, Shield
@@ -249,26 +249,26 @@ remain preserved rather than silently normalized:
   compact v3 provenance, accepted direction/calibration boards, and review-pending Greatsword
   campaign; retired superseded v1/v2 campaigns, duplicate v3 rasters/review galleries, and obsolete
   producer tooling; moved every retained Equipment PNG to Git LFS.
-- 2026-09-03 — v3 candidate closeout — Accepted all 77 roots and 84 Armour pieces, reconciled 11
+- 2026-09-03 — v3 candidate closeout — Accepted all 77 roots and 84 Armor pieces, reconciled 11
   directions and 60 audit sheets, and created a 161-entry proposal-only promotion list without
   modifying approved or runtime assets.
 - 2026-09-02 — v2 root activation — Materialized 77 root packet pairs and activated one immutable,
-  root-only, 16-worker Equipment run; all 84 Armour pieces remain review-gated.
+  root-only, 16-worker Equipment run; all 84 Armor pieces remain review-gated.
 - 2026-09-02 — v2 profile acceptance — Recorded the owner's profile-only acceptance and added the
   isolated v2 execution-record schemas and in-memory packet renderer without materializing packets
   or authorizing a run or image generation.
 - 2026-09-02 — v2 planning — Prepared a collision-safe 161-target manifest, inert allocation plan,
-  and approval-candidate visual profile with hash-bound class pose and Armour camera references.
+  and approval-candidate visual profile with hash-bound class pose and Armor camera references.
 - 2026-09-02 — owner material lock — Locked Bronze, Ash, and Hard Leather; deferred double-bit Axes
   as later variants.
-- 2026-09-02 — owner visual review — Made within-class weapon pose and full-set Armour camera,
+- 2026-09-02 — owner visual review — Made within-class weapon pose and full-set Armor camera,
   empty-interior, and Head-item consistency explicit; recorded v2 revision feedback without
   mutating v1 evidence.
 - 2026-09-02 — root production — Completed all 77 root jobs with 76 reviewable images; retained 84
-  Armour-piece jobs behind full-set human-review gates.
+  Armor-piece jobs behind full-set human-review gates.
 - 2026-09-01 — production planning — Bound all 161 material targets into one resumable Equipment
-  run with 77 initially ready jobs, 21 human-review gates, and 84 dependent Armour-piece jobs.
-- 2026-09-01 — owner revision — Split each Armour class into Head, Torso, Legs, and Boots; required
+  run with 77 initially ready jobs, 21 human-review gates, and 84 dependent Armor-piece jobs.
+- 2026-09-01 — owner revision — Split each Armor class into Head, Torso, Legs, and Boots; required
   full-set-first visual production; established 161 candidate images across the canonical material
   ladder.
 - 2026-09-01 — owner revision — Reduced crafted outputs to Equipment, Potion, and Food; reduced

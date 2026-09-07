@@ -330,11 +330,11 @@
 			]
 		},
 		{
-			"mapEntryId": "polearm.armour-rend",
+			"mapEntryId": "polearm.armor-rend",
 			"domain": "Martial",
 			"family": "Polearm",
 			"memberTargetIds": [
-				"martial:polearm:rend-armour",
+				"martial:polearm:rend-armor",
 				"martial:polearm:bloodletting",
 				"martial:polearm:ruin"
 			]
@@ -927,7 +927,7 @@
 			"memberTargetIds": [
 				"magical:enchantment:imbuing",
 				"magical:enchantment:weapon-oil",
-				"magical:enchantment:armour-imbuing",
+				"magical:enchantment:armor-imbuing",
 				"magical:enchantment:elemental-attunement"
 			]
 		},
@@ -1092,7 +1092,7 @@
 				"craft:forging:ore-sense",
 				"craft:forging:simple-smithing",
 				"craft:forging:weaponsmithing",
-				"craft:forging:armoursmithing",
+				"craft:forging:armorsmithing",
 				"craft:forging:godsmithing"
 			]
 		},
@@ -2001,9 +2001,9 @@
 			"primaryVisualParent": "martial:polearm:hook-shield"
 		},
 		{
-			"targetId": "martial:polearm:rend-armour",
-			"mapEntryId": "polearm.armour-rend",
-			"motifFamily": "polearm.armour-rend",
+			"targetId": "martial:polearm:rend-armor",
+			"mapEntryId": "polearm.armor-rend",
+			"motifFamily": "polearm.armor-rend",
 			"primaryVisualParent": null
 		},
 		{
@@ -2020,9 +2020,9 @@
 		},
 		{
 			"targetId": "martial:polearm:bloodletting",
-			"mapEntryId": "polearm.armour-rend",
-			"motifFamily": "polearm.armour-rend",
-			"primaryVisualParent": "martial:polearm:rend-armour"
+			"mapEntryId": "polearm.armor-rend",
+			"motifFamily": "polearm.armor-rend",
+			"primaryVisualParent": "martial:polearm:rend-armor"
 		},
 		{
 			"targetId": "martial:polearm:executioner-s-grip",
@@ -2044,8 +2044,8 @@
 		},
 		{
 			"targetId": "martial:polearm:ruin",
-			"mapEntryId": "polearm.armour-rend",
-			"motifFamily": "polearm.armour-rend",
+			"mapEntryId": "polearm.armor-rend",
+			"motifFamily": "polearm.armor-rend",
 			"primaryVisualParent": "martial:polearm:bloodletting"
 		},
 		{
@@ -3351,7 +3351,7 @@
 			"primaryVisualParent": "magical:enchantment:greater-blessing"
 		},
 		{
-			"targetId": "magical:enchantment:armour-imbuing",
+			"targetId": "magical:enchantment:armor-imbuing",
 			"mapEntryId": "enchantment.imbued-object",
 			"motifFamily": "enchantment.imbued-object",
 			"primaryVisualParent": "magical:enchantment:weapon-oil"
@@ -3384,7 +3384,7 @@
 			"targetId": "magical:enchantment:elemental-attunement",
 			"mapEntryId": "enchantment.imbued-object",
 			"motifFamily": "enchantment.imbued-object",
-			"primaryVisualParent": "magical:enchantment:armour-imbuing"
+			"primaryVisualParent": "magical:enchantment:armor-imbuing"
 		},
 		{
 			"targetId": "magical:enchantment:greater-sigil",
@@ -3657,7 +3657,7 @@
 			"primaryVisualParent": "craft:forging:simple-smithing"
 		},
 		{
-			"targetId": "craft:forging:armoursmithing",
+			"targetId": "craft:forging:armorsmithing",
 			"mapEntryId": "forging.smithing",
 			"motifFamily": "forging.smithing",
 			"primaryVisualParent": "craft:forging:weaponsmithing"
@@ -3720,7 +3720,7 @@
 			"targetId": "craft:forging:godsmithing",
 			"mapEntryId": "forging.smithing",
 			"motifFamily": "forging.smithing",
-			"primaryVisualParent": "craft:forging:armoursmithing"
+			"primaryVisualParent": "craft:forging:armorsmithing"
 		},
 		{
 			"targetId": "craft:alchemy:reagent-sense",

@@ -1003,14 +1003,14 @@ Use these accepted lineages:
 ```text
 Horizontal Slash → Crescent Sweep → Wind Slash → Rising Moon → Ten Thousand Leaves
 Fireball → Great Fireball → Charged Fireball → Meteor → Sunfall
-Ore Sense → Simple Smithing → Weaponsmithing → Armoursmithing → Godsmithing
+Ore Sense → Simple Smithing → Weaponsmithing → Armorsmithing → Godsmithing
 ```
 
 Use one visual grammar per family:
 
 - `blade.sweeping-cut`: one polished blade arc as the dominant subject; the supporting cue progresses from a clean lateral pressure wake to crescent air, launched wind, rising lunar force, and finally leaf-like afterimages; steel, pale cyan-white air, and restrained amber impact sparks.
 - `elemental.fire-projectile`: one self-contained fire projectile or descending fire mass; the supporting cue progresses through hotter core compression, charge rings, atmospheric descent, and solar corona; ember orange, deep red, and white-hot centers against transparent edges.
-- `forging.smithing`: one material/tool emblem progressing from exposed ore vein to worked billet, weapon, armour, and divine anvil-work; at most one ember or hammer-strike cue; iron, steel, charcoal, and controlled forge orange.
+- `forging.smithing`: one material/tool emblem progressing from exposed ore vein to worked billet, weapon, armor, and divine anvil-work; at most one ember or hammer-strike cue; iron, steel, charcoal, and controlled forge orange.
 
 Author these exact subject/cue pairs:
 
@@ -1029,7 +1029,7 @@ Author these exact subject/cue pairs:
 | Ore Sense | One split ore-bearing stone showing a mineral vein | One directional mineral glint |
 | Simple Smithing | One heated metal billet resting on a small anvil | One hammer-strike spark |
 | Weaponsmithing | One newly forged sword blank across an anvil | One controlled forge spark |
-| Armoursmithing | One shaped breastplate panel on an anvil | One low forge ember |
+| Armorsmithing | One shaped breastplate panel on an anvil | One low forge ember |
 | Godsmithing | One monumental masterwork anvil joined to impossible bright metal | One restrained sacred-metal halo |
 
 Every child names only its immediate predecessor as `primaryVisualParent`. Every record uses the

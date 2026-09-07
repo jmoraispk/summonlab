@@ -148,7 +148,7 @@ git commit -m "feat(combat): assemble frozen actor decision views"
 - [ ] Add tests proving rolls are stable across object insertion order, unrelated actors, area-target ordering, and replay; changing purpose, actor, action instance, target, or local sequence must change the draw.
 - [ ] Implement purpose-key draws from `seed + attemptId + tick + actorId + actionInstanceId + optional targetId + purpose + local sequence`. Do not consume the legacy entropy cursor.
 - [ ] Implement hit resolution from skill accuracy/mastery versus defender evasion, a clamped relative-Agility modifier, and explicit flank/surround/unaware modifiers. Use separate `hit`, `critical`, `status`, and `target-fallback` purposes.
-- [ ] Resolve damage in this order: authored base/coefficient; Might for physical or Spirit for magical; bounded affinity contribution; critical/status multiplier; armour and penetration for general physical mitigation; matching named resistances; resource clamp; typed downing event.
+- [ ] Resolve damage in this order: authored base/coefficient; Might for physical or Spirit for magical; bounded affinity contribution; critical/status multiplier; armor and penetration for general physical mitigation; matching named resistances; resource clamp; typed downing event.
 - [ ] Apply Vitality Health regeneration and Spirit Mana regeneration only during readiness advancement, respecting post-hit delay, caps, and downed state.
 - [ ] Assert no model/provider data can supply damage, hit result, critical result, status, downing, loot, or death.
 - [ ] Verify:
@@ -343,7 +343,7 @@ git commit -m "feat(web): expose operator-bound readiness combat"
 - Modify: `docs/superpowers/specs/2026-09-06-attributes-and-combat-modes-design.md`
 
 - [ ] Add a replay vector containing at least two same-tick windows, one movement collision, one retarget/cancel fallback, a miss, a critical, a downed/recovered hero, and a terminal common result. Replay solely from recorded batches and assert exact hashes.
-- [ ] Extend the balance harness with action cadence distributions, same-window frequency, collision rate, no-progress rate, passive-regeneration duration, provider fallback rate, and deterministic cross-run equality. Keep existing accuracy/armour/off-affinity gates.
+- [ ] Extend the balance harness with action cadence distributions, same-window frequency, collision rate, no-progress rate, passive-regeneration duration, provider fallback rate, and deterministic cross-run equality. Keep existing accuracy/armor/off-affinity gates.
 - [ ] Generate `agent-readiness-v1.json` from at least 10,000 deterministic trials per benchmark and 100 simulated complete encounters per archetype. Include rules/content hashes, seeds, p50/p95 tick/event counts, and safety-stop count.
 - [ ] Gate promotion on: zero nondeterministic replays, zero unclassified cancellations, zero passive-regeneration stalemates, zero safety stops in the benchmark set, p95 complete encounter under the configured tick/event budgets, and 100% provider failures resolving through legal deterministic fallbacks.
 - [ ] Update the wiki and ADR to mark readiness as implemented but operator-controlled. Keep `legacy-auto-v1` documented as the release default until a separate operator configuration change is deliberately deployed.

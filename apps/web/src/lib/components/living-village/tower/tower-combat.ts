@@ -379,7 +379,7 @@ function simulateEncounter(args: {
 			const target = livingTargets[targetIndex]!;
 			const targetHero = party.find((hero) => hero.id === target.unitId)!;
 			const rawDamage = encounterDamage(species, floor, encounterIndex);
-			const damage = Math.max(1, rawDamage - targetHero.armour);
+			const damage = Math.max(1, rawDamage - targetHero.armor);
 			target.health = Math.max(0, target.health - damage);
 			heroTaken.set(target.unitId, (heroTaken.get(target.unitId) ?? 0) + damage);
 			choiceLog.push({
@@ -396,14 +396,14 @@ function simulateEncounter(args: {
 				targetName: targetHero.name,
 				verb: 'STRIKE',
 				title: species.role,
-				detail: `${damage} Health lost after ${targetHero.armour} armour.`,
+				detail: `${damage} Health lost after ${targetHero.armor} armor.`,
 				healthDelta: -damage,
 				status: species.affinity === 'Fire' ? 'Burn pressure' : undefined,
 				contributions: [
 					{ label: 'Species power', value: `${species.baseDamage}` },
 					{ label: 'Floor scaling', value: `+${floor.number}` },
 					{ label: 'Repeat pressure', value: `+${encounterIndex * 2}` },
-					{ label: 'Hero armour', value: `−${targetHero.armour}` }
+					{ label: 'Hero armor', value: `−${targetHero.armor}` }
 				]
 			});
 		}

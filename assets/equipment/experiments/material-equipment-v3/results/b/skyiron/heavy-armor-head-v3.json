@@ -1,0 +1,48 @@
+{
+	"schemaVersion": "equipment-rank-first-provenance-result-v3",
+	"resultId": "result-material-equipment-v3-skyiron-heavy-armor-head-v3-attempt-1",
+	"targetId": "material-equipment-v3-skyiron-heavy-armor-head-v3",
+	"assignmentId": "assignment-material-equipment-v3-skyiron-heavy-armor-head-v3",
+	"attempt": 1,
+	"status": "succeeded",
+	"startedAt": "2026-09-03T17:36:07.619Z",
+	"completedAt": "2026-09-03T17:36:48.342Z",
+	"provider": "OpenAI image generation",
+	"model": "gpt-imagegen-2.0",
+	"promptSha256": "fb727db56f94ed34583729106abdc970ba5eb8bfb0a0444f90f0e68dba791e31",
+	"references": [
+		{
+			"path": "assets/equipment/experiments/rank-first-calibration-2026-09-02/heavy-armor-metal-ranks-v1.png",
+			"sha256": "e43eebe931c75330abe54d39b35a97b69bc1e18c2e349c31eff1bb0b096683da",
+			"purpose": "Rank escalation, silhouette, and finish only; production must remove mannequin/body impression."
+		},
+		{
+			"path": "assets/equipment/experiments/material-vs-class-calibration-2026-09-02/approach-a-steel-material-cohort-v1.png",
+			"sha256": "6749ad1a65b995f48b89b0c1c8c8ee051da145315f5fd60775803f691ad7b887",
+			"purpose": "Accepted painterly finish and cross-class material-coherence reference; do not copy geometry."
+		},
+		{
+			"path": "assets/equipment/experiments/material-equipment-v3/candidates/b/skyiron/heavy-armor-full-set-v3.png",
+			"sha256": "e9f6b7808621c16eb3d38147f99b2a27c225cd17b66c399068f16c8fae930e4b",
+			"purpose": "Owner-accepted full Armor set; authoritative source for piece reconstruction."
+		}
+	],
+	"source": {
+		"path": "/home/joao/.codex/generated_images/01a0684f-e93d-7d61-a650-703eaa74259e/exec-3de9c458-f895-4740-af52-0c90c3a75ae3.png",
+		"sha256": "64f1d63fb0969ec9e789f425caa76ece01000f3561959144a2bb712f9f2e2f50",
+		"bytes": 1855862,
+		"width": 1254,
+		"height": 1254,
+		"mediaType": "image/png"
+	},
+	"persistenceOperation": "exclusive-normalize",
+	"output": {
+		"path": "assets/equipment/experiments/material-equipment-v3/candidates/b/skyiron/heavy-armor-head-v3.png",
+		"sha256": "40b7a77aada2d052017205a613bf1cf4e877e341dcacfe7d16c7fc310a7c28f6",
+		"bytes": 1437379,
+		"width": 1024,
+		"height": 1024,
+		"mediaType": "image/png"
+	},
+	"error": null
+}

@@ -1,0 +1,48 @@
+{
+	"schemaVersion": "equipment-rank-first-provenance-result-v3",
+	"resultId": "result-material-equipment-v3-sunsteel-heavy-armor-torso-v3-attempt-1",
+	"targetId": "material-equipment-v3-sunsteel-heavy-armor-torso-v3",
+	"assignmentId": "assignment-material-equipment-v3-sunsteel-heavy-armor-torso-v3",
+	"attempt": 1,
+	"status": "succeeded",
+	"startedAt": "2026-09-03T17:41:46.552Z",
+	"completedAt": "2026-09-03T17:43:00.007Z",
+	"provider": "OpenAI image generation",
+	"model": "gpt-imagegen-2.0",
+	"promptSha256": "818efdecec5bfc30a817de5fc79ddd6394aed2177bc1e21fa36c90f08a8ee8a2",
+	"references": [
+		{
+			"path": "assets/equipment/experiments/rank-first-calibration-2026-09-02/heavy-armor-metal-ranks-v1.png",
+			"sha256": "e43eebe931c75330abe54d39b35a97b69bc1e18c2e349c31eff1bb0b096683da",
+			"purpose": "Rank escalation, silhouette, and finish only; production must remove mannequin/body impression."
+		},
+		{
+			"path": "assets/equipment/experiments/material-vs-class-calibration-2026-09-02/approach-a-steel-material-cohort-v1.png",
+			"sha256": "6749ad1a65b995f48b89b0c1c8c8ee051da145315f5fd60775803f691ad7b887",
+			"purpose": "Accepted painterly finish and cross-class material-coherence reference; do not copy geometry."
+		},
+		{
+			"path": "assets/equipment/experiments/material-equipment-v3/candidates/s/sunsteel/heavy-armor-full-set-v3.png",
+			"sha256": "0d560a1d850b706578729343bf9076ee1c042b7eea17f25e9624d71b0ab9e83a",
+			"purpose": "Owner-accepted full Armor set; authoritative source for piece reconstruction."
+		}
+	],
+	"source": {
+		"path": "/home/joao/.codex/generated_images/01a0684f-11cb-72d3-88d1-6611f0c2c922/exec-cf330dca-5a12-4e57-9506-3a0e510881bd.png",
+		"sha256": "00e87f2942be1ae7a83d1e27773066b58c24402257dc9c2c659a566b5eae77f5",
+		"bytes": 2424286,
+		"width": 1254,
+		"height": 1254,
+		"mediaType": "image/png"
+	},
+	"persistenceOperation": "exclusive-normalize",
+	"output": {
+		"path": "assets/equipment/experiments/material-equipment-v3/candidates/s/sunsteel/heavy-armor-torso-v3.png",
+		"sha256": "d18679c4edbfe8b2b2a92a2c725abdba06aec35ef65642cf8b5b9b47b10f77b4",
+		"bytes": 1918118,
+		"width": 1024,
+		"height": 1024,
+		"mediaType": "image/png"
+	},
+	"error": null
+}

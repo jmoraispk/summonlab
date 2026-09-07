@@ -12,11 +12,11 @@
 	"sourceAuthorities": {
 		"catalog": {
 			"path": "assets/wiki/skills/icon-production-v1/catalog.json",
-			"contentHash": "71add63ae46e6e0b68d807bb5bca6060b101213682fc8e1c9037ad1fe3744aaf"
+			"contentHash": "c3505a68a38909927127e53233e12adbebfc1f65c98c7bd6fb449f13986c92a1"
 		},
 		"massProductionManifest": {
 			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/manifest.json",
-			"contentHash": "22d7e61074efc43150502e82cc7947589f031cf688362c571d6eb3b99b26f0ee"
+			"contentHash": "f04585b9e534130944d87d45b5a05fe76030eb370f218443ad47a8ef6e35806f"
 		}
 	},
 	"records": [
@@ -340,11 +340,11 @@
 			"contentHash": "5c6ff1025d1362572c4d13dd2b6631e37b260fb9cb9bd7979c5bd3fdd538537e"
 		},
 		{
-			"targetId": "craft:forging:armoursmithing",
-			"sourcePath": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/craft-forging-armoursmithing.png",
+			"targetId": "craft:forging:armorsmithing",
+			"sourcePath": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/craft-forging-armorsmithing.png",
 			"sourceContentHash": "6e2bfcc345bc129ce1f5fdd6cfabd9fd479e2fede60ce76f06e84cb8b06cc939",
-			"file": "icons/craft-forging-armoursmithing.6e2bfcc345bc.webp",
-			"publicPath": "/wiki-media/skills/visual-catalog-v1/icons/craft-forging-armoursmithing.6e2bfcc345bc.webp",
+			"file": "icons/craft-forging-armorsmithing.6e2bfcc345bc.webp",
+			"publicPath": "/wiki-media/skills/visual-catalog-v1/icons/craft-forging-armorsmithing.6e2bfcc345bc.webp",
 			"width": 512,
 			"height": 512,
 			"bytes": 78218,
@@ -1429,11 +1429,11 @@
 			"contentHash": "eb4bccbd9224d0419845bcae9c7ca272e7a84c590129a7c2e24ff9fb54c24d70"
 		},
 		{
-			"targetId": "magical:enchantment:armour-imbuing",
-			"sourcePath": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-enchantment-armour-imbuing.png",
+			"targetId": "magical:enchantment:armor-imbuing",
+			"sourcePath": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-enchantment-armor-imbuing.png",
 			"sourceContentHash": "34ca516618b8eab44c3e4814242535cb3c7d7324539df5cdff8496d55ee1d041",
-			"file": "icons/magical-enchantment-armour-imbuing.34ca516618b8.webp",
-			"publicPath": "/wiki-media/skills/visual-catalog-v1/icons/magical-enchantment-armour-imbuing.34ca516618b8.webp",
+			"file": "icons/magical-enchantment-armor-imbuing.34ca516618b8.webp",
+			"publicPath": "/wiki-media/skills/visual-catalog-v1/icons/magical-enchantment-armor-imbuing.34ca516618b8.webp",
 			"width": 512,
 			"height": 512,
 			"bytes": 73794,
@@ -4256,11 +4256,11 @@
 			"contentHash": "317c62d380bb048094eb9e20b5de0f1a04ca82c5f699c99ede4e1452a27bce9d"
 		},
 		{
-			"targetId": "martial:polearm:rend-armour",
-			"sourcePath": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-polearm-rend-armour.png",
+			"targetId": "martial:polearm:rend-armor",
+			"sourcePath": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-polearm-rend-armor.png",
 			"sourceContentHash": "83726d3a04d4dd291b093fbd1776d924fcc6532d866c1beb8fac385e1342db58",
-			"file": "icons/martial-polearm-rend-armour.83726d3a04d4.webp",
-			"publicPath": "/wiki-media/skills/visual-catalog-v1/icons/martial-polearm-rend-armour.83726d3a04d4.webp",
+			"file": "icons/martial-polearm-rend-armor.83726d3a04d4.webp",
+			"publicPath": "/wiki-media/skills/visual-catalog-v1/icons/martial-polearm-rend-armor.83726d3a04d4.webp",
 			"width": 512,
 			"height": 512,
 			"bytes": 65818,
@@ -5041,7 +5041,7 @@
 		"skillCount": 456,
 		"assetCount": 456,
 		"totalBytes": 38597676,
-		"managedDirectoryBytes": 38860225,
+		"managedDirectoryBytes": 38860209,
 		"maximumAssetBytes": 133120,
 		"maximumManagedDirectoryBytes": 44040192
 	}

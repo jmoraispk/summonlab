@@ -12,7 +12,7 @@
 	"promptSha256": "23f0b966e455ac934259df07f4d75ad1f6305c7749d9f9e8f124f0c77d7a1a71",
 	"references": [
 		{
-			"path": "assets/equipment/experiments/material-equipment-v3/direction/class-progressions/robes-cloth-fibre-ranks-v3.png",
+			"path": "assets/equipment/experiments/material-equipment-v3/direction/class-progressions/robes-cloth-fiber-ranks-v3.png",
 			"sha256": "3f982275114ec66f36a3d22a4a18da4cd39a0467804c6e07ecb5e470954b9c3c",
 			"purpose": "Requires owner checkpoint 1 acceptance for rank escalation, silhouettes, finish, camera, and empty-set treatment."
 		},

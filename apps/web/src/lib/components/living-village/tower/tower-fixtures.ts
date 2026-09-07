@@ -43,7 +43,7 @@ export type HeroFixture = {
 	maxHealth: number;
 	maxMana: number;
 	agility: number;
-	armour: number;
+	armor: number;
 	availability: Availability;
 	skill: {
 		id: string;
@@ -162,7 +162,7 @@ export const HEROES: HeroFixture[] = [
 		maxHealth: 112,
 		maxMana: 42,
 		agility: 15,
-		armour: 5,
+		armor: 5,
 		availability: 'idle',
 		skill: {
 			id: 'shielding-cleave-v0',
@@ -184,7 +184,7 @@ export const HEROES: HeroFixture[] = [
 		maxHealth: 88,
 		maxMana: 70,
 		agility: 18,
-		armour: 2,
+		armor: 2,
 		availability: 'idle',
 		skill: {
 			id: 'cinder-lance-v0',
@@ -206,7 +206,7 @@ export const HEROES: HeroFixture[] = [
 		maxHealth: 96,
 		maxMana: 56,
 		agility: 17,
-		armour: 3,
+		armor: 3,
 		availability: 'idle',
 		skill: {
 			id: 'measured-shot-v0',

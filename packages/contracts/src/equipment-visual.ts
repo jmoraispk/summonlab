@@ -164,7 +164,7 @@ export const EquipmentRuntimeVisualManifestSchema = z
 			.object({
 				bundleCount: z.literal(140),
 				assetCount: z.literal(280),
-				armourSetReferenceCount: z.literal(0),
+				armorSetReferenceCount: z.literal(0),
 				cardBytes: z.number().int().positive(),
 				detailBytes: z.number().int().positive(),
 				totalBytes: z.number().int().positive()

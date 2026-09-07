@@ -1,0 +1,39 @@
+{
+	"schemaVersion": "equipment-class-direction-result-v3",
+	"resultId": "result-equipment-v3-light-armor-rank-progression-attempt-2",
+	"directionId": "equipment-v3-light-armor-rank-progression",
+	"assignmentId": "assignment-equipment-v3-light-armor-rank-progression-attempt-2",
+	"attempt": 2,
+	"status": "succeeded",
+	"startedAt": "2026-09-03T03:35:46.000Z",
+	"completedAt": "2026-09-03T03:36:43.000Z",
+	"provider": "OpenAI image generation",
+	"model": "gpt-imagegen-2.0",
+	"promptSha256": "87832e5c5bbdd95b924442373e2cb2113f78d89b6725d91e73170142bc868096",
+	"references": [
+		{
+			"path": "assets/equipment/experiments/material-equipment-v3/direction/class-progressions/revisions/light-armor-attempt-1-source.png",
+			"sha256": "5a11d89ea1eaf38c41a98c6ef5a8734c8c720abbe147aae4800877270bc10467",
+			"purpose": "Attempt 1 design source; preserve all seven material/rank designs while correcting the failed mannequin treatment."
+		},
+		{
+			"path": "assets/equipment/experiments/material-vs-class-calibration-2026-09-02/approach-b-dagger-class-progression-v1.png",
+			"sha256": "6ecc2035df1272044ca96a0f033977e6de3bad02cd1e855c4f04cad9a45394b2",
+			"purpose": "Accepted F-to-S escalation rhythm and target coolness; do not copy dagger geometry."
+		},
+		{
+			"path": "assets/equipment/experiments/material-vs-class-calibration-2026-09-02/approach-a-steel-material-cohort-v1.png",
+			"sha256": "6749ad1a65b995f48b89b0c1c8c8ee051da145315f5fd60775803f691ad7b887",
+			"purpose": "Accepted painterly finish and cross-class material-coherence reference; do not copy geometry."
+		}
+	],
+	"output": {
+		"path": "assets/equipment/experiments/material-equipment-v3/direction/class-progressions/light-armor-hide-scale-ranks-v3.png",
+		"sha256": "4aeead1698bd2e6ba26e8c007c92248288c452b0254c4bb16fc09f4ca5e7a4a9",
+		"bytes": 2664486,
+		"width": 1536,
+		"height": 1024,
+		"mediaType": "image/png"
+	},
+	"error": null
+}

@@ -29,7 +29,7 @@ Ranged owns bow, crossbow, and sling projectile techniques. Equipment labels nar
 | 16 | **Storm of a Thousand** | Bow | B | A | Rain of Arrows Master, Split Arrow Expert | The sky fills; a wide area is saturated for a long duration |
 | 17 | **The Arrow That Finds** | Bow | A | A | Sky Piercer Master, composite condition | Fired once, it does not stop until its target is dead |
 | 18 | **World's Edge Shot** | Bow | S | A | The Arrow That Finds Master, composite condition | A shot that crosses any distance and cannot be prevented |
-| 19 | **Crossbow Handling** | Crossbow | F | P | Hold a crossbow | Damage and armour-penetration bonus with crossbows. **Foundation.** |
+| 19 | **Crossbow Handling** | Crossbow | F | P | Hold a crossbow | Damage and armor-penetration bonus with crossbows. **Foundation.** |
 | 20 | **Bolt Shot** | Crossbow | F | A | Crossbow Handling Novice | Straightforward, high-penetration single shot |
 | 21 | **Reload Drill** | Crossbow | F | P | Crossbow Handling Intermediate | Reduced reload time |
 | 22 | **Bolt Craft** | Crossbow | E | C | Reload Drill Expert, Forging prerequisite | Craft bolts, including barbed, explosive and hollow heads |

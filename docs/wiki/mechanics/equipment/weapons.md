@@ -19,7 +19,7 @@ tradeoffs, and skill compatibility remain later combat work.
 | **Spear** | Two | Metal | Reach, bracing, and control |
 | **Bow** | Two | Wood | Ranged attacks |
 | **Axe** | One or two | Metal | Heavy cuts and cleaving |
-| **Mace** | One or two | Metal | Blunt force, stagger, and armour breaking |
+| **Mace** | One or two | Metal | Blunt force, stagger, and armor breaking |
 
 The Spear's metal head determines its base rank. Its wood shaft is a required physical component
 but does not contribute another rank. The same rule applies to an Axe or Mace haft, a Bow string,
@@ -87,7 +87,7 @@ item stands clear of the ground plane; it is never presented lying on the floor.
 - The primary material ladder uses a standard single-bit Axe. Double-bit war axes may be authored
   later as variants within the same Axe class; they are not a rank stage or another skill family.
 
-These are visual-comparison rules. Weapons remain independent and do not need to match an Armour
+These are visual-comparison rules. Weapons remain independent and do not need to match an Armor
 set unless a later named set explicitly binds them.
 
 ## Open implementation questions

@@ -1,7 +1,7 @@
 import {
 	EquipmentDefinitionCatalogSchema,
 	EquipmentStandardRecipeDescriptorSchema,
-	type EquipmentArmourSlot,
+	type EquipmentArmorSlot,
 	type EquipmentClass,
 	type EquipmentDefinition,
 	type EquipmentHandedness,
@@ -74,38 +74,38 @@ export const EQUIPMENT_MATERIALS = Object.freeze([
 	{
 		materialId: 'hemp-weave',
 		displayName: 'Hemp Weave',
-		family: 'cloth-or-fibre',
+		family: 'cloth-or-fiber',
 		rank: 'F'
 	},
-	{ materialId: 'wool', displayName: 'Wool', family: 'cloth-or-fibre', rank: 'E' },
+	{ materialId: 'wool', displayName: 'Wool', family: 'cloth-or-fiber', rank: 'E' },
 	{
 		materialId: 'layered-silk',
 		displayName: 'Layered Silk',
-		family: 'cloth-or-fibre',
+		family: 'cloth-or-fiber',
 		rank: 'D'
 	},
 	{
 		materialId: 'spellweave',
 		displayName: 'Spellweave',
-		family: 'cloth-or-fibre',
+		family: 'cloth-or-fiber',
 		rank: 'C'
 	},
 	{
 		materialId: 'moonweave',
 		displayName: 'Moonweave',
-		family: 'cloth-or-fibre',
+		family: 'cloth-or-fiber',
 		rank: 'B'
 	},
 	{
 		materialId: 'starcloth',
 		displayName: 'Starcloth',
-		family: 'cloth-or-fibre',
+		family: 'cloth-or-fiber',
 		rank: 'A'
 	},
 	{
 		materialId: 'fateweave',
 		displayName: 'Fateweave',
-		family: 'cloth-or-fibre',
+		family: 'cloth-or-fiber',
 		rank: 'S'
 	}
 ] satisfies readonly MaterialDefinition[]);
@@ -119,12 +119,12 @@ const METAL_CLASSES = Object.freeze([
 	'shield'
 ] satisfies readonly EquipmentClass[]);
 const WOOD_CLASSES = Object.freeze(['bow', 'staff'] satisfies readonly EquipmentClass[]);
-const ARMOUR_SLOTS = Object.freeze([
+const ARMOR_SLOTS = Object.freeze([
 	'head',
 	'torso',
 	'legs',
 	'boots'
-] satisfies readonly EquipmentArmourSlot[]);
+] satisfies readonly EquipmentArmorSlot[]);
 
 const MATERIALS_BY_ID = Object.freeze(
 	Object.fromEntries(
@@ -133,13 +133,13 @@ const MATERIALS_BY_ID = Object.freeze(
 );
 
 function classDisplayName(equipmentClass: EquipmentClass): string {
-	if (equipmentClass === 'heavy-armour') return 'Heavy Armour';
-	if (equipmentClass === 'light-armour') return 'Light Armour';
+	if (equipmentClass === 'heavy-armor') return 'Heavy Armor';
+	if (equipmentClass === 'light-armor') return 'Light Armor';
 	if (equipmentClass === 'robes') return 'Robes';
 	return equipmentClass.charAt(0).toUpperCase() + equipmentClass.slice(1);
 }
 
-function slotDisplayName(slot: EquipmentArmourSlot): string {
+function slotDisplayName(slot: EquipmentArmorSlot): string {
 	return slot.charAt(0).toUpperCase() + slot.slice(1);
 }
 
@@ -166,17 +166,17 @@ function handlingFor(equipmentClass: EquipmentClass): {
 function createDefinition(
 	material: MaterialDefinition,
 	equipmentClass: EquipmentClass,
-	armourSlot?: EquipmentArmourSlot
+	armorSlot?: EquipmentArmorSlot
 ): Readonly<EquipmentDefinition> {
-	const form = `${equipmentClass}${armourSlot ? `-${armourSlot}` : ''}`;
+	const form = `${equipmentClass}${armorSlot ? `-${armorSlot}` : ''}`;
 	const definitionId = `equipment-${material.materialId}-${form}`;
 	const approvedVisualAssetKey = `equipment-v1-${material.rank.toLowerCase()}-${material.materialId}-${form}`;
-	const handling = armourSlot
+	const handling = armorSlot
 		? {
-				slot: armourSlot,
+				slot: armorSlot,
 				handedness: 'none' as const,
 				weightClass:
-					equipmentClass === 'heavy-armour'
+					equipmentClass === 'heavy-armor'
 						? ('heavy' as const)
 						: equipmentClass === 'robes'
 							? ('light' as const)
@@ -188,7 +188,7 @@ function createDefinition(
 		schemaVersion: 'equipment-definition-v1' as const,
 		definitionId,
 		displayName: `${material.displayName} ${classDisplayName(equipmentClass)}${
-			armourSlot ? ` ${slotDisplayName(armourSlot)}` : ''
+			armorSlot ? ` ${slotDisplayName(armorSlot)}` : ''
 		}`,
 		materialId: material.materialId,
 		materialFamily: material.family,
@@ -206,14 +206,14 @@ function expandMaterial(material: MaterialDefinition): readonly Readonly<Equipme
 	if (material.family === 'metal') {
 		return [
 			...METAL_CLASSES.map((equipmentClass) => createDefinition(material, equipmentClass)),
-			...ARMOUR_SLOTS.map((slot) => createDefinition(material, 'heavy-armour', slot))
+			...ARMOR_SLOTS.map((slot) => createDefinition(material, 'heavy-armor', slot))
 		];
 	}
 	if (material.family === 'wood') {
 		return WOOD_CLASSES.map((equipmentClass) => createDefinition(material, equipmentClass));
 	}
-	const armourClass = material.family === 'hide-or-scale' ? 'light-armour' : 'robes';
-	return ARMOUR_SLOTS.map((slot) => createDefinition(material, armourClass, slot));
+	const armorClass = material.family === 'hide-or-scale' ? 'light-armor' : 'robes';
+	return ARMOR_SLOTS.map((slot) => createDefinition(material, armorClass, slot));
 }
 
 export const EQUIPMENT_DEFINITIONS = Object.freeze(EQUIPMENT_MATERIALS.flatMap(expandMaterial));
@@ -228,7 +228,7 @@ export const EQUIPMENT_DEFINITION_CATALOG = Object.freeze(
 	EquipmentDefinitionCatalogSchema.parse({
 		schemaVersion: 'equipment-definition-catalog-v1',
 		contentVersion: 'equipment-content-v1',
-		contentHash: '42a8ffc1899ee458ca8360d33dffbeac3713864548734b7345ce489c3599035c',
+		contentHash: '42e64ba49543b86482f9b75d885885ba9b0681d6e68d1fc9f8f37ddcb5c0eaf9',
 		definitions: EQUIPMENT_DEFINITIONS
 	})
 );
@@ -247,11 +247,11 @@ export function isEquipmentMaterialCompatible(
 	if (family === 'metal')
 		return (
 			(METAL_CLASSES as readonly EquipmentClass[]).includes(equipmentClass) ||
-			equipmentClass === 'heavy-armour'
+			equipmentClass === 'heavy-armor'
 		);
 	if (family === 'wood')
 		return (WOOD_CLASSES as readonly EquipmentClass[]).includes(equipmentClass);
-	if (family === 'hide-or-scale') return equipmentClass === 'light-armour';
+	if (family === 'hide-or-scale') return equipmentClass === 'light-armor';
 	return equipmentClass === 'robes';
 }
 

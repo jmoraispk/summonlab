@@ -4,7 +4,7 @@
 	"targetId": "material-equipment-v3-starcloth-robes-legs-v3",
 	"immutable": true,
 	"classDirection": {
-		"path": "assets/equipment/experiments/material-equipment-v3/direction/class-progressions/robes-cloth-fibre-ranks-v3.png",
+		"path": "assets/equipment/experiments/material-equipment-v3/direction/class-progressions/robes-cloth-fiber-ranks-v3.png",
 		"sha256": "3f982275114ec66f36a3d22a4a18da4cd39a0467804c6e07ecb5e470954b9c3c",
 		"purpose": "Requires owner checkpoint 1 acceptance for rank escalation, silhouettes, finish, camera, and empty-set treatment."
 	},
@@ -20,7 +20,7 @@
 	"consistencySource": {
 		"path": "assets/equipment/experiments/material-equipment-v3/candidates/a/starcloth/robes-full-set-v3.png",
 		"sha256": "c02dc954d3ac92af7a2b4235eaeaad3b243963c0edca949a29e6c762c3862c3b",
-		"purpose": "Owner-accepted full Armour set; authoritative source for piece reconstruction."
+		"purpose": "Owner-accepted full Armor set; authoritative source for piece reconstruction."
 	},
 	"prompt": "Render only the legs item from the accepted full set. Preserve its exact material, palette, silhouette language, trim, fastenings, wear, ornament, and slot boundary. Do not redesign it.\n\nCLASS DIRECTION: Cloth-led draped equipment comprising exactly Head, Torso, Legs, and Boots. Empty self-supporting full set in a consistent mild three-quarter front view; no mannequin, wearer, or black void figure. Use the accepted progression reference as the authoritative design for the A column while reconstructing it as a dedicated render. Preserve rank silhouette and distinctive structural cues; do not crop.\n\nMATERIAL BRIEF — Starcloth:\nPalette: Deep indigo-black, radiant blue-violet, silver-white constellations, and sparse gold points.\nValue: Very dark cloth carrying crisp luminous accents.\nSurface/wear: Impossibly fine weave, deep clean folds, constellation embroidery, pristine resilient edges.\nConstruction: Celestial arcs, layered mantle, long star-trail hems, elegant open sleeves, precise luminous borders.\nSupernatural behavior: Tiny constellation points and faint thread paths glow within the cloth, never around it.\nNeutral secondary materials: Silver clasps, black leather, dark lining, and minimal gold thread.\nNeighbor distinction: More radiant, cosmic, and sharply detailed than Moonweave; less reality-bending than Fateweave.\n\nOne isolated legs only; no other set pieces, body part, wearer, mannequin, or display stand.\n\nSTYLE/OUTPUT: premium realistic-painterly dark fantasy equipment inventory art; grounded construction; honest material response; cold key light, restrained warm rim, midnight-charcoal studio ground with restrained floor plane. One fully visible object centered on a 1024×1024 portrait-or-square canvas, about 8% margin and never below 5%; readable at 128px. No text, labels, UI, border, watermark, signature, scenery, extra objects, hands, wielder, detached particles, uncontrolled glow, or recognizable reference copying.\n\nThe accepted full-set source is the first and authoritative visual reference. Match it exactly.",
 	"promptSha256": "5bbfdba6a139e817e4571754e5b414d157eb6728f173a9df150e54138d6e2a07",

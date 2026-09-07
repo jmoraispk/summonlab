@@ -27,12 +27,12 @@ Polearm owns long-shafted melee techniques. Equipment labels narrow compatibilit
 | 14 | **Coiling Dragon** | Spear | B | A | Dragon Tail Master, deed | The spear moves independently, striking every enemy in reach |
 | 15 | **Thousand Li Thrust** | Spear | B | A | Heaven Piercer Master, rare catalyst | Reach becomes effectively unlimited for one strike |
 | 16 | **The Line That Holds** | Spear | A | St | Unbreakable Line Master, composite condition | Nothing crosses the hero's reach while they stand |
-| 17 | **Halberd Handling** | Halberd | F | P | Hold a halberd | Damage bonus with halberds; small armour-shred chance. **Foundation.** |
+| 17 | **Halberd Handling** | Halberd | F | P | Hold a halberd | Damage bonus with halberds; small armor-shred chance. **Foundation.** |
 | 18 | **Chop** | Halberd | F | A | Halberd Handling Novice | Heavy downward strike |
 | 19 | **Hook Shield** | Halberd | F | A | Halberd Handling Novice | Pulls a shield aside, exposing the target briefly |
 | 20 | **Split Grip** | Halberd | E | P | Halberd Handling Intermediate | Choke the haft for faster, weaker swings on demand |
-| 21 | **Rend Armour** | Halberd | E | A | Chop Expert | Stacking armour reduction on the target |
-| 22 | **Berserk Swing** | Halberd | D | A | Rend Armour Master | Damage scales with the hero's missing health |
+| 21 | **Rend Armor** | Halberd | E | A | Chop Expert | Stacking armor reduction on the target |
+| 22 | **Berserk Swing** | Halberd | D | A | Rend Armor Master | Damage scales with the hero's missing health |
 | 23 | **Reaping Arc** | Halberd | D | A | Chop Master, Might threshold | Wide sweep; each kill refreshes the cooldown |
 | 24 | **Bloodletting** | Halberd | D | P | 10,000 halberd hits | Halberd damage causes bleeding without any affinity |
 | 25 | **Executioner's Grip** | Halberd | C | P | Berserk Swing Master | Critical hits against wounded targets are lethal far more often |
@@ -41,7 +41,7 @@ Polearm owns long-shafted melee techniques. Equipment labels narrow compatibilit
 | 28 | **Ruin** | Halberd | B | A | Storm of Iron Master, deed | Destroys the target's equipment outright on a critical hit |
 | 29 | **The Last Harvest** | Halberd | A | A | Red Harvest Master, composite condition | One swing per enemy in range, resolved simultaneously |
 | 30 | **Polehammer Handling** | Polehammer | F | P | Might threshold, hold a polehammer | Damage and poise-damage bonus with polehammers. **Foundation.** |
-| 31 | **Crush** | Polehammer | F | A | Polehammer Handling Novice | Slow heavy strike; ignores a portion of armour |
+| 31 | **Crush** | Polehammer | F | A | Polehammer Handling Novice | Slow heavy strike; ignores a portion of armor |
 | 32 | **Knee Breaker** | Polehammer | F | A | Polehammer Handling Novice | Slows the target heavily on hit |
 | 33 | **Heavy Footing** | Polehammer | E | P | Polehammer Handling Intermediate | Cannot be knocked down while swinging |
 | 34 | **Shatter** | Polehammer | E | A | Crush Expert | Removes the target's block or barrier entirely |
@@ -49,7 +49,7 @@ Polearm owns long-shafted melee techniques. Equipment labels narrow compatibilit
 | 36 | **Seismic Step** | Polehammer | D | A | Heavy Footing Master, Might threshold | Each step sends a shockwave forward |
 | 37 | **Anvil Strike** | Polehammer | D | A | Shatter Master | Damage doubles against staggered targets |
 | 38 | **Bell Ringer** | Polehammer | D | P | Concussive Blow Master, 10,000 polehammer hits | Every fourth polehammer hit dazes automatically |
-| 39 | **Unmaking** | Polehammer | C | A | Anvil Strike Master | Permanently reduces the target's armour for the encounter |
+| 39 | **Unmaking** | Polehammer | C | A | Anvil Strike Master | Permanently reduces the target's armor for the encounter |
 | 40 | **Tremor Field** | Polehammer | C | St | Seismic Step Master | Continuous ground tremor; enemies within it cannot regain poise |
 | 41 | **Mountain's Weight** | Polehammer | B | A | Unmaking Master, deed | A single blow carrying the mass of something far larger |
 | 42 | **Silence the Bell** | Polehammer | B | P | Bell Ringer Master, rare catalyst | Dazed targets cannot act at all until the daze ends |

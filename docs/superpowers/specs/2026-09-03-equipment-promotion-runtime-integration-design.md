@@ -24,7 +24,7 @@ different artwork.
 - Forging and Gathering are the enabled Craft families for the first equipment slice.
 - Equipment uses six Weapon classes: Sword, Dagger, Spear, Bow, Axe, and Mace.
 - Shield and Staff are separate equipment classes.
-- Heavy Armour, Light Armour, and Robes each have Head, Torso, Legs, and Boots items.
+- Heavy Armor, Light Armor, and Robes each have Head, Torso, Legs, and Boots items.
 - Every item has one rank-bearing material.
 - Material supplies base rank. Craftsmanship may add `+0`, `+1`, or `+2`, capped at S.
 - Ranking is mechanically important, but an item's approved illustration remains tied to its
@@ -39,12 +39,12 @@ different artwork.
 | Role | Count | Approved source | Runtime item visual | Item definition |
 | --- | ---: | --- | --- | --- |
 | Weapon, Shield, and Staff items | 56 | yes | yes | yes |
-| Armour pieces | 84 | yes | yes | yes |
-| Complete Armour-set references | 21 | yes | no | no |
+| Armor pieces | 84 | yes | yes | yes |
+| Complete Armor-set references | 21 | yes | no | no |
 | **Total** | **161** | **161** | **140** | **140** |
 
 The complete-set sources are approved because they are the authoritative visual continuity record
-for their four pieces. They are not fifth Armour items and do not enter inventory.
+for their four pieces. They are not fifth Armor items and do not enter inventory.
 
 ## Design principles
 
@@ -67,7 +67,7 @@ for their four pieces. They are not fifth Armour items and do not enter inventor
 assets/equipment/approved/material-equipment-v1/
   manifest.json
   items/<rank>/<material>/<artifact>.png
-  armour-set-references/<rank>/<material>/<armour-class>.png
+  armor-set-references/<rank>/<material>/<armor-class>.png
   receipts/promotion-v1.json
 ```
 
@@ -77,15 +77,15 @@ The promotion tool resolves each of its 161 selected paths and verifies:
 
 - proposal, manifest, and checkpoint hashes;
 - 161 unique target IDs and approved output paths;
-- 140 equippable roles and 21 Armour-set-reference roles;
+- 140 equippable roles and 21 Armor-set-reference roles;
 - exact candidate hash, PNG decoding, and required dimensions;
 - no destination collision, symlink escape, or path outside `assets/equipment/approved`.
 
 Every approved record contains:
 
 - stable approved asset key;
-- role: `item` or `armour-set-reference`;
-- rank, material, equipment class, and optional Armour slot;
+- role: `item` or `armor-set-reference`;
+- rank, material, equipment class, and optional Armor slot;
 - v3 target ID;
 - selected candidate path and SHA-256;
 - checkpoint receipt path and canonical SHA-256;
@@ -134,7 +134,7 @@ The engine-independent catalog lives in `packages/content` behind strict contrac
 
 - 28 canonical materials and their base ranks;
 - the allowed material-to-form mapping;
-- six Weapon classes, Shield, Staff, and twelve Armour slot forms;
+- six Weapon classes, Shield, Staff, and twelve Armor slot forms;
 - the 140 approved visual asset keys.
 
 Each definition contains only stable authored facts:
@@ -159,12 +159,12 @@ Definition IDs are deterministic and readable, for example:
 ```text
 equipment-bronze-sword
 equipment-worldtree-limb-staff
-equipment-iron-heavy-armour-head
+equipment-iron-heavy-armor-head
 equipment-fateweave-robes-boots
 ```
 
 The catalog validator requires exactly 140 definitions, one approved item visual per definition,
-no Armour-set reference masquerading as an item, and no illegal material/form combination.
+no Armor-set reference masquerading as an item, and no illegal material/form combination.
 
 ### Recipe derivation
 
@@ -226,7 +226,7 @@ The new loadout supports:
 mainHand, offHand, head, torso, legs, boots
 ```
 
-Handedness and class determine main/off-hand legality. Armour slot legality comes directly from the
+Handedness and class determine main/off-hand legality. Armor slot legality comes directly from the
 definition. A later Accessory slot is outside this slice.
 
 Old state schemas and events remain frozen. The next engine version adds the new item and loadout
@@ -259,7 +259,7 @@ The first UI belongs inside the existing play/workshop surface. It shows the app
 material, form, base rank, current producible rank, and required material lot. It does not implement
 quality rolls, enchantment, repair, set bonuses, or hero-body compositing.
 
-Armour is forged one piece at a time. A future “forge complete set” control may submit four ordinary
+Armor is forged one piece at a time. A future “forge complete set” control may submit four ordinary
 piece recipes as a convenience; it must not create a fifth inventory object.
 
 ## 6. Drop flow
@@ -397,14 +397,14 @@ On a phone-sized viewport:
 5. acquire the deterministic drop fixture and confirm it behaves like the forged item.
 
 The test decides whether card/detail resolution is sufficient, whether definition names are clear,
-and whether one-piece Armour forging is understandable. It does not decide quality-specific visual
+and whether one-piece Armor forging is understandable. It does not decide quality-specific visual
 treatment.
 
 ## Non-goals
 
 - No new image generation or craftsmanship art variants.
 - No automatic promotion from future candidate runs.
-- No full Armour set as an inventory item.
+- No full Armor set as an inventory item.
 - No Tool, Accessory, Potion, Food, enchantment, repair, wear-balance, or set-bonus system.
 - No global equipment drop rates or complete reward tables.
 - No monster-derived material catalog in this implementation.

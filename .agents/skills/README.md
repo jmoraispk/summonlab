@@ -26,7 +26,7 @@ routes agents to the narrower skills; a partial update can leave that routing in
 - `summonlab-image-production` — produces one manifest-bound project image with bounded inspection,
   provenance, and collision-safe output ownership.
 - `summonlab-item-production` — adds or expands repository items, equipment classes, material
-  families, rank ladders, armour, weapons, consumables, loot, and item visuals.
+  families, rank ladders, armor, weapons, consumables, loot, and item visuals.
 - `summonlab-skill-creation` — creates or revises canonical Domain → Family → Skill branches while
   preserving mechanics and skill-icon catalog consistency.
 - `summonlab-skill-icon-production` — produces one assigned manifest-bound skill-icon raster with

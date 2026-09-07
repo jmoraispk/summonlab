@@ -1,0 +1,22 @@
+Create one polished seven-column EQUIPMENT DESIGN PROGRESSION SHEET for Summonlab. This is a direction reference, not seven final item assets.
+
+CLASS: Light Armor. Stable identity: Mobile hide- or scale-led protection comprising exactly Head, Torso, Legs, and Boots.
+POSE/CAMERA: Empty self-supporting full set in a consistent mild three-quarter front view; no mannequin or wearer.
+
+LAYOUT: one clean landscape 3:2 sheet, exactly seven evenly spaced full-object columns ordered left-to-right F, E, D, C, B, A, S. Put a small plain rank letter and material name below each column. No title, no legend, no lore text, no UI frame. Every object fully inside canvas with generous margins and no overlap. Midnight-charcoal studio background and restrained floor plane.
+
+PROGRESSION: F practical and appealing with minimal ornament; E sturdier and more deliberate; D refined professional; C bold silhouette with first supernatural construction cues; B visibly exceptional; A extraordinary geometry and ornament; S legendary controlled spectacle. Adjacent ranks must differ structurally at phone-thumbnail size. Palette alone is never the difference. Variation levers: Panels, scale direction, closures, layering, shoulder shape, and increasing material authority.
+
+MATERIAL COLUMNS:
+F — Coarse Hide: Earth brown, dusty tan, and soot-dark seams. Large overlapping hide panels, simple ties, crude stitching, and few hard fittings. None.
+E — Hard Leather: Deep chestnut, russet edges, and dark brown seams. Molded leather plates, reinforced seams, articulated lames, buckles, and fitted closures. None.
+D — Beast Scale: Smoky umber, gray-green, and bone-tan scale edges. Sorted scale rows on flexible backing, reinforced zones, tied edges, practical closures. None; biological durability is visible but grounded.
+C — Chitin: Obsidian brown, muted violet-black, bone edges, and dark red joint traces. Interlocking carapace plates, asymmetric biological curves, hooked overlaps, flexible dark joints. None beyond an uncanny grown precision.
+B — Drakescale: Deep ember red, soot-black, and warm bronze-gold scale ridges. Tight aerodynamic scale rows, reinforced crests, clawlike trim, heat-resistant layered joints. A few ember-warm seams suggest retained heat; no flames.
+A — Wyrmscale: Royal cobalt or deep crimson scales, black recesses, and luminous gold edge accents. Regal scale fields, pronounced crests, sweeping draconic panels, gold-bound joints, powerful silhouette. A restrained elemental gleam travels through a few scale edges; no breath effect.
+S — Ancient Dragon Scale: Obsidian dragon scales, molten gold fissures, ancient crimson undertones, and ivory horn accents. Monumental draconic plating, crownlike crests, horn-bound contours, grand interlocking scale architecture. Ancient inner fire glows through a few deep fissures; no flames, smoke, or creature body.
+ARMOR RULES: Each column is one complete empty self-supporting equipment set with exactly four readable components: Head, Torso, Legs, Boots. Mild three-quarter front view, matching camera and stance across all seven. Natural cavity shadows only. Absolutely no person, mannequin, body, face, hands, pose dummy, black void figure, or extra fifth component.
+
+STYLE: premium realistic-painterly dark fantasy equipment concept art, grounded medieval construction, crisp readable silhouettes, honest material response and wear, cold key light with restrained warm rim, high-end game inventory art. Use the attached Dagger progression only for escalation rhythm and the attached Steel cohort only for finish/material discipline. Do not reproduce their shapes, emblems, characters, text, or recognizable copyrighted designs.
+
+EXCLUDE: repeated identical geometry with color swaps, generic near-duplicates, extra objects, hands, wielders, mannequins, scenery, dramatic VFX, detached particles, full-object glow, illegible labels, watermarks, signatures, logos, crops, and recognizable copying.

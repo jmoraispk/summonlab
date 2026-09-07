@@ -108,7 +108,7 @@ export const SKILL_ICON_PILOT_TARGET_IDS = [
 	'craft:forging:ore-sense',
 	'craft:forging:simple-smithing',
 	'craft:forging:weaponsmithing',
-	'craft:forging:armoursmithing',
+	'craft:forging:armorsmithing',
 	'craft:forging:godsmithing'
 ] as const;
 

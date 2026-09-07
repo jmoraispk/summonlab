@@ -15,21 +15,21 @@
 	"revisionSource": {
 		"path": "assets/equipment/experiments/material-equipment-v3/candidates/e/wool/robes-torso-v3.png",
 		"sha256": "63838b523d2c51d7dd19915d7b1444e26027688dd268519420f085c550118c95",
-		"purpose": "First-pass Armour-piece candidate retained as immutable evidence; correct only the stated review issue."
+		"purpose": "First-pass Armor-piece candidate retained as immutable evidence; correct only the stated review issue."
 	},
 	"references": [
 		{
 			"path": "assets/equipment/experiments/material-equipment-v3/candidates/e/wool/robes-full-set-v3.png",
 			"sha256": "15a1e3b531a307d88b8d3850519979c4e1c8b1c41ed4e8af39867c76ee1f498a",
-			"purpose": "Owner-accepted full Armour set; authoritative source for piece reconstruction."
+			"purpose": "Owner-accepted full Armor set; authoritative source for piece reconstruction."
 		},
 		{
 			"path": "assets/equipment/experiments/material-equipment-v3/candidates/e/wool/robes-torso-v3.png",
 			"sha256": "63838b523d2c51d7dd19915d7b1444e26027688dd268519420f085c550118c95",
-			"purpose": "First-pass Armour-piece candidate retained as immutable evidence; correct only the stated review issue."
+			"purpose": "First-pass Armor-piece candidate retained as immutable evidence; correct only the stated review issue."
 		},
 		{
-			"path": "assets/equipment/experiments/material-equipment-v3/direction/class-progressions/robes-cloth-fibre-ranks-v3.png",
+			"path": "assets/equipment/experiments/material-equipment-v3/direction/class-progressions/robes-cloth-fiber-ranks-v3.png",
 			"sha256": "3f982275114ec66f36a3d22a4a18da4cd39a0467804c6e07ecb5e470954b9c3c",
 			"purpose": "Requires owner checkpoint 1 acceptance for rank escalation, silhouettes, finish, camera, and empty-set treatment."
 		},
@@ -41,16 +41,16 @@
 	],
 	"classification": "class-rule-violation",
 	"correction": "Render only the connected Wool Robes Torso garment. Remove any separate hood, cowl, collar, mantle, or headpiece that repeats the Head slot, and do not include Legs or Boots items.",
-	"prompt": "Render only the torso item from the accepted full set. Preserve its exact material, palette, silhouette language, trim, fastenings, wear, ornament, and slot boundary. Do not redesign it.\n\nCLASS DIRECTION: Cloth-led draped equipment comprising exactly Head, Torso, Legs, and Boots. Empty self-supporting full set in a consistent mild three-quarter front view; no mannequin, wearer, or black void figure. Use the accepted progression reference as the authoritative design for the E column while reconstructing it as a dedicated render. Preserve rank silhouette and distinctive structural cues; do not crop.\n\nMATERIAL BRIEF — Wool:\nPalette: Deep moss, warm gray, muted burgundy, and natural cream accents.\nValue: Soft middle values with deep fold shadows.\nSurface/wear: Dense fuzzy weave, pill-soft edges, compressed folds, and careful darning.\nConstruction: Layered warm panels, fitted mantle or hood, broad hems, braided ties, practical drape.\nSupernatural behavior: None.\nNeutral secondary materials: Plain leather, linen lining, wood toggles, and dull iron clasps.\nNeighbor distinction: Denser, warmer, and more tailored than Hemp Weave; less sleek and layered than Silk.\n\nOne isolated torso only; no other set pieces, body part, wearer, mannequin, or display stand.\n\nSTYLE/OUTPUT: premium realistic-painterly dark fantasy equipment inventory art; grounded construction; honest material response; cold key light, restrained warm rim, midnight-charcoal studio ground with restrained floor plane. One fully visible object centered on a 1024×1024 portrait-or-square canvas, about 8% margin and never below 5%; readable at 128px. No text, labels, UI, border, watermark, signature, scenery, extra objects, hands, wielder, detached particles, uncontrolled glow, or recognizable reference copying.\n\nThe accepted full-set source is the first and authoritative visual reference. Match it exactly.\n\nREVISION PASS 2. The attached first-pass piece candidate is immutable evidence. Preserve every successful source-faithful trait while changing only the audited defect.\n\nCorrect this exact audited issue: Render only the connected Wool Robes Torso garment. Remove any separate hood, cowl, collar, mantle, or headpiece that repeats the Head slot, and do not include Legs or Boots items.\n\nThe owner-accepted full set remains the first and authoritative reference. Return one new isolated torso candidate only. Do not make unrelated redesigns, add another Armour slot, add a body or mannequin, add text, or imitate recognizable copyrighted geometry.",
-	"promptSha256": "380edba0f62d6468862ae984f49823a5cfeb8c8ac5138a1ce41b5df640f2da6e",
+	"prompt": "Render only the torso item from the accepted full set. Preserve its exact material, palette, silhouette language, trim, fastenings, wear, ornament, and slot boundary. Do not redesign it.\n\nCLASS DIRECTION: Cloth-led draped equipment comprising exactly Head, Torso, Legs, and Boots. Empty self-supporting full set in a consistent mild three-quarter front view; no mannequin, wearer, or black void figure. Use the accepted progression reference as the authoritative design for the E column while reconstructing it as a dedicated render. Preserve rank silhouette and distinctive structural cues; do not crop.\n\nMATERIAL BRIEF — Wool:\nPalette: Deep moss, warm gray, muted burgundy, and natural cream accents.\nValue: Soft middle values with deep fold shadows.\nSurface/wear: Dense fuzzy weave, pill-soft edges, compressed folds, and careful darning.\nConstruction: Layered warm panels, fitted mantle or hood, broad hems, braided ties, practical drape.\nSupernatural behavior: None.\nNeutral secondary materials: Plain leather, linen lining, wood toggles, and dull iron clasps.\nNeighbor distinction: Denser, warmer, and more tailored than Hemp Weave; less sleek and layered than Silk.\n\nOne isolated torso only; no other set pieces, body part, wearer, mannequin, or display stand.\n\nSTYLE/OUTPUT: premium realistic-painterly dark fantasy equipment inventory art; grounded construction; honest material response; cold key light, restrained warm rim, midnight-charcoal studio ground with restrained floor plane. One fully visible object centered on a 1024×1024 portrait-or-square canvas, about 8% margin and never below 5%; readable at 128px. No text, labels, UI, border, watermark, signature, scenery, extra objects, hands, wielder, detached particles, uncontrolled glow, or recognizable reference copying.\n\nThe accepted full-set source is the first and authoritative visual reference. Match it exactly.\n\nREVISION PASS 2. The attached first-pass piece candidate is immutable evidence. Preserve every successful source-faithful trait while changing only the audited defect.\n\nCorrect this exact audited issue: Render only the connected Wool Robes Torso garment. Remove any separate hood, cowl, collar, mantle, or headpiece that repeats the Head slot, and do not include Legs or Boots items.\n\nThe owner-accepted full set remains the first and authoritative reference. Return one new isolated torso candidate only. Do not make unrelated redesigns, add another Armor slot, add a body or mannequin, add text, or imitate recognizable copyrighted geometry.",
+	"promptSha256": "49ec3fa6ee3f29097831ea9db404475791041ee7f4b41cb962c8ab95ea0bfb24",
 	"permittedOutputs": {
 		"candidatePath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-wool-robes-torso-v3/attempt-2/candidate.png",
 		"resultPath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-wool-robes-torso-v3/attempt-2/result.json"
 	},
 	"forbiddenActions": [
-		"overwrite the first-pass Armour-piece candidate or result",
+		"overwrite the first-pass Armor-piece candidate or result",
 		"write outside the attempt-scoped Equipment v3 revision directory",
-		"change another Armour slot or the owner-accepted full-set source",
+		"change another Armor slot or the owner-accepted full-set source",
 		"promote a candidate to approved or runtime state",
 		"edit shared catalogs, engine contracts, or another visual domain"
 	]

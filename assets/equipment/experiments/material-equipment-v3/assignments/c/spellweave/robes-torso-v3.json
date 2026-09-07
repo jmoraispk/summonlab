@@ -4,7 +4,7 @@
 	"targetId": "material-equipment-v3-spellweave-robes-torso-v3",
 	"immutable": true,
 	"classDirection": {
-		"path": "assets/equipment/experiments/material-equipment-v3/direction/class-progressions/robes-cloth-fibre-ranks-v3.png",
+		"path": "assets/equipment/experiments/material-equipment-v3/direction/class-progressions/robes-cloth-fiber-ranks-v3.png",
 		"sha256": "3f982275114ec66f36a3d22a4a18da4cd39a0467804c6e07ecb5e470954b9c3c",
 		"purpose": "Requires owner checkpoint 1 acceptance for rank escalation, silhouettes, finish, camera, and empty-set treatment."
 	},
@@ -20,7 +20,7 @@
 	"consistencySource": {
 		"path": "assets/equipment/experiments/material-equipment-v3/candidates/c/spellweave/robes-full-set-v3.png",
 		"sha256": "2583be932e05edf55d70caa5864f8441d172efa2882f101f62ef710a81e89448",
-		"purpose": "Owner-accepted full Armour set; authoritative source for piece reconstruction."
+		"purpose": "Owner-accepted full Armor set; authoritative source for piece reconstruction."
 	},
 	"prompt": "Render only the torso item from the accepted full set. Preserve its exact material, palette, silhouette language, trim, fastenings, wear, ornament, and slot boundary. Do not redesign it.\n\nCLASS DIRECTION: Cloth-led draped equipment comprising exactly Head, Torso, Legs, and Boots. Empty self-supporting full set in a consistent mild three-quarter front view; no mannequin, wearer, or black void figure. Use the accepted progression reference as the authoritative design for the C column while reconstructing it as a dedicated render. Preserve rank silhouette and distinctive structural cues; do not crop.\n\nMATERIAL BRIEF — Spellweave:\nPalette: Deep indigo, muted violet, charcoal, and narrow cyan-violet thread accents.\nValue: Dark rich folds with selective luminous stitching.\nSurface/wear: Fine resilient weave, precise hems, layered runic stitching, almost no fray.\nConstruction: Structured drape, geometric panels, inscribed borders, suspended-looking collars and cuffs.\nSupernatural behavior: A few stitched glyph paths emit a faint controlled light.\nNeutral secondary materials: Black leather, silver clasps, matte lining, and dark cord.\nNeighbor distinction: More self-structured and arcane than Layered Silk; less ethereal and nocturnal than Moonweave.\n\nOne isolated torso only; no other set pieces, body part, wearer, mannequin, or display stand.\n\nSTYLE/OUTPUT: premium realistic-painterly dark fantasy equipment inventory art; grounded construction; honest material response; cold key light, restrained warm rim, midnight-charcoal studio ground with restrained floor plane. One fully visible object centered on a 1024×1024 portrait-or-square canvas, about 8% margin and never below 5%; readable at 128px. No text, labels, UI, border, watermark, signature, scenery, extra objects, hands, wielder, detached particles, uncontrolled glow, or recognizable reference copying.\n\nThe accepted full-set source is the first and authoritative visual reference. Match it exactly.",
 	"promptSha256": "b85a9d3e104445d8b5eef251cd3946388ef5be13d965a6f389007bac2b4caa38",

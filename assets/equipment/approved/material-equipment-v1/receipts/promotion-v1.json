@@ -7,11 +7,11 @@
 	"authorization": {
 		"design": {
 			"path": "docs/superpowers/specs/2026-09-03-equipment-promotion-runtime-integration-design.md",
-			"sha256": "9e81d050551d959f27f00f65ff9318752579847a483f8f6e23e578befd97a874"
+			"sha256": "07fae0f17afc9b72f0ad7cf31bae3e7ae4ba6df2df48ab0958a6bc878014f188"
 		},
 		"implementationPlan": {
 			"path": "docs/superpowers/plans/2026-09-03-equipment-promotion-runtime-integration.md",
-			"sha256": "1b8d287a708ab68634b6aea4900d1976b2eeaadfdb784a0fd663f1cd93720fa3"
+			"sha256": "f5c1afdbfd0a3d7e9b2089a202531ce8099f3ba3088d1c192574e05ac9f153cb"
 		},
 		"approvalCommit": "46cd7e715e327e26ecd89829ad6826d8aaf7adf9"
 	},
@@ -19,33 +19,33 @@
 		"branch": "codex/equipment-promotion-integration",
 		"basisCommit": "43f0fd7475f687b15fc7104176736fb78760d451"
 	},
-	"planCanonicalSha256": "d2f4efa0a539520f3bb2f819518c6f35b3d74b9e23f33da8f0df8a8c243fc7ba",
+	"planCanonicalSha256": "a1689ef0b8ea4db142a38ecc058d39cd5e72d02b720738fabc4101ac0c6e2b6c",
 	"approvedManifest": {
 		"path": "assets/equipment/approved/material-equipment-v1/manifest.json",
-		"canonicalSha256": "3874e0b589b6f61c348620e955469813b96a08cedd9aeeef0c41488324f22b81"
+		"canonicalSha256": "ecb895016223cab3575b1f3480fe38b2de060a6967b1d75d6e09e52d704d1cff"
 	},
 	"sourceProposal": {
 		"path": "assets/equipment/experiments/material-equipment-v3/reviews/proposed-promotions/candidate-promotion-v1.json",
-		"canonicalSha256": "08720524e89abedbc8c41268ccfe327ba5b1e4fbd425ca7c3bfe3d01c9c5bd8b"
+		"canonicalSha256": "da210f113c350a4d08cad1b00677eaf57222cc79e03d531e02564eb12cd54e6f"
 	},
 	"checkpoints": {
 		"directions": {
 			"path": "assets/equipment/experiments/material-equipment-v3/checkpoints/checkpoint-1-directions.json",
-			"canonicalSha256": "50572df501e039722331bc0d0c2aadf037a9b5a83547905f7fcea50262d682f2"
+			"canonicalSha256": "f0c84d5c79e6986dd11fd51bb6e425d4c74da160885f9f7049f701c1d30ea24e"
 		},
 		"roots": {
 			"path": "assets/equipment/experiments/material-equipment-v3/checkpoints/checkpoint-2-roots.json",
-			"canonicalSha256": "ff2fde9c9904bd47604473f026356e02218505ba68236df76f9774ac85c98dcf"
+			"canonicalSha256": "641cdb72736b2e65cebf5fd86911e5b693535f9cb55f6d3f961370a0022a5f54"
 		},
-		"armourPieces": {
-			"path": "assets/equipment/experiments/material-equipment-v3/checkpoints/checkpoint-3-armour-pieces.json",
-			"canonicalSha256": "39ad1cb1fb5f8e3b7d872a80d527006e645008641bda75202033de16efc0d578"
+		"armorPieces": {
+			"path": "assets/equipment/experiments/material-equipment-v3/checkpoints/checkpoint-3-armor-pieces.json",
+			"canonicalSha256": "f2bab5974692e751e4926f5245463e81be29f82e870f91bfb85314c811f66a10"
 		}
 	},
 	"summary": {
 		"total": 161,
 		"items": 140,
-		"armourSetReferences": 21,
+		"armorSetReferences": 21,
 		"totalBytes": 224157513
 	}
 }

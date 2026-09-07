@@ -142,7 +142,7 @@ Variety is deliberately harder to obtain than repetition. It is the difference b
 | High raw repetition | **Economy** | Reduced mana cost |
 | Rapid successive use | **Timing** | Reduced wind-up and cast time |
 | Used while below a health threshold, or outnumbered | **Composure** | Potency rises as the hero's health falls |
-| Used against armoured or resistant targets | **Penetration** | Ignores a portion of mitigation |
+| Used against armored or resistant targets | **Penetration** | Ignores a portion of mitigation |
 | High proportion of weak-point and critical hits | **Keenness** | Increased critical rate and critical damage |
 | Practiced across many distinct contexts | **Adaptability** | Reduced penalty in unfamiliar conditions; broader valid targets |
 | Long solo repetition with no opponent | **Consistency** | Reduced variance; lower failure and fumble chance |
@@ -255,7 +255,7 @@ Skills are not confined to combat.
 
 | Family | Scope and optional labels |
 |---|---|
-| **Forging** | Weapons, armour, tools |
+| **Forging** | Weapons, armor, tools |
 | **Alchemy** | Potions, poisons, reagents |
 | **Cooking** | Food, duration buffs, morale |
 | **Gathering** | Harvesting, mining, foraging, skinning, animal handling, taming, and breeding |

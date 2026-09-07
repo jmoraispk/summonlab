@@ -176,8 +176,8 @@ Produced by two affinities standing in an overcoming relationship. Something is 
 |---|---|---|---|---|
 | **Mist** | Water ✕ Fire | Near-white grey | Scalding vapor, obscurement, concealment | **Shroud** — accuracy loss; breaks target lock |
 | **Lightning** | Fire ✕ Wind | Gold-violet | Discharge, instantaneity, the storm's own convection | **Shock** — interrupts casts; chains between nearby targets |
-| **Sand** | Wind ✕ Earth | Tan-ochre | Erosion, abrasion, the scouring storm | **Abrade** — armour shred plus blind |
-| **Rot** | Earth ✕ Water | Sickly green | Decay, disease, waterlogged ground | **Decay** — stacking degeneration that ignores armour |
+| **Sand** | Wind ✕ Earth | Tan-ochre | Erosion, abrasion, the scouring storm | **Abrade** — armor shred plus blind |
+| **Rot** | Earth ✕ Water | Sickly green | Decay, disease, waterlogged ground | **Decay** — stacking degeneration that ignores armor |
 
 ### Materials — from neutral pairs
 
@@ -185,7 +185,7 @@ Produced by two affinities with no quarrel. These are stable states of matter ra
 
 | Dual | From | Color | Character | Status |
 |---|---|---|---|---|
-| **Magma** | Fire ✕ Earth | Molten red-black | Liquid stone; crust over a burning core | **Melt** — destroys armour; denies ground |
+| **Magma** | Fire ✕ Earth | Molten red-black | Liquid stone; crust over a burning core | **Melt** — destroys armor; denies ground |
 | **Ice** | Water ✕ Wind | Pale cyan | Contraction, stillness, brittleness | **Freeze** — hard stop; bonus stagger taken while frozen |
 
 ### Where a dual sits on the cycle

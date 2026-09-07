@@ -38,7 +38,7 @@ command in combat. `Unarmed` appears only when a technique truly requires empty 
 | 24 | **Iron Body** | Unarmed | E | P | Vitality threshold, 5,000 hits taken | Standing mitigation while unarmed |
 | 25 | **Rising Kick** | Unarmed | E | A | Low Kick Expert | Launches the target; opens an air chain |
 | 26 | **Flowing Redirect** | Unarmed | D | A | Palm Block Master | Redirects an attack into another enemy |
-| 27 | **Focused Strike** | Unarmed | D | A | Combination Master, Spirit threshold | Damage passes through armour and barriers entirely |
+| 27 | **Focused Strike** | Unarmed | D | A | Combination Master, Spirit threshold | Damage passes through armor and barriers entirely |
 | 28 | **Hundred Hands** | Unarmed | D | A | Combination Master, Agility threshold | Rapid multi-hit; count scales with attack speed |
 | 29 | **Diamond Body** | Unarmed | C | St | Iron Body Master | Heavy mitigation while held; no weapons may be used |
 | 30 | **One Inch** | Unarmed | C | A | Focused Strike Master, 50,000 punches | Full damage delivered from no distance at all |

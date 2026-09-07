@@ -1,0 +1,71 @@
+{
+	"schemaVersion": "equipment-armor-piece-first-pass-audit-v1",
+	"auditId": "equipment-v3-armor-piece-first-pass-audit-v1",
+	"auditedAt": "2026-09-03T18:06:27Z",
+	"auditedBy": "equipment-production-audit",
+	"scope": {
+		"expectedTargets": 84,
+		"persistedCandidates": 79,
+		"acceptedWithoutRevision": 56,
+		"revisionTargets": 28
+	},
+	"decisionRule": "Each Armor piece must remain source-faithful to its owner-accepted full set while containing exactly one decoupled slot. Because Boots are separate, Legs must stop above footwear; Torso must not repeat Head or include a detached Legs item.",
+	"withheldFirstPasses": [
+		{
+			"targetId": "material-equipment-v3-hard-leather-light-armor-legs-v3",
+			"reason": "Both first-pass provider outputs crossed the Legs/Boots boundary, so no candidate or result was persisted."
+		},
+		{
+			"targetId": "material-equipment-v3-drakescale-light-armor-torso-v3",
+			"reason": "The first-pass provider output contained more than the Torso slot, so no candidate or result was persisted."
+		},
+		{
+			"targetId": "material-equipment-v3-drakescale-light-armor-legs-v3",
+			"reason": "The first-pass provider output crossed the Legs/Boots boundary, so no candidate or result was persisted."
+		},
+		{
+			"targetId": "material-equipment-v3-starmetal-heavy-armor-legs-v3",
+			"reason": "The first-pass provider output crossed the Legs/Boots boundary, so no candidate or result was persisted."
+		},
+		{
+			"targetId": "material-equipment-v3-sunsteel-heavy-armor-legs-v3",
+			"reason": "The first-pass provider output crossed the Legs/Boots boundary, so no candidate or result was persisted."
+		}
+	],
+	"revisionFindings": {
+		"legsIncludeFootwear": [
+			"material-equipment-v3-bronze-heavy-armor-legs-v3",
+			"material-equipment-v3-iron-heavy-armor-legs-v3",
+			"material-equipment-v3-steel-heavy-armor-legs-v3",
+			"material-equipment-v3-blacksteel-heavy-armor-legs-v3",
+			"material-equipment-v3-skyiron-heavy-armor-legs-v3",
+			"material-equipment-v3-starmetal-heavy-armor-legs-v3",
+			"material-equipment-v3-sunsteel-heavy-armor-legs-v3",
+			"material-equipment-v3-hard-leather-light-armor-legs-v3",
+			"material-equipment-v3-beast-scale-light-armor-legs-v3",
+			"material-equipment-v3-chitin-light-armor-legs-v3",
+			"material-equipment-v3-drakescale-light-armor-legs-v3",
+			"material-equipment-v3-wyrmscale-light-armor-legs-v3",
+			"material-equipment-v3-ancient-dragon-scale-light-armor-legs-v3",
+			"material-equipment-v3-layered-silk-robes-legs-v3",
+			"material-equipment-v3-moonweave-robes-legs-v3",
+			"material-equipment-v3-starcloth-robes-legs-v3",
+			"material-equipment-v3-fateweave-robes-legs-v3"
+		],
+		"torsoIncludesDetachedLowerSlot": [
+			"material-equipment-v3-beast-scale-light-armor-torso-v3",
+			"material-equipment-v3-drakescale-light-armor-torso-v3",
+			"material-equipment-v3-wyrmscale-light-armor-torso-v3",
+			"material-equipment-v3-ancient-dragon-scale-light-armor-torso-v3"
+		],
+		"torsoRepeatsHeadSlot": [
+			"material-equipment-v3-hemp-weave-robes-torso-v3",
+			"material-equipment-v3-wool-robes-torso-v3",
+			"material-equipment-v3-layered-silk-robes-torso-v3",
+			"material-equipment-v3-spellweave-robes-torso-v3",
+			"material-equipment-v3-moonweave-robes-torso-v3",
+			"material-equipment-v3-starcloth-robes-torso-v3",
+			"material-equipment-v3-fateweave-robes-torso-v3"
+		]
+	}
+}

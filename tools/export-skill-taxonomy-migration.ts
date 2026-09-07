@@ -167,7 +167,7 @@ function mapRow(row: LegacySkillRow): SkillMigrationRecord {
 		};
 
 	if (row.section === 'Protection') {
-		if (['Armour Training', 'Heavy Bearing', 'Fortress', 'Second Skin'].includes(row.name))
+		if (['Armor Training', 'Heavy Bearing', 'Fortress', 'Second Skin'].includes(row.name))
 			return { ...row, disposition: 'delete', rationale: EQUIPMENT_PROGRESSION_DELETE_RATIONALE };
 		if (row.name === 'Punishment')
 			return {
@@ -252,7 +252,7 @@ function mapRow(row: LegacySkillRow): SkillMigrationRecord {
 				labels: [{ namespace: 'Equipment', value: 'Halberd' }]
 			},
 			replacementRequires: 'Hold a halberd',
-			replacementEffect: 'Damage bonus with halberds; small armour-shred chance. **Foundation.**'
+			replacementEffect: 'Damage bonus with halberds; small armor-shred chance. **Foundation.**'
 		};
 
 	const halberdPrerequisites: Record<string, string> = {
@@ -565,7 +565,7 @@ function mapRow(row: LegacySkillRow): SkillMigrationRecord {
 	if (
 		[
 			'Enchantment:Weapon Oil',
-			'Enchantment:Armour Imbuing',
+			'Enchantment:Armor Imbuing',
 			'Enchantment:Elemental Attunement'
 		].includes(source)
 	)

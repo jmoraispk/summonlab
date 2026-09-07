@@ -13,7 +13,7 @@ function fixtureInput() {
 		approvedManifest: {
 			schemaVersion: 'equipment-approved-source-manifest-v1' as const,
 			catalogId: 'material-equipment-v1' as const,
-			summary: { total: 161, items: 140, armourSetReferences: 21, totalBytes: 1 }
+			summary: { total: 161, items: 140, armorSetReferences: 21, totalBytes: 1 }
 		},
 		approvedManifestByteSha256: HASH,
 		approvedManifestCanonicalSha256: 'b'.repeat(64),
@@ -24,7 +24,7 @@ function fixtureInput() {
 			summary: {
 				bundleCount: 140,
 				assetCount: 280,
-				armourSetReferenceCount: 0,
+				armorSetReferenceCount: 0,
 				cardBytes: 2,
 				detailBytes: 3,
 				totalBytes: 5
@@ -58,7 +58,7 @@ describe('equipment integration report', () => {
 		expect(report.counts).toStrictEqual({
 			approvedSources: 161,
 			equippableSources: 140,
-			armourSetReferences: 21,
+			armorSetReferences: 21,
 			runtimeBundles: 140,
 			runtimeAssets: 280,
 			contentDefinitions: 140

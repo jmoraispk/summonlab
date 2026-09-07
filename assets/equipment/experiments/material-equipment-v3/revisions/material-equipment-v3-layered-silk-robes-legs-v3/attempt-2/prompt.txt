@@ -21,4 +21,4 @@ REVISION PASS 2. The attached first-pass piece candidate is immutable evidence. 
 
 Correct this exact audited issue: Render only the Layered Silk Robes Legs slot: waistband with lower skirt, trousers, or draped leg panels from the accepted set. Remove all boots, shoes, and detached extra items; stop cleanly above the Boots slot.
 
-The owner-accepted full set remains the first and authoritative reference. Return one new isolated legs candidate only. Do not make unrelated redesigns, add another Armour slot, add a body or mannequin, add text, or imitate recognizable copyrighted geometry.
+The owner-accepted full set remains the first and authoritative reference. Return one new isolated legs candidate only. Do not make unrelated redesigns, add another Armor slot, add a body or mannequin, add text, or imitate recognizable copyrighted geometry.
