@@ -392,13 +392,60 @@ describe('American English migration planning', () => {
 		expect(plan.unownedIntegrityBindings).toEqual([
 			{
 				path: 'records/manifest.json',
-				reasons: ['contentHash']
+				reasons: [
+					'unowned-binding /contentHash: No registered integrity owner matches this binding'
+				]
 			}
+		]);
+	});
+
+	it('consumes the integrity registry for an explicitly owned runtime binding', async () => {
+		const behavior = retired('behavior');
+		const repository = await makeRepository({
+			'packages/engine/src/fixture.ts': `export const ${behavior}Fixture = { contentHash: '${'a'.repeat(64)}' };\n`
+		});
+
+		const plan = await planAmericanEnglishMigration({
+			repositoryRoot: repository.root,
+			baselineCommit: repository.baseline
+		});
+
+		expect(plan.unownedIntegrityBindings).toEqual([]);
+		expect(plan.integrityOwners).toEqual([
+			expect.objectContaining({
+				id: 'runtime-and-engine',
+				bindingCount: 1,
+				pathCount: 1,
+				writeCommand: expect.stringContaining('export:playtest-release'),
+				checkCommand: expect.stringContaining('validate:playtest-release')
+			})
 		]);
 	});
 });
 
 describe('American English transactional application', () => {
+	it('records the registered integrity owner on each successor receipt entry', async () => {
+		const behavior = retired('behavior');
+		const repository = await makeRepository({
+			'packages/engine/src/fixture.ts': `export const ${behavior}Fixture = { contentHash: '${'a'.repeat(64)}' };\n`
+		});
+		const plan = await planAmericanEnglishMigration({
+			repositoryRoot: repository.root,
+			baselineCommit: repository.baseline
+		});
+		const receiptPath = path.join(tmpdir(), `owned-successor-${process.pid}.json`);
+
+		const receipt = await applyAmericanEnglishMigration(plan, {
+			repositoryRoot: repository.root,
+			receiptPath
+		});
+
+		expect(receipt.ownerCounts).toEqual({ 'runtime-and-engine': 1 });
+		expect(receipt.files).toEqual([
+			expect.objectContaining({ ownerId: 'runtime-and-engine', unchangedBinary: false })
+		]);
+	});
+
 	it('recomputes the full preflight and rejects collision or integrity drift before journaling', async () => {
 		const gray = retired('gray');
 		const behavior = retired('behavior');

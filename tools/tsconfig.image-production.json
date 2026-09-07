@@ -8,10 +8,15 @@
 		"types": ["node", "vitest/globals"]
 	},
 	"include": [
+		"american-english-equipment-successors.ts",
+		"american-english-integrity.ts",
+		"american-english-integrity.spec.ts",
 		"american-english-migration.ts",
 		"american-english-migration.spec.ts",
 		"american-english-policy.ts",
 		"american-english-policy.spec.ts",
+		"american-english-runtime-successors.ts",
+		"american-english-visual-successors.ts",
 		"check-american-english.ts",
 		"family-affinity-production-lib.ts",
 		"family-affinity-production-lib.spec.ts",

@@ -8,6 +8,8 @@
 		"types": ["node"]
 	},
 	"include": [
+		"american-english-integrity.ts",
+		"american-english-runtime-successors.ts",
 		"export-playtest-release.ts",
 		"package-playtest-release.ts",
 		"playtest-package-lib.ts",

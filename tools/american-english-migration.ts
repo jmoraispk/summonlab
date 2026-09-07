@@ -23,6 +23,11 @@ import {
 	type AmericanEnglishViolation,
 	auditTrackedTree
 } from './american-english-policy.js';
+import {
+	classifyIntegrityBindings,
+	type IntegrityOwnerPlan,
+	type TrackedTreeSnapshot
+} from './american-english-integrity.js';
 
 export interface IntegrityBindingProblem {
 	readonly path: string;
@@ -48,6 +53,7 @@ export interface AmericanEnglishMigrationPlan {
 		readonly sources: readonly string[];
 	}[];
 	readonly unownedIntegrityBindings: readonly IntegrityBindingProblem[];
+	readonly integrityOwners: readonly IntegrityOwnerPlan[];
 	readonly previousReceiptHash: string | null;
 	readonly inventoryFingerprint: string;
 }
@@ -65,6 +71,7 @@ export interface AmericanEnglishMigrationReceiptFile {
 	readonly successorPathHash: string;
 	readonly successorBlobId: string;
 	readonly unchangedBinary: boolean;
+	readonly ownerId: 'migration-planner' | IntegrityOwnerPlan['id'];
 }
 
 export interface AmericanEnglishMigrationReceipt {
@@ -111,16 +118,6 @@ interface ValidatedReceipt {
 }
 
 const POLICY_VERSION = 1 as const;
-const integrityMarkers = [
-	'canonicalHash',
-	'checksum',
-	'contentHash',
-	'manifestHash',
-	'promptHash',
-	'sha256',
-	'sourceHash'
-] as const;
-
 function compareCodepoints(left: string, right: string): number {
 	return left < right ? -1 : left > right ? 1 : 0;
 }
@@ -379,21 +376,32 @@ async function baselineBlobMap(
 	return blobs;
 }
 
-async function collectUnownedIntegrityBindings(
+async function collectIntegritySnapshot(
 	repositoryRoot: string,
-	affectedTextPaths: readonly string[]
-): Promise<IntegrityBindingProblem[]> {
-	const problems: IntegrityBindingProblem[] = [];
-	for (const repositoryPath of affectedTextPaths) {
+	affectedPaths: readonly string[],
+	binary: ReadonlyMap<string, boolean>,
+	expectedBinaryBlobs: ReadonlyMap<string, string>,
+	index: ReadonlyMap<string, { readonly mode: string; readonly blobId: string }>
+): Promise<TrackedTreeSnapshot> {
+	const entries: TrackedTreeSnapshot['entries'][number][] = [];
+	for (const repositoryPath of affectedPaths) {
 		const absolutePath = path.join(repositoryRoot, ...repositoryPath.split('/'));
 		const status = await lstat(absolutePath);
-		const source = status.isSymbolicLink()
-			? await readlink(absolutePath)
-			: (await readFile(absolutePath)).toString('utf8');
-		const reasons = integrityMarkers.filter((marker) => source.includes(marker));
-		if (reasons.length > 0) problems.push({ path: repositoryPath, reasons });
+		const bytes = status.isSymbolicLink()
+			? Buffer.from(await readlink(absolutePath))
+			: await readFile(absolutePath);
+		const isBinary = binary.get(repositoryPath) ?? false;
+		const expectedBinaryBlob = expectedBinaryBlobs.get(repositoryPath);
+		entries.push({
+			path: repositoryPath,
+			bytes,
+			binary: isBinary,
+			...(isBinary && expectedBinaryBlob !== undefined
+				? { binaryChanged: index.get(repositoryPath)?.blobId !== expectedBinaryBlob }
+				: {})
+		});
 	}
-	return problems.sort((left, right) => compareCodepoints(left.path, right.path));
+	return { entries };
 }
 
 export async function planAmericanEnglishMigration(
@@ -468,12 +476,37 @@ export async function planAmericanEnglishMigration(
 		.filter(({ violationCount }) => violationCount > 0)
 		.sort((left, right) => compareCodepoints(left.path, right.path));
 	for (const { path: source } of textEdits) resolveSourceBlob(source);
-	const affectedTextPaths = [
+	const affectedPaths = [
 		...new Set([
 			...textEdits.map(({ path: repositoryPath }) => repositoryPath),
-			...pathMoves.filter(({ binary: isBinary }) => !isBinary).map(({ source }) => source)
+			...pathMoves.map(({ source }) => source)
 		])
 	].sort(compareCodepoints);
+	const migrationProjection = {
+		textEdits,
+		pathMoves: pathMoves.sort((left, right) => compareCodepoints(left.source, right.source))
+	};
+	const integrity = await classifyIntegrityBindings(
+		await collectIntegritySnapshot(
+			repositoryRoot,
+			affectedPaths,
+			binary,
+			new Map(pathMoves.map(({ source, sourceBlobId }) => [source, sourceBlobId])),
+			index
+		),
+		migrationProjection
+	);
+	const unownedIntegrityBindings = [...new Set(integrity.problems.map(({ path }) => path))]
+		.sort(compareCodepoints)
+		.map((problemPath) => ({
+			path: problemPath,
+			reasons: integrity.problems
+				.filter(({ path: candidatePath }) => candidatePath === problemPath)
+				.map(
+					({ code, jsonPointer, message }) =>
+						`${code}${jsonPointer.length === 0 ? '' : ` ${jsonPointer}`}: ${message}`
+				)
+		}));
 
 	const planMaterial: Omit<AmericanEnglishMigrationPlan, 'inventoryFingerprint'> = {
 		baselineCommit,
@@ -481,12 +514,10 @@ export async function planAmericanEnglishMigration(
 		ruleIds,
 		roots,
 		textEdits,
-		pathMoves: pathMoves.sort((left, right) => compareCodepoints(left.source, right.source)),
+		pathMoves: migrationProjection.pathMoves,
 		collisions,
-		unownedIntegrityBindings: await collectUnownedIntegrityBindings(
-			repositoryRoot,
-			affectedTextPaths
-		),
+		unownedIntegrityBindings,
+		integrityOwners: integrity.ownerPlans,
 		previousReceiptHash: previousReceipt?.receiptHash ?? null
 	};
 	return { ...planMaterial, inventoryFingerprint: fingerprintPlanMaterial(planMaterial) };
@@ -670,6 +701,9 @@ async function readPreviousReceipt(
 			!isRecord(file) ||
 			!isObjectId(file.sourceBlobId) ||
 			!isObjectId(file.successorBlobId) ||
+			!['equipment', 'migration-planner', 'runtime-and-engine', 'visual-production'].includes(
+				String(file.ownerId)
+			) ||
 			typeof file.successorPathHash !== 'string' ||
 			!/^[0-9a-f]{64}$/u.test(file.successorPathHash) ||
 			typeof file.unchangedBinary !== 'boolean' ||
@@ -927,6 +961,9 @@ export async function applyAmericanEnglishMigration(
 		const successorFiles = new Map<string, AmericanEnglishMigrationReceiptFile>(
 			previousReceipt?.receipt.files.map((file) => [file.successorPathHash, file]) ?? []
 		);
+		const ownerByPath = new Map(
+			plan.integrityOwners.flatMap((owner) => owner.paths.map((path) => [path, owner.id] as const))
+		);
 		for (const { source, destination, sourceBlobId, binary } of plannedFiles) {
 			const successorBlobId = indexAfter.get(destination)?.blobId;
 			if (successorBlobId === undefined) {
@@ -938,14 +975,22 @@ export async function applyAmericanEnglishMigration(
 				sourceBlobId,
 				successorPathHash,
 				successorBlobId,
-				unchangedBinary: binary && indexBefore.get(source)?.blobId === successorBlobId
+				unchangedBinary: binary && indexBefore.get(source)?.blobId === successorBlobId,
+				ownerId: ownerByPath.get(source) ?? 'migration-planner'
 			});
 		}
+		const ownerCountsById = [...successorFiles.values()].reduce((counts, { ownerId }) => {
+			counts.set(ownerId, (counts.get(ownerId) ?? 0) + 1);
+			return counts;
+		}, new Map<string, number>());
+		const ownerCounts = Object.fromEntries(
+			[...ownerCountsById.entries()].sort(([left], [right]) => compareCodepoints(left, right))
+		);
 		const receipt: AmericanEnglishMigrationReceipt = {
 			baselineCommit: plan.baselineCommit,
 			policyVersion: POLICY_VERSION,
 			ruleCounts,
-			ownerCounts: { 'migration-planner': successorFiles.size },
+			ownerCounts,
 			files: [...successorFiles.values()].sort((left, right) =>
 				compareCodepoints(left.successorPathHash, right.successorPathHash)
 			)
