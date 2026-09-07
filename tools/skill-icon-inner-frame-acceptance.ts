@@ -157,12 +157,14 @@ async function assertBoundFile(
 }
 
 async function deriveAcceptance(repositoryRoot: string): Promise<SkillIconInnerFrameAcceptance> {
-	const [v10Bytes, v12Bytes, cleanupManifestBytes] = await Promise.all([
+	const [v10Bytes, v11Bytes, v12Bytes, cleanupManifestBytes] = await Promise.all([
 		regularBytes(repositoryRoot, V10_PATH),
+		regularBytes(repositoryRoot, `${CLEANUP_ROOT}/review/v11-inner-frame-regeneration/report.json`),
 		regularBytes(repositoryRoot, V12_PATH),
 		regularBytes(repositoryRoot, CLEANUP_MANIFEST_PATH)
 	]);
 	const v10 = record(parseJson(v10Bytes, 'V10 report'), 'V10 report');
+	const v11 = record(parseJson(v11Bytes, 'V11 report'), 'V11 report');
 	const v12 = record(parseJson(v12Bytes, 'V12 report'), 'V12 report');
 	const cleanupManifest = record(
 		parseJson(cleanupManifestBytes, 'cleanup manifest'),
@@ -249,8 +251,46 @@ async function deriveAcceptance(repositoryRoot: string): Promise<SkillIconInnerF
 		throw new Error('Unexpected V12 input authority path');
 	await Promise.all([
 		assertBoundFile(repositoryRoot, v12Geometry, 'V12 geometry'),
-		assertBoundFile(repositoryRoot, priorReview, 'V12 prior review')
+		Promise.resolve(assertHash(v11Bytes, priorReview, 'V12 prior review'))
 	]);
+	if (
+		v11.schemaVersion !== 'skill-icon-inner-frame-regeneration-review-v1' ||
+		v11.status !== 'owner-approved-regeneration-review-not-promoted'
+	)
+		throw new Error('Unexpected V11 inner-frame review authority');
+	const v11ByTarget = new Map<
+		string,
+		{
+			readonly comparisonBaseline: Binding;
+			readonly source: Binding;
+			readonly reference: Binding;
+			readonly frame: Binding;
+		}
+	>();
+	for (const value of array(v11.records, 'V11 records')) {
+		const entry = record(value, 'V11');
+		const targetId = string(entry.targetId, 'V11 target ID');
+		if (v11ByTarget.has(targetId)) throw new Error(`Duplicate V11 target ID: ${targetId}`);
+		const source = record(entry.source, 'V11 source');
+		v11ByTarget.set(targetId, {
+			comparisonBaseline: {
+				path: string(entry.candidatePath, 'V11 candidate path'),
+				contentHash: string(entry.candidateHash, 'V11 candidate hash')
+			},
+			source: {
+				path: string(entry.sourcePath, 'V11 source path'),
+				contentHash: string(source.contentHash, 'V11 source hash')
+			},
+			reference: {
+				path: string(entry.referencePath, 'V11 reference path'),
+				contentHash: string(entry.referenceHash, 'V11 reference hash')
+			},
+			frame: {
+				path: string(entry.framePath, 'V11 frame path'),
+				contentHash: string(entry.frameHash, 'V11 frame hash')
+			}
+		});
+	}
 	const sequence = record(v12.sequence, 'V12 sequence');
 	if (sequence.mode !== 'sequential') throw new Error('Unexpected V12 sequence mode');
 	const executionOrder = array(sequence.executionOrder, 'V12 execution order').map((entry) =>
@@ -294,6 +334,60 @@ async function deriveAcceptance(repositoryRoot: string): Promise<SkillIconInnerF
 		};
 		if (v12Baseline.path !== baseline.path || v12Baseline.contentHash !== baseline.contentHash)
 			throw new Error(`V12 baseline binding drift for ${targetId}`);
+		const v11Record = v11ByTarget.get(targetId);
+		if (!v11Record) throw new Error(`Missing V11 record for ${targetId}`);
+		const frame = {
+			path: string(entry.framePath, 'V12 frame path'),
+			contentHash: string(entry.frameHash, 'V12 frame hash')
+		};
+		if (frame.path !== v11Record.frame.path || frame.contentHash !== v11Record.frame.contentHash)
+			throw new Error(`V12 frame binding drift for ${targetId}`);
+		await assertBoundFile(repositoryRoot, frame, 'V12 frame');
+		const comparisonBaseline = {
+			path: string(entry.comparisonBaselinePath, 'V12 comparison baseline path'),
+			contentHash: string(entry.comparisonBaselineHash, 'V12 comparison baseline hash')
+		};
+		if (
+			comparisonBaseline.path !== v11Record.comparisonBaseline.path ||
+			comparisonBaseline.contentHash !== v11Record.comparisonBaseline.contentHash
+		)
+			throw new Error(`V12 comparison baseline binding drift for ${targetId}`);
+		await assertBoundFile(repositoryRoot, comparisonBaseline, 'V12 comparison baseline');
+		const sourceBinding = record(entry.sourceBinding, 'V12 source binding');
+		const source = record(entry.source, 'V12 source');
+		if (
+			source.width !== 1254 ||
+			source.height !== 1254 ||
+			source.alphaMode !== 'rgb' ||
+			sourceBinding.matches !== true
+		)
+			throw new Error(`V12 source envelope drift for ${targetId}`);
+		const sourceRaster = {
+			path: string(entry.sourcePath, 'V12 source path'),
+			contentHash: string(source.contentHash, 'V12 source hash')
+		};
+		const v11SourceBinding = {
+			path: string(sourceBinding.v11Path, 'V12 V11 source path'),
+			contentHash: string(sourceBinding.v11ContentHash, 'V12 V11 source hash')
+		};
+		if (
+			sourceRaster.path !== v11Record.source.path ||
+			sourceRaster.contentHash !== v11Record.source.contentHash ||
+			v11SourceBinding.path !== v11Record.source.path ||
+			v11SourceBinding.contentHash !== v11Record.source.contentHash
+		)
+			throw new Error(`V12 source binding drift for ${targetId}`);
+		await assertBoundFile(repositoryRoot, sourceRaster, 'V12 source');
+		const reference = {
+			path: string(entry.referencePath, 'V12 reference path'),
+			contentHash: string(entry.referenceHash, 'V12 reference hash')
+		};
+		if (
+			reference.path !== v11Record.reference.path ||
+			reference.contentHash !== v11Record.reference.contentHash
+		)
+			throw new Error(`V12 reference binding drift for ${targetId}`);
+		await assertBoundFile(repositoryRoot, reference, 'V12 reference');
 		const candidate = {
 			path: string(entry.candidatePath, 'V12 candidate path'),
 			contentHash: string(entry.candidateHash, 'V12 candidate hash')

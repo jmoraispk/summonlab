@@ -20,6 +20,7 @@ const cleanupManifestPath = `${cleanupRoot}/manifest.json`;
 const geometryPath = 'assets/wiki/skills/icon-production-v1/geometry-v2.json';
 const backingPath =
 	'assets/wiki/skills/icon-production-v1/candidates/references/charcoal-forged-stone-v6.png';
+const framePath = `${cleanupRoot}/review/v9-complete-frame-rollout/frames/rarity-frame-e-v11-review.png`;
 const approvedTargets = [
 	'martial:blade:piercing-thrust',
 	'martial:polearm:keep-away',
@@ -97,11 +98,10 @@ async function fixtureRepository(): Promise<{
 
 	const geometry = Buffer.from('{"canvas":{"width":1024,"height":1024}}\n');
 	const backing = Buffer.from('fixture backing');
-	const v11 = Buffer.from('{"schemaVersion":"fixture-v11"}\n');
 	await Promise.all([
 		writeRepositoryFile(root, geometryPath, geometry),
 		writeRepositoryFile(root, backingPath, backing),
-		writeRepositoryFile(root, v11Path, v11)
+		writeRepositoryFile(root, framePath, 'fixture canonical frame')
 	]);
 
 	const v10 = {
@@ -116,15 +116,47 @@ async function fixtureRepository(): Promise<{
 			classification: index < 23 ? 'clear' : 'borderline'
 		}))
 	};
+	const v11Records = [];
 	const v12Records = [];
 	for (const [index, target] of accepted.entries()) {
 		const candidatePath = `${cleanupRoot}/review/v12-inner-frame-regeneration-scale/candidates/${slug(target)}.png`;
+		const comparisonBaselinePath = `${cleanupRoot}/review/v11-inner-frame-regeneration/candidates/${slug(target)}.png`;
+		const sourcePath = `${cleanupRoot}/provider-sources/${slug(target)}-v1-frameless-source.png`;
+		const referenceTarget =
+			target === 'martial:body:called-shot' ? 'martial:body:sidestep' : target;
+		const comparisonBaseline = Buffer.from(`comparison:${target}`);
+		const source = Buffer.from(`source:${target}`);
 		const candidate = Buffer.from(`candidate:${target}`);
-		await writeRepositoryFile(root, candidatePath, candidate);
+		await Promise.all([
+			writeRepositoryFile(root, candidatePath, candidate),
+			writeRepositoryFile(root, comparisonBaselinePath, comparisonBaseline),
+			writeRepositoryFile(root, sourcePath, source)
+		]);
+		v11Records.push({
+			targetId: target,
+			candidatePath: comparisonBaselinePath,
+			candidateHash: sha256(comparisonBaseline),
+			sourcePath,
+			source: { contentHash: sha256(source) },
+			referencePath: baselineByTarget.get(referenceTarget)!.path,
+			referenceHash: baselineByTarget.get(referenceTarget)!.hash,
+			framePath,
+			frameHash: sha256('fixture canonical frame')
+		});
 		v12Records.push({
 			targetId: target,
+			rank: 'E',
 			currentPath: baselineByTarget.get(target)!.path,
 			currentHash: baselineByTarget.get(target)!.hash,
+			comparisonBaselinePath,
+			comparisonBaselineHash: sha256(comparisonBaseline),
+			sourceBinding: { v11Path: sourcePath, v11ContentHash: sha256(source), matches: true },
+			referencePath: baselineByTarget.get(referenceTarget)!.path,
+			referenceHash: baselineByTarget.get(referenceTarget)!.hash,
+			sourcePath,
+			source: { width: 1254, height: 1254, alphaMode: 'rgb', contentHash: sha256(source) },
+			framePath,
+			frameHash: sha256('fixture canonical frame'),
 			candidatePath,
 			candidateHash: sha256(candidate),
 			apertureCoverage: { expectedPixels: 12, coveredPixels: 12, complete: true },
@@ -138,6 +170,17 @@ async function fixtureRepository(): Promise<{
 			sequence: index + 1
 		});
 	}
+	const v11 = Buffer.from(
+		`${JSON.stringify(
+			{
+				schemaVersion: 'skill-icon-inner-frame-regeneration-review-v1',
+				status: 'owner-approved-regeneration-review-not-promoted',
+				records: v11Records
+			},
+			null,
+			'\t'
+		)}\n`
+	);
 	const v12 = {
 		schemaVersion: 'skill-icon-inner-frame-regeneration-review-v2',
 		status: 'owner-approved-less-zoom-review-not-promoted',
@@ -174,6 +217,7 @@ async function fixtureRepository(): Promise<{
 	};
 	await Promise.all([
 		writeRepositoryFile(root, v10Path, `${JSON.stringify(v10, null, '\t')}\n`),
+		writeRepositoryFile(root, v11Path, v11),
 		writeRepositoryFile(root, v12Path, `${JSON.stringify(v12, null, '\t')}\n`),
 		writeRepositoryFile(
 			root,
@@ -271,6 +315,49 @@ describe('skill-icon inner-frame acceptance', () => {
 				async (root) => {
 					const report = await readJson(root, v12Path);
 					(report.records as Record<string, unknown>[])[0]!.candidateHash = '0'.repeat(64);
+					await replaceJson(root, v12Path, report);
+				}
+			],
+			...(
+				[
+					['frame', 'framePath'],
+					['source', 'sourcePath'],
+					['V11 source binding', 'sourceBinding.v11Path'],
+					['V11 comparison baseline', 'comparisonBaselinePath'],
+					['reference', 'referencePath']
+				] as const
+			).map(
+				([label, binding]) =>
+					[
+						`a drifted V12 ${label} raster`,
+						async (root: string) => {
+							const report = await readJson(root, v12Path);
+							const record = (report.records as Record<string, unknown>[])[0]!;
+							const repositoryPath = binding.includes('.')
+								? ((record.sourceBinding as Record<string, unknown>).v11Path as string)
+								: (record[binding] as string);
+							await writeRepositoryFile(root, repositoryPath, `drifted ${label} bytes`);
+						}
+					] as const
+			),
+			[
+				'a mutated V12 frame hash',
+				async (root) => {
+					const report = await readJson(root, v12Path);
+					(report.records as Record<string, unknown>[])[0]!.frameHash = '0'.repeat(64);
+					await replaceJson(root, v12Path, report);
+				}
+			],
+			[
+				'a mutated V12 V11 source-binding hash',
+				async (root) => {
+					const report = await readJson(root, v12Path);
+					(
+						(report.records as Record<string, unknown>[])[0]!.sourceBinding as Record<
+							string,
+							unknown
+						>
+					).v11ContentHash = '0'.repeat(64);
 					await replaceJson(root, v12Path, report);
 				}
 			],
