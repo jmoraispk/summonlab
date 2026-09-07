@@ -25,6 +25,7 @@ import {
 	FamilyAffinityReviewAssignmentSchema,
 	FamilyAffinityReviewReceiptSchema,
 	FamilyAffinityTargetSchema,
+	FamilyPacketSchema,
 	familyAffinitySourcePacketBinding,
 	PRODUCTION_AFFINITIES,
 	bridgeAttemptPaths,
@@ -83,6 +84,8 @@ export {
 export const FAMILY_AFFINITY_REVIEW_ROOT = `${FAMILY_AFFINITY_ROOT}/review` as const;
 export const FAMILY_AFFINITY_REVIEW_CATALOG_PATH =
 	`${FAMILY_AFFINITY_REVIEW_ROOT}/catalog.json` as const;
+export const FAMILY_AFFINITY_RETAINED_PACK_PATH =
+	`${FAMILY_AFFINITY_ROOT}/retained-pack.json` as const;
 export const FAMILY_CONTACT_SHEET_WIDTH = 1600 as const;
 export const FAMILY_CONTACT_SHEET_HEIGHT = 1200 as const;
 
@@ -328,14 +331,67 @@ export function evaluateFamilyAffinityReviewAttempt(input: {
 		candidateBytes: input.candidateBytes,
 		resultBytes: input.resultBytes
 	});
-	const result = evidence.result;
+	return evaluateFamilyAffinityReviewReceipts({
+		target,
+		result: evidence.result,
+		resultSha256: evidence.resultSha256,
+		ordinary: input.ordinary,
+		blind: input.blind
+	});
+}
+
+function validateFamilyAffinityRetiredCandidateEvidence(input: {
+	target: unknown;
+	assignment: unknown;
+	familyPacketBytes: Uint8Array;
+	resultBytes: Uint8Array;
+}): {
+	result: FamilyAffinityResult;
+	resultSha256: string;
+} {
+	const target = FamilyAffinityTargetSchema.parse(input.target);
+	const assignment = FamilyAffinityAssignmentSchema.parse(input.assignment);
+	const sourcePacket = FamilyPacketSchema.parse(
+		JSON.parse(Buffer.from(input.familyPacketBytes).toString('utf8'))
+	);
+	const result = FamilyAffinityResultSchema.parse(
+		JSON.parse(Buffer.from(input.resultBytes).toString('utf8'))
+	);
+	const sourceBinding = familyAffinitySourcePacketBinding(target);
+	const sourceSha256 = familyAffinitySha256(sourcePacket);
+	if (
+		result.targetId !== target.targetId ||
+		result.targetSha256 !== familyAffinitySha256(target) ||
+		result.coordinateId !== target.coordinateId ||
+		result.candidateVersion !== target.version ||
+		result.candidatePath !== target.ownedPaths.candidate ||
+		result.resultPath !== target.ownedPaths.result ||
+		result.sourcePath !== sourceBinding.path ||
+		sourceSha256 !== sourceBinding.sha256 ||
+		result.sourceSha256 !== sourceSha256 ||
+		result.promptSha256 !== familyAffinityPromptSha256(target, assignment) ||
+		result.producerId.trim().length === 0
+	) {
+		throw new Error('Retired candidate result evidence is stale, forged, or cross-bound');
+	}
+	return { result, resultSha256: familyAffinityRawSha256(input.resultBytes) };
+}
+
+function evaluateFamilyAffinityReviewReceipts(input: {
+	target: FamilyAffinityTarget;
+	result: FamilyAffinityResult;
+	resultSha256: string;
+	ordinary?: unknown;
+	blind?: unknown;
+}): { state: ReviewState; revisionRequired: boolean; approved: boolean } {
+	const { target, result } = input;
 	const requiresBlind = target.tier === 'T3' || target.tier === 'T5';
 	let blind: BlindReviewReceipt | undefined;
 	if (input.blind) {
 		blind = validateFamilyAffinityReceiptEvidence({
 			target,
 			result,
-			resultSha256: evidence.resultSha256,
+			resultSha256: input.resultSha256,
 			receipt: input.blind,
 			kind: 'blind'
 		}) as BlindReviewReceipt;
@@ -346,7 +402,7 @@ export function evaluateFamilyAffinityReviewAttempt(input: {
 	const ordinary = validateFamilyAffinityReceiptEvidence({
 		target,
 		result,
-		resultSha256: evidence.resultSha256,
+		resultSha256: input.resultSha256,
 		receipt: input.ordinary,
 		kind: 'ordinary'
 	}) as OrdinaryReviewReceipt;
@@ -1017,7 +1073,6 @@ export type FamilyAffinityReviewCatalog = {
 	families: Array<{
 		familyId: string;
 		summaryPath: string;
-		contactSheetPath: string;
 		generatedCount: number;
 		approvedReviewCount: number;
 	}>;
@@ -1032,6 +1087,24 @@ export type FamilyAffinityReviewArtifacts = {
 		summary: FamilyReviewSummary;
 		contactSheet: Buffer;
 	}>;
+	retainedPack?: {
+		schemaVersion: 'family-affinity-retained-pack-v1';
+		packId: 'family-affinity-v1';
+		state: 'retained-candidate';
+		sourceManifest: { path: string; sha256: string };
+		candidateRoot: string;
+		summary: { familyCount: 30; formCount: 150; candidateCount: 750; bytes: number };
+		entries: Array<{
+			coordinateId: string;
+			familyId: string;
+			formId: string;
+			affinity: (typeof PRODUCTION_AFFINITIES)[number];
+			activeVersion: number;
+			candidatePath: string;
+			candidateSha256: string;
+			bytes: number;
+		}>;
+	};
 	digest: string;
 };
 
@@ -1213,12 +1286,13 @@ async function loadValidatedReviewAttemptHistory(
 						throw new Error(`Review attempt history is skipped or unbound: ${target.targetId}`);
 					}
 					const [candidateBytes, resultBytes, receiptBytes] = await Promise.all([
-						requiredRealFile(repositoryRoot, preceding.candidatePath),
+						optionalRealFile(repositoryRoot, preceding.candidatePath),
 						requiredRealFile(repositoryRoot, preceding.resultPath),
 						requiredRealFile(repositoryRoot, preceding.reviewPath)
 					]);
 					if (
-						familyAffinityRawSha256(candidateBytes) !== preceding.candidateSha256 ||
+						(candidateBytes &&
+							familyAffinityRawSha256(candidateBytes) !== preceding.candidateSha256) ||
 						familyAffinityRawSha256(resultBytes) !== preceding.resultSha256 ||
 						familyAffinityRawSha256(receiptBytes) !== preceding.reviewSha256
 					) {
@@ -1373,9 +1447,6 @@ export async function buildFamilyAffinityReviewArtifacts(
 	const expectedGeneratedPaths = new Set<string>([FAMILY_AFFINITY_REVIEW_CATALOG_PATH]);
 	for (const familyId of [...new Set(canonicalTargets.map(({ familyId }) => familyId))]) {
 		expectedGeneratedPaths.add(`${FAMILY_AFFINITY_REVIEW_ROOT}/families/${familyId}/summary.json`);
-		expectedGeneratedPaths.add(
-			`${FAMILY_AFFINITY_REVIEW_ROOT}/families/${familyId}/contact-sheet.png`
-		);
 	}
 	const allReviewFiles = await walkFilesNoSymlinks(repositoryRoot, FAMILY_AFFINITY_REVIEW_ROOT);
 	const receiptFiles = allReviewFiles.filter(
@@ -1416,16 +1487,26 @@ export async function buildFamilyAffinityReviewArtifacts(
 		if (path !== expectedPath) {
 			throw new Error(`Review assignment is stale, malformed, or cross-bound: ${path}`);
 		}
-		const candidateBytes = await requiredRealFile(repositoryRoot, reviewAssignment.candidatePath);
+		const candidateBytes = await optionalRealFile(repositoryRoot, reviewAssignment.candidatePath);
+		if (!candidateBytes && attempt.active) {
+			throw new Error(`Active review assignment requires candidate bytes: ${path}`);
+		}
 		const resultBytes = await requiredRealFile(repositoryRoot, reviewAssignment.resultPath);
 		const familyPacketBytes = await requiredRealFile(repositoryRoot, reviewAssignment.sourcePath);
-		const evidence = validateFamilyAffinityCandidateEvidence({
-			target,
-			assignment,
-			familyPacketBytes,
-			candidateBytes,
-			resultBytes
-		});
+		const evidence = candidateBytes
+			? validateFamilyAffinityCandidateEvidence({
+					target,
+					assignment,
+					familyPacketBytes,
+					candidateBytes,
+					resultBytes
+				})
+			: validateFamilyAffinityRetiredCandidateEvidence({
+					target,
+					assignment,
+					familyPacketBytes,
+					resultBytes
+				});
 		const validatedReviewAssignment = validateFamilyAffinityReviewAssignmentEvidence({
 			reviewAssignment,
 			reviewAssignmentPath: path,
@@ -1549,15 +1630,31 @@ export async function buildFamilyAffinityReviewArtifacts(
 				: undefined;
 		const evaluated = generationFailure
 			? { state: 'revise' as const, revisionRequired: true, approved: false }
-			: evaluateFamilyAffinityReviewAttempt({
-					target,
-					assignment,
-					...(familyPacketBytes ? { familyPacketBytes } : {}),
-					...(candidateBytes ? { candidateBytes } : {}),
-					...(resultBytes ? { resultBytes } : {}),
-					...(ordinaryRecord ? { ordinary: ordinaryRecord.receipt } : {}),
-					...(blindRecord ? { blind: blindRecord.receipt } : {})
-				});
+			: !active && !candidateBytes && resultBytes && familyPacketBytes
+				? (() => {
+						const evidence = validateFamilyAffinityRetiredCandidateEvidence({
+							target,
+							assignment,
+							familyPacketBytes,
+							resultBytes
+						});
+						return evaluateFamilyAffinityReviewReceipts({
+							target,
+							result: evidence.result,
+							resultSha256: evidence.resultSha256,
+							...(ordinaryRecord ? { ordinary: ordinaryRecord.receipt } : {}),
+							...(blindRecord ? { blind: blindRecord.receipt } : {})
+						});
+					})()
+				: evaluateFamilyAffinityReviewAttempt({
+						target,
+						assignment,
+						...(familyPacketBytes ? { familyPacketBytes } : {}),
+						...(candidateBytes ? { candidateBytes } : {}),
+						...(resultBytes ? { resultBytes } : {}),
+						...(ordinaryRecord ? { ordinary: ordinaryRecord.receipt } : {}),
+						...(blindRecord ? { blind: blindRecord.receipt } : {})
+					});
 		if (!active) {
 			if (!evaluated.revisionRequired || evaluated.approved) {
 				throw new Error(
@@ -1697,7 +1794,6 @@ export async function buildFamilyAffinityReviewArtifacts(
 		families: families.map((family) => ({
 			familyId: family.familyId,
 			summaryPath: family.summaryPath,
-			contactSheetPath: family.contactSheetPath,
 			generatedCount: family.summary.generatedCount,
 			approvedReviewCount: family.summary.approvedReviewCount
 		}))
@@ -1713,5 +1809,43 @@ export async function buildFamilyAffinityReviewArtifacts(
 				.join('\n')
 		)
 		.digest('hex');
-	return { catalog, families, digest };
+	const retainedEntries = families.flatMap((family) =>
+		family.summary.cells.flatMap((cell) => {
+			const bytes = candidateBytesByCoordinate.get(cell.coordinateId);
+			if (!bytes || !cell.candidatePath || !cell.candidateSha256) return [];
+			return [
+				{
+					coordinateId: cell.coordinateId,
+					familyId: family.familyId,
+					formId: cell.formId,
+					affinity: cell.affinity,
+					activeVersion: cell.activeVersion,
+					candidatePath: cell.candidatePath,
+					candidateSha256: cell.candidateSha256,
+					bytes: bytes.byteLength
+				}
+			];
+		})
+	);
+	const retainedPack =
+		retainedEntries.length === 750
+			? {
+					schemaVersion: 'family-affinity-retained-pack-v1' as const,
+					packId: 'family-affinity-v1' as const,
+					state: 'retained-candidate' as const,
+					sourceManifest: {
+						path: manifestPath,
+						sha256: familyAffinityRawSha256(manifestBytes)
+					},
+					candidateRoot: `${FAMILY_AFFINITY_ROOT}/candidates`,
+					summary: {
+						familyCount: 30 as const,
+						formCount: 150 as const,
+						candidateCount: 750 as const,
+						bytes: retainedEntries.reduce((sum, entry) => sum + entry.bytes, 0)
+					},
+					entries: retainedEntries
+				}
+			: undefined;
+	return { catalog, families, ...(retainedPack ? { retainedPack } : {}), digest };
 }

@@ -59,11 +59,10 @@ the wiki must determine whether affinity is body, origin, resource, skill, envir
 layered concepts before individual runtime anchors are commissioned.
 
 The current canonical production matrix supersedes that historical four-character plate for form
-and affinity review. T1–T4 have accepted Normal anchors plus Fire, Earth, Wind, and Water candidates;
-T5 remains visibly ungenerated while its Normal telegraph is revised. Every affinity image below is
-still candidate-only and none is runtime art.
-
-![Elementals family-affinity review matrix](../../../assets/enemies/experiments/family-affinity-v1/review/families/elementals/contact-sheet.png)
+and affinity review. Its retained 750-image candidate pack remains candidate-only and none of it is
+runtime art. Review the matrix through the generated
+[enemy image gallery](../../evidence/enemy-image-review-gallery-v1/index.html); reproducible
+contact sheets are generated on demand rather than committed.
 
 ### Arachnids
 

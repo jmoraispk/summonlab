@@ -974,6 +974,39 @@ describe('family-affinity review receipt contract', () => {
 		await expect(buildFamilyAffinityReviewArtifacts(live.root)).rejects.toThrow(/orphan|unbound/i);
 	}, 30_000);
 
+	it('allows a superseded candidate payload to be retired while retaining its JSON history', async () => {
+		const live = await stageLiveAttempt('T1', true);
+		const issued = await issueReviewAssignmentExclusive(
+			live.root,
+			reviewIssueInput(live, 'ordinary', 'reviewer-beta')
+		);
+		await createReviewReceiptExclusive(
+			live.root,
+			issued.path,
+			ordinaryFor(live.activeTarget, live.result, 'rejected')
+		);
+		await allocateFamilyAffinityRevision({
+			repositoryRoot: live.root,
+			manifestPath: familyAffinityManifestPath,
+			namespace: 'canonical',
+			coordinateId: live.activeTarget.coordinateId,
+			callerRole: 'integration-controller',
+			reviewPath: live.activeTarget.ownedPaths.decision
+		});
+		await rm(join(live.root, live.activeTarget.ownedPaths.candidate));
+
+		const artifacts = await buildFamilyAffinityReviewArtifacts(live.root);
+		const cell = artifacts.families
+			.find(({ familyId }) => familyId === 'goblins')!
+			.summary.cells.find(({ coordinateId }) => coordinateId === live.activeTarget.coordinateId)!;
+		expect(cell).toMatchObject({
+			activeVersion: 2,
+			state: 'planned',
+			historyAttemptCount: 1,
+			historyRevisionRequiredCount: 1
+		});
+	}, 30_000);
+
 	it('binds resultSha256 to raw result bytes, including otherwise harmless whitespace', async () => {
 		const live = await stageLiveAttempt();
 		const reviewAssignment = await issueReviewAssignmentExclusive(
@@ -1106,6 +1139,21 @@ describe('family-affinity review receipt contract', () => {
 });
 
 describe('initial family review evidence', () => {
+	it('exports compact review data without persisting reproducible contact sheets', async () => {
+		const root = await mkdtemp(join(tmpdir(), 'family-review-compact-export-'));
+		temporaryRoots.push(root);
+		await materializeCleanProductionCorpus(root);
+
+		const report = await exportFamilyAffinityReview(root, 'write');
+		expect(report).toMatchObject({
+			contactSheetCount: 0,
+			artifactCount: 31
+		});
+		for (const family of (await buildFamilyAffinityReviewArtifacts(root)).families) {
+			expect(await readdir(join(root, dirname(family.summaryPath)))).toEqual(['summary.json']);
+		}
+	}, 120_000);
+
 	it('builds thirty deterministic 5x5 sheets with truthful live counts', async () => {
 		const first = await buildFamilyAffinityReviewArtifacts(process.cwd());
 		const second = await buildFamilyAffinityReviewArtifacts(process.cwd());

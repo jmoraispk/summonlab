@@ -11,6 +11,8 @@ import sharp from 'sharp';
 
 const approvedHeroRoot = 'assets/heroes/approved/summonable-roster-v1';
 const retainedEnemyPackManifestPath = 'assets/enemies/legacy/affinity-pack-v1/manifest.json';
+const retainedFamilyAffinityPackManifestPath =
+	'assets/enemies/experiments/family-affinity-v1/retained-pack.json';
 
 type HeroVisualRole = 'summon' | 'combat-chibi';
 
@@ -26,6 +28,8 @@ export interface RepositoryAssetValidationSummary {
 	readonly approvedHeroBytes: number;
 	readonly retainedEnemyImageCount: number;
 	readonly retainedEnemyBytes: number;
+	readonly retainedFamilyAffinityImageCount: number;
+	readonly retainedFamilyAffinityBytes: number;
 	readonly trackedFileCount: number;
 }
 
@@ -61,6 +65,52 @@ interface RetainedEnemyCatalog {
 		readonly candidateHash?: string;
 		readonly bytes?: number;
 	}[];
+}
+
+interface RetainedFamilyAffinityPackManifest {
+	readonly schemaVersion: 'family-affinity-retained-pack-v1';
+	readonly packId: 'family-affinity-v1';
+	readonly state: 'retained-candidate';
+	readonly sourceManifest: { readonly path: string; readonly sha256: string };
+	readonly candidateRoot: string;
+	readonly summary: {
+		readonly familyCount: number;
+		readonly formCount: number;
+		readonly candidateCount: number;
+		readonly bytes: number;
+	};
+	readonly entries: readonly {
+		readonly coordinateId: string;
+		readonly familyId: string;
+		readonly formId: string;
+		readonly affinity: string;
+		readonly activeVersion: number;
+		readonly candidatePath: string;
+		readonly candidateSha256: string;
+		readonly bytes: number;
+	}[];
+}
+
+interface FamilyAffinitySourceManifest {
+	readonly canonicalMatrix: {
+		readonly activeCoordinates: readonly {
+			readonly coordinateId: string;
+			readonly familyId: string;
+			readonly formId: string;
+			readonly affinity: string;
+			readonly activeVersion: number;
+			readonly targetPath: string;
+		}[];
+	};
+}
+
+interface FamilyAffinityTargetRecord {
+	readonly coordinateId: string;
+	readonly familyId: string;
+	readonly formId: string;
+	readonly affinity: string;
+	readonly version: number;
+	readonly ownedPaths: { readonly candidate: string };
 }
 
 function sha256(bytes: Uint8Array): string {
@@ -262,6 +312,131 @@ async function validateRetainedEnemyPack(
 	return { candidateCount: selectedPaths.length, bytes: retainedEnemyBytes };
 }
 
+async function validateRetainedFamilyAffinityPack(
+	workspaceRoot: string,
+	tracked: readonly string[]
+): Promise<{ candidateCount: number; bytes: number }> {
+	const manifest = JSON.parse(
+		await readFile(resolve(workspaceRoot, retainedFamilyAffinityPackManifestPath), 'utf8')
+	) as RetainedFamilyAffinityPackManifest;
+	const violations: string[] = [];
+	if (
+		manifest.schemaVersion !== 'family-affinity-retained-pack-v1' ||
+		manifest.packId !== 'family-affinity-v1' ||
+		manifest.state !== 'retained-candidate'
+	) {
+		violations.push('Retained family-affinity pack identity or state is invalid');
+	}
+	const expectedRoot = 'assets/enemies/experiments/family-affinity-v1/candidates';
+	const expectedSourceManifestPath = 'assets/enemies/experiments/family-affinity-v1/manifest.json';
+	if (
+		manifest.candidateRoot !== expectedRoot ||
+		manifest.sourceManifest.path !== expectedSourceManifestPath
+	) {
+		violations.push('Retained family-affinity pack roots are invalid');
+	}
+	const sourceManifestBytes = await readFile(resolve(workspaceRoot, manifest.sourceManifest.path));
+	if (sha256(sourceManifestBytes) !== manifest.sourceManifest.sha256) {
+		violations.push('Retained family-affinity source manifest hash mismatch');
+	}
+	const sourceManifest = JSON.parse(
+		sourceManifestBytes.toString('utf8')
+	) as FamilyAffinitySourceManifest;
+	const activeCoordinates = sourceManifest.canonicalMatrix.activeCoordinates;
+	const activeByCoordinate = new Map(
+		activeCoordinates.map((coordinate) => [coordinate.coordinateId, coordinate])
+	);
+	const selectedPaths: string[] = [];
+	const familyIds = new Set<string>();
+	const formIds = new Set<string>();
+	const seenCoordinates = new Set<string>();
+	let retainedBytes = 0;
+	for (const entry of manifest.entries) {
+		if (seenCoordinates.has(entry.coordinateId)) {
+			violations.push(`Duplicate retained family-affinity coordinate: ${entry.coordinateId}`);
+			continue;
+		}
+		seenCoordinates.add(entry.coordinateId);
+		const coordinate = activeByCoordinate.get(entry.coordinateId);
+		if (
+			!coordinate ||
+			coordinate.familyId !== entry.familyId ||
+			coordinate.formId !== entry.formId ||
+			coordinate.affinity !== entry.affinity ||
+			coordinate.activeVersion !== entry.activeVersion
+		) {
+			violations.push(
+				`Retained family-affinity entry is not the active coordinate: ${entry.coordinateId}`
+			);
+			continue;
+		}
+		const target = JSON.parse(
+			await readFile(resolve(workspaceRoot, coordinate.targetPath), 'utf8')
+		) as FamilyAffinityTargetRecord;
+		if (
+			target.coordinateId !== entry.coordinateId ||
+			target.familyId !== entry.familyId ||
+			target.formId !== entry.formId ||
+			target.affinity !== entry.affinity ||
+			target.version !== entry.activeVersion ||
+			target.ownedPaths.candidate !== entry.candidatePath
+		) {
+			violations.push(`Retained family-affinity target binding mismatch: ${entry.coordinateId}`);
+			continue;
+		}
+		selectedPaths.push(entry.candidatePath);
+		familyIds.add(entry.familyId);
+		formIds.add(`${entry.familyId}/${entry.formId}`);
+		const bytes = await readFile(resolve(workspaceRoot, entry.candidatePath));
+		retainedBytes += bytes.byteLength;
+		if (sha256(bytes) !== entry.candidateSha256) {
+			violations.push(`Retained family-affinity candidate hash mismatch: ${entry.candidatePath}`);
+		}
+		if (bytes.byteLength !== entry.bytes) {
+			violations.push(
+				`Retained family-affinity candidate byte count mismatch: ${entry.candidatePath}`
+			);
+		}
+	}
+	const trackedPngPaths = tracked.filter(
+		(path) => path.endsWith('.png') && insideRepositoryRoot(path, manifest.candidateRoot)
+	);
+	violations.push(
+		...findRetainedEnemyPackPathViolations({
+			candidateRoots: [manifest.candidateRoot],
+			selectedPaths,
+			trackedPngPaths
+		})
+	);
+	const filters = lfsFilters(workspaceRoot, selectedPaths);
+	for (const path of selectedPaths) {
+		if (filters.get(path) !== 'lfs') {
+			violations.push(`Retained family-affinity candidate is not covered by Git LFS: ${path}`);
+		}
+	}
+	if (
+		activeCoordinates.length !== 750 ||
+		manifest.entries.length !== 750 ||
+		selectedPaths.length !== 750 ||
+		familyIds.size !== 30 ||
+		formIds.size !== 150 ||
+		manifest.summary.familyCount !== 30 ||
+		manifest.summary.formCount !== 150 ||
+		manifest.summary.candidateCount !== 750
+	) {
+		violations.push(
+			'Retained family-affinity pack must contain the exact 30-family, 750-image matrix'
+		);
+	}
+	if (manifest.summary.bytes !== retainedBytes) {
+		violations.push(
+			`Retained family-affinity byte count mismatch: expected ${manifest.summary.bytes}, found ${retainedBytes}`
+		);
+	}
+	if (violations.length > 0) throw new Error(violations.join('\n'));
+	return { candidateCount: selectedPaths.length, bytes: retainedBytes };
+}
+
 export async function validateRepositoryAssets(
 	workspaceRoot: string
 ): Promise<RepositoryAssetValidationSummary> {
@@ -269,6 +444,10 @@ export async function validateRepositoryAssets(
 	const trackedSet = new Set(tracked);
 	const catalog = await readCatalog(workspaceRoot);
 	const retainedEnemyPack = await validateRetainedEnemyPack(workspaceRoot, tracked);
+	const retainedFamilyAffinityPack = await validateRetainedFamilyAffinityPack(
+		workspaceRoot,
+		tracked
+	);
 	const violations = findRepositoryAssetPathViolations(tracked);
 	violations.push(
 		...findApprovedHeroPathViolations(
@@ -335,6 +514,8 @@ export async function validateRepositoryAssets(
 		approvedHeroBytes,
 		retainedEnemyImageCount: retainedEnemyPack.candidateCount,
 		retainedEnemyBytes: retainedEnemyPack.bytes,
+		retainedFamilyAffinityImageCount: retainedFamilyAffinityPack.candidateCount,
+		retainedFamilyAffinityBytes: retainedFamilyAffinityPack.bytes,
 		trackedFileCount: tracked.length
 	};
 }

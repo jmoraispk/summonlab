@@ -4,7 +4,8 @@ import {
 	expectedApprovedHeroVisualPath,
 	findApprovedHeroPathViolations,
 	findRetainedEnemyPackPathViolations,
-	findRepositoryAssetPathViolations
+	findRepositoryAssetPathViolations,
+	validateRepositoryAssets
 } from './repository-asset-policy.js';
 
 describe('repository asset retention policy', () => {
@@ -77,4 +78,11 @@ describe('repository asset retention policy', () => {
 			`Unselected enemy candidate must not be tracked: ${expansionRoot}/wolf/fire-v1.png`
 		]);
 	});
+
+	it('protects the complete canonical family-affinity pack with Git LFS', async () => {
+		await expect(validateRepositoryAssets(process.cwd())).resolves.toMatchObject({
+			retainedFamilyAffinityImageCount: 750,
+			retainedFamilyAffinityBytes: 2_078_754_623
+		});
+	}, 120_000);
 });
