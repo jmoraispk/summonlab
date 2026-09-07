@@ -1,0 +1,2513 @@
+{
+	"schemaVersion": "combat-balance-evidence-v1",
+	"status": "passed",
+	"bindings": {
+		"rules": {
+			"rulesVersion": "combat-rules-v1",
+			"rulesHash": "8dbabd54ac17398bba2c64598322a51d09c7abb6c1f3f2d3f944da023c44cfed"
+		},
+		"combatContent": {
+			"bindingVersion": "combat-content-binding-v1",
+			"contentHash": "1abef40c18eb97d4c1694c674f9b4917f286053e6d810d5b4282760f2ab4c2a7",
+			"components": [
+				{
+					"contentVersion": "combat-equipment-profiles-v1",
+					"contentHash": "df6ac2281db7759528d4fb32d21e4446a4747df4e94cf7d9e8ca85263acdd9fd"
+				},
+				{
+					"contentVersion": "combat-skills-v1",
+					"contentHash": "2e0767343ddb1d80969612c7c8485cda6345a086f3dfb1b9cf474fce450e62d5"
+				}
+			]
+		}
+	},
+	"simulation": {
+		"profile": {
+			"profileVersion": "combat-balance-simulation-profile-v1",
+			"calibrationStatus": "benchmark-promotion-candidate",
+			"randomnessVersion": "sha256-seeded-xorshift32-v1",
+			"agilityAccuracyBasisPointsPerPoint": 10,
+			"agilityAccuracyCapBasisPoints": 900,
+			"damageVarianceBasisPoints": [
+				9000,
+				11000
+			],
+			"armourPointSeries": [
+				0,
+				25,
+				50,
+				100,
+				150,
+				250
+			],
+			"armouredBenchmarkPoints": 100,
+			"maxCompletionActions": 200,
+			"attributeValues": {
+				"10": {
+					"low": 10,
+					"mid": 20,
+					"high": 30
+				},
+				"40": {
+					"low": 15,
+					"mid": 35,
+					"high": 55
+				},
+				"70": {
+					"low": 20,
+					"mid": 50,
+					"high": 80
+				},
+				"99": {
+					"low": 25,
+					"mid": 65,
+					"high": 95
+				}
+			},
+			"baseMagnitudeByLevel": {
+				"10": 12,
+				"40": 18,
+				"70": 24,
+				"99": 30
+			},
+			"benchmarkDomain": {
+				"armour": {
+					"minimumPoints": 0,
+					"maximumPoints": 250,
+					"armouredFixturePoints": 100,
+					"runtimeMagnitudeStatus": "not-yet-shipped"
+				}
+			},
+			"affinityAssociations": {
+				"fire": "might",
+				"earth": "vitality",
+				"wind": "agility",
+				"water": "spirit"
+			},
+			"sourceRecords": {
+				"accuracySkillId": "combat-skill-basic-sword-strike",
+				"armouredEquipmentDefinitionId": "equipment-iron-heavy-armour-torso"
+			}
+		},
+		"profileHash": "cd4a8948395c5d05c26d420383902bf613ad789613481886c11fa4ea29a3208e",
+		"trialsPerMatchup": 10000,
+		"percentileMethod": "nearest-rank",
+		"seedSet": [
+			"0x243f6a88",
+			"0x85a308d3",
+			"0x13198a2e",
+			"0x03707344",
+			"0xa4093822",
+			"0x299f31d0",
+			"0x082efa98",
+			"0xec4e6c89",
+			"0x452821e6",
+			"0x38d01377"
+		]
+	},
+	"fixtures": {
+		"levels": [
+			10,
+			40,
+			70,
+			99
+		],
+		"attributeSpreads": [
+			"low",
+			"mid",
+			"high"
+		],
+		"masteryBands": [
+			"novice",
+			"trained",
+			"mastered"
+		],
+		"armourStates": [
+			"unarmoured",
+			"armoured"
+		],
+		"offAffinityArchetypes": [
+			"fire-caster",
+			"water-martial"
+		]
+	},
+	"gates": {
+		"accuracy": {
+			"status": "passed",
+			"targetsBasisPoints": {
+				"novice": {
+					"minimumBasisPoints": 6500,
+					"maximumBasisPoints": 7000
+				},
+				"trained": {
+					"minimumBasisPoints": 7700,
+					"maximumBasisPoints": 8300
+				},
+				"mastered": {
+					"minimumBasisPoints": 9000,
+					"maximumBasisPoints": 9500
+				}
+			}
+		},
+		"relativeAgility": {
+			"status": "passed",
+			"maximumAllowedChanceShiftBasisPoints": 1000,
+			"maximumAbsoluteChanceShiftBasisPoints": 904
+		},
+		"passiveCombatRegeneration": {
+			"status": "passed",
+			"maximumRegenerationToDamageRatioBasisPoints": 2081
+		},
+		"offAffinityCompletion": {
+			"status": "passed",
+			"maximumAllowedMedianRatioBasisPoints": 11500,
+			"maximumObservedMedianRatioBasisPoints": 11111
+		},
+		"armour": {
+			"status": "passed",
+			"maximumAllowedExclusiveReductionBasisPoints": 7500,
+			"maximumObservedReductionBasisPoints": 7143,
+			"monotonic": true
+		}
+	},
+	"matchups": {
+		"accuracy": [
+			{
+				"matchupId": "accuracy-l10-low-novice",
+				"level": 10,
+				"attributeSpread": "low",
+				"masteryBand": "novice",
+				"trials": 10000,
+				"authoredAccuracyBasisPoints": 6750,
+				"observedHitRateBasisPoints": 6685,
+				"seedCohortHitRateBasisPoints": {
+					"p10": 6490,
+					"p50": 6660,
+					"p90": 6840
+				}
+			},
+			{
+				"matchupId": "accuracy-l10-low-trained",
+				"level": 10,
+				"attributeSpread": "low",
+				"masteryBand": "trained",
+				"trials": 10000,
+				"authoredAccuracyBasisPoints": 8000,
+				"observedHitRateBasisPoints": 7921,
+				"seedCohortHitRateBasisPoints": {
+					"p10": 7720,
+					"p50": 7920,
+					"p90": 8030
+				}
+			},
+			{
+				"matchupId": "accuracy-l10-low-mastered",
+				"level": 10,
+				"attributeSpread": "low",
+				"masteryBand": "mastered",
+				"trials": 10000,
+				"authoredAccuracyBasisPoints": 9250,
+				"observedHitRateBasisPoints": 9272,
+				"seedCohortHitRateBasisPoints": {
+					"p10": 9130,
+					"p50": 9260,
+					"p90": 9370
+				}
+			},
+			{
+				"matchupId": "accuracy-l10-mid-novice",
+				"level": 10,
+				"attributeSpread": "mid",
+				"masteryBand": "novice",
+				"trials": 10000,
+				"authoredAccuracyBasisPoints": 6750,
+				"observedHitRateBasisPoints": 6740,
+				"seedCohortHitRateBasisPoints": {
+					"p10": 6540,
+					"p50": 6770,
+					"p90": 6820
+				}
+			},
+			{
+				"matchupId": "accuracy-l10-mid-trained",
+				"level": 10,
+				"attributeSpread": "mid",
+				"masteryBand": "trained",
+				"trials": 10000,
+				"authoredAccuracyBasisPoints": 8000,
+				"observedHitRateBasisPoints": 7989,
+				"seedCohortHitRateBasisPoints": {
+					"p10": 7870,
+					"p50": 7960,
+					"p90": 8110
+				}
+			},
+			{
+				"matchupId": "accuracy-l10-mid-mastered",
+				"level": 10,
+				"attributeSpread": "mid",
+				"masteryBand": "mastered",
+				"trials": 10000,
+				"authoredAccuracyBasisPoints": 9250,
+				"observedHitRateBasisPoints": 9248,
+				"seedCohortHitRateBasisPoints": {
+					"p10": 9050,
+					"p50": 9240,
+					"p90": 9340
+				}
+			},
+			{
+				"matchupId": "accuracy-l10-high-novice",
+				"level": 10,
+				"attributeSpread": "high",
+				"masteryBand": "novice",
+				"trials": 10000,
+				"authoredAccuracyBasisPoints": 6750,
+				"observedHitRateBasisPoints": 6734,
+				"seedCohortHitRateBasisPoints": {
+					"p10": 6390,
+					"p50": 6740,
+					"p90": 6940
+				}
+			},
+			{
+				"matchupId": "accuracy-l10-high-trained",
+				"level": 10,
+				"attributeSpread": "high",
+				"masteryBand": "trained",
+				"trials": 10000,
+				"authoredAccuracyBasisPoints": 8000,
+				"observedHitRateBasisPoints": 8104,
+				"seedCohortHitRateBasisPoints": {
+					"p10": 7900,
+					"p50": 8090,
+					"p90": 8270
+				}
+			},
+			{
+				"matchupId": "accuracy-l10-high-mastered",
+				"level": 10,
+				"attributeSpread": "high",
+				"masteryBand": "mastered",
+				"trials": 10000,
+				"authoredAccuracyBasisPoints": 9250,
+				"observedHitRateBasisPoints": 9283,
+				"seedCohortHitRateBasisPoints": {
+					"p10": 9160,
+					"p50": 9260,
+					"p90": 9390
+				}
+			},
+			{
+				"matchupId": "accuracy-l40-low-novice",
+				"level": 40,
+				"attributeSpread": "low",
+				"masteryBand": "novice",
+				"trials": 10000,
+				"authoredAccuracyBasisPoints": 6750,
+				"observedHitRateBasisPoints": 6768,
+				"seedCohortHitRateBasisPoints": {
+					"p10": 6560,
+					"p50": 6740,
+					"p90": 6950
+				}
+			},
+			{
+				"matchupId": "accuracy-l40-low-trained",
+				"level": 40,
+				"attributeSpread": "low",
+				"masteryBand": "trained",
+				"trials": 10000,
+				"authoredAccuracyBasisPoints": 8000,
+				"observedHitRateBasisPoints": 8035,
+				"seedCohortHitRateBasisPoints": {
+					"p10": 7820,
+					"p50": 8060,
+					"p90": 8110
+				}
+			},
+			{
+				"matchupId": "accuracy-l40-low-mastered",
+				"level": 40,
+				"attributeSpread": "low",
+				"masteryBand": "mastered",
+				"trials": 10000,
+				"authoredAccuracyBasisPoints": 9250,
+				"observedHitRateBasisPoints": 9240,
+				"seedCohortHitRateBasisPoints": {
+					"p10": 9080,
+					"p50": 9260,
+					"p90": 9350
+				}
+			},
+			{
+				"matchupId": "accuracy-l40-mid-novice",
+				"level": 40,
+				"attributeSpread": "mid",
+				"masteryBand": "novice",
+				"trials": 10000,
+				"authoredAccuracyBasisPoints": 6750,
+				"observedHitRateBasisPoints": 6673,
+				"seedCohortHitRateBasisPoints": {
+					"p10": 6350,
+					"p50": 6640,
+					"p90": 6930
+				}
+			},
+			{
+				"matchupId": "accuracy-l40-mid-trained",
+				"level": 40,
+				"attributeSpread": "mid",
+				"masteryBand": "trained",
+				"trials": 10000,
+				"authoredAccuracyBasisPoints": 8000,
+				"observedHitRateBasisPoints": 8055,
+				"seedCohortHitRateBasisPoints": {
+					"p10": 7940,
+					"p50": 8020,
+					"p90": 8200
+				}
+			},
+			{
+				"matchupId": "accuracy-l40-mid-mastered",
+				"level": 40,
+				"attributeSpread": "mid",
+				"masteryBand": "mastered",
+				"trials": 10000,
+				"authoredAccuracyBasisPoints": 9250,
+				"observedHitRateBasisPoints": 9267,
+				"seedCohortHitRateBasisPoints": {
+					"p10": 9180,
+					"p50": 9230,
+					"p90": 9360
+				}
+			},
+			{
+				"matchupId": "accuracy-l40-high-novice",
+				"level": 40,
+				"attributeSpread": "high",
+				"masteryBand": "novice",
+				"trials": 10000,
+				"authoredAccuracyBasisPoints": 6750,
+				"observedHitRateBasisPoints": 6826,
+				"seedCohortHitRateBasisPoints": {
+					"p10": 6600,
+					"p50": 6830,
+					"p90": 6900
+				}
+			},
+			{
+				"matchupId": "accuracy-l40-high-trained",
+				"level": 40,
+				"attributeSpread": "high",
+				"masteryBand": "trained",
+				"trials": 10000,
+				"authoredAccuracyBasisPoints": 8000,
+				"observedHitRateBasisPoints": 8005,
+				"seedCohortHitRateBasisPoints": {
+					"p10": 7820,
+					"p50": 8030,
+					"p90": 8100
+				}
+			},
+			{
+				"matchupId": "accuracy-l40-high-mastered",
+				"level": 40,
+				"attributeSpread": "high",
+				"masteryBand": "mastered",
+				"trials": 10000,
+				"authoredAccuracyBasisPoints": 9250,
+				"observedHitRateBasisPoints": 9213,
+				"seedCohortHitRateBasisPoints": {
+					"p10": 9130,
+					"p50": 9210,
+					"p90": 9280
+				}
+			},
+			{
+				"matchupId": "accuracy-l70-low-novice",
+				"level": 70,
+				"attributeSpread": "low",
+				"masteryBand": "novice",
+				"trials": 10000,
+				"authoredAccuracyBasisPoints": 6750,
+				"observedHitRateBasisPoints": 6634,
+				"seedCohortHitRateBasisPoints": {
+					"p10": 6350,
+					"p50": 6630,
+					"p90": 6780
+				}
+			},
+			{
+				"matchupId": "accuracy-l70-low-trained",
+				"level": 70,
+				"attributeSpread": "low",
+				"masteryBand": "trained",
+				"trials": 10000,
+				"authoredAccuracyBasisPoints": 8000,
+				"observedHitRateBasisPoints": 8008,
+				"seedCohortHitRateBasisPoints": {
+					"p10": 7900,
+					"p50": 7990,
+					"p90": 8080
+				}
+			},
+			{
+				"matchupId": "accuracy-l70-low-mastered",
+				"level": 70,
+				"attributeSpread": "low",
+				"masteryBand": "mastered",
+				"trials": 10000,
+				"authoredAccuracyBasisPoints": 9250,
+				"observedHitRateBasisPoints": 9285,
+				"seedCohortHitRateBasisPoints": {
+					"p10": 9140,
+					"p50": 9280,
+					"p90": 9380
+				}
+			},
+			{
+				"matchupId": "accuracy-l70-mid-novice",
+				"level": 70,
+				"attributeSpread": "mid",
+				"masteryBand": "novice",
+				"trials": 10000,
+				"authoredAccuracyBasisPoints": 6750,
+				"observedHitRateBasisPoints": 6803,
+				"seedCohortHitRateBasisPoints": {
+					"p10": 6580,
+					"p50": 6770,
+					"p90": 6850
+				}
+			},
+			{
+				"matchupId": "accuracy-l70-mid-trained",
+				"level": 70,
+				"attributeSpread": "mid",
+				"masteryBand": "trained",
+				"trials": 10000,
+				"authoredAccuracyBasisPoints": 8000,
+				"observedHitRateBasisPoints": 7995,
+				"seedCohortHitRateBasisPoints": {
+					"p10": 7740,
+					"p50": 8000,
+					"p90": 8230
+				}
+			},
+			{
+				"matchupId": "accuracy-l70-mid-mastered",
+				"level": 70,
+				"attributeSpread": "mid",
+				"masteryBand": "mastered",
+				"trials": 10000,
+				"authoredAccuracyBasisPoints": 9250,
+				"observedHitRateBasisPoints": 9225,
+				"seedCohortHitRateBasisPoints": {
+					"p10": 9060,
+					"p50": 9200,
+					"p90": 9290
+				}
+			},
+			{
+				"matchupId": "accuracy-l70-high-novice",
+				"level": 70,
+				"attributeSpread": "high",
+				"masteryBand": "novice",
+				"trials": 10000,
+				"authoredAccuracyBasisPoints": 6750,
+				"observedHitRateBasisPoints": 6772,
+				"seedCohortHitRateBasisPoints": {
+					"p10": 6570,
+					"p50": 6800,
+					"p90": 6880
+				}
+			},
+			{
+				"matchupId": "accuracy-l70-high-trained",
+				"level": 70,
+				"attributeSpread": "high",
+				"masteryBand": "trained",
+				"trials": 10000,
+				"authoredAccuracyBasisPoints": 8000,
+				"observedHitRateBasisPoints": 8020,
+				"seedCohortHitRateBasisPoints": {
+					"p10": 7810,
+					"p50": 7950,
+					"p90": 8210
+				}
+			},
+			{
+				"matchupId": "accuracy-l70-high-mastered",
+				"level": 70,
+				"attributeSpread": "high",
+				"masteryBand": "mastered",
+				"trials": 10000,
+				"authoredAccuracyBasisPoints": 9250,
+				"observedHitRateBasisPoints": 9266,
+				"seedCohortHitRateBasisPoints": {
+					"p10": 9170,
+					"p50": 9240,
+					"p90": 9380
+				}
+			},
+			{
+				"matchupId": "accuracy-l99-low-novice",
+				"level": 99,
+				"attributeSpread": "low",
+				"masteryBand": "novice",
+				"trials": 10000,
+				"authoredAccuracyBasisPoints": 6750,
+				"observedHitRateBasisPoints": 6750,
+				"seedCohortHitRateBasisPoints": {
+					"p10": 6540,
+					"p50": 6760,
+					"p90": 6880
+				}
+			},
+			{
+				"matchupId": "accuracy-l99-low-trained",
+				"level": 99,
+				"attributeSpread": "low",
+				"masteryBand": "trained",
+				"trials": 10000,
+				"authoredAccuracyBasisPoints": 8000,
+				"observedHitRateBasisPoints": 8007,
+				"seedCohortHitRateBasisPoints": {
+					"p10": 7830,
+					"p50": 8070,
+					"p90": 8120
+				}
+			},
+			{
+				"matchupId": "accuracy-l99-low-mastered",
+				"level": 99,
+				"attributeSpread": "low",
+				"masteryBand": "mastered",
+				"trials": 10000,
+				"authoredAccuracyBasisPoints": 9250,
+				"observedHitRateBasisPoints": 9270,
+				"seedCohortHitRateBasisPoints": {
+					"p10": 9110,
+					"p50": 9280,
+					"p90": 9380
+				}
+			},
+			{
+				"matchupId": "accuracy-l99-mid-novice",
+				"level": 99,
+				"attributeSpread": "mid",
+				"masteryBand": "novice",
+				"trials": 10000,
+				"authoredAccuracyBasisPoints": 6750,
+				"observedHitRateBasisPoints": 6769,
+				"seedCohortHitRateBasisPoints": {
+					"p10": 6430,
+					"p50": 6750,
+					"p90": 6990
+				}
+			},
+			{
+				"matchupId": "accuracy-l99-mid-trained",
+				"level": 99,
+				"attributeSpread": "mid",
+				"masteryBand": "trained",
+				"trials": 10000,
+				"authoredAccuracyBasisPoints": 8000,
+				"observedHitRateBasisPoints": 8018,
+				"seedCohortHitRateBasisPoints": {
+					"p10": 7810,
+					"p50": 7990,
+					"p90": 8170
+				}
+			},
+			{
+				"matchupId": "accuracy-l99-mid-mastered",
+				"level": 99,
+				"attributeSpread": "mid",
+				"masteryBand": "mastered",
+				"trials": 10000,
+				"authoredAccuracyBasisPoints": 9250,
+				"observedHitRateBasisPoints": 9244,
+				"seedCohortHitRateBasisPoints": {
+					"p10": 9030,
+					"p50": 9260,
+					"p90": 9330
+				}
+			},
+			{
+				"matchupId": "accuracy-l99-high-novice",
+				"level": 99,
+				"attributeSpread": "high",
+				"masteryBand": "novice",
+				"trials": 10000,
+				"authoredAccuracyBasisPoints": 6750,
+				"observedHitRateBasisPoints": 6773,
+				"seedCohortHitRateBasisPoints": {
+					"p10": 6530,
+					"p50": 6790,
+					"p90": 6870
+				}
+			},
+			{
+				"matchupId": "accuracy-l99-high-trained",
+				"level": 99,
+				"attributeSpread": "high",
+				"masteryBand": "trained",
+				"trials": 10000,
+				"authoredAccuracyBasisPoints": 8000,
+				"observedHitRateBasisPoints": 7999,
+				"seedCohortHitRateBasisPoints": {
+					"p10": 7860,
+					"p50": 7960,
+					"p90": 8140
+				}
+			},
+			{
+				"matchupId": "accuracy-l99-high-mastered",
+				"level": 99,
+				"attributeSpread": "high",
+				"masteryBand": "mastered",
+				"trials": 10000,
+				"authoredAccuracyBasisPoints": 9250,
+				"observedHitRateBasisPoints": 9231,
+				"seedCohortHitRateBasisPoints": {
+					"p10": 9080,
+					"p50": 9230,
+					"p90": 9270
+				}
+			}
+		],
+		"agility": [
+			{
+				"matchupId": "agility-l10-low-faster",
+				"level": 10,
+				"attributeSpread": "low",
+				"direction": "faster",
+				"peerAgility": 10,
+				"attackerAgility": 100,
+				"trials": 10000,
+				"effectiveChanceShiftBasisPoints": 900,
+				"observedChanceShiftBasisPoints": 904,
+				"adjustedHitRateBasisPoints": 8871,
+				"seedCohortHitRateBasisPoints": {
+					"p10": 8720,
+					"p50": 8870,
+					"p90": 8940
+				}
+			},
+			{
+				"matchupId": "agility-l10-low-slower",
+				"level": 10,
+				"attributeSpread": "low",
+				"direction": "slower",
+				"peerAgility": 10,
+				"attackerAgility": 1,
+				"trials": 10000,
+				"effectiveChanceShiftBasisPoints": -90,
+				"observedChanceShiftBasisPoints": -93,
+				"adjustedHitRateBasisPoints": 7940,
+				"seedCohortHitRateBasisPoints": {
+					"p10": 7760,
+					"p50": 7950,
+					"p90": 8010
+				}
+			},
+			{
+				"matchupId": "agility-l10-mid-faster",
+				"level": 10,
+				"attributeSpread": "mid",
+				"direction": "faster",
+				"peerAgility": 20,
+				"attackerAgility": 100,
+				"trials": 10000,
+				"effectiveChanceShiftBasisPoints": 800,
+				"observedChanceShiftBasisPoints": 864,
+				"adjustedHitRateBasisPoints": 8764,
+				"seedCohortHitRateBasisPoints": {
+					"p10": 8590,
+					"p50": 8740,
+					"p90": 8870
+				}
+			},
+			{
+				"matchupId": "agility-l10-mid-slower",
+				"level": 10,
+				"attributeSpread": "mid",
+				"direction": "slower",
+				"peerAgility": 20,
+				"attackerAgility": 1,
+				"trials": 10000,
+				"effectiveChanceShiftBasisPoints": -190,
+				"observedChanceShiftBasisPoints": -191,
+				"adjustedHitRateBasisPoints": 7757,
+				"seedCohortHitRateBasisPoints": {
+					"p10": 7610,
+					"p50": 7740,
+					"p90": 7850
+				}
+			},
+			{
+				"matchupId": "agility-l10-high-faster",
+				"level": 10,
+				"attributeSpread": "high",
+				"direction": "faster",
+				"peerAgility": 30,
+				"attackerAgility": 100,
+				"trials": 10000,
+				"effectiveChanceShiftBasisPoints": 700,
+				"observedChanceShiftBasisPoints": 711,
+				"adjustedHitRateBasisPoints": 8665,
+				"seedCohortHitRateBasisPoints": {
+					"p10": 8400,
+					"p50": 8700,
+					"p90": 8760
+				}
+			},
+			{
+				"matchupId": "agility-l10-high-slower",
+				"level": 10,
+				"attributeSpread": "high",
+				"direction": "slower",
+				"peerAgility": 30,
+				"attackerAgility": 1,
+				"trials": 10000,
+				"effectiveChanceShiftBasisPoints": -290,
+				"observedChanceShiftBasisPoints": -279,
+				"adjustedHitRateBasisPoints": 7694,
+				"seedCohortHitRateBasisPoints": {
+					"p10": 7530,
+					"p50": 7700,
+					"p90": 7840
+				}
+			},
+			{
+				"matchupId": "agility-l40-low-faster",
+				"level": 40,
+				"attributeSpread": "low",
+				"direction": "faster",
+				"peerAgility": 15,
+				"attackerAgility": 100,
+				"trials": 10000,
+				"effectiveChanceShiftBasisPoints": 850,
+				"observedChanceShiftBasisPoints": 883,
+				"adjustedHitRateBasisPoints": 8885,
+				"seedCohortHitRateBasisPoints": {
+					"p10": 8810,
+					"p50": 8880,
+					"p90": 8970
+				}
+			},
+			{
+				"matchupId": "agility-l40-low-slower",
+				"level": 40,
+				"attributeSpread": "low",
+				"direction": "slower",
+				"peerAgility": 15,
+				"attackerAgility": 1,
+				"trials": 10000,
+				"effectiveChanceShiftBasisPoints": -140,
+				"observedChanceShiftBasisPoints": -144,
+				"adjustedHitRateBasisPoints": 7860,
+				"seedCohortHitRateBasisPoints": {
+					"p10": 7670,
+					"p50": 7860,
+					"p90": 7980
+				}
+			},
+			{
+				"matchupId": "agility-l40-mid-faster",
+				"level": 40,
+				"attributeSpread": "mid",
+				"direction": "faster",
+				"peerAgility": 35,
+				"attackerAgility": 100,
+				"trials": 10000,
+				"effectiveChanceShiftBasisPoints": 650,
+				"observedChanceShiftBasisPoints": 634,
+				"adjustedHitRateBasisPoints": 8591,
+				"seedCohortHitRateBasisPoints": {
+					"p10": 8410,
+					"p50": 8530,
+					"p90": 8790
+				}
+			},
+			{
+				"matchupId": "agility-l40-mid-slower",
+				"level": 40,
+				"attributeSpread": "mid",
+				"direction": "slower",
+				"peerAgility": 35,
+				"attackerAgility": 1,
+				"trials": 10000,
+				"effectiveChanceShiftBasisPoints": -340,
+				"observedChanceShiftBasisPoints": -328,
+				"adjustedHitRateBasisPoints": 7714,
+				"seedCohortHitRateBasisPoints": {
+					"p10": 7630,
+					"p50": 7700,
+					"p90": 7770
+				}
+			},
+			{
+				"matchupId": "agility-l40-high-faster",
+				"level": 40,
+				"attributeSpread": "high",
+				"direction": "faster",
+				"peerAgility": 55,
+				"attackerAgility": 100,
+				"trials": 10000,
+				"effectiveChanceShiftBasisPoints": 450,
+				"observedChanceShiftBasisPoints": 490,
+				"adjustedHitRateBasisPoints": 8469,
+				"seedCohortHitRateBasisPoints": {
+					"p10": 8340,
+					"p50": 8460,
+					"p90": 8570
+				}
+			},
+			{
+				"matchupId": "agility-l40-high-slower",
+				"level": 40,
+				"attributeSpread": "high",
+				"direction": "slower",
+				"peerAgility": 55,
+				"attackerAgility": 1,
+				"trials": 10000,
+				"effectiveChanceShiftBasisPoints": -540,
+				"observedChanceShiftBasisPoints": -532,
+				"adjustedHitRateBasisPoints": 7489,
+				"seedCohortHitRateBasisPoints": {
+					"p10": 7310,
+					"p50": 7470,
+					"p90": 7610
+				}
+			},
+			{
+				"matchupId": "agility-l70-low-faster",
+				"level": 70,
+				"attributeSpread": "low",
+				"direction": "faster",
+				"peerAgility": 20,
+				"attackerAgility": 100,
+				"trials": 10000,
+				"effectiveChanceShiftBasisPoints": 800,
+				"observedChanceShiftBasisPoints": 820,
+				"adjustedHitRateBasisPoints": 8833,
+				"seedCohortHitRateBasisPoints": {
+					"p10": 8620,
+					"p50": 8820,
+					"p90": 8930
+				}
+			},
+			{
+				"matchupId": "agility-l70-low-slower",
+				"level": 70,
+				"attributeSpread": "low",
+				"direction": "slower",
+				"peerAgility": 20,
+				"attackerAgility": 1,
+				"trials": 10000,
+				"effectiveChanceShiftBasisPoints": -190,
+				"observedChanceShiftBasisPoints": -158,
+				"adjustedHitRateBasisPoints": 7879,
+				"seedCohortHitRateBasisPoints": {
+					"p10": 7780,
+					"p50": 7880,
+					"p90": 7960
+				}
+			},
+			{
+				"matchupId": "agility-l70-mid-faster",
+				"level": 70,
+				"attributeSpread": "mid",
+				"direction": "faster",
+				"peerAgility": 50,
+				"attackerAgility": 100,
+				"trials": 10000,
+				"effectiveChanceShiftBasisPoints": 500,
+				"observedChanceShiftBasisPoints": 479,
+				"adjustedHitRateBasisPoints": 8473,
+				"seedCohortHitRateBasisPoints": {
+					"p10": 8270,
+					"p50": 8450,
+					"p90": 8640
+				}
+			},
+			{
+				"matchupId": "agility-l70-mid-slower",
+				"level": 70,
+				"attributeSpread": "mid",
+				"direction": "slower",
+				"peerAgility": 50,
+				"attackerAgility": 1,
+				"trials": 10000,
+				"effectiveChanceShiftBasisPoints": -490,
+				"observedChanceShiftBasisPoints": -501,
+				"adjustedHitRateBasisPoints": 7500,
+				"seedCohortHitRateBasisPoints": {
+					"p10": 7260,
+					"p50": 7450,
+					"p90": 7610
+				}
+			},
+			{
+				"matchupId": "agility-l70-high-faster",
+				"level": 70,
+				"attributeSpread": "high",
+				"direction": "faster",
+				"peerAgility": 80,
+				"attackerAgility": 100,
+				"trials": 10000,
+				"effectiveChanceShiftBasisPoints": 200,
+				"observedChanceShiftBasisPoints": 196,
+				"adjustedHitRateBasisPoints": 8233,
+				"seedCohortHitRateBasisPoints": {
+					"p10": 8110,
+					"p50": 8250,
+					"p90": 8310
+				}
+			},
+			{
+				"matchupId": "agility-l70-high-slower",
+				"level": 70,
+				"attributeSpread": "high",
+				"direction": "slower",
+				"peerAgility": 80,
+				"attackerAgility": 1,
+				"trials": 10000,
+				"effectiveChanceShiftBasisPoints": -790,
+				"observedChanceShiftBasisPoints": -800,
+				"adjustedHitRateBasisPoints": 7213,
+				"seedCohortHitRateBasisPoints": {
+					"p10": 6970,
+					"p50": 7190,
+					"p90": 7360
+				}
+			},
+			{
+				"matchupId": "agility-l99-low-faster",
+				"level": 99,
+				"attributeSpread": "low",
+				"direction": "faster",
+				"peerAgility": 25,
+				"attackerAgility": 100,
+				"trials": 10000,
+				"effectiveChanceShiftBasisPoints": 750,
+				"observedChanceShiftBasisPoints": 742,
+				"adjustedHitRateBasisPoints": 8722,
+				"seedCohortHitRateBasisPoints": {
+					"p10": 8620,
+					"p50": 8700,
+					"p90": 8790
+				}
+			},
+			{
+				"matchupId": "agility-l99-low-slower",
+				"level": 99,
+				"attributeSpread": "low",
+				"direction": "slower",
+				"peerAgility": 25,
+				"attackerAgility": 1,
+				"trials": 10000,
+				"effectiveChanceShiftBasisPoints": -240,
+				"observedChanceShiftBasisPoints": -243,
+				"adjustedHitRateBasisPoints": 7775,
+				"seedCohortHitRateBasisPoints": {
+					"p10": 7480,
+					"p50": 7750,
+					"p90": 7970
+				}
+			},
+			{
+				"matchupId": "agility-l99-mid-faster",
+				"level": 99,
+				"attributeSpread": "mid",
+				"direction": "faster",
+				"peerAgility": 65,
+				"attackerAgility": 100,
+				"trials": 10000,
+				"effectiveChanceShiftBasisPoints": 350,
+				"observedChanceShiftBasisPoints": 353,
+				"adjustedHitRateBasisPoints": 8351,
+				"seedCohortHitRateBasisPoints": {
+					"p10": 8250,
+					"p50": 8360,
+					"p90": 8400
+				}
+			},
+			{
+				"matchupId": "agility-l99-mid-slower",
+				"level": 99,
+				"attributeSpread": "mid",
+				"direction": "slower",
+				"peerAgility": 65,
+				"attackerAgility": 1,
+				"trials": 10000,
+				"effectiveChanceShiftBasisPoints": -640,
+				"observedChanceShiftBasisPoints": -635,
+				"adjustedHitRateBasisPoints": 7271,
+				"seedCohortHitRateBasisPoints": {
+					"p10": 6900,
+					"p50": 7270,
+					"p90": 7420
+				}
+			},
+			{
+				"matchupId": "agility-l99-high-faster",
+				"level": 99,
+				"attributeSpread": "high",
+				"direction": "faster",
+				"peerAgility": 95,
+				"attackerAgility": 100,
+				"trials": 10000,
+				"effectiveChanceShiftBasisPoints": 50,
+				"observedChanceShiftBasisPoints": 60,
+				"adjustedHitRateBasisPoints": 7981,
+				"seedCohortHitRateBasisPoints": {
+					"p10": 7850,
+					"p50": 7990,
+					"p90": 8080
+				}
+			},
+			{
+				"matchupId": "agility-l99-high-slower",
+				"level": 99,
+				"attributeSpread": "high",
+				"direction": "slower",
+				"peerAgility": 95,
+				"attackerAgility": 1,
+				"trials": 10000,
+				"effectiveChanceShiftBasisPoints": -900,
+				"observedChanceShiftBasisPoints": -892,
+				"adjustedHitRateBasisPoints": 7149,
+				"seedCohortHitRateBasisPoints": {
+					"p10": 6930,
+					"p50": 7090,
+					"p90": 7300
+				}
+			}
+		],
+		"regeneration": [
+			{
+				"matchupId": "regeneration-l10-low-unarmoured",
+				"level": 10,
+				"attributeSpread": "low",
+				"armourState": "unarmoured",
+				"trials": 10000,
+				"combatHealthRegenerationDuringDelay": 0,
+				"combatHealthRegenerationPerTick": 1,
+				"sustainedPeerDamage": {
+					"mean": 10.381,
+					"p10": 0,
+					"p50": 13,
+					"p90": 14
+				}
+			},
+			{
+				"matchupId": "regeneration-l10-low-armoured",
+				"level": 10,
+				"attributeSpread": "low",
+				"armourState": "armoured",
+				"trials": 10000,
+				"combatHealthRegenerationDuringDelay": 0,
+				"combatHealthRegenerationPerTick": 1,
+				"sustainedPeerDamage": {
+					"mean": 4.805,
+					"p10": 0,
+					"p50": 6,
+					"p90": 6
+				}
+			},
+			{
+				"matchupId": "regeneration-l10-mid-unarmoured",
+				"level": 10,
+				"attributeSpread": "mid",
+				"armourState": "unarmoured",
+				"trials": 10000,
+				"combatHealthRegenerationDuringDelay": 0,
+				"combatHealthRegenerationPerTick": 1,
+				"sustainedPeerDamage": {
+					"mean": 11.188,
+					"p10": 0,
+					"p50": 14,
+					"p90": 15
+				}
+			},
+			{
+				"matchupId": "regeneration-l10-mid-armoured",
+				"level": 10,
+				"attributeSpread": "mid",
+				"armourState": "armoured",
+				"trials": 10000,
+				"combatHealthRegenerationDuringDelay": 0,
+				"combatHealthRegenerationPerTick": 1,
+				"sustainedPeerDamage": {
+					"mean": 5.081,
+					"p10": 0,
+					"p50": 6,
+					"p90": 7
+				}
+			},
+			{
+				"matchupId": "regeneration-l10-high-unarmoured",
+				"level": 10,
+				"attributeSpread": "high",
+				"armourState": "unarmoured",
+				"trials": 10000,
+				"combatHealthRegenerationDuringDelay": 0,
+				"combatHealthRegenerationPerTick": 1,
+				"sustainedPeerDamage": {
+					"mean": 12.784,
+					"p10": 0,
+					"p50": 16,
+					"p90": 17
+				}
+			},
+			{
+				"matchupId": "regeneration-l10-high-armoured",
+				"level": 10,
+				"attributeSpread": "high",
+				"armourState": "armoured",
+				"trials": 10000,
+				"combatHealthRegenerationDuringDelay": 0,
+				"combatHealthRegenerationPerTick": 1,
+				"sustainedPeerDamage": {
+					"mean": 5.773,
+					"p10": 0,
+					"p50": 7,
+					"p90": 8
+				}
+			},
+			{
+				"matchupId": "regeneration-l40-low-unarmoured",
+				"level": 40,
+				"attributeSpread": "low",
+				"armourState": "unarmoured",
+				"trials": 10000,
+				"combatHealthRegenerationDuringDelay": 0,
+				"combatHealthRegenerationPerTick": 1,
+				"sustainedPeerDamage": {
+					"mean": 16.732,
+					"p10": 0,
+					"p50": 20,
+					"p90": 23
+				}
+			},
+			{
+				"matchupId": "regeneration-l40-low-armoured",
+				"level": 40,
+				"attributeSpread": "low",
+				"armourState": "armoured",
+				"trials": 10000,
+				"combatHealthRegenerationDuringDelay": 0,
+				"combatHealthRegenerationPerTick": 1,
+				"sustainedPeerDamage": {
+					"mean": 7.861,
+					"p10": 0,
+					"p50": 9,
+					"p90": 11
+				}
+			},
+			{
+				"matchupId": "regeneration-l40-mid-unarmoured",
+				"level": 40,
+				"attributeSpread": "mid",
+				"armourState": "unarmoured",
+				"trials": 10000,
+				"combatHealthRegenerationDuringDelay": 0,
+				"combatHealthRegenerationPerTick": 1,
+				"sustainedPeerDamage": {
+					"mean": 19.291,
+					"p10": 0,
+					"p50": 23,
+					"p90": 26
+				}
+			},
+			{
+				"matchupId": "regeneration-l40-mid-armoured",
+				"level": 40,
+				"attributeSpread": "mid",
+				"armourState": "armoured",
+				"trials": 10000,
+				"combatHealthRegenerationDuringDelay": 0,
+				"combatHealthRegenerationPerTick": 1,
+				"sustainedPeerDamage": {
+					"mean": 8.972,
+					"p10": 0,
+					"p50": 11,
+					"p90": 12
+				}
+			},
+			{
+				"matchupId": "regeneration-l40-high-unarmoured",
+				"level": 40,
+				"attributeSpread": "high",
+				"armourState": "unarmoured",
+				"trials": 10000,
+				"combatHealthRegenerationDuringDelay": 0,
+				"combatHealthRegenerationPerTick": 1,
+				"sustainedPeerDamage": {
+					"mean": 22.425,
+					"p10": 0,
+					"p50": 27,
+					"p90": 30
+				}
+			},
+			{
+				"matchupId": "regeneration-l40-high-armoured",
+				"level": 40,
+				"attributeSpread": "high",
+				"armourState": "armoured",
+				"trials": 10000,
+				"combatHealthRegenerationDuringDelay": 0,
+				"combatHealthRegenerationPerTick": 1,
+				"sustainedPeerDamage": {
+					"mean": 10.632,
+					"p10": 0,
+					"p50": 13,
+					"p90": 14
+				}
+			},
+			{
+				"matchupId": "regeneration-l70-low-unarmoured",
+				"level": 70,
+				"attributeSpread": "low",
+				"armourState": "unarmoured",
+				"trials": 10000,
+				"combatHealthRegenerationDuringDelay": 0,
+				"combatHealthRegenerationPerTick": 1,
+				"sustainedPeerDamage": {
+					"mean": 23.235,
+					"p10": 0,
+					"p50": 28,
+					"p90": 31
+				}
+			},
+			{
+				"matchupId": "regeneration-l70-low-armoured",
+				"level": 70,
+				"attributeSpread": "low",
+				"armourState": "armoured",
+				"trials": 10000,
+				"combatHealthRegenerationDuringDelay": 0,
+				"combatHealthRegenerationPerTick": 1,
+				"sustainedPeerDamage": {
+					"mean": 11.031,
+					"p10": 0,
+					"p50": 13,
+					"p90": 15
+				}
+			},
+			{
+				"matchupId": "regeneration-l70-mid-unarmoured",
+				"level": 70,
+				"attributeSpread": "mid",
+				"armourState": "unarmoured",
+				"trials": 10000,
+				"combatHealthRegenerationDuringDelay": 0,
+				"combatHealthRegenerationPerTick": 1,
+				"sustainedPeerDamage": {
+					"mean": 28.757,
+					"p10": 0,
+					"p50": 35,
+					"p90": 39
+				}
+			},
+			{
+				"matchupId": "regeneration-l70-mid-armoured",
+				"level": 70,
+				"attributeSpread": "mid",
+				"armourState": "armoured",
+				"trials": 10000,
+				"combatHealthRegenerationDuringDelay": 0,
+				"combatHealthRegenerationPerTick": 1,
+				"sustainedPeerDamage": {
+					"mean": 13.524,
+					"p10": 0,
+					"p50": 17,
+					"p90": 18
+				}
+			},
+			{
+				"matchupId": "regeneration-l70-high-unarmoured",
+				"level": 70,
+				"attributeSpread": "high",
+				"armourState": "unarmoured",
+				"trials": 10000,
+				"combatHealthRegenerationDuringDelay": 0,
+				"combatHealthRegenerationPerTick": 2,
+				"sustainedPeerDamage": {
+					"mean": 34.422,
+					"p10": 0,
+					"p50": 42,
+					"p90": 46
+				}
+			},
+			{
+				"matchupId": "regeneration-l70-high-armoured",
+				"level": 70,
+				"attributeSpread": "high",
+				"armourState": "armoured",
+				"trials": 10000,
+				"combatHealthRegenerationDuringDelay": 0,
+				"combatHealthRegenerationPerTick": 2,
+				"sustainedPeerDamage": {
+					"mean": 15.799,
+					"p10": 0,
+					"p50": 19,
+					"p90": 21
+				}
+			},
+			{
+				"matchupId": "regeneration-l99-low-unarmoured",
+				"level": 99,
+				"attributeSpread": "low",
+				"armourState": "unarmoured",
+				"trials": 10000,
+				"combatHealthRegenerationDuringDelay": 0,
+				"combatHealthRegenerationPerTick": 1,
+				"sustainedPeerDamage": {
+					"mean": 30.315,
+					"p10": 0,
+					"p50": 37,
+					"p90": 41
+				}
+			},
+			{
+				"matchupId": "regeneration-l99-low-armoured",
+				"level": 99,
+				"attributeSpread": "low",
+				"armourState": "armoured",
+				"trials": 10000,
+				"combatHealthRegenerationDuringDelay": 0,
+				"combatHealthRegenerationPerTick": 1,
+				"sustainedPeerDamage": {
+					"mean": 14.022,
+					"p10": 0,
+					"p50": 17,
+					"p90": 19
+				}
+			},
+			{
+				"matchupId": "regeneration-l99-mid-unarmoured",
+				"level": 99,
+				"attributeSpread": "mid",
+				"armourState": "unarmoured",
+				"trials": 10000,
+				"combatHealthRegenerationDuringDelay": 0,
+				"combatHealthRegenerationPerTick": 2,
+				"sustainedPeerDamage": {
+					"mean": 39.808,
+					"p10": 0,
+					"p50": 49,
+					"p90": 54
+				}
+			},
+			{
+				"matchupId": "regeneration-l99-mid-armoured",
+				"level": 99,
+				"attributeSpread": "mid",
+				"armourState": "armoured",
+				"trials": 10000,
+				"combatHealthRegenerationDuringDelay": 0,
+				"combatHealthRegenerationPerTick": 2,
+				"sustainedPeerDamage": {
+					"mean": 18.513,
+					"p10": 0,
+					"p50": 23,
+					"p90": 25
+				}
+			},
+			{
+				"matchupId": "regeneration-l99-high-unarmoured",
+				"level": 99,
+				"attributeSpread": "high",
+				"armourState": "unarmoured",
+				"trials": 10000,
+				"combatHealthRegenerationDuringDelay": 0,
+				"combatHealthRegenerationPerTick": 2,
+				"sustainedPeerDamage": {
+					"mean": 47.216,
+					"p10": 0,
+					"p50": 58,
+					"p90": 63
+				}
+			},
+			{
+				"matchupId": "regeneration-l99-high-armoured",
+				"level": 99,
+				"attributeSpread": "high",
+				"armourState": "armoured",
+				"trials": 10000,
+				"combatHealthRegenerationDuringDelay": 0,
+				"combatHealthRegenerationPerTick": 2,
+				"sustainedPeerDamage": {
+					"mean": 22.082,
+					"p10": 0,
+					"p50": 27,
+					"p90": 29
+				}
+			}
+		],
+		"affinity": [
+			{
+				"matchupId": "affinity-l10-low-fire-caster",
+				"level": 10,
+				"attributeSpread": "low",
+				"archetype": "fire-caster",
+				"matchedAffinity": {
+					"affinity": "water",
+					"trials": 10000,
+					"completionActions": {
+						"p10": 12,
+						"p50": 14,
+						"p90": 16
+					}
+				},
+				"offAffinity": {
+					"affinity": "fire",
+					"trials": 10000,
+					"completionActions": {
+						"p10": 12,
+						"p50": 14,
+						"p90": 16
+					}
+				},
+				"medianCompletionTimeRatioBasisPoints": 10000
+			},
+			{
+				"matchupId": "affinity-l10-low-water-martial",
+				"level": 10,
+				"attributeSpread": "low",
+				"archetype": "water-martial",
+				"matchedAffinity": {
+					"affinity": "fire",
+					"trials": 10000,
+					"completionActions": {
+						"p10": 12,
+						"p50": 14,
+						"p90": 16
+					}
+				},
+				"offAffinity": {
+					"affinity": "water",
+					"trials": 10000,
+					"completionActions": {
+						"p10": 12,
+						"p50": 14,
+						"p90": 16
+					}
+				},
+				"medianCompletionTimeRatioBasisPoints": 10000
+			},
+			{
+				"matchupId": "affinity-l10-mid-fire-caster",
+				"level": 10,
+				"attributeSpread": "mid",
+				"archetype": "fire-caster",
+				"matchedAffinity": {
+					"affinity": "water",
+					"trials": 10000,
+					"completionActions": {
+						"p10": 14,
+						"p50": 16,
+						"p90": 19
+					}
+				},
+				"offAffinity": {
+					"affinity": "fire",
+					"trials": 10000,
+					"completionActions": {
+						"p10": 14,
+						"p50": 16,
+						"p90": 19
+					}
+				},
+				"medianCompletionTimeRatioBasisPoints": 10000
+			},
+			{
+				"matchupId": "affinity-l10-mid-water-martial",
+				"level": 10,
+				"attributeSpread": "mid",
+				"archetype": "water-martial",
+				"matchedAffinity": {
+					"affinity": "fire",
+					"trials": 10000,
+					"completionActions": {
+						"p10": 14,
+						"p50": 16,
+						"p90": 19
+					}
+				},
+				"offAffinity": {
+					"affinity": "water",
+					"trials": 10000,
+					"completionActions": {
+						"p10": 14,
+						"p50": 16,
+						"p90": 19
+					}
+				},
+				"medianCompletionTimeRatioBasisPoints": 10000
+			},
+			{
+				"matchupId": "affinity-l10-high-fire-caster",
+				"level": 10,
+				"attributeSpread": "high",
+				"archetype": "fire-caster",
+				"matchedAffinity": {
+					"affinity": "water",
+					"trials": 10000,
+					"completionActions": {
+						"p10": 15,
+						"p50": 17,
+						"p90": 20
+					}
+				},
+				"offAffinity": {
+					"affinity": "fire",
+					"trials": 10000,
+					"completionActions": {
+						"p10": 15,
+						"p50": 17,
+						"p90": 21
+					}
+				},
+				"medianCompletionTimeRatioBasisPoints": 10000
+			},
+			{
+				"matchupId": "affinity-l10-high-water-martial",
+				"level": 10,
+				"attributeSpread": "high",
+				"archetype": "water-martial",
+				"matchedAffinity": {
+					"affinity": "fire",
+					"trials": 10000,
+					"completionActions": {
+						"p10": 15,
+						"p50": 17,
+						"p90": 20
+					}
+				},
+				"offAffinity": {
+					"affinity": "water",
+					"trials": 10000,
+					"completionActions": {
+						"p10": 15,
+						"p50": 17,
+						"p90": 20
+					}
+				},
+				"medianCompletionTimeRatioBasisPoints": 10000
+			},
+			{
+				"matchupId": "affinity-l40-low-fire-caster",
+				"level": 40,
+				"attributeSpread": "low",
+				"archetype": "fire-caster",
+				"matchedAffinity": {
+					"affinity": "water",
+					"trials": 10000,
+					"completionActions": {
+						"p10": 8,
+						"p50": 10,
+						"p90": 12
+					}
+				},
+				"offAffinity": {
+					"affinity": "fire",
+					"trials": 10000,
+					"completionActions": {
+						"p10": 8,
+						"p50": 10,
+						"p90": 12
+					}
+				},
+				"medianCompletionTimeRatioBasisPoints": 10000
+			},
+			{
+				"matchupId": "affinity-l40-low-water-martial",
+				"level": 40,
+				"attributeSpread": "low",
+				"archetype": "water-martial",
+				"matchedAffinity": {
+					"affinity": "fire",
+					"trials": 10000,
+					"completionActions": {
+						"p10": 8,
+						"p50": 10,
+						"p90": 12
+					}
+				},
+				"offAffinity": {
+					"affinity": "water",
+					"trials": 10000,
+					"completionActions": {
+						"p10": 8,
+						"p50": 10,
+						"p90": 12
+					}
+				},
+				"medianCompletionTimeRatioBasisPoints": 10000
+			},
+			{
+				"matchupId": "affinity-l40-mid-fire-caster",
+				"level": 40,
+				"attributeSpread": "mid",
+				"archetype": "fire-caster",
+				"matchedAffinity": {
+					"affinity": "water",
+					"trials": 10000,
+					"completionActions": {
+						"p10": 10,
+						"p50": 12,
+						"p90": 15
+					}
+				},
+				"offAffinity": {
+					"affinity": "fire",
+					"trials": 10000,
+					"completionActions": {
+						"p10": 11,
+						"p50": 13,
+						"p90": 16
+					}
+				},
+				"medianCompletionTimeRatioBasisPoints": 10833
+			},
+			{
+				"matchupId": "affinity-l40-mid-water-martial",
+				"level": 40,
+				"attributeSpread": "mid",
+				"archetype": "water-martial",
+				"matchedAffinity": {
+					"affinity": "fire",
+					"trials": 10000,
+					"completionActions": {
+						"p10": 10,
+						"p50": 12,
+						"p90": 15
+					}
+				},
+				"offAffinity": {
+					"affinity": "water",
+					"trials": 10000,
+					"completionActions": {
+						"p10": 11,
+						"p50": 13,
+						"p90": 16
+					}
+				},
+				"medianCompletionTimeRatioBasisPoints": 10833
+			},
+			{
+				"matchupId": "affinity-l40-high-fire-caster",
+				"level": 40,
+				"attributeSpread": "high",
+				"archetype": "fire-caster",
+				"matchedAffinity": {
+					"affinity": "water",
+					"trials": 10000,
+					"completionActions": {
+						"p10": 12,
+						"p50": 14,
+						"p90": 17
+					}
+				},
+				"offAffinity": {
+					"affinity": "fire",
+					"trials": 10000,
+					"completionActions": {
+						"p10": 13,
+						"p50": 15,
+						"p90": 18
+					}
+				},
+				"medianCompletionTimeRatioBasisPoints": 10714
+			},
+			{
+				"matchupId": "affinity-l40-high-water-martial",
+				"level": 40,
+				"attributeSpread": "high",
+				"archetype": "water-martial",
+				"matchedAffinity": {
+					"affinity": "fire",
+					"trials": 10000,
+					"completionActions": {
+						"p10": 12,
+						"p50": 14,
+						"p90": 17
+					}
+				},
+				"offAffinity": {
+					"affinity": "water",
+					"trials": 10000,
+					"completionActions": {
+						"p10": 13,
+						"p50": 15,
+						"p90": 18
+					}
+				},
+				"medianCompletionTimeRatioBasisPoints": 10714
+			},
+			{
+				"matchupId": "affinity-l70-low-fire-caster",
+				"level": 70,
+				"attributeSpread": "low",
+				"archetype": "fire-caster",
+				"matchedAffinity": {
+					"affinity": "water",
+					"trials": 10000,
+					"completionActions": {
+						"p10": 6,
+						"p50": 8,
+						"p90": 10
+					}
+				},
+				"offAffinity": {
+					"affinity": "fire",
+					"trials": 10000,
+					"completionActions": {
+						"p10": 7,
+						"p50": 8,
+						"p90": 11
+					}
+				},
+				"medianCompletionTimeRatioBasisPoints": 10000
+			},
+			{
+				"matchupId": "affinity-l70-low-water-martial",
+				"level": 70,
+				"attributeSpread": "low",
+				"archetype": "water-martial",
+				"matchedAffinity": {
+					"affinity": "fire",
+					"trials": 10000,
+					"completionActions": {
+						"p10": 6,
+						"p50": 8,
+						"p90": 10
+					}
+				},
+				"offAffinity": {
+					"affinity": "water",
+					"trials": 10000,
+					"completionActions": {
+						"p10": 7,
+						"p50": 8,
+						"p90": 11
+					}
+				},
+				"medianCompletionTimeRatioBasisPoints": 10000
+			},
+			{
+				"matchupId": "affinity-l70-mid-fire-caster",
+				"level": 70,
+				"attributeSpread": "mid",
+				"archetype": "fire-caster",
+				"matchedAffinity": {
+					"affinity": "water",
+					"trials": 10000,
+					"completionActions": {
+						"p10": 9,
+						"p50": 11,
+						"p90": 13
+					}
+				},
+				"offAffinity": {
+					"affinity": "fire",
+					"trials": 10000,
+					"completionActions": {
+						"p10": 9,
+						"p50": 11,
+						"p90": 14
+					}
+				},
+				"medianCompletionTimeRatioBasisPoints": 10000
+			},
+			{
+				"matchupId": "affinity-l70-mid-water-martial",
+				"level": 70,
+				"attributeSpread": "mid",
+				"archetype": "water-martial",
+				"matchedAffinity": {
+					"affinity": "fire",
+					"trials": 10000,
+					"completionActions": {
+						"p10": 9,
+						"p50": 11,
+						"p90": 13
+					}
+				},
+				"offAffinity": {
+					"affinity": "water",
+					"trials": 10000,
+					"completionActions": {
+						"p10": 9,
+						"p50": 11,
+						"p90": 14
+					}
+				},
+				"medianCompletionTimeRatioBasisPoints": 10000
+			},
+			{
+				"matchupId": "affinity-l70-high-fire-caster",
+				"level": 70,
+				"attributeSpread": "high",
+				"archetype": "fire-caster",
+				"matchedAffinity": {
+					"affinity": "water",
+					"trials": 10000,
+					"completionActions": {
+						"p10": 10,
+						"p50": 12,
+						"p90": 15
+					}
+				},
+				"offAffinity": {
+					"affinity": "fire",
+					"trials": 10000,
+					"completionActions": {
+						"p10": 11,
+						"p50": 12,
+						"p90": 15
+					}
+				},
+				"medianCompletionTimeRatioBasisPoints": 10000
+			},
+			{
+				"matchupId": "affinity-l70-high-water-martial",
+				"level": 70,
+				"attributeSpread": "high",
+				"archetype": "water-martial",
+				"matchedAffinity": {
+					"affinity": "fire",
+					"trials": 10000,
+					"completionActions": {
+						"p10": 10,
+						"p50": 12,
+						"p90": 15
+					}
+				},
+				"offAffinity": {
+					"affinity": "water",
+					"trials": 10000,
+					"completionActions": {
+						"p10": 11,
+						"p50": 12,
+						"p90": 15
+					}
+				},
+				"medianCompletionTimeRatioBasisPoints": 10000
+			},
+			{
+				"matchupId": "affinity-l99-low-fire-caster",
+				"level": 99,
+				"attributeSpread": "low",
+				"archetype": "fire-caster",
+				"matchedAffinity": {
+					"affinity": "water",
+					"trials": 10000,
+					"completionActions": {
+						"p10": 6,
+						"p50": 7,
+						"p90": 9
+					}
+				},
+				"offAffinity": {
+					"affinity": "fire",
+					"trials": 10000,
+					"completionActions": {
+						"p10": 6,
+						"p50": 7,
+						"p90": 9
+					}
+				},
+				"medianCompletionTimeRatioBasisPoints": 10000
+			},
+			{
+				"matchupId": "affinity-l99-low-water-martial",
+				"level": 99,
+				"attributeSpread": "low",
+				"archetype": "water-martial",
+				"matchedAffinity": {
+					"affinity": "fire",
+					"trials": 10000,
+					"completionActions": {
+						"p10": 6,
+						"p50": 7,
+						"p90": 9
+					}
+				},
+				"offAffinity": {
+					"affinity": "water",
+					"trials": 10000,
+					"completionActions": {
+						"p10": 6,
+						"p50": 7,
+						"p90": 9
+					}
+				},
+				"medianCompletionTimeRatioBasisPoints": 10000
+			},
+			{
+				"matchupId": "affinity-l99-mid-fire-caster",
+				"level": 99,
+				"attributeSpread": "mid",
+				"archetype": "fire-caster",
+				"matchedAffinity": {
+					"affinity": "water",
+					"trials": 10000,
+					"completionActions": {
+						"p10": 7,
+						"p50": 9,
+						"p90": 11
+					}
+				},
+				"offAffinity": {
+					"affinity": "fire",
+					"trials": 10000,
+					"completionActions": {
+						"p10": 8,
+						"p50": 10,
+						"p90": 12
+					}
+				},
+				"medianCompletionTimeRatioBasisPoints": 11111
+			},
+			{
+				"matchupId": "affinity-l99-mid-water-martial",
+				"level": 99,
+				"attributeSpread": "mid",
+				"archetype": "water-martial",
+				"matchedAffinity": {
+					"affinity": "fire",
+					"trials": 10000,
+					"completionActions": {
+						"p10": 7,
+						"p50": 9,
+						"p90": 11
+					}
+				},
+				"offAffinity": {
+					"affinity": "water",
+					"trials": 10000,
+					"completionActions": {
+						"p10": 8,
+						"p50": 10,
+						"p90": 12
+					}
+				},
+				"medianCompletionTimeRatioBasisPoints": 11111
+			},
+			{
+				"matchupId": "affinity-l99-high-fire-caster",
+				"level": 99,
+				"attributeSpread": "high",
+				"archetype": "fire-caster",
+				"matchedAffinity": {
+					"affinity": "water",
+					"trials": 10000,
+					"completionActions": {
+						"p10": 8,
+						"p50": 10,
+						"p90": 12
+					}
+				},
+				"offAffinity": {
+					"affinity": "fire",
+					"trials": 10000,
+					"completionActions": {
+						"p10": 9,
+						"p50": 11,
+						"p90": 13
+					}
+				},
+				"medianCompletionTimeRatioBasisPoints": 11000
+			},
+			{
+				"matchupId": "affinity-l99-high-water-martial",
+				"level": 99,
+				"attributeSpread": "high",
+				"archetype": "water-martial",
+				"matchedAffinity": {
+					"affinity": "fire",
+					"trials": 10000,
+					"completionActions": {
+						"p10": 8,
+						"p50": 10,
+						"p90": 12
+					}
+				},
+				"offAffinity": {
+					"affinity": "water",
+					"trials": 10000,
+					"completionActions": {
+						"p10": 9,
+						"p50": 11,
+						"p90": 13
+					}
+				},
+				"medianCompletionTimeRatioBasisPoints": 11000
+			}
+		],
+		"armour": [
+			{
+				"matchupId": "armour-l10-low",
+				"level": 10,
+				"attributeSpread": "low",
+				"trials": 10000,
+				"reductionCurve": [
+					{
+						"armour": 0,
+						"reductionBasisPoints": 0
+					},
+					{
+						"armour": 25,
+						"reductionBasisPoints": 2000
+					},
+					{
+						"armour": 50,
+						"reductionBasisPoints": 3333
+					},
+					{
+						"armour": 100,
+						"reductionBasisPoints": 5000
+					},
+					{
+						"armour": 150,
+						"reductionBasisPoints": 6000
+					},
+					{
+						"armour": 250,
+						"reductionBasisPoints": 7143
+					}
+				],
+				"damageAfterArmour": {
+					"mean": 2.939,
+					"p10": 0,
+					"p50": 4,
+					"p90": 4
+				}
+			},
+			{
+				"matchupId": "armour-l10-mid",
+				"level": 10,
+				"attributeSpread": "mid",
+				"trials": 10000,
+				"reductionCurve": [
+					{
+						"armour": 0,
+						"reductionBasisPoints": 0
+					},
+					{
+						"armour": 25,
+						"reductionBasisPoints": 2000
+					},
+					{
+						"armour": 50,
+						"reductionBasisPoints": 3333
+					},
+					{
+						"armour": 100,
+						"reductionBasisPoints": 5000
+					},
+					{
+						"armour": 150,
+						"reductionBasisPoints": 6000
+					},
+					{
+						"armour": 250,
+						"reductionBasisPoints": 7143
+					}
+				],
+				"damageAfterArmour": {
+					"mean": 3.202,
+					"p10": 0,
+					"p50": 4,
+					"p90": 4
+				}
+			},
+			{
+				"matchupId": "armour-l10-high",
+				"level": 10,
+				"attributeSpread": "high",
+				"trials": 10000,
+				"reductionCurve": [
+					{
+						"armour": 0,
+						"reductionBasisPoints": 0
+					},
+					{
+						"armour": 25,
+						"reductionBasisPoints": 2000
+					},
+					{
+						"armour": 50,
+						"reductionBasisPoints": 3333
+					},
+					{
+						"armour": 100,
+						"reductionBasisPoints": 5000
+					},
+					{
+						"armour": 150,
+						"reductionBasisPoints": 6000
+					},
+					{
+						"armour": 250,
+						"reductionBasisPoints": 7143
+					}
+				],
+				"damageAfterArmour": {
+					"mean": 3.712,
+					"p10": 0,
+					"p50": 5,
+					"p90": 5
+				}
+			},
+			{
+				"matchupId": "armour-l40-low",
+				"level": 40,
+				"attributeSpread": "low",
+				"trials": 10000,
+				"reductionCurve": [
+					{
+						"armour": 0,
+						"reductionBasisPoints": 0
+					},
+					{
+						"armour": 25,
+						"reductionBasisPoints": 2000
+					},
+					{
+						"armour": 50,
+						"reductionBasisPoints": 3333
+					},
+					{
+						"armour": 100,
+						"reductionBasisPoints": 5000
+					},
+					{
+						"armour": 150,
+						"reductionBasisPoints": 6000
+					},
+					{
+						"armour": 250,
+						"reductionBasisPoints": 7143
+					}
+				],
+				"damageAfterArmour": {
+					"mean": 4.789,
+					"p10": 0,
+					"p50": 6,
+					"p90": 7
+				}
+			},
+			{
+				"matchupId": "armour-l40-mid",
+				"level": 40,
+				"attributeSpread": "mid",
+				"trials": 10000,
+				"reductionCurve": [
+					{
+						"armour": 0,
+						"reductionBasisPoints": 0
+					},
+					{
+						"armour": 25,
+						"reductionBasisPoints": 2000
+					},
+					{
+						"armour": 50,
+						"reductionBasisPoints": 3333
+					},
+					{
+						"armour": 100,
+						"reductionBasisPoints": 5000
+					},
+					{
+						"armour": 150,
+						"reductionBasisPoints": 6000
+					},
+					{
+						"armour": 250,
+						"reductionBasisPoints": 7143
+					}
+				],
+				"damageAfterArmour": {
+					"mean": 5.47,
+					"p10": 0,
+					"p50": 7,
+					"p90": 7
+				}
+			},
+			{
+				"matchupId": "armour-l40-high",
+				"level": 40,
+				"attributeSpread": "high",
+				"trials": 10000,
+				"reductionCurve": [
+					{
+						"armour": 0,
+						"reductionBasisPoints": 0
+					},
+					{
+						"armour": 25,
+						"reductionBasisPoints": 2000
+					},
+					{
+						"armour": 50,
+						"reductionBasisPoints": 3333
+					},
+					{
+						"armour": 100,
+						"reductionBasisPoints": 5000
+					},
+					{
+						"armour": 150,
+						"reductionBasisPoints": 6000
+					},
+					{
+						"armour": 250,
+						"reductionBasisPoints": 7143
+					}
+				],
+				"damageAfterArmour": {
+					"mean": 6.398,
+					"p10": 0,
+					"p50": 8,
+					"p90": 9
+				}
+			},
+			{
+				"matchupId": "armour-l70-low",
+				"level": 70,
+				"attributeSpread": "low",
+				"trials": 10000,
+				"reductionCurve": [
+					{
+						"armour": 0,
+						"reductionBasisPoints": 0
+					},
+					{
+						"armour": 25,
+						"reductionBasisPoints": 2000
+					},
+					{
+						"armour": 50,
+						"reductionBasisPoints": 3333
+					},
+					{
+						"armour": 100,
+						"reductionBasisPoints": 5000
+					},
+					{
+						"armour": 150,
+						"reductionBasisPoints": 6000
+					},
+					{
+						"armour": 250,
+						"reductionBasisPoints": 7143
+					}
+				],
+				"damageAfterArmour": {
+					"mean": 6.622,
+					"p10": 0,
+					"p50": 8,
+					"p90": 9
+				}
+			},
+			{
+				"matchupId": "armour-l70-mid",
+				"level": 70,
+				"attributeSpread": "mid",
+				"trials": 10000,
+				"reductionCurve": [
+					{
+						"armour": 0,
+						"reductionBasisPoints": 0
+					},
+					{
+						"armour": 25,
+						"reductionBasisPoints": 2000
+					},
+					{
+						"armour": 50,
+						"reductionBasisPoints": 3333
+					},
+					{
+						"armour": 100,
+						"reductionBasisPoints": 5000
+					},
+					{
+						"armour": 150,
+						"reductionBasisPoints": 6000
+					},
+					{
+						"armour": 250,
+						"reductionBasisPoints": 7143
+					}
+				],
+				"damageAfterArmour": {
+					"mean": 8.235,
+					"p10": 0,
+					"p50": 10,
+					"p90": 11
+				}
+			},
+			{
+				"matchupId": "armour-l70-high",
+				"level": 70,
+				"attributeSpread": "high",
+				"trials": 10000,
+				"reductionCurve": [
+					{
+						"armour": 0,
+						"reductionBasisPoints": 0
+					},
+					{
+						"armour": 25,
+						"reductionBasisPoints": 2000
+					},
+					{
+						"armour": 50,
+						"reductionBasisPoints": 3333
+					},
+					{
+						"armour": 100,
+						"reductionBasisPoints": 5000
+					},
+					{
+						"armour": 150,
+						"reductionBasisPoints": 6000
+					},
+					{
+						"armour": 250,
+						"reductionBasisPoints": 7143
+					}
+				],
+				"damageAfterArmour": {
+					"mean": 9.933,
+					"p10": 0,
+					"p50": 12,
+					"p90": 13
+				}
+			},
+			{
+				"matchupId": "armour-l99-low",
+				"level": 99,
+				"attributeSpread": "low",
+				"trials": 10000,
+				"reductionCurve": [
+					{
+						"armour": 0,
+						"reductionBasisPoints": 0
+					},
+					{
+						"armour": 25,
+						"reductionBasisPoints": 2000
+					},
+					{
+						"armour": 50,
+						"reductionBasisPoints": 3333
+					},
+					{
+						"armour": 100,
+						"reductionBasisPoints": 5000
+					},
+					{
+						"armour": 150,
+						"reductionBasisPoints": 6000
+					},
+					{
+						"armour": 250,
+						"reductionBasisPoints": 7143
+					}
+				],
+				"damageAfterArmour": {
+					"mean": 8.647,
+					"p10": 0,
+					"p50": 11,
+					"p90": 12
+				}
+			},
+			{
+				"matchupId": "armour-l99-mid",
+				"level": 99,
+				"attributeSpread": "mid",
+				"trials": 10000,
+				"reductionCurve": [
+					{
+						"armour": 0,
+						"reductionBasisPoints": 0
+					},
+					{
+						"armour": 25,
+						"reductionBasisPoints": 2000
+					},
+					{
+						"armour": 50,
+						"reductionBasisPoints": 3333
+					},
+					{
+						"armour": 100,
+						"reductionBasisPoints": 5000
+					},
+					{
+						"armour": 150,
+						"reductionBasisPoints": 6000
+					},
+					{
+						"armour": 250,
+						"reductionBasisPoints": 7143
+					}
+				],
+				"damageAfterArmour": {
+					"mean": 11.377,
+					"p10": 0,
+					"p50": 14,
+					"p90": 15
+				}
+			},
+			{
+				"matchupId": "armour-l99-high",
+				"level": 99,
+				"attributeSpread": "high",
+				"trials": 10000,
+				"reductionCurve": [
+					{
+						"armour": 0,
+						"reductionBasisPoints": 0
+					},
+					{
+						"armour": 25,
+						"reductionBasisPoints": 2000
+					},
+					{
+						"armour": 50,
+						"reductionBasisPoints": 3333
+					},
+					{
+						"armour": 100,
+						"reductionBasisPoints": 5000
+					},
+					{
+						"armour": 150,
+						"reductionBasisPoints": 6000
+					},
+					{
+						"armour": 250,
+						"reductionBasisPoints": 7143
+					}
+				],
+				"damageAfterArmour": {
+					"mean": 13.379,
+					"p10": 0,
+					"p50": 16,
+					"p90": 18
+				}
+			}
+		]
+	}
+}
