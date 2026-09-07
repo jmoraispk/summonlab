@@ -37,7 +37,6 @@ const SEED_SET = [
 	'0x38d01377'
 ] as const;
 
-const TRIALS_PER_SEED = BALANCE_TRIALS_PER_MATCHUP / SEED_SET.length;
 const BASIS_POINTS = 10_000;
 const HEAVY_ARMOUR_DEFINITION_ID = 'equipment-iron-heavy-armour-torso' as const;
 
@@ -57,8 +56,19 @@ function deepFreeze<T>(value: T): T {
 const BALANCE_SIMULATION_PROFILE_V1 = deepFreeze({
 	profileVersion: 'combat-balance-simulation-profile-v1',
 	calibrationStatus: 'benchmark-promotion-candidate',
+	arithmetic: {
+		basisPointScale: BASIS_POINTS,
+		integerDivisionRounding: 'half-up',
+		summaryMeanDecimalPlaces: 3
+	},
 	randomness: {
 		version: 'sha256-seeded-xorshift32-v1',
+		seedMaterial: 'canonical-object-of-randomness-version-matchup-id-and-seed',
+		seedDigestHexStart: 0,
+		seedDigestHexLength: 8,
+		seedDigestRadix: 16,
+		seedCohortAllocation: 'equal',
+		outputUnsignedRightShiftBits: 0,
 		xorshift32: {
 			firstLeftShift: 13,
 			rightShift: 17,
@@ -74,43 +84,103 @@ const BALANCE_SIMULATION_PROFILE_V1 = deepFreeze({
 	percentileFractions: { p10: 0.1, p50: 0.5, p90: 0.9 },
 	seedSet: SEED_SET,
 	masteryFixtures: { novice: 0, trained: 50, mastered: 100 },
+	masteryResolution: 'greatest-minimum-mastery-at-or-below-fixture',
+	fixtureMatrix: {
+		accuracyMasteryBands: ['novice', 'trained', 'mastered'],
+		armourStates: ['unarmoured', 'armoured']
+	},
+	attributeFixture: 'all-four-attributes-equal-to-level-spread-value',
+	accuracyFixture: {
+		attackerAgilitySource: 'peer',
+		defenderAgilitySource: 'peer'
+	},
 	hitContest: {
+		formula:
+			'clamp(authored-accuracy + attacker-level-accuracy - defender-level-evasion - defender-agility-evasion + relative-agility)',
+		levelSource: 'peer-for-attacker-and-defender',
 		minimumHitChanceBasisPoints: 500,
 		maximumHitChanceBasisPoints: 9_950,
 		attackerLevelAccuracyBasisPointsPerLevel: 2,
 		defenderLevelEvasionBasisPointsPerLevel: 1,
 		defenderAgilityEvasionBasisPointsPerPoint: 1,
 		relativeAgilityBasisPointsPerPoint: 10,
-		relativeAgilityCapBasisPoints: 900,
-		fasterEndpointAgility: 100,
-		slowerEndpointAgility: 1
+		relativeAgilityCapBasisPoints: 900
 	},
-	damageVarianceBasisPoints: [9_000, 11_000] as const,
-	armourPointSeries: [0, 25, 50, 100, 150, 250] as const,
-	maxCompletionActions: 200,
-	damageFixture: {
+	relativeAgilityFixture: {
 		masteryBand: 'trained',
+		directions: ['faster', 'slower'],
+		baselineAttackerAgilitySource: 'peer',
+		defenderAgilitySource: 'peer',
+		endpointAttackerAgility: { faster: 100, slower: 1 },
+		randomStreamCoupling: 'paired-baseline-and-adjusted'
+	},
+	armourPointSeries: [0, 25, 50, 100, 150, 250] as const,
+	peerDamageFixture: {
+		damageModel: 'attribute-scaled-level-base-magnitude',
+		masteryBand: 'trained',
+		channel: 'physical',
+		damageTags: BASIC_SWORD_STRIKE.damageTags,
+		matchedAffinity: false,
+		attackerAgilitySource: 'peer',
+		defenderAgilitySource: 'peer',
+		missDamage: 0,
+		damageVarianceBasisPoints: { minimum: 9_000, maximum: 11_000, endpoints: 'inclusive' },
 		minimumSuccessfulDamage: 1,
 		mitigationOrder: ['armour', 'named-resistance'],
-		penetrationPoints: 0
+		penetrationPoints: 0,
+		resistancePolicy: 'apply-authored-armour-receipts-when-enabled'
+	},
+	completionFixture: {
+		damageModel: 'attribute-scaled-level-base-magnitude-with-affinity-candidate',
+		masteryBand: 'trained',
+		attackerAgilitySource: 'peer',
+		defenderAgilitySource: 'peer',
+		targetHealthSource: 'maximum-health-from-peer-vitality',
+		damageVarianceBasisPoints: { minimum: 9_000, maximum: 11_000, endpoints: 'inclusive' },
+		minimumSuccessfulDamage: 1,
+		maximumActions: 200,
+		missConsumesAction: true,
+		defencePolicy: 'no-armour-or-named-resistance',
+		affinityVariantRandomStreamCoupling: 'independent',
+		affinityVariantRandomStreamSuffixes: { matched: 'matched', offAffinity: 'off' }
 	},
 	promotionGates: {
+		accuracyStatistic: 'aggregate-hit-rate',
 		accuracyBasisPoints: {
 			novice: { minimumBasisPoints: 6_500, maximumBasisPoints: 7_000 },
 			trained: { minimumBasisPoints: 7_700, maximumBasisPoints: 8_300 },
 			mastered: { minimumBasisPoints: 9_000, maximumBasisPoints: 9_500 }
 		},
 		maximumRelativeAgilityShiftBasisPoints: 1_000,
+		relativeAgilityEvaluation: 'maximum-of-formula-endpoints-and-observed-paired-shifts',
 		offAffinityMedianRatioBasisPoints: { minimum: 8_500, maximum: 11_500 },
-		regenerationComparison: 'p90-total-regeneration-below-p10-total-damage'
+		offAffinityStatistic: 'p50-completion-actions-off-divided-by-matched',
+		regenerationComparison: {
+			completionPolicy: 'all-trials-complete-with-zero-timeouts',
+			totalBand: 'p90-regeneration-strictly-below-p10-damage',
+			normalizedThroughput: 'mean-regeneration-strictly-below-mean-damage',
+			zeroDamageRatioDenominatorScaledUnits: 1
+		},
+		armourReduction: {
+			monotonicRequired: true,
+			maximumExclusiveBasisPoints: 7_500,
+			authoritativeCeilingRequired: true
+		}
 	},
 	sustainedTimeline: {
+		damageSource: 'peer-damage-fixture',
 		tickDurationMilliseconds: 100,
+		tickIndexOrigin: 0,
+		tickIndexIncrement: 1,
 		horizonTicks: 120,
 		firstAttackTick: 0,
 		attackCadenceTicks: 10,
 		initialTicksSinceDamage: 0,
-		resolutionOrder: 'attack-then-regeneration',
+		regenerationContext: { mode: 'combat', downed: false, injuryRepair: false },
+		resolutionOrder: ['attack', 'regeneration', 'advance-damage-clock'],
+		damageClockResetPolicy: { trigger: 'positive-damage', value: 0 },
+		damageClockAdvancePerTick: 1,
+		recoveryAccounting: 'uncapped-throughput',
 		throughputNormalizationTicks: 1_000
 	},
 	attributeValues: {
@@ -124,7 +194,11 @@ const BALANCE_SIMULATION_PROFILE_V1 = deepFreeze({
 		armour: {
 			minimumPoints: 0,
 			maximumPoints: 10_000,
+			pointIncrement: 1,
+			penetrationPoints: 0,
 			armouredFixturePoints: 100,
+			damageFixturePoints: 250,
+			damageFixtureIncludesNamedResistance: false,
 			equipmentMagnitudeStatus: 'not-yet-shipped',
 			reductionCeilingStatus: 'authoritative-combat-rule'
 		}
@@ -134,6 +208,13 @@ const BALANCE_SIMULATION_PROFILE_V1 = deepFreeze({
 		earth: 'vitality',
 		wind: 'agility',
 		water: 'spirit'
+	},
+	affinityApplication: {
+		matchingRule: 'associated-attribute-matches-channel-attribute',
+		channelAttributes: { physical: 'might', magical: 'spirit' },
+		matchedAdjustmentScope: 'attribute-contribution-only',
+		nudgeSource: 'combat-rules-affinity-contribution-cap',
+		offAffinityAdjustment: 'none'
 	},
 	affinityArchetypes: {
 		fireCaster: {
@@ -155,6 +236,7 @@ const BALANCE_SIMULATION_PROFILE_V1 = deepFreeze({
 	},
 	sourceRecords: {
 		accuracySkillId: BASIC_SWORD_STRIKE.skillId,
+		peerDamageTagSkillId: BASIC_SWORD_STRIKE.skillId,
 		armouredEquipmentDefinitionId: HEAVY_ARMOUR_DEFINITION_ID
 	}
 } as const);
@@ -316,16 +398,25 @@ export type CombatBalanceEvidence = Readonly<{
 }>;
 
 function divideHalfUp(numerator: bigint, denominator: bigint): number {
+	if (BALANCE_SIMULATION_PROFILE_V1.arithmetic.integerDivisionRounding !== 'half-up') {
+		throw new Error('Unsupported balance integer-division rounding policy');
+	}
 	return Number((numerator + denominator / 2n) / denominator);
 }
 
 function scaleByBasisPoints(value: number, basisPoints: number): number {
-	return divideHalfUp(BigInt(value) * BigInt(basisPoints), BigInt(BASIS_POINTS));
+	return divideHalfUp(
+		BigInt(value) * BigInt(basisPoints),
+		BigInt(BALANCE_SIMULATION_PROFILE_V1.arithmetic.basisPointScale)
+	);
 }
 
 function ratioBasisPoints(numerator: number, denominator: number): number {
 	if (denominator <= 0) throw new Error('Balance ratio denominator must be positive');
-	return divideHalfUp(BigInt(numerator) * BigInt(BASIS_POINTS), BigInt(denominator));
+	return divideHalfUp(
+		BigInt(numerator) * BigInt(BALANCE_SIMULATION_PROFILE_V1.arithmetic.basisPointScale),
+		BigInt(denominator)
+	);
 }
 
 function nearestRank(values: readonly number[], fraction: number): number {
@@ -335,6 +426,9 @@ function nearestRank(values: readonly number[], fraction: number): number {
 }
 
 function percentileBand(values: readonly number[]): PercentileBand {
+	if (BALANCE_SIMULATION_PROFILE_V1.percentileMethod !== 'nearest-rank') {
+		throw new Error('Unsupported balance percentile method');
+	}
 	const fractions = BALANCE_SIMULATION_PROFILE_V1.percentileFractions;
 	return {
 		p10: nearestRank(values, fractions.p10),
@@ -345,33 +439,60 @@ function percentileBand(values: readonly number[]): PercentileBand {
 
 function seededSummary(values: readonly number[]): SeededSummary {
 	const total = values.reduce((sum, value) => sum + value, 0);
+	const precision = 10 ** BALANCE_SIMULATION_PROFILE_V1.arithmetic.summaryMeanDecimalPlaces;
 	return {
-		mean: Math.round((total / values.length) * 1_000) / 1_000,
+		mean: Math.round((total / values.length) * precision) / precision,
 		...percentileBand(values)
 	};
 }
 
+function trialsPerSeed(): number {
+	if (BALANCE_SIMULATION_PROFILE_V1.randomness.seedCohortAllocation !== 'equal') {
+		throw new Error('Unsupported balance seed-cohort allocation policy');
+	}
+	const trials =
+		BALANCE_SIMULATION_PROFILE_V1.trialsPerMatchup / BALANCE_SIMULATION_PROFILE_V1.seedSet.length;
+	if (!Number.isInteger(trials)) {
+		throw new Error('Balance trials must divide equally across the declared seed set');
+	}
+	return trials;
+}
+
 function randomStream(matchupId: string, seed: string): () => number {
+	if (
+		BALANCE_SIMULATION_PROFILE_V1.randomness.seedMaterial !==
+		'canonical-object-of-randomness-version-matchup-id-and-seed'
+	) {
+		throw new Error('Unsupported balance seed-material policy');
+	}
+	const randomness = BALANCE_SIMULATION_PROFILE_V1.randomness;
+	const digest = hashCanonical({
+		randomnessVersion: randomness.version,
+		matchupId,
+		seed
+	});
 	let state = Number.parseInt(
-		hashCanonical({
-			randomnessVersion: BALANCE_SIMULATION_PROFILE_V1.randomness.version,
-			matchupId,
-			seed
-		}).slice(0, 8),
-		16
+		digest.slice(
+			randomness.seedDigestHexStart,
+			randomness.seedDigestHexStart + randomness.seedDigestHexLength
+		),
+		randomness.seedDigestRadix
 	);
-	const shifts = BALANCE_SIMULATION_PROFILE_V1.randomness.xorshift32;
+	const shifts = randomness.xorshift32;
 	if (state === 0) state = shifts.zeroStateFallback;
 	return () => {
 		state ^= state << shifts.firstLeftShift;
 		state ^= state >>> shifts.rightShift;
 		state ^= state << shifts.secondLeftShift;
-		return state >>> 0;
+		return state >>> randomness.outputUnsignedRightShiftBits;
 	};
 }
 
 function rollBasisPoints(random: () => number, chanceBasisPoints: number): boolean {
-	const threshold = Math.min(BASIS_POINTS, Math.max(0, chanceBasisPoints));
+	const threshold = Math.min(
+		BALANCE_SIMULATION_PROFILE_V1.arithmetic.basisPointScale,
+		Math.max(0, chanceBasisPoints)
+	);
 	return random() % BALANCE_SIMULATION_PROFILE_V1.randomness.rollModulo < threshold;
 }
 
@@ -384,14 +505,29 @@ function attributeValue(level: BalanceLevel, spread: BalanceSpread): number {
 }
 
 function peerAttributes(level: BalanceLevel, spread: BalanceSpread): CombatAttributes {
+	if (
+		BALANCE_SIMULATION_PROFILE_V1.attributeFixture !==
+		'all-four-attributes-equal-to-level-spread-value'
+	) {
+		throw new Error('Unsupported peer attribute fixture');
+	}
 	const value = attributeValue(level, spread);
 	return { might: value, vitality: value, agility: value, spirit: value };
 }
 
 function masteryAccuracy(masteryBand: MasteryBand): number {
+	if (
+		BALANCE_SIMULATION_PROFILE_V1.masteryResolution !==
+		'greatest-minimum-mastery-at-or-below-fixture'
+	) {
+		throw new Error('Unsupported balance mastery-resolution policy');
+	}
+	if (BALANCE_SIMULATION_PROFILE_V1.sourceRecords.accuracySkillId !== BASIC_SWORD_STRIKE.skillId) {
+		throw new Error('Balance accuracy skill no longer matches its declared source record');
+	}
 	const mastery = BALANCE_SIMULATION_PROFILE_V1.masteryFixtures[masteryBand];
 	const step = [...BASIC_SWORD_STRIKE.masteryProgression]
-		.reverse()
+		.sort((left, right) => right.minimumMastery - left.minimumMastery)
 		.find((candidate) => candidate.minimumMastery <= mastery);
 	if (!step) throw new Error(`Basic sword strike has no accuracy step for mastery ${mastery}`);
 	return step.accuracyBasisPoints;
@@ -417,6 +553,13 @@ function peerHitContest(
 	chanceBasisPoints: number;
 }> {
 	const hitContest = BALANCE_SIMULATION_PROFILE_V1.hitContest;
+	if (
+		hitContest.formula !==
+			'clamp(authored-accuracy + attacker-level-accuracy - defender-level-evasion - defender-agility-evasion + relative-agility)' ||
+		hitContest.levelSource !== 'peer-for-attacker-and-defender'
+	) {
+		throw new Error('Unsupported peer hit-contest formula');
+	}
 	const authoredAccuracyBasisPoints = masteryAccuracy(masteryBand);
 	const attackerAccuracyBasisPoints = level * hitContest.attackerLevelAccuracyBasisPointsPerLevel;
 	const defenderEvasionBasisPoints =
@@ -450,25 +593,32 @@ function simulateHitRate(
 } {
 	let hits = 0;
 	const cohortRates: number[] = [];
-	for (const seed of SEED_SET) {
+	const cohortTrials = trialsPerSeed();
+	for (const seed of BALANCE_SIMULATION_PROFILE_V1.seedSet) {
 		const random = randomStream(matchupId, seed);
 		let cohortHits = 0;
-		for (let trial = 0; trial < TRIALS_PER_SEED; trial += 1) {
+		for (let trial = 0; trial < cohortTrials; trial += 1) {
 			if (rollBasisPoints(random, chanceBasisPoints)) cohortHits += 1;
 		}
 		hits += cohortHits;
-		cohortRates.push(ratioBasisPoints(cohortHits, TRIALS_PER_SEED));
+		cohortRates.push(ratioBasisPoints(cohortHits, cohortTrials));
 	}
 	return {
-		observedBasisPoints: ratioBasisPoints(hits, BALANCE_TRIALS_PER_MATCHUP),
+		observedBasisPoints: ratioBasisPoints(hits, BALANCE_SIMULATION_PROFILE_V1.trialsPerMatchup),
 		seedBand: percentileBand(cohortRates)
 	};
 }
 
 function buildAccuracyMatchups(): AccuracyMatchup[] {
-	return BALANCE_LEVELS.flatMap((level) =>
-		BALANCE_SPREADS.flatMap((attributeSpread) =>
-			(['novice', 'trained', 'mastered'] as const).map((masteryBand) => {
+	return BALANCE_SIMULATION_PROFILE_V1.benchmarkLevels.flatMap((level) =>
+		BALANCE_SIMULATION_PROFILE_V1.attributeSpreads.flatMap((attributeSpread) =>
+			BALANCE_SIMULATION_PROFILE_V1.fixtureMatrix.accuracyMasteryBands.map((masteryBand) => {
+				if (
+					BALANCE_SIMULATION_PROFILE_V1.accuracyFixture.attackerAgilitySource !== 'peer' ||
+					BALANCE_SIMULATION_PROFILE_V1.accuracyFixture.defenderAgilitySource !== 'peer'
+				) {
+					throw new Error('Unsupported accuracy peer source');
+				}
 				const matchupId = `accuracy-l${level}-${attributeSpread}-${masteryBand}`;
 				const agility = attributeValue(level, attributeSpread);
 				const contest = peerHitContest(level, agility, agility, masteryBand);
@@ -478,7 +628,7 @@ function buildAccuracyMatchups(): AccuracyMatchup[] {
 					level,
 					attributeSpread,
 					masteryBand,
-					trials: BALANCE_TRIALS_PER_MATCHUP,
+					trials: BALANCE_SIMULATION_PROFILE_V1.trialsPerMatchup,
 					authoredAccuracyBasisPoints: contest.authoredAccuracyBasisPoints,
 					attackerAccuracyBasisPoints: contest.attackerAccuracyBasisPoints,
 					defenderEvasionBasisPoints: contest.defenderEvasionBasisPoints,
@@ -493,21 +643,39 @@ function buildAccuracyMatchups(): AccuracyMatchup[] {
 }
 
 function buildAgilityMatchups(): AgilityMatchup[] {
-	return BALANCE_LEVELS.flatMap((level) =>
-		BALANCE_SPREADS.flatMap((attributeSpread) => {
+	const fixture = BALANCE_SIMULATION_PROFILE_V1.relativeAgilityFixture;
+	return BALANCE_SIMULATION_PROFILE_V1.benchmarkLevels.flatMap((level) =>
+		BALANCE_SIMULATION_PROFILE_V1.attributeSpreads.flatMap((attributeSpread) => {
 			const peerAgility = attributeValue(level, attributeSpread);
-			return (['faster', 'slower'] as const).map((direction) => {
-				const attackerAgility =
-					direction === 'faster'
-						? BALANCE_SIMULATION_PROFILE_V1.hitContest.fasterEndpointAgility
-						: BALANCE_SIMULATION_PROFILE_V1.hitContest.slowerEndpointAgility;
+			return fixture.directions.map((direction) => {
+				if (
+					fixture.baselineAttackerAgilitySource !== 'peer' ||
+					fixture.defenderAgilitySource !== 'peer'
+				) {
+					throw new Error('Unsupported relative-Agility peer source');
+				}
+				const attackerAgility = fixture.endpointAttackerAgility[direction];
 				const matchupId = `agility-l${level}-${attributeSpread}-${direction}`;
-				const baselineContest = peerHitContest(level, peerAgility, peerAgility, 'trained');
-				const adjustedContest = peerHitContest(level, attackerAgility, peerAgility, 'trained');
+				const baselineContest = peerHitContest(
+					level,
+					peerAgility,
+					peerAgility,
+					fixture.masteryBand
+				);
+				const adjustedContest = peerHitContest(
+					level,
+					attackerAgility,
+					peerAgility,
+					fixture.masteryBand
+				);
 				const effectiveChanceShiftBasisPoints =
 					adjustedContest.chanceBasisPoints - baselineContest.chanceBasisPoints;
-				const baseline = simulateHitRate(`${matchupId}-paired`, baselineContest.chanceBasisPoints);
-				const adjusted = simulateHitRate(`${matchupId}-paired`, adjustedContest.chanceBasisPoints);
+				if (fixture.randomStreamCoupling !== 'paired-baseline-and-adjusted') {
+					throw new Error('Unsupported relative-Agility random-stream coupling');
+				}
+				const pairedStreamId = `${matchupId}-paired`;
+				const baseline = simulateHitRate(pairedStreamId, baselineContest.chanceBasisPoints);
+				const adjusted = simulateHitRate(pairedStreamId, adjustedContest.chanceBasisPoints);
 				return {
 					matchupId,
 					level,
@@ -515,7 +683,7 @@ function buildAgilityMatchups(): AgilityMatchup[] {
 					direction,
 					peerAgility,
 					attackerAgility,
-					trials: BALANCE_TRIALS_PER_MATCHUP,
+					trials: BALANCE_SIMULATION_PROFILE_V1.trialsPerMatchup,
 					effectiveChanceShiftBasisPoints,
 					observedChanceShiftBasisPoints:
 						adjusted.observedBasisPoints - baseline.observedBasisPoints,
@@ -545,13 +713,26 @@ function affinityAdjustedMagnitude(
 	matchedAffinity: boolean
 ): number {
 	const scaled = attributeScaledMagnitude(baseMagnitude, channel, attributes, COMBAT_RULES_V1);
-	if (!matchedAffinity) return scaled;
+	const affinityApplication = BALANCE_SIMULATION_PROFILE_V1.affinityApplication;
+	if (!matchedAffinity) {
+		if (affinityApplication.offAffinityAdjustment !== 'none') {
+			throw new Error('Unsupported off-affinity adjustment policy');
+		}
+		return scaled;
+	}
+	if (
+		affinityApplication.matchedAdjustmentScope !== 'attribute-contribution-only' ||
+		affinityApplication.nudgeSource !== 'combat-rules-affinity-contribution-cap'
+	) {
+		throw new Error('Unsupported matched-affinity adjustment policy');
+	}
 	const attributeContribution = scaled - baseMagnitude;
 	return (
 		baseMagnitude +
 		scaleByBasisPoints(
 			attributeContribution,
-			BASIS_POINTS + COMBAT_RULES_V1.affinity.contributionNudgeCapBasisPoints
+			BALANCE_SIMULATION_PROFILE_V1.arithmetic.basisPointScale +
+				COMBAT_RULES_V1.affinity.contributionNudgeCapBasisPoints
 		)
 	);
 }
@@ -562,13 +743,17 @@ function damageAfterMitigation(
 	resistanceBasisPoints: number
 ): number {
 	let mitigated = damage;
-	for (const mitigation of BALANCE_SIMULATION_PROFILE_V1.damageFixture.mitigationOrder) {
+	for (const mitigation of BALANCE_SIMULATION_PROFILE_V1.peerDamageFixture.mitigationOrder) {
 		mitigated = scaleByBasisPoints(
 			mitigated,
-			BASIS_POINTS - (mitigation === 'armour' ? armourBasisPoints : resistanceBasisPoints)
+			BALANCE_SIMULATION_PROFILE_V1.arithmetic.basisPointScale -
+				(mitigation === 'armour' ? armourBasisPoints : resistanceBasisPoints)
 		);
 	}
-	return Math.max(BALANCE_SIMULATION_PROFILE_V1.damageFixture.minimumSuccessfulDamage, mitigated);
+	return Math.max(
+		BALANCE_SIMULATION_PROFILE_V1.peerDamageFixture.minimumSuccessfulDamage,
+		mitigated
+	);
 }
 
 function simulatePeerDamage(input: {
@@ -580,9 +765,10 @@ function simulatePeerDamage(input: {
 }): SeededSummary {
 	const values: number[] = [];
 	const profile = createPeerDamageProfile(input);
-	for (const seed of SEED_SET) {
+	const cohortTrials = trialsPerSeed();
+	for (const seed of BALANCE_SIMULATION_PROFILE_V1.seedSet) {
 		const random = randomStream(input.matchupId, seed);
-		for (let trial = 0; trial < TRIALS_PER_SEED; trial += 1) {
+		for (let trial = 0; trial < cohortTrials; trial += 1) {
 			values.push(peerDamageForAttack(random, profile));
 		}
 	}
@@ -602,30 +788,40 @@ function createPeerDamageProfile(input: {
 	armourPoints: number;
 	includeHeavyArmourResistance: boolean;
 }): PeerDamageProfile {
+	const fixture = BALANCE_SIMULATION_PROFILE_V1.peerDamageFixture;
+	if (
+		fixture.damageModel !== 'attribute-scaled-level-base-magnitude' ||
+		fixture.attackerAgilitySource !== 'peer' ||
+		fixture.defenderAgilitySource !== 'peer' ||
+		fixture.resistancePolicy !== 'apply-authored-armour-receipts-when-enabled'
+	) {
+		throw new Error('Unsupported peer-damage fixture policy');
+	}
+	if (
+		BALANCE_SIMULATION_PROFILE_V1.sourceRecords.peerDamageTagSkillId !== BASIC_SWORD_STRIKE.skillId
+	) {
+		throw new Error('Balance peer-damage tags no longer match their declared source record');
+	}
 	const accuracy = peerHitContest(
 		input.level,
 		input.attributes.agility,
 		input.attributes.agility,
-		BALANCE_SIMULATION_PROFILE_V1.damageFixture.masteryBand
+		fixture.masteryBand
 	).chanceBasisPoints;
 	const baseMagnitude = BALANCE_SIMULATION_PROFILE_V1.baseMagnitudeByLevel[input.level];
 	const scaledMagnitude = affinityAdjustedMagnitude(
 		baseMagnitude,
-		'physical',
+		fixture.channel,
 		input.attributes,
-		false
+		fixture.matchedAffinity
 	);
 	const armourBasisPoints = armourReduction(
 		input.armourPoints,
-		BALANCE_SIMULATION_PROFILE_V1.damageFixture.penetrationPoints,
+		fixture.penetrationPoints,
 		COMBAT_RULES_V1
 	);
 	const resistanceBasisPoints = input.includeHeavyArmourResistance
-		? namedResistanceReduction(
-				BASIC_SWORD_STRIKE.damageTags,
-				heavyArmourResistanceReceipts,
-				COMBAT_RULES_V1
-			)
+		? namedResistanceReduction(fixture.damageTags, heavyArmourResistanceReceipts, COMBAT_RULES_V1)
 		: 0;
 	return {
 		accuracyBasisPoints: accuracy,
@@ -636,12 +832,18 @@ function createPeerDamageProfile(input: {
 }
 
 function peerDamageForAttack(random: () => number, profile: PeerDamageProfile): number {
-	if (!rollBasisPoints(random, profile.accuracyBasisPoints)) return 0;
-	const [minimumVariance, maximumVariance] =
-		BALANCE_SIMULATION_PROFILE_V1.damageVarianceBasisPoints;
+	const fixture = BALANCE_SIMULATION_PROFILE_V1.peerDamageFixture;
+	if (!rollBasisPoints(random, profile.accuracyBasisPoints)) return fixture.missDamage;
+	if (fixture.damageVarianceBasisPoints.endpoints !== 'inclusive') {
+		throw new Error('Unsupported peer-damage variance endpoint policy');
+	}
 	const varied = scaleByBasisPoints(
 		profile.scaledMagnitude,
-		randomBasisPoints(random, minimumVariance, maximumVariance)
+		randomBasisPoints(
+			random,
+			fixture.damageVarianceBasisPoints.minimum,
+			fixture.damageVarianceBasisPoints.maximum
+		)
 	);
 	return damageAfterMitigation(varied, profile.armourBasisPoints, profile.resistanceBasisPoints);
 }
@@ -662,40 +864,70 @@ function simulateSustainedTimeline(input: {
 	| 'regenerationPerThousandTicks'
 > {
 	const timeline = BALANCE_SIMULATION_PROFILE_V1.sustainedTimeline;
+	if (
+		timeline.damageSource !== 'peer-damage-fixture' ||
+		timeline.recoveryAccounting !== 'uncapped-throughput'
+	) {
+		throw new Error('Unsupported sustained-regeneration accounting policy');
+	}
 	const damageProfile = createPeerDamageProfile(input);
 	const regenerationByTicksSinceDamage = Array.from(
-		{ length: timeline.horizonTicks + 1 },
+		{
+			length:
+				timeline.initialTicksSinceDamage +
+				timeline.horizonTicks * timeline.damageClockAdvancePerTick +
+				1
+		},
 		(_unused, ticksSinceDamage) =>
 			healthRegeneration(
 				input.attributes.vitality,
 				{
-					mode: 'combat',
-					downed: false,
-					ticksSinceDamage,
-					injuryRepair: false
+					...timeline.regenerationContext,
+					ticksSinceDamage
 				},
 				COMBAT_RULES_V1
 			)
 	);
 	const damageTotals: number[] = [];
 	const regenerationTotals: number[] = [];
-	for (const seed of SEED_SET) {
+	const cohortTrials = trialsPerSeed();
+	for (const seed of BALANCE_SIMULATION_PROFILE_V1.seedSet) {
 		const random = randomStream(input.matchupId, seed);
-		for (let trial = 0; trial < TRIALS_PER_SEED; trial += 1) {
+		for (let trial = 0; trial < cohortTrials; trial += 1) {
 			let damageTotal = 0;
 			let regenerationTotal = 0;
 			let ticksSinceDamage = timeline.initialTicksSinceDamage;
-			for (let tick = 0; tick < timeline.horizonTicks; tick += 1) {
-				if (
-					tick >= timeline.firstAttackTick &&
-					(tick - timeline.firstAttackTick) % timeline.attackCadenceTicks === 0
-				) {
-					const damage = peerDamageForAttack(random, damageProfile);
-					damageTotal += damage;
-					if (damage > 0) ticksSinceDamage = 0;
+			const horizonMilliseconds = timeline.horizonTicks * timeline.tickDurationMilliseconds;
+			for (
+				let elapsedMilliseconds = timeline.tickIndexOrigin * timeline.tickDurationMilliseconds;
+				elapsedMilliseconds < horizonMilliseconds;
+				elapsedMilliseconds += timeline.tickIndexIncrement * timeline.tickDurationMilliseconds
+			) {
+				const tick = elapsedMilliseconds / timeline.tickDurationMilliseconds;
+				for (const phase of timeline.resolutionOrder) {
+					if (phase === 'attack') {
+						if (
+							tick >= timeline.firstAttackTick &&
+							(tick - timeline.firstAttackTick) % timeline.attackCadenceTicks === 0
+						) {
+							const damage = peerDamageForAttack(random, damageProfile);
+							damageTotal += damage;
+							const resetTrigger: string = timeline.damageClockResetPolicy.trigger;
+							if (
+								resetTrigger === 'attack-attempt' ||
+								(resetTrigger === 'positive-damage' && damage > 0)
+							) {
+								ticksSinceDamage = timeline.damageClockResetPolicy.value;
+							}
+						}
+					} else if (phase === 'regeneration') {
+						regenerationTotal += regenerationByTicksSinceDamage[ticksSinceDamage]!;
+					} else if (phase === 'advance-damage-clock') {
+						ticksSinceDamage += timeline.damageClockAdvancePerTick;
+					} else {
+						throw new Error(`Unsupported sustained-timeline phase: ${String(phase)}`);
+					}
 				}
-				regenerationTotal += regenerationByTicksSinceDamage[ticksSinceDamage]!;
-				ticksSinceDamage += 1;
 			}
 			damageTotals.push(damageTotal);
 			regenerationTotals.push(regenerationTotal);
@@ -704,8 +936,10 @@ function simulateSustainedTimeline(input: {
 	const perThousandTicks = (values: readonly number[]) =>
 		values.map((value) =>
 			divideHalfUp(
-				BigInt(value) * BigInt(timeline.throughputNormalizationTicks),
-				BigInt(timeline.horizonTicks)
+				BigInt(value) *
+					BigInt(timeline.throughputNormalizationTicks) *
+					BigInt(timeline.tickDurationMilliseconds),
+				BigInt(timeline.horizonTicks) * BigInt(timeline.tickDurationMilliseconds)
 			)
 		);
 	return {
@@ -719,9 +953,9 @@ function simulateSustainedTimeline(input: {
 }
 
 function buildRegenerationMatchups(): RegenerationMatchup[] {
-	return BALANCE_LEVELS.flatMap((level) =>
-		BALANCE_SPREADS.flatMap((attributeSpread) =>
-			(['unarmoured', 'armoured'] as const).map((armourState) => {
+	return BALANCE_SIMULATION_PROFILE_V1.benchmarkLevels.flatMap((level) =>
+		BALANCE_SIMULATION_PROFILE_V1.attributeSpreads.flatMap((attributeSpread) =>
+			BALANCE_SIMULATION_PROFILE_V1.fixtureMatrix.armourStates.map((armourState) => {
 				const attributes = peerAttributes(level, attributeSpread);
 				const matchupId = `regeneration-l${level}-${attributeSpread}-${armourState}`;
 				const armourFixture = BALANCE_SIMULATION_PROFILE_V1.armourFixtures[armourState];
@@ -737,7 +971,7 @@ function buildRegenerationMatchups(): RegenerationMatchup[] {
 					level,
 					attributeSpread,
 					armourState,
-					trials: BALANCE_TRIALS_PER_MATCHUP,
+					trials: BALANCE_SIMULATION_PROFILE_V1.trialsPerMatchup,
 					...timeline
 				};
 			})
@@ -752,13 +986,24 @@ function simulateCompletionActions(input: {
 	channel: DamageChannel;
 	matchedAffinity: boolean;
 }): CompletionSimulation {
+	const fixture = BALANCE_SIMULATION_PROFILE_V1.completionFixture;
+	if (
+		fixture.damageModel !== 'attribute-scaled-level-base-magnitude-with-affinity-candidate' ||
+		fixture.attackerAgilitySource !== 'peer' ||
+		fixture.defenderAgilitySource !== 'peer' ||
+		fixture.targetHealthSource !== 'maximum-health-from-peer-vitality' ||
+		fixture.defencePolicy !== 'no-armour-or-named-resistance' ||
+		!fixture.missConsumesAction
+	) {
+		throw new Error('Unsupported affinity-completion fixture policy');
+	}
 	const values: number[] = [];
 	let timedOutTrials = 0;
 	const hitChance = peerHitContest(
 		input.level,
 		input.attributes.agility,
 		input.attributes.agility,
-		BALANCE_SIMULATION_PROFILE_V1.damageFixture.masteryBand
+		fixture.masteryBand
 	).chanceBasisPoints;
 	const targetHealth = maximumHealth(input.attributes.vitality, COMBAT_RULES_V1);
 	const baseMagnitude = BALANCE_SIMULATION_PROFILE_V1.baseMagnitudeByLevel[input.level];
@@ -768,19 +1013,28 @@ function simulateCompletionActions(input: {
 		input.attributes,
 		input.matchedAffinity
 	);
-	for (const seed of SEED_SET) {
+	if (fixture.damageVarianceBasisPoints.endpoints !== 'inclusive') {
+		throw new Error('Unsupported affinity-completion variance endpoint policy');
+	}
+	const cohortTrials = trialsPerSeed();
+	for (const seed of BALANCE_SIMULATION_PROFILE_V1.seedSet) {
 		const random = randomStream(input.matchupId, seed);
-		for (let trial = 0; trial < TRIALS_PER_SEED; trial += 1) {
+		for (let trial = 0; trial < cohortTrials; trial += 1) {
 			let dealt = 0;
 			let actions = 0;
-			while (dealt < targetHealth && actions < BALANCE_SIMULATION_PROFILE_V1.maxCompletionActions) {
+			while (dealt < targetHealth && actions < fixture.maximumActions) {
 				actions += 1;
 				if (!rollBasisPoints(random, hitChance)) continue;
-				const [minimumVariance, maximumVariance] =
-					BALANCE_SIMULATION_PROFILE_V1.damageVarianceBasisPoints;
 				dealt += Math.max(
-					BALANCE_SIMULATION_PROFILE_V1.damageFixture.minimumSuccessfulDamage,
-					scaleByBasisPoints(damage, randomBasisPoints(random, minimumVariance, maximumVariance))
+					fixture.minimumSuccessfulDamage,
+					scaleByBasisPoints(
+						damage,
+						randomBasisPoints(
+							random,
+							fixture.damageVarianceBasisPoints.minimum,
+							fixture.damageVarianceBasisPoints.maximum
+						)
+					)
 				);
 			}
 			if (dealt < targetHealth) timedOutTrials += 1;
@@ -799,10 +1053,16 @@ export function evaluateAffinityCompletionPair(
 	offAffinity: CompletionSimulation
 ): Readonly<{ status: 'passed' | 'failed'; medianRatioBasisPoints: number | null }> {
 	if (
+		BALANCE_SIMULATION_PROFILE_V1.promotionGates.offAffinityStatistic !==
+		'p50-completion-actions-off-divided-by-matched'
+	) {
+		throw new Error('Unsupported off-affinity completion statistic');
+	}
+	if (
 		matched.timedOutTrials > 0 ||
 		offAffinity.timedOutTrials > 0 ||
-		matched.completedTrials !== BALANCE_TRIALS_PER_MATCHUP ||
-		offAffinity.completedTrials !== BALANCE_TRIALS_PER_MATCHUP ||
+		matched.completedTrials !== BALANCE_SIMULATION_PROFILE_V1.trialsPerMatchup ||
+		offAffinity.completedTrials !== BALANCE_SIMULATION_PROFILE_V1.trialsPerMatchup ||
 		matched.completionActions === null ||
 		offAffinity.completionActions === null
 	) {
@@ -823,24 +1083,43 @@ export function evaluateAffinityCompletionPair(
 
 function buildAffinityMatchups(): AffinityMatchup[] {
 	const archetypes = Object.values(BALANCE_SIMULATION_PROFILE_V1.affinityArchetypes);
-	return BALANCE_LEVELS.flatMap((level) =>
-		BALANCE_SPREADS.flatMap((attributeSpread) => {
+	const completionFixture = BALANCE_SIMULATION_PROFILE_V1.completionFixture;
+	if (completionFixture.affinityVariantRandomStreamCoupling !== 'independent') {
+		throw new Error('Unsupported affinity-variant random-stream coupling');
+	}
+	if (
+		BALANCE_SIMULATION_PROFILE_V1.affinityApplication.matchingRule !==
+		'associated-attribute-matches-channel-attribute'
+	) {
+		throw new Error('Unsupported affinity matching rule');
+	}
+	return BALANCE_SIMULATION_PROFILE_V1.benchmarkLevels.flatMap((level) =>
+		BALANCE_SIMULATION_PROFILE_V1.attributeSpreads.flatMap((attributeSpread) => {
 			const attributes = peerAttributes(level, attributeSpread);
 			return archetypes.map(({ archetype, channel, matchedAffinity, offAffinity }) => {
 				const matchupId = `affinity-l${level}-${attributeSpread}-${archetype}`;
+				const channelAttribute =
+					BALANCE_SIMULATION_PROFILE_V1.affinityApplication.channelAttributes[channel];
+				const matchedAppliesNudge =
+					BALANCE_SIMULATION_PROFILE_V1.affinityAssociations[matchedAffinity] === channelAttribute;
+				const offAppliesNudge =
+					BALANCE_SIMULATION_PROFILE_V1.affinityAssociations[offAffinity] === channelAttribute;
+				if (!matchedAppliesNudge || offAppliesNudge) {
+					throw new Error(`Affinity archetype ${archetype} does not define matched/off controls`);
+				}
 				const matchedCompletion = simulateCompletionActions({
-					matchupId: `${matchupId}-matched`,
+					matchupId: `${matchupId}-${completionFixture.affinityVariantRandomStreamSuffixes.matched}`,
 					attributes,
 					level,
 					channel,
-					matchedAffinity: true
+					matchedAffinity: matchedAppliesNudge
 				});
 				const offCompletion = simulateCompletionActions({
-					matchupId: `${matchupId}-off`,
+					matchupId: `${matchupId}-${completionFixture.affinityVariantRandomStreamSuffixes.offAffinity}`,
 					attributes,
 					level,
 					channel,
-					matchedAffinity: false
+					matchedAffinity: offAppliesNudge
 				});
 				const evaluation = evaluateAffinityCompletionPair(matchedCompletion, offCompletion);
 				return {
@@ -850,12 +1129,12 @@ function buildAffinityMatchups(): AffinityMatchup[] {
 					archetype,
 					matchedAffinity: {
 						affinity: matchedAffinity,
-						trials: BALANCE_TRIALS_PER_MATCHUP,
+						trials: BALANCE_SIMULATION_PROFILE_V1.trialsPerMatchup,
 						...matchedCompletion
 					},
 					offAffinity: {
 						affinity: offAffinity,
-						trials: BALANCE_TRIALS_PER_MATCHUP,
+						trials: BALANCE_SIMULATION_PROFILE_V1.trialsPerMatchup,
 						...offCompletion
 					},
 					medianCompletionTimeRatioBasisPoints: evaluation.medianRatioBasisPoints
@@ -870,28 +1149,27 @@ function buildArmourMatchups(): ArmourMatchup[] {
 		armour,
 		reductionBasisPoints: armourReduction(
 			armour,
-			BALANCE_SIMULATION_PROFILE_V1.damageFixture.penetrationPoints,
+			BALANCE_SIMULATION_PROFILE_V1.benchmarkDomain.armour.penetrationPoints,
 			COMBAT_RULES_V1
 		)
 	}));
-	return BALANCE_LEVELS.flatMap((level) =>
-		BALANCE_SPREADS.map((attributeSpread) => {
+	return BALANCE_SIMULATION_PROFILE_V1.benchmarkLevels.flatMap((level) =>
+		BALANCE_SIMULATION_PROFILE_V1.attributeSpreads.map((attributeSpread) => {
 			const matchupId = `armour-l${level}-${attributeSpread}`;
 			return {
 				matchupId,
 				level,
 				attributeSpread,
-				trials: BALANCE_TRIALS_PER_MATCHUP,
+				trials: BALANCE_SIMULATION_PROFILE_V1.trialsPerMatchup,
 				reductionCurve,
 				damageAfterArmour: simulatePeerDamage({
 					matchupId,
 					attributes: peerAttributes(level, attributeSpread),
 					level,
-					armourPoints:
-						BALANCE_SIMULATION_PROFILE_V1.armourPointSeries[
-							BALANCE_SIMULATION_PROFILE_V1.armourPointSeries.length - 1
-						]!,
-					includeHeavyArmourResistance: false
+					armourPoints: BALANCE_SIMULATION_PROFILE_V1.benchmarkDomain.armour.damageFixturePoints,
+					includeHeavyArmourResistance:
+						BALANCE_SIMULATION_PROFILE_V1.benchmarkDomain.armour
+							.damageFixtureIncludesNamedResistance
 				})
 			};
 		})
@@ -912,11 +1190,12 @@ function auditArmourDomain(): Readonly<{
 }> {
 	const { minimumPoints, maximumPoints } = BALANCE_SIMULATION_PROFILE_V1.benchmarkDomain.armour;
 	const reductions: number[] = [];
-	for (let armour = minimumPoints; armour <= maximumPoints; armour += 1) {
+	const pointIncrement = BALANCE_SIMULATION_PROFILE_V1.benchmarkDomain.armour.pointIncrement;
+	for (let armour = minimumPoints; armour <= maximumPoints; armour += pointIncrement) {
 		reductions.push(
 			armourReduction(
 				armour,
-				BALANCE_SIMULATION_PROFILE_V1.damageFixture.penetrationPoints,
+				BALANCE_SIMULATION_PROFILE_V1.benchmarkDomain.armour.penetrationPoints,
 				COMBAT_RULES_V1
 			)
 		);
@@ -940,6 +1219,9 @@ export async function createCombatBalanceEvidence(): Promise<CombatBalanceEviden
 	const regeneration = buildRegenerationMatchups();
 	const affinity = buildAffinityMatchups();
 	const armour = buildArmourMatchups();
+	if (BALANCE_SIMULATION_PROFILE_V1.promotionGates.accuracyStatistic !== 'aggregate-hit-rate') {
+		throw new Error('Unsupported accuracy promotion statistic');
+	}
 	const accuracyPassed = accuracy.every((matchup) => {
 		const gate = ACCURACY_GATES[matchup.masteryBand];
 		return (
@@ -947,24 +1229,39 @@ export async function createCombatBalanceEvidence(): Promise<CombatBalanceEviden
 			matchup.observedHitRateBasisPoints <= gate.maximumBasisPoints
 		);
 	});
+	if (
+		BALANCE_SIMULATION_PROFILE_V1.promotionGates.relativeAgilityEvaluation !==
+		'maximum-of-formula-endpoints-and-observed-paired-shifts'
+	) {
+		throw new Error('Unsupported relative-Agility promotion evaluation');
+	}
 	const maximumAbsoluteChanceShiftBasisPoints = Math.max(
 		Math.abs(
 			agilityChanceShift(
-				BALANCE_SIMULATION_PROFILE_V1.hitContest.slowerEndpointAgility,
-				BALANCE_SIMULATION_PROFILE_V1.hitContest.fasterEndpointAgility
+				BALANCE_SIMULATION_PROFILE_V1.relativeAgilityFixture.endpointAttackerAgility.slower,
+				BALANCE_SIMULATION_PROFILE_V1.relativeAgilityFixture.endpointAttackerAgility.faster
 			)
 		),
 		Math.abs(
 			agilityChanceShift(
-				BALANCE_SIMULATION_PROFILE_V1.hitContest.fasterEndpointAgility,
-				BALANCE_SIMULATION_PROFILE_V1.hitContest.slowerEndpointAgility
+				BALANCE_SIMULATION_PROFILE_V1.relativeAgilityFixture.endpointAttackerAgility.faster,
+				BALANCE_SIMULATION_PROFILE_V1.relativeAgilityFixture.endpointAttackerAgility.slower
 			)
 		),
 		...agility.map((matchup) => Math.abs(matchup.observedChanceShiftBasisPoints))
 	);
+	const regenerationComparison =
+		BALANCE_SIMULATION_PROFILE_V1.promotionGates.regenerationComparison;
+	if (
+		regenerationComparison.completionPolicy !== 'all-trials-complete-with-zero-timeouts' ||
+		regenerationComparison.totalBand !== 'p90-regeneration-strictly-below-p10-damage' ||
+		regenerationComparison.normalizedThroughput !== 'mean-regeneration-strictly-below-mean-damage'
+	) {
+		throw new Error('Unsupported regeneration promotion comparison');
+	}
 	const regenerationPassed = regeneration.every(
 		(matchup) =>
-			matchup.completedTrials === BALANCE_TRIALS_PER_MATCHUP &&
+			matchup.completedTrials === BALANCE_SIMULATION_PROFILE_V1.trialsPerMatchup &&
 			matchup.timedOutTrials === 0 &&
 			matchup.regenerationTotal.p90 < matchup.damageTotal.p10 &&
 			matchup.regenerationPerThousandTicks.mean < matchup.damagePerThousandTicks.mean
@@ -972,8 +1269,17 @@ export async function createCombatBalanceEvidence(): Promise<CombatBalanceEviden
 	const maximumRegenerationToDamageRatioBasisPoints = Math.max(
 		...regeneration.map((matchup) =>
 			ratioBasisPoints(
-				Math.round(matchup.regenerationPerThousandTicks.mean * 1_000),
-				Math.max(1, Math.round(matchup.damagePerThousandTicks.mean * 1_000))
+				Math.round(
+					matchup.regenerationPerThousandTicks.mean *
+						10 ** BALANCE_SIMULATION_PROFILE_V1.arithmetic.summaryMeanDecimalPlaces
+				),
+				Math.max(
+					regenerationComparison.zeroDamageRatioDenominatorScaledUnits,
+					Math.round(
+						matchup.damagePerThousandTicks.mean *
+							10 ** BALANCE_SIMULATION_PROFILE_V1.arithmetic.summaryMeanDecimalPlaces
+					)
+				)
 			)
 		)
 	);
@@ -994,6 +1300,7 @@ export async function createCombatBalanceEvidence(): Promise<CombatBalanceEviden
 	const maximumObservedMedianRatioBasisPoints =
 		completedAffinityRatios.length === 0 ? 0 : Math.max(...completedAffinityRatios);
 	const armourAudit = auditArmourDomain();
+	const armourGate = BALANCE_SIMULATION_PROFILE_V1.promotionGates.armourReduction;
 	const armourMonotonic = armourAudit.monotonic;
 	const maximumObservedReductionBasisPoints = armourAudit.maximumReductionBasisPoints;
 	const gates = {
@@ -1025,12 +1332,13 @@ export async function createCombatBalanceEvidence(): Promise<CombatBalanceEviden
 		},
 		armour: {
 			status: status(
-				armourMonotonic &&
+				(!armourGate.monotonicRequired || armourMonotonic) &&
 					maximumObservedReductionBasisPoints <=
 						COMBAT_RULES_V1.armour.maximumGeneralReductionBasisPoints &&
-					maximumObservedReductionBasisPoints < 7_500
+					maximumObservedReductionBasisPoints < armourGate.maximumExclusiveBasisPoints &&
+					armourGate.authoritativeCeilingRequired
 			),
-			maximumAllowedExclusiveReductionBasisPoints: 7_500 as const,
+			maximumAllowedExclusiveReductionBasisPoints: armourGate.maximumExclusiveBasisPoints,
 			maximumObservedReductionBasisPoints,
 			monotonic: armourMonotonic,
 			exhaustiveDomain: {
@@ -1064,11 +1372,13 @@ export async function createCombatBalanceEvidence(): Promise<CombatBalanceEviden
 			seedSet: BALANCE_SIMULATION_PROFILE_V1.seedSet
 		},
 		fixtures: {
-			levels: BALANCE_LEVELS,
-			attributeSpreads: BALANCE_SPREADS,
-			masteryBands: ['novice', 'trained', 'mastered'],
-			armourStates: ['unarmoured', 'armoured'],
-			offAffinityArchetypes: ['fire-caster', 'water-martial']
+			levels: BALANCE_SIMULATION_PROFILE_V1.benchmarkLevels,
+			attributeSpreads: BALANCE_SIMULATION_PROFILE_V1.attributeSpreads,
+			masteryBands: BALANCE_SIMULATION_PROFILE_V1.fixtureMatrix.accuracyMasteryBands,
+			armourStates: BALANCE_SIMULATION_PROFILE_V1.fixtureMatrix.armourStates,
+			offAffinityArchetypes: Object.values(BALANCE_SIMULATION_PROFILE_V1.affinityArchetypes).map(
+				(archetype) => archetype.archetype
+			)
 		},
 		gates,
 		matchups: { accuracy, agility, regeneration, affinity, armour }
@@ -1104,7 +1414,7 @@ async function runCli(): Promise<void> {
 		}
 	}
 	process.stdout.write(
-		`combat-balance-v1 ${evidence.status}: ${BALANCE_TRIALS_PER_MATCHUP} trials per matchup; ${evidence.bindings.rules.rulesHash}\n`
+		`combat-balance-v1 ${evidence.status}: ${BALANCE_SIMULATION_PROFILE_V1.trialsPerMatchup} trials per matchup; ${evidence.bindings.rules.rulesHash}\n`
 	);
 }
 

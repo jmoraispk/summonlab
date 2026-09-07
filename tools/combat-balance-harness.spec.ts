@@ -71,15 +71,16 @@ describe('four-attribute combat balance evidence', () => {
 			mastered: 100
 		});
 		expect(evidence.simulation.profile.hitContest).toStrictEqual({
+			formula:
+				'clamp(authored-accuracy + attacker-level-accuracy - defender-level-evasion - defender-agility-evasion + relative-agility)',
+			levelSource: 'peer-for-attacker-and-defender',
 			minimumHitChanceBasisPoints: 500,
 			maximumHitChanceBasisPoints: 9_950,
 			attackerLevelAccuracyBasisPointsPerLevel: 2,
 			defenderLevelEvasionBasisPointsPerLevel: 1,
 			defenderAgilityEvasionBasisPointsPerPoint: 1,
 			relativeAgilityBasisPointsPerPoint: 10,
-			relativeAgilityCapBasisPoints: 900,
-			fasterEndpointAgility: 100,
-			slowerEndpointAgility: 1
+			relativeAgilityCapBasisPoints: 900
 		});
 
 		for (const matchup of evidence.matchups.accuracy) {
@@ -114,12 +115,19 @@ describe('four-attribute combat balance evidence', () => {
 
 	it('rejects immortal passive recovery, affinity lock-in, and armour-only over-mitigation', () => {
 		expect(evidence.simulation.profile.sustainedTimeline).toStrictEqual({
+			damageSource: 'peer-damage-fixture',
 			tickDurationMilliseconds: 100,
+			tickIndexOrigin: 0,
+			tickIndexIncrement: 1,
 			horizonTicks: 120,
 			firstAttackTick: 0,
 			attackCadenceTicks: 10,
 			initialTicksSinceDamage: 0,
-			resolutionOrder: 'attack-then-regeneration',
+			regenerationContext: { mode: 'combat', downed: false, injuryRepair: false },
+			resolutionOrder: ['attack', 'regeneration', 'advance-damage-clock'],
+			damageClockResetPolicy: { trigger: 'positive-damage', value: 0 },
+			damageClockAdvancePerTick: 1,
+			recoveryAccounting: 'uncapped-throughput',
 			throughputNormalizationTicks: 1_000
 		});
 		expect(
@@ -212,12 +220,17 @@ describe('four-attribute combat balance evidence', () => {
 		expect(first.simulation.profile.benchmarkDomain.armour).toStrictEqual({
 			minimumPoints: 0,
 			maximumPoints: 10_000,
+			pointIncrement: 1,
+			penetrationPoints: 0,
 			armouredFixturePoints: 100,
+			damageFixturePoints: 250,
+			damageFixtureIncludesNamedResistance: false,
 			equipmentMagnitudeStatus: 'not-yet-shipped',
 			reductionCeilingStatus: 'authoritative-combat-rule'
 		});
 		expect(first.simulation.profile.sourceRecords).toStrictEqual({
 			accuracySkillId: BASIC_SWORD_STRIKE.skillId,
+			peerDamageTagSkillId: BASIC_SWORD_STRIKE.skillId,
 			armouredEquipmentDefinitionId:
 				COMBAT_EQUIPMENT_PROFILES_BY_ID['equipment-iron-heavy-armour-torso']?.definitionId
 		});
@@ -241,6 +254,12 @@ describe('four-attribute combat balance evidence', () => {
 		});
 		expect(first.simulation.profile.randomness).toStrictEqual({
 			version: 'sha256-seeded-xorshift32-v1',
+			seedMaterial: 'canonical-object-of-randomness-version-matchup-id-and-seed',
+			seedDigestHexStart: 0,
+			seedDigestHexLength: 8,
+			seedDigestRadix: 16,
+			seedCohortAllocation: 'equal',
+			outputUnsignedRightShiftBits: 0,
 			xorshift32: {
 				firstLeftShift: 13,
 				rightShift: 17,
@@ -249,16 +268,101 @@ describe('four-attribute combat balance evidence', () => {
 			},
 			rollModulo: 10_000
 		});
-		expect(first.simulation.profile.damageFixture).toStrictEqual({
+		expect(first.simulation.profile.relativeAgilityFixture).toStrictEqual({
 			masteryBand: 'trained',
+			directions: ['faster', 'slower'],
+			baselineAttackerAgilitySource: 'peer',
+			defenderAgilitySource: 'peer',
+			endpointAttackerAgility: { faster: 100, slower: 1 },
+			randomStreamCoupling: 'paired-baseline-and-adjusted'
+		});
+		expect(first.simulation.profile.peerDamageFixture).toStrictEqual({
+			damageModel: 'attribute-scaled-level-base-magnitude',
+			masteryBand: 'trained',
+			channel: 'physical',
+			damageTags: ['physical', 'cut'],
+			matchedAffinity: false,
+			attackerAgilitySource: 'peer',
+			defenderAgilitySource: 'peer',
+			missDamage: 0,
+			damageVarianceBasisPoints: {
+				minimum: 9_000,
+				maximum: 11_000,
+				endpoints: 'inclusive'
+			},
 			minimumSuccessfulDamage: 1,
 			mitigationOrder: ['armour', 'named-resistance'],
-			penetrationPoints: 0
+			penetrationPoints: 0,
+			resistancePolicy: 'apply-authored-armour-receipts-when-enabled'
+		});
+		expect(first.simulation.profile.sustainedTimeline).toStrictEqual({
+			damageSource: 'peer-damage-fixture',
+			tickDurationMilliseconds: 100,
+			tickIndexOrigin: 0,
+			tickIndexIncrement: 1,
+			horizonTicks: 120,
+			firstAttackTick: 0,
+			attackCadenceTicks: 10,
+			initialTicksSinceDamage: 0,
+			regenerationContext: { mode: 'combat', downed: false, injuryRepair: false },
+			resolutionOrder: ['attack', 'regeneration', 'advance-damage-clock'],
+			damageClockResetPolicy: { trigger: 'positive-damage', value: 0 },
+			damageClockAdvancePerTick: 1,
+			recoveryAccounting: 'uncapped-throughput',
+			throughputNormalizationTicks: 1_000
+		});
+		expect(first.simulation.profile.completionFixture).toStrictEqual({
+			damageModel: 'attribute-scaled-level-base-magnitude-with-affinity-candidate',
+			masteryBand: 'trained',
+			attackerAgilitySource: 'peer',
+			defenderAgilitySource: 'peer',
+			targetHealthSource: 'maximum-health-from-peer-vitality',
+			damageVarianceBasisPoints: {
+				minimum: 9_000,
+				maximum: 11_000,
+				endpoints: 'inclusive'
+			},
+			minimumSuccessfulDamage: 1,
+			maximumActions: 200,
+			missConsumesAction: true,
+			defencePolicy: 'no-armour-or-named-resistance',
+			affinityVariantRandomStreamCoupling: 'independent',
+			affinityVariantRandomStreamSuffixes: { matched: 'matched', offAffinity: 'off' }
+		});
+		expect(first.simulation.profile.affinityApplication).toStrictEqual({
+			matchingRule: 'associated-attribute-matches-channel-attribute',
+			channelAttributes: { physical: 'might', magical: 'spirit' },
+			matchedAdjustmentScope: 'attribute-contribution-only',
+			nudgeSource: 'combat-rules-affinity-contribution-cap',
+			offAffinityAdjustment: 'none'
+		});
+		expect(first.simulation.profile.arithmetic).toStrictEqual({
+			basisPointScale: 10_000,
+			integerDivisionRounding: 'half-up',
+			summaryMeanDecimalPlaces: 3
+		});
+		expect(first.simulation.profile.fixtureMatrix).toStrictEqual({
+			accuracyMasteryBands: ['novice', 'trained', 'mastered'],
+			armourStates: ['unarmoured', 'armoured']
+		});
+		expect(first.simulation.profile.promotionGates.regenerationComparison).toStrictEqual({
+			completionPolicy: 'all-trials-complete-with-zero-timeouts',
+			totalBand: 'p90-regeneration-strictly-below-p10-damage',
+			normalizedThroughput: 'mean-regeneration-strictly-below-mean-damage',
+			zeroDamageRatioDenominatorScaledUnits: 1
 		});
 		expect(Object.isFrozen(first)).toBe(true);
 		expect(Object.isFrozen(first.simulation.profile)).toBe(true);
 		expect(Object.isFrozen(first.simulation.profile.hitContest)).toBe(true);
 		expect(Object.isFrozen(first.simulation.profile.seedSet)).toBe(true);
+		expect(Object.isFrozen(first.simulation.profile.relativeAgilityFixture)).toBe(true);
+		expect(Object.isFrozen(first.simulation.profile.peerDamageFixture)).toBe(true);
+		expect(Object.isFrozen(first.simulation.profile.peerDamageFixture.damageTags)).toBe(true);
+		expect(Object.isFrozen(first.simulation.profile.sustainedTimeline.regenerationContext)).toBe(
+			true
+		);
+		expect(Object.isFrozen(first.simulation.profile.sustainedTimeline.resolutionOrder)).toBe(true);
+		expect(Object.isFrozen(first.simulation.profile.completionFixture)).toBe(true);
 		expect(Object.isFrozen(first.matchups.accuracy)).toBe(true);
 		expect(Object.isFrozen(first.matchups.accuracy[0])).toBe(true);
 		const profileHashBeforeMutation = hashCanonical(first.simulation.profile);
@@ -276,6 +380,132 @@ describe('four-attribute combat balance evidence', () => {
 				}
 			})
 		).not.toBe(first.simulation.profileHash);
+
+		const semanticMutations = [
+			{
+				...first.simulation.profile,
+				arithmetic: { ...first.simulation.profile.arithmetic, summaryMeanDecimalPlaces: 2 }
+			},
+			{
+				...first.simulation.profile,
+				randomness: { ...first.simulation.profile.randomness, seedDigestHexLength: 16 }
+			},
+			{
+				...first.simulation.profile,
+				masteryResolution: 'first-authored-step-at-or-below-fixture'
+			},
+			{
+				...first.simulation.profile,
+				fixtureMatrix: {
+					...first.simulation.profile.fixtureMatrix,
+					accuracyMasteryBands: ['novice', 'mastered']
+				}
+			},
+			{
+				...first.simulation.profile,
+				attributeFixture: 'vitality-only'
+			},
+			{
+				...first.simulation.profile,
+				accuracyFixture: {
+					...first.simulation.profile.accuracyFixture,
+					defenderAgilitySource: 'endpoint'
+				}
+			},
+			{
+				...first.simulation.profile,
+				hitContest: { ...first.simulation.profile.hitContest, formula: 'authored-accuracy-only' }
+			},
+			{
+				...first.simulation.profile,
+				relativeAgilityFixture: {
+					...first.simulation.profile.relativeAgilityFixture,
+					masteryBand: 'novice'
+				}
+			},
+			{
+				...first.simulation.profile,
+				peerDamageFixture: {
+					...first.simulation.profile.peerDamageFixture,
+					channel: 'magical'
+				}
+			},
+			{
+				...first.simulation.profile,
+				peerDamageFixture: {
+					...first.simulation.profile.peerDamageFixture,
+					damageTags: ['physical', 'pierce']
+				}
+			},
+			{
+				...first.simulation.profile,
+				peerDamageFixture: {
+					...first.simulation.profile.peerDamageFixture,
+					matchedAffinity: true
+				}
+			},
+			{
+				...first.simulation.profile,
+				sustainedTimeline: {
+					...first.simulation.profile.sustainedTimeline,
+					tickDurationMilliseconds: 50
+				}
+			},
+			{
+				...first.simulation.profile,
+				sustainedTimeline: {
+					...first.simulation.profile.sustainedTimeline,
+					regenerationContext: {
+						...first.simulation.profile.sustainedTimeline.regenerationContext,
+						mode: 'safe-rest'
+					}
+				}
+			},
+			{
+				...first.simulation.profile,
+				sustainedTimeline: {
+					...first.simulation.profile.sustainedTimeline,
+					resolutionOrder: ['regeneration', 'attack', 'advance-damage-clock']
+				}
+			},
+			{
+				...first.simulation.profile,
+				sustainedTimeline: {
+					...first.simulation.profile.sustainedTimeline,
+					damageClockResetPolicy: {
+						...first.simulation.profile.sustainedTimeline.damageClockResetPolicy,
+						trigger: 'attack-attempt'
+					}
+				}
+			},
+			{
+				...first.simulation.profile,
+				completionFixture: {
+					...first.simulation.profile.completionFixture,
+					maximumActions: 201
+				}
+			},
+			{
+				...first.simulation.profile,
+				benchmarkDomain: {
+					...first.simulation.profile.benchmarkDomain,
+					armour: {
+						...first.simulation.profile.benchmarkDomain.armour,
+						damageFixturePoints: 150
+					}
+				}
+			},
+			{
+				...first.simulation.profile,
+				affinityApplication: {
+					...first.simulation.profile.affinityApplication,
+					matchedAdjustmentScope: 'whole-magnitude'
+				}
+			}
+		];
+		for (const mutation of semanticMutations) {
+			expect(hashCanonical(mutation)).not.toBe(first.simulation.profileHash);
+		}
 		expect(serializeCombatBalanceEvidence(second)).toBe(serializeCombatBalanceEvidence(first));
 	});
 });

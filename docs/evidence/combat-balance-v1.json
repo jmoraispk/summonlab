@@ -25,8 +25,19 @@
 		"profile": {
 			"profileVersion": "combat-balance-simulation-profile-v1",
 			"calibrationStatus": "benchmark-promotion-candidate",
+			"arithmetic": {
+				"basisPointScale": 10000,
+				"integerDivisionRounding": "half-up",
+				"summaryMeanDecimalPlaces": 3
+			},
 			"randomness": {
 				"version": "sha256-seeded-xorshift32-v1",
+				"seedMaterial": "canonical-object-of-randomness-version-matchup-id-and-seed",
+				"seedDigestHexStart": 0,
+				"seedDigestHexLength": 8,
+				"seedDigestRadix": 16,
+				"seedCohortAllocation": "equal",
+				"outputUnsignedRightShiftBits": 0,
 				"xorshift32": {
 					"firstLeftShift": 13,
 					"rightShift": 17,
@@ -70,21 +81,48 @@
 				"trained": 50,
 				"mastered": 100
 			},
+			"masteryResolution": "greatest-minimum-mastery-at-or-below-fixture",
+			"fixtureMatrix": {
+				"accuracyMasteryBands": [
+					"novice",
+					"trained",
+					"mastered"
+				],
+				"armourStates": [
+					"unarmoured",
+					"armoured"
+				]
+			},
+			"attributeFixture": "all-four-attributes-equal-to-level-spread-value",
+			"accuracyFixture": {
+				"attackerAgilitySource": "peer",
+				"defenderAgilitySource": "peer"
+			},
 			"hitContest": {
+				"formula": "clamp(authored-accuracy + attacker-level-accuracy - defender-level-evasion - defender-agility-evasion + relative-agility)",
+				"levelSource": "peer-for-attacker-and-defender",
 				"minimumHitChanceBasisPoints": 500,
 				"maximumHitChanceBasisPoints": 9950,
 				"attackerLevelAccuracyBasisPointsPerLevel": 2,
 				"defenderLevelEvasionBasisPointsPerLevel": 1,
 				"defenderAgilityEvasionBasisPointsPerPoint": 1,
 				"relativeAgilityBasisPointsPerPoint": 10,
-				"relativeAgilityCapBasisPoints": 900,
-				"fasterEndpointAgility": 100,
-				"slowerEndpointAgility": 1
+				"relativeAgilityCapBasisPoints": 900
 			},
-			"damageVarianceBasisPoints": [
-				9000,
-				11000
-			],
+			"relativeAgilityFixture": {
+				"masteryBand": "trained",
+				"directions": [
+					"faster",
+					"slower"
+				],
+				"baselineAttackerAgilitySource": "peer",
+				"defenderAgilitySource": "peer",
+				"endpointAttackerAgility": {
+					"faster": 100,
+					"slower": 1
+				},
+				"randomStreamCoupling": "paired-baseline-and-adjusted"
+			},
 			"armourPointSeries": [
 				0,
 				25,
@@ -93,17 +131,54 @@
 				150,
 				250
 			],
-			"maxCompletionActions": 200,
-			"damageFixture": {
+			"peerDamageFixture": {
+				"damageModel": "attribute-scaled-level-base-magnitude",
 				"masteryBand": "trained",
+				"channel": "physical",
+				"damageTags": [
+					"physical",
+					"cut"
+				],
+				"matchedAffinity": false,
+				"attackerAgilitySource": "peer",
+				"defenderAgilitySource": "peer",
+				"missDamage": 0,
+				"damageVarianceBasisPoints": {
+					"minimum": 9000,
+					"maximum": 11000,
+					"endpoints": "inclusive"
+				},
 				"minimumSuccessfulDamage": 1,
 				"mitigationOrder": [
 					"armour",
 					"named-resistance"
 				],
-				"penetrationPoints": 0
+				"penetrationPoints": 0,
+				"resistancePolicy": "apply-authored-armour-receipts-when-enabled"
+			},
+			"completionFixture": {
+				"damageModel": "attribute-scaled-level-base-magnitude-with-affinity-candidate",
+				"masteryBand": "trained",
+				"attackerAgilitySource": "peer",
+				"defenderAgilitySource": "peer",
+				"targetHealthSource": "maximum-health-from-peer-vitality",
+				"damageVarianceBasisPoints": {
+					"minimum": 9000,
+					"maximum": 11000,
+					"endpoints": "inclusive"
+				},
+				"minimumSuccessfulDamage": 1,
+				"maximumActions": 200,
+				"missConsumesAction": true,
+				"defencePolicy": "no-armour-or-named-resistance",
+				"affinityVariantRandomStreamCoupling": "independent",
+				"affinityVariantRandomStreamSuffixes": {
+					"matched": "matched",
+					"offAffinity": "off"
+				}
 			},
 			"promotionGates": {
+				"accuracyStatistic": "aggregate-hit-rate",
 				"accuracyBasisPoints": {
 					"novice": {
 						"minimumBasisPoints": 6500,
@@ -119,19 +194,49 @@
 					}
 				},
 				"maximumRelativeAgilityShiftBasisPoints": 1000,
+				"relativeAgilityEvaluation": "maximum-of-formula-endpoints-and-observed-paired-shifts",
 				"offAffinityMedianRatioBasisPoints": {
 					"minimum": 8500,
 					"maximum": 11500
 				},
-				"regenerationComparison": "p90-total-regeneration-below-p10-total-damage"
+				"offAffinityStatistic": "p50-completion-actions-off-divided-by-matched",
+				"regenerationComparison": {
+					"completionPolicy": "all-trials-complete-with-zero-timeouts",
+					"totalBand": "p90-regeneration-strictly-below-p10-damage",
+					"normalizedThroughput": "mean-regeneration-strictly-below-mean-damage",
+					"zeroDamageRatioDenominatorScaledUnits": 1
+				},
+				"armourReduction": {
+					"monotonicRequired": true,
+					"maximumExclusiveBasisPoints": 7500,
+					"authoritativeCeilingRequired": true
+				}
 			},
 			"sustainedTimeline": {
+				"damageSource": "peer-damage-fixture",
 				"tickDurationMilliseconds": 100,
+				"tickIndexOrigin": 0,
+				"tickIndexIncrement": 1,
 				"horizonTicks": 120,
 				"firstAttackTick": 0,
 				"attackCadenceTicks": 10,
 				"initialTicksSinceDamage": 0,
-				"resolutionOrder": "attack-then-regeneration",
+				"regenerationContext": {
+					"mode": "combat",
+					"downed": false,
+					"injuryRepair": false
+				},
+				"resolutionOrder": [
+					"attack",
+					"regeneration",
+					"advance-damage-clock"
+				],
+				"damageClockResetPolicy": {
+					"trigger": "positive-damage",
+					"value": 0
+				},
+				"damageClockAdvancePerTick": 1,
+				"recoveryAccounting": "uncapped-throughput",
 				"throughputNormalizationTicks": 1000
 			},
 			"attributeValues": {
@@ -166,7 +271,11 @@
 				"armour": {
 					"minimumPoints": 0,
 					"maximumPoints": 10000,
+					"pointIncrement": 1,
+					"penetrationPoints": 0,
 					"armouredFixturePoints": 100,
+					"damageFixturePoints": 250,
+					"damageFixtureIncludesNamedResistance": false,
 					"equipmentMagnitudeStatus": "not-yet-shipped",
 					"reductionCeilingStatus": "authoritative-combat-rule"
 				}
@@ -176,6 +285,16 @@
 				"earth": "vitality",
 				"wind": "agility",
 				"water": "spirit"
+			},
+			"affinityApplication": {
+				"matchingRule": "associated-attribute-matches-channel-attribute",
+				"channelAttributes": {
+					"physical": "might",
+					"magical": "spirit"
+				},
+				"matchedAdjustmentScope": "attribute-contribution-only",
+				"nudgeSource": "combat-rules-affinity-contribution-cap",
+				"offAffinityAdjustment": "none"
 			},
 			"affinityArchetypes": {
 				"fireCaster": {
@@ -203,10 +322,11 @@
 			},
 			"sourceRecords": {
 				"accuracySkillId": "combat-skill-basic-sword-strike",
+				"peerDamageTagSkillId": "combat-skill-basic-sword-strike",
 				"armouredEquipmentDefinitionId": "equipment-iron-heavy-armour-torso"
 			}
 		},
-		"profileHash": "daebeee1aa95802e0300a7cabe131a1bcbb997a73f45492f2d9c90a731bafe0d",
+		"profileHash": "b925b579f583cb009f8e571dd957dcce7c86fcdc7ca6804966f9c90f9923847b",
 		"trialsPerMatchup": 10000,
 		"percentileMethod": "nearest-rank",
 		"seedSet": [
