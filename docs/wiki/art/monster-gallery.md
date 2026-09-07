@@ -58,11 +58,10 @@ This family is the strongest immediate test for the [affinity system](../mechani
 the wiki must determine whether affinity is body, origin, resource, skill, environment, or several
 layered concepts before individual runtime anchors are commissioned.
 
-The current canonical production matrix supersedes that historical four-character plate for form
-and affinity review. Its retained 750-image candidate pack remains candidate-only and none of it is
-runtime art. Review the matrix through the generated
-[enemy image gallery](../../evidence/enemy-image-review-gallery-v1/index.html); reproducible
-contact sheets are generated on demand rather than committed.
+The current canonical production matrix supersedes that historical four-character plate. Its
+retained 750-image candidate pack remains candidate-only and none of it is runtime art. Browse the
+complete matrix through the [monster database](../creatures/monsters/README.md), which publishes the
+750 canonical coordinates together with the 200 approved fauna coordinates.
 
 ### Arachnids
 

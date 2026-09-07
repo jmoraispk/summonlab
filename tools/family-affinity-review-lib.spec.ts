@@ -1218,7 +1218,7 @@ describe('initial family review evidence', () => {
 		await expect(buildFamilyAffinityReviewArtifacts(root)).rejects.toThrow(/extraneous/i);
 	});
 
-	it('reports provisional Earth bridge candidates separately from the canonical 750', async () => {
+	it('reports current bridge candidates and treats deleted bridge rasters as retired', async () => {
 		const root = await mkdtemp(join(tmpdir(), 'family-review-bridge-'));
 		temporaryRoots.push(root);
 		await materializeCleanProductionCorpus(root);
@@ -1329,6 +1329,16 @@ describe('initial family review evidence', () => {
 			bridgeGeneratedCount: 1,
 			bridgeApprovedReviewCount: 0
 		});
+		await rm(join(root, bridgePaths.candidate));
+		const retiredBridge = await buildFamilyAffinityReviewArtifacts(root);
+		expect(retiredBridge.catalog).toMatchObject({
+			coordinateCount: 750,
+			generatedCount: canonicalBaseline.generatedCount,
+			bridgeCoordinateCount: 1,
+			bridgeGeneratedCount: 0,
+			bridgeApprovedReviewCount: 0
+		});
+		await writeFile(join(root, bridgePaths.candidate), candidateBytes);
 		const issued = await issueReviewAssignmentExclusive(root, {
 			callerRole: 'controller',
 			issuerId: 'review-controller-alpha',
@@ -1403,6 +1413,26 @@ describe('initial family review evidence', () => {
 			bridgeGeneratedCount: 0,
 			bridgeApprovedReviewCount: 0,
 			runtimeCount: 0
+		});
+	}, 30_000);
+
+	it('validates retired bridge results against bridge identity packets', async () => {
+		const root = await mkdtemp(join(tmpdir(), 'family-review-retired-bridge-'));
+		temporaryRoots.push(root);
+		await materializeCleanProductionCorpus(root);
+		await attachCurrentBridgeFixture(root);
+		await cp(
+			join(process.cwd(), familyAffinityRoot, 'review/bridge'),
+			join(root, familyAffinityRoot, 'review/bridge'),
+			{ recursive: true }
+		);
+
+		const artifacts = await buildFamilyAffinityReviewArtifacts(root);
+		expect(artifacts.catalog).toMatchObject({
+			coordinateCount: 750,
+			bridgeCoordinateCount: 38,
+			bridgeGeneratedCount: 0,
+			bridgeApprovedReviewCount: 0
 		});
 	}, 30_000);
 });

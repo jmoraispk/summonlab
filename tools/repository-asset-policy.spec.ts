@@ -24,6 +24,19 @@ describe('repository asset retention policy', () => {
 		]);
 	});
 
+	it('rejects retired bridge rasters and the standalone family-affinity review gallery', () => {
+		expect(
+			findRepositoryAssetPathViolations([
+				'assets/enemies/experiments/family-affinity-v1/bridge/candidates/cave-bear/earth-v2.png',
+				'docs/evidence/enemy-image-review-gallery-v1/index.html',
+				'docs/evidence/enemy-image-review-gallery-v1/owner-acceptance.md'
+			])
+		).toEqual([
+			'Family-affinity bridge raster must not be tracked: assets/enemies/experiments/family-affinity-v1/bridge/candidates/cave-bear/earth-v2.png',
+			'Standalone family-affinity review gallery must not be tracked: docs/evidence/enemy-image-review-gallery-v1/index.html'
+		]);
+	});
+
 	it('defines stable approved paths for both hero visual roles', () => {
 		expect(expectedApprovedHeroVisualPath('aear-soro', 'summon')).toBe(
 			'assets/heroes/approved/summonable-roster-v1/sources/aear-soro/summon.png'

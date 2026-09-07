@@ -130,6 +130,15 @@ export function findRepositoryAssetPathViolations(paths: readonly string[]): str
 		if (path.includes('/__pycache__/') || path.endsWith('.pyc')) {
 			violations.push(`Python cache output must not be tracked: ${path}`);
 		}
+		if (
+			path.startsWith('assets/enemies/experiments/family-affinity-v1/bridge/candidates/') &&
+			path.endsWith('.png')
+		) {
+			violations.push(`Family-affinity bridge raster must not be tracked: ${path}`);
+		}
+		if (path === 'docs/evidence/enemy-image-review-gallery-v1/index.html') {
+			violations.push(`Standalone family-affinity review gallery must not be tracked: ${path}`);
+		}
 	}
 	return violations;
 }

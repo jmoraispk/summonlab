@@ -25,7 +25,6 @@ import {
 	FamilyAffinityReviewAssignmentSchema,
 	FamilyAffinityReviewReceiptSchema,
 	FamilyAffinityTargetSchema,
-	FamilyPacketSchema,
 	familyAffinitySourcePacketBinding,
 	PRODUCTION_AFFINITIES,
 	bridgeAttemptPaths,
@@ -41,6 +40,7 @@ import {
 	validateFamilyAffinityAttemptCrossBinding,
 	validateFamilyAffinityReceiptEvidence,
 	validateFamilyAffinityReviewAssignmentEvidence,
+	validateFamilyAffinitySourcePacket,
 	validateCanonicalTargetSourceBinding,
 	type FamilyAffinityAssignment,
 	type FamilyAffinityBlindReviewReceipt,
@@ -351,9 +351,7 @@ function validateFamilyAffinityRetiredCandidateEvidence(input: {
 } {
 	const target = FamilyAffinityTargetSchema.parse(input.target);
 	const assignment = FamilyAffinityAssignmentSchema.parse(input.assignment);
-	const sourcePacket = FamilyPacketSchema.parse(
-		JSON.parse(Buffer.from(input.familyPacketBytes).toString('utf8'))
-	);
+	const sourcePacket = validateFamilyAffinitySourcePacket(target, input.familyPacketBytes);
 	const result = FamilyAffinityResultSchema.parse(
 		JSON.parse(Buffer.from(input.resultBytes).toString('utf8'))
 	);
@@ -1630,7 +1628,10 @@ export async function buildFamilyAffinityReviewArtifacts(
 				: undefined;
 		const evaluated = generationFailure
 			? { state: 'revise' as const, revisionRequired: true, approved: false }
-			: !active && !candidateBytes && resultBytes && familyPacketBytes
+			: (!active || target.namespace === 'bridge') &&
+				  !candidateBytes &&
+				  resultBytes &&
+				  familyPacketBytes
 				? (() => {
 						const evidence = validateFamilyAffinityRetiredCandidateEvidence({
 							target,
@@ -1783,7 +1784,7 @@ export async function buildFamilyAffinityReviewArtifacts(
 		bridgeCoordinateCount: bridgeCells.length,
 		generatedCount,
 		approvedReviewCount,
-		bridgeGeneratedCount: bridgeCells.filter(({ state }) => state !== 'planned').length,
+		bridgeGeneratedCount: bridgeCells.filter(({ candidatePath }) => candidatePath !== null).length,
 		bridgeApprovedReviewCount: bridgeCells.filter(({ state }) => state === 'approved-review')
 			.length,
 		revisionRequiredCount,
