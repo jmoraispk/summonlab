@@ -221,6 +221,32 @@ export const CombatLegalActionSchema = z
 		}
 	});
 
+export const CombatLegalActionTemplateSchema = z
+	.object({
+		actionId: z.string().regex(/^[a-z][a-z0-9-]{0,79}$/u),
+		actionKind: z.enum(['attack', 'skill', 'move', 'guard', 'rescue', 'retreat']),
+		skillId: CombatSkillIdSchema.nullable(),
+		publicLabel: z.string().trim().min(1).max(120),
+		targetContract: CombatTargetContractSchema,
+		reactionPriority: z.number().int().min(-100).max(100),
+		recoveryTicks: z.number().int().positive().max(100_000),
+		manaCost: z.number().int().nonnegative().max(1_000_000),
+		fallbackOptions: z.array(CombatFallbackOptionSchema).min(1).max(16)
+	})
+	.strict()
+	.superRefine((action, context) => {
+		if (
+			new Set(action.fallbackOptions.map((fallback) => fallback.fallbackId)).size !==
+			action.fallbackOptions.length
+		) {
+			context.addIssue({
+				code: 'custom',
+				path: ['fallbackOptions'],
+				message: 'Fallback options must be unique'
+			});
+		}
+	});
+
 export const CombatTelegraphSchema = z
 	.object({
 		telegraphId: z.string().regex(/^[a-z][a-z0-9-]{0,79}$/u),
@@ -265,7 +291,77 @@ export const CombatWindowSnapshotSchema = z
 				message: 'Ready actors must be unique'
 			});
 		}
+		if (
+			new Set(snapshot.visibleTelegraphs.map((telegraph) => telegraph.telegraphId)).size !==
+			snapshot.visibleTelegraphs.length
+		) {
+			context.addIssue({
+				code: 'custom',
+				path: ['visibleTelegraphs'],
+				message: 'Visible combat telegraphs must be unique'
+			});
+		}
 		validateCombatantMap(snapshot.combatants, snapshot.terrain, context, snapshot.tick);
+	});
+
+export const CombatActorContextStateSchema = z
+	.object({
+		actorId: EntityIdSchema,
+		visibleCombatantIds: z.array(EntityIdSchema).max(128),
+		visibleTelegraphIds: z.array(z.string().regex(/^[a-z][a-z0-9-]{0,79}$/u)).max(1_000),
+		observableReadinessActorIds: z.array(EntityIdSchema).max(128),
+		visiblePositions: z.array(CombatPositionSchema).min(1).max(10_000),
+		visibleTerrainFeatureIds: z.array(z.string().regex(/^[a-z][a-z0-9-]{0,79}$/u)).max(1_000),
+		rememberedContext: z.array(BoundedTextSchema).max(32),
+		doctrine: z.array(BoundedTextSchema).max(32),
+		relationships: z
+			.array(z.object({ entityId: EntityIdSchema, publicSummary: BoundedTextSchema }).strict())
+			.max(128),
+		masterDirections: z.array(BoundedTextSchema).max(32),
+		legalActionTemplates: z.array(CombatLegalActionTemplateSchema).min(1).max(128)
+	})
+	.strict()
+	.superRefine((actorContext, context) => {
+		for (const [path, values] of [
+			['visibleCombatantIds', actorContext.visibleCombatantIds],
+			['visibleTelegraphIds', actorContext.visibleTelegraphIds],
+			['observableReadinessActorIds', actorContext.observableReadinessActorIds],
+			['visibleTerrainFeatureIds', actorContext.visibleTerrainFeatureIds]
+		] as const) {
+			if (new Set(values).size !== values.length) {
+				context.addIssue({ code: 'custom', path: [path], message: `${path} must be unique` });
+			}
+		}
+		const positionKeys = actorContext.visiblePositions.map(
+			(position) => `${position.x}:${position.y}`
+		);
+		if (new Set(positionKeys).size !== positionKeys.length) {
+			context.addIssue({
+				code: 'custom',
+				path: ['visiblePositions'],
+				message: 'Visible positions must be unique'
+			});
+		}
+		if (
+			new Set(actorContext.relationships.map((relationship) => relationship.entityId)).size !==
+			actorContext.relationships.length
+		) {
+			context.addIssue({
+				code: 'custom',
+				path: ['relationships'],
+				message: 'Actor relationships must be unique by entity'
+			});
+		}
+		if (
+			new Set(actorContext.legalActionTemplates.map((action) => action.actionId)).size !==
+			actorContext.legalActionTemplates.length
+		) {
+			context.addIssue({
+				code: 'custom',
+				path: ['legalActionTemplates'],
+				message: 'Legal action template IDs must be unique'
+			});
+		}
 	});
 
 export const ObservableCombatConditionSchema = z
@@ -624,6 +720,216 @@ function structurallyEqual(left: unknown, right: unknown): boolean {
 	);
 }
 
+function positionKey(position: z.infer<typeof CombatPositionSchema>): string {
+	return `${position.x}:${position.y}`;
+}
+
+function validateActorContexts(
+	state: {
+		combatants: Record<string, z.infer<typeof CombatantStateSchema>>;
+		actorContexts: Record<string, z.infer<typeof CombatActorContextStateSchema>>;
+		terrain: z.infer<typeof CombatTerrainSchema>;
+		visibleTelegraphs: z.infer<typeof CombatTelegraphSchema>[];
+	},
+	context: z.RefinementCtx
+): void {
+	const telegraphs = new Map(
+		state.visibleTelegraphs.map((telegraph) => [telegraph.telegraphId, telegraph])
+	);
+	const features = new Map(state.terrain.features.map((feature) => [feature.featureId, feature]));
+	const blockedPositions = new Set(state.terrain.blockedTiles.map(positionKey));
+	const occupiedPositions = new Map(
+		Object.values(state.combatants).map((combatant) => [
+			positionKey(combatant.position),
+			combatant.combatantId
+		])
+	);
+	for (const [actorId, actorContext] of Object.entries(state.actorContexts)) {
+		const issue = (path: PropertyKey[], message: string): void => {
+			context.addIssue({ code: 'custom', path: ['actorContexts', actorId, ...path], message });
+		};
+		const actor = state.combatants[actorId];
+		if (!actor || actorContext.actorId !== actorId) {
+			issue(['actorId'], 'Actor context key and actor must match canonical combat state');
+			continue;
+		}
+		const visibleIds = new Set(actorContext.visibleCombatantIds);
+		const visiblePositions = new Set(actorContext.visiblePositions.map(positionKey));
+		if (!visiblePositions.has(positionKey(actor.position))) {
+			issue(['visiblePositions'], 'Actor context must include its own visible position');
+		}
+		for (const [index, position] of actorContext.visiblePositions.entries()) {
+			if (position.x >= state.terrain.width || position.y >= state.terrain.height) {
+				issue(['visiblePositions', index], 'Visible position is outside the canonical arena');
+			}
+		}
+		for (const [index, combatantId] of actorContext.visibleCombatantIds.entries()) {
+			const combatant = state.combatants[combatantId];
+			if (!combatant || combatantId === actorId) {
+				issue(['visibleCombatantIds', index], 'Visible combatant must be another canonical actor');
+			} else if (!visiblePositions.has(positionKey(combatant.position))) {
+				issue(['visibleCombatantIds', index], 'Visible combatant position must be visible');
+			}
+		}
+		for (const [index, combatantId] of actorContext.observableReadinessActorIds.entries()) {
+			if (!visibleIds.has(combatantId)) {
+				issue(
+					['observableReadinessActorIds', index],
+					'Observable readiness must belong to a visible combatant'
+				);
+			}
+		}
+		for (const [index, featureId] of actorContext.visibleTerrainFeatureIds.entries()) {
+			const feature = features.get(featureId);
+			if (!feature || !visiblePositions.has(positionKey(feature.position))) {
+				issue(
+					['visibleTerrainFeatureIds', index],
+					'Visible terrain feature must exist at a visible position'
+				);
+			}
+		}
+		for (const [index, telegraphId] of actorContext.visibleTelegraphIds.entries()) {
+			const telegraph = telegraphs.get(telegraphId);
+			if (!telegraph) {
+				issue(['visibleTelegraphIds', index], 'Visible telegraph must exist in canonical state');
+				continue;
+			}
+			if (telegraph.sourceCombatantId !== actorId && !visibleIds.has(telegraph.sourceCombatantId)) {
+				issue(['visibleTelegraphIds', index], 'Visible telegraph source must be visible');
+			}
+			if (
+				(telegraph.target.kind === 'entity' ||
+					telegraph.target.kind === 'entity-relative-position') &&
+				telegraph.target.combatantId !== actorId &&
+				!visibleIds.has(telegraph.target.combatantId)
+			) {
+				issue(['visibleTelegraphIds', index], 'Visible telegraph target must be visible');
+			}
+			if (
+				telegraph.target.kind === 'tile' &&
+				!visiblePositions.has(positionKey(telegraph.target.position))
+			) {
+				issue(['visibleTelegraphIds', index], 'Visible telegraph tile must be visible');
+			}
+		}
+		for (const [index, relationship] of actorContext.relationships.entries()) {
+			if (relationship.entityId !== actorId && !visibleIds.has(relationship.entityId)) {
+				issue(['relationships', index], 'Actor relationship must concern a visible entity');
+			}
+		}
+
+		const positionIsLegal = (
+			position: z.infer<typeof CombatPositionSchema>,
+			actionKind: z.infer<typeof CombatLegalActionTemplateSchema>['actionKind']
+		): boolean => {
+			const key = positionKey(position);
+			if (
+				position.x >= state.terrain.width ||
+				position.y >= state.terrain.height ||
+				!visiblePositions.has(key) ||
+				blockedPositions.has(key)
+			) {
+				return false;
+			}
+			return actionKind !== 'move' || !occupiedPositions.has(key);
+		};
+		const entityIsLegal = (combatantId: string): boolean =>
+			combatantId === actorId ||
+			(visibleIds.has(combatantId) && Boolean(state.combatants[combatantId]));
+		type RelativeRelation = 'adjacent' | 'behind' | 'flank-left' | 'flank-right';
+		const relativePositionExists = (combatantId: string, relation: RelativeRelation): boolean => {
+			const target = state.combatants[combatantId];
+			if (!target) return false;
+			const deltaX = target.position.x - actor.position.x;
+			const deltaY = target.position.y - actor.position.y;
+			const forward =
+				Math.abs(deltaX) >= Math.abs(deltaY)
+					? { x: Math.sign(deltaX) || 1, y: 0 }
+					: { x: 0, y: Math.sign(deltaY) || 1 };
+			const offsets =
+				relation === 'adjacent'
+					? [
+							{ x: -1, y: 0 },
+							{ x: 1, y: 0 },
+							{ x: 0, y: -1 },
+							{ x: 0, y: 1 }
+						]
+					: relation === 'behind'
+						? [forward]
+						: relation === 'flank-left'
+							? [{ x: -forward.y, y: forward.x }]
+							: [{ x: forward.y, y: -forward.x }];
+			return offsets
+				.map((offset) => ({
+					x: target.position.x + offset.x,
+					y: target.position.y + offset.y
+				}))
+				.some(
+					(position) => position.x >= 0 && position.y >= 0 && positionIsLegal(position, 'move')
+				);
+		};
+		for (const [actionIndex, action] of actorContext.legalActionTemplates.entries()) {
+			const actionPath = ['legalActionTemplates', actionIndex] as const;
+			if (action.targetContract.kind === 'entity') {
+				if (
+					new Set(action.targetContract.allowedCombatantIds).size !==
+						action.targetContract.allowedCombatantIds.length ||
+					action.targetContract.allowedCombatantIds.some((id) => !entityIsLegal(id))
+				) {
+					issue([...actionPath, 'targetContract'], 'Entity targets must be unique and visible');
+				}
+			} else if (action.targetContract.kind === 'tile') {
+				const keys = action.targetContract.allowedPositions.map(positionKey);
+				if (
+					new Set(keys).size !== keys.length ||
+					action.targetContract.allowedPositions.some(
+						(position) => !positionIsLegal(position, action.actionKind)
+					)
+				) {
+					issue(
+						[...actionPath, 'targetContract'],
+						'Tile targets must be unique, visible, and legal'
+					);
+				}
+			} else if (action.targetContract.kind === 'entity-relative-position') {
+				const allowedRelations = action.targetContract.allowedRelations;
+				if (
+					new Set(action.targetContract.allowedCombatantIds).size !==
+						action.targetContract.allowedCombatantIds.length ||
+					new Set(action.targetContract.allowedRelations).size !==
+						action.targetContract.allowedRelations.length ||
+					action.targetContract.allowedCombatantIds.some(
+						(id) =>
+							!entityIsLegal(id) ||
+							allowedRelations.some((relation) => !relativePositionExists(id, relation))
+					)
+				) {
+					issue(
+						[...actionPath, 'targetContract'],
+						'Relative targets require unique visible entities and a visible legal destination'
+					);
+				}
+			}
+			for (const [fallbackIndex, fallback] of action.fallbackOptions.entries()) {
+				const target = fallback.target;
+				const valid =
+					target.kind === 'self' ||
+					(target.kind === 'entity' && entityIsLegal(target.combatantId)) ||
+					(target.kind === 'tile' && positionIsLegal(target.position, action.actionKind)) ||
+					(target.kind === 'entity-relative-position' &&
+						entityIsLegal(target.combatantId) &&
+						relativePositionExists(target.combatantId, target.relation));
+				if (!valid) {
+					issue(
+						[...actionPath, 'fallbackOptions', fallbackIndex, 'target'],
+						'Fallback target must be visible and legal'
+					);
+				}
+			}
+		}
+	}
+}
+
 export const ReadinessCombatStateV1Schema = z
 	.object({
 		stateVersion: ReadinessCombatStateVersionSchema,
@@ -631,6 +937,7 @@ export const ReadinessCombatStateV1Schema = z
 		attemptId: EntityIdSchema,
 		tick: TickSchema,
 		combatants: z.record(EntityIdSchema, CombatantStateSchema),
+		actorContexts: z.record(EntityIdSchema, CombatActorContextStateSchema),
 		terrain: CombatTerrainSchema,
 		visibleTelegraphs: z.array(CombatTelegraphSchema).max(1_000),
 		scheduledEffects: z.array(ScheduledCombatEffectSchema).max(10_000),
@@ -641,6 +948,27 @@ export const ReadinessCombatStateV1Schema = z
 	.strict()
 	.superRefine((state, context) => {
 		validateCombatantMap(state.combatants, state.terrain, context, state.tick);
+		validateActorContexts(state, context);
+		if (
+			new Set(state.visibleTelegraphs.map((telegraph) => telegraph.telegraphId)).size !==
+			state.visibleTelegraphs.length
+		) {
+			context.addIssue({
+				code: 'custom',
+				path: ['visibleTelegraphs'],
+				message: 'Visible combat telegraphs must be unique'
+			});
+		}
+		if (
+			new Set(state.scheduledEffects.map((effect) => effect.scheduledEffectId)).size !==
+			state.scheduledEffects.length
+		) {
+			context.addIssue({
+				code: 'custom',
+				path: ['scheduledEffects'],
+				message: 'Scheduled combat effects must be unique'
+			});
+		}
 		if ((state.status === 'complete') !== (state.result !== null)) {
 			context.addIssue({
 				code: 'custom',
@@ -765,11 +1093,13 @@ export const CombatAdvanceSchema = z
 
 export type ActorDecisionView = z.infer<typeof ActorDecisionViewSchema>;
 export type ActorSelfDecisionState = z.infer<typeof ActorSelfDecisionStateSchema>;
+export type CombatActorContextState = z.infer<typeof CombatActorContextStateSchema>;
 export type CombatActionIntent = z.infer<typeof CombatActionIntentSchema>;
 export type CombatAdvance = z.infer<typeof CombatAdvanceSchema>;
 export type CombatChoiceBatchV1 = z.infer<typeof CombatChoiceBatchV1Schema>;
 export type CombatClaim = z.infer<typeof CombatClaimSchema>;
 export type CombatLegalAction = z.infer<typeof CombatLegalActionSchema>;
+export type CombatLegalActionTemplate = z.infer<typeof CombatLegalActionTemplateSchema>;
 export type CombatResolvedEvent = z.infer<typeof CombatResolvedEventSchema>;
 export type CombatResult = z.infer<typeof CombatResultSchema>;
 export type CombatSafetyStop = z.infer<typeof CombatSafetyStopSchema>;

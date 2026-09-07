@@ -319,6 +319,7 @@ function v26ReadinessStateFromV24Fixture() {
 						attemptId: attempt.attemptId,
 						tick: 12,
 						combatants,
+						actorContexts: {},
 						terrain: { width: 16, height: 8, blockedTiles: [], features: [] },
 						visibleTelegraphs: [],
 						scheduledEffects: [],

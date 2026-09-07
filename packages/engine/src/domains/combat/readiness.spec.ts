@@ -73,6 +73,7 @@ function state(
 		attemptId: ID.attempt,
 		tick: input.tick ?? 0,
 		combatants,
+		actorContexts: {},
 		terrain: { width: 8, height: 8, blockedTiles: [], features: [] },
 		visibleTelegraphs: [],
 		scheduledEffects: input.scheduledEffects ?? [],

@@ -1,4 +1,9 @@
-import type { CombatLegalAction, ReadinessCombatStateV1 } from '@summonlab/contracts';
+import type {
+	CombatActorContextState,
+	CombatLegalAction,
+	CombatLegalActionTemplate,
+	ReadinessCombatStateV1
+} from '@summonlab/contracts';
 import { COMBAT_CONTENT_BINDING, COMBAT_RULES_V1 } from '@summonlab/content';
 import { describe, expect, it } from 'vitest';
 
@@ -6,8 +11,7 @@ import { hashCanonical } from '../../hash.js';
 import {
 	advanceUntilDecision,
 	assembleCombatDecisionWindow,
-	buildCombatWindowSnapshot,
-	type ActorCombatContext
+	buildCombatWindowSnapshot
 } from './window.js';
 
 const ID = {
@@ -61,6 +65,7 @@ function state(): ReadinessCombatStateV1 {
 			[ID.visibleMonster]: combatant(ID.visibleMonster, { x: 4, y: 1 }, 'enemy', 0),
 			[ID.hero]: combatant(ID.hero, { x: 1, y: 1 }, 'party')
 		},
+		actorContexts: contexts(),
 		terrain: {
 			width: 8,
 			height: 8,
@@ -113,30 +118,64 @@ function action(
 	};
 }
 
-function contexts(): Readonly<Record<string, ActorCombatContext>> {
+function actionTemplate(
+	actionId: string,
+	targetId: string,
+	label: string,
+	skillId: CombatLegalActionTemplate['skillId'] = 'combat-skill-basic-sword-strike'
+): CombatLegalActionTemplate {
+	const fullAction = action(actionId, ID.actionHero, targetId, label, skillId);
+	return {
+		actionId: fullAction.actionId,
+		actionKind: fullAction.actionKind,
+		skillId: fullAction.skillId,
+		publicLabel: fullAction.publicLabel,
+		targetContract: fullAction.targetContract,
+		reactionPriority: fullAction.reactionPriority,
+		recoveryTicks: fullAction.recoveryTicks,
+		manaCost: fullAction.manaCost,
+		fallbackOptions: fullAction.fallbackOptions
+	};
+}
+
+function contexts(): Readonly<Record<string, CombatActorContextState>> {
 	return {
 		[ID.hero]: {
+			actorId: ID.hero,
 			visibleCombatantIds: [ID.visibleMonster, ID.ally],
 			visibleTelegraphIds: [ID.telegraphVisible],
 			observableReadinessActorIds: [ID.ally],
+			visiblePositions: [
+				{ x: 1, y: 1 },
+				{ x: 2, y: 1 },
+				{ x: 4, y: 1 },
+				{ x: 5, y: 1 }
+			],
+			visibleTerrainFeatureIds: ['cover-east'],
 			rememberedContext: ['The eastern beast recoils from pressure.'],
 			doctrine: ['Protect allies before pursuing.'],
 			relationships: [{ entityId: ID.ally, publicSummary: 'A trusted shield-partner.' }],
 			masterDirections: ['Hold the eastern lane.'],
-			legalActions: [action('cross-cut', ID.actionHero, ID.visibleMonster, 'Cross Cut')]
+			legalActionTemplates: [actionTemplate('cross-cut', ID.visibleMonster, 'Cross Cut')]
 		},
 		[ID.ally]: {
+			actorId: ID.ally,
 			visibleCombatantIds: [ID.hiddenMonster, ID.hero],
 			visibleTelegraphIds: [ID.telegraphHidden],
 			observableReadinessActorIds: [],
+			visiblePositions: [
+				{ x: 1, y: 1 },
+				{ x: 2, y: 1 },
+				{ x: 6, y: 6 }
+			],
+			visibleTerrainFeatureIds: [],
 			rememberedContext: ['Movement sounded beyond the southern cover.'],
 			doctrine: ['Draw danger away from wounded allies.'],
 			relationships: [{ entityId: ID.hero, publicSummary: 'A new but reliable companion.' }],
 			masterDirections: ['Watch the southern approach.'],
-			legalActions: [
-				action(
+			legalActionTemplates: [
+				actionTemplate(
 					'driving-shot',
-					ID.actionAlly,
 					ID.hiddenMonster,
 					'Driving Shot',
 					'combat-skill-basic-bow-shot'
@@ -154,7 +193,6 @@ describe('frozen combat decision windows', () => {
 			state: arranged,
 			rules: COMBAT_RULES_V1,
 			readyActorIds: [ID.ally, ID.hero],
-			actorContexts: contexts(),
 			contentHash: COMBAT_CONTENT_BINDING.contentHash
 		});
 
@@ -172,20 +210,32 @@ describe('frozen combat decision windows', () => {
 		}
 		expect(result.views[0]?.actorViewHash).not.toBe(result.views[1]?.actorViewHash);
 		expect(result.views[0]?.legalActionSetHash).not.toBe(result.views[1]?.legalActionSetHash);
+		expect(result.views[0]?.legalActions.map((legal) => legal.actionId)).toStrictEqual([
+			'cross-cut'
+		]);
+		expect(result.views[1]?.legalActions.map((legal) => legal.actionId)).toStrictEqual([
+			'driving-shot'
+		]);
+		expect(result.snapshot).not.toHaveProperty('actorContexts');
 		expect(hashCanonical(arranged)).toBe(inputHash);
 		expect(Object.isFrozen(result.snapshot)).toBe(true);
 		expect(Object.isFrozen(result.snapshot.combatants[ID.hero]?.resources.health)).toBe(true);
 		expect(Object.isFrozen(result.views[0]?.legalActions[0]?.fallbackOptions)).toBe(true);
+		const changedContextState = state();
+		changedContextState.actorContexts[ID.hero]!.doctrine = ['Withdraw if the eastern lane breaks.'];
+		const changedSnapshot = buildCombatWindowSnapshot({
+			state: changedContextState,
+			rules: COMBAT_RULES_V1,
+			readyActorIds: [ID.hero, ID.ally],
+			contentHash: COMBAT_CONTENT_BINDING.contentHash
+		});
+		expect(changedSnapshot.stateHash).not.toBe(result.snapshot.stateHash);
 	});
 
 	it('filters hidden truth, private readiness internals, ally private state, and unresolved choices', () => {
-		const result = assembleCombatDecisionWindow({
-			state: state(),
-			rules: COMBAT_RULES_V1,
-			readyActorIds: [ID.hero, ID.ally],
-			actorContexts: contexts(),
-			contentHash: COMBAT_CONTENT_BINDING.contentHash
-		});
+		const result = advanceUntilDecision(state(), COMBAT_RULES_V1);
+		expect(result.kind).toBe('decision-window');
+		if (result.kind !== 'decision-window') return;
 		const heroView = result.views.find((view) => view.actorId === ID.hero)!;
 		const encoded = JSON.stringify(heroView);
 
@@ -203,6 +253,11 @@ describe('frozen combat decision windows', () => {
 		expect(encoded).not.toContain('cooldowns');
 		expect(encoded).not.toContain('unresolvedChoices');
 		expect(encoded).not.toContain(state().seed);
+		expect(encoded).not.toContain('actorContexts');
+		expect(encoded).not.toContain('legalActionTemplates');
+		expect(result.views.find((view) => view.actorId === ID.ally)?.actorViewHash).not.toBe(
+			heroView.actorViewHash
+		);
 	});
 
 	it('rejects legal targets and terrain details outside the actor perception', () => {
@@ -210,43 +265,134 @@ describe('frozen combat decision windows', () => {
 		const heroContext = actorContexts[ID.hero]!;
 		expect(() =>
 			assembleCombatDecisionWindow({
-				state: state(),
-				rules: COMBAT_RULES_V1,
-				readyActorIds: [ID.hero, ID.ally],
-				actorContexts: {
-					...actorContexts,
-					[ID.hero]: {
-						...heroContext,
-						legalActions: [
-							action('hidden-strike', ID.actionHero, ID.hiddenMonster, 'Hidden Strike')
-						]
-					}
-				},
-				contentHash: COMBAT_CONTENT_BINDING.contentHash
-			})
-		).toThrow('hidden combatant');
-
-		expect(() =>
-			assembleCombatDecisionWindow({
-				state: state(),
-				rules: COMBAT_RULES_V1,
-				readyActorIds: [ID.hero, ID.ally],
-				actorContexts: {
-					...actorContexts,
-					[ID.hero]: {
-						...heroContext,
-						visibleTerrain: {
-							...state().terrain,
-							features: [
-								...state().terrain.features,
-								{ featureId: 'invented-cover', kind: 'cover', position: { x: 7, y: 7 } }
+				state: {
+					...state(),
+					actorContexts: {
+						...actorContexts,
+						[ID.hero]: {
+							...heroContext,
+							legalActionTemplates: [
+								actionTemplate('hidden-strike', ID.hiddenMonster, 'Hidden Strike')
 							]
 						}
 					}
 				},
+				rules: COMBAT_RULES_V1,
+				readyActorIds: [ID.hero, ID.ally],
 				contentHash: COMBAT_CONTENT_BINDING.contentHash
 			})
-		).toThrow('terrain');
+		).toThrow('visible');
+
+		expect(() =>
+			assembleCombatDecisionWindow({
+				state: {
+					...state(),
+					actorContexts: {
+						...actorContexts,
+						[ID.hero]: {
+							...heroContext,
+							visiblePositions: [...heroContext.visiblePositions, { x: 8, y: 1 }]
+						}
+					}
+				},
+				rules: COMBAT_RULES_V1,
+				readyActorIds: [ID.hero, ID.ally],
+				contentHash: COMBAT_CONTENT_BINDING.contentHash
+			})
+		).toThrow('outside');
+
+		expect(() =>
+			assembleCombatDecisionWindow({
+				state: {
+					...state(),
+					actorContexts: {
+						...actorContexts,
+						[ID.hero]: {
+							...heroContext,
+							visiblePositions: [...heroContext.visiblePositions, { x: 0, y: 0 }],
+							legalActionTemplates: [
+								{
+									actionId: 'move-into-wall',
+									actionKind: 'move',
+									skillId: null,
+									publicLabel: 'Move into wall',
+									targetContract: {
+										kind: 'tile',
+										allowedPositions: [{ x: 0, y: 0 }]
+									},
+									reactionPriority: 0,
+									recoveryTicks: 2,
+									manaCost: 0,
+									fallbackOptions: [
+										{
+											fallbackId: 'stay',
+											publicLabel: 'Stay',
+											target: { kind: 'self' }
+										}
+									]
+								}
+							]
+						}
+					}
+				},
+				rules: COMBAT_RULES_V1,
+				readyActorIds: [ID.hero, ID.ally],
+				contentHash: COMBAT_CONTENT_BINDING.contentHash
+			})
+		).toThrow('Tile targets');
+
+		expect(() =>
+			assembleCombatDecisionWindow({
+				state: {
+					...state(),
+					actorContexts: {
+						...actorContexts,
+						[ID.hero]: {
+							...heroContext,
+							legalActionTemplates: [
+								{
+									actionId: 'unseen-flank',
+									actionKind: 'move',
+									skillId: null,
+									publicLabel: 'Unseen flank',
+									targetContract: {
+										kind: 'entity-relative-position',
+										allowedCombatantIds: [ID.visibleMonster],
+										allowedRelations: ['flank-left']
+									},
+									reactionPriority: 0,
+									recoveryTicks: 2,
+									manaCost: 0,
+									fallbackOptions: [
+										{
+											fallbackId: 'stay',
+											publicLabel: 'Stay',
+											target: { kind: 'self' }
+										}
+									]
+								}
+							]
+						}
+					}
+				},
+				rules: COMBAT_RULES_V1,
+				readyActorIds: [ID.hero, ID.ally],
+				contentHash: COMBAT_CONTENT_BINDING.contentHash
+			})
+		).toThrow('Relative targets');
+	});
+
+	it('returns a typed deterministic safety stop when a ready actor lacks engine-owned context', () => {
+		const arranged = state();
+		arranged.actorContexts = { [ID.hero]: arranged.actorContexts[ID.hero]! };
+		const left = advanceUntilDecision(arranged, COMBAT_RULES_V1);
+		const right = advanceUntilDecision(arranged, COMBAT_RULES_V1);
+
+		expect(left).toStrictEqual(right);
+		expect(left.kind).toBe('combat-result');
+		if (left.kind !== 'combat-result') return;
+		expect(left.result.outcome).toBe('safety-stop');
+		expect(left.result.safetyStop?.reason).toBe('invalid-state');
 	});
 
 	it('rejects a ready actor set that does not exactly match canonical readiness', () => {
@@ -262,23 +408,55 @@ describe('frozen combat decision windows', () => {
 
 	it('is byte-stable across semantically irrelevant record and context insertion order', () => {
 		const arranged = state();
+		arranged.scheduledEffects = [
+			{
+				scheduledEffectId: '31000000-0000-4000-8000-000000000010',
+				resolvesAtTick: 10,
+				sourceCombatantId: ID.visibleMonster,
+				effects: [
+					{
+						kind: 'resource',
+						combatantId: ID.hero,
+						resource: 'health',
+						before: 90,
+						after: 89,
+						delta: -1
+					}
+				]
+			},
+			{
+				scheduledEffectId: '31000000-0000-4000-8000-000000000011',
+				resolvesAtTick: 11,
+				sourceCombatantId: ID.hiddenMonster,
+				effects: [
+					{
+						kind: 'resource',
+						combatantId: ID.ally,
+						resource: 'mana',
+						before: 30,
+						after: 29,
+						delta: -1
+					}
+				]
+			}
+		];
 		const reversed = {
 			...arranged,
-			combatants: Object.fromEntries(Object.entries(arranged.combatants).reverse())
+			combatants: Object.fromEntries(Object.entries(arranged.combatants).reverse()),
+			actorContexts: Object.fromEntries(Object.entries(arranged.actorContexts).reverse()),
+			visibleTelegraphs: [...arranged.visibleTelegraphs].reverse(),
+			scheduledEffects: [...arranged.scheduledEffects].reverse()
 		};
-		const actorContexts = contexts();
 		const left = assembleCombatDecisionWindow({
 			state: arranged,
 			rules: COMBAT_RULES_V1,
 			readyActorIds: [ID.hero, ID.ally],
-			actorContexts,
 			contentHash: COMBAT_CONTENT_BINDING.contentHash
 		});
 		const right = assembleCombatDecisionWindow({
 			state: reversed,
 			rules: COMBAT_RULES_V1,
 			readyActorIds: [ID.ally, ID.hero],
-			actorContexts: Object.fromEntries(Object.entries(actorContexts).reverse()),
 			contentHash: COMBAT_CONTENT_BINDING.contentHash
 		});
 
@@ -287,7 +465,7 @@ describe('frozen combat decision windows', () => {
 
 	it('composes readiness advancement into the exact public stepped contract', () => {
 		const arranged = state();
-		for (const actor of Object.values(arranged.combatants)) {
+		for (const actor of [arranged.combatants[ID.hero]!, arranged.combatants[ID.ally]!]) {
 			actor.readiness = { value: 9_899, exactNumerator: 9_899, recoveryUntilTick: 0 };
 		}
 		const result = advanceUntilDecision(arranged, COMBAT_RULES_V1);

@@ -1,10 +1,12 @@
 import {
 	ActorDecisionViewSchema,
 	CombatAdvanceSchema,
+	CombatResultSchema,
 	CombatRulesV1Schema,
 	CombatWindowSnapshotSchema,
 	ReadinessCombatStateV1Schema,
 	type ActorDecisionView,
+	type CombatActorContextState,
 	type CombatAdvance,
 	type CombatLegalAction,
 	type CombatRulesV1,
@@ -14,22 +16,12 @@ import {
 import { COMBAT_CONTENT_BINDING } from '@summonlab/content';
 
 import { deterministicUuid, hashCanonical } from '../../hash.js';
-import { authorCombatLegalActions, canonicalCombatLegalActions } from './legal-actions.js';
+import { authorCombatLegalActions, canonicalCombatLegalActionTemplates } from './legal-actions.js';
 import { advanceUntilReadyCohort } from './readiness.js';
 
 type CombatTerrain = CombatWindowSnapshot['terrain'];
 
-export type ActorCombatContext = Readonly<{
-	visibleCombatantIds: readonly string[];
-	visibleTelegraphIds: readonly string[];
-	observableReadinessActorIds: readonly string[];
-	rememberedContext: readonly string[];
-	doctrine: readonly string[];
-	relationships: readonly Readonly<{ entityId: string; publicSummary: string }>[];
-	masterDirections: readonly string[];
-	legalActions: readonly CombatLegalAction[];
-	visibleTerrain?: CombatTerrain;
-}>;
+export type ActorCombatContext = Readonly<CombatActorContextState>;
 
 export type BuildCombatWindowSnapshotInput = Readonly<{
 	state: ReadinessCombatStateV1;
@@ -38,8 +30,7 @@ export type BuildCombatWindowSnapshotInput = Readonly<{
 	contentHash: string;
 }>;
 
-export type AssembleCombatDecisionWindowInput = BuildCombatWindowSnapshotInput &
-	Readonly<{ actorContexts: Readonly<Record<string, ActorCombatContext>> }>;
+export type AssembleCombatDecisionWindowInput = BuildCombatWindowSnapshotInput;
 
 function deepFreeze<T>(value: T): T {
 	if (value !== null && typeof value === 'object' && !Object.isFrozen(value)) {
@@ -106,6 +97,37 @@ function canonicalCombatants(
 	);
 }
 
+function canonicalActorContexts(
+	actorContexts: ReadinessCombatStateV1['actorContexts']
+): ReadinessCombatStateV1['actorContexts'] {
+	return Object.fromEntries(
+		Object.entries(actorContexts)
+			.sort(([left], [right]) => left.localeCompare(right))
+			.map(([actorId, context]) => [
+				actorId,
+				{
+					...context,
+					visibleCombatantIds: [...context.visibleCombatantIds].sort(),
+					visibleTelegraphIds: [...context.visibleTelegraphIds].sort(),
+					observableReadinessActorIds: [...context.observableReadinessActorIds].sort(),
+					visiblePositions: [...context.visiblePositions].sort(
+						(left, right) => left.y - right.y || left.x - right.x
+					),
+					visibleTerrainFeatureIds: [...context.visibleTerrainFeatureIds].sort(),
+					rememberedContext: [...context.rememberedContext].sort(),
+					doctrine: [...context.doctrine].sort(),
+					relationships: [...context.relationships].sort((left, right) =>
+						left.entityId.localeCompare(right.entityId)
+					),
+					masterDirections: [...context.masterDirections].sort(),
+					legalActionTemplates: [
+						...canonicalCombatLegalActionTemplates(context.legalActionTemplates)
+					]
+				}
+			])
+	);
+}
+
 function unsignedSnapshot(
 	snapshot: CombatWindowSnapshot
 ): Omit<CombatWindowSnapshot, 'snapshotHash'> {
@@ -132,6 +154,7 @@ export function buildCombatWindowSnapshot(
 	const canonicalState = {
 		...state,
 		combatants: canonicalCombatants(state.combatants),
+		actorContexts: canonicalActorContexts(state.actorContexts),
 		terrain: canonicalTerrain(state.terrain),
 		visibleTelegraphs: [...state.visibleTelegraphs].sort((left, right) =>
 			left.telegraphId.localeCompare(right.telegraphId)
@@ -213,32 +236,20 @@ function validateProviderActionVisibility(
 
 function visibleTerrainProjection(
 	canonical: CombatTerrain,
-	visibleInput: CombatTerrain | undefined
+	context: ActorCombatContext
 ): CombatTerrain {
-	if (!visibleInput) return canonicalTerrain(canonical);
-	const visible = canonicalTerrain(visibleInput);
-	if (visible.width !== canonical.width || visible.height !== canonical.height) {
-		throw new Error('Visible combat terrain must preserve canonical arena dimensions');
-	}
-	const canonicalBlocked = new Set(
-		canonical.blockedTiles.map((position) => `${position.x}:${position.y}`)
+	const visiblePositions = new Set(
+		context.visiblePositions.map((position) => `${position.x}:${position.y}`)
 	);
-	if (
-		visible.blockedTiles.some((position) => !canonicalBlocked.has(`${position.x}:${position.y}`))
-	) {
-		throw new Error('Visible combat terrain cannot invent blocked tiles');
-	}
-	const canonicalFeatures = new Map(
-		canonical.features.map((feature) => [feature.featureId, hashCanonical(feature)])
-	);
-	if (
-		visible.features.some(
-			(feature) => canonicalFeatures.get(feature.featureId) !== hashCanonical(feature)
-		)
-	) {
-		throw new Error('Visible combat terrain cannot invent or alter features');
-	}
-	return visible;
+	const visibleFeatures = new Set(context.visibleTerrainFeatureIds);
+	return canonicalTerrain({
+		width: canonical.width,
+		height: canonical.height,
+		blockedTiles: canonical.blockedTiles.filter((position) =>
+			visiblePositions.has(`${position.x}:${position.y}`)
+		),
+		features: canonical.features.filter((feature) => visibleFeatures.has(feature.featureId))
+	});
 }
 
 function actorView(
@@ -260,7 +271,11 @@ function actorView(
 			throw new Error(`Visible combatant ${combatantId} is absent from the canonical snapshot`);
 		}
 	}
-	const legalActions = canonicalCombatLegalActions(contextInput.legalActions);
+	const legalActions = authorCombatLegalActions({
+		actorId,
+		windowId: snapshot.windowId,
+		actions: contextInput.legalActionTemplates
+	});
 	validateProviderActionVisibility(actorId, visibleSet, legalActions);
 	const legalActionSetHash = hashCanonical(legalActions);
 	const visibleTelegraphIds = new Set(
@@ -337,7 +352,7 @@ function actorView(
 				active: combatant.active
 			};
 		}),
-		visibleTerrain: visibleTerrainProjection(snapshot.terrain, contextInput.visibleTerrain),
+		visibleTerrain: visibleTerrainProjection(snapshot.terrain, contextInput),
 		visibleTelegraphs,
 		rememberedContext: [...contextInput.rememberedContext].sort((left, right) =>
 			left.localeCompare(right)
@@ -363,65 +378,46 @@ export function assembleCombatDecisionWindow(
 	input: AssembleCombatDecisionWindowInput
 ): Extract<CombatAdvance, { kind: 'decision-window' }> {
 	const rules = CombatRulesV1Schema.parse(input.rules);
+	const state = ReadinessCombatStateV1Schema.parse(input.state);
 	const snapshot = buildCombatWindowSnapshot(input);
-	const contextActorIds = Object.keys(input.actorContexts).sort((left, right) =>
-		left.localeCompare(right)
-	);
-	if (JSON.stringify(contextActorIds) !== JSON.stringify(snapshot.readyActorIds)) {
-		throw new Error('Combat actor contexts must exactly match the ready actor set');
+	if (snapshot.readyActorIds.some((actorId) => !state.actorContexts[actorId])) {
+		throw new Error('Combat actor contexts must include every ready actor');
 	}
 	const views = snapshot.readyActorIds.map((actorId) =>
-		actorView(snapshot, input.actorContexts[actorId]!, rules, actorId)
+		actorView(snapshot, state.actorContexts[actorId]!, rules, actorId)
 	);
 	const advance = CombatAdvanceSchema.parse({ kind: 'decision-window', snapshot, views });
 	if (advance.kind !== 'decision-window') throw new Error('Expected a combat decision window');
 	return deepFreeze(advance);
 }
 
-function defaultActorContexts(
-	state: ReadinessCombatStateV1,
-	readyActorIds: readonly string[],
-	windowId: string
-): Readonly<Record<string, ActorCombatContext>> {
-	return Object.fromEntries(
-		readyActorIds.map((actorId) => {
-			const visibleCombatantIds = Object.keys(state.combatants)
-				.filter((combatantId) => combatantId !== actorId)
-				.sort((left, right) => left.localeCompare(right));
-			const legalActions = authorCombatLegalActions({
-				actorId,
-				windowId,
-				actions: [
-					{
-						actionId: 'guard',
-						actionKind: 'guard',
-						skillId: null,
-						publicLabel: 'Guard',
-						targetContract: { kind: 'self' },
-						reactionPriority: 0,
-						recoveryTicks: 1,
-						manaCost: 0,
-						fallbackOptions: [
-							{ fallbackId: 'brace', publicLabel: 'Brace', target: { kind: 'self' } }
-						]
-					}
-				]
-			});
-			return [
-				actorId,
-				{
-					visibleCombatantIds,
-					visibleTelegraphIds: state.visibleTelegraphs.map((telegraph) => telegraph.telegraphId),
-					observableReadinessActorIds: [],
-					rememberedContext: [],
-					doctrine: [],
-					relationships: [],
-					masterDirections: [],
-					legalActions
-				}
-			] as const;
-		})
-	);
+function invalidDecisionContextResult(state: ReadinessCombatStateV1): CombatAdvance {
+	const safetyStop = {
+		safetyStopVersion: 'combat-safety-stop-v1' as const,
+		reason: 'invalid-state' as const,
+		disposition: 'diagnostic' as const,
+		...state.safety
+	};
+	const withoutHash = {
+		resultVersion: 'combat-result-v1' as const,
+		resultId: deterministicUuid(
+			`${state.attemptId}:missing-decision-context:${state.tick}:${hashCanonical(state.actorContexts)}`
+		),
+		attemptId: state.attemptId,
+		modeId: 'agent-readiness-v1' as const,
+		rulesVersion: 'combat-rules-v1' as const,
+		outcome: 'safety-stop' as const,
+		endedAtTick: state.tick,
+		finalCombatants: state.combatants,
+		claims: [],
+		decisiveEventIds: [],
+		safetyStop
+	};
+	const result = CombatResultSchema.parse({
+		...withoutHash,
+		traceHash: hashCanonical(withoutHash)
+	});
+	return deepFreeze(CombatAdvanceSchema.parse({ kind: 'combat-result', result }));
 }
 
 export function advanceUntilDecision(
@@ -435,17 +431,13 @@ export function advanceUntilDecision(
 			CombatAdvanceSchema.parse({ kind: 'combat-result', result: advanced.result })
 		);
 	}
-	const snapshot = buildCombatWindowSnapshot({
-		state: advanced.state,
-		rules,
-		readyActorIds: advanced.readyActorIds,
-		contentHash: COMBAT_CONTENT_BINDING.contentHash
-	});
+	if (advanced.readyActorIds.some((actorId) => !advanced.state.actorContexts[actorId])) {
+		return invalidDecisionContextResult(advanced.state);
+	}
 	return assembleCombatDecisionWindow({
 		state: advanced.state,
 		rules,
 		readyActorIds: advanced.readyActorIds,
-		contentHash: COMBAT_CONTENT_BINDING.contentHash,
-		actorContexts: defaultActorContexts(advanced.state, advanced.readyActorIds, snapshot.windowId)
+		contentHash: COMBAT_CONTENT_BINDING.contentHash
 	});
 }

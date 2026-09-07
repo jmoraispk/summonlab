@@ -114,6 +114,32 @@ const legalAction = {
 	]
 } as const;
 
+const legalActionTemplate = {
+	actionId: legalAction.actionId,
+	actionKind: legalAction.actionKind,
+	skillId: legalAction.skillId,
+	publicLabel: legalAction.publicLabel,
+	targetContract: legalAction.targetContract,
+	reactionPriority: legalAction.reactionPriority,
+	recoveryTicks: legalAction.recoveryTicks,
+	manaCost: legalAction.manaCost,
+	fallbackOptions: legalAction.fallbackOptions
+} as const;
+
+const heroActorContext = {
+	actorId: ID.hero,
+	visibleCombatantIds: [ID.monster],
+	visibleTelegraphIds: [telegraph.telegraphId],
+	observableReadinessActorIds: [],
+	visiblePositions: [hero.position, monster.position, telegraph.target.position],
+	visibleTerrainFeatureIds: [],
+	rememberedContext: ['The enemy favors the eastern lane.'],
+	doctrine: ['Protect the Master.'],
+	relationships: [{ entityId: ID.monster, publicSummary: 'A known threat.' }],
+	masterDirections: ['Hold the gate.'],
+	legalActionTemplates: [legalActionTemplate]
+} as const;
+
 const intent = {
 	windowId: ID.window,
 	attemptId: ID.attempt,
@@ -191,6 +217,7 @@ const state = {
 	attemptId: ID.attempt,
 	tick: 12,
 	combatants: { [ID.hero]: hero, [ID.monster]: monster },
+	actorContexts: { [ID.hero]: heroActorContext },
 	terrain,
 	visibleTelegraphs: [telegraph],
 	scheduledEffects: [],
@@ -221,6 +248,57 @@ const completedState = {
 } as const;
 
 describe('readiness combat contracts', () => {
+	it('validates private actor context references without exposing window-bound instances', () => {
+		expect(ReadinessCombatStateV1Schema.parse(state).actorContexts[ID.hero]).toStrictEqual(
+			heroActorContext
+		);
+		expect(
+			ReadinessCombatStateV1Schema.safeParse({
+				...state,
+				actorContexts: {
+					[ID.hero]: { ...heroActorContext, visibleCombatantIds: [] }
+				}
+			}).success
+		).toBe(false);
+		expect(JSON.stringify(heroActorContext)).not.toContain('actionInstanceId');
+	});
+
+	it('rejects duplicate telegraph and scheduled-effect identities', () => {
+		expect(
+			CombatWindowSnapshotSchema.safeParse({
+				...snapshot,
+				visibleTelegraphs: [telegraph, telegraph]
+			}).success
+		).toBe(false);
+		expect(
+			ReadinessCombatStateV1Schema.safeParse({
+				...state,
+				visibleTelegraphs: [telegraph, telegraph]
+			}).success
+		).toBe(false);
+		const effect = {
+			scheduledEffectId: ID.event,
+			resolvesAtTick: 14,
+			sourceCombatantId: ID.monster,
+			effects: [
+				{
+					kind: 'resource' as const,
+					combatantId: ID.hero,
+					resource: 'health' as const,
+					before: 120,
+					after: 110,
+					delta: -10
+				}
+			]
+		};
+		expect(
+			ReadinessCombatStateV1Schema.safeParse({
+				...state,
+				scheduledEffects: [effect, effect]
+			}).success
+		).toBe(false);
+	});
+
 	it('accepts a bounded canonical readiness state and rejects unknown state fields', () => {
 		expect(ReadinessCombatStateV1Schema.parse(state)).toStrictEqual(state);
 		expect(

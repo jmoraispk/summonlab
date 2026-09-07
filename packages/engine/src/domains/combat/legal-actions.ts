@@ -1,10 +1,12 @@
 import {
 	CombatEquipmentProfileSchema,
 	CombatLegalActionSchema,
+	CombatLegalActionTemplateSchema,
 	CombatSkillDefinitionSchema,
 	LearnedCombatSkillStateSchema,
 	type CombatEquipmentProfile,
 	type CombatLegalAction,
+	type CombatLegalActionTemplate,
 	type CombatSkillDefinition,
 	type EquipmentFamilyTag,
 	type EquipmentProficiencyTag,
@@ -13,7 +15,7 @@ import {
 
 import { deterministicUuid } from '../../hash.js';
 
-export type AuthoredCombatLegalAction = Readonly<Omit<CombatLegalAction, 'actionInstanceId'>>;
+export type AuthoredCombatLegalAction = Readonly<CombatLegalActionTemplate>;
 
 export type AuthorCombatLegalActionsInput = Readonly<{
 	actorId: string;
@@ -29,11 +31,41 @@ function deepFreeze<T>(value: T): T {
 	return value;
 }
 
+function canonicalizeActionCollections<T extends CombatLegalAction | CombatLegalActionTemplate>(
+	action: T
+): T {
+	action.fallbackOptions.sort((left, right) => left.fallbackId.localeCompare(right.fallbackId));
+	if (action.targetContract.kind === 'entity') {
+		action.targetContract.allowedCombatantIds.sort((left, right) => left.localeCompare(right));
+	} else if (action.targetContract.kind === 'tile') {
+		action.targetContract.allowedPositions.sort(
+			(left, right) => left.y - right.y || left.x - right.x
+		);
+	} else if (action.targetContract.kind === 'entity-relative-position') {
+		action.targetContract.allowedCombatantIds.sort((left, right) => left.localeCompare(right));
+		action.targetContract.allowedRelations.sort((left, right) => left.localeCompare(right));
+	}
+	return action;
+}
+
+export function canonicalCombatLegalActionTemplates(
+	actionsInput: readonly CombatLegalActionTemplate[]
+): readonly CombatLegalActionTemplate[] {
+	const actions = actionsInput
+		.map((action) => canonicalizeActionCollections(CombatLegalActionTemplateSchema.parse(action)))
+		.sort((left, right) => left.actionId.localeCompare(right.actionId));
+	if (actions.length === 0) throw new Error('A combat actor requires at least one legal action');
+	if (new Set(actions.map((action) => action.actionId)).size !== actions.length) {
+		throw new Error('Combat legal action template IDs must be unique');
+	}
+	return deepFreeze(actions);
+}
+
 export function canonicalCombatLegalActions(
 	actionsInput: readonly CombatLegalAction[]
 ): readonly CombatLegalAction[] {
 	const actions = actionsInput
-		.map((action) => CombatLegalActionSchema.parse(action))
+		.map((action) => canonicalizeActionCollections(CombatLegalActionSchema.parse(action)))
 		.sort((left, right) => left.actionId.localeCompare(right.actionId));
 	if (actions.length === 0) throw new Error('A combat actor requires at least one legal action');
 	if (new Set(actions.map((action) => action.actionId)).size !== actions.length) {
@@ -46,17 +78,6 @@ export function canonicalCombatLegalActions(
 		if (action.fallbackOptions.length === 0) {
 			throw new Error(`Combat legal action ${action.actionId} requires an authored fallback`);
 		}
-		action.fallbackOptions.sort((left, right) => left.fallbackId.localeCompare(right.fallbackId));
-		if (action.targetContract.kind === 'entity') {
-			action.targetContract.allowedCombatantIds.sort((left, right) => left.localeCompare(right));
-		} else if (action.targetContract.kind === 'tile') {
-			action.targetContract.allowedPositions.sort(
-				(left, right) => left.y - right.y || left.x - right.x
-			);
-		} else if (action.targetContract.kind === 'entity-relative-position') {
-			action.targetContract.allowedCombatantIds.sort((left, right) => left.localeCompare(right));
-			action.targetContract.allowedRelations.sort((left, right) => left.localeCompare(right));
-		}
 	}
 	return deepFreeze(actions);
 }
@@ -65,7 +86,7 @@ export function authorCombatLegalActions(
 	input: AuthorCombatLegalActionsInput
 ): readonly CombatLegalAction[] {
 	return canonicalCombatLegalActions(
-		input.actions.map((action) => ({
+		canonicalCombatLegalActionTemplates(input.actions).map((action) => ({
 			...action,
 			actionInstanceId: deterministicUuid(`${input.windowId}:${input.actorId}:${action.actionId}`)
 		}))
