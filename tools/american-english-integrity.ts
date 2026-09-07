@@ -1,3 +1,4 @@
+import { createHash } from 'node:crypto';
 import { access, readFile } from 'node:fs/promises';
 import path from 'node:path';
 
@@ -12,7 +13,11 @@ import { equipmentIntegrityOwner } from './american-english-equipment-successors
 import { runtimeAndEngineIntegrityOwner } from './american-english-runtime-successors.js';
 import { visualProductionIntegrityOwner } from './american-english-visual-successors.js';
 import { OWNER_DIGEST_PATH_REFERENCES } from './american-english-integrity-pointers.js';
-import { replaceRetiredForms } from './american-english-policy.js';
+import {
+	AMERICAN_ENGLISH_RULE_IDS,
+	replaceRetiredForms,
+	type AmericanEnglishRuleId
+} from './american-english-policy.js';
 
 export * from './american-english-integrity-contracts.js';
 
@@ -50,8 +55,17 @@ export interface IntegrityOwnerPlan {
 		readonly path: string;
 		readonly kind: IntegrityBindingKind;
 		readonly serializer: IntegritySerializerId;
+		readonly currentValueDigest: string;
 		readonly projectedValueDigest: string;
-		readonly dependencies: readonly { readonly path: string; readonly digest: string }[];
+		readonly currentRawDigest: string;
+		readonly projectedRawDigest: string;
+		/** Private plan-time bytes; stripped before a migration plan is serialized. */
+		readonly projectedBytes?: Uint8Array;
+		readonly dependencies: readonly {
+			readonly path: string;
+			readonly digest: string;
+			readonly digestKind?: 'raw-bytes';
+		}[];
 		readonly externalDependencies: readonly {
 			readonly jsonPointer: string;
 			readonly value: string;
@@ -202,7 +216,31 @@ function entryValue(entry: TrackedTreeEntry, repositoryPath: string, projected: 
 	if (entry.binary) return bytes;
 	const text = Buffer.from(bytes).toString('utf8');
 	const valuePath = projected ? (entry.projectedPath ?? repositoryPath) : repositoryPath;
+	if (/^tools\/tsconfig\.[^/]+\.json$/u.test(valuePath)) return text;
 	return valuePath.endsWith('.json') ? JSON.parse(text) : text;
+}
+
+export function digestTrackedIntegrityValue(options: {
+	readonly ownerId: IntegrityOwnerId;
+	readonly path: string;
+	readonly bytes: Uint8Array;
+	readonly kind: IntegrityBindingKind;
+	readonly serializer: IntegritySerializerId;
+}): string {
+	const owner = AMERICAN_ENGLISH_INTEGRITY_OWNERS.find(({ id }) => id === options.ownerId);
+	if (owner === undefined || !owner.ownsPath(options.path)) {
+		throw new Error(`Expected integrity owner does not own tracked successor: ${options.ownerId}`);
+	}
+	if (owner.serializerFor(options.path, options.kind) !== options.serializer) {
+		throw new Error(`Tracked successor serializer does not match its authenticated intent`);
+	}
+	const value =
+		options.serializer === 'raw-file'
+			? options.bytes
+			: options.serializer === 'utf8-string'
+				? Buffer.from(options.bytes).toString('utf8')
+				: JSON.parse(Buffer.from(options.bytes).toString('utf8'));
+	return owner.digest(options.serializer, value);
 }
 
 function nodeKind(entry: TrackedTreeEntry, repositoryPath: string): IntegrityBindingKind {
@@ -295,7 +333,8 @@ async function buildOwnerPlan(
 	owner: AmericanEnglishIntegrityOwner,
 	ownedBindings: readonly IntegrityBinding[],
 	problems: IntegrityProblem[],
-	entries: ReadonlyMap<string, TrackedTreeEntry>
+	entries: ReadonlyMap<string, TrackedTreeEntry>,
+	projectText: (value: string) => string
 ): Promise<IntegrityOwnerPlan | null> {
 	if (ownedBindings.length === 0 || owner.regeneration === null) return null;
 	const paths = [...new Set(ownedBindings.map(({ path: repositoryPath }) => repositoryPath))].sort(
@@ -333,11 +372,14 @@ async function buildOwnerPlan(
 				serializer,
 				value: entryValue(entry, repositoryPath, true),
 				currentValue: entryValue(entry, repositoryPath, false),
+				projectedRawBytes: entry.projectedBytes ?? entry.bytes,
+				currentRawBytes: entry.bytes,
 				pathBindings
 			}
 		];
 	});
 	const digestSources = new Map<string, string[]>();
+	const currentDigestBySource = new Map<string, string>();
 	for (const draft of drafts) {
 		const [current] = await owner.planSuccessors({
 			nodes: [
@@ -346,14 +388,19 @@ async function buildOwnerPlan(
 					kind: draft.kind,
 					serializer: draft.serializer,
 					value: draft.currentValue,
+					rawBytes: draft.currentRawBytes,
 					dependsOn: []
 				}
 			]
 		});
 		if (current !== undefined) {
+			currentDigestBySource.set(draft.sourcePath, current.digest);
 			const sources = digestSources.get(current.digest) ?? [];
 			sources.push(draft.sourcePath);
 			digestSources.set(current.digest, sources);
+			const rawSources = digestSources.get(current.rawDigest) ?? [];
+			if (!rawSources.includes(draft.sourcePath)) rawSources.push(draft.sourcePath);
+			digestSources.set(current.rawDigest, rawSources);
 		}
 	}
 	const projectedBySource = new Map(drafts.map(({ sourcePath, path }) => [sourcePath, path]));
@@ -362,7 +409,7 @@ async function buildOwnerPlan(
 		const dependencyBindings: {
 			sourcePath: string;
 			jsonPointer: string;
-			replacement?: 'digest' | 'path';
+			replacement?: 'digest' | 'raw-digest' | 'path';
 		}[] = [];
 		const externalDependencies: {
 			jsonPointer: string;
@@ -371,7 +418,7 @@ async function buildOwnerPlan(
 		}[] = [];
 		for (const binding of draft.pathBindings) {
 			if (binding.jsonPointer === '') continue;
-			const projectedPointer = replaceRetiredForms(binding.jsonPointer);
+			const projectedPointer = projectText(binding.jsonPointer);
 			const current = getJsonPointer(draft.currentValue, binding.jsonPointer);
 			if (typeof current !== 'string') continue;
 			const candidateSources = digestSources.get(current) ?? [];
@@ -391,14 +438,24 @@ async function buildOwnerPlan(
 						: undefined;
 			if (dependencySource !== undefined && dependencySource !== draft.sourcePath) {
 				const dependencyPath = projectedBySource.get(dependencySource)!;
+				const dependencyDraft = drafts.find(({ sourcePath }) => sourcePath === dependencySource)!;
+				const replacement =
+					createHash('sha256').update(dependencyDraft.currentRawBytes).digest('hex') === current &&
+					currentDigestBySource.get(dependencySource) !== current
+						? ('raw-digest' as const)
+						: ('digest' as const);
 				dependsOn.add(dependencyPath);
-				dependencyBindings.push({ sourcePath: dependencyPath, jsonPointer: projectedPointer });
+				dependencyBindings.push({
+					sourcePath: dependencyPath,
+					jsonPointer: projectedPointer,
+					replacement
+				});
 				for (const pathReference of pathReferences.filter(
 					({ sourcePath }) => sourcePath === dependencySource
 				)) {
 					dependencyBindings.push({
 						sourcePath: dependencyPath,
-						jsonPointer: replaceRetiredForms(pathReference.jsonPointer),
+						jsonPointer: projectText(pathReference.jsonPointer),
 						replacement: 'path'
 					});
 				}
@@ -422,6 +479,7 @@ async function buildOwnerPlan(
 			kind: draft.kind,
 			serializer: draft.serializer,
 			value: draft.value,
+			rawBytes: draft.projectedRawBytes,
 			dependsOn: [...dependsOn].sort(compareCodepoints),
 			dependencyBindings,
 			externalDependencies
@@ -435,7 +493,13 @@ async function buildOwnerPlan(
 		path: successor.path,
 		kind: successor.kind,
 		serializer: serializerByPath.get(successor.path)!,
+		currentValueDigest: currentDigestBySource.get(successor.sourcePath)!,
 		projectedValueDigest: successor.digest,
+		currentRawDigest: createHash('sha256')
+			.update(drafts.find(({ sourcePath }) => sourcePath === successor.sourcePath)!.currentRawBytes)
+			.digest('hex'),
+		projectedRawDigest: successor.rawDigest,
+		projectedBytes: successor.rawBytes,
 		dependencies: successor.dependencies,
 		externalDependencies: successor.externalDependencies,
 		languageMigrationSuccessor: true as const
@@ -453,7 +517,8 @@ async function buildOwnerPlan(
 export async function classifyIntegrityBindings(
 	before: TrackedTreeSnapshot,
 	proposed: MigrationProjection,
-	owners: readonly AmericanEnglishIntegrityOwner[] = AMERICAN_ENGLISH_INTEGRITY_OWNERS
+	owners: readonly AmericanEnglishIntegrityOwner[] = AMERICAN_ENGLISH_INTEGRITY_OWNERS,
+	ruleIds: readonly AmericanEnglishRuleId[] = AMERICAN_ENGLISH_RULE_IDS
 ): Promise<IntegrityBindingReport> {
 	const affectedPaths = [
 		...new Set([
@@ -547,7 +612,8 @@ export async function classifyIntegrityBindings(
 					owner,
 					bindings.filter(({ ownerId }) => ownerId === owner.id),
 					problems,
-					entries
+					entries,
+					(value) => replaceRetiredForms(value, ruleIds)
 				)
 			)
 		)

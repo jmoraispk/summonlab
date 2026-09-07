@@ -171,9 +171,9 @@ const HABIT_TERMS = {
 	'checks-exits': ['retreat', 'move', 'explore', 'inspect'],
 	'stretches-at-dawn': ['train', 'training', 'practice', 'progression'],
 	'shares-breakfast': ['kitchen', 'eat', 'meal', 'social', 'rest'],
-	'catalogues-tools': ['inspect', 'equipment', 'work', 'craft', 'repair'],
+	'catalogs-tools': ['inspect', 'equipment', 'work', 'craft', 'repair'],
 	'walks-the-walls': ['move', 'defend', 'guard', 'patrol'],
-	'practises-knots': ['finesse', 'equipment', 'work', 'repair']
+	'practices-knots': ['finesse', 'equipment', 'work', 'repair']
 } as const;
 
 function mindContributions(packet: HeroDecisionPacket, terms: ReadonlySet<string>) {

@@ -38,7 +38,7 @@ export const VISUAL_PRODUCTION_FILE_BINDING_PATH_PATTERNS = [
 	/^apps\/web\/static\/(?:runtime\/enemies\/fauna-family-v1|wiki-media\/(?:monsters|skills))\//u,
 	/^docs\/(?:affinity-wave-scheduler\.md|evidence\/fauna-family-v1\/index\.html)$/u,
 	/^docs\/superpowers\/plans\/[^/]*(?:monster|skill-icon)[^/]*\.md$/u,
-	/^packages\/characters\/src\/index\.ts$/u,
+	/^packages\/characters\/src\/(?:characters\.spec|index)\.ts$/u,
 	/^packages\/content\/src\/affinity-workflow(?:\.spec)?\.ts$/u,
 	/^packages\/contracts\/src\/(?:character|image-production)\.ts$/u,
 	/^tools\/(?![^/]*equipment)[^/]*(?:affinity|earth-bridge|family|fauna|hero|skill-icon|visual|wiki)[^/]*\.(?:ts|mjs)$/u,
@@ -68,6 +68,30 @@ export const visualCanonicalSerializers = {
 
 export const visualProductionIntegrityOwner: AmericanEnglishIntegrityOwner = {
 	id: 'visual-production',
+	intentMaterialization: {
+		commands: [
+			['pnpm', 'tsx', 'tools/reseal-character-generation-expectations.ts'],
+			['pnpm', 'export:player-visuals'],
+			['pnpm', 'tsx', 'tools/reseal-skill-icon-content-bindings.ts'],
+			['pnpm', 'prettier', '--write', 'packages/contracts/src/character.ts']
+		],
+		paths: [
+			'packages/contracts/src/character.ts',
+			'packages/characters/src/characters.spec.ts',
+			'assets/heroes/visuals/forge-v2/catalog.json',
+			'assets/wiki/skills/icon-production-v2/overlay.json',
+			'assets/wiki/skills/icon-production-v2/runs/reversal-cut-v1/manifest.json',
+			'assets/wiki/skills/icon-production-v2/runs/reversal-cut-v2/completion.json',
+			'assets/wiki/skills/icon-production-v2/runs/reversal-cut-v2/guard-flow-ancestor-authority.json',
+			'assets/wiki/skills/icon-production-v2/runs/reversal-cut-v2/individual-attempt-v1.json',
+			'assets/wiki/skills/icon-production-v2/runs/reversal-cut-v2/manifest.json',
+			'assets/wiki/skills/icon-production-v2/runs/reversal-cut-v3/activation.json',
+			'assets/wiki/skills/icon-production-v2/runs/reversal-cut-v3/owner-review.json',
+			'assets/wiki/skills/icon-production-v2/runs/reversal-cut-v4/correction.json',
+			'assets/wiki/skills/icon-production-v2/runs/reversal-cut-v4/owner-frame-feedback.json',
+			'assets/wiki/skills/icon-production-v2/runs/reversal-cut-v7/activation.json'
+		]
+	},
 	regeneration: {
 		writeCommand:
 			'pnpm export:family-affinity-production && pnpm export:affinity-workflow && pnpm export:enemy-affinity-expansion && pnpm export:wiki-monsters && pnpm export:wiki-skill-visual-catalog && pnpm export:runtime-visuals && pnpm export:player-visuals && pnpm tsx tools/export-summonable-hero-runtime.ts && pnpm export:skill-icon-runtime',
@@ -86,6 +110,9 @@ export const visualProductionIntegrityOwner: AmericanEnglishIntegrityOwner = {
 	ownsPath(path) {
 		return VISUAL_PRODUCTION_INTEGRITY_PATH_PATTERNS.some((pattern) => pattern.test(path));
 	},
+	regeneratesPath(path) {
+		return this.ownsPath(path) && !path.includes('/migrations/');
+	},
 	owns(path, jsonPointer) {
 		if (!this.ownsPath(path)) return false;
 		if (jsonPointer === '') {
@@ -98,6 +125,7 @@ export const visualProductionIntegrityOwner: AmericanEnglishIntegrityOwner = {
 			pattern.test(jsonPointer)
 		);
 	},
+	digest: visualDigest,
 	planSuccessors(context) {
 		return planTopologicalIntegritySuccessors(context, visualDigest);
 	},

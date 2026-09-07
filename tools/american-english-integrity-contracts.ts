@@ -28,11 +28,12 @@ export interface IntegrityPlanningNode {
 	readonly kind: IntegrityBindingKind;
 	readonly serializer: IntegritySerializerId;
 	readonly value: unknown;
+	readonly rawBytes?: Uint8Array;
 	readonly dependsOn: readonly string[];
 	readonly dependencyBindings?: readonly {
 		readonly sourcePath: string;
 		readonly jsonPointer: string;
-		readonly replacement?: 'digest' | 'path';
+		readonly replacement?: 'digest' | 'raw-digest' | 'path';
 	}[];
 	readonly externalDependencies?: readonly {
 		readonly jsonPointer: string;
@@ -55,8 +56,14 @@ export interface IntegritySuccessor {
 	readonly sourcePath: string;
 	readonly kind: IntegrityBindingKind;
 	readonly digest: string;
+	readonly rawDigest: string;
+	readonly rawBytes: Uint8Array;
 	readonly value: unknown;
-	readonly dependencies: readonly { readonly path: string; readonly digest: string }[];
+	readonly dependencies: readonly {
+		readonly path: string;
+		readonly digest: string;
+		readonly digestKind?: 'raw-bytes';
+	}[];
 	readonly externalDependencies: readonly {
 		readonly jsonPointer: string;
 		readonly value: string;
@@ -88,9 +95,15 @@ export interface AmericanEnglishIntegrityOwner {
 		readonly writeCommand: string;
 		readonly checkCommand: string;
 	} | null;
+	readonly intentMaterialization?: {
+		readonly commands: readonly (readonly string[])[];
+		readonly paths: readonly string[];
+	};
 	ownsPath(path: string): boolean;
+	regeneratesPath(path: string): boolean;
 	owns(path: string, jsonPointer: string): boolean;
 	serializerFor(path: string, kind: IntegrityBindingKind): IntegritySerializerId | null;
+	digest(serializer: IntegritySerializerId, value: unknown): string;
 	planSuccessors(context: IntegrityPlanningContext): Promise<readonly IntegritySuccessor[]>;
 	verify(context: IntegrityVerificationContext): Promise<readonly IntegrityProblem[]>;
 }
@@ -124,6 +137,17 @@ function setJsonPointer(value: unknown, pointer: string, replacement: string): u
 	}
 	(parent as Record<string, unknown>)[leaf] = replacement;
 	return clone;
+}
+
+function getJsonPointer(value: unknown, pointer: string): unknown {
+	let current = value;
+	for (const token of pointer.slice(1).split('/').filter(Boolean)) {
+		if (current === null || typeof current !== 'object') return undefined;
+		current = (current as Record<string, unknown>)[
+			token.replaceAll('~1', '/').replaceAll('~0', '~')
+		];
+	}
+	return current;
 }
 
 export async function planTopologicalIntegritySuccessors(
@@ -162,24 +186,47 @@ export async function planTopologicalIntegritySuccessors(
 		for (const node of ready) {
 			let value =
 				(node.dependencyBindings?.length ?? 0) > 0 ? structuredClone(node.value) : node.value;
+			let rawBytes = Buffer.from(
+				node.rawBytes ??
+					(typeof node.value === 'string'
+						? node.value
+						: node.value instanceof Uint8Array
+							? node.value
+							: JSON.stringify(node.value))
+			);
 			const dependencies = node.dependsOn.map((sourcePath) => {
 				const source = completed.get(sourcePath)!;
 				return { path: sourcePath, digest: source.digest };
 			});
 			for (const binding of node.dependencyBindings ?? []) {
-				value = setJsonPointer(
-					value,
-					binding.jsonPointer,
+				const source = completed.get(binding.sourcePath)!;
+				const replacement =
 					binding.replacement === 'path'
-						? completed.get(binding.sourcePath)!.path
-						: completed.get(binding.sourcePath)!.digest
-				);
+						? source.path
+						: binding.replacement === 'raw-digest'
+							? source.rawDigest
+							: source.digest;
+				const previous = getJsonPointer(value, binding.jsonPointer);
+				value = setJsonPointer(value, binding.jsonPointer, replacement);
+				if (typeof previous === 'string') {
+					rawBytes = Buffer.from(
+						rawBytes.toString('utf8').replaceAll(previous, replacement),
+						'utf8'
+					);
+				}
+				if (binding.replacement === 'raw-digest') {
+					const dependency = dependencies.find(({ path }) => path === binding.sourcePath)!;
+					(dependency as { digest: string; digestKind?: 'raw-bytes' }).digest = source.rawDigest;
+					(dependency as { digest: string; digestKind?: 'raw-bytes' }).digestKind = 'raw-bytes';
+				}
 			}
 			const successor: IntegritySuccessor = {
 				path: node.path,
 				sourcePath: node.sourcePath ?? node.path,
 				kind: node.kind,
 				digest: digest(node.serializer, value),
+				rawDigest: digestBytes(rawBytes),
+				rawBytes,
 				value,
 				dependencies,
 				externalDependencies: node.externalDependencies ?? [],

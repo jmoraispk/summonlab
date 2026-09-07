@@ -186,6 +186,13 @@ describe('integrity owner successor planning', () => {
 		expect(
 			select(runtimeAndEngineIntegrityOwner, 'packages/engine/src/fixture.json', 'canonical-json')
 		).toBe('engine');
+		expect(
+			select(
+				equipmentIntegrityOwner,
+				'tools/tsconfig.equipment-rank-first-v3.json',
+				'canonical-json'
+			)
+		).toBe('utf8-string');
 		expect(select(visualProductionIntegrityOwner, 'assets/heroes/source.png', 'raw-file')).toBe(
 			'raw-file'
 		);
@@ -463,6 +470,14 @@ describe('integrity binding classification', () => {
 			true
 		);
 		expect(equipmentIntegrityOwner.owns('assets/heroes/experiments/manifest.json', '')).toBe(false);
+		expect(equipmentIntegrityOwner.owns('tools/tsconfig.equipment-rank-first-v3.json', '')).toBe(
+			true
+		);
+		expect(
+			equipmentIntegrityOwner.regeneratesPath(
+				'assets/equipment/experiments/material-equipment-v1/runs/run-001/events/0001.json'
+			)
+		).toBe(false);
 		expect(
 			visualProductionIntegrityOwner.owns('tools/export-equipment-runtime-visuals.ts', '')
 		).toBe(false);
@@ -474,6 +489,19 @@ describe('integrity binding classification', () => {
 		).toBe(true);
 		expect(runtimeAndEngineIntegrityOwner.ownsPath('packages/engine/src/hash.ts')).toBe(true);
 		expect(runtimeAndEngineIntegrityOwner.owns('packages/engine/src/story.ts', '')).toBe(true);
+		expect(runtimeAndEngineIntegrityOwner.owns('tools/skill-taxonomy-lib.ts', '')).toBe(true);
+		expect(
+			runtimeAndEngineIntegrityOwner.owns('tools/export-skill-taxonomy-migration.spec.ts', '')
+		).toBe(true);
+		expect(
+			visualProductionIntegrityOwner.owns('packages/characters/src/characters.spec.ts', '')
+		).toBe(true);
+		expect(
+			runtimeAndEngineIntegrityOwner.owns('packages/engine/src/compatibility/replay-vectors.ts', '')
+		).toBe(true);
+		expect(runtimeAndEngineIntegrityOwner.owns('packages/policies/src/openai.spec.ts', '')).toBe(
+			true
+		);
 		expect(runtimeAndEngineIntegrityOwner.owns('unregistered/receipt.json', '')).toBe(false);
 	});
 
@@ -573,6 +601,35 @@ describe('integrity binding classification', () => {
 		);
 		expect(report.problems).toEqual([]);
 		expect(report.bindings.map(({ path }) => path)).toEqual(paths);
+	});
+
+	it('classifies registered TypeScript config JSON with its raw-text serializer', async () => {
+		const path = 'tools/tsconfig.equipment-rank-first-v3.json';
+		const report = await classifyIntegrityBindings(
+			{
+				entries: [
+					{
+						path,
+						bytes: Buffer.from('{"include":["armor"]}\n'),
+						binary: false
+					}
+				]
+			},
+			proposed([path])
+		);
+
+		expect(report.problems).toEqual([]);
+		expect(report.ownerPlans).toEqual([
+			expect.objectContaining({
+				id: 'equipment',
+				successorIntents: [
+					expect.objectContaining({
+						path,
+						serializer: 'utf8-string'
+					})
+				]
+			})
+		]);
 	});
 
 	it('does not manufacture package bindings from a recognized extension', async () => {

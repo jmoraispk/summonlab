@@ -540,10 +540,14 @@ function findMatches(source: string): readonly TextMatch[] {
 		);
 }
 
-export function replaceRetiredForms(source: string): string {
+export function replaceRetiredForms(
+	source: string,
+	ruleIds: readonly AmericanEnglishRuleId[] = AMERICAN_ENGLISH_RULE_IDS
+): string {
+	const selectedRuleIds = new Set(ruleIds);
 	let offset = 0;
 	let result = '';
-	for (const match of findMatches(source)) {
+	for (const match of findMatches(source).filter(({ ruleId }) => selectedRuleIds.has(ruleId))) {
 		result += source.slice(offset, match.index);
 		result += match.recommended;
 		offset = match.index + match.length;

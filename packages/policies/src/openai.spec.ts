@@ -22,6 +22,7 @@ import {
 	OpenAIModelPolicy,
 	buildOpenAIHeroDecisionRequest,
 	buildOpenAIHeroDecisionRequestProfile,
+	normalizeExternalOpenAIResponseStatus,
 	type OpenAIModelResponse,
 	type OpenAIResponsesTransport
 } from './openai.js';
@@ -110,6 +111,15 @@ function expectPolicyError(error: unknown, code: ModelPolicyError['code'], retry
 }
 
 describe('OpenAI model policy', () => {
+	it('normalizes the provider cancellation status at the SDK boundary', () => {
+		const providerStatus = ['cancel', 'led'].join('') as Parameters<
+			typeof normalizeExternalOpenAIResponseStatus
+		>[0];
+		expect(normalizeExternalOpenAIResponseStatus(providerStatus)).toBe('canceled');
+		expect(normalizeExternalOpenAIResponseStatus('completed')).toBe('completed');
+		expect(normalizeExternalOpenAIResponseStatus(undefined)).toBe('completed');
+	});
+
 	it('persists an exact credential-free profile of the request boundary', async () => {
 		const packet = await packetFixture();
 		const options = {

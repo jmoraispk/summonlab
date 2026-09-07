@@ -19,7 +19,7 @@ export const EQUIPMENT_INTEGRITY_PATH_PATTERNS = [
 	/^docs\/superpowers\/plans\/[^/]*equipment[^/]*\.md$/u,
 	/^docs\/wiki\/mechanics\/equipment\//u,
 	/^packages\/(?:content|contracts)\/src\/equipment(?:-|\.|\/)/u,
-	/^tools\/[^/]*equipment[^/]*\.(?:ts|mjs)$/u
+	/^tools\/[^/]*equipment[^/]*\.(?:json|ts|mjs)$/u
 ] as const;
 
 export const EQUIPMENT_FILE_BINDING_PATH_PATTERNS = [
@@ -30,7 +30,7 @@ export const EQUIPMENT_FILE_BINDING_PATH_PATTERNS = [
 	/^docs\/superpowers\/plans\/[^/]*equipment[^/]*\.md$/u,
 	/^docs\/wiki\/mechanics\/equipment\/README\.md$/u,
 	/^packages\/(?:content|contracts)\/src\/equipment(?:-|\.|\/)/u,
-	/^tools\/[^/]*equipment[^/]*\.(?:ts|mjs)$/u
+	/^tools\/[^/]*equipment[^/]*\.(?:json|ts|mjs)$/u
 ] as const;
 
 export const EQUIPMENT_BINARY_PATH_PATTERNS = [
@@ -59,6 +59,16 @@ export const equipmentCanonicalSerializers = {
 
 export const equipmentIntegrityOwner: AmericanEnglishIntegrityOwner = {
 	id: 'equipment',
+	intentMaterialization: {
+		commands: [
+			['pnpm', 'tsx', 'tools/reseal-equipment-content-expectations.ts'],
+			['pnpm', 'tsx', 'tools/reseal-equipment-profile-plan.ts']
+		],
+		paths: [
+			'packages/content/src/equipment.ts',
+			'assets/equipment/experiments/material-equipment-v2/runs/material-equipment-v2-run-001/plan.json'
+		]
+	},
 	regeneration: {
 		writeCommand:
 			'pnpm export:equipment-runtime-visuals && pnpm export:equipment-integration-report',
@@ -67,6 +77,13 @@ export const equipmentIntegrityOwner: AmericanEnglishIntegrityOwner = {
 	},
 	ownsPath(path) {
 		return EQUIPMENT_INTEGRITY_PATH_PATTERNS.some((pattern) => pattern.test(path));
+	},
+	regeneratesPath(path) {
+		return (
+			this.ownsPath(path) &&
+			!path.includes('/runs/') &&
+			path !== 'tools/equipment-image-terminal-journal-v2.spec.ts'
+		);
 	},
 	owns(path, jsonPointer) {
 		if (!this.ownsPath(path)) return false;
@@ -80,7 +97,9 @@ export const equipmentIntegrityOwner: AmericanEnglishIntegrityOwner = {
 	serializerFor(path, kind) {
 		if (kind === 'raw-file')
 			return EQUIPMENT_BINARY_PATH_PATTERNS.some((p) => p.test(path)) ? 'raw-file' : null;
-		if (kind === 'utf8-string' || !path.endsWith('.json')) return 'utf8-string';
+		if (kind === 'utf8-string' || path.startsWith('tools/') || !path.endsWith('.json')) {
+			return 'utf8-string';
+		}
 		if (path.includes('material-equipment-v1') || path.includes('equipment-v1'))
 			return 'equipment-v1';
 		if (path.includes('material-equipment-v2') || path.includes('equipment-v2'))
@@ -89,6 +108,7 @@ export const equipmentIntegrityOwner: AmericanEnglishIntegrityOwner = {
 			return 'equipment-v3';
 		return null;
 	},
+	digest: equipmentDigest,
 	planSuccessors(context) {
 		return planTopologicalIntegritySuccessors(context, equipmentDigest);
 	},

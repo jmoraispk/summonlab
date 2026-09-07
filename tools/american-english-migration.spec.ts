@@ -18,9 +18,11 @@ import { afterEach, describe, expect, it } from 'vitest';
 
 import {
 	applyAmericanEnglishMigration,
+	finalizeAmericanEnglishMigrationReceipt,
 	planAmericanEnglishMigration
 } from './american-english-migration.js';
 import { type AmericanEnglishRuleId, deriveRetiredForms } from './american-english-policy.js';
+import { hashCanonical } from '../packages/engine/src/hash.js';
 
 const temporaryRoots: string[] = [];
 
@@ -63,6 +65,22 @@ function commitAll(repositoryRoot: string, message: string): string {
 
 function pathHash(repositoryPath: string): string {
 	return createHash('sha256').update(repositoryPath).digest('hex');
+}
+
+async function fileSha256(filePath: string): Promise<string> {
+	return createHash('sha256')
+		.update(await readFile(filePath))
+		.digest('hex');
+}
+
+async function writePlanArtifact(
+	directory: string,
+	name: string,
+	plan: Awaited<ReturnType<typeof planAmericanEnglishMigration>>
+): Promise<{ readonly path: string; readonly sha256: string }> {
+	const planPath = path.join(directory, name);
+	await writeFile(planPath, `${JSON.stringify(plan, null, 2)}\n`);
+	return { path: planPath, sha256: await fileSha256(planPath) };
 }
 
 function journalPath(repositoryRoot: string): string {
@@ -249,6 +267,81 @@ describe('American English migration planning', () => {
 
 		expect(command.status).toBe(0);
 		expect(JSON.parse(command.stdout)).toMatchObject({ baselineCommit: repository.baseline });
+	});
+
+	it('excludes requested rules at the CLI boundary', async () => {
+		const armor = retired('armor');
+		const color = retired('color');
+		const repository = await makeRepository({ 'docs/note.txt': `${armor} ${color}\n` });
+		const command = spawnSync(
+			process.execPath,
+			[
+				path.resolve('node_modules/tsx/dist/cli.mjs'),
+				path.resolve('tools/american-english-migration.ts'),
+				'--baseline',
+				repository.baseline,
+				'--repository-root',
+				repository.root,
+				'--exclude-rules',
+				'armor',
+				'--format',
+				'json'
+			],
+			{ encoding: 'utf8' }
+		);
+
+		expect(command.status).toBe(0);
+		const plan = JSON.parse(command.stdout);
+		expect(plan.ruleIds).not.toContain('armor');
+		expect(plan.ruleIds).toContain('color');
+		expect(plan.textEdits).toEqual([{ path: 'docs/note.txt', violationCount: 1 }]);
+		expect(await readFile(path.join(repository.root, 'docs/note.txt'), 'utf8')).toBe(
+			`${armor} ${color}\n`
+		);
+	});
+
+	it('rejects unknown excluded rules at the CLI boundary', async () => {
+		const repository = await makeRepository({ 'safe.txt': 'safe\n' });
+		const command = spawnSync(
+			process.execPath,
+			[
+				path.resolve('node_modules/tsx/dist/cli.mjs'),
+				path.resolve('tools/american-english-migration.ts'),
+				'--baseline',
+				repository.baseline,
+				'--repository-root',
+				repository.root,
+				'--exclude-rules',
+				'unknown'
+			],
+			{ encoding: 'utf8' }
+		);
+
+		expect(command.status).toBe(2);
+		expect(command.stderr).toMatch(/unknown american english rule/i);
+	});
+
+	it('rejects combining included and excluded rule filters', async () => {
+		const repository = await makeRepository({ 'safe.txt': 'safe\n' });
+		const command = spawnSync(
+			process.execPath,
+			[
+				path.resolve('node_modules/tsx/dist/cli.mjs'),
+				path.resolve('tools/american-english-migration.ts'),
+				'--baseline',
+				repository.baseline,
+				'--repository-root',
+				repository.root,
+				'--rules',
+				'color',
+				'--exclude-rules',
+				'armor'
+			],
+			{ encoding: 'utf8' }
+		);
+
+		expect(command.status).toBe(2);
+		expect(command.stderr).toMatch(/cannot combine.*--rules.*--exclude-rules/i);
 	});
 
 	it('plans deterministic filtered edits while preserving dry-run bytes', async () => {
@@ -775,5 +868,704 @@ describe('American English transactional application', () => {
 		for (const value of [gray, armor, behavior, color]) expect(serialized).not.toContain(value);
 		expect(serialized).not.toContain(`docs/${gray}/${armor}.txt`);
 		expect(executablePath).not.toBe(path.join(repository.root, 'docs/gray/armor.txt'));
+	});
+});
+
+describe('American English receipt finalization', () => {
+	it.each(['reordered JSON', 'whitespace-only JSON', 'final-newline difference'] as const)(
+		'rejects owner successor bytes with a %s despite an equal canonical digest',
+		async (scenario) => {
+			const color = retired('color');
+			const upstreamBefore = { contentHash: 'a'.repeat(64), label: color };
+			const repository = await makeRepository({
+				'packages/engine/src/fixture.json': `${JSON.stringify(upstreamBefore, null, 2)}\n`,
+				'packages/engine/src/downstream.json': `${JSON.stringify(
+					{ stateHash: hashCanonical(upstreamBefore), marker: 'stable' },
+					null,
+					2
+				)}\n`
+			});
+			const receiptDirectory = await mkdtemp(path.join(tmpdir(), 'american-english-receipts-'));
+			temporaryRoots.push(receiptDirectory);
+			const initialReceiptPath = path.join(receiptDirectory, 'initial.json');
+			const plan = await planAmericanEnglishMigration({
+				repositoryRoot: repository.root,
+				baselineCommit: repository.baseline,
+				ruleIds: ['color']
+			});
+			const artifact = await writePlanArtifact(receiptDirectory, 'plan.json', plan);
+			await applyAmericanEnglishMigration(plan, {
+				repositoryRoot: repository.root,
+				receiptPath: initialReceiptPath
+			});
+			const downstreamPath = path.join(repository.root, 'packages/engine/src/downstream.json');
+			const value = JSON.parse(await readFile(downstreamPath, 'utf8')) as {
+				readonly stateHash: string;
+				readonly marker: string;
+			};
+			const mutated =
+				scenario === 'reordered JSON'
+					? `${JSON.stringify({ marker: value.marker, stateHash: value.stateHash }, null, 2)}\n`
+					: scenario === 'whitespace-only JSON'
+						? `${JSON.stringify(value)}\n`
+						: JSON.stringify(value, null, 2);
+			await writeFile(downstreamPath, mutated);
+			const migrationCommit = commitAll(repository.root, scenario);
+
+			await expect(
+				finalizeAmericanEnglishMigrationReceipt({
+					repositoryRoot: repository.root,
+					expectedMigrationCommit: migrationCommit,
+					planPath: artifact.path,
+					expectedPlanHash: artifact.sha256,
+					initialReceiptPath,
+					expectedInitialReceiptHash: await fileSha256(initialReceiptPath),
+					receiptPath: path.join(receiptDirectory, 'final.json')
+				})
+			).rejects.toThrow(/raw|exact|bytes|blob/iu);
+		}
+	);
+
+	it('materializes the complete owner closure from authenticated pre-apply intent', async () => {
+		const color = retired('color');
+		const upstreamBefore = { contentHash: 'a'.repeat(64), label: color };
+		const repository = await makeRepository({
+			'packages/engine/src/fixture.json': `${JSON.stringify(upstreamBefore, null, 2)}\n`,
+			'packages/engine/src/downstream.json': `${JSON.stringify(
+				{ stateHash: hashCanonical(upstreamBefore) },
+				null,
+				2
+			)}\n`
+		});
+		const receiptDirectory = await mkdtemp(path.join(tmpdir(), 'american-english-receipts-'));
+		temporaryRoots.push(receiptDirectory);
+		const initialReceiptPath = path.join(receiptDirectory, 'initial.json');
+		const finalReceiptPath = path.join(receiptDirectory, 'final.json');
+		const plan = await planAmericanEnglishMigration({
+			repositoryRoot: repository.root,
+			baselineCommit: repository.baseline,
+			ruleIds: ['color']
+		});
+		const artifact = await writePlanArtifact(receiptDirectory, 'plan.json', plan);
+		await applyAmericanEnglishMigration(plan, {
+			repositoryRoot: repository.root,
+			receiptPath: initialReceiptPath
+		});
+
+		const upstreamIntent = plan.expectedOwnerSuccessors.find(
+			({ successorPathHash }) => successorPathHash === pathHash('packages/engine/src/fixture.json')
+		)!;
+		expect(
+			JSON.parse(
+				await readFile(path.join(repository.root, 'packages/engine/src/downstream.json'), 'utf8')
+			)
+		).toEqual({ stateHash: upstreamIntent.projectedValueDigest });
+		const migrationCommit = commitAll(repository.root, 'materialized owner closure');
+
+		await expect(
+			finalizeAmericanEnglishMigrationReceipt({
+				repositoryRoot: repository.root,
+				expectedMigrationCommit: migrationCommit,
+				planPath: artifact.path,
+				expectedPlanHash: artifact.sha256,
+				initialReceiptPath,
+				expectedInitialReceiptHash: await fileSha256(initialReceiptPath),
+				receiptPath: finalReceiptPath
+			})
+		).resolves.toMatchObject({ ownerCounts: { 'runtime-and-engine': 2 } });
+	});
+
+	it('rejects structurally valid owner bytes that merely self-verify from current state', async () => {
+		const color = retired('color');
+		const repository = await makeRepository({
+			'packages/engine/src/story.ts': `export const direct = '${color}';\n`
+		});
+		const receiptDirectory = await mkdtemp(path.join(tmpdir(), 'american-english-receipts-'));
+		temporaryRoots.push(receiptDirectory);
+		const initialReceiptPath = path.join(receiptDirectory, 'initial.json');
+		const plan = await planAmericanEnglishMigration({
+			repositoryRoot: repository.root,
+			baselineCommit: repository.baseline,
+			ruleIds: ['color']
+		});
+		const artifact = await writePlanArtifact(receiptDirectory, 'plan.json', plan);
+		await applyAmericanEnglishMigration(plan, {
+			repositoryRoot: repository.root,
+			receiptPath: initialReceiptPath
+		});
+		await writeFile(
+			path.join(repository.root, 'packages/engine/src/story.ts'),
+			"export const direct = 'color';\nexport const unauthorizedButValid = true;\n"
+		);
+		const migrationCommit = commitAll(repository.root, 'migration with unauthorized owner bytes');
+
+		await expect(
+			finalizeAmericanEnglishMigrationReceipt({
+				repositoryRoot: repository.root,
+				expectedMigrationCommit: migrationCommit,
+				initialReceiptPath,
+				expectedInitialReceiptHash: await fileSha256(initialReceiptPath),
+				receiptPath: path.join(receiptDirectory, 'finalized.json'),
+				planPath: artifact.path,
+				expectedPlanHash: artifact.sha256
+			} as Parameters<typeof finalizeAmericanEnglishMigrationReceipt>[0])
+		).rejects.toThrow(/expected successor|owner.*intent|plan/i);
+	});
+
+	it('rejects a missing or valid-looking mutated downstream reverse-dependency successor', async () => {
+		const color = retired('color');
+		for (const scenario of ['missing', 'mutated'] as const) {
+			const upstream = { contentHash: 'a'.repeat(64), label: color };
+			const repository = await makeRepository({
+				'packages/engine/src/fixture.json': `${JSON.stringify(upstream)}\n`,
+				'packages/engine/src/downstream.json': `${JSON.stringify({ stateHash: hashCanonical(upstream) })}\n`
+			});
+			const receiptDirectory = await mkdtemp(path.join(tmpdir(), 'american-english-receipts-'));
+			temporaryRoots.push(receiptDirectory);
+			const initialReceiptPath = path.join(receiptDirectory, 'initial.json');
+			const plan = await planAmericanEnglishMigration({
+				repositoryRoot: repository.root,
+				baselineCommit: repository.baseline,
+				ruleIds: ['color']
+			});
+			const artifact = await writePlanArtifact(receiptDirectory, 'plan.json', plan);
+			expect(
+				plan.expectedOwnerSuccessors.some(
+					({ successorPathHash }) =>
+						successorPathHash === pathHash('packages/engine/src/downstream.json')
+				)
+			).toBe(true);
+			await applyAmericanEnglishMigration(plan, {
+				repositoryRoot: repository.root,
+				receiptPath: initialReceiptPath
+			});
+			if (scenario === 'missing') {
+				await rm(path.join(repository.root, 'packages/engine/src/downstream.json'));
+			} else {
+				await writeFile(
+					path.join(repository.root, 'packages/engine/src/downstream.json'),
+					`${JSON.stringify({ stateHash: 'b'.repeat(64), unauthorized: true })}\n`
+				);
+			}
+			const migrationCommit = commitAll(repository.root, `${scenario} downstream successor`);
+			await expect(
+				finalizeAmericanEnglishMigrationReceipt({
+					repositoryRoot: repository.root,
+					expectedMigrationCommit: migrationCommit,
+					planPath: artifact.path,
+					expectedPlanHash: artifact.sha256,
+					initialReceiptPath,
+					expectedInitialReceiptHash: await fileSha256(initialReceiptPath),
+					receiptPath: path.join(receiptDirectory, 'finalized.json')
+				})
+			).rejects.toThrow(/successor intent|owner bytes|post-apply delta/i);
+		}
+	});
+
+	it('authenticates reverse dependencies bound to exact source bytes', async () => {
+		const color = retired('color');
+		const upstreamText = `${JSON.stringify({ contentHash: 'a'.repeat(64), label: color }, null, 2)}\n`;
+		const rawSourceDigest = createHash('sha256').update(upstreamText).digest('hex');
+		const repository = await makeRepository({
+			'packages/engine/src/fixture.json': upstreamText,
+			'packages/engine/src/downstream.json': `${JSON.stringify({ contentHash: rawSourceDigest }, null, 2)}\n`
+		});
+
+		const plan = await planAmericanEnglishMigration({
+			repositoryRoot: repository.root,
+			baselineCommit: repository.baseline,
+			ruleIds: ['color']
+		});
+		const upstream = plan.expectedOwnerSuccessors.find(
+			({ successorPathHash }) => successorPathHash === pathHash('packages/engine/src/fixture.json')
+		);
+		const downstream = plan.expectedOwnerSuccessors.find(
+			({ successorPathHash }) =>
+				successorPathHash === pathHash('packages/engine/src/downstream.json')
+		);
+
+		expect(upstream).toBeDefined();
+		expect(downstream).toBeDefined();
+		expect(downstream?.dependencies).toEqual([
+			{
+				successorPathHash: pathHash('packages/engine/src/fixture.json'),
+				digest: upstream?.projectedRawDigest,
+				digestKind: 'raw-bytes'
+			}
+		]);
+	});
+
+	it('rejects an extra owner-matched delta absent from the authenticated closure', async () => {
+		const color = retired('color');
+		const repository = await makeRepository({
+			'packages/engine/src/story.ts': `export const direct = '${color}';\n`,
+			'packages/engine/src/story.spec.ts': 'export const untouched = true;\n'
+		});
+		const receiptDirectory = await mkdtemp(path.join(tmpdir(), 'american-english-receipts-'));
+		temporaryRoots.push(receiptDirectory);
+		const initialReceiptPath = path.join(receiptDirectory, 'initial.json');
+		const plan = await planAmericanEnglishMigration({
+			repositoryRoot: repository.root,
+			baselineCommit: repository.baseline,
+			ruleIds: ['color']
+		});
+		const artifact = await writePlanArtifact(receiptDirectory, 'plan.json', plan);
+		await applyAmericanEnglishMigration(plan, {
+			repositoryRoot: repository.root,
+			receiptPath: initialReceiptPath
+		});
+		await writeFile(
+			path.join(repository.root, 'packages/engine/src/story.spec.ts'),
+			'export const unauthorizedOwnerDelta = true;\n'
+		);
+		const migrationCommit = commitAll(repository.root, 'extra owner-matched delta');
+		await expect(
+			finalizeAmericanEnglishMigrationReceipt({
+				repositoryRoot: repository.root,
+				expectedMigrationCommit: migrationCommit,
+				planPath: artifact.path,
+				expectedPlanHash: artifact.sha256,
+				initialReceiptPath,
+				expectedInitialReceiptHash: await fileSha256(initialReceiptPath),
+				receiptPath: path.join(receiptDirectory, 'finalized.json')
+			})
+		).rejects.toThrow(/unplanned.*owner.*post-apply|successor intent/i);
+	});
+
+	it('rejects forged, sibling, altered-plan, and non-direct migration boundaries', async () => {
+		const color = retired('color');
+		const repository = await makeRepository({ 'docs/note.txt': `${color}\n` });
+		const receiptDirectory = await mkdtemp(path.join(tmpdir(), 'american-english-receipts-'));
+		temporaryRoots.push(receiptDirectory);
+		const initialReceiptPath = path.join(receiptDirectory, 'initial.json');
+		const plan = await planAmericanEnglishMigration({
+			repositoryRoot: repository.root,
+			baselineCommit: repository.baseline,
+			ruleIds: ['color']
+		});
+		const artifact = await writePlanArtifact(receiptDirectory, 'plan.json', plan);
+		await applyAmericanEnglishMigration(plan, {
+			repositoryRoot: repository.root,
+			receiptPath: initialReceiptPath
+		});
+		const migrationCommit = commitAll(repository.root, 'migration');
+		const siblingCommit = git(repository.root, [
+			'-c',
+			'user.name=Test',
+			'-c',
+			'user.email=test@example.com',
+			'commit-tree',
+			git(repository.root, ['rev-parse', `${migrationCommit}^{tree}`]),
+			'-p',
+			repository.baseline,
+			'-m',
+			'sibling forged base'
+		]);
+		const common = {
+			repositoryRoot: repository.root,
+			expectedMigrationCommit: migrationCommit,
+			initialReceiptPath,
+			expectedInitialReceiptHash: await fileSha256(initialReceiptPath),
+			planPath: artifact.path,
+			expectedPlanHash: artifact.sha256
+		};
+
+		await expect(
+			finalizeAmericanEnglishMigrationReceipt({
+				...common,
+				migrationBaseCommit: siblingCommit,
+				receiptPath: path.join(receiptDirectory, 'sibling.json')
+			} as Parameters<typeof finalizeAmericanEnglishMigrationReceipt>[0])
+		).rejects.toThrow(/plan head|direct parent|migration boundary/i);
+
+		const altered = { ...plan, roots: ['forged'] };
+		await writeFile(artifact.path, `${JSON.stringify(altered, null, 2)}\n`);
+		await expect(
+			finalizeAmericanEnglishMigrationReceipt({
+				...common,
+				receiptPath: path.join(receiptDirectory, 'altered.json')
+			} as Parameters<typeof finalizeAmericanEnglishMigrationReceipt>[0])
+		).rejects.toThrow(/plan.*hash|fingerprint/i);
+
+		await writeFile(artifact.path, `${JSON.stringify(plan, null, 2)}\n`);
+		const intermediate = git(repository.root, [
+			'-c',
+			'user.name=Test',
+			'-c',
+			'user.email=test@example.com',
+			'commit-tree',
+			git(repository.root, ['rev-parse', `${repository.baseline}^{tree}`]),
+			'-p',
+			repository.baseline,
+			'-m',
+			'intermediate'
+		]);
+		const nonDirectMigration = git(repository.root, [
+			'-c',
+			'user.name=Test',
+			'-c',
+			'user.email=test@example.com',
+			'commit-tree',
+			git(repository.root, ['rev-parse', `${migrationCommit}^{tree}`]),
+			'-p',
+			intermediate,
+			'-m',
+			'non-direct migration'
+		]);
+		git(repository.root, ['update-ref', 'HEAD', nonDirectMigration, migrationCommit]);
+		await expect(
+			finalizeAmericanEnglishMigrationReceipt({
+				...common,
+				expectedMigrationCommit: nonDirectMigration,
+				receiptPath: path.join(receiptDirectory, 'non-direct.json')
+			} as Parameters<typeof finalizeAmericanEnglishMigrationReceipt>[0])
+		).rejects.toThrow(/direct parent|migration boundary/i);
+	});
+
+	it('reseals validated owner changes and lets the next filtered slice plan and apply', async () => {
+		const armor = retired('armor');
+		const color = retired('color');
+		const upstreamBefore = { contentHash: 'a'.repeat(64), label: color, next: armor };
+		const repository = await makeRepository({
+			'packages/engine/src/fixture.json': `${JSON.stringify(upstreamBefore)}\n`,
+			'packages/engine/src/downstream.json': `${JSON.stringify({ stateHash: hashCanonical(upstreamBefore), label: color, next: armor })}\n`,
+			'packages/engine/src/presentation.ts': `export const preexisting = '${armor}';\n`
+		});
+		await writeFile(
+			path.join(repository.root, 'packages/engine/src/presentation.ts'),
+			`export const preexisting = '${armor}';\nexport const changedBeforeThisSlice = true;\n`
+		);
+		commitAll(repository.root, 'prepare preexisting owner state');
+		const receiptDirectory = await mkdtemp(path.join(tmpdir(), 'american-english-receipts-'));
+		temporaryRoots.push(receiptDirectory);
+		const initialReceiptPath = path.join(receiptDirectory, 'initial.json');
+		const finalizedReceiptPath = path.join(receiptDirectory, 'finalized.json');
+		const nextReceiptPath = path.join(receiptDirectory, 'next.json');
+		const firstPlan = await planAmericanEnglishMigration({
+			repositoryRoot: repository.root,
+			baselineCommit: repository.baseline,
+			ruleIds: ['color']
+		});
+		const planArtifact = await writePlanArtifact(receiptDirectory, 'plan.json', firstPlan);
+		const upstreamIntent = firstPlan.expectedOwnerSuccessors.find(
+			({ successorPathHash }) => successorPathHash === pathHash('packages/engine/src/fixture.json')
+		);
+		const downstreamIntent = firstPlan.expectedOwnerSuccessors.find(
+			({ successorPathHash }) =>
+				successorPathHash === pathHash('packages/engine/src/downstream.json')
+		);
+		expect(upstreamIntent).toBeDefined();
+		expect(downstreamIntent?.dependencies).toEqual([
+			{
+				successorPathHash: pathHash('packages/engine/src/fixture.json'),
+				digest: upstreamIntent!.projectedValueDigest
+			}
+		]);
+		await applyAmericanEnglishMigration(firstPlan, {
+			repositoryRoot: repository.root,
+			receiptPath: initialReceiptPath
+		});
+		const migrationCommit = commitAll(repository.root, 'apply and regenerate first spelling slice');
+
+		await expect(
+			planAmericanEnglishMigration({
+				repositoryRoot: repository.root,
+				baselineCommit: repository.baseline,
+				ruleIds: ['armor'],
+				previousReceiptPath: initialReceiptPath
+			})
+		).rejects.toThrow(/receipt successor blob/i);
+		const unchainedPlan = await planAmericanEnglishMigration({
+			repositoryRoot: repository.root,
+			baselineCommit: repository.baseline,
+			ruleIds: ['armor']
+		});
+		await expect(
+			applyAmericanEnglishMigration(unchainedPlan, {
+				repositoryRoot: repository.root,
+				receiptPath: nextReceiptPath,
+				previousReceiptPath: initialReceiptPath
+			})
+		).rejects.toThrow(/preflight.*changed/i);
+
+		const finalized = await finalizeAmericanEnglishMigrationReceipt({
+			repositoryRoot: repository.root,
+			expectedMigrationCommit: migrationCommit,
+			planPath: planArtifact.path,
+			expectedPlanHash: planArtifact.sha256,
+			initialReceiptPath,
+			expectedInitialReceiptHash: await fileSha256(initialReceiptPath),
+			receiptPath: finalizedReceiptPath
+		});
+		expect(finalized.files).toHaveLength(3);
+		expect(finalized.ownerCounts).toEqual({
+			'authenticated-plan-head': 1,
+			'runtime-and-engine': 2
+		});
+		expect(finalized.files).toEqual(
+			expect.arrayContaining([
+				expect.objectContaining({
+					successorPathHash: pathHash('packages/engine/src/downstream.json'),
+					ownerId: 'runtime-and-engine'
+				}),
+				expect.objectContaining({
+					successorPathHash: pathHash('packages/engine/src/fixture.json'),
+					ownerId: 'runtime-and-engine'
+				}),
+				expect.objectContaining({
+					successorPathHash: pathHash('packages/engine/src/presentation.ts'),
+					ownerId: 'authenticated-plan-head'
+				})
+			])
+		);
+		const serialized = JSON.stringify(finalized);
+		for (const privateValue of [armor, color, 'packages/', 'story.ts']) {
+			expect(serialized).not.toContain(privateValue);
+		}
+		await expect(
+			finalizeAmericanEnglishMigrationReceipt({
+				repositoryRoot: repository.root,
+				expectedMigrationCommit: migrationCommit,
+				planPath: planArtifact.path,
+				expectedPlanHash: planArtifact.sha256,
+				initialReceiptPath,
+				expectedInitialReceiptHash: await fileSha256(initialReceiptPath),
+				receiptPath: finalizedReceiptPath
+			})
+		).rejects.toThrow(/receipt.*exists/i);
+		const cliReceiptPath = path.join(receiptDirectory, 'finalized-cli.json');
+		const cli = spawnSync(
+			process.execPath,
+			[
+				path.resolve('node_modules/tsx/dist/cli.mjs'),
+				path.resolve('tools/american-english-migration.ts'),
+				'--finalize-receipt',
+				initialReceiptPath,
+				'--initial-receipt-sha256',
+				await fileSha256(initialReceiptPath),
+				'--plan',
+				planArtifact.path,
+				'--plan-sha256',
+				planArtifact.sha256,
+				'--expected-migration-commit',
+				migrationCommit,
+				'--repository-root',
+				repository.root,
+				'--receipt',
+				cliReceiptPath,
+				'--format',
+				'json'
+			],
+			{ encoding: 'utf8' }
+		);
+		expect(cli.status).toBe(0);
+		expect(JSON.parse(cli.stdout)).toEqual(finalized);
+
+		const nextPlan = await planAmericanEnglishMigration({
+			repositoryRoot: repository.root,
+			baselineCommit: repository.baseline,
+			ruleIds: ['armor'],
+			previousReceiptPath: finalizedReceiptPath
+		});
+		expect(nextPlan.textEdits).toHaveLength(3);
+		await applyAmericanEnglishMigration(nextPlan, {
+			repositoryRoot: repository.root,
+			receiptPath: nextReceiptPath,
+			previousReceiptPath: finalizedReceiptPath
+		});
+		expect(
+			await readFile(path.join(repository.root, 'packages/engine/src/fixture.json'), 'utf8')
+		).toContain('armor');
+		expect(
+			await readFile(path.join(repository.root, 'packages/engine/src/downstream.json'), 'utf8')
+		).toContain('armor');
+		expect(
+			await readFile(path.join(repository.root, 'packages/engine/src/presentation.ts'), 'utf8')
+		).toContain("'armor'");
+	});
+
+	it('rejects unowned and migration-planner-owned post-apply drift', async () => {
+		const armor = retired('armor');
+		const color = retired('color');
+		const plannerRepository = await makeRepository({
+			'docs/note.txt': `${color} ${armor}\n`
+		});
+		const receiptDirectory = await mkdtemp(path.join(tmpdir(), 'american-english-receipts-'));
+		temporaryRoots.push(receiptDirectory);
+		const plannerReceiptPath = path.join(receiptDirectory, 'planner-initial.json');
+		const plannerPlan = await planAmericanEnglishMigration({
+			repositoryRoot: plannerRepository.root,
+			baselineCommit: plannerRepository.baseline,
+			ruleIds: ['color']
+		});
+		const plannerArtifact = await writePlanArtifact(
+			receiptDirectory,
+			'planner-plan.json',
+			plannerPlan
+		);
+		await applyAmericanEnglishMigration(plannerPlan, {
+			repositoryRoot: plannerRepository.root,
+			receiptPath: plannerReceiptPath
+		});
+		await writeFile(
+			path.join(plannerRepository.root, 'docs/note.txt'),
+			`color ${armor}\narbitrary drift\n`
+		);
+		const plannerMigrationCommit = commitAll(plannerRepository.root, 'tamper planner successor');
+		await expect(
+			finalizeAmericanEnglishMigrationReceipt({
+				repositoryRoot: plannerRepository.root,
+				expectedMigrationCommit: plannerMigrationCommit,
+				planPath: plannerArtifact.path,
+				expectedPlanHash: plannerArtifact.sha256,
+				initialReceiptPath: plannerReceiptPath,
+				expectedInitialReceiptHash: await fileSha256(plannerReceiptPath),
+				receiptPath: path.join(receiptDirectory, 'planner-final.json')
+			})
+		).rejects.toThrow(/migration-planner.*drift/i);
+		const initialReceiptHash = await fileSha256(plannerReceiptPath);
+		const forgedReceipt = JSON.parse(await readFile(plannerReceiptPath, 'utf8'));
+		forgedReceipt.files[0].successorBlobId = git(plannerRepository.root, [
+			'rev-parse',
+			'HEAD:docs/note.txt'
+		]);
+		const forgedReceiptPath = path.join(receiptDirectory, 'planner-forged.json');
+		await writeFile(forgedReceiptPath, `${JSON.stringify(forgedReceipt, null, 2)}\n`);
+		await expect(
+			finalizeAmericanEnglishMigrationReceipt({
+				repositoryRoot: plannerRepository.root,
+				expectedMigrationCommit: plannerMigrationCommit,
+				planPath: plannerArtifact.path,
+				expectedPlanHash: plannerArtifact.sha256,
+				initialReceiptPath: forgedReceiptPath,
+				expectedInitialReceiptHash: initialReceiptHash,
+				receiptPath: path.join(receiptDirectory, 'planner-forged-final.json')
+			})
+		).rejects.toThrow(/initial receipt.*hash/i);
+
+		const unownedRepository = await makeRepository({
+			'docs/note.txt': `${color}\n`,
+			'misc/safe.txt': 'safe\n'
+		});
+		const unownedReceiptPath = path.join(receiptDirectory, 'unowned-initial.json');
+		const unownedPlan = await planAmericanEnglishMigration({
+			repositoryRoot: unownedRepository.root,
+			baselineCommit: unownedRepository.baseline,
+			ruleIds: ['color']
+		});
+		const unownedArtifact = await writePlanArtifact(
+			receiptDirectory,
+			'unowned-plan.json',
+			unownedPlan
+		);
+		await applyAmericanEnglishMigration(unownedPlan, {
+			repositoryRoot: unownedRepository.root,
+			receiptPath: unownedReceiptPath
+		});
+		await writeFile(path.join(unownedRepository.root, 'misc/safe.txt'), 'tampered\n');
+		const unownedMigrationCommit = commitAll(unownedRepository.root, 'tamper unowned path');
+		await expect(
+			finalizeAmericanEnglishMigrationReceipt({
+				repositoryRoot: unownedRepository.root,
+				expectedMigrationCommit: unownedMigrationCommit,
+				planPath: unownedArtifact.path,
+				expectedPlanHash: unownedArtifact.sha256,
+				initialReceiptPath: unownedReceiptPath,
+				expectedInitialReceiptHash: await fileSha256(unownedReceiptPath),
+				receiptPath: path.join(receiptDirectory, 'unowned-final.json')
+			})
+		).rejects.toThrow(/unowned.*post-apply/i);
+	});
+
+	it('rejects post-apply binary drift instead of resealing it', async () => {
+		const gray = retired('gray');
+		const repository = await makeRepository({
+			'.gitattributes': 'assets/wiki/**/*.png -text\n',
+			[`assets/wiki/icons/${gray}.png`]: Buffer.from([0, 1, 2, 3])
+		});
+		const receiptDirectory = await mkdtemp(path.join(tmpdir(), 'american-english-receipts-'));
+		temporaryRoots.push(receiptDirectory);
+		const initialReceiptPath = path.join(receiptDirectory, 'initial.json');
+		const firstPlan = await planAmericanEnglishMigration({
+			repositoryRoot: repository.root,
+			baselineCommit: repository.baseline,
+			ruleIds: ['gray']
+		});
+		const planArtifact = await writePlanArtifact(receiptDirectory, 'binary-plan.json', firstPlan);
+		await applyAmericanEnglishMigration(firstPlan, {
+			repositoryRoot: repository.root,
+			receiptPath: initialReceiptPath
+		});
+		await writeFile(
+			path.join(repository.root, 'assets/wiki/icons/gray.png'),
+			Buffer.from([9, 8, 7])
+		);
+		const migrationCommit = commitAll(repository.root, 'tamper binary successor');
+
+		await expect(
+			finalizeAmericanEnglishMigrationReceipt({
+				repositoryRoot: repository.root,
+				expectedMigrationCommit: migrationCommit,
+				planPath: planArtifact.path,
+				expectedPlanHash: planArtifact.sha256,
+				initialReceiptPath,
+				expectedInitialReceiptHash: await fileSha256(initialReceiptPath),
+				receiptPath: path.join(receiptDirectory, 'finalized.json')
+			})
+		).rejects.toThrow(/binary.*drift/i);
+	});
+});
+
+describe('American English apply materialization authentication', () => {
+	it.each([
+		['serialized and reparsed', (plan: object) => JSON.parse(JSON.stringify(plan))],
+		['shallow-cloned', (plan: object) => ({ ...plan })]
+	] as const)('rejects a %s owner plan before mutation', async (_label, clone) => {
+		const color = retired('color');
+		const repository = await makeRepository({
+			'packages/engine/src/story.ts': `export const value = '${color}';\n`
+		});
+		const receiptDirectory = await mkdtemp(path.join(tmpdir(), 'american-english-receipts-'));
+		temporaryRoots.push(receiptDirectory);
+		const receiptPath = path.join(receiptDirectory, 'initial.json');
+		const plan = await planAmericanEnglishMigration({
+			repositoryRoot: repository.root,
+			baselineCommit: repository.baseline,
+			ruleIds: ['color']
+		});
+		expect(plan.expectedOwnerSuccessors.length).toBeGreaterThan(0);
+		const before = await readFile(path.join(repository.root, 'packages/engine/src/story.ts'));
+
+		await expect(
+			applyAmericanEnglishMigration(
+				clone(plan) as Awaited<ReturnType<typeof planAmericanEnglishMigration>>,
+				{ repositoryRoot: repository.root, receiptPath }
+			)
+		).rejects.toThrow(/private|materialization|original.*plan/iu);
+		expect(await readFile(path.join(repository.root, 'packages/engine/src/story.ts'))).toEqual(
+			before
+		);
+		expect(git(repository.root, ['status', '--porcelain=v1'])).toBe('');
+		await expect(lstat(receiptPath)).rejects.toMatchObject({ code: 'ENOENT' });
+	});
+
+	it('allows a reparsed direct-only plan with no owner closure', async () => {
+		const color = retired('color');
+		const repository = await makeRepository({ 'docs/note.txt': `${color}\n` });
+		const receiptDirectory = await mkdtemp(path.join(tmpdir(), 'american-english-receipts-'));
+		temporaryRoots.push(receiptDirectory);
+		const plan = await planAmericanEnglishMigration({
+			repositoryRoot: repository.root,
+			baselineCommit: repository.baseline,
+			ruleIds: ['color']
+		});
+		expect(plan.expectedOwnerSuccessors).toHaveLength(0);
+
+		await expect(
+			applyAmericanEnglishMigration(JSON.parse(JSON.stringify(plan)), {
+				repositoryRoot: repository.root,
+				receiptPath: path.join(receiptDirectory, 'initial.json')
+			})
+		).resolves.toMatchObject({ files: expect.any(Array) });
 	});
 });
