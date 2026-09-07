@@ -51,14 +51,13 @@ The approved player pool is `summonable-heroes-v1`: exactly 200 named, native-1�
 binds one stable `human-v6` character draft to its exact approved summon portrait and combat chibi;
 the pair is one identity, never two independently selectable images.
 
-The source of truth is
+The v2 catalog source of truth is
 `assets/heroes/approved/summonable-roster-v1/catalog.json`. It records the immutable experiment
 paths, SHA-256 hashes, dimensions, approval ID, character manifest, and stable asset keys. Nineteen
 heroes use the explicitly approved v3 chibi correction; the other 181 use their completed five-head
-regeneration. Candidate PNGs remain production evidence. Runtime WebPs are separate, reproducible
-derivatives recorded in
-`apps/web/static/runtime/summonable-heroes-v1/manifest.json`, with both images bound to the exact
-character-manifest hash and loaded in a lazy bundle for that hero.
+regeneration. Candidate PNGs remain production evidence. The v2 runtime manifest is
+`apps/web/static/runtime/summonable-heroes-v1/manifest.json`; its WebP derivatives are bound to the
+exact character-manifest hash and loaded in a lazy bundle for that hero.
 
 Only these base 1★ forms are approved here. Their 2★–7★ current-star art remains future evolution
 production and must preserve the identity rules below.
@@ -109,11 +108,11 @@ Village cutout. A cutout must contain true alpha, leave all canvas edges transpa
 comfortable margins around the entire character before the candidate batch can validate. Approval
 and runtime promotion remain separate lifecycle steps.
 
-The approved 200-hero `summonable-heroes-v1` catalog predates this three-artifact rule and currently
-binds only summon/chibi pairs. Those heroes require an explicit cutout backfill and approval pass
-before persistent Village scenes may render them as character overlays. Until then, the player UI
-uses a labeled non-character missing-art marker rather than a chibi, opaque portrait, or invented
-vector substitute.
+The approved 200-hero `summonable-heroes-v1` catalog now has three approved pilot cutouts: Yaso
+Dreno, Oren Sorin, and Joror Pelleth. The other 197 heroes remain in the explicit cutout backfill
+and approval queue. A persistent Village scene may render only a catalog-approved cutout; when a
+current-company hero has no approved cutout, it uses a labeled non-character missing-art marker
+rather than a chibi, opaque portrait, or invented vector substitute.
 
 ## Generation order
 

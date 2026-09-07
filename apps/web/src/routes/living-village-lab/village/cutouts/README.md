@@ -1,9 +1,14 @@
 # Route-local Village cutouts
 
-These six PNGs are alpha-background derivatives of the approved identity anchors used by the
-Living Village prototype. No face, clothing, pose, or painted character content was regenerated.
-Background isolation used `rembg`'s `u2net_human_seg` model with alpha matting and edge
-decontamination.
+These six PNGs are visual-development fixtures for the Living Village lab only: Dara Zev, Mara
+Vey, Jori Daro, Kira Toren, Iven Orra, and Remy Nahl. They are absent from the approved
+summonable-hero roster and must never be imported by `/play` or used as a fallback for a persistent
+Village resident. Canonical playable-hero ownership remains exclusively with
+`assets/heroes/approved/summonable-roster-v1/catalog.json` and its runtime derivatives.
+
+The fixtures are alpha-background derivatives of their lab identity anchors. No face, clothing,
+pose, or painted character content was regenerated. Background isolation used `rembg`'s
+`u2net_human_seg` model with alpha matting and edge decontamination.
 
 | Cutout | Approved source |
 | --- | --- |
