@@ -46,6 +46,18 @@ export const COMBAT_RULES_V1: CombatRulesV1 = deepFreeze(
 			domainMinimumBasisPoints: 8_000,
 			domainMaximumBasisPoints: 12_000
 		},
-		affinity: { contributionNudgeCapBasisPoints: 1_000 }
+		affinity: { contributionNudgeCapBasisPoints: 1_000 },
+		readiness: {
+			tickDurationMilliseconds: 100,
+			threshold: 10_000,
+			baseGainPerTick: 100,
+			agilityGainPerTick: 1,
+			actionRecoverySource: 'authored-action-recovery-ticks',
+			safety: {
+				maximumTicksAdvanced: 1_000_000,
+				maximumEventsEmitted: 100_000,
+				maximumNoProgressCycles: 1_000
+			}
+		}
 	})
 );

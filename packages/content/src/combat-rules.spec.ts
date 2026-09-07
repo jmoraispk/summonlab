@@ -24,7 +24,19 @@ describe('combat-rules-v1 content', () => {
 				cognitiveMinimumBasisPoints: 9_000,
 				cognitiveMaximumBasisPoints: 11_000
 			},
-			affinity: { contributionNudgeCapBasisPoints: 1_000 }
+			affinity: { contributionNudgeCapBasisPoints: 1_000 },
+			readiness: {
+				tickDurationMilliseconds: 100,
+				threshold: 10_000,
+				baseGainPerTick: 100,
+				agilityGainPerTick: 1,
+				actionRecoverySource: 'authored-action-recovery-ticks',
+				safety: {
+					maximumTicksAdvanced: 1_000_000,
+					maximumEventsEmitted: 100_000,
+					maximumNoProgressCycles: 1_000
+				}
+			}
 		});
 		expect(COMBAT_RULES_V1.health.combatRecoveryBasisPoints).toBe(10_000 / 5);
 	});
@@ -33,6 +45,8 @@ describe('combat-rules-v1 content', () => {
 		expect(Object.isFrozen(COMBAT_RULES_V1)).toBe(true);
 		expect(Object.isFrozen(COMBAT_RULES_V1.health)).toBe(true);
 		expect(Object.isFrozen(COMBAT_RULES_V1.armour)).toBe(true);
+		expect(Object.isFrozen(COMBAT_RULES_V1.readiness)).toBe(true);
+		expect(Object.isFrozen(COMBAT_RULES_V1.readiness.safety)).toBe(true);
 		expect(Object.isFrozen(COMBAT_RULES_V1.attributes.modifierStackingOrder)).toBe(true);
 
 		const rootChanged = Reflect.set(COMBAT_RULES_V1, 'rulesVersion', 'changed-rules');
@@ -47,13 +61,15 @@ describe('combat-rules-v1 content', () => {
 			0,
 			'additive-basis-points'
 		);
+		const readinessChanged = Reflect.set(COMBAT_RULES_V1.readiness, 'threshold', 1);
 
-		expect([rootChanged, nestedChanged, armourChanged, arrayChanged]).toStrictEqual([
-			false,
-			false,
-			false,
-			false
-		]);
+		expect([
+			rootChanged,
+			nestedChanged,
+			armourChanged,
+			arrayChanged,
+			readinessChanged
+		]).toStrictEqual([false, false, false, false, false]);
 		expect(COMBAT_RULES_V1.rulesVersion).toBe('combat-rules-v1');
 		expect(COMBAT_RULES_V1.health.baseMaximum).toBe(100);
 		expect(COMBAT_RULES_V1.armour.maximumGeneralReductionBasisPoints).toBe(7_499);

@@ -219,7 +219,23 @@ export const CombatRulesV1Schema = z
 				domainMaximumBasisPoints: z.number().int().positive().max(20_000)
 			})
 			.strict(),
-		affinity: z.object({ contributionNudgeCapBasisPoints: BasisPointsSchema.max(1_000) }).strict()
+		affinity: z.object({ contributionNudgeCapBasisPoints: BasisPointsSchema.max(1_000) }).strict(),
+		readiness: z
+			.object({
+				tickDurationMilliseconds: z.number().int().positive(),
+				threshold: z.number().int().positive(),
+				baseGainPerTick: z.number().int().nonnegative(),
+				agilityGainPerTick: z.number().int().positive(),
+				actionRecoverySource: z.literal('authored-action-recovery-ticks'),
+				safety: z
+					.object({
+						maximumTicksAdvanced: z.number().int().positive().max(Number.MAX_SAFE_INTEGER),
+						maximumEventsEmitted: z.number().int().nonnegative().max(Number.MAX_SAFE_INTEGER),
+						maximumNoProgressCycles: z.number().int().positive().max(Number.MAX_SAFE_INTEGER)
+					})
+					.strict()
+			})
+			.strict()
 	})
 	.strict()
 	.superRefine((rules, context) => {

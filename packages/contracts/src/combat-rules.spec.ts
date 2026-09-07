@@ -55,11 +55,52 @@ function validRules() {
 			domainMinimumBasisPoints: 8_000,
 			domainMaximumBasisPoints: 12_000
 		},
-		affinity: { contributionNudgeCapBasisPoints: 1_000 }
+		affinity: { contributionNudgeCapBasisPoints: 1_000 },
+		readiness: {
+			tickDurationMilliseconds: 100,
+			threshold: 10_000,
+			baseGainPerTick: 100,
+			agilityGainPerTick: 1,
+			actionRecoverySource: 'authored-action-recovery-ticks' as const,
+			safety: {
+				maximumTicksAdvanced: 1_000_000,
+				maximumEventsEmitted: 100_000,
+				maximumNoProgressCycles: 1_000
+			}
+		}
 	};
 }
 
 describe('combat rules contracts', () => {
+	it('binds integer one-tick readiness and engine safety candidates', () => {
+		const parsed = CombatRulesV1Schema.parse(validRules());
+		expect(parsed.readiness).toStrictEqual({
+			tickDurationMilliseconds: 100,
+			threshold: 10_000,
+			baseGainPerTick: 100,
+			agilityGainPerTick: 1,
+			actionRecoverySource: 'authored-action-recovery-ticks',
+			safety: {
+				maximumTicksAdvanced: 1_000_000,
+				maximumEventsEmitted: 100_000,
+				maximumNoProgressCycles: 1_000
+			}
+		});
+		for (const readiness of [
+			{ ...parsed.readiness, tickDurationMilliseconds: 100.5 },
+			{ ...parsed.readiness, threshold: 0 },
+			{ ...parsed.readiness, baseGainPerTick: -1 },
+			{ ...parsed.readiness, agilityGainPerTick: 0 },
+			{ ...parsed.readiness, actionRecoverySource: 'initiative' },
+			{
+				...parsed.readiness,
+				safety: { ...parsed.readiness.safety, maximumNoProgressCycles: 0 }
+			}
+		]) {
+			expect(CombatRulesV1Schema.safeParse({ ...validRules(), readiness }).success).toBe(false);
+		}
+	});
+
 	it('requires every scoped modifier to carry typed source, stacking, cap, duration, and rules evidence', () => {
 		const parsed = AttributeModifierSchema.parse({
 			modifierId: '10000000-0000-4000-8000-000000000002',

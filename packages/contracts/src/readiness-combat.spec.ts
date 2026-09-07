@@ -45,6 +45,7 @@ const hero = {
 		health: { current: 120, maximum: 120 },
 		mana: { current: 40, maximum: 50 }
 	},
+	lastDamagedAtTick: 2,
 	attributes: { might: 20, vitality: 20, agility: 20, spirit: 20 },
 	armour: 10,
 	resistances: { cut: 500 },
@@ -75,7 +76,8 @@ const monster = {
 	position: { x: 3, y: 1 },
 	conditions: [],
 	cooldowns: {},
-	readiness: { value: 9_900, exactNumerator: 9_900, recoveryUntilTick: 0 }
+	readiness: { value: 9_900, exactNumerator: 9_900, recoveryUntilTick: 0 },
+	lastDamagedAtTick: null
 } as const;
 
 const terrain = {
@@ -209,6 +211,15 @@ describe('readiness combat contracts', () => {
 	});
 
 	it('validates positions, resources, readiness, and condition timing', () => {
+		expect(
+			ReadinessCombatStateV1Schema.safeParse({
+				...state,
+				combatants: {
+					...state.combatants,
+					[ID.hero]: { ...hero, lastDamagedAtTick: state.tick + 1 }
+				}
+			}).success
+		).toBe(false);
 		expect(
 			ReadinessCombatStateV1Schema.safeParse({
 				...state,

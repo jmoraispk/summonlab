@@ -281,6 +281,7 @@ function v26ReadinessStateFromV24Fixture() {
 					health: { current: 100, maximum: 100 },
 					mana: { current: 50, maximum: 50 }
 				},
+				lastDamagedAtTick: null,
 				attributes: { might: 41, vitality: 52, agility: 63, spirit: 74 },
 				armour: 0,
 				resistances: {},

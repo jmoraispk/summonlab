@@ -63,6 +63,7 @@ export const CombatantStateSchema = z
 		teamId: TeamIdSchema,
 		position: CombatPositionSchema,
 		resources: CombatResourcesSchema,
+		lastDamagedAtTick: TickSchema.nullable(),
 		attributes: CombatAttributesSchema,
 		armour: z.number().int().nonnegative().max(1_000_000),
 		resistances: z.partialRecord(ResistanceTagSchema, z.number().int().min(-10_000).max(10_000)),
@@ -261,7 +262,7 @@ export const CombatWindowSnapshotSchema = z
 				message: 'Ready actors must be unique'
 			});
 		}
-		validateCombatantMap(snapshot.combatants, snapshot.terrain, context);
+		validateCombatantMap(snapshot.combatants, snapshot.terrain, context, snapshot.tick);
 	});
 
 export const ObservableCombatConditionSchema = z
@@ -574,6 +575,7 @@ export const CombatResultSchema = z
 				message: 'Combat claim idempotency keys must be unique'
 			});
 		}
+		validateCombatantDamageClocks(result.finalCombatants, result.endedAtTick, context);
 	});
 
 export const ScheduledCombatEffectSchema = z
@@ -601,7 +603,7 @@ export const ReadinessCombatStateV1Schema = z
 	})
 	.strict()
 	.superRefine((state, context) => {
-		validateCombatantMap(state.combatants, state.terrain, context);
+		validateCombatantMap(state.combatants, state.terrain, context, state.tick);
 		if ((state.status === 'complete') !== (state.result !== null)) {
 			context.addIssue({
 				code: 'custom',
@@ -621,7 +623,8 @@ export const ReadinessCombatStateV1Schema = z
 function validateCombatantMap(
 	combatants: Record<string, z.infer<typeof CombatantStateSchema>>,
 	terrain: z.infer<typeof CombatTerrainSchema>,
-	context: z.RefinementCtx
+	context: z.RefinementCtx,
+	currentTick: number
 ): void {
 	for (const [combatantId, combatant] of Object.entries(combatants)) {
 		if (combatant.combatantId !== combatantId) {
@@ -636,6 +639,23 @@ function validateCombatantMap(
 				code: 'custom',
 				path: ['combatants', combatantId, 'position'],
 				message: 'Combatant position is outside the arena'
+			});
+		}
+	}
+	validateCombatantDamageClocks(combatants, currentTick, context);
+}
+
+function validateCombatantDamageClocks(
+	combatants: Record<string, z.infer<typeof CombatantStateSchema>>,
+	currentTick: number,
+	context: z.RefinementCtx
+): void {
+	for (const [combatantId, combatant] of Object.entries(combatants)) {
+		if (combatant.lastDamagedAtTick !== null && combatant.lastDamagedAtTick > currentTick) {
+			context.addIssue({
+				code: 'custom',
+				path: ['combatants', combatantId, 'lastDamagedAtTick'],
+				message: 'Last-damaged tick cannot be in the future'
 			});
 		}
 	}
