@@ -7,6 +7,12 @@ export const VILLAGE_MODES = [
 
 export type VillageMode = (typeof VILLAGE_MODES)[number]['id'];
 
+export interface VillageResidentArt {
+	readonly publicPath: string;
+	readonly width: number;
+	readonly height: number;
+}
+
 export interface VillageResident {
 	readonly heroId: string;
 	readonly ordinal: number;
@@ -26,6 +32,7 @@ export interface VillageResident {
 		readonly width: number;
 		readonly height: number;
 	} | null;
+	readonly sceneArt: VillageResidentArt | null;
 }
 
 const VILLAGE_MODE_IDS = new Set<string>(VILLAGE_MODES.map((mode) => mode.id));

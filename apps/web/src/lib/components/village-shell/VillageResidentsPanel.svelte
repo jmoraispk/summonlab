@@ -16,7 +16,7 @@
 
 	<div class="resident-grid">
 		{#each residents as resident (resident.heroId)}
-			<article data-testid="village-resident">
+			<article id={`resident-${resident.heroId}`} data-testid="village-resident">
 				<div class="portrait">
 					{#if resident.portrait}
 						<img
@@ -124,6 +124,7 @@
 	article {
 		min-width: 0;
 		padding: 1rem;
+		scroll-margin-top: 6rem;
 		background: #0d0e12;
 	}
 

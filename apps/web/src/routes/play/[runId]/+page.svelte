@@ -347,12 +347,7 @@
 				<div class="foreground"><span></span><span></span><span></span></div>
 			</section>
 		{:else}
-			<LivingHearthScene
-				scene={data.scene}
-				{presentation}
-				manifest={snapshot.manifest}
-				{eventCue}
-			/>
+			<LivingHearthScene scene={data.scene} {presentation} residents={data.residents} {eventCue} />
 		{/if}
 
 		{#if !walking && firstEmber}

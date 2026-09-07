@@ -75,7 +75,12 @@ export const load: PageServerLoad = async ({ params, url }) => {
 				beliefCount: social?.beliefCount ?? 0,
 				latestObservation: social?.latestObservation?.summary ?? null,
 				firstReply: hero.firstReply?.exactText ?? null,
-				portrait: runtimePortraitFor(hero.draft.manifestHash, hero.draft.manifest.artKey, 'roster')
+				portrait: runtimePortraitFor(hero.draft.manifestHash, hero.draft.manifest.artKey, 'roster'),
+				sceneArt: runtimePortraitFor(
+					hero.draft.manifestHash,
+					hero.draft.manifest.artKey,
+					'village-cutout'
+				)
 			};
 		}) ?? [];
 	return {

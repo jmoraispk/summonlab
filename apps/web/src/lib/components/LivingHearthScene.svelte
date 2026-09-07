@@ -1,32 +1,27 @@
 <script lang="ts">
 	import type {
 		AuthoritativeEvent,
-		CharacterManifest,
-		NormalizedScenePoint,
 		SettlementPresentation,
 		SettlementSceneDefinition
 	} from '@summonlab/contracts';
+	import { projectVillageSceneResidents } from '$lib/village-scene';
+	import type { VillageResident } from '$lib/village-shell';
 
 	let {
 		scene,
 		presentation,
-		manifest,
+		residents,
 		eventCue = null
 	}: {
 		scene: SettlementSceneDefinition;
 		presentation: SettlementPresentation;
-		manifest: CharacterManifest;
+		residents: readonly VillageResident[];
 		eventCue?: AuthoritativeEvent | null;
 	} = $props();
 
-	const points = $derived(
-		new Map(scene.nodeProjections.map((entry) => [entry.nodeId, entry.point]))
-	);
-	const occupant = $derived(
-		presentation.occupants.find((entry) => entry.heroId === manifest.characterId) ??
-			presentation.occupants[0]
-	);
-	const markerPoint = $derived(occupant ? pointAlongRoute(occupant) : { x: 0.5, y: 0.35 });
+	const sceneResidents = $derived(projectVillageSceneResidents(scene, presentation, residents));
+	const primaryOccupant = $derived(sceneResidents[0]?.occupant ?? null);
+	let unavailableArtHeroIds = $state<ReadonlySet<string>>(new Set());
 	const buildingState = $derived(
 		new Map(presentation.buildings.map((building) => [building.buildingId, building]))
 	);
@@ -40,24 +35,8 @@
 					: 'The walls keep watch while Hearth 01 sleeps.'
 	);
 
-	function pointAlongRoute(
-		entry: SettlementPresentation['occupants'][number]
-	): NormalizedScenePoint {
-		const fallback = points.get(entry.nodeId) ?? { x: 0.5, y: 0.5 };
-		if (!entry.travel || entry.travel.routeNodeIds.length < 2) return fallback;
-		const routePoints = entry.travel.routeNodeIds
-			.map((nodeId) => points.get(nodeId))
-			.filter((point): point is NormalizedScenePoint => point !== undefined);
-		if (routePoints.length < 2) return fallback;
-		const scaled = entry.travel.progress * (routePoints.length - 1);
-		const segment = Math.min(Math.floor(scaled), routePoints.length - 2);
-		const localProgress = scaled - segment;
-		const from = routePoints[segment]!;
-		const to = routePoints[segment + 1]!;
-		return {
-			x: from.x + (to.x - from.x) * localProgress,
-			y: from.y + (to.y - from.y) * localProgress
-		};
+	function markSceneArtUnavailable(heroId: string) {
+		unavailableArtHeroIds = new Set([...unavailableArtHeroIds, heroId]);
 	}
 
 	function buildingLabel(buildingId: string): string {
@@ -74,9 +53,9 @@
 	class={`living-scene phase-${presentation.dayPhase}`}
 	data-testid="living-settlement"
 	data-day-phase={presentation.dayPhase}
-	data-hero-pose={occupant?.pose ?? 'absent'}
+	data-hero-pose={primaryOccupant?.pose ?? 'absent'}
 	data-event-cursor={presentation.eventCursor}
-	aria-label={`Hearth 01 on day ${presentation.dayNumber} at ${presentation.gameTime.slice(11, 16)}, ${occupant?.activityLabel ?? 'hero absent'}`}
+	aria-label={`Hearth 01 on day ${presentation.dayNumber} at ${presentation.gameTime.slice(11, 16)}, ${primaryOccupant?.activityLabel ?? 'residents absent'}`}
 >
 	<img
 		class="environment"
@@ -113,30 +92,60 @@
 		</div>
 	{/each}
 
-	{#if occupant}
-		<div
-			class={`occupant pose-${occupant.pose}`}
-			style={`--x:${markerPoint.x * 100}%;--y:${markerPoint.y * 100}%`}
-			data-testid="settlement-occupant"
-		>
-			<div class="activity-fx" aria-hidden="true">
-				{#if occupant.pose === 'sleep'}<span class="sleep-rune">z</span><span class="sleep-rune"
-						>z</span
-					>{/if}
-				{#if occupant.pose === 'eat'}<span class="steam">⌇</span><i class="bowl"></i>{/if}
-				{#if occupant.pose === 'work'}<span class="spark">✦</span><span class="spark">✦</span>{/if}
-				{#if occupant.pose === 'train'}<i class="arc"></i>{/if}
+	{#each sceneResidents as sceneResident (sceneResident.occupant.heroId)}
+		{@const knownResident = sceneResident.resident}
+		{@const showSceneArt =
+			knownResident?.sceneArt && !unavailableArtHeroIds.has(sceneResident.occupant.heroId)}
+		{#if knownResident}
+			<a
+				class={`scene-resident pose-${sceneResident.occupant.pose}`}
+				style={`--x:${sceneResident.point.x * 100}%;--y:${sceneResident.point.y * 100}%`}
+				href={`?mode=residents#resident-${knownResident.heroId}`}
+				data-testid="village-scene-resident"
+				aria-label={`${sceneResident.label}: ${sceneResident.occupant.activityLabel}. View resident details.`}
+			>
+				<div class="activity-fx" aria-hidden="true">
+					{#if sceneResident.occupant.pose === 'sleep'}<span class="sleep-rune">z</span><span
+							class="sleep-rune">z</span
+						>{/if}
+					{#if sceneResident.occupant.pose === 'eat'}<span class="steam">⌇</span><i class="bowl"
+						></i>{/if}
+					{#if sceneResident.occupant.pose === 'work'}<span class="spark">✦</span><span
+							class="spark">✦</span
+						>{/if}
+					{#if sceneResident.occupant.pose === 'train'}<i class="arc"></i>{/if}
+				</div>
+				{#if showSceneArt}
+					<img
+						class="resident-cutout"
+						src={knownResident.sceneArt.publicPath}
+						width={knownResident.sceneArt.width}
+						height={knownResident.sceneArt.height}
+						alt=""
+						onerror={() => markSceneArtUnavailable(knownResident.heroId)}
+					/>
+				{:else}
+					<div class="art-pending" aria-hidden="true">Art pending</div>
+				{/if}
+				<div class="activity-tag">
+					<span>{sceneResident.label}</span>
+					<strong>{sceneResident.occupant.activityLabel}</strong>
+				</div>
+			</a>
+		{:else}
+			<div
+				class={`scene-resident unavailable pose-${sceneResident.occupant.pose}`}
+				style={`--x:${sceneResident.point.x * 100}%;--y:${sceneResident.point.y * 100}%`}
+				data-testid="village-scene-resident"
+			>
+				<div class="art-pending">{sceneResident.label}</div>
+				<div class="activity-tag">
+					<span>{sceneResident.label}</span>
+					<strong>{sceneResident.occupant.activityLabel}</strong>
+				</div>
 			</div>
-			<div class="presence-marker" aria-hidden="true">
-				<span>✦</span>
-				<i></i>
-			</div>
-			<div class="activity-tag">
-				<span>{manifest.displayName}</span>
-				<strong>{occupant.activityLabel}</strong>
-			</div>
-		</div>
-	{/if}
+		{/if}
+	{/each}
 
 	<div class="time-plaque">
 		<p>Hearth 01 · Day {presentation.dayNumber}</p>
@@ -331,44 +340,54 @@
 			0.42rem ui-monospace,
 			monospace;
 	}
-	.occupant {
+	.scene-resident {
 		position: absolute;
 		z-index: 8;
 		left: var(--x);
 		top: var(--y);
-		width: clamp(2.7rem, 6.2vw, 5.6rem);
-		transform: translate(-50%, -82%);
+		display: flex;
+		width: clamp(3.6rem, 8vw, 7.2rem);
+		height: clamp(5.2rem, 11vw, 10rem);
+		align-items: end;
+		justify-content: center;
+		color: inherit;
+		text-decoration: none;
+		transform: translate(-50%, -100%);
 		transition:
 			left 0.8s linear,
 			top 0.8s linear;
 	}
-	.presence-marker {
+	.scene-resident:focus-visible {
+		z-index: 14;
+		outline: 2px solid #e5aa73;
+		outline-offset: 0.3rem;
+	}
+	.resident-cutout {
+		width: 100%;
+		height: 100%;
+		object-fit: contain;
+		object-position: center bottom;
+		filter: drop-shadow(0 0.55rem 0.35rem rgba(0, 0, 0, 0.58));
+	}
+	.art-pending {
 		display: grid;
 		place-items: center;
-		width: 2.2rem;
-		height: 2.2rem;
-		margin: 0 auto;
-		border: 1px solid rgba(213, 170, 89, 0.72);
-		border-radius: 50%;
-		color: #f2cf87;
+		width: 100%;
+		height: 100%;
+		border: 1px dashed rgba(213, 170, 89, 0.72);
+		color: rgba(242, 207, 135, 0.86);
 		background: rgba(5, 8, 12, 0.92);
-		box-shadow:
-			0 0 0 0.28rem rgba(213, 170, 89, 0.12),
-			0 0.6rem 1.2rem rgba(0, 0, 0, 0.55);
-		animation: marker-pulse 2.5s ease-in-out infinite;
+		box-shadow: 0 0.6rem 1.2rem rgba(0, 0, 0, 0.55);
+		font:
+			700 0.48rem/1.2 ui-monospace,
+			monospace;
+		letter-spacing: 0.08em;
+		text-align: center;
+		text-transform: uppercase;
 	}
-	.presence-marker i {
-		position: absolute;
-		top: 2rem;
-		width: 0.35rem;
-		height: 0.35rem;
-		border-radius: 50%;
-		background: #d5aa59;
-		box-shadow: 0 0 0.7rem #d5aa59;
-	}
-	.pose-downed .presence-marker,
-	.pose-dead .presence-marker {
-		filter: grayscale(1) brightness(0.58);
+	.unavailable .art-pending {
+		color: rgba(239, 233, 221, 0.64);
+		border-color: rgba(239, 233, 221, 0.36);
 	}
 	.activity-tag {
 		position: absolute;

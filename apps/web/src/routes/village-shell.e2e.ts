@@ -76,7 +76,12 @@ test('persistent Village shell connects campaign destinations on desktop and pho
 	await expect(page.getByRole('link', { name: 'summonlab' })).toBeVisible();
 	await expect(page.getByTestId('campaign-status-header')).toHaveCount(0);
 	const desktopScene = page.getByTestId('living-settlement');
-	await expect(desktopScene.getByTestId('settlement-occupant')).toHaveCount(1);
+	const sceneResidents = desktopScene.getByTestId('village-scene-resident');
+	await expect(sceneResidents).toHaveCount(3);
+	for (const heroName of heroNames)
+		await expect(desktopScene.getByText(heroName, { exact: true })).toBeVisible();
+	await expect(desktopScene).not.toContainText('Dara Zev');
+	await expect(desktopScene).not.toContainText('Mara Vey');
 	await expect(desktopScene.getByText('Authoritative world')).toBeVisible();
 	await expect(
 		desktopScene.locator('[aria-label="Settlement occupancy and assignment capacity"]')
