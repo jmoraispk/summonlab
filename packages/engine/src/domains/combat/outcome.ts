@@ -1,23 +1,32 @@
 import {
 	CombatResolvedEventSchema,
 	CombatResultSchema,
-	CombatRulesV1Schema,
+	ReadinessCombatStateV1Schema,
 	type CombatClaim,
 	type CombatModeId,
 	type CombatResolvedEvent,
 	type CombatResult,
-	type CombatRulesV1,
 	type CombatSafetyStop,
 	type ReadinessCombatStateV1
 } from '@summonlab/contracts';
+import { COMBAT_RULES_V1 } from '@summonlab/content';
 
 import { deterministicUuid, hashCanonical } from '../../hash.js';
+import { combatAftermathRulesForBinding } from '../../core/combat-aftermath-rules.js';
 
 type CombatOutcome = CombatResult['outcome'];
 type WithoutClaimIdentity<Claim> = Claim extends unknown
 	? Omit<Claim, 'claimVersion' | 'claimId' | 'idempotencyKey'>
 	: never;
 type CombatClaimPayload = WithoutClaimIdentity<CombatClaim>;
+
+function deepFreeze<T>(value: T): T {
+	if (value !== null && typeof value === 'object' && !Object.isFrozen(value)) {
+		for (const child of Object.values(value)) deepFreeze(child);
+		Object.freeze(value);
+	}
+	return value;
+}
 
 export type CombatTermination =
 	| { readonly kind: Exclude<CombatOutcome, 'safety-stop'> }
@@ -50,6 +59,17 @@ export interface EmitCombatOutcomeInput {
 	readonly securedLoot: readonly SecuredCombatLoot[];
 	readonly objectiveStates: readonly CombatObjectiveState[];
 	readonly decisiveEventIds: readonly string[];
+}
+
+export interface FinalizeReadinessCombatInput {
+	readonly state: ReadinessCombatStateV1;
+	readonly termination: CombatTermination;
+	readonly resolvedEvents?: readonly CombatResolvedEvent[];
+	readonly engineDamageTakenByHeroId?: Readonly<Record<string, number>>;
+	readonly engineRecoveredCombatantIds?: readonly string[];
+	readonly securedLoot?: readonly SecuredCombatLoot[];
+	readonly objectiveStates?: readonly CombatObjectiveState[];
+	readonly decisiveEventIds?: readonly string[];
 }
 
 function assertUnique(values: readonly string[], label: string): void {
@@ -105,11 +125,8 @@ function practiceClaims(input: EmitCombatOutcomeInput): CombatClaim[] {
  * Converts either combat mode's terminal evidence into the one outer result boundary. Combat
  * remains combat-local here: permanent state changes happen only when owning reducers apply claims.
  */
-export function emitCombatOutcome(
-	input: EmitCombatOutcomeInput,
-	rules: CombatRulesV1
-): CombatResult {
-	const parsedRules = CombatRulesV1Schema.parse(rules);
+export function emitCombatOutcome(input: EmitCombatOutcomeInput): CombatResult {
+	const aftermathRules = combatAftermathRulesForBinding(input.modeId, input.rulesVersion);
 	assertUnique(input.partyHeroIds, 'Party hero IDs');
 	assertUnique(input.engineRecoveredCombatantIds, 'Recovered combatant IDs');
 	assertUnique(input.decisiveEventIds, 'Decisive event IDs');
@@ -184,7 +201,7 @@ export function emitCombatOutcome(
 			claim(input.attemptId, `recovery:${heroId}`, {
 				claimType: 'recovery',
 				heroId,
-				minimumSafeHealth: parsedRules.health.minimumSafeHealth
+				minimumSafeHealth: aftermathRules.minimumSafeHealth
 			})
 		);
 	}
@@ -228,6 +245,15 @@ export function emitCombatOutcome(
 		outcome: input.termination.kind,
 		endedAtTick: input.endedAtTick,
 		finalCombatants: structuredClone(input.finalCombatants),
+		claimEvidence: {
+			evidenceVersion: 'combat-outcome-claim-evidence-v1' as const,
+			partyHeroIds: [...input.partyHeroIds],
+			engineDamageTakenByHeroId: { ...input.engineDamageTakenByHeroId },
+			resolvedEvents: structuredClone(input.resolvedEvents),
+			engineRecoveredCombatantIds: [...input.engineRecoveredCombatantIds],
+			securedLoot: structuredClone(input.securedLoot),
+			objectiveStates: structuredClone(input.objectiveStates)
+		},
 		claims,
 		decisiveEventIds: [...input.decisiveEventIds],
 		safetyStop: input.termination.kind === 'safety-stop' ? input.termination.safetyStop : null
@@ -236,4 +262,69 @@ export function emitCombatOutcome(
 		...resultWithoutHash,
 		traceHash: hashCanonical({ result: resultWithoutHash, resolvedEvents: input.resolvedEvents })
 	});
+}
+
+/** Re-derives the complete canonical result and claim manifest from terminal engine evidence. */
+export function authenticateCombatResult(
+	resultInput: CombatResult,
+	authorityInput: EmitCombatOutcomeInput
+): CombatResult {
+	const result = CombatResultSchema.parse(resultInput);
+	const expected = emitCombatOutcome(authorityInput);
+	if (hashCanonical(expected) !== hashCanonical(result)) {
+		throw new Error('Combat result claim manifest diverged from trusted terminal authority');
+	}
+	return expected;
+}
+
+/** The sole readiness-kernel terminal transition for ordinary and safety outcomes. */
+export function finalizeReadinessCombatOutcome(input: FinalizeReadinessCombatInput): Readonly<{
+	state: ReadinessCombatStateV1;
+	result: CombatResult;
+}> {
+	const state = input.state;
+	if (state.status !== 'active' || state.result !== null) {
+		throw new Error('Only an active readiness combat can be finalized');
+	}
+	if (
+		input.termination.kind !== 'safety-stop' &&
+		[
+			input.resolvedEvents,
+			input.engineDamageTakenByHeroId,
+			input.engineRecoveredCombatantIds,
+			input.securedLoot,
+			input.objectiveStates,
+			input.decisiveEventIds
+		].some((evidence) => evidence === undefined)
+	) {
+		throw new Error('Ordinary readiness completion requires explicit accumulated engine evidence');
+	}
+	const partyHeroIds = Object.values(state.combatants)
+		.filter((combatant) => combatant.combatantKind === 'hero' && combatant.teamId === 'party')
+		.map((combatant) => combatant.combatantId)
+		.sort((left, right) => left.localeCompare(right));
+	const damage = Object.fromEntries(
+		partyHeroIds.map((heroId) => [heroId, input.engineDamageTakenByHeroId?.[heroId] ?? 0])
+	);
+	const result = emitCombatOutcome({
+		attemptId: state.attemptId,
+		modeId: 'agent-readiness-v1',
+		rulesVersion: COMBAT_RULES_V1.rulesVersion,
+		endedAtTick: state.tick,
+		termination: input.termination,
+		partyHeroIds,
+		engineDamageTakenByHeroId: damage,
+		finalCombatants: state.combatants,
+		resolvedEvents: input.resolvedEvents ?? [],
+		engineRecoveredCombatantIds: input.engineRecoveredCombatantIds ?? [],
+		securedLoot: input.securedLoot ?? [],
+		objectiveStates: input.objectiveStates ?? [],
+		decisiveEventIds: input.decisiveEventIds ?? []
+	});
+	const completed = ReadinessCombatStateV1Schema.parse({
+		...state,
+		status: 'complete',
+		result
+	});
+	return deepFreeze({ state: completed, result });
 }

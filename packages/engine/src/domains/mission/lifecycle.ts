@@ -38,11 +38,16 @@ import {
 	type MissionRunStateV9
 } from '@summonlab/contracts';
 import { IRON_MOON_PACKAGE, MONSTER_POLICY_CATALOG } from '@summonlab/content';
+import { z } from 'zod';
 
 import { createEntropyCursor } from '../../entropy.js';
 import { IllegalActionError } from '../../errors.js';
 import { deterministicUuid } from '../../hash.js';
-import type { CombatClaimReceipt } from '../../core/combat-claims.js';
+import {
+	CombatClaimReceiptSchema,
+	parseCombatClaimReceipt,
+	type CombatClaimReceipt
+} from '../../core/combat-claims.js';
 import {
 	missionContentForState,
 	verifiedMissionBinding,
@@ -757,10 +762,92 @@ export interface CombatMissionClaimProjection {
 	readonly receipts: Readonly<Record<string, CombatClaimReceipt>>;
 }
 
+const SafeCountSchema = z.number().int().nonnegative().max(Number.MAX_SAFE_INTEGER);
+const HashSchema = z.string().regex(/^[a-f0-9]{64}$/u);
+const CombatMissionClaimCombatantStateSchema = z
+	.object({
+		health: SafeCountSchema,
+		mana: SafeCountSchema,
+		maximumHealth: z.number().int().positive().max(Number.MAX_SAFE_INTEGER),
+		maximumMana: z.number().int().positive().max(Number.MAX_SAFE_INTEGER),
+		downed: z.boolean(),
+		lost: z.boolean(),
+		injuryIds: z.array(z.string().trim().min(1).max(120)).max(1_000)
+	})
+	.strict()
+	.superRefine((combatant, context) => {
+		if (combatant.health > combatant.maximumHealth || combatant.mana > combatant.maximumMana) {
+			context.addIssue({
+				code: 'custom',
+				message: 'Combat projection resources exceed their caps'
+			});
+		}
+		if ((combatant.health === 0) !== combatant.downed || (combatant.lost && !combatant.downed)) {
+			context.addIssue({ code: 'custom', message: 'Combat projection life state is inconsistent' });
+		}
+		if (new Set(combatant.injuryIds).size !== combatant.injuryIds.length) {
+			context.addIssue({ code: 'custom', message: 'Combat projection injuries must be unique' });
+		}
+	});
+
+export const CombatMissionClaimProjectionSchema = z
+	.object({
+		combatants: z.record(z.string().uuid(), CombatMissionClaimCombatantStateSchema),
+		harm: z.record(
+			z.string().uuid(),
+			z.object({ damageTaken: SafeCountSchema, downed: z.boolean() }).strict()
+		),
+		recoveries: z.record(
+			z.string().uuid(),
+			z.object({ minimumSafeHealth: z.number().int().positive() }).strict()
+		),
+		loot: z.record(
+			z.string().uuid(),
+			z.record(z.string().trim().min(1).max(120), z.number().int().positive())
+		),
+		objectives: z.record(z.string().trim().min(1).max(120), z.boolean()),
+		attempts: z.record(
+			z.string().uuid(),
+			z
+				.object({
+					outcome: z.enum([
+						'victory',
+						'extraction',
+						'retreat',
+						'party-downed',
+						'deadline',
+						'safety-stop'
+					]),
+					modeId: z.enum(['legacy-auto-v1', 'agent-readiness-v1']),
+					rulesVersion: z.string().trim().min(1).max(80),
+					traceHash: HashSchema
+				})
+				.strict()
+		),
+		receipts: z.record(z.string().trim().min(1).max(240), CombatClaimReceiptSchema)
+	})
+	.strict()
+	.superRefine((projection, context) => {
+		for (const [key, receiptInput] of Object.entries(projection.receipts)) {
+			const receipt = parseCombatClaimReceipt(receiptInput);
+			if (receipt.idempotencyKey !== key || receipt.owner !== 'mission-aftermath') {
+				context.addIssue({
+					code: 'custom',
+					path: ['receipts', key],
+					message: 'Mission combat claim receipt key or owner is inconsistent'
+				});
+			}
+		}
+	});
+
+export function parseCombatMissionClaimProjection(input: unknown): CombatMissionClaimProjection {
+	return CombatMissionClaimProjectionSchema.parse(input);
+}
+
 export function createCombatMissionClaimProjection(
 	combatants: Readonly<Record<string, CombatMissionClaimCombatantSeed>>
 ): CombatMissionClaimProjection {
-	return {
+	return parseCombatMissionClaimProjection({
 		combatants: Object.fromEntries(
 			Object.entries(combatants).map(([combatantId, combatant]) => [
 				combatantId,
@@ -776,7 +863,7 @@ export function createCombatMissionClaimProjection(
 		objectives: {},
 		attempts: {},
 		receipts: {}
-	};
+	});
 }
 
 export interface CombatMissionAttemptTransition {

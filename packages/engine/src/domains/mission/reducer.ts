@@ -47,10 +47,10 @@ import {
 	type MissionRunStateV8,
 	type MissionTurnChoice
 } from '@summonlab/contracts';
-import { COMBAT_RULES_V1 } from '@summonlab/content';
 import { z } from 'zod';
 
 import { EmptyMetadataSchema } from '../../core/event-metadata.js';
+import { combatAftermathRulesForBinding } from '../../core/combat-aftermath-rules.js';
 import type { EngineEventReducer, EngineGameStateModern } from '../../core/types.js';
 import {
 	combatClaimReceipt,
@@ -66,6 +66,7 @@ import {
 	completeMissionExtraction,
 	deployMissionAttempt,
 	openMissionExtraction,
+	parseCombatMissionClaimProjection,
 	prepareMissionAttempt,
 	retreatMissionAttempt,
 	reviseMissionParty,
@@ -103,7 +104,11 @@ function checkedAdd(left: number, right: number, label: string): number {
 	return value;
 }
 
-function validateOwnedClaim(result: CombatResult, claim: CombatClaim): void {
+function validateOwnedClaim(
+	result: CombatResult,
+	claim: CombatClaim,
+	minimumSafeHealth: number
+): void {
 	if (!claim.idempotencyKey.startsWith(`${result.attemptId}:`)) {
 		throw new Error('Combat claim belongs to another attempt');
 	}
@@ -124,7 +129,7 @@ function validateOwnedClaim(result: CombatResult, claim: CombatClaim): void {
 		if (
 			!combatant?.downed ||
 			!['victory', 'extraction'].includes(result.outcome) ||
-			claim.minimumSafeHealth !== COMBAT_RULES_V1.health.minimumSafeHealth ||
+			claim.minimumSafeHealth !== minimumSafeHealth ||
 			claim.minimumSafeHealth > combatant.resources.health.maximum
 		) {
 			throw new Error('Recovery claim lacks engine-owned safe-outcome evidence');
@@ -137,12 +142,16 @@ export function transitionCombatMissionClaims(
 	projection: CombatMissionClaimProjection,
 	resultInput: CombatResult
 ): CombatMissionClaimTransition {
+	projection = parseCombatMissionClaimProjection(projection);
 	const result = CombatResultSchema.parse(resultInput);
+	const aftermathRules = combatAftermathRulesForBinding(result.modeId, result.rulesVersion);
 	const outcomeClaims = result.claims.filter((claim) => claim.claimType === 'attempt-outcome');
 	if (outcomeClaims.length !== 1 || outcomeClaims[0]?.outcome !== result.outcome) {
 		throw new Error('Combat result outcome claims are inconsistent');
 	}
-	for (const claim of result.claims) validateOwnedClaim(result, claim);
+	for (const claim of result.claims) {
+		validateOwnedClaim(result, claim, aftermathRules.minimumSafeHealth);
+	}
 
 	let mission = projection;
 	const receipts: CombatClaimReceipt[] = [];
@@ -238,7 +247,7 @@ export function transitionCombatMissionClaims(
 		receipts.push(receipt);
 	}
 
-	if (['retreat', 'party-downed', 'deadline'].includes(result.outcome)) {
+	if (aftermathRules.permanentLossOutcomes.some((outcome) => outcome === result.outcome)) {
 		const recoveredIds = new Set(
 			result.claims.filter((claim) => claim.claimType === 'recovery').map((claim) => claim.heroId)
 		);
@@ -252,7 +261,7 @@ export function transitionCombatMissionClaims(
 		mission = { ...mission, combatants };
 	}
 
-	return { projection: mission, receipts };
+	return { projection: parseCombatMissionClaimProjection(mission), receipts };
 }
 
 const ResourceChangeSchema = z

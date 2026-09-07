@@ -772,6 +772,40 @@ export const CombatClaimSchema = z.discriminatedUnion('claimType', [
 	}).strict()
 ]);
 
+export const CombatOutcomeClaimEvidenceSchema = z
+	.object({
+		evidenceVersion: z.literal('combat-outcome-claim-evidence-v1'),
+		partyHeroIds: z.array(EntityIdSchema).max(100),
+		engineDamageTakenByHeroId: z.record(
+			EntityIdSchema,
+			z.number().int().nonnegative().max(Number.MAX_SAFE_INTEGER)
+		),
+		resolvedEvents: z.array(CombatResolvedEventSchema).max(10_000),
+		engineRecoveredCombatantIds: z.array(EntityIdSchema).max(100),
+		securedLoot: z
+			.array(
+				z
+					.object({
+						ownerId: EntityIdSchema,
+						lootId: z.string().trim().min(1).max(120),
+						quantity: z.number().int().positive()
+					})
+					.strict()
+			)
+			.max(1_000),
+		objectiveStates: z
+			.array(
+				z
+					.object({
+						objectiveId: z.string().trim().min(1).max(120),
+						completed: z.boolean()
+					})
+					.strict()
+			)
+			.max(1_000)
+	})
+	.strict();
+
 export const CombatResultSchema = z
 	.object({
 		resultVersion: CombatResultVersionSchema,
@@ -789,7 +823,8 @@ export const CombatResultSchema = z
 		]),
 		endedAtTick: TickSchema,
 		finalCombatants: z.record(EntityIdSchema, CombatantStateSchema),
-		claims: z.array(CombatClaimSchema).max(10_000),
+		claimEvidence: CombatOutcomeClaimEvidenceSchema,
+		claims: z.array(CombatClaimSchema).min(1).max(10_000),
 		decisiveEventIds: z.array(EntityIdSchema).max(1_000),
 		safetyStop: CombatSafetyStopSchema.nullable(),
 		traceHash: StateHashSchema
@@ -817,6 +852,84 @@ export const CombatResultSchema = z
 				code: 'custom',
 				path: ['claims'],
 				message: 'Combat claim idempotency keys must be unique'
+			});
+		}
+		if (new Set(result.claims.map((claim) => claim.claimId)).size !== result.claims.length) {
+			context.addIssue({
+				code: 'custom',
+				path: ['claims'],
+				message: 'Combat claim IDs must be unique'
+			});
+		}
+		const evidence = result.claimEvidence;
+		const uniqueLists = [
+			['partyHeroIds', evidence.partyHeroIds],
+			['engineRecoveredCombatantIds', evidence.engineRecoveredCombatantIds],
+			['resolvedEvents', evidence.resolvedEvents.map((event) => event.eventId)],
+			['securedLoot', evidence.securedLoot.map((loot) => `${loot.ownerId}:${loot.lootId}`)],
+			['objectiveStates', evidence.objectiveStates.map((objective) => objective.objectiveId)],
+			['decisiveEventIds', result.decisiveEventIds]
+		] as const;
+		for (const [path, values] of uniqueLists) {
+			if (new Set(values).size !== values.length) {
+				context.addIssue({ code: 'custom', path: [path], message: `${path} must be unique` });
+			}
+		}
+		const expectedParty = Object.values(result.finalCombatants)
+			.filter((combatant) => combatant.combatantKind === 'hero' && combatant.teamId === 'party')
+			.map((combatant) => combatant.combatantId)
+			.sort();
+		const suppliedParty = [...evidence.partyHeroIds].sort();
+		if (JSON.stringify(expectedParty) !== JSON.stringify(suppliedParty)) {
+			context.addIssue({
+				code: 'custom',
+				path: ['claimEvidence', 'partyHeroIds'],
+				message: 'Claim evidence must cover the exact terminal party heroes'
+			});
+		}
+		if (
+			JSON.stringify(Object.keys(evidence.engineDamageTakenByHeroId).sort()) !==
+			JSON.stringify(suppliedParty)
+		) {
+			context.addIssue({
+				code: 'custom',
+				path: ['claimEvidence', 'engineDamageTakenByHeroId'],
+				message: 'Harm evidence must cover every and only party hero'
+			});
+		}
+		const eventIds = new Set(evidence.resolvedEvents.map((event) => event.eventId));
+		if (
+			evidence.resolvedEvents.some((event) => event.attemptId !== result.attemptId) ||
+			result.decisiveEventIds.some((eventId) => !eventIds.has(eventId))
+		) {
+			context.addIssue({
+				code: 'custom',
+				path: ['claimEvidence', 'resolvedEvents'],
+				message: 'Terminal event evidence must belong to the attempt and cover decisive events'
+			});
+		}
+		if (
+			evidence.engineRecoveredCombatantIds.some((heroId) => {
+				const combatant = result.finalCombatants[heroId];
+				return (
+					!suppliedParty.includes(heroId) ||
+					!combatant?.downed ||
+					!['victory', 'extraction'].includes(result.outcome)
+				);
+			})
+		) {
+			context.addIssue({
+				code: 'custom',
+				path: ['claimEvidence', 'engineRecoveredCombatantIds'],
+				message: 'Recovery evidence requires a downed party hero and safe outcome'
+			});
+		}
+		const outcomeClaims = result.claims.filter((claim) => claim.claimType === 'attempt-outcome');
+		if (outcomeClaims.length !== 1 || outcomeClaims[0]?.outcome !== result.outcome) {
+			context.addIssue({
+				code: 'custom',
+				path: ['claims'],
+				message: 'Combat result requires exactly one matching attempt outcome claim'
 			});
 		}
 		validateCombatantDamageClocks(result.finalCombatants, result.endedAtTick, context);
@@ -1195,6 +1308,7 @@ export type CombatLegalActionTemplate = z.infer<typeof CombatLegalActionTemplate
 export type CombatActionResolutionProfile = z.infer<typeof CombatActionResolutionProfileSchema>;
 export type CombatResolvedEvent = z.infer<typeof CombatResolvedEventSchema>;
 export type CombatResult = z.infer<typeof CombatResultSchema>;
+export type CombatOutcomeClaimEvidence = z.infer<typeof CombatOutcomeClaimEvidenceSchema>;
 export type CombatSafetyStop = z.infer<typeof CombatSafetyStopSchema>;
 export type CombatWindowSnapshot = z.infer<typeof CombatWindowSnapshotSchema>;
 export type ReadinessCombatStateV1 = z.infer<typeof ReadinessCombatStateV1Schema>;

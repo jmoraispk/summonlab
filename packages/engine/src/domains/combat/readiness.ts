@@ -1,6 +1,5 @@
 import {
 	CombatLegalActionSchema,
-	CombatResultSchema,
 	CombatRulesV1Schema,
 	ReadinessCombatStateV1Schema,
 	type CombatLegalAction,
@@ -10,8 +9,8 @@ import {
 } from '@summonlab/contracts';
 import type { ZodError } from 'zod';
 
-import { deterministicUuid, hashCanonical } from '../../hash.js';
 import { healthRegeneration, manaRegeneration } from './capability.js';
+import { finalizeReadinessCombatOutcome } from './outcome.js';
 
 export type ReadyCohortAdvance =
 	| Readonly<{
@@ -82,31 +81,11 @@ function safetyResult(
 		disposition: 'diagnostic' as const,
 		...state.safety
 	};
-	const resultWithoutHash = {
-		resultVersion: 'combat-result-v1' as const,
-		resultId: deterministicUuid(
-			`${state.attemptId}:readiness-safety-stop:${reason}:${state.tick}:${hashCanonical(state.safety)}`
-		),
-		attemptId: state.attemptId,
-		modeId: 'agent-readiness-v1' as const,
-		rulesVersion: 'combat-rules-v1' as const,
-		outcome: 'safety-stop' as const,
-		endedAtTick: state.tick,
-		finalCombatants: state.combatants,
-		claims: [],
-		decisiveEventIds: [],
-		safetyStop
-	};
-	const result = CombatResultSchema.parse({
-		...resultWithoutHash,
-		traceHash: hashCanonical(resultWithoutHash)
+	const finalized = finalizeReadinessCombatOutcome({
+		state,
+		termination: { kind: 'safety-stop', safetyStop }
 	});
-	const completed = ReadinessCombatStateV1Schema.parse({
-		...state,
-		status: 'complete',
-		result
-	});
-	return { kind: 'combat-result', state: completed, result };
+	return { kind: 'combat-result', ...finalized };
 }
 
 function actorContextFailureResult(

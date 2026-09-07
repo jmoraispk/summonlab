@@ -1,7 +1,6 @@
 import {
 	ActorDecisionViewSchema,
 	CombatAdvanceSchema,
-	CombatResultSchema,
 	CombatRulesV1Schema,
 	CombatWindowSnapshotSchema,
 	ReadinessCombatStateV1Schema,
@@ -19,6 +18,7 @@ import { COMBAT_CONTENT_BINDING } from '@summonlab/content';
 import { deterministicUuid, hashCanonical } from '../../hash.js';
 import { resolveEntityRelativePosition } from './geometry.js';
 import { authorCombatLegalActions, canonicalCombatLegalActionTemplates } from './legal-actions.js';
+import { finalizeReadinessCombatOutcome } from './outcome.js';
 import { advanceUntilReadyCohort } from './readiness.js';
 
 type CombatTerrain = CombatWindowSnapshot['terrain'];
@@ -510,24 +510,9 @@ function invalidDecisionContextResult(state: ReadinessCombatStateV1): CombatAdva
 		disposition: 'diagnostic' as const,
 		...state.safety
 	};
-	const withoutHash = {
-		resultVersion: 'combat-result-v1' as const,
-		resultId: deterministicUuid(
-			`${state.attemptId}:missing-decision-context:${state.tick}:${hashCanonical(state.actorContexts)}`
-		),
-		attemptId: state.attemptId,
-		modeId: 'agent-readiness-v1' as const,
-		rulesVersion: 'combat-rules-v1' as const,
-		outcome: 'safety-stop' as const,
-		endedAtTick: state.tick,
-		finalCombatants: state.combatants,
-		claims: [],
-		decisiveEventIds: [],
-		safetyStop
-	};
-	const result = CombatResultSchema.parse({
-		...withoutHash,
-		traceHash: hashCanonical(withoutHash)
+	const { result } = finalizeReadinessCombatOutcome({
+		state,
+		termination: { kind: 'safety-stop', safetyStop }
 	});
 	return deepFreeze(CombatAdvanceSchema.parse({ kind: 'combat-result', result }));
 }

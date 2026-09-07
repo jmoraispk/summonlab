@@ -1,15 +1,23 @@
-import type { CombatResolvedEvent, ReadinessCombatStateV1 } from '@summonlab/contracts';
+import type {
+	CombatResolvedEvent,
+	CombatResult,
+	ReadinessCombatStateV1
+} from '@summonlab/contracts';
 import { COMBAT_RULES_V1 } from '@summonlab/content';
 import { describe, expect, it } from 'vitest';
 
-import { hashCanonical } from '../../hash.js';
+import { deterministicUuid, hashCanonical } from '../../hash.js';
 import { healthRegeneration } from '../combat/capability.js';
 import { emitCombatOutcome } from '../combat/outcome.js';
+import type { EmitCombatOutcomeInput } from '../combat/outcome.js';
 import {
 	createCombatMissionClaimProjection,
 	missionAttemptTransitionForCombatResult
 } from '../mission/lifecycle.js';
-import { transitionCombatResultClaims } from '../../orchestration/combat-claims.js';
+import {
+	transitionCombatResultClaims,
+	type CombatClaimTransitionInput
+} from '../../orchestration/combat-claims.js';
 import { createCombatProgressionClaimProjection } from './claims.js';
 
 const ID = {
@@ -90,30 +98,80 @@ function result(
 	options: { downed?: boolean; recovered?: boolean } = {}
 ) {
 	const downed = options.downed ?? false;
-	return emitCombatOutcome(
-		{
-			attemptId: ID.attempt,
-			modeId: 'agent-readiness-v1',
-			rulesVersion: COMBAT_RULES_V1.rulesVersion,
-			endedAtTick: 3,
-			termination: { kind: outcome },
-			partyHeroIds: [ID.hero],
-			engineDamageTakenByHeroId: { [ID.hero]: downed ? 100 : 30 },
-			finalCombatants: {
-				[ID.hero]: combatant(ID.hero, 'party', downed ? 0 : 70, downed),
-				[ID.monster]: combatant(ID.monster, 'enemy', 0, true)
-			},
-			resolvedEvents: [practiceEvent()],
-			engineRecoveredCombatantIds: options.recovered ? [ID.hero] : [],
-			securedLoot: [{ ownerId: ID.hero, lootId: 'iron-ore', quantity: 2 }],
-			objectiveStates: [{ objectiveId: 'recover-core', completed: outcome === 'victory' }],
-			decisiveEventIds: [ID.event]
+	return emitCombatOutcome({
+		attemptId: ID.attempt,
+		modeId: 'agent-readiness-v1',
+		rulesVersion: COMBAT_RULES_V1.rulesVersion,
+		endedAtTick: 3,
+		termination: { kind: outcome },
+		partyHeroIds: [ID.hero],
+		engineDamageTakenByHeroId: { [ID.hero]: downed ? 100 : 30 },
+		finalCombatants: {
+			[ID.hero]: combatant(ID.hero, 'party', downed ? 0 : 70, downed),
+			[ID.monster]: combatant(ID.monster, 'enemy', 0, true)
 		},
-		COMBAT_RULES_V1
-	);
+		resolvedEvents: [practiceEvent()],
+		engineRecoveredCombatantIds: options.recovered ? [ID.hero] : [],
+		securedLoot: [{ ownerId: ID.hero, lootId: 'iron-ore', quantity: 2 }],
+		objectiveStates: [{ objectiveId: 'recover-core', completed: outcome === 'victory' }],
+		decisiveEventIds: [ID.event]
+	});
+}
+
+function authorityFor(combatResult: CombatResult): EmitCombatOutcomeInput {
+	return {
+		attemptId: combatResult.attemptId,
+		modeId: combatResult.modeId,
+		rulesVersion: combatResult.rulesVersion,
+		endedAtTick: combatResult.endedAtTick,
+		termination:
+			combatResult.outcome === 'safety-stop'
+				? { kind: 'safety-stop', safetyStop: combatResult.safetyStop! }
+				: { kind: combatResult.outcome },
+		partyHeroIds: combatResult.claimEvidence.partyHeroIds,
+		engineDamageTakenByHeroId: combatResult.claimEvidence.engineDamageTakenByHeroId,
+		finalCombatants: combatResult.finalCombatants,
+		resolvedEvents: combatResult.claimEvidence.resolvedEvents,
+		engineRecoveredCombatantIds: combatResult.claimEvidence.engineRecoveredCombatantIds,
+		securedLoot: combatResult.claimEvidence.securedLoot,
+		objectiveStates: combatResult.claimEvidence.objectiveStates,
+		decisiveEventIds: combatResult.decisiveEventIds
+	};
+}
+
+function applyResultClaims(
+	input: CombatClaimTransitionInput,
+	combatResult: CombatResult,
+	authoritativeResult: CombatResult = combatResult
+) {
+	return transitionCombatResultClaims(input, combatResult, authorityFor(authoritativeResult));
 }
 
 describe('combat claim process managers', () => {
+	it('rejects a self-consistent forged result that diverges from trusted terminal evidence', () => {
+		const trusted = result('retreat');
+		const authority = authorityFor(trusted);
+		const forged = emitCombatOutcome({
+			...authority,
+			securedLoot: [{ ownerId: ID.hero, lootId: 'iron-ore', quantity: 99 }]
+		});
+		const input = {
+			mission: createCombatMissionClaimProjection({
+				[ID.hero]: {
+					health: 100,
+					mana: 20,
+					maximumHealth: 100,
+					maximumMana: 20,
+					downed: false,
+					lost: false,
+					injuryIds: []
+				}
+			}),
+			progression: createCombatProgressionClaimProjection()
+		};
+
+		expect(() => transitionCombatResultClaims(input, forged, authority)).toThrow(/authority/iu);
+	});
 	it('projects the exact canonical pre-combat resources without fabricating full recovery', () => {
 		const projection = createCombatMissionClaimProjection({
 			[ID.hero]: {
@@ -142,7 +200,7 @@ describe('combat claim process managers', () => {
 			}
 		});
 		const progression = createCombatProgressionClaimProjection();
-		const applied = transitionCombatResultClaims(
+		const applied = applyResultClaims(
 			{ mission, progression },
 			result('victory', { downed: true, recovered: true })
 		);
@@ -190,8 +248,8 @@ describe('combat claim process managers', () => {
 			progression: createCombatProgressionClaimProjection()
 		};
 		const combatResult = result('retreat');
-		const first = transitionCombatResultClaims(initial, combatResult);
-		const second = transitionCombatResultClaims(first, combatResult);
+		const first = applyResultClaims(initial, combatResult);
+		const second = applyResultClaims(first, combatResult);
 
 		expect(second).toStrictEqual(first);
 		expect(hashCanonical(second)).toBe(hashCanonical(first));
@@ -199,6 +257,113 @@ describe('combat claim process managers', () => {
 		expect(second.progression.practiceEvidence[ID.hero]?.['combat-skill-basic-sword-strike']).toBe(
 			1
 		);
+	});
+
+	it('rejects a poisoned deterministic receipt before considering any claim applied', () => {
+		const combatResult = result('retreat');
+		const first = applyResultClaims(
+			{
+				mission: createCombatMissionClaimProjection({
+					[ID.hero]: {
+						health: 100,
+						mana: 20,
+						maximumHealth: 100,
+						maximumMana: 20,
+						downed: false,
+						lost: false,
+						injuryIds: []
+					}
+				}),
+				progression: createCombatProgressionClaimProjection()
+			},
+			combatResult
+		);
+		const [key, receipt] = Object.entries(first.mission.receipts)[0]!;
+		const poisoned = {
+			mission: {
+				...first.mission,
+				receipts: {
+					...first.mission.receipts,
+					[key]: { ...receipt, receiptId: '62000000-0000-4000-8000-000000000099' }
+				}
+			},
+			progression: first.progression
+		};
+		const before = hashCanonical(poisoned);
+
+		expect(() => applyResultClaims(poisoned, combatResult)).toThrow(/receipt/iu);
+		expect(hashCanonical(poisoned)).toBe(before);
+	});
+
+	it('strictly validates the entire projection including an unrelated poisoned receipt', () => {
+		const combatResult = result('retreat');
+		const applied = applyResultClaims(
+			{
+				mission: createCombatMissionClaimProjection({
+					[ID.hero]: {
+						health: 100,
+						mana: 20,
+						maximumHealth: 100,
+						maximumMana: 20,
+						downed: false,
+						lost: false,
+						injuryIds: []
+					}
+				}),
+				progression: createCombatProgressionClaimProjection()
+			},
+			combatResult
+		);
+		const receipt = Object.values(applied.mission.receipts)[0]!;
+		const poisoned = {
+			mission: {
+				...applied.mission,
+				receipts: {
+					...applied.mission.receipts,
+					'unrelated-poison': {
+						...receipt,
+						idempotencyKey: 'unrelated-poison',
+						claimHash: 'f'.repeat(64),
+						receiptId: deterministicUuid(
+							`unrelated-poison:receipt:${receipt.owner}:${receipt.inputHash}`
+						)
+					}
+				}
+			},
+			progression: applied.progression
+		} as unknown as CombatClaimTransitionInput;
+
+		expect(() => applyResultClaims(poisoned, combatResult)).toThrow(/projection|receipt/iu);
+	});
+
+	it('rejects a partially persisted claim set instead of completing half an atomic transition', () => {
+		const combatResult = result('retreat');
+		const applied = applyResultClaims(
+			{
+				mission: createCombatMissionClaimProjection({
+					[ID.hero]: {
+						health: 100,
+						mana: 20,
+						maximumHealth: 100,
+						maximumMana: 20,
+						downed: false,
+						lost: false,
+						injuryIds: []
+					}
+				}),
+				progression: createCombatProgressionClaimProjection()
+			},
+			combatResult
+		);
+		const missionReceipts = Object.fromEntries(Object.entries(applied.mission.receipts).slice(1));
+		const partial = {
+			mission: { ...applied.mission, receipts: missionReceipts },
+			progression: applied.progression
+		};
+		const before = hashCanonical(partial);
+
+		expect(() => applyResultClaims(partial, combatResult)).toThrow(/partial|atomic/iu);
+		expect(hashCanonical(partial)).toBe(before);
 	});
 
 	it('rejects a forged recovery amount instead of turning text or claims into healing authority', () => {
@@ -223,8 +388,101 @@ describe('combat claim process managers', () => {
 				claim.claimType === 'recovery' ? { ...claim, minimumSafeHealth: 50 } : claim
 			)
 		};
-		expect(() => transitionCombatResultClaims(input, forged)).toThrow(/recovery/iu);
+		expect(() => applyResultClaims(input, forged, valid)).toThrow(/manifest|recovery/iu);
 		expect(input.mission.combatants[ID.hero]?.health).toBe(100);
+	});
+
+	it.each([
+		['loot quantity', 'loot', { quantity: 99 }],
+		['practice amount', 'skill-practice', { practiceEvidence: 99 }],
+		['objective state', 'objective', { completed: true }],
+		['harm amount', 'harm', { damageTaken: 99 }],
+		['claim identity', 'loot', { claimId: '62000000-0000-4000-8000-000000000099' }],
+		['idempotency identity', 'loot', { idempotencyKey: `${ID.attempt}:forged-loot` }]
+	] as const)('rejects a forged %s before either owner changes', (_label, claimType, patch) => {
+		const initial = {
+			mission: createCombatMissionClaimProjection({
+				[ID.hero]: {
+					health: 100,
+					mana: 20,
+					maximumHealth: 100,
+					maximumMana: 20,
+					downed: false,
+					lost: false,
+					injuryIds: []
+				}
+			}),
+			progression: createCombatProgressionClaimProjection()
+		};
+		const before = hashCanonical(initial);
+		const valid = result('retreat');
+		const forged = {
+			...valid,
+			claims: valid.claims.map((claim) =>
+				claim.claimType === claimType ? { ...claim, ...patch } : claim
+			)
+		} as CombatResult;
+
+		expect(() => applyResultClaims(initial, forged, valid)).toThrow(/manifest|claim/iu);
+		expect(hashCanonical(initial)).toBe(before);
+	});
+
+	it('rejects missing and duplicated claim identities instead of partially applying a manifest', () => {
+		const initial = {
+			mission: createCombatMissionClaimProjection({
+				[ID.hero]: {
+					health: 100,
+					mana: 20,
+					maximumHealth: 100,
+					maximumMana: 20,
+					downed: false,
+					lost: false,
+					injuryIds: []
+				}
+			}),
+			progression: createCombatProgressionClaimProjection()
+		};
+		const valid = result('retreat');
+		const missing = {
+			...valid,
+			claims: valid.claims.filter((claim) => claim.claimType !== 'skill-practice')
+		};
+		const duplicatedId = {
+			...valid,
+			claims: valid.claims.map((claim, index) =>
+				index === 1 ? { ...claim, claimId: valid.claims[0]!.claimId } : claim
+			)
+		};
+
+		expect(() => applyResultClaims(initial, missing, valid)).toThrow(/manifest|claim/iu);
+		expect(() => applyResultClaims(initial, duplicatedId, valid)).toThrow(/manifest|claim/iu);
+	});
+
+	it('rejects recovery reordered before final resources and leaves both owner inputs untouched', () => {
+		const initial = {
+			mission: createCombatMissionClaimProjection({
+				[ID.hero]: {
+					health: 100,
+					mana: 20,
+					maximumHealth: 100,
+					maximumMana: 20,
+					downed: false,
+					lost: false,
+					injuryIds: []
+				}
+			}),
+			progression: createCombatProgressionClaimProjection()
+		};
+		const before = hashCanonical(initial);
+		const valid = result('victory', { downed: true, recovered: true });
+		const recovery = valid.claims.find((claim) => claim.claimType === 'recovery')!;
+		const reordered = {
+			...valid,
+			claims: [recovery, ...valid.claims.filter((claim) => claim !== recovery)]
+		};
+
+		expect(() => applyResultClaims(initial, reordered, valid)).toThrow(/manifest|order/iu);
+		expect(hashCanonical(initial)).toBe(before);
 	});
 
 	it('preserves retreat practice and loses an unrecovered downed hero only in aftermath', () => {
@@ -242,7 +500,7 @@ describe('combat claim process managers', () => {
 			}),
 			progression: createCombatProgressionClaimProjection()
 		};
-		const applied = transitionCombatResultClaims(
+		const applied = applyResultClaims(
 			initial,
 			result('retreat', { downed: true, recovered: false })
 		);
@@ -272,34 +530,31 @@ describe('combat claim process managers', () => {
 			cause: 'deadline',
 			authoredFailure: true
 		});
-		const safetyResult = emitCombatOutcome(
-			{
-				attemptId: ID.attempt,
-				modeId: 'agent-readiness-v1',
-				rulesVersion: COMBAT_RULES_V1.rulesVersion,
-				endedAtTick: 3,
-				termination: {
-					kind: 'safety-stop',
-					safetyStop: {
-						safetyStopVersion: 'combat-safety-stop-v1',
-						reason: 'no-progress-cycles',
-						disposition: 'forced-retreat',
-						ticksAdvanced: 3,
-						eventsEmitted: 1,
-						noProgressCycles: 3
-					}
-				},
-				partyHeroIds: [ID.hero],
-				engineDamageTakenByHeroId: { [ID.hero]: 30 },
-				finalCombatants: { [ID.hero]: combatant(ID.hero, 'party', 70) },
-				resolvedEvents: [],
-				engineRecoveredCombatantIds: [],
-				securedLoot: [],
-				objectiveStates: [],
-				decisiveEventIds: []
+		const safetyResult = emitCombatOutcome({
+			attemptId: ID.attempt,
+			modeId: 'agent-readiness-v1',
+			rulesVersion: COMBAT_RULES_V1.rulesVersion,
+			endedAtTick: 3,
+			termination: {
+				kind: 'safety-stop',
+				safetyStop: {
+					safetyStopVersion: 'combat-safety-stop-v1',
+					reason: 'no-progress-cycles',
+					disposition: 'forced-retreat',
+					ticksAdvanced: 3,
+					eventsEmitted: 1,
+					noProgressCycles: 3
+				}
 			},
-			COMBAT_RULES_V1
-		);
+			partyHeroIds: [ID.hero],
+			engineDamageTakenByHeroId: { [ID.hero]: 30 },
+			finalCombatants: { [ID.hero]: combatant(ID.hero, 'party', 70) },
+			resolvedEvents: [],
+			engineRecoveredCombatantIds: [],
+			securedLoot: [],
+			objectiveStates: [],
+			decisiveEventIds: []
+		});
 		expect(missionAttemptTransitionForCombatResult(safetyResult)).toStrictEqual({
 			status: 'retreat',
 			outcome: 'retreat',

@@ -5,11 +5,16 @@ import type {
 	ReadinessCombatStateV1
 } from '@summonlab/contracts';
 import { CombatResultSchema } from '@summonlab/contracts';
-import { COMBAT_RULES_V1 } from '@summonlab/content';
+import { COMBAT_CONTENT_BINDING, COMBAT_RULES_V1 } from '@summonlab/content';
 import { describe, expect, it } from 'vitest';
 
 import { hashCanonical } from '../../hash.js';
-import { emitCombatOutcome, type CombatTermination } from './outcome.js';
+import { adaptV26LegacyCombatOutcome } from '../../orchestration/combat-claims.js';
+import {
+	emitCombatOutcome,
+	finalizeReadinessCombatOutcome,
+	type CombatTermination
+} from './outcome.js';
 
 const ID = {
 	attempt: '61000000-0000-4000-8000-000000000001',
@@ -101,32 +106,107 @@ function termination(outcome: CombatTermination['kind']): CombatTermination {
 }
 
 function emit(modeId: CombatModeId, outcome: CombatTermination['kind'], downed = false) {
-	return emitCombatOutcome(
-		{
-			attemptId: ID.attempt,
-			modeId,
-			rulesVersion:
-				modeId === 'legacy-auto-v1' ? 'legacy-auto-rules-v1' : COMBAT_RULES_V1.rulesVersion,
-			endedAtTick: 8,
-			termination: termination(outcome),
-			partyHeroIds: [ID.hero],
-			engineDamageTakenByHeroId: { [ID.hero]: downed ? 100 : 40 },
-			finalCombatants: {
-				[ID.hero]: combatant(ID.hero, 'party', downed ? 0 : 75, downed),
-				[ID.monster]: combatant(ID.monster, 'enemy', 0, true)
-			},
-			resolvedEvents: [practiceEvent()],
-			engineRecoveredCombatantIds:
-				downed && (outcome === 'victory' || outcome === 'extraction') ? [ID.hero] : [],
-			securedLoot: [{ ownerId: ID.hero, lootId: 'iron-ore', quantity: 2 }],
-			objectiveStates: [{ objectiveId: 'floor-01-core', completed: outcome === 'victory' }],
-			decisiveEventIds: [ID.event]
+	return emitCombatOutcome({
+		attemptId: ID.attempt,
+		modeId,
+		rulesVersion:
+			modeId === 'legacy-auto-v1' ? 'legacy-auto-rules-v1' : COMBAT_RULES_V1.rulesVersion,
+		endedAtTick: 8,
+		termination: termination(outcome),
+		partyHeroIds: [ID.hero],
+		engineDamageTakenByHeroId: { [ID.hero]: downed ? 100 : 40 },
+		finalCombatants: {
+			[ID.hero]: combatant(ID.hero, 'party', downed ? 0 : 75, downed),
+			[ID.monster]: combatant(ID.monster, 'enemy', 0, true)
 		},
-		COMBAT_RULES_V1
-	);
+		resolvedEvents: [practiceEvent()],
+		engineRecoveredCombatantIds:
+			downed && (outcome === 'victory' || outcome === 'extraction') ? [ID.hero] : [],
+		securedLoot: [{ ownerId: ID.hero, lootId: 'iron-ore', quantity: 2 }],
+		objectiveStates: [{ objectiveId: 'floor-01-core', completed: outcome === 'victory' }],
+		decisiveEventIds: [ID.event]
+	});
+}
+
+function activeState(downed = false): ReadinessCombatStateV1 {
+	return {
+		stateVersion: 'readiness-combat-state-v1',
+		seed: 'd'.repeat(64),
+		attemptId: ID.attempt,
+		tick: 8,
+		combatants: {
+			[ID.hero]: combatant(ID.hero, 'party', downed ? 0 : 75, downed),
+			[ID.monster]: combatant(ID.monster, 'enemy', 0, true)
+		},
+		actorContexts: {},
+		terrain: { width: 8, height: 8, blockedTiles: [], features: [] },
+		visibleTelegraphs: [],
+		scheduledEffects: [],
+		safety: { ticksAdvanced: 8, eventsEmitted: 1, noProgressCycles: 0 },
+		status: 'active',
+		result: null
+	};
 }
 
 describe('common combat outcomes', () => {
+	it('adapts a bound legacy terminal only at the V26 orchestration boundary', () => {
+		const result = adaptV26LegacyCombatOutcome({
+			combatModeBinding: {
+				modeId: 'legacy-auto-v1',
+				rulesVersion: 'legacy-auto-rules-v1',
+				contentHash: COMBAT_CONTENT_BINDING.contentHash,
+				boundAt: '2000-01-01T00:00:00.000Z'
+			},
+			attemptId: ID.attempt,
+			endedAtTick: 8,
+			termination: { kind: 'retreat' },
+			partyHeroIds: [ID.hero],
+			engineDamageTakenByHeroId: { [ID.hero]: 40 },
+			finalCombatants: {
+				[ID.hero]: combatant(ID.hero, 'party', 75),
+				[ID.monster]: combatant(ID.monster, 'enemy', 0, true)
+			},
+			resolvedEvents: [practiceEvent()],
+			engineRecoveredCombatantIds: [],
+			securedLoot: [],
+			objectiveStates: [],
+			decisiveEventIds: [ID.event]
+		});
+
+		expect(result).toMatchObject({
+			modeId: 'legacy-auto-v1',
+			rulesVersion: 'legacy-auto-rules-v1',
+			outcome: 'retreat'
+		});
+		expect(result.claims).not.toHaveLength(0);
+	});
+	it('requires explicit accumulated engine evidence for an ordinary readiness terminal', () => {
+		expect(() =>
+			finalizeReadinessCombatOutcome({ state: activeState(), termination: { kind: 'victory' } })
+		).toThrow(/evidence/iu);
+	});
+
+	it.each(['victory', 'extraction', 'retreat', 'party-downed', 'deadline'] as const)(
+		'finalizes the actual readiness state path for %s through the common manifest',
+		(outcome) => {
+			const downed = outcome === 'party-downed';
+			const finalized = finalizeReadinessCombatOutcome({
+				state: activeState(downed),
+				termination: { kind: outcome },
+				resolvedEvents: [practiceEvent()],
+				engineDamageTakenByHeroId: { [ID.hero]: downed ? 100 : 40 },
+				engineRecoveredCombatantIds: [],
+				securedLoot: [],
+				objectiveStates: [],
+				decisiveEventIds: [ID.event]
+			});
+
+			expect(finalized.state.status).toBe('complete');
+			expect(finalized.state.result).toStrictEqual(finalized.result);
+			expect(finalized.result.outcome).toBe(outcome);
+			expect(finalized.result.claims.map((claim) => claim.claimType)).toContain('attempt-outcome');
+		}
+	);
 	it.each(['victory', 'extraction', 'retreat', 'party-downed', 'deadline', 'safety-stop'] as const)(
 		'emits a strict common result for %s in both combat modes',
 		(outcome) => {
@@ -191,24 +271,21 @@ describe('common combat outcomes', () => {
 				minimumSafeHealth: COMBAT_RULES_V1.health.minimumSafeHealth
 			});
 
-			const withoutEngineEvidence = emitCombatOutcome(
-				{
-					attemptId: ID.attempt,
-					modeId: 'agent-readiness-v1',
-					rulesVersion: COMBAT_RULES_V1.rulesVersion,
-					endedAtTick: 8,
-					termination: { kind: outcome },
-					partyHeroIds: [ID.hero],
-					engineDamageTakenByHeroId: { [ID.hero]: 100 },
-					finalCombatants: { [ID.hero]: combatant(ID.hero, 'party', 0, true) },
-					resolvedEvents: [practiceEvent('I died, then revived at full health.')],
-					engineRecoveredCombatantIds: [],
-					securedLoot: [],
-					objectiveStates: [],
-					decisiveEventIds: [ID.event]
-				},
-				COMBAT_RULES_V1
-			);
+			const withoutEngineEvidence = emitCombatOutcome({
+				attemptId: ID.attempt,
+				modeId: 'agent-readiness-v1',
+				rulesVersion: COMBAT_RULES_V1.rulesVersion,
+				endedAtTick: 8,
+				termination: { kind: outcome },
+				partyHeroIds: [ID.hero],
+				engineDamageTakenByHeroId: { [ID.hero]: 100 },
+				finalCombatants: { [ID.hero]: combatant(ID.hero, 'party', 0, true) },
+				resolvedEvents: [practiceEvent('I died, then revived at full health.')],
+				engineRecoveredCombatantIds: [],
+				securedLoot: [],
+				objectiveStates: [],
+				decisiveEventIds: [ID.event]
+			});
 			expect(withoutEngineEvidence.claims.some((claim) => claim.claimType === 'recovery')).toBe(
 				false
 			);

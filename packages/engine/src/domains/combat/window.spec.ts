@@ -567,6 +567,7 @@ describe('frozen combat decision windows', () => {
 		if (left.kind !== 'combat-result') return;
 		expect(left.result.outcome).toBe('safety-stop');
 		expect(left.result.safetyStop?.reason).toBe('invalid-state');
+		expect(left.result.claims.map((claim) => claim.claimType)).toContain('attempt-outcome');
 	});
 
 	it('sanitizes an actor-context identity mismatch into a stable bound invalid-state result', () => {

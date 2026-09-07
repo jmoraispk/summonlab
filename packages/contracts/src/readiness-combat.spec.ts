@@ -295,6 +295,24 @@ const state = {
 	result: null
 } as const;
 
+const attemptOutcomeClaim = {
+	claimVersion: 'combat-claim-v1',
+	claimId: ID.action,
+	idempotencyKey: `${ID.attempt}:attempt-outcome`,
+	claimType: 'attempt-outcome',
+	outcome: 'victory'
+} as const;
+
+const emptyClaimEvidence = {
+	evidenceVersion: 'combat-outcome-claim-evidence-v1',
+	partyHeroIds: [ID.hero],
+	engineDamageTakenByHeroId: { [ID.hero]: 0 },
+	resolvedEvents: [],
+	engineRecoveredCombatantIds: [],
+	securedLoot: [],
+	objectiveStates: []
+} as const;
+
 const terminalResult = {
 	resultVersion: 'combat-result-v1',
 	resultId: ID.event,
@@ -304,8 +322,9 @@ const terminalResult = {
 	outcome: 'victory',
 	endedAtTick: state.tick,
 	finalCombatants: state.combatants,
-	claims: [],
-	decisiveEventIds: [ID.event],
+	claimEvidence: emptyClaimEvidence,
+	claims: [attemptOutcomeClaim],
+	decisiveEventIds: [],
 	safetyStop: null,
 	traceHash: HASH.trace
 } as const;
@@ -790,13 +809,15 @@ describe('readiness combat contracts', () => {
 					active: false
 				}
 			},
-			claims: [],
-			decisiveEventIds: [ID.event],
+			claimEvidence: emptyClaimEvidence,
+			claims: [attemptOutcomeClaim],
+			decisiveEventIds: [],
 			safetyStop: null,
 			traceHash: HASH.trace
 		} as const;
 		expect(CombatResultSchema.parse(result)).toStrictEqual(result);
 		expect(CombatAdvanceSchema.parse({ kind: 'combat-result', result })).toBeDefined();
+		expect(CombatResultSchema.safeParse({ ...result, claims: [] }).success).toBe(false);
 		const legacy = {
 			...result,
 			modeId: 'legacy-auto-v1' as const,

@@ -30,7 +30,6 @@ import {
 	type EngineGameStateV1,
 	type FirstEmberFacility
 } from '@summonlab/contracts';
-import { COMBAT_RULES_V1 } from '@summonlab/content';
 import { describe, expect, expectTypeOf, it } from 'vitest';
 
 import {
@@ -4039,30 +4038,29 @@ describe('deterministic engine', () => {
 
 	it('exposes one public outer-result and claim-reducer seam for either combat mode', () => {
 		const attemptId = '63000000-0000-4000-8000-000000000001';
-		const result = emitCombatOutcome(
-			{
-				attemptId,
-				modeId: 'legacy-auto-v1',
-				rulesVersion: 'legacy-auto-rules-v1',
-				endedAtTick: 4,
-				termination: { kind: 'retreat' },
-				partyHeroIds: [],
-				engineDamageTakenByHeroId: {},
-				finalCombatants: {},
-				resolvedEvents: [],
-				engineRecoveredCombatantIds: [],
-				securedLoot: [],
-				objectiveStates: [],
-				decisiveEventIds: []
-			},
-			COMBAT_RULES_V1
-		);
+		const authority = {
+			attemptId,
+			modeId: 'legacy-auto-v1' as const,
+			rulesVersion: 'legacy-auto-rules-v1',
+			endedAtTick: 4,
+			termination: { kind: 'retreat' as const },
+			partyHeroIds: [],
+			engineDamageTakenByHeroId: {},
+			finalCombatants: {},
+			resolvedEvents: [],
+			engineRecoveredCombatantIds: [],
+			securedLoot: [],
+			objectiveStates: [],
+			decisiveEventIds: []
+		};
+		const result = emitCombatOutcome(authority);
 		const applied = transitionCombatResultClaims(
 			{
 				mission: createCombatMissionClaimProjection({}),
 				progression: createCombatProgressionClaimProjection()
 			},
-			result
+			result,
+			authority
 		);
 
 		expect(applied.mission.attempts[attemptId]).toMatchObject({

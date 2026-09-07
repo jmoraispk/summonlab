@@ -1,6 +1,14 @@
 export * from './catch-up.js';
 export * from './domains/combat/capability.js';
-export * from './domains/combat/outcome.js';
+export {
+	emitCombatOutcome,
+	finalizeReadinessCombatOutcome,
+	type CombatObjectiveState,
+	type CombatTermination,
+	type EmitCombatOutcomeInput,
+	type FinalizeReadinessCombatInput,
+	type SecuredCombatLoot
+} from './domains/combat/outcome.js';
 export {
 	applyCombatChoiceBatch,
 	combatChoiceBatchHash,
@@ -33,9 +41,11 @@ export {
 	type CombatProgressionClaimProjection
 } from './domains/progression/claims.js';
 export {
+	adaptV26LegacyCombatOutcome,
 	transitionCombatResultClaims,
 	type CombatClaimTransition,
-	type CombatClaimTransitionInput
+	type CombatClaimTransitionInput,
+	type V26LegacyCombatOutcomeInput
 } from './orchestration/combat-claims.js';
 export * from './context.js';
 export * from './engine.js';

@@ -471,6 +471,8 @@ describe('agent-readiness one-tick cohorts', () => {
 			outcome: 'safety-stop',
 			safetyStop: { reason, disposition: 'diagnostic' }
 		});
+		expect(result.result.claims.map((claim) => claim.claimType)).toContain('attempt-outcome');
+		expect(result.result.claims).not.toHaveLength(0);
 		expect(result.result).not.toHaveProperty('timeout');
 		expect(result.state.status).toBe('complete');
 		expect(result.state.result).toStrictEqual(result.result);
@@ -661,7 +663,24 @@ describe('agent-readiness one-tick cohorts', () => {
 			outcome: 'victory' as const,
 			endedAtTick: 12,
 			finalCombatants,
-			claims: [],
+			claimEvidence: {
+				evidenceVersion: 'combat-outcome-claim-evidence-v1' as const,
+				partyHeroIds: [ID.hero],
+				engineDamageTakenByHeroId: { [ID.hero]: 0 },
+				resolvedEvents: [],
+				engineRecoveredCombatantIds: [],
+				securedLoot: [],
+				objectiveStates: []
+			},
+			claims: [
+				{
+					claimVersion: 'combat-claim-v1' as const,
+					claimId: ID.action,
+					idempotencyKey: `${ID.attempt}:attempt-outcome`,
+					claimType: 'attempt-outcome' as const,
+					outcome: 'victory' as const
+				}
+			],
 			decisiveEventIds: [],
 			safetyStop: null,
 			traceHash: 'b'.repeat(64)
