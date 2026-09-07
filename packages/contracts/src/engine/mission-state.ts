@@ -2,6 +2,7 @@ import { z } from 'zod';
 
 import { InjurySchema } from './base-state.js';
 import { MissionArenaKnowledgeSchema, MissionSlugSchema } from '../mission.js';
+import { ReadinessCombatStateV1Schema } from '../readiness-combat.js';
 import {
 	ContentVersionSchema,
 	EntityIdSchema,
@@ -1395,6 +1396,117 @@ export const MissionRunStateV9Schema = z
 		}
 	});
 
+export const MissionCombatStateV1Schema = z.discriminatedUnion('modeId', [
+	z
+		.object({
+			modeId: z.literal('legacy-auto-v1'),
+			turnState: MissionTurnStateV2Schema
+		})
+		.strict(),
+	z
+		.object({
+			modeId: z.literal('agent-readiness-v1'),
+			readinessState: ReadinessCombatStateV1Schema
+		})
+		.strict()
+]);
+
+export const MissionAttemptV10Schema = z
+	.object({
+		...MissionAttemptSchema.shape,
+		combatModeBinding: CombatModeBindingSchema,
+		combatState: MissionCombatStateV1Schema
+	})
+	.strict()
+	.superRefine((attempt, context) => {
+		const baseAttempt = Object.fromEntries(
+			Object.entries(attempt).filter(
+				([key]) => key !== 'combatModeBinding' && key !== 'combatState'
+			)
+		);
+		if (!MissionAttemptSchema.safeParse(baseAttempt).success) {
+			context.addIssue({ code: 'custom', message: 'Mission combat lifecycle is inconsistent' });
+		}
+		if (attempt.combatModeBinding.boundAt !== attempt.preparedAt) {
+			context.addIssue({
+				code: 'custom',
+				path: ['combatModeBinding', 'boundAt'],
+				message: 'Combat mode must bind exactly when mission preparation begins'
+			});
+		}
+		if (attempt.combatModeBinding.modeId !== attempt.combatState.modeId) {
+			context.addIssue({
+				code: 'custom',
+				path: ['combatState', 'modeId'],
+				message: 'Mission combat state must match its immutable mode binding'
+			});
+		}
+		if (attempt.combatState.modeId === 'agent-readiness-v1') {
+			if (attempt.combatState.readinessState.attemptId !== attempt.attemptId) {
+				context.addIssue({
+					code: 'custom',
+					path: ['combatState', 'readinessState', 'attemptId'],
+					message: 'Readiness combat state must belong to its mission attempt'
+				});
+			}
+			return;
+		}
+		const turnState = attempt.combatState.turnState;
+		if (
+			attempt.completedObjectiveIds.includes(turnState.objective.objectiveId) !==
+			(turnState.objective.status === 'delivered')
+		) {
+			context.addIssue({ code: 'custom', message: 'Mission combat objective delivery diverged' });
+		}
+		const members = [...attempt.party.memberIds].sort().join('|');
+		if (Object.keys(turnState.partyGuard).sort().join('|') !== members) {
+			context.addIssue({ code: 'custom', message: 'Mission guard must match the complete party' });
+		}
+	});
+
+export const MissionRunStateV10Schema = z
+	.object({
+		binding: MissionContentBindingSchema,
+		availableMissionIds: z.array(MissionSlugSchema).min(1).max(100),
+		evidence: z.record(EntityIdSchema, MissionEvidenceRecordSchema),
+		aftermath: MissionAftermathStateV4Schema,
+		attemptCount: z.number().int().nonnegative(),
+		attempt: MissionAttemptV10Schema.nullable()
+	})
+	.strict()
+	.superRefine((mission, context) => {
+		if (
+			(mission.attempt === null) !== (mission.attemptCount === 0) ||
+			(mission.attempt !== null && mission.attempt.ordinal !== mission.attemptCount)
+		) {
+			context.addIssue({ code: 'custom', message: 'Mission attempt count is inconsistent' });
+		}
+		if (
+			new Set(mission.availableMissionIds).size !== mission.availableMissionIds.length ||
+			!mission.availableMissionIds.includes(mission.binding.missionId)
+		) {
+			context.addIssue({ code: 'custom', message: 'Mission availability binding is inconsistent' });
+		}
+		for (const [evidenceId, evidence] of Object.entries(mission.evidence)) {
+			if (evidence.evidenceId !== evidenceId) {
+				context.addIssue({ code: 'custom', message: 'Mission evidence key must match its id' });
+			}
+		}
+		if ((mission.attempt?.attemptId ?? null) !== mission.aftermath.activeAttemptId) {
+			context.addIssue({ code: 'custom', message: 'Mission aftermath must identify active attempt' });
+		}
+		for (const consequence of mission.aftermath.consequences) {
+			if (!mission.attempt || consequence.sourceAttemptId !== mission.attempt.attemptId) {
+				context.addIssue({ code: 'custom', message: 'Mission consequence exceeds active attempt' });
+			} else if (
+				mission.attempt.combatState.modeId === 'legacy-auto-v1' &&
+				consequence.roundNumber > mission.attempt.combatState.turnState.roundNumber
+			) {
+				context.addIssue({ code: 'custom', message: 'Mission consequence exceeds active legacy turn' });
+			}
+		}
+	});
+
 export type MissionAttempt = z.infer<typeof MissionAttemptSchema>;
 export type MissionAttemptStatus = z.infer<typeof MissionAttemptStatusSchema>;
 export type MissionRound = z.infer<typeof MissionRoundSchema>;
@@ -1415,6 +1527,9 @@ export type CombatModeId = z.infer<typeof CombatModeIdSchema>;
 export type CombatModeBinding = z.infer<typeof CombatModeBindingSchema>;
 export type MissionAttemptV9 = z.infer<typeof MissionAttemptV9Schema>;
 export type MissionRunStateV9 = z.infer<typeof MissionRunStateV9Schema>;
+export type MissionCombatStateV1 = z.infer<typeof MissionCombatStateV1Schema>;
+export type MissionAttemptV10 = z.infer<typeof MissionAttemptV10Schema>;
+export type MissionRunStateV10 = z.infer<typeof MissionRunStateV10Schema>;
 export type MissionHarmRecord = z.infer<typeof MissionHarmRecordSchema>;
 export type MissionHarmRecordV2 = z.infer<typeof MissionHarmRecordV2Schema>;
 export type MissionHarmRecordV3 = z.infer<typeof MissionHarmRecordV3Schema>;

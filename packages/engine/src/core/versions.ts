@@ -13,6 +13,7 @@ export const SYNTHESIS_ENGINE_CONTENT_VERSION = 'engine-v22';
 export const FIRST_BAND_ARCHIVE_ENGINE_CONTENT_VERSION = 'engine-v23';
 export const EQUIPMENT_ENGINE_CONTENT_VERSION = 'engine-v24';
 export const CAPABILITY_ENGINE_CONTENT_VERSION = 'engine-v25';
+export const READINESS_COMBAT_ENGINE_CONTENT_VERSION = 'engine-v26';
 export const MISSION_COMBAT_ENGINE_CONTENT_VERSION = 'engine-v13';
 export const MISSION_TURN_ENGINE_CONTENT_VERSION = 'engine-v12';
 export const MISSION_ENGINE_CONTENT_VERSION = 'engine-v11';
@@ -89,7 +90,7 @@ export const DIRECTIVES_API_SUPPORTED_VERSIONS = Object.freeze([
 	10, 11, 12, 13, 16, 17, 18
 ] as const);
 export const MISSION_API_SUPPORTED_VERSIONS = Object.freeze([
-	13, 15, 16, 17, 18, 19, 20, 25
+	13, 15, 16, 17, 18, 19, 20, 25, 26
 ] as const);
 export const STORY_PATCH_API_SUPPORTED_VERSIONS = Object.freeze([21] as const);
 export const SYNTHESIS_API_SUPPORTED_VERSIONS = Object.freeze([22] as const);

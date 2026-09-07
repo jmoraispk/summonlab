@@ -29,6 +29,7 @@ import {
 	MissionRunStateV7Schema as PublicMissionRunStateV7Schema,
 	MissionRunStateV8Schema as PublicMissionRunStateV8Schema,
 	MissionRunStateV9Schema as PublicMissionRunStateV9Schema,
+	MissionRunStateV10Schema as PublicMissionRunStateV10Schema,
 	MODEL_POLICY_VERSION,
 	StoryPatchCandidateSchema as PublicStoryPatchCandidateSchema,
 	SynthesisReceiptSchema as PublicSynthesisReceiptSchema,
@@ -67,7 +68,8 @@ import {
 	MissionRunStateV6Schema,
 	MissionRunStateV7Schema,
 	MissionRunStateV8Schema,
-	MissionRunStateV9Schema
+	MissionRunStateV9Schema,
+	MissionRunStateV10Schema
 } from './engine/mission-state.js';
 import {
 	FirstBandArchiveStateSchema,
@@ -353,6 +355,33 @@ describe('engine contracts compatibility', () => {
 		).toBeDefined();
 	});
 
+	it('adds v26 mission state without widening the frozen v25 schema', () => {
+		const v25 = v25StateFromV24Fixture();
+		const legacyAttempt = v25.mission.attempt;
+		const v26 = {
+			...v25,
+			schemaVersion: 26,
+			contentVersion: 'engine-v26',
+			mission: {
+				...v25.mission,
+				attempt: legacyAttempt
+					? {
+							...Object.fromEntries(
+								Object.entries(legacyAttempt).filter(([key]) => key !== 'turnState')
+							),
+							combatState: { modeId: 'legacy-auto-v1', turnState: legacyAttempt.turnState }
+						}
+					: null
+			}
+		};
+		const parsed = gameStateContracts.EngineGameStateV26Schema.parse(v26);
+		expect(parsed.schemaVersion).toBe(26);
+		expect(MissionRunStateV10Schema.parse(parsed.mission)).toStrictEqual(
+			PublicMissionRunStateV10Schema.parse(parsed.mission)
+		);
+		expect(gameStateContracts.EngineGameStateV25Schema.safeParse(v26).success).toBe(false);
+	});
+
 	it('keeps command discriminators and public version constants stable', () => {
 		expect(EngineCommandSchema.options.map((option) => option.shape.commandType.value).sort())
 			.toMatchInlineSnapshot(`
@@ -583,7 +612,7 @@ describe('engine contracts compatibility', () => {
 
 		const unsupported = {
 			...ENGINE_COMPATIBILITY_STATE_FIXTURES[23],
-			schemaVersion: 26
+			schemaVersion: 27
 		};
 		const directVersionResult = gameStateContracts.EngineGameStateV24Schema.safeParse(unsupported);
 		expect(directVersionResult).toStrictEqual(
@@ -618,7 +647,7 @@ describe('engine contracts compatibility', () => {
 				code: 'invalid_union',
 				path: ['schemaVersion'],
 				message:
-					"Invalid discriminator value. Expected '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' | '10' | '11' | '12' | '13' | '14' | '15' | '16' | '17' | '18' | '19' | '20' | '21' | '22' | '23' | '24' | '25'"
+					"Invalid discriminator value. Expected '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' | '10' | '11' | '12' | '13' | '14' | '15' | '16' | '17' | '18' | '19' | '20' | '21' | '22' | '23' | '24' | '25' | '26'"
 			}
 		]);
 	});

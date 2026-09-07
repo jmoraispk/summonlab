@@ -2,6 +2,7 @@ import { z } from 'zod';
 
 import { CombatAttributeNameSchema } from './capability.js';
 import { CombatRulesVersionSchema } from './combat-rules.js';
+import { CombatChoiceBatchV1Schema, CombatResolvedEventSchema } from './readiness-combat.js';
 import {
 	ContentVersionSchema,
 	EntityIdSchema,
@@ -177,6 +178,18 @@ export const AuthoritativeEventSchema = z
 		payload: z.record(z.string(), z.unknown())
 	})
 	.strict();
+
+export const CombatChoiceBatchAppliedEventSchema = AuthoritativeEventSchema.extend({
+	schemaVersion: z.literal(26),
+	eventType: z.literal('mission.combat.choice-batch.applied'),
+	contentVersion: z.literal('engine-v26'),
+	payload: z
+		.object({
+			batch: CombatChoiceBatchV1Schema,
+			resolvedEvents: z.array(CombatResolvedEventSchema).max(1_000)
+		})
+		.strict()
+}).strict();
 
 export const JournalEntrySchema = z
 	.object({

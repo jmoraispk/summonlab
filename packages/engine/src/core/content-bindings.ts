@@ -12,6 +12,7 @@ import type {
 	EngineGameState,
 	EngineGameStateV24,
 	EngineGameStateV25,
+	EngineGameStateV26,
 	EquipmentDefinition,
 	EquipmentLoadoutSlot,
 	EquipmentRank,
@@ -65,7 +66,7 @@ let verifiedBandStory: typeof TOWER_BAND_01_STORY_ENVELOPE | undefined;
 let verifiedEquipment = false;
 let verifiedEquipmentDropFixture: MissionEquipmentDropFixture | undefined;
 const EQUIPMENT_RANKS = Object.freeze(['F', 'E', 'D', 'C', 'B', 'A', 'S'] as const);
-type EquipmentState = EngineGameStateV24 | EngineGameStateV25;
+type EquipmentState = EngineGameStateV24 | EngineGameStateV25 | EngineGameStateV26;
 
 function verifyEquipmentCatalog(): void {
 	if (verifiedEquipment) return;

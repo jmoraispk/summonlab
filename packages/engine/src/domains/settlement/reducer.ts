@@ -1374,6 +1374,9 @@ function reduceSettlementEvent(
 				settlement
 			});
 		}
+		if (state.schemaVersion === 26) {
+			throw new ReplayIntegrityError('Engine v26 simulation reducer is not yet supported', event.sequence);
+		}
 		const payload = SimulationAdvancedPayloadSchema.parse(event.payload);
 		const heroes = { ...state.heroes };
 		const items = { ...state.items };

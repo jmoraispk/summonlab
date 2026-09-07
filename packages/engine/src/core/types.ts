@@ -30,6 +30,7 @@ import type {
 	EngineGameStateV23,
 	EngineGameStateV24,
 	EngineGameStateV25,
+	EngineGameStateV26,
 	EngineSnapshot,
 	EntropyDraw,
 	LegalAction,
@@ -61,7 +62,9 @@ export type EngineGameStateModern =
 	| EngineGameStateV22
 	| EngineGameStateV23
 	| EngineGameStateV24
-	| EngineGameStateV25;
+	| EngineGameStateV25
+	| EngineGameStateV26;
+export type EngineReadinessState = EngineGameStateV26;
 export type EngineRoutineState =
 	| EngineGameStateV5
 	| EngineGameStateV6

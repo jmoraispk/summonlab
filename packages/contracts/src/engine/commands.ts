@@ -24,6 +24,7 @@ import {
 	FallbackPolicySchema
 } from '../event.js';
 import { MissionSlugSchema } from '../mission.js';
+import { CombatChoiceBatchV1Schema } from '../readiness-combat.js';
 import { SettlementSlugSchema } from '../settlement.js';
 import {
 	ConversationActKindSchema,
@@ -322,6 +323,11 @@ export const ResolveMissionTurnCommandSchema = EngineCommandBaseSchema.extend({
 
 export const AdvanceAutomaticCombatCommandSchema = EngineCommandBaseSchema.extend({
 	commandType: z.literal('mission.advance.automatic')
+}).strict();
+
+export const ApplyCombatChoiceBatchCommandSchema = EngineCommandBaseSchema.extend({
+	commandType: z.literal('mission.apply.combat-choice-batch'),
+	batch: CombatChoiceBatchV1Schema
 }).strict();
 
 export const OpenMissionExtractionCommandSchema = EngineCommandBaseSchema.extend({
