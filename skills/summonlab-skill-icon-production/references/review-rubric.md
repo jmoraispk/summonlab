@@ -1,84 +1,14 @@
-# Producer review rubric
+# Frameless artwork review rubric
 
-For a normalized `rarity-frame` or `backing` retry, first inspect the provider raster only for
-visible fidelity and eligibility: it must be a non-interlaced 8-bit 1254×1254 RGB PNG. Profiles v1,
-v2, and v3 require an opaque `#00FF00` matte and reject a depicted checkerboard. Profile v1 requires
-an explicit perceptual-sRGB declaration. Profiles v2, v3, and geometry-first instead require exactly
-one bounded, structurally valid `caBX` provider container and assign perceptual sRGB after removing
-it. Black-matte is frame-only, uses that same envelope with an opaque `#000000` matte, and requires
-clean black in every role-required transparent region without checker or structured contamination.
-Profile v3 uses only its hash-bound geometry-v2 guide for the expanded frame envelope and unchanged
-backing aperture. Inspect the green-key provider boundary at full resolution: exact `#00FF00` is not
-enough when darker, desaturated, or spatially connected green contamination remains around the
-subject. Geometry-first uses the same guide and mask but permits imperfect green
-edges or non-green/checker pixels wholly outside that mask; the helper clears those pixels
-deterministically and still rejects a checker inside retained role content. Then let the helper
-normalize it. Strict geometry-first additionally removes retained green dominance by clamping green
-to the larger of retained red and blue; visible green fringe is a failure, not a manual-repair
-opportunity. Black-matte extraction uses the exact 4–16 transfer, Lanczos3 resize, and inward-only
-4×4 geometry-v2 coverage; visible black halo, matte contamination, aperture pixels, or pixels
-outside the frame union are failures, not manual-repair opportunities. V1 `skill-art` and
-`calibration-plate` jobs do not use this green-key profile. Inspect the retained canonical raster
-at full target resolution and as a 96×96 view. Record concise `pass`, `concern`, or `fail` findings
-for both retained-candidate views, including `revise`; `not-applicable` does not satisfy either
-required view. A candidate explicitly passes both views and has no concern or failure; unrelated
-role-inapplicable criteria may remain `not-applicable`. This is informed producer inspection, not
-owner acceptance or blind recognition.
+Inspect the exact candidate at 1024px and a temporary 96px derivative.
 
-Do not use this producer rubric to execute a coordinator reprocess packet. Reprocess success may
-later enter the same owner visual review as any other retained candidate, but its deterministic
-normalization and provenance checks belong to the coordinator route. Owner rejection is terminal
-for that reprocess route and sends the asset to vector/native or alpha-capable production; it does
-not authorize another reprocess attempt.
+- **Identity:** the dominant subject and action match the skill, not a sibling.
+- **Lineage:** the family progression is recognizable without copying parent pixels.
+- **Composition:** one readable subject, at most one supporting cue, centered with breathing room.
+- **Layer purity:** transparent exterior; no frame, inner rail, crest, rank letter, backing, text,
+  UI, logo, watermark, or narrative scenery.
+- **Recognition:** the subject and action remain distinct at 96px.
 
-## Shared checks
-
-- **Manifest fidelity:** the immutable prompt's subject, cue, palette, composition, and exclusions
-  are present without undeclared narrative content.
-- **Geometry:** canvas, registration, aperture, subject/effect safe zones, and medallion exclusion
-  follow the geometry guide for the role.
-- **Alpha:** standalone `skill-art`, `rarity-frame`, and `backing` outputs are genuine RGBA PNGs
-  and satisfy their role-specific transparency or coverage rules. A `calibration-plate` may be RGB
-  or RGBA when its declared canvas and the role-aware inspector permit it.
-- **Normalization:** v2 frame/backing candidates contain no green matte or fringe, obey the exact
-  role mask, and carry source/geometry/output hash evidence. Geometry-first candidates additionally
-  pass strict role-aware output inspection after mask clearing. Black-matte frame candidates have
-  canonical transparent RGB, an exactly clear aperture and exterior, inward-only boundary coverage,
-  and the complete caBX/decoder/source/geometry/output evidence. Inspect normalized alpha edges
-  against both light and dark viewer backgrounds without persisting an extra raster; reject
-  green-dominant edge residue, including residue revealed only after resize. Provider eligibility is
-  not candidate acceptance; never repair an ineligible provider source by hand.
-- **Recognition:** at 96 pixels the dominant silhouette and action/material cue remain distinct,
-  uncluttered, and different from adjacent family stages.
-- **Reference discipline:** each reference influenced only its declared purpose. No calibration
-  cell, complete-skill candidate pixels, parent pixels, label, watermark, UI, or reference text was
-  copied. A complete icon that merely inherited the approved frame-sheet reference is not a
-  standalone frame authority.
-
-## Role checks
-
-- `skill-art`: one frameless artwork layer in Painted Emblem treatment; one dominant subject and at
-  most one supporting cue; centered subject matter with breathing room for deterministic coordinator
-  composition; no rarity frame, backing, badge, text, or scenery. Reject straight or faceted
-  metallic rails, an inner hexagonal border, a rank-letter medallion, crest fragments, or any other
-  baked prior-frame trace—even when the canonical frame would cover most of it. Preserve calibrated
-  family progression and change only what distinguishes the child from an approved parent. Inspect
-  the provider layer only; do not resize, mask, composite, or promote it.
-- `rarity-frame`: transparent central aperture, correct six-edge registration, no embedded art or
-  backing, and readable rank material at small size. For revision 5 or later, compare the isolated
-  candidate with the matching-rank cell in the declared seven-frame authority. Explicitly assess
-  crest scale and placement, rail weight, aperture footprint, side ornaments, and bottom
-  termination. Geometry success does not override a failed family comparison.
-- `backing`: continuous aperture coverage without frame-like pixels or subject artwork.
-- `calibration-plate`: all requested stages at equal scale and clearly useful as reference only;
-  never extract a cell as an individual deliverable.
-
-Use the one allowed corrective edit only for a bounded visible defect whose correction can preserve
-passing traits. If no correction is authorized or one edit does not resolve it, stop with honest
-`revise`/`failed` evidence. A visually attractive image does not override geometry, provenance,
-ownership, or recognition failures.
-
-Owner praise for provider pixels is not producer acceptance evidence. Report the failed result and
-hand the exact source decision back to the coordinator. An owner-selected deterministic derivative
-requires a fresh layer review, then a separate composed-icon review; only the latter can authorize
-coordinator promotion.
+Record a concrete pass/fail observation for both views. Delete the temporary 96px derivative after
+inspection. Owner acceptance of the isolated layer and of the later framed composite are separate
+decisions.

@@ -31,12 +31,12 @@ function record(
 		motifFamily: fields.motifFamily,
 		primaryVisualParent: fields.primaryVisualParent ?? null,
 		image: {
-			publicPath: `/wiki-media/skills/visual-catalog-v1/icons/${targetId}.webp`,
+			publicPath: `/wiki-media/skills/visual-catalog-v2/icons/${targetId}.webp`,
 			width: 512,
 			height: 512
 		},
 		provenance: {
-			status: 'candidate',
+			status: 'approved',
 			sourcePath: `assets/${targetId}.png`,
 			runtimePath: `${targetId}.webp`
 		}
@@ -138,7 +138,7 @@ describe('skill visual catalog model', () => {
 			filterSkillVisualCatalog(records, { ...EMPTY_SKILL_CATALOG_FILTERS, q: '  FIRE   AFFINITY ' })
 		).toHaveLength(1);
 		expect(
-			filterSkillVisualCatalog(records, { ...EMPTY_SKILL_CATALOG_FILTERS, q: 'visual-catalog-v1' })
+			filterSkillVisualCatalog(records, { ...EMPTY_SKILL_CATALOG_FILTERS, q: 'visual-catalog-v2' })
 		).toHaveLength(0);
 	});
 

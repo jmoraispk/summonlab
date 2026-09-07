@@ -59,7 +59,7 @@ describe('online wiki registry', () => {
 		const loaded = loadWikiPage({
 			params: { slug: 'mechanics/skills/visual-catalog' }
 		} as never);
-		expect(loaded.skillVisualCatalog).toHaveLength(456);
+		expect(loaded.skillVisualCatalog).toHaveLength(457);
 		expect(loaded.monsterDatabase).toBeNull();
 	});
 

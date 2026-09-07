@@ -29,7 +29,13 @@ const assetSources = import.meta.glob(
 		'../../../../../apps/web/src/routes/living-village-lab/village/cutouts/kira-toren.png',
 		'../../../../../apps/web/src/routes/living-village-lab/village/cutouts/mara-vey.png',
 		'../../../../../apps/web/src/routes/living-village-lab/village/cutouts/remy-nahl.png',
-		'../../../../../assets/wiki/skills/rarity-frame-v1/skill-rarity-option-c-v1.webp',
+		'../../../../../assets/wiki/skills/icon-production-v2/frames/rarity-frame-f.png',
+		'../../../../../assets/wiki/skills/icon-production-v2/frames/rarity-frame-e.png',
+		'../../../../../assets/wiki/skills/icon-production-v2/frames/rarity-frame-d.png',
+		'../../../../../assets/wiki/skills/icon-production-v2/frames/rarity-frame-c.png',
+		'../../../../../assets/wiki/skills/icon-production-v2/frames/rarity-frame-b.png',
+		'../../../../../assets/wiki/skills/icon-production-v2/frames/rarity-frame-a.png',
+		'../../../../../assets/wiki/skills/icon-production-v2/frames/rarity-frame-s.png',
 		'../../../../../assets/settlements/hearth-01/hearth-01-environment-v1.png'
 	],
 	{

@@ -143,16 +143,15 @@ use the accepted hexagonal rarity frame without turning the family ledger into a
 
 ### Skill rarity frames
 
-The canonical comparison source is `assets/wiki/skills/rarity-frame-v1/`. Skill rarity uses one
+The canonical reusable frames are under `assets/wiki/skills/icon-production-v2/frames/`. Skill rarity uses one
 domain-independent material ladder: weathered iron F, aged bronze E, tempered blue steel D,
 moonlit silver C, blackened amethyst B, champagne electrum A, and ceremonial antique gold S.
 Ornament remains restrained through C, B relies on faceted mineral material, A adds fine spear-leaf
 accents, and S owns the crowned ceremonial apex. Frame rarity and bearer mastery remain separate;
 mastery and level appear only in the second text row beneath a skill.
 
-The approved comparison plate is not a sprite sheet. Runtime work must consume separately produced
-transparent frame assets rather than cropping the plate or approximating its ornament with CSS or
-inline SVG.
+Runtime composition consumes these seven transparent frame assets directly. Skill interiors stay
+frameless so a frame can be replaced without regenerating the artwork.
 
 ### Skill visual catalog
 

@@ -152,6 +152,18 @@ export function findRepositoryAssetPathViolations(paths: readonly string[]): str
 		'assets/heroes/visuals/realtime-combat-study-v1/animation-canary-v1/moss-archer/moss-archer-motion-sheet-source-v1.png'
 	]);
 	for (const path of paths) {
+		if (
+			path.startsWith('assets/wiki/skills/') &&
+			path.endsWith('.png') &&
+			!/^assets\/wiki\/skills\/icon-production-v2\/(?:interiors\/[a-z0-9-]+|frames\/rarity-frame-[fedcbas]|backing|geometry-guide)\.png$/u.test(
+				path
+			)
+		) {
+			violations.push(`Non-canonical skill raster must not be tracked: ${path}`);
+		}
+		if (path.startsWith('apps/web/static/skill-icons/')) {
+			violations.push(`Retired standalone skill runtime must not be tracked: ${path}`);
+		}
 		if (path.startsWith('assets/heroes/experiments/')) {
 			violations.push(`Hero experiment output must not be tracked: ${path}`);
 		}
@@ -247,6 +259,16 @@ export function findRepositoryAssetPathViolations(paths: readonly string[]): str
 		}
 	}
 	return violations;
+}
+
+export function findSkillPngLfsViolations(
+	paths: readonly string[],
+	filters: ReadonlyMap<string, string>
+): string[] {
+	return paths
+		.filter((path) => path.startsWith('assets/wiki/skills/') && path.endsWith('.png'))
+		.filter((path) => filters.get(path) !== 'lfs')
+		.map((path) => `Skill PNG is not covered by Git LFS: ${path}`);
 }
 
 export function findApprovedHeroPathViolations(entries: readonly ApprovedHeroPaths[]): string[] {
@@ -567,6 +589,12 @@ export async function validateRepositoryAssets(
 	const approvedEquipment = await checkEquipmentApprovedSources(workspaceRoot);
 	const approvedGreatswords = await validateGreatswordCampaignFiles(workspaceRoot);
 	const violations = findRepositoryAssetPathViolations(tracked);
+	const skillPngPaths = tracked.filter(
+		(path) => path.startsWith('assets/wiki/skills/') && path.endsWith('.png')
+	);
+	violations.push(
+		...findSkillPngLfsViolations(skillPngPaths, lfsFilters(workspaceRoot, skillPngPaths))
+	);
 	violations.push(
 		...findApprovedHeroPathViolations(
 			catalog.entries.map((entry) => ({

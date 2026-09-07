@@ -5,6 +5,7 @@ import {
 	findApprovedHeroPathViolations,
 	findRetainedEnemyPackPathViolations,
 	findRepositoryAssetPathViolations,
+	findSkillPngLfsViolations,
 	validateRepositoryAssets
 } from './repository-asset-policy.js';
 
@@ -81,6 +82,41 @@ describe('repository asset retention policy', () => {
 			'Retired hero runtime catalog must not be tracked: apps/web/static/runtime/visual-catalog-v1/manifest.json',
 			'Retired hero review route must not be tracked: apps/web/src/routes/forge/pack-2/+page.svelte',
 			'Retired hero review route must not be tracked: apps/web/src/routes/visual-lab/+page.svelte'
+		]);
+	});
+
+	it('requires every tracked skill PNG to use Git LFS', () => {
+		expect(
+			findSkillPngLfsViolations(
+				[
+					'assets/wiki/skills/icon-production-v2/interiors/blade.png',
+					'assets/wiki/skills/icon-production-v2/frames/contact-sheet.png',
+					'assets/wiki/skills/icon-production-v2/catalog.json',
+					'assets/wiki/monsters/goblin.png'
+				],
+				new Map([
+					['assets/wiki/skills/icon-production-v2/interiors/blade.png', 'lfs'],
+					['assets/wiki/skills/icon-production-v2/frames/contact-sheet.png', 'unspecified']
+				])
+			)
+		).toEqual([
+			'Skill PNG is not covered by Git LFS: assets/wiki/skills/icon-production-v2/frames/contact-sheet.png'
+		]);
+	});
+
+	it('rejects retired skill raster and standalone runtime namespaces', () => {
+		expect(
+			findRepositoryAssetPathViolations([
+				'assets/wiki/skills/icon-production-v2/interiors/martial-blade-measured-cut.png',
+				'assets/wiki/skills/icon-production-v2/frames/rarity-frame-f.png',
+				'assets/wiki/skills/icon-production-v2/review/contact-sheet.png',
+				'assets/wiki/skills/rarity-frame-v6/review/old.png',
+				'apps/web/static/skill-icons/v1/512/old.webp'
+			])
+		).toEqual([
+			'Non-canonical skill raster must not be tracked: assets/wiki/skills/icon-production-v2/review/contact-sheet.png',
+			'Non-canonical skill raster must not be tracked: assets/wiki/skills/rarity-frame-v6/review/old.png',
+			'Retired standalone skill runtime must not be tracked: apps/web/static/skill-icons/v1/512/old.webp'
 		]);
 	});
 

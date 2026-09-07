@@ -1,23 +1,19 @@
 import { createHash } from 'node:crypto';
 import { isDeepStrictEqual } from 'node:util';
 
-import canonicalCatalogSource from '../../../../../assets/wiki/skills/icon-production-v1/catalog.json';
-import canonicalCatalogRaw from '../../../../../assets/wiki/skills/icon-production-v1/catalog.json?raw';
-import massProductionManifestSource from '../../../../../assets/wiki/skills/icon-production-v1/mass-production-v1/manifest.json';
-import massProductionManifestRaw from '../../../../../assets/wiki/skills/icon-production-v1/mass-production-v1/manifest.json?raw';
-import runtimeManifestSource from '../../../static/wiki-media/skills/visual-catalog-v1/manifest.json';
-import runtimeManifestRaw from '../../../static/wiki-media/skills/visual-catalog-v1/manifest.json?raw';
+import canonicalCatalogSource from '../../../../../assets/wiki/skills/icon-production-v2/catalog.json';
+import canonicalCatalogRaw from '../../../../../assets/wiki/skills/icon-production-v2/catalog.json?raw';
+import canonicalAssetsSource from '../../../../../assets/wiki/skills/icon-production-v2/asset-manifest.json';
+import canonicalAssetsRaw from '../../../../../assets/wiki/skills/icon-production-v2/asset-manifest.json?raw';
+import runtimeManifestSource from '../../../static/wiki-media/skills/visual-catalog-v2/manifest.json';
+import runtimeManifestRaw from '../../../static/wiki-media/skills/visual-catalog-v2/manifest.json?raw';
 
-const CATALOG_PATH = 'assets/wiki/skills/icon-production-v1/catalog.json';
-const MASS_MANIFEST_PATH = 'assets/wiki/skills/icon-production-v1/mass-production-v1/manifest.json';
-const MASS_ICON_ROOT = 'assets/wiki/skills/icon-production-v1/mass-production-v1/icons';
-const PUBLIC_ROOT = '/wiki-media/skills/visual-catalog-v1/';
-const PUBLIC_ICON_ROOT = `${PUBLIC_ROOT}icons/`;
-const SKILL_COUNT = 456;
-const DOMAIN_COUNTS = { Martial: 258, Magical: 124, Craft: 74 } as const;
-const RUNTIME_EXPORTER_VERSION = 'wiki-skill-visual-catalog-exporter-v1';
-const MAXIMUM_ASSET_BYTES = 133_120;
-const MAXIMUM_MANAGED_DIRECTORY_BYTES = 44_040_192;
+const CATALOG_PATH = 'assets/wiki/skills/icon-production-v2/catalog.json';
+const ASSET_MANIFEST_PATH = 'assets/wiki/skills/icon-production-v2/asset-manifest.json';
+const PUBLIC_ROOT = '/wiki-media/skills/visual-catalog-v2/';
+const RUNTIME_EXPORTER_VERSION = 'wiki-skill-visual-catalog-exporter-v2';
+const MAXIMUM_ASSET_BYTES = 170_000;
+const MAXIMUM_MANAGED_DIRECTORY_BYTES = 60_000_000;
 
 type SkillDomain = 'Martial' | 'Magical' | 'Craft';
 type SkillType = 'Active' | 'Passive' | 'Stance' | 'Craft';
@@ -36,7 +32,7 @@ export interface SkillVisualCatalogRecord {
 	readonly primaryVisualParent: { readonly targetId: string; readonly name: string } | null;
 	readonly image: { readonly publicPath: string; readonly width: 512; readonly height: 512 };
 	readonly provenance: {
-		readonly status: 'candidate';
+		readonly status: 'approved';
 		readonly sourcePath: string;
 		readonly runtimePath: string;
 	};
@@ -45,79 +41,18 @@ export interface SkillVisualCatalogRecord {
 export interface SkillVisualCatalogAuthorities {
 	readonly canonicalCatalog: unknown;
 	readonly canonicalCatalogBytes: Uint8Array;
-	readonly massProductionManifest: unknown;
-	readonly massProductionManifestBytes: Uint8Array;
+	readonly canonicalAssets: unknown;
+	readonly canonicalAssetsBytes: Uint8Array;
 	readonly runtimeManifest: unknown;
 	readonly runtimeManifestBytes: Uint8Array;
 }
 
-interface CanonicalRecord {
-	readonly targetId: string;
-	readonly name: string;
-	readonly domain: SkillDomain;
-	readonly family: string;
-	readonly labels: readonly { readonly namespace: SkillLabelNamespace; readonly value: string }[];
-	readonly rarity: string;
-	readonly type: SkillType;
-	readonly acquisition: string;
-	readonly effect: string;
-	readonly motifFamily: string;
-	readonly primaryVisualParent: string | null;
-}
+type JsonObject = Record<string, unknown>;
 
-interface MassRecord {
-	readonly targetId: string;
-	readonly slug: string;
-	readonly name: string;
-	readonly domain: SkillDomain;
-	readonly family: string;
-	readonly motifFamily: string;
-	readonly rarity: string;
-	readonly primaryVisualParent: string | null;
-	readonly status: 'candidate';
-	readonly finalImagePath: string;
-	readonly finalImageHash: string;
-}
-
-interface RuntimeRecord {
-	readonly targetId: string;
-	readonly sourcePath: string;
-	readonly sourceContentHash: string;
-	readonly file: string;
-	readonly publicPath: string;
-	readonly width: 512;
-	readonly height: 512;
-	readonly bytes: number;
-	readonly contentHash: string;
-}
-
-interface RuntimeSummary {
-	readonly skillCount: 456;
-	readonly assetCount: 456;
-	readonly totalBytes: number;
-	readonly managedDirectoryBytes: number;
-	readonly maximumAssetBytes: 133_120;
-	readonly maximumManagedDirectoryBytes: 44_040_192;
-}
-
-function object(value: unknown, label: string): Record<string, unknown> {
+function object(value: unknown, label: string): JsonObject {
 	if (!value || typeof value !== 'object' || Array.isArray(value))
 		throw new Error(`Invalid ${label}`);
-	return value as Record<string, unknown>;
-}
-
-function exactObject(
-	value: unknown,
-	label: string,
-	expectedKeys: readonly string[]
-): Record<string, unknown> {
-	const source = object(value, label);
-	const actualKeys = Object.keys(source).sort();
-	const sortedExpectedKeys = [...expectedKeys].sort();
-	if (!isDeepStrictEqual(actualKeys, sortedExpectedKeys)) {
-		throw new Error(`Invalid ${label} fields`);
-	}
-	return source;
+	return value as JsonObject;
 }
 
 function array(value: unknown, label: string): readonly unknown[] {
@@ -126,241 +61,82 @@ function array(value: unknown, label: string): readonly unknown[] {
 }
 
 function string(value: unknown, label: string): string {
-	if (typeof value !== 'string' || value.length === 0) throw new Error(`Invalid ${label}`);
+	if (typeof value !== 'string' || !value) throw new Error(`Invalid ${label}`);
 	return value;
 }
 
-function literal<T extends string | number | boolean>(
-	value: unknown,
-	expected: T,
-	label: string
-): T {
-	if (value !== expected) throw new Error(`Invalid ${label}`);
-	return expected;
-}
-
-function positiveInteger(value: unknown, label: string): number {
-	if (!Number.isSafeInteger(value) || (value as number) <= 0) {
-		throw new Error(`Invalid ${label}`);
-	}
+function integer(value: unknown, label: string): number {
+	if (!Number.isSafeInteger(value) || (value as number) <= 0) throw new Error(`Invalid ${label}`);
 	return value as number;
 }
 
-function domain(value: unknown, label: string): SkillDomain {
-	if (value === 'Martial' || value === 'Magical' || value === 'Craft') return value;
-	throw new Error(`Invalid ${label} Domain`);
-}
-
-function skillType(value: unknown, label: string): SkillType {
-	switch (value) {
-		case 'A':
-			return 'Active';
-		case 'P':
-			return 'Passive';
-		case 'St':
-			return 'Stance';
-		case 'C':
-			return 'Craft';
-		default:
-			throw new Error(`Invalid ${label} type`);
-	}
-}
-
-function label(value: unknown): {
-	readonly namespace: SkillLabelNamespace;
-	readonly value: string;
-} {
-	const source = object(value, 'canonical label');
-	const namespace = source.namespace;
-	if (namespace !== 'Equipment' && namespace !== 'Element') {
-		throw new Error('Invalid canonical label namespace');
-	}
-	return { namespace, value: string(source.value, 'canonical label value') };
-}
-
-function nullableString(value: unknown, label: string): string | null {
-	return value === null ? null : string(value, label);
-}
-
 function hash(value: unknown, label: string): string {
-	const candidate = string(value, label);
-	if (!/^[a-f0-9]{64}$/u.test(candidate)) throw new Error(`Invalid ${label}`);
-	return candidate;
+	const result = string(value, label);
+	if (!/^[a-f0-9]{64}$/u.test(result)) throw new Error(`Invalid ${label}`);
+	return result;
 }
 
-function rawContentHash(value: Uint8Array): string {
+function sha256(value: Uint8Array): string {
 	return createHash('sha256').update(value).digest('hex');
 }
 
-function parseRawJson(value: Uint8Array, label: string): unknown {
+function parsedBytes(bytes: Uint8Array, label: string): unknown {
 	try {
-		return JSON.parse(new TextDecoder().decode(value)) as unknown;
+		return JSON.parse(new TextDecoder().decode(bytes)) as unknown;
 	} catch {
-		throw new Error(`Invalid ${label} raw bytes`);
+		throw new Error(`Invalid ${label} bytes`);
 	}
 }
 
-function assertMatchesRawBytes(supplied: unknown, raw: unknown, label: string): void {
-	if (!isDeepStrictEqual(supplied, raw)) {
-		throw new Error(`${label} does not match its raw bytes`);
-	}
+function assertRaw(value: unknown, bytes: Uint8Array, label: string): JsonObject {
+	const raw = parsedBytes(bytes, label);
+	if (!isDeepStrictEqual(value, raw)) throw new Error(`${label} does not match raw bytes`);
+	return object(raw, label);
 }
 
-function unique<T>(records: readonly T[], identifier: (record: T) => string, label: string): void {
-	const seen = new Set<string>();
-	for (const record of records) {
-		const id = identifier(record);
-		if (seen.has(id)) throw new Error(`Duplicate ${label}: ${id}`);
-		seen.add(id);
-	}
+function domain(value: unknown): SkillDomain {
+	if (value === 'Martial' || value === 'Magical' || value === 'Craft') return value;
+	throw new Error('Invalid canonical Domain');
 }
 
-function canonicalRecord(value: unknown): CanonicalRecord {
-	const record = object(value, 'canonical skill record');
-	const rarity = string(record.rarity, 'canonical rarity');
-	if (!['F', 'E', 'D', 'C', 'B', 'A', 'S'].includes(rarity)) {
-		throw new Error('Invalid canonical rarity');
-	}
-	return {
-		targetId: string(record.targetId, 'canonical target ID'),
-		name: string(record.name, 'canonical name'),
-		domain: domain(record.domain, 'canonical'),
-		family: string(record.family, 'canonical family'),
-		labels: array(record.labels, 'canonical labels').map(label),
-		rarity,
-		type: skillType(record.type, 'canonical'),
-		acquisition: string(record.requires, 'canonical acquisition'),
-		effect: string(record.effect, 'canonical effect'),
-		motifFamily: string(record.motifFamily ?? record.mapEntryId, 'canonical motif family'),
-		primaryVisualParent: nullableString(
-			record.primaryVisualParent,
-			'canonical primary visual parent'
-		)
-	};
+function skillType(value: unknown): SkillType {
+	if (value === 'A') return 'Active';
+	if (value === 'P') return 'Passive';
+	if (value === 'St') return 'Stance';
+	if (value === 'C') return 'Craft';
+	throw new Error('Invalid canonical type');
 }
 
-function massRecord(value: unknown): MassRecord {
-	const record = object(value, 'mass-production skill record');
-	const rarity = string(record.rarity, 'mass-production rarity');
-	if (!['F', 'E', 'D', 'C', 'B', 'A', 'S'].includes(rarity)) {
-		throw new Error('Invalid mass-production rarity');
-	}
-	return {
-		targetId: string(record.targetId, 'mass-production target ID'),
-		slug: string(record.slug, 'mass-production slug'),
-		name: string(record.name, 'mass-production name'),
-		domain: domain(record.domain, 'mass-production'),
-		family: string(record.family, 'mass-production family'),
-		motifFamily: string(record.motifFamily, 'mass-production motif family'),
-		rarity,
-		primaryVisualParent: nullableString(
-			record.primaryVisualParent,
-			'mass-production primary visual parent'
-		),
-		status: literal(record.status, 'candidate', 'mass-production status'),
-		finalImagePath: string(record.finalImagePath, 'mass-production final image path'),
-		finalImageHash: hash(record.finalImageHash, 'mass-production final image hash')
-	};
-}
-
-function runtimeRecord(value: unknown): RuntimeRecord {
-	const record = exactObject(value, 'runtime skill record', [
-		'targetId',
-		'sourcePath',
-		'sourceContentHash',
-		'file',
-		'publicPath',
-		'width',
-		'height',
-		'bytes',
-		'contentHash'
-	]);
-	return {
-		targetId: string(record.targetId, 'runtime target ID'),
-		sourcePath: string(record.sourcePath, 'runtime source path'),
-		sourceContentHash: hash(record.sourceContentHash, 'runtime source hash'),
-		file: string(record.file, 'runtime file'),
-		publicPath: string(record.publicPath, 'runtime public path'),
-		width: literal(record.width, 512, 'runtime width'),
-		height: literal(record.height, 512, 'runtime height'),
-		bytes: positiveInteger(record.bytes, 'runtime bytes'),
-		contentHash: hash(record.contentHash, 'runtime content hash')
-	};
-}
-
-function runtimeSummary(value: unknown): RuntimeSummary {
-	const summary = exactObject(value, 'runtime summary', [
-		'skillCount',
-		'assetCount',
-		'totalBytes',
-		'managedDirectoryBytes',
-		'maximumAssetBytes',
-		'maximumManagedDirectoryBytes'
-	]);
-	return {
-		skillCount: literal(summary.skillCount, SKILL_COUNT, 'runtime summary skill count'),
-		assetCount: literal(summary.assetCount, SKILL_COUNT, 'runtime summary asset count'),
-		totalBytes: positiveInteger(summary.totalBytes, 'runtime summary total bytes'),
-		managedDirectoryBytes: positiveInteger(
-			summary.managedDirectoryBytes,
-			'runtime summary managed directory bytes'
-		),
-		maximumAssetBytes: literal(
-			summary.maximumAssetBytes,
-			MAXIMUM_ASSET_BYTES,
-			'runtime maximum asset bytes'
-		),
-		maximumManagedDirectoryBytes: literal(
-			summary.maximumManagedDirectoryBytes,
-			MAXIMUM_MANAGED_DIRECTORY_BYTES,
-			'runtime maximum managed directory bytes'
-		)
-	};
+function labels(value: unknown): { namespace: SkillLabelNamespace; value: string }[] {
+	return array(value, 'canonical labels').map((item) => {
+		const source = object(item, 'canonical label');
+		if (source.namespace !== 'Equipment' && source.namespace !== 'Element') {
+			throw new Error('Invalid canonical label namespace');
+		}
+		return { namespace: source.namespace, value: string(source.value, 'canonical label value') };
+	});
 }
 
 function authority(value: unknown, expectedPath: string, label: string): string {
-	const source = exactObject(value, label, ['path', 'contentHash']);
-	if (string(source.path, `${label} path`) !== expectedPath) {
-		throw new Error(`Invalid ${label} path`);
-	}
+	const source = object(value, label);
+	if (source.path !== expectedPath) throw new Error(`Invalid ${label} path`);
 	return hash(source.contentHash, `${label} hash`);
 }
 
-function assertCanonicalMatchesMass(canonical: CanonicalRecord, mass: MassRecord): void {
-	for (const field of [
-		'name',
-		'domain',
-		'family',
-		'motifFamily',
-		'rarity',
-		'primaryVisualParent'
-	] as const) {
-		if (canonical[field] !== mass[field]) {
-			throw new Error(`Canonical/mass ${field} mismatch for ${canonical.targetId}`);
-		}
+function unique<T>(items: readonly T[], id: (item: T) => string, label: string): void {
+	const seen = new Set<string>();
+	for (const item of items) {
+		const value = id(item);
+		if (seen.has(value)) throw new Error(`Duplicate ${label}: ${value}`);
+		seen.add(value);
 	}
-	if (
-		!new RegExp(`^${MASS_ICON_ROOT}/[a-z0-9-]+\\.png$`, 'u').test(mass.finalImagePath) ||
-		mass.finalImagePath !== `${MASS_ICON_ROOT}/${mass.slug}.png`
-	) {
-		throw new Error(`Invalid mass-production source path: ${mass.finalImagePath}`);
-	}
-}
-
-function freezeRecord(record: SkillVisualCatalogRecord): SkillVisualCatalogRecord {
-	for (const item of record.labels) Object.freeze(item);
-	Object.freeze(record.labels);
-	if (record.primaryVisualParent) Object.freeze(record.primaryVisualParent);
-	Object.freeze(record.image);
-	Object.freeze(record.provenance);
-	return Object.freeze(record);
 }
 
 const defaultAuthorities: SkillVisualCatalogAuthorities = {
 	canonicalCatalog: canonicalCatalogSource,
 	canonicalCatalogBytes: new TextEncoder().encode(canonicalCatalogRaw),
-	massProductionManifest: massProductionManifestSource,
-	massProductionManifestBytes: new TextEncoder().encode(massProductionManifestRaw),
+	canonicalAssets: canonicalAssetsSource,
+	canonicalAssetsBytes: new TextEncoder().encode(canonicalAssetsRaw),
 	runtimeManifest: runtimeManifestSource,
 	runtimeManifestBytes: new TextEncoder().encode(runtimeManifestRaw)
 };
@@ -368,193 +144,136 @@ const defaultAuthorities: SkillVisualCatalogAuthorities = {
 export function buildSkillVisualCatalog(
 	input: SkillVisualCatalogAuthorities = defaultAuthorities
 ): readonly SkillVisualCatalogRecord[] {
-	const rawCatalog = parseRawJson(input.canonicalCatalogBytes, 'canonical catalog');
-	const rawMass = parseRawJson(input.massProductionManifestBytes, 'mass-production manifest');
-	const rawRuntime = parseRawJson(input.runtimeManifestBytes, 'runtime manifest');
-	assertMatchesRawBytes(input.canonicalCatalog, rawCatalog, 'Canonical catalog');
-	assertMatchesRawBytes(input.massProductionManifest, rawMass, 'Mass-production manifest');
-	assertMatchesRawBytes(input.runtimeManifest, rawRuntime, 'Runtime manifest');
-	const catalog = object(rawCatalog, 'canonical catalog');
-	const mass = object(rawMass, 'mass-production manifest');
-	const runtime = exactObject(rawRuntime, 'runtime manifest', [
-		'schemaVersion',
-		'exporterVersion',
-		'encoder',
-		'sourceAuthorities',
-		'records',
-		'summary'
-	]);
-
-	literal(catalog.schemaVersion, 'skill-icon-catalog-v1', 'canonical catalog schema');
-	literal(
-		mass.schemaVersion,
-		'skill-icon-mass-production-manifest-v1',
-		'mass-production manifest schema'
+	const catalog = assertRaw(
+		input.canonicalCatalog,
+		input.canonicalCatalogBytes,
+		'Canonical catalog'
 	);
-	literal(mass.completionState, 'complete', 'mass-production completion state');
-	literal(runtime.schemaVersion, 'wiki-skill-visual-catalog-v1', 'runtime manifest schema');
-	literal(runtime.exporterVersion, RUNTIME_EXPORTER_VERSION, 'runtime exporter version');
-	const encoder = exactObject(runtime.encoder, 'runtime encoder', [
-		'format',
-		'quality',
-		'alphaQuality',
-		'effort',
-		'smartSubsample',
-		'metadata'
-	]);
-	literal(encoder.format, 'webp', 'runtime encoder format');
-	literal(encoder.quality, 86, 'runtime encoder quality');
-	literal(encoder.alphaQuality, 100, 'runtime encoder alpha quality');
-	literal(encoder.effort, 4, 'runtime encoder effort');
-	literal(encoder.smartSubsample, true, 'runtime encoder smart subsampling');
-	literal(encoder.metadata, 'stripped', 'runtime encoder metadata');
+	const assets = assertRaw(input.canonicalAssets, input.canonicalAssetsBytes, 'Canonical assets');
+	const runtime = assertRaw(input.runtimeManifest, input.runtimeManifestBytes, 'Runtime manifest');
+	if (catalog.schemaVersion !== 'skill-icon-catalog-v1')
+		throw new Error('Invalid canonical catalog schema');
+	if (assets.schemaVersion !== 'skill-icon-canonical-assets-v1')
+		throw new Error('Invalid canonical asset schema');
+	if (runtime.schemaVersion !== 'wiki-skill-visual-catalog-v2')
+		throw new Error('Invalid runtime manifest schema');
+	if (runtime.exporterVersion !== RUNTIME_EXPORTER_VERSION)
+		throw new Error('Invalid runtime exporter version');
 
-	const canonical = array(catalog.records, 'canonical records').map(canonicalRecord);
-	const massRecords = array(mass.skills, 'mass-production skills').map(massRecord);
-	const runtimeRecords = array(runtime.records, 'runtime records').map(runtimeRecord);
-	unique(canonical, (record) => record.targetId, 'canonical target ID');
-	unique(massRecords, (record) => record.targetId, 'mass-production target ID');
-	unique(runtimeRecords, (record) => record.targetId, 'runtime target ID');
-	for (let index = 1; index < runtimeRecords.length; index += 1) {
-		if (runtimeRecords[index - 1]!.targetId.localeCompare(runtimeRecords[index]!.targetId) >= 0) {
-			throw new Error('Invalid runtime record order');
-		}
-	}
-	const canonicalByTargetId = new Map(canonical.map((record) => [record.targetId, record]));
-	for (const record of canonical) {
-		if (record.primaryVisualParent && !canonicalByTargetId.has(record.primaryVisualParent)) {
-			throw new Error(`Unresolved primary visual parent: ${record.primaryVisualParent}`);
-		}
-	}
-	if (canonical.length !== SKILL_COUNT) {
-		throw new Error(`Expected ${SKILL_COUNT} canonical records; got ${canonical.length}`);
-	}
-	if (massRecords.length !== SKILL_COUNT) {
-		throw new Error(`Expected ${SKILL_COUNT} mass-production records; got ${massRecords.length}`);
-	}
-	if (runtimeRecords.length !== SKILL_COUNT) {
-		throw new Error(`Expected ${SKILL_COUNT} runtime records; got ${runtimeRecords.length}`);
-	}
-	const summary = runtimeSummary(runtime.summary);
-	const runtimeTotalBytes = runtimeRecords.reduce((total, record) => total + record.bytes, 0);
-	if (runtimeTotalBytes !== summary.totalBytes) {
-		throw new Error('Runtime total bytes do not match record bytes');
-	}
-	if (runtimeRecords.some((record) => record.bytes > summary.maximumAssetBytes)) {
-		throw new Error('Runtime record exceeds maximum asset bytes');
-	}
+	const canonical = array(catalog.records, 'canonical records').map((item) =>
+		object(item, 'canonical record')
+	);
+	const interiors = array(assets.records, 'canonical interiors').map((item) =>
+		object(item, 'canonical interior')
+	);
+	const runtimeRecords = array(runtime.records, 'runtime records').map((item) =>
+		object(item, 'runtime record')
+	);
 	if (
-		summary.managedDirectoryBytes !==
-		summary.totalBytes + input.runtimeManifestBytes.byteLength
+		canonical.length === 0 ||
+		interiors.length !== canonical.length ||
+		runtimeRecords.length !== canonical.length
 	) {
-		throw new Error('Runtime managed directory bytes do not include the exact manifest bytes');
+		throw new Error('Canonical, interior, and runtime record counts must agree');
 	}
-	if (summary.managedDirectoryBytes > summary.maximumManagedDirectoryBytes) {
-		throw new Error('Runtime managed directory exceeds maximum managed directory bytes');
-	}
-	const actualDomainCounts = Object.fromEntries(
-		(Object.keys(DOMAIN_COUNTS) as SkillDomain[]).map((expectedDomain) => [
-			expectedDomain,
-			canonical.filter((record) => record.domain === expectedDomain).length
-		])
-	) as Record<SkillDomain, number>;
-	for (const [expectedDomain, expectedCount] of Object.entries(DOMAIN_COUNTS) as [
-		SkillDomain,
-		number
-	][]) {
-		if (actualDomainCounts[expectedDomain] !== expectedCount) {
-			throw new Error(
-				`Invalid canonical domain count for ${expectedDomain}: expected ${expectedCount}; got ${actualDomainCounts[expectedDomain]}`
-			);
-		}
-	}
+	unique(canonical, (item) => string(item.targetId, 'canonical target ID'), 'canonical target ID');
+	unique(interiors, (item) => string(item.targetId, 'interior target ID'), 'interior target ID');
+	unique(runtimeRecords, (item) => string(item.targetId, 'runtime target ID'), 'runtime target ID');
 
-	const massAuthorities = object(mass.authorities, 'mass-production authorities');
-	const massCatalogHash = authority(
-		massAuthorities.catalog,
-		CATALOG_PATH,
-		'mass catalog authority'
-	);
-	const runtimeAuthorities = exactObject(runtime.sourceAuthorities, 'runtime source authorities', [
-		'catalog',
-		'massProductionManifest'
-	]);
-	const catalogHash = rawContentHash(input.canonicalCatalogBytes);
-	const massManifestHash = rawContentHash(input.massProductionManifestBytes);
-	if (massCatalogHash !== catalogHash) {
-		throw new Error('Mass-production catalog source hash mismatch');
+	const summary = object(runtime.summary, 'runtime summary');
+	if (summary.skillCount !== canonical.length || summary.assetCount !== canonical.length) {
+		throw new Error('Invalid runtime summary skill count');
 	}
 	if (
-		authority(runtimeAuthorities.catalog, CATALOG_PATH, 'runtime catalog authority') !== catalogHash
+		summary.maximumAssetBytes !== MAXIMUM_ASSET_BYTES ||
+		summary.maximumManagedDirectoryBytes !== MAXIMUM_MANAGED_DIRECTORY_BYTES
+	) {
+		throw new Error('Invalid runtime maximum budget');
+	}
+	const totalBytes = runtimeRecords.reduce(
+		(total, record) => total + integer(record.bytes, 'runtime bytes'),
+		0
+	);
+	if (summary.totalBytes !== totalBytes) throw new Error('Invalid runtime total bytes');
+	if (summary.managedDirectoryBytes !== totalBytes + input.runtimeManifestBytes.byteLength) {
+		throw new Error('Invalid runtime managed directory bytes');
+	}
+
+	const sources = object(runtime.sourceAuthorities, 'runtime source authorities');
+	if (
+		authority(sources.catalog, CATALOG_PATH, 'runtime catalog authority') !==
+		sha256(input.canonicalCatalogBytes)
 	) {
 		throw new Error('Runtime catalog source hash mismatch');
 	}
 	if (
-		authority(
-			runtimeAuthorities.massProductionManifest,
-			MASS_MANIFEST_PATH,
-			'runtime mass-production authority'
-		) !== massManifestHash
+		authority(sources.assetManifest, ASSET_MANIFEST_PATH, 'runtime asset authority') !==
+		sha256(input.canonicalAssetsBytes)
 	) {
-		throw new Error('Runtime mass-production source hash mismatch');
+		throw new Error('Runtime asset source hash mismatch');
+	}
+	if (
+		authority(assets.catalog, CATALOG_PATH, 'asset catalog authority') !==
+		sha256(input.canonicalCatalogBytes)
+	) {
+		throw new Error('Canonical asset catalog hash mismatch');
 	}
 
-	const massByTargetId = new Map(massRecords.map((record) => [record.targetId, record]));
-	const runtimeByTargetId = new Map(runtimeRecords.map((record) => [record.targetId, record]));
-
-	const records = canonical.map((record) => {
-		const massRecord = massByTargetId.get(record.targetId);
-		if (!massRecord) throw new Error(`Missing mass-production record: ${record.targetId}`);
-		assertCanonicalMatchesMass(record, massRecord);
-		const runtimeRecord = runtimeByTargetId.get(record.targetId);
-		if (!runtimeRecord) throw new Error(`Missing runtime record: ${record.targetId}`);
-		if (
-			runtimeRecord.sourcePath !== massRecord.finalImagePath ||
-			runtimeRecord.sourceContentHash !== massRecord.finalImageHash
-		) {
-			throw new Error(`Runtime source hash mismatch for ${record.targetId}`);
+	const interiorById = new Map(
+		interiors.map((record) => [string(record.targetId, 'interior target ID'), record])
+	);
+	const runtimeById = new Map(
+		runtimeRecords.map((record) => [string(record.targetId, 'runtime target ID'), record])
+	);
+	const canonicalById = new Map(
+		canonical.map((record) => [string(record.targetId, 'canonical target ID'), record])
+	);
+	const result = canonical.map((record): SkillVisualCatalogRecord => {
+		const targetId = string(record.targetId, 'canonical target ID');
+		const skillDomain = domain(record.domain);
+		const interior = interiorById.get(targetId);
+		const runtimeRecord = runtimeById.get(targetId);
+		if (!interior || !runtimeRecord)
+			throw new Error(`Missing canonical visual record: ${targetId}`);
+		const sourcePath = string(interior.interiorPath, 'interior path');
+		const sourceHash = hash(interior.contentHash, 'interior hash');
+		if (runtimeRecord.sourcePath !== sourcePath || runtimeRecord.sourceContentHash !== sourceHash) {
+			throw new Error(`Runtime source mismatch for ${targetId}`);
 		}
-		const expectedFile = `icons/${massRecord.slug}.${massRecord.finalImageHash.slice(0, 12)}.webp`;
-		if (runtimeRecord.file !== expectedFile) {
-			throw new Error(`Runtime file mismatch for ${record.targetId}`);
+		const publicPath = string(runtimeRecord.publicPath, 'runtime public path');
+		const file = string(runtimeRecord.file, 'runtime file');
+		if (publicPath !== `${PUBLIC_ROOT}${file}` || !file.startsWith('icons/')) {
+			throw new Error(`Invalid runtime public path for ${targetId}`);
 		}
-		if (
-			!runtimeRecord.publicPath.startsWith(PUBLIC_ICON_ROOT) ||
-			runtimeRecord.publicPath !== `${PUBLIC_ROOT}${runtimeRecord.file}`
-		) {
-			throw new Error(`Runtime public path mismatch for ${record.targetId}`);
-		}
-		const parent = record.primaryVisualParent
-			? canonicalByTargetId.get(record.primaryVisualParent)
-			: null;
-		if (record.primaryVisualParent && !parent) {
-			throw new Error(`Unresolved primary visual parent: ${record.primaryVisualParent}`);
-		}
-		return freezeRecord({
-			targetId: record.targetId,
-			name: record.name,
-			domain: record.domain,
-			family: record.family,
-			labels: record.labels.map((item) => ({ ...item })),
-			type: record.type,
-			acquisition: record.acquisition,
-			effect: record.effect,
-			motifFamily: record.motifFamily,
-			primaryVisualParent: parent ? { targetId: parent.targetId, name: parent.name } : null,
-			image: {
-				publicPath: runtimeRecord.publicPath,
-				width: runtimeRecord.width,
-				height: runtimeRecord.height
-			},
-			provenance: {
-				status: massRecord.status,
-				sourcePath: massRecord.finalImagePath,
-				runtimePath: runtimeRecord.file
-			}
-		});
+		const parentId =
+			record.primaryVisualParent === null
+				? null
+				: string(record.primaryVisualParent, 'visual parent');
+		const parent = parentId ? canonicalById.get(parentId) : null;
+		if (parentId && !parent) throw new Error(`Unresolved primary visual parent: ${parentId}`);
+		const output: SkillVisualCatalogRecord = {
+			targetId,
+			name: string(record.name, 'canonical name'),
+			domain: skillDomain,
+			family: string(record.family, 'canonical family'),
+			labels: labels(record.labels),
+			type: skillType(record.type),
+			acquisition: string(record.requires, 'canonical acquisition'),
+			effect: string(record.effect, 'canonical effect'),
+			motifFamily: string(record.motifFamily ?? record.mapEntryId, 'canonical motif family'),
+			primaryVisualParent: parent
+				? { targetId: parentId!, name: string(parent.name, 'parent name') }
+				: null,
+			image: { publicPath, width: 512, height: 512 },
+			provenance: { status: 'approved', sourcePath, runtimePath: file }
+		};
+		Object.freeze(output.labels);
+		if (output.primaryVisualParent) Object.freeze(output.primaryVisualParent);
+		Object.freeze(output.image);
+		Object.freeze(output.provenance);
+		return Object.freeze(output);
 	});
-
-	return Object.freeze(records);
+	return Object.freeze(result);
 }
 
 const skillVisualCatalog = buildSkillVisualCatalog();

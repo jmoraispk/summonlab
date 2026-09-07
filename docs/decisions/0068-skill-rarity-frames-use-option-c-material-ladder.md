@@ -24,12 +24,12 @@ revised comparison, referred to as Option C, after reviewing three material-ladd
   `MASTERY · LV N`.
 - Rarity is fixed on the skill definition. Mastery and level are separate hero-skill state and must
   never be inferred from the frame.
-- `assets/wiki/skills/rarity-frame-v1/` is the canonical visual-source root. The selected comparison
-  plate is not a runtime sprite sheet and must not be cropped into individual frame assets.
+- `assets/wiki/skills/icon-production-v2/frames/` is the canonical visual-source root. It contains
+  one approved transparent frame layer per rank, bound by the canonical asset manifest.
 
 ## Consequences
 
-The wiki and future visual-production work now share one explicit material and ornament ladder.
+The wiki and future visual-production work share one explicit material and ornament ladder.
 D may remain more chromatic than C, but C must read brighter and more precisely finished; future
-polish should mute D before making C or A brighter. A later production decision must create and
-verify individual transparent frame exports before a runtime component consumes them.
+polish should mute D before making C or A brighter. Replacing a canonical frame and regenerating
+the runtime updates every skill without changing its retained frameless interior.

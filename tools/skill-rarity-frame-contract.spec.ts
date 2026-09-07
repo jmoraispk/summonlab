@@ -2,67 +2,57 @@ import { readFile } from 'node:fs/promises';
 
 import { describe, expect, it } from 'vitest';
 
-type WikiAsset = {
-	assetKey: string;
-	file: string;
-	status: string;
-	generationMode?: string;
-	provenanceFile?: string;
-};
-
-type WikiEntry = {
-	wikiId: string;
-	path: string;
-	designStatus: string;
-	implementationStatus: string;
-	visualStatus: string;
-	assets?: WikiAsset[];
-};
-
-describe('canonical skill rarity frame specification', () => {
-	it('publishes owner-selected Option C as the approved visual authority', async () => {
-		const catalog = JSON.parse(await readFile('docs/wiki/catalog.json', 'utf8')) as {
-			entries: WikiEntry[];
+describe('canonical skill rarity frames', () => {
+	it('binds one approved reusable frame for every rarity', async () => {
+		const manifest = JSON.parse(
+			await readFile('assets/wiki/skills/icon-production-v2/asset-manifest.json', 'utf8')
+		) as {
+			approvalPolicy: string;
+			sourcePolicy: string;
+			composition: { interiorTransform: string };
+			frames: { rarity: string; path: string }[];
 		};
-		const entry = catalog.entries.find(({ wikiId }) => wikiId === 'art.skill-rarity-frames');
 
-		expect(entry).toMatchObject({
-			path: 'docs/wiki/art/skill-rarity-frames.md',
-			designStatus: 'accepted',
-			implementationStatus: 'partial',
-			visualStatus: 'approved'
-		});
-		expect(entry?.assets).toEqual([
-			{
-				assetKey: 'skill-rarity-option-c-v1',
-				file: 'assets/wiki/skills/rarity-frame-v1/skill-rarity-option-c-v1.webp',
-				status: 'approved',
-				generationMode: 'built-in-imagegen',
-				provenanceFile: 'assets/wiki/skills/rarity-frame-v1/catalog.json'
-			}
+		expect(manifest.approvalPolicy).toBe('owner-approved-before-promotion');
+		expect(manifest.sourcePolicy).toBe('exact-frameless-source');
+		expect(manifest.composition.interiorTransform).toBe('identity');
+		expect(manifest.frames.map((frame) => frame.rarity)).toEqual([
+			'F',
+			'E',
+			'D',
+			'C',
+			'B',
+			'A',
+			'S'
 		]);
+		expect(manifest.frames.every((frame) => frame.path.includes('/frames/rarity-frame-'))).toBe(
+			true
+		);
 	});
 
-	it('freezes the material and ornament ladder without conflating mastery', async () => {
+	it('keeps the material ladder separate from bearer mastery', async () => {
 		const source = await readFile('docs/wiki/art/skill-rarity-frames.md', 'utf8');
-		const prose = source.replace(/\s+/g, ' ');
+		const prose = source.replaceAll(/\s+/g, ' ');
 
-		expect(source).toContain('F | Common | Weathered iron');
-		expect(source).toContain('E | Uncommon | Aged bronze');
-		expect(source).toContain('D | Rare | Tempered blue steel');
-		expect(source).toContain('C | Epic | Moonlit silver');
-		expect(source).toContain('B | Mythic | Blackened metal and amethyst');
-		expect(source).toContain('A | Fabled | Champagne electrum');
-		expect(source).toContain('S | Legendary | Ceremonial antique gold');
+		for (const material of [
+			'Weathered iron',
+			'Aged bronze',
+			'Tempered blue steel',
+			'Moonlit silver',
+			'Blackened metal and amethyst',
+			'Champagne electrum',
+			'Ceremonial antique gold'
+		]) {
+			expect(source).toContain(material);
+		}
 		expect(prose).toContain('Rarity belongs to the skill definition');
 		expect(prose).toContain('Mastery and level belong to the hero-skill relationship');
 	});
 
-	it('bundles the approved comparison plate into the rendered wiki', async () => {
-		const wikiServer = await readFile('apps/web/src/lib/server/wiki.ts', 'utf8');
-
-		expect(wikiServer).toContain(
-			"'../../../../../assets/wiki/skills/rarity-frame-v1/skill-rarity-option-c-v1.webp'"
-		);
+	it('renders the seven canonical frame files in the wiki', async () => {
+		const wiki = await readFile('apps/web/src/lib/server/wiki.ts', 'utf8');
+		for (const rarity of ['f', 'e', 'd', 'c', 'b', 'a', 's']) {
+			expect(wiki).toContain(`icon-production-v2/frames/rarity-frame-${rarity}.png`);
+		}
 	});
 });

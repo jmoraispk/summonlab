@@ -1,6 +1,6 @@
 import { execFile } from 'node:child_process';
 import { createHash } from 'node:crypto';
-import { mkdtemp, mkdir, readFile, rm, writeFile } from 'node:fs/promises';
+import { access, mkdtemp, mkdir, readFile, rm, writeFile } from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 import { promisify } from 'node:util';
@@ -151,15 +151,16 @@ describe('wiki generated-art provenance validation', () => {
 		});
 	});
 
-	it('binds every runtime skill-tree domain image to the Skills index catalog', async () => {
+	it('keeps each lean runtime skill-domain image available without source archives', async () => {
 		const catalog = JSON.parse(await readFile('docs/wiki/catalog.json', 'utf8')) as {
 			entries: Array<{ wikiId: string; assets?: Array<{ file: string }> }>;
 		};
 		const skillsIndex = catalog.entries.find((entry) => entry.wikiId === 'skills.index');
 
-		expect(skillsIndex?.assets?.map((asset) => asset.file)).toEqual(
-			SKILL_DOMAINS.map((domain) => `apps/web/static${domain.image}`)
-		);
+		expect(skillsIndex?.assets).toBeUndefined();
+		await expect(
+			Promise.all(SKILL_DOMAINS.map((domain) => access(path.join('apps/web/static', domain.image))))
+		).resolves.toEqual(expect.any(Array));
 	});
 
 	it('rejects a generated wiki asset without a provenance manifest', async () => {

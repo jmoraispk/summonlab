@@ -411,30 +411,7 @@
       "designStatus": "draft",
       "implementationStatus": "partial",
       "visualStatus": "candidate",
-      "spoilerScope": "public",
-      "assets": [
-        {
-          "assetKey": "martial-domain-v1",
-          "file": "apps/web/static/wiki-media/skills/martial-domain.webp",
-          "status": "candidate",
-          "generationMode": "built-in-imagegen",
-          "provenanceFile": "assets/wiki/skills/domain-art-v1/catalog.json"
-        },
-        {
-          "assetKey": "magical-domain-v2",
-          "file": "apps/web/static/wiki-media/skills/magical-domain-v2.webp",
-          "status": "candidate",
-          "generationMode": "built-in-imagegen",
-          "provenanceFile": "assets/wiki/skills/domain-art-v1/catalog.json"
-        },
-        {
-          "assetKey": "craft-domain-v1",
-          "file": "apps/web/static/wiki-media/skills/craft-domain.webp",
-          "status": "candidate",
-          "generationMode": "built-in-imagegen",
-          "provenanceFile": "assets/wiki/skills/domain-art-v1/catalog.json"
-        }
-      ]
+      "spoilerScope": "public"
     },
     {
       "wikiId": "skills.visual-catalog",
@@ -702,18 +679,9 @@
       "pageType": "visual-brief",
       "owner": "skill-catalog",
       "designStatus": "accepted",
-      "implementationStatus": "partial",
-      "visualStatus": "approved",
-      "spoilerScope": "public",
-      "assets": [
-        {
-          "assetKey": "skill-rarity-option-c-v1",
-          "file": "assets/wiki/skills/rarity-frame-v1/skill-rarity-option-c-v1.webp",
-          "status": "approved",
-          "generationMode": "built-in-imagegen",
-          "provenanceFile": "assets/wiki/skills/rarity-frame-v1/catalog.json"
-        }
-      ]
+      "implementationStatus": "implemented",
+			"visualStatus": "approved",
+			"spoilerScope": "public"
     },
     {
       "wikiId": "art.hero-rarity-frames",

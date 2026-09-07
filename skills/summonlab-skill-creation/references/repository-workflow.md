@@ -13,16 +13,19 @@ the next stable row number. Add the skill to one existing motif sequence at the 
 position, or create a new motif sequence under the existing family when its concrete subject and
 progression grammar differ materially.
 
-Regenerate the complete affected family reference sheet in a new production revision. Generate the
-new individual skill independently; do not regenerate accepted siblings merely because the sheet
-changed.
+Generate a pre-generation family sheet on demand from already accepted family interiors, backing,
+and frames. It excludes the target being created. Generate the new individual skill independently;
+do not regenerate accepted siblings. After generation, the coordinator may create a complete
+framed family sheet that includes the candidate for owner review. Do not retain either sheet.
 
 ### New family
 
 Confirm the family belongs under exactly one of `Martial`, `Magical`, or `Craft`. Update the
 canonical family allowlist, wiki index/navigation, interactive tree data, and add a canonical
 Markdown source in the same shape as neighboring families. Define every initial motif sequence,
-then generate one reference sheet per motif family and one independent icon per new skill.
+then generate one temporary reference sheet per motif family from any already accepted members and
+one independent interior per new skill. The first skill in a new family has no family sheet; its
+generation references only geometry and any separately approved visual parent.
 
 Do not introduce an intermediate taxonomy level. Equipment and Element remain optional labels on
 skills.
@@ -66,16 +69,15 @@ Inspect:
 
 - `docs/superpowers/specs/2026-09-01-skill-icon-production-system-design.md`
 - `docs/superpowers/specs/2026-09-01-skill-icon-motif-map.md`
-- `assets/wiki/skills/icon-production-v1/visual-specs.json`
-- `assets/wiki/skills/icon-production-v1/geometry-v2.json`
-- `assets/wiki/skills/icon-production-v1/references/geometry-guide-v2.png`
-- `assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png`
+- `assets/wiki/skills/icon-production-v2/visual-specs.json`
+- `assets/wiki/skills/icon-production-v2/asset-manifest.json`
+- `assets/wiki/skills/icon-production-v2/geometry.json`
+- `assets/wiki/skills/icon-production-v2/geometry-guide.png`
+- `assets/wiki/skills/icon-production-v2/frames/`
 
-The accepted v1 motif-map Markdown is historical authored lineage authority. For post-v1 skills,
-create a dated/versioned successor source rather than editing it. Motif-map and catalog JSON are
-generated outputs. Add each target exactly once and keep family members in parent-before-child
-order. The immediate parent must be in the same motif family and visually explain the child's
-progression.
+Motif-map and catalog JSON are generated outputs. Add each target exactly once and keep family
+members in parent-before-child order. The immediate parent must be in the same motif family and
+visually explain the child's progression.
 
 Author the visual-spec record with one dominant concrete subject and at most one supporting effect.
 F through A remain concrete-first. S may become primarily abstract only when the skill concept and
@@ -88,62 +90,75 @@ provider request remains a frameless artwork layer:
 - no name, mastery, level, caption, UI panel, scenery, logo, or watermark;
 - no enlarged crop from a family sheet and no reused sibling icon.
 
-The v1 exporter contains frozen catalog-count assertions, and the completed v1 manifest binds its
-catalog, motif map, and visual specs by path and hash. Treat the inspected v1 visual specs as a
-style/content reference, not an editable destination. A post-v1 addition must not rewrite those
-files. Create the next versioned icon-production authority (prefer
-`assets/wiki/skills/icon-production-v2/`) or an explicit, tested append-only overlay that binds v1
-as its base. Preserve the v1 exporter/checker and add a version-aware exporter/checker for the new
-authority. Prefer counts derived from frozen inputs over replacing one global magic number with
-another.
-
-Export and check the intended version only after mechanics, lineage, and visual state agree. These
-commands are the current v1 interface; extend or version them before using them for later inventory:
+`assets/wiki/skills/icon-production-v2/` is the sole live visual authority. Its asset manifest binds
+one frameless interior to every catalog row plus seven reusable frames, one backing, and geometry.
+Export and check the derived catalog after mechanics, lineage, and visual state agree. The full
+asset/runtime validator intentionally waits until the approved interior is promoted:
 
 ```bash
 pnpm export:skill-icons
 pnpm check:skill-icon-catalog
 ```
 
-## 4. Additive image production
+## 4. Temporary review and canonical promotion
 
-Read `docs/skill-icon-mass-production-goal-contract.md` for the completed baseline conventions, but
-do not edit `icon-production-v1` or its `mass-production-v1` evidence. Under the new versioned
-authority, create a collision-safe run root and manifest that freezes the new canonical inputs and
-references the approved frame, geometry, and Painted Emblem authorities by path and hash. Existing
-v1 individual icons may be referenced by exact hash; they are not copied or silently re-approved.
+Use a collision-safe temporary run for new provider output. It must reference the live canonical
+frame, backing, geometry, and family members by path and hash, but it is not a second catalog or a
+permanent production archive.
 
 For every affected motif family:
 
-1. Save a provider-native reference sheet with all current members in lineage order, complete
-   frames, and no captions. It is reference-only presentation for lineage review: it does not
-   authorize frame generation or cropping a framed cell into an individual artwork layer.
-2. Save its cell map, prompt packet, result, references, hashes, and revision evidence.
+1. Before generation, compose a temporary reference sheet from already accepted members in lineage
+   order, complete frames, and no captions. Exclude the target. It is temporary reference-only
+   presentation for lineage review: it does not authorize frame generation or cropping a framed
+   cell into an individual artwork layer. Omit this sheet when no accepted family member exists.
+2. Keep the temporary cell map, prompt packet, result, references, and hashes only through review.
 3. Generate one frameless artwork layer from content, geometry, family, and immediate-parent
    authorities. The individual producer receives no approved frame as generation content. The
    family sheet may remain a complete framed review reference, never crop content; do not use an
    enlarged crop from it as individual artwork.
-4. The coordinator centers the accepted provider artwork at artworkScale: 0.9, producing 922x922
-   pixels at (51,51) on the 1024x1024 canvas. It assembles layers strictly back-to-front as
-   `backing → skill-art → rarity-frame`; `rarityFrameIsFinal === true`. It extracts the aperture
-   interior, adds canonical backing, and applies the canonical rarity frame with
-   compositionProfile: 'frame-opening-v3'. A different scale requires new explicit owner-reviewed
-   authority; never guess it per target. Here, accepted provider artwork means the
-   coordinator-selected exact provider source, not owner approval or promotion.
-5. Fail closed before composition acceptance unless every literal outcome holds:
-   `apertureCoverage.complete === true`; no baked frame traces; `exteriorTransparent === true`;
-   `backingOnlyComponents.length === 0`; `layerHashesMatch === true`; `exactComposite === true`;
-   `protectedBandMatches === true`; and `rarityFrameIsFinal === true`. Preserve source, layer,
-   candidate, result, hashes, and inspection evidence for the provider artwork and deterministic
-   assembly.
+4. Keep the accepted provider artwork byte-for-byte as the 1024x1024 canonical interior. Do not
+   resize, reposition, mask, crop, or extract it. The shared manifest declares
+   `sourcePolicy: 'exact-frameless-source'` and `interiorTransform: 'identity'` so a future frame
+   replacement reuses the original art without hidden reframing.
+5. The coordinator creates the review composite with the shared runtime composition function by
+   running `pnpm render:skill-icon-review -- ...`. It uses
+   `backing → interior → rarity-frame`, with the frame last. Automated checks bind every layer hash,
+   enforce the identity transform and exact inventory, and reproduce the composite. The owner
+   visually confirms subject placement, aperture coverage, absence of baked frame traces, and
+   recognition at full size and 96px.
+6. After the candidate exists, the coordinator may compose a complete framed family sheet including
+   it for final lineage review using the same command's `--family-output`. This post-generation
+   sheet is never a generation source.
+
+Before generation, when accepted lineage members exist:
+
+```bash
+pnpm render:skill-icon-review -- \
+  --target-id martial:blade:measured-cut \
+  --family-output .skill-icon-work/martial-blade-measured-cut-v2/family-reference.png
+```
+
+After generation, create the individual composite and optional complete review sheet:
+
+```bash
+pnpm render:skill-icon-review -- \
+  --target-id martial:blade:measured-cut \
+  --candidate .skill-icon-work/martial-blade-measured-cut-v2/candidate.png \
+  --review-output .skill-icon-work/martial-blade-measured-cut-v2/review-composite.png \
+  --family-output .skill-icon-work/martial-blade-measured-cut-v2/family-review.png
+```
+
+The command refuses permanent output paths and refuses an empty first-lineage sheet.
 
 Use `summonlab-skill-icon-production` for each assigned manifest-bound raster. That producer writes
-only its owned candidate/result paths and never promotes. The coordinating change owns manifests,
-reference sheets, maps, catalogs, contact sheets, and completion evidence.
-
-If extending existing production tooling to a new run revision, add tests first and retain
-compatibility with the completed v1 checker. A new revision needs its own read-only completion check;
-passing `pnpm check:skill-icon-mass-production` for v1 alone is insufficient.
+only its temporary candidate/result paths and never promotes. The target's mechanics, motif, and
+visual-spec records must already exist before image production. Once the owner approves the
+isolated art and its framed composite, the coordinator promotes the exact frameless file into the
+canonical interior inventory, regenerates `asset-manifest.json` and the wiki runtime, verifies both,
+and deletes the temporary run. Do not retain
+the generated family sheet, framed candidate, provider source, contact sheet, or review gallery in
+the repository after promotion.
 
 ## 5. Verification and handoff
 
@@ -151,23 +166,24 @@ At minimum, run the live equivalents of:
 
 ```bash
 pnpm validate:wiki
-pnpm check:skill-icon-catalog
+pnpm validate:skill-icons
 pnpm typecheck:skill-icons
 pnpm test:skill-icons
-pnpm check:skill-icon-mass-production
+pnpm validate:wiki-skill-visual-catalog
 ```
 
-Also run the new revision's checker and the broader repository suite required by `AGENTS.md`. Inspect
-each new candidate full-size and at 96 pixels. Confirm the manifest indexes every new file and hash,
-and that the working tree contains no unindexed provider output.
+Also run the broader repository suite required by `AGENTS.md`. Inspect each new candidate full-size
+and at 96 pixels before promotion. Confirm the canonical manifest indexes every retained file and
+hash, and that the working tree contains no unindexed provider output.
 
 Report separately:
 
 - canonical mechanics and taxonomy changes;
 - new or revised motif lineages;
-- family sheets and individual candidates produced;
-- validations and exact new-run counts;
-- unresolved visual-review decisions;
+- temporary family review and approved interior produced;
+- canonical manifest and runtime validations;
+- any unresolved visual-review decision;
 - commit, push, and working-tree state.
 
-Candidate means technically reviewable. Only the owner can accept or promote it.
+Candidate means technically reviewable. Only the owner can accept it; only the coordinator can
+promote it into shared canonical state.

@@ -1,0 +1,2808 @@
+{
+	"schemaVersion": "skill-icon-canonical-assets-v1",
+	"approvalPolicy": "owner-approved-before-promotion",
+	"sourcePolicy": "exact-frameless-source",
+	"catalog": {
+		"path": "assets/wiki/skills/icon-production-v2/catalog.json",
+		"contentHash": "699ebc2e91788f08646ce3fa05a215b975a14bf19721c8e159f025db6536296d"
+	},
+	"composition": {
+		"canvasSize": 1024,
+		"layerOrder": ["backing", "interior", "rarity-frame"],
+		"interiorTransform": "identity"
+	},
+	"backing": {
+		"path": "assets/wiki/skills/icon-production-v2/backing.png",
+		"contentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15"
+	},
+	"geometry": {
+		"path": "assets/wiki/skills/icon-production-v2/geometry.json",
+		"contentHash": "6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab"
+	},
+	"geometryGuide": {
+		"path": "assets/wiki/skills/icon-production-v2/geometry-guide.png",
+		"contentHash": "8f1c01435f3e32de07560b154d9e3becba3ca2a38773ca74c3115d66ba28094e"
+	},
+	"frames": [
+		{
+			"rarity": "F",
+			"path": "assets/wiki/skills/icon-production-v2/frames/rarity-frame-f.png",
+			"contentHash": "8a96672403f0eb28e794ea4332780245cb7a992ca40374917dc4994a59bf79f4"
+		},
+		{
+			"rarity": "E",
+			"path": "assets/wiki/skills/icon-production-v2/frames/rarity-frame-e.png",
+			"contentHash": "759766a69a4c8daecc72f3714f6e6bcc06560f9dd349e9be676b88bf69199056"
+		},
+		{
+			"rarity": "D",
+			"path": "assets/wiki/skills/icon-production-v2/frames/rarity-frame-d.png",
+			"contentHash": "a5e986928d1cd3202194df2db17e8d727669e62f7428cd8dbc79bf706420ae15"
+		},
+		{
+			"rarity": "C",
+			"path": "assets/wiki/skills/icon-production-v2/frames/rarity-frame-c.png",
+			"contentHash": "ce21fd3bc700133299ae0d812c85796445d6ad5011e0cb1ef29916a78fdda2d8"
+		},
+		{
+			"rarity": "B",
+			"path": "assets/wiki/skills/icon-production-v2/frames/rarity-frame-b.png",
+			"contentHash": "2157b369aaecdf883693b644da8256a1add656a4a92309ea0b19d0b8cce3c7e0"
+		},
+		{
+			"rarity": "A",
+			"path": "assets/wiki/skills/icon-production-v2/frames/rarity-frame-a.png",
+			"contentHash": "7b705ab4bfa49fa6f96949f0277da2be5602fb3457de2108fe4e0e620d1d6d7a"
+		},
+		{
+			"rarity": "S",
+			"path": "assets/wiki/skills/icon-production-v2/frames/rarity-frame-s.png",
+			"contentHash": "9dcf6bd4d9df127d695668e9b59e8c515d531ef2370e0d4e17d4349bd9e1e464"
+		}
+	],
+	"records": [
+		{
+			"targetId": "craft:alchemy:antidotes",
+			"slug": "craft-alchemy-antidotes",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/craft-alchemy-antidotes.png",
+			"contentHash": "8ed24e0c1afc0f937a7efe4cd1d09716d0216017fb5f66171254af4b5874ade6"
+		},
+		{
+			"targetId": "craft:alchemy:concentration",
+			"slug": "craft-alchemy-concentration",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/craft-alchemy-concentration.png",
+			"contentHash": "c10e141b96bdacd9278ca18b6b608f33de9f732eea8604d499063e4f621ce6eb"
+		},
+		{
+			"targetId": "craft:alchemy:deathcap",
+			"slug": "craft-alchemy-deathcap",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/craft-alchemy-deathcap.png",
+			"contentHash": "05faa387d847e01712417717dc87307c205a3858711bf0f5db3f51e3633c4d23"
+		},
+		{
+			"targetId": "craft:alchemy:elixir-craft",
+			"slug": "craft-alchemy-elixir-craft",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/craft-alchemy-elixir-craft.png",
+			"contentHash": "9421f47fba7475153b2fd68191457b44f4598333c6b172928e05df750b2bc0bc"
+		},
+		{
+			"targetId": "craft:alchemy:elixir-of-years",
+			"slug": "craft-alchemy-elixir-of-years",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/craft-alchemy-elixir-of-years.png",
+			"contentHash": "1a07d6a141fe0efcc5f3459c9fd5df6915f3c5fd90589db4b7a2a0b62518fcf2"
+		},
+		{
+			"targetId": "craft:alchemy:extraction",
+			"slug": "craft-alchemy-extraction",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/craft-alchemy-extraction.png",
+			"contentHash": "19b68dd3f4149bc255fa23f4cb540a1501f3051eb39688025d08f2d7f9fac019"
+		},
+		{
+			"targetId": "craft:alchemy:grenade-throw",
+			"slug": "craft-alchemy-grenade-throw",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/craft-alchemy-grenade-throw.png",
+			"contentHash": "a13aced5a68a8de9a70cb433e3b0d15d8c1c744c177f5468ce198f006497d851"
+		},
+		{
+			"targetId": "craft:alchemy:panacea",
+			"slug": "craft-alchemy-panacea",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/craft-alchemy-panacea.png",
+			"contentHash": "087766feacbcaea783711bd686bee0994b12822b1f1a04736ce32456251ba26b"
+		},
+		{
+			"targetId": "craft:alchemy:philosopher-s-work",
+			"slug": "craft-alchemy-philosopher-s-work",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/craft-alchemy-philosopher-s-work.png",
+			"contentHash": "8b05382691ae3cb1f6d9ed0575bfb6a0ab2d7b3b410546cb0b0629ca66407ec4"
+		},
+		{
+			"targetId": "craft:alchemy:poisoncraft",
+			"slug": "craft-alchemy-poisoncraft",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/craft-alchemy-poisoncraft.png",
+			"contentHash": "616bcd77b55bfabd112237d3615aeaeee8c07af97b7fd767d11cacc736c6309a"
+		},
+		{
+			"targetId": "craft:alchemy:potion-brewing",
+			"slug": "craft-alchemy-potion-brewing",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/craft-alchemy-potion-brewing.png",
+			"contentHash": "bfa4914cb6e44c6f8ac1985f08ccf9f7d1bad79123daf1131532f76e1f8e13fb"
+		},
+		{
+			"targetId": "craft:alchemy:preservation",
+			"slug": "craft-alchemy-preservation",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/craft-alchemy-preservation.png",
+			"contentHash": "726d1d63375490065e830e75a5485af770918eed28b7aea075e420e1252bcd19"
+		},
+		{
+			"targetId": "craft:alchemy:reagent-sense",
+			"slug": "craft-alchemy-reagent-sense",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/craft-alchemy-reagent-sense.png",
+			"contentHash": "b3d1ca6c9a8628694d6b0d7b2300c379f5f5125c331660ec7384e1eda7131bbe"
+		},
+		{
+			"targetId": "craft:alchemy:simple-brewing",
+			"slug": "craft-alchemy-simple-brewing",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/craft-alchemy-simple-brewing.png",
+			"contentHash": "0a457acb745fcbec9b5aa32f0a47dbd135d0c367a776df2d3ab952eb6617e6fe"
+		},
+		{
+			"targetId": "craft:alchemy:transmutation",
+			"slug": "craft-alchemy-transmutation",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/craft-alchemy-transmutation.png",
+			"contentHash": "d451b70871a5b3753ade3e6dee34ec4ffa84e0ef5e7cab711a16245e2bfd05cb"
+		},
+		{
+			"targetId": "craft:alchemy:volatiles",
+			"slug": "craft-alchemy-volatiles",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/craft-alchemy-volatiles.png",
+			"contentHash": "049cb2c4f64681b55fd8852fd840fc110c17544275979147eaa85d71d931d8c4"
+		},
+		{
+			"targetId": "craft:cooking:banquet-of-the-five",
+			"slug": "craft-cooking-banquet-of-the-five",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/craft-cooking-banquet-of-the-five.png",
+			"contentHash": "f1bb3fc47980275e17daa118904a433f12c84e2b5601e1d6aec3eeba4415ded4"
+		},
+		{
+			"targetId": "craft:cooking:butchery",
+			"slug": "craft-cooking-butchery",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/craft-cooking-butchery.png",
+			"contentHash": "3528b6c4f83b3f4273c162b8ffb7c56b6c6f79fa7343b119c8e4b846f8f4fc88"
+		},
+		{
+			"targetId": "craft:cooking:comfort",
+			"slug": "craft-cooking-comfort",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/craft-cooking-comfort.png",
+			"contentHash": "8d864a0b865698fd4eed34d58c5ce70dd76dc90f3bf4f322165e0c832427578b"
+		},
+		{
+			"targetId": "craft:cooking:cooking",
+			"slug": "craft-cooking-cooking",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/craft-cooking-cooking.png",
+			"contentHash": "a2667c783f1d4cde637e2241588e3266d35f9b9d3c88274dcd656e2206ce9fb0"
+		},
+		{
+			"targetId": "craft:cooking:feast",
+			"slug": "craft-cooking-feast",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/craft-cooking-feast.png",
+			"contentHash": "e36eb5fe5f5a05dd99af6062a3163cd75bb5538619324ad58a27dc9d74721c1a"
+		},
+		{
+			"targetId": "craft:cooking:field-rations",
+			"slug": "craft-cooking-field-rations",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/craft-cooking-field-rations.png",
+			"contentHash": "be5930605722cba299a3da27ee17b60f34ac36bed894c69e429aef54b51aacde"
+		},
+		{
+			"targetId": "craft:cooking:hearth-meal",
+			"slug": "craft-cooking-hearth-meal",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/craft-cooking-hearth-meal.png",
+			"contentHash": "51c23ae4e3a393620c29a0f15786cb8f3b0307b2b9fb1cf8bdf8aaa04aa077e1"
+		},
+		{
+			"targetId": "craft:cooking:monster-cuisine",
+			"slug": "craft-cooking-monster-cuisine",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/craft-cooking-monster-cuisine.png",
+			"contentHash": "15a42baffd940fce673ba4502f9478faa5ac544a85536e31a0167264c5d8cc38"
+		},
+		{
+			"targetId": "craft:cooking:preserving",
+			"slug": "craft-cooking-preserving",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/craft-cooking-preserving.png",
+			"contentHash": "222e3f01d6349271eb5902c4bd7aa48548eea1d35972b412a0d4b460345e62c3"
+		},
+		{
+			"targetId": "craft:cooking:restorative-broth",
+			"slug": "craft-cooking-restorative-broth",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/craft-cooking-restorative-broth.png",
+			"contentHash": "9a90975dd53af7a850f16076b30ad4a1b8a08cbe561c9777e42afbc20f9524da"
+		},
+		{
+			"targetId": "craft:cooking:seasoning",
+			"slug": "craft-cooking-seasoning",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/craft-cooking-seasoning.png",
+			"contentHash": "dd53129b0577a49a08aa40d93a589a37070223c0872a94e644fd8a8ed5b93a1f"
+		},
+		{
+			"targetId": "craft:cooking:the-long-table",
+			"slug": "craft-cooking-the-long-table",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/craft-cooking-the-long-table.png",
+			"contentHash": "6b713a777c9ed135323642ab8723282836e1de9221ef4e3d5a79c1535556c42d"
+		},
+		{
+			"targetId": "craft:forging:alloying",
+			"slug": "craft-forging-alloying",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/craft-forging-alloying.png",
+			"contentHash": "248563618b84fbb5f431064a6e500c13b95b8743121baecae1cdf8d527fd30d4"
+		},
+		{
+			"targetId": "craft:forging:armoursmithing",
+			"slug": "craft-forging-armoursmithing",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/craft-forging-armoursmithing.png",
+			"contentHash": "8b6b0f3315ed849f07d3b633634c9ed6058d58d767d603bbf2c250172804e7d3"
+		},
+		{
+			"targetId": "craft:forging:fittings",
+			"slug": "craft-forging-fittings",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/craft-forging-fittings.png",
+			"contentHash": "ae1c4fd5e09f4aa2a07b7ff914537f1f0d8ef47357e1d94017b2b870fb2141da"
+		},
+		{
+			"targetId": "craft:forging:fuel-craft",
+			"slug": "craft-forging-fuel-craft",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/craft-forging-fuel-craft.png",
+			"contentHash": "bd790fcc581afb6a46e995ff53dcdc6e9c2fd3649c86f99ab410d0ba908421e5"
+		},
+		{
+			"targetId": "craft:forging:godsmithing",
+			"slug": "craft-forging-godsmithing",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/craft-forging-godsmithing.png",
+			"contentHash": "d298a882213811f54da635667ed3eb79f44371108db45d20ac2d53369fb201a4"
+		},
+		{
+			"targetId": "craft:forging:living-metal",
+			"slug": "craft-forging-living-metal",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/craft-forging-living-metal.png",
+			"contentHash": "c00a71fa8027827d6e8c288394d0c0bf962681964c99a02758ec5b837fa92ef9"
+		},
+		{
+			"targetId": "craft:forging:master-s-mark",
+			"slug": "craft-forging-master-s-mark",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/craft-forging-master-s-mark.png",
+			"contentHash": "bf8a9730de1f56d0ccd00ac3f327084cecc32ae6b7fc2beb3747e06d29deb738"
+		},
+		{
+			"targetId": "craft:forging:monster-craft",
+			"slug": "craft-forging-monster-craft",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/craft-forging-monster-craft.png",
+			"contentHash": "388d01bd3f0eeb9bef9a85c416570ce64395b4512ac06a537367be74532249b8"
+		},
+		{
+			"targetId": "craft:forging:ore-sense",
+			"slug": "craft-forging-ore-sense",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/craft-forging-ore-sense.png",
+			"contentHash": "2405e86e6fdf88b2c5113fcb35047238f71c3aba181ccaa20877985252d93403"
+		},
+		{
+			"targetId": "craft:forging:runic-foundation",
+			"slug": "craft-forging-runic-foundation",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/craft-forging-runic-foundation.png",
+			"contentHash": "67c2c9b82cdfe052054aca37544dca6e158c88c10cc228674d05a1e97eb8ce24"
+		},
+		{
+			"targetId": "craft:forging:sharpening",
+			"slug": "craft-forging-sharpening",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/craft-forging-sharpening.png",
+			"contentHash": "e66909e9d86a3db1a360ce101f04a34caa630a3324c2d6ac6f834ebd4a01e04c"
+		},
+		{
+			"targetId": "craft:forging:simple-smithing",
+			"slug": "craft-forging-simple-smithing",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/craft-forging-simple-smithing.png",
+			"contentHash": "7bb46e5b4030591383f437e8e7963ade91053a7e24afba05cd1c7a59659ef3ae"
+		},
+		{
+			"targetId": "craft:forging:soul-forging",
+			"slug": "craft-forging-soul-forging",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/craft-forging-soul-forging.png",
+			"contentHash": "c83510ad0eceab99d4ff2c134d027e492f509191f94217619376ea243f6b8aaf"
+		},
+		{
+			"targetId": "craft:forging:tempering",
+			"slug": "craft-forging-tempering",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/craft-forging-tempering.png",
+			"contentHash": "5a47904c5d4f65a42147823fe978455cff7ec6842409535039aba5eaebb4ada9"
+		},
+		{
+			"targetId": "craft:forging:weaponsmithing",
+			"slug": "craft-forging-weaponsmithing",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/craft-forging-weaponsmithing.png",
+			"contentHash": "3ae1b90762a5475d8768a1efdd1a347e370b8dd3079f6e1de64d8175753fdcde"
+		},
+		{
+			"targetId": "craft:forging:weightless-craft",
+			"slug": "craft-forging-weightless-craft",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/craft-forging-weightless-craft.png",
+			"contentHash": "96169006ca33cd721dd017f52c8408d5da6e43bb68e4cb0e03c75a6fce9a2802"
+		},
+		{
+			"targetId": "craft:gathering:animal-handling",
+			"slug": "craft-gathering-animal-handling",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/craft-gathering-animal-handling.png",
+			"contentHash": "a536d0f84179b3d0d421ef00220f190457c97557fcb66f1fd69a85a0889761b2"
+		},
+		{
+			"targetId": "craft:gathering:breeding",
+			"slug": "craft-gathering-breeding",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/craft-gathering-breeding.png",
+			"contentHash": "7aa9874ee8dc5794498bb26d1a07ebf03897410f7eae5df99cba676ea7de516f"
+		},
+		{
+			"targetId": "craft:gathering:bulk-carry",
+			"slug": "craft-gathering-bulk-carry",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/craft-gathering-bulk-carry.png",
+			"contentHash": "b9d5d53b780bcf84d1f46b9f23a91c3a59c7b555263cdbe35acc6b9394624030"
+		},
+		{
+			"targetId": "craft:gathering:careful-harvest",
+			"slug": "craft-gathering-careful-harvest",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/craft-gathering-careful-harvest.png",
+			"contentHash": "356e4b36e0e01e71112084b43c5f75bb00d4b4c87545678f2084c5f5e24a8278"
+		},
+		{
+			"targetId": "craft:gathering:cultivation",
+			"slug": "craft-gathering-cultivation",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/craft-gathering-cultivation.png",
+			"contentHash": "31878abca58651532c8f82fafd99196e97926209055867414d8a4b911d6411f9"
+		},
+		{
+			"targetId": "craft:gathering:deep-vein",
+			"slug": "craft-gathering-deep-vein",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/craft-gathering-deep-vein.png",
+			"contentHash": "70ad3dcb379d4a08f8555a2150fec547da75099a2c239e6f9ae4e3e21047b3ac"
+		},
+		{
+			"targetId": "craft:gathering:foraging",
+			"slug": "craft-gathering-foraging",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/craft-gathering-foraging.png",
+			"contentHash": "133c96e6f345db0c5d36e0fd63f574fe4f72420ed5a91b693914995bea7abc45"
+		},
+		{
+			"targetId": "craft:gathering:gathering",
+			"slug": "craft-gathering-gathering",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/craft-gathering-gathering.png",
+			"contentHash": "286e34df42af7c42b4d02c3c4c94becc255f377b56f39b03ea1680a3d65626dd"
+		},
+		{
+			"targetId": "craft:gathering:greater-taming",
+			"slug": "craft-gathering-greater-taming",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/craft-gathering-greater-taming.png",
+			"contentHash": "f39e36ecdf9bd45d80ad5cf0cd2d31efe7bf7d43290341d2dc79f2b9d1cfe124"
+		},
+		{
+			"targetId": "craft:gathering:leyline-harvest",
+			"slug": "craft-gathering-leyline-harvest",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/craft-gathering-leyline-harvest.png",
+			"contentHash": "e10149988fdef5037bdf07dbe48a0e81ed0511e72820784f666709f4682d24e8"
+		},
+		{
+			"targetId": "craft:gathering:mining",
+			"slug": "craft-gathering-mining",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/craft-gathering-mining.png",
+			"contentHash": "49365262be6ca9767817caf60ce85f622fdb4b87c8937a44264c883829b612d0"
+		},
+		{
+			"targetId": "craft:gathering:monarch-of-beasts",
+			"slug": "craft-gathering-monarch-of-beasts",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/craft-gathering-monarch-of-beasts.png",
+			"contentHash": "60e5e5972ac54fb52c22087444b40cab413ecbe9fd840573aee4f7c76c337d96"
+		},
+		{
+			"targetId": "craft:gathering:nothing-wasted",
+			"slug": "craft-gathering-nothing-wasted",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/craft-gathering-nothing-wasted.png",
+			"contentHash": "44d9b32d8d4cce70b03850855380ba14e57f5dae9440cfd1f8a76f9f64919ef9"
+		},
+		{
+			"targetId": "craft:gathering:perfect-cut",
+			"slug": "craft-gathering-perfect-cut",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/craft-gathering-perfect-cut.png",
+			"contentHash": "568c2701c4e4a11c699fe8dc8f6f2bd278c55123d6af016a8be526f7544dbf6b"
+		},
+		{
+			"targetId": "craft:gathering:prospecting",
+			"slug": "craft-gathering-prospecting",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/craft-gathering-prospecting.png",
+			"contentHash": "be89bd20c31ac5b2ae906e5d268ddd90e51e906c96b54944d80b32aa364deec4"
+		},
+		{
+			"targetId": "craft:gathering:skinning",
+			"slug": "craft-gathering-skinning",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/craft-gathering-skinning.png",
+			"contentHash": "4560940f6224aee6fab0baaa17c2e0d99ce116fdb51b149ac4f3d2981d0fea78"
+		},
+		{
+			"targetId": "craft:gathering:taming",
+			"slug": "craft-gathering-taming",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/craft-gathering-taming.png",
+			"contentHash": "b605661afb3baccfed9163e5c37cf85e24f689318a0d822adfcbbce0a76a1b4a"
+		},
+		{
+			"targetId": "craft:gathering:the-earth-provides",
+			"slug": "craft-gathering-the-earth-provides",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/craft-gathering-the-earth-provides.png",
+			"contentHash": "e6971346df884f9b9b29cc221f0053f0add7e89c4e2222f7def641b1aad5481e"
+		},
+		{
+			"targetId": "craft:knowledge:ancient-script",
+			"slug": "craft-knowledge-ancient-script",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/craft-knowledge-ancient-script.png",
+			"contentHash": "2cd3c7724f8807d924def5deec72d47b18f8462909846d95703f28d2544abd2a"
+		},
+		{
+			"targetId": "craft:knowledge:appraisal",
+			"slug": "craft-knowledge-appraisal",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/craft-knowledge-appraisal.png",
+			"contentHash": "174daabe06da8ccc6048f3f2cc0049cfbb9ad649d5f6c88d61c908dd19db01e6"
+		},
+		{
+			"targetId": "craft:knowledge:cartography",
+			"slug": "craft-knowledge-cartography",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/craft-knowledge-cartography.png",
+			"contentHash": "cf77f2680055c196ad52769cb3713fbc8902290599c18ba7f459ffea8cda4c3d"
+		},
+		{
+			"targetId": "craft:knowledge:deep-appraisal",
+			"slug": "craft-knowledge-deep-appraisal",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/craft-knowledge-deep-appraisal.png",
+			"contentHash": "d311b381b7db2869ff272464f7aa683f5ee50ca9e9460d1c56e5acef9136b3bf"
+		},
+		{
+			"targetId": "craft:knowledge:identify",
+			"slug": "craft-knowledge-identify",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/craft-knowledge-identify.png",
+			"contentHash": "5bbf47d8c21da483672406273718370ab7394b429981aa9ee13ba72dde967517"
+		},
+		{
+			"targetId": "craft:knowledge:languages",
+			"slug": "craft-knowledge-languages",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/craft-knowledge-languages.png",
+			"contentHash": "0b4063d0f984ee12b95528f40959a9476d9b9c27d5dc796e0930d77c7c426856"
+		},
+		{
+			"targetId": "craft:knowledge:literacy",
+			"slug": "craft-knowledge-literacy",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/craft-knowledge-literacy.png",
+			"contentHash": "04b7dc9fab2570a402cc6d7d9dee2803f521a7ff24b109021303bb1e8416735a"
+		},
+		{
+			"targetId": "craft:knowledge:mapping",
+			"slug": "craft-knowledge-mapping",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/craft-knowledge-mapping.png",
+			"contentHash": "366f7e7747ea798e9548b611d90f28a8734c1b002ab0602824d36a1ff1605055"
+		},
+		{
+			"targetId": "craft:knowledge:read-the-body",
+			"slug": "craft-knowledge-read-the-body",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/craft-knowledge-read-the-body.png",
+			"contentHash": "e838127dd087f93420505659d6fcd8e294038292f24a3087b215aea824e13e23"
+		},
+		{
+			"targetId": "craft:knowledge:recovered-knowledge",
+			"slug": "craft-knowledge-recovered-knowledge",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/craft-knowledge-recovered-knowledge.png",
+			"contentHash": "7695798074a63a636e037e14f9fabdc8541d4899198b77c061cf45030b4a5878"
+		},
+		{
+			"targetId": "craft:knowledge:research",
+			"slug": "craft-knowledge-research",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/craft-knowledge-research.png",
+			"contentHash": "fbd3d9b84c5a83e8462edb1ba68d8ddbcbb6c640cadba3721877102dd1dae204"
+		},
+		{
+			"targetId": "craft:knowledge:the-archive",
+			"slug": "craft-knowledge-the-archive",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/craft-knowledge-the-archive.png",
+			"contentHash": "c6fcb4eb0ef1c8925d1110d22523b63c5a912173d0d16536ea437734bc88a965"
+		},
+		{
+			"targetId": "magical:elemental:ashfall",
+			"slug": "magical-elemental-ashfall",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/magical-elemental-ashfall.png",
+			"contentHash": "7d0e7bb07ea5bb0316a6094a3348b5aa297ba8f8c1dde46096ca78412468f226"
+		},
+		{
+			"targetId": "magical:elemental:avalanche",
+			"slug": "magical-elemental-avalanche",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/magical-elemental-avalanche.png",
+			"contentHash": "0ed422155ab4899cb61931d032b5c136267d343adef5aa810d8e155b198326a6"
+		},
+		{
+			"targetId": "magical:elemental:boulder-throw",
+			"slug": "magical-elemental-boulder-throw",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/magical-elemental-boulder-throw.png",
+			"contentHash": "4b0e607fd7fadfb6b0a5ed930fe512e6ed38cf34679803ba943359d643a3ee28"
+		},
+		{
+			"targetId": "magical:elemental:bury-the-world",
+			"slug": "magical-elemental-bury-the-world",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/magical-elemental-bury-the-world.png",
+			"contentHash": "978b0271d4d8a228e028ec5a5cbe4dbea74eb5dc8d363a4b0dfaaae58debe691"
+		},
+		{
+			"targetId": "magical:elemental:charged-fireball",
+			"slug": "magical-elemental-charged-fireball",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/magical-elemental-charged-fireball.png",
+			"contentHash": "263ab89d183ee1616d119becc41e064fb67736d55dabe225c8e67db3f6b71941"
+		},
+		{
+			"targetId": "magical:elemental:cinder-trail",
+			"slug": "magical-elemental-cinder-trail",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/magical-elemental-cinder-trail.png",
+			"contentHash": "477a28e59a55674629bc909033e144f382d81a671600929446b59e7e01cdda6a"
+		},
+		{
+			"targetId": "magical:elemental:cold-touch",
+			"slug": "magical-elemental-cold-touch",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/magical-elemental-cold-touch.png",
+			"contentHash": "ade403a59a1535b6175d5d15df99790b3f5c68c0450ff5f732e45cb4252c9ec3"
+		},
+		{
+			"targetId": "magical:elemental:crushing-weight",
+			"slug": "magical-elemental-crushing-weight",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/magical-elemental-crushing-weight.png",
+			"contentHash": "707485acc6fe8ab260cc403ce757b7e797408dba376af18939c06131b46f2a9e"
+		},
+		{
+			"targetId": "magical:elemental:deep-cold",
+			"slug": "magical-elemental-deep-cold",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/magical-elemental-deep-cold.png",
+			"contentHash": "ea3a9824a0ec38027df6051013d27cf60832ee9320cd38418254a9c46c17e2f1"
+		},
+		{
+			"targetId": "magical:elemental:detonation",
+			"slug": "magical-elemental-detonation",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/magical-elemental-detonation.png",
+			"contentHash": "f4a27c1acae74545beea7758db250c8bc398340d52edd9aef21c2549a899ae04"
+		},
+		{
+			"targetId": "magical:elemental:draw-water",
+			"slug": "magical-elemental-draw-water",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/magical-elemental-draw-water.png",
+			"contentHash": "9d7fc4226d744dfc8b97b2048250e1edaadaa15f23bff464a96c2a767dbdcaf6"
+		},
+		{
+			"targetId": "magical:elemental:drowning-grasp",
+			"slug": "magical-elemental-drowning-grasp",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/magical-elemental-drowning-grasp.png",
+			"contentHash": "e0e2aeb776781cecc638612f50ce1b69b62569ad208234f9822f41fa5b851e32"
+		},
+		{
+			"targetId": "magical:elemental:earthen-form",
+			"slug": "magical-elemental-earthen-form",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/magical-elemental-earthen-form.png",
+			"contentHash": "5970e9fe8d01dee0aab31d961149e609746260e20e8d60809fc9398df7304b87"
+		},
+		{
+			"targetId": "magical:elemental:earthen-wall",
+			"slug": "magical-elemental-earthen-wall",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/magical-elemental-earthen-wall.png",
+			"contentHash": "c4f5fc79fb936ad2556a1803a95efd4551d481e8bedf399734b8c5996081da0e"
+		},
+		{
+			"targetId": "magical:elemental:ember",
+			"slug": "magical-elemental-ember",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/magical-elemental-ember.png",
+			"contentHash": "4156f8085aefc08f788ff9d6eaf10c8c4f2ecb482f10d52edf65ba5e937d6709"
+		},
+		{
+			"targetId": "magical:elemental:fireball",
+			"slug": "magical-elemental-fireball",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/magical-elemental-fireball.png",
+			"contentHash": "fece2f08fadbe03e3ec1b678f7876c211bca78051affda43893ae66497d26f16"
+		},
+		{
+			"targetId": "magical:elemental:firestorm",
+			"slug": "magical-elemental-firestorm",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/magical-elemental-firestorm.png",
+			"contentHash": "be037b93dc823abfcc10c89b3c5ba07da3485cc930f87568e821b34e84fd83f8"
+		},
+		{
+			"targetId": "magical:elemental:fissure",
+			"slug": "magical-elemental-fissure",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/magical-elemental-fissure.png",
+			"contentHash": "7577a1e5daf85bab60171c92b50f3f389f9efcdf4371de1cdb34c5b88ff5ab9f"
+		},
+		{
+			"targetId": "magical:elemental:flame-jet",
+			"slug": "magical-elemental-flame-jet",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/magical-elemental-flame-jet.png",
+			"contentHash": "1fa4c7c61ba9ed247a8ded190ab844e2fe786fd90107bbc36841156671ba43d1"
+		},
+		{
+			"targetId": "magical:elemental:flame-shroud",
+			"slug": "magical-elemental-flame-shroud",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/magical-elemental-flame-shroud.png",
+			"contentHash": "05108b418a2e99b5f77ee164810fb82c419eb7363dc8524342107dc70b949618"
+		},
+		{
+			"targetId": "magical:elemental:flow",
+			"slug": "magical-elemental-flow",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/magical-elemental-flow.png",
+			"contentHash": "ed89faf8f5d9909894cfb77322e754ac1dd910ea00efff51290c22d1ce002282"
+		},
+		{
+			"targetId": "magical:elemental:frozen-world",
+			"slug": "magical-elemental-frozen-world",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/magical-elemental-frozen-world.png",
+			"contentHash": "140c82e89dec0df1439b7dac749cbfbe0332fa9d061d4f5b6c67ee130bf286bf"
+		},
+		{
+			"targetId": "magical:elemental:glacier",
+			"slug": "magical-elemental-glacier",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/magical-elemental-glacier.png",
+			"contentHash": "b29e0c635e5d4a8c7e0359a83cc6190ee3b9a98fcf8e1ed98bf4ccd821672c9e"
+		},
+		{
+			"targetId": "magical:elemental:great-fireball",
+			"slug": "magical-elemental-great-fireball",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/magical-elemental-great-fireball.png",
+			"contentHash": "b61fdb2f47a6eb76540cdc040b1991ba3567f4b1e197109fa74780d8e510bc4a"
+		},
+		{
+			"targetId": "magical:elemental:harden",
+			"slug": "magical-elemental-harden",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/magical-elemental-harden.png",
+			"contentHash": "946efecc36f2e1fb932e63d81f65ed8a2a1ccceff0bb9242d46a7b698f0d8fcc"
+		},
+		{
+			"targetId": "magical:elemental:ignite",
+			"slug": "magical-elemental-ignite",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/magical-elemental-ignite.png",
+			"contentHash": "608df66e2cc9f46e5b47948679ae96551de4a4ba88297a3eb3c1a65cc264ab7a"
+		},
+		{
+			"targetId": "magical:elemental:kindling",
+			"slug": "magical-elemental-kindling",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/magical-elemental-kindling.png",
+			"contentHash": "33df123bd34f19dbdd3f8ce95a9ceffee3bc558648215b0061141dfbcdcf6a4f"
+		},
+		{
+			"targetId": "magical:elemental:leviathan-s-coil",
+			"slug": "magical-elemental-leviathan-s-coil",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/magical-elemental-leviathan-s-coil.png",
+			"contentHash": "14237f6338e44814c41e7533ca5aa70544e9e7d5114f57410b27697336a780c4"
+		},
+		{
+			"targetId": "magical:elemental:living-mountain",
+			"slug": "magical-elemental-living-mountain",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/magical-elemental-living-mountain.png",
+			"contentHash": "5386ea656da89fcd4c2e6c14e780e3527c74d2665061960e083be620ac8c61e4"
+		},
+		{
+			"targetId": "magical:elemental:maelstrom",
+			"slug": "magical-elemental-maelstrom",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/magical-elemental-maelstrom.png",
+			"contentHash": "4e4d1a56f5fb430bde64007d48dec202c74c22b8bf03dcc4e282b85b27e38ccd"
+		},
+		{
+			"targetId": "magical:elemental:meteor",
+			"slug": "magical-elemental-meteor",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/magical-elemental-meteor.png",
+			"contentHash": "e2b35988a6b1a74c90293b47d2c04cd48577e11cbfa5a5cb5ce439c4efbff667"
+		},
+		{
+			"targetId": "magical:elemental:mist",
+			"slug": "magical-elemental-mist",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/magical-elemental-mist.png",
+			"contentHash": "4df74180da745e78fe00e35e9f7ce667a918a13775079e44477521301bace644"
+		},
+		{
+			"targetId": "magical:elemental:mountain-rise",
+			"slug": "magical-elemental-mountain-rise",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/magical-elemental-mountain-rise.png",
+			"contentHash": "4a6d25b5f97b5c8a6e6ebad3d2e9d6d2660a2eaf42e44dfda148db71fd1ac757"
+		},
+		{
+			"targetId": "magical:elemental:phoenix-form",
+			"slug": "magical-elemental-phoenix-form",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/magical-elemental-phoenix-form.png",
+			"contentHash": "06ce0c31cacaf46c3cdc7f85f350a2f8709b869703047e48ad97fddf2e73726c"
+		},
+		{
+			"targetId": "magical:elemental:pressure-lance",
+			"slug": "magical-elemental-pressure-lance",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/magical-elemental-pressure-lance.png",
+			"contentHash": "cee9d396bd791ab87b1695f63e376ec489d4ea97f518a68a4b093f7afb4045cf"
+		},
+		{
+			"targetId": "magical:elemental:sea-of-flame",
+			"slug": "magical-elemental-sea-of-flame",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/magical-elemental-sea-of-flame.png",
+			"contentHash": "f9b4a8ef3eb5a27ab29314a28c43440843e02f8042a7c831aaa9373d09f5bf37"
+		},
+		{
+			"targetId": "magical:elemental:spark",
+			"slug": "magical-elemental-spark",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/magical-elemental-spark.png",
+			"contentHash": "d4889a6d63a2671de5cdd08ee3833e66de3bccf31d0e6881654480351e897cbe"
+		},
+		{
+			"targetId": "magical:elemental:spike-field",
+			"slug": "magical-elemental-spike-field",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/magical-elemental-spike-field.png",
+			"contentHash": "bd65f1600b001778335ceb09387fe80903fcd6ebd5d523480f14b06924386bbd"
+		},
+		{
+			"targetId": "magical:elemental:still-depths",
+			"slug": "magical-elemental-still-depths",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/magical-elemental-still-depths.png",
+			"contentHash": "e516535fe7e792e04a3dc4817c92415d592a85fd463f42764442bea3580da0a6"
+		},
+		{
+			"targetId": "magical:elemental:stone-sentinel",
+			"slug": "magical-elemental-stone-sentinel",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/magical-elemental-stone-sentinel.png",
+			"contentHash": "4bd25acbfc1b0985d86477374e31af54e659ce73eec47bc315d9568e353a8e51"
+		},
+		{
+			"targetId": "magical:elemental:stone-shard",
+			"slug": "magical-elemental-stone-shard",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/magical-elemental-stone-shard.png",
+			"contentHash": "eb9d9fe28c856fb29cec201833d952d99e04c618c005c86872bb5accfa4ce542"
+		},
+		{
+			"targetId": "magical:elemental:stone-skin",
+			"slug": "magical-elemental-stone-skin",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/magical-elemental-stone-skin.png",
+			"contentHash": "fdf1184060df87d71cd27ed11dceb89e0aedd24d9efa8dd1d38bf1234e5beb2f"
+		},
+		{
+			"targetId": "magical:elemental:stoneshape",
+			"slug": "magical-elemental-stoneshape",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/magical-elemental-stoneshape.png",
+			"contentHash": "0ae4c267eaf22d5b91592fb2e027199a9ccfc8c01431b1663af6578ef089ee33"
+		},
+		{
+			"targetId": "magical:elemental:sunfall",
+			"slug": "magical-elemental-sunfall",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/magical-elemental-sunfall.png",
+			"contentHash": "7bc592826cb4d787375415fa24d185544b837ae7cc36da00e0274acfd33bb25e"
+		},
+		{
+			"targetId": "magical:elemental:the-deep",
+			"slug": "magical-elemental-the-deep",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/magical-elemental-the-deep.png",
+			"contentHash": "5831b1177b16d854d515889a98f8b4a93f5651876f5e8c25a2b4a53ac0b21f00"
+		},
+		{
+			"targetId": "magical:elemental:the-weight-of-ages",
+			"slug": "magical-elemental-the-weight-of-ages",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/magical-elemental-the-weight-of-ages.png",
+			"contentHash": "3ef45554c230ff49d21de4155f1f6449acb7d81d164a0803f96d11a8eb3a1a58"
+		},
+		{
+			"targetId": "magical:elemental:tide-sense",
+			"slug": "magical-elemental-tide-sense",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/magical-elemental-tide-sense.png",
+			"contentHash": "e03b83594ac5610af4c0a45911cacafd5f9205782407378fd4da949b87f6c5fd"
+		},
+		{
+			"targetId": "magical:elemental:torrent",
+			"slug": "magical-elemental-torrent",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/magical-elemental-torrent.png",
+			"contentHash": "50f0368107d12ae5639f99dd67d912bd4e6f25ea83ea57f508acb632409d452e"
+		},
+		{
+			"targetId": "magical:elemental:tremor",
+			"slug": "magical-elemental-tremor",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/magical-elemental-tremor.png",
+			"contentHash": "b276fcd9aa73c7a9abbc80e76bc206bd6c7628a26088432b7180f25b944c7c79"
+		},
+		{
+			"targetId": "magical:elemental:unshakeable",
+			"slug": "magical-elemental-unshakeable",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/magical-elemental-unshakeable.png",
+			"contentHash": "b69d4bc5e73ef3ec1296951f9df33744b0f7928bc5b30fee13a58acc76fe08d1"
+		},
+		{
+			"targetId": "magical:elemental:warmth",
+			"slug": "magical-elemental-warmth",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/magical-elemental-warmth.png",
+			"contentHash": "76a182ad19791a47985dd3850adef5d8249f82bf5e3eb4075e43c4044e14202e"
+		},
+		{
+			"targetId": "magical:elemental:water-bullet",
+			"slug": "magical-elemental-water-bullet",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/magical-elemental-water-bullet.png",
+			"contentHash": "e31f9706bfc60bacb7542f3190a6f17d2759689d30f4469b19a01d2f3d329f38"
+		},
+		{
+			"targetId": "magical:elemental:water-whip",
+			"slug": "magical-elemental-water-whip",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/magical-elemental-water-whip.png",
+			"contentHash": "ce676203b53f4550088c9679738623065797cba1c67618760edf32bfc509e88a"
+		},
+		{
+			"targetId": "magical:elemental:where-all-rivers-end",
+			"slug": "magical-elemental-where-all-rivers-end",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/magical-elemental-where-all-rivers-end.png",
+			"contentHash": "49b8cc32a18c811702518acf43fbb093ead57af7ac0f9a5bb1b2db9d4492edbe"
+		},
+		{
+			"targetId": "magical:enchantment:armour-imbuing",
+			"slug": "magical-enchantment-armour-imbuing",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/magical-enchantment-armour-imbuing.png",
+			"contentHash": "2f2c9e965124dac40e18d49b648e15217b13262136e614731df776c6681e323a"
+		},
+		{
+			"targetId": "magical:enchantment:ascendance",
+			"slug": "magical-enchantment-ascendance",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/magical-enchantment-ascendance.png",
+			"contentHash": "069cbd98e67e88ff44790d59714bcb06872f898fed9d55654e3881b00c00f0b7"
+		},
+		{
+			"targetId": "magical:enchantment:battle-hymn",
+			"slug": "magical-enchantment-battle-hymn",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/magical-enchantment-battle-hymn.png",
+			"contentHash": "a15f62ab740c4ce1107311421eb1d2f2d3932d2e229bd3da994934ddba44cceb"
+		},
+		{
+			"targetId": "magical:enchantment:component-craft",
+			"slug": "magical-enchantment-component-craft",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/magical-enchantment-component-craft.png",
+			"contentHash": "1b360f6a53dcbe01f92a63741fa6a1fe0d0a7038206e1f11f4d82c72903bc2d0"
+		},
+		{
+			"targetId": "magical:enchantment:elemental-attunement",
+			"slug": "magical-enchantment-elemental-attunement",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/magical-enchantment-elemental-attunement.png",
+			"contentHash": "08c040a6825f784bb92ca52069fcf79110728c1b7021961d70c29db65aa1c615"
+		},
+		{
+			"targetId": "magical:enchantment:empowerment",
+			"slug": "magical-enchantment-empowerment",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/magical-enchantment-empowerment.png",
+			"contentHash": "03fd1196d867307c1d79ab0d92690aa63d8bb9565dd8efc46964c774ffc6c5a8"
+		},
+		{
+			"targetId": "magical:enchantment:greater-blessing",
+			"slug": "magical-enchantment-greater-blessing",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/magical-enchantment-greater-blessing.png",
+			"contentHash": "3c16426829b72ea0847c26e17eaa15061e413e0051a85642177ddeee8f2e8d91"
+		},
+		{
+			"targetId": "magical:enchantment:greater-sigil",
+			"slug": "magical-enchantment-greater-sigil",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/magical-enchantment-greater-sigil.png",
+			"contentHash": "9de1fc79234cd19329361d5390fdb17d2c97563cadd5f2bec234cc3cf392f7b2"
+		},
+		{
+			"targetId": "magical:enchantment:group-blessing",
+			"slug": "magical-enchantment-group-blessing",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/magical-enchantment-group-blessing.png",
+			"contentHash": "09b28be3fa3063764b2931179c233fff47785d206e9f5fff99a7a350fcfb1879"
+		},
+		{
+			"targetId": "magical:enchantment:imbuing",
+			"slug": "magical-enchantment-imbuing",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/magical-enchantment-imbuing.png",
+			"contentHash": "d1ba293613e1abd9e6c1fe1ce905e7a02c080e46416402f6fb1b2f0b30a8e29b"
+		},
+		{
+			"targetId": "magical:enchantment:light",
+			"slug": "magical-enchantment-light",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/magical-enchantment-light.png",
+			"contentHash": "5588d8ad2929c8fd3dead732ce4b1505731aa2a375fdf34b307dd494c6b5b20a"
+		},
+		{
+			"targetId": "magical:enchantment:minor-blessing",
+			"slug": "magical-enchantment-minor-blessing",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/magical-enchantment-minor-blessing.png",
+			"contentHash": "ec908be8b3e7ecf28d1a92a4333abe0f8f6cb3f3983331c60bce5056e85b3b7d"
+		},
+		{
+			"targetId": "magical:enchantment:sigil-binding",
+			"slug": "magical-enchantment-sigil-binding",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/magical-enchantment-sigil-binding.png",
+			"contentHash": "c6e157ac59ec7a534cf819b4f192f71128f58d11bf102ac1bc46dc1fe16cdb36"
+		},
+		{
+			"targetId": "magical:enchantment:soul-sigil",
+			"slug": "magical-enchantment-soul-sigil",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/magical-enchantment-soul-sigil.png",
+			"contentHash": "cac9857195bb9bf85a56109b4ea04b4109521ad0f4cecb03f62276a0e00574ca"
+		},
+		{
+			"targetId": "magical:enchantment:sustained-weave",
+			"slug": "magical-enchantment-sustained-weave",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/magical-enchantment-sustained-weave.png",
+			"contentHash": "0ac56cd854b4b4758483c1b058ed97c97ccd566876fec68d255d0f86da25196f"
+		},
+		{
+			"targetId": "magical:enchantment:the-written-world",
+			"slug": "magical-enchantment-the-written-world",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/magical-enchantment-the-written-world.png",
+			"contentHash": "452697d4a10595903d058f18ae715ddc86d943272a6deb194a4f45647b5a1609"
+		},
+		{
+			"targetId": "magical:enchantment:transference",
+			"slug": "magical-enchantment-transference",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/magical-enchantment-transference.png",
+			"contentHash": "0fb6b4c5326d87f2dec971e3f3483919c14913922fa97bfb2b0d04705ab0400b"
+		},
+		{
+			"targetId": "magical:enchantment:weapon-oil",
+			"slug": "magical-enchantment-weapon-oil",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/magical-enchantment-weapon-oil.png",
+			"contentHash": "80e108e134a1e2cf45b01e4c7ccab76dbc27ac61f17899cb5da2cc2734cb7503"
+		},
+		{
+			"targetId": "magical:mind:confusion",
+			"slug": "magical-mind-confusion",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/magical-mind-confusion.png",
+			"contentHash": "10e1836337aab2795c38ef0791dea4ed3c5bc65e0787b2afa31e80507b4cc7ac"
+		},
+		{
+			"targetId": "magical:mind:distract",
+			"slug": "magical-mind-distract",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/magical-mind-distract.png",
+			"contentHash": "f25c52abb54fa59298b0ccb188ae057503fce0f1c2680ba2a8d8d11934abc005"
+		},
+		{
+			"targetId": "magical:mind:domination",
+			"slug": "magical-mind-domination",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/magical-mind-domination.png",
+			"contentHash": "4ae1d47da791d40b46dcb1a9eacaa21e3db73251ebf5a9ca1be05ae06f313241"
+		},
+		{
+			"targetId": "magical:mind:false-terrain",
+			"slug": "magical-mind-false-terrain",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/magical-mind-false-terrain.png",
+			"contentHash": "f00d462196edaae086599ea76860cb90cbea53e4aab81aec098d2aedc01ce3b2"
+		},
+		{
+			"targetId": "magical:mind:fear",
+			"slug": "magical-mind-fear",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/magical-mind-fear.png",
+			"contentHash": "c0c31e304cb4d5a0eef69fb55c96bed4b1153a6d2b401b090dcea9467828db44"
+		},
+		{
+			"targetId": "magical:mind:mass-illusion",
+			"slug": "magical-mind-mass-illusion",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/magical-mind-mass-illusion.png",
+			"contentHash": "723eb8720e0c120b4a3d22382873d7433a97f8ba9cb0f33ab1fcafe32cde218d"
+		},
+		{
+			"targetId": "magical:mind:memory-edit",
+			"slug": "magical-mind-memory-edit",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/magical-mind-memory-edit.png",
+			"contentHash": "e464df89bbf9dfb2fdc9f0a11d3f2b7ca82534bf9527c435b0e26e7076ab1c4f"
+		},
+		{
+			"targetId": "magical:mind:mental-fortress",
+			"slug": "magical-mind-mental-fortress",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/magical-mind-mental-fortress.png",
+			"contentHash": "bceedad5387f0ae8d7061014cb9b9129dbe4016f470bd2b974251146aa25bf94"
+		},
+		{
+			"targetId": "magical:mind:minor-illusion",
+			"slug": "magical-mind-minor-illusion",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/magical-mind-minor-illusion.png",
+			"contentHash": "ebde955f596eea4a3f4d215c6606b10c441814c61e3ef8068726afbd981e4a99"
+		},
+		{
+			"targetId": "magical:mind:nothing-was-ever-here",
+			"slug": "magical-mind-nothing-was-ever-here",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/magical-mind-nothing-was-ever-here.png",
+			"contentHash": "36f027aafd67c77235b87a51360e8fe3f9f95a1a39f4037c708b40035e51fe88"
+		},
+		{
+			"targetId": "magical:mind:presence",
+			"slug": "magical-mind-presence",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/magical-mind-presence.png",
+			"contentHash": "218cc961bcab37c1cc0862c15cc3c09a4970bd59c7dbaf7c014280dc2f3170d5"
+		},
+		{
+			"targetId": "magical:mind:read-surface",
+			"slug": "magical-mind-read-surface",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/magical-mind-read-surface.png",
+			"contentHash": "324c5856ecc40ad2fe5d8517534fc906ffcd74bbef218154d05f6f2e470b4ede"
+		},
+		{
+			"targetId": "magical:mind:shared-sight",
+			"slug": "magical-mind-shared-sight",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/magical-mind-shared-sight.png",
+			"contentHash": "9008f3c828f3fe7aa8ff329a1066db068d49b6c2dda7d35f72c2cd1c0841c449"
+		},
+		{
+			"targetId": "magical:mind:suggestion",
+			"slug": "magical-mind-suggestion",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/magical-mind-suggestion.png",
+			"contentHash": "7e127591da2387350b546eb33bbfb76b38e520d8fce9785ab5b7910838206ca2"
+		},
+		{
+			"targetId": "magical:mind:the-long-silence",
+			"slug": "magical-mind-the-long-silence",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/magical-mind-the-long-silence.png",
+			"contentHash": "c0af0519d0980bcccd5b88a1776890ab8ccd8f0ef0697e0e39d91a8c5e0a3dda"
+		},
+		{
+			"targetId": "magical:mind:unmaking-of-the-self",
+			"slug": "magical-mind-unmaking-of-the-self",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/magical-mind-unmaking-of-the-self.png",
+			"contentHash": "2439a752242c718d28435f0d4d9ff25f43c9f3bb1f114683e2dec9fe56ac2ca4"
+		},
+		{
+			"targetId": "magical:mind:veil",
+			"slug": "magical-mind-veil",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/magical-mind-veil.png",
+			"contentHash": "77798e94c9e42e1050ac965cda7ffb2279b15aa769953aab69ffacb88c02238f"
+		},
+		{
+			"targetId": "magical:restoration:close-wound",
+			"slug": "magical-restoration-close-wound",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/magical-restoration-close-wound.png",
+			"contentHash": "d49783efbc598824179ebc35ee07cfbe259a32e3f064d84be6e902bba711301d"
+		},
+		{
+			"targetId": "magical:restoration:cure",
+			"slug": "magical-restoration-cure",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/magical-restoration-cure.png",
+			"contentHash": "56b6f1121997b69c20f0b16bb218823ae386eab11200529d515fb734d5254685"
+		},
+		{
+			"targetId": "magical:restoration:field-care",
+			"slug": "magical-restoration-field-care",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/magical-restoration-field-care.png",
+			"contentHash": "7db9e7a34c8180ff754cb535233f116ed3d84094d24d4f659b5976651584bc1b"
+		},
+		{
+			"targetId": "magical:restoration:great-renewal",
+			"slug": "magical-restoration-great-renewal",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/magical-restoration-great-renewal.png",
+			"contentHash": "332378cb205523c330bec64dfe367c58fc52a2b95974b16eca276e74ec8f2008"
+		},
+		{
+			"targetId": "magical:restoration:life-link",
+			"slug": "magical-restoration-life-link",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/magical-restoration-life-link.png",
+			"contentHash": "3642702c64d46ba72896e0747af3236eecf47f77603138cd004d1d288b798a36"
+		},
+		{
+			"targetId": "magical:restoration:mass-mending",
+			"slug": "magical-restoration-mass-mending",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/magical-restoration-mass-mending.png",
+			"contentHash": "b8fd170188ebbd5d59e2b555b51c98a41599f8851823d3ecceb1a5013879841a"
+		},
+		{
+			"targetId": "magical:restoration:mending",
+			"slug": "magical-restoration-mending",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/magical-restoration-mending.png",
+			"contentHash": "0b0da3403200a6efbebc42e1e09aa643f63c6e132b1668c21044b106cf94d092"
+		},
+		{
+			"targetId": "magical:restoration:purity",
+			"slug": "magical-restoration-purity",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/magical-restoration-purity.png",
+			"contentHash": "5384f005b8992b6bdf7a1fc5219f122e2300a4aeccbecdce483de94dcd963ac0"
+		},
+		{
+			"targetId": "magical:restoration:regeneration",
+			"slug": "magical-restoration-regeneration",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/magical-restoration-regeneration.png",
+			"contentHash": "c674565640c02ddb00596a22ab844bc18ac53cf864f6a12418b43a254dbaddb4"
+		},
+		{
+			"targetId": "magical:restoration:restore-limb",
+			"slug": "magical-restoration-restore-limb",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/magical-restoration-restore-limb.png",
+			"contentHash": "d9edd276e6abbce686bdb42f97fb660651a1d7c4b3551d0926331247a9007496"
+		},
+		{
+			"targetId": "magical:restoration:return",
+			"slug": "magical-restoration-return",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/magical-restoration-return.png",
+			"contentHash": "75f8569be7e5c452c70e6b1058424474e067f928875955f7cb97b1724e97dbd0"
+		},
+		{
+			"targetId": "magical:restoration:sanctified-ground",
+			"slug": "magical-restoration-sanctified-ground",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/magical-restoration-sanctified-ground.png",
+			"contentHash": "53099a756055df4170992f552aff2cdacaf1b50fe7c7132173915e4a51567944"
+		},
+		{
+			"targetId": "magical:restoration:second-life",
+			"slug": "magical-restoration-second-life",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/magical-restoration-second-life.png",
+			"contentHash": "c116b4ddba3e64ad3cd57aececa817821e7110b0c3723680a6802b7b44d3f578"
+		},
+		{
+			"targetId": "magical:restoration:shared-vigour",
+			"slug": "magical-restoration-shared-vigour",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/magical-restoration-shared-vigour.png",
+			"contentHash": "a30f9612201653ad2ec33f3d215a1e5ceecdf0dc9b994498836700683121e3c1"
+		},
+		{
+			"targetId": "magical:restoration:soothe",
+			"slug": "magical-restoration-soothe",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/magical-restoration-soothe.png",
+			"contentHash": "15986cba45adc355ae7eab8305e4efeeb1560a82e3dd8cf1b04bdf9c1c70e598"
+		},
+		{
+			"targetId": "magical:restoration:the-unbroken-thread",
+			"slug": "magical-restoration-the-unbroken-thread",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/magical-restoration-the-unbroken-thread.png",
+			"contentHash": "761b12d689dfe31a286b7274f1451335ec8b29ab2ada4b2ab1aa64132fe865a6"
+		},
+		{
+			"targetId": "magical:restoration:what-was-taken-back",
+			"slug": "magical-restoration-what-was-taken-back",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/magical-restoration-what-was-taken-back.png",
+			"contentHash": "1bc035293d6ef84d840113ef4a901dabdd34030b5c2dc81c6081d618e67442aa"
+		},
+		{
+			"targetId": "magical:ward:absorption",
+			"slug": "magical-ward-absorption",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/magical-ward-absorption.png",
+			"contentHash": "68c209a4583b5f475298fd872e15a994b9c8ac0cd228b419eb7a788f65079fc8"
+		},
+		{
+			"targetId": "magical:ward:aegis-field",
+			"slug": "magical-ward-aegis-field",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/magical-ward-aegis-field.png",
+			"contentHash": "02a3f87b73419255225ac39fdd02c29dad5f154863b4af91dd0124f43acde2c3"
+		},
+		{
+			"targetId": "magical:ward:barrier",
+			"slug": "magical-ward-barrier",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/magical-ward-barrier.png",
+			"contentHash": "22ec205bc5a960bd63439d45ebe0692d9e2814cf56395da268f76c28fb51935c"
+		},
+		{
+			"targetId": "magical:ward:cleanse",
+			"slug": "magical-ward-cleanse",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/magical-ward-cleanse.png",
+			"contentHash": "5e0e44d39640343717f3e4cef523bd05904127da8d40ff8b79521442342d8d24"
+		},
+		{
+			"targetId": "magical:ward:counter-sigil",
+			"slug": "magical-ward-counter-sigil",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/magical-ward-counter-sigil.png",
+			"contentHash": "428b86953adc75b8d4b314c4f6e8f0ddfe822e402739f86399692ff2adefaba1"
+		},
+		{
+			"targetId": "magical:ward:dispel",
+			"slug": "magical-ward-dispel",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/magical-ward-dispel.png",
+			"contentHash": "5d6c722419c6df51a9b53c6d59c57bb4e985561c20e27e01e7ab321f33504c64"
+		},
+		{
+			"targetId": "magical:ward:elemental-guard",
+			"slug": "magical-ward-elemental-guard",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/magical-ward-elemental-guard.png",
+			"contentHash": "499e86b85ac8bdb5e53bcccd11e9919f7db3d2d73fb164db08c23ecdf0412110"
+		},
+		{
+			"targetId": "magical:ward:layered-ward",
+			"slug": "magical-ward-layered-ward",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/magical-ward-layered-ward.png",
+			"contentHash": "4a3881c3d2b88fa3c7837e9f4394f2f57be7afd73e1957bc9aae739cc13b3a79"
+		},
+		{
+			"targetId": "magical:ward:mirror-ward",
+			"slug": "magical-ward-mirror-ward",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/magical-ward-mirror-ward.png",
+			"contentHash": "f10c1764330289d18c112972113c008cc18400c93496ccaad280452d4bc6ac25"
+		},
+		{
+			"targetId": "magical:ward:nothing-reaches",
+			"slug": "magical-ward-nothing-reaches",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/magical-ward-nothing-reaches.png",
+			"contentHash": "fcdec92762823ba0b23c464806a29584030cfcd090da9b753a6412cd1354d544"
+		},
+		{
+			"targetId": "magical:ward:null-zone",
+			"slug": "magical-ward-null-zone",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/magical-ward-null-zone.png",
+			"contentHash": "4affa3240f97b6c26f7c1d0babf9869a87a2f2cff681541f1425e90cd58d66d5"
+		},
+		{
+			"targetId": "magical:ward:reflect",
+			"slug": "magical-ward-reflect",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/magical-ward-reflect.png",
+			"contentHash": "4501485a01411a9572eed1a807798b1a3567888bb89aa8b563e6322ca5c8c004"
+		},
+		{
+			"targetId": "magical:ward:sanctuary",
+			"slug": "magical-ward-sanctuary",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/magical-ward-sanctuary.png",
+			"contentHash": "4df20e575b6657925c318bc396d331ee7094a00efd198e88d82c4b0586e60c73"
+		},
+		{
+			"targetId": "magical:ward:severance-ward",
+			"slug": "magical-ward-severance-ward",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/magical-ward-severance-ward.png",
+			"contentHash": "db4ad5ff7bea6dc856cb1c5b8684f1afd9c43e93fe7d4f56da40e8a24eea0d11"
+		},
+		{
+			"targetId": "magical:ward:shield-sigil",
+			"slug": "magical-ward-shield-sigil",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/magical-ward-shield-sigil.png",
+			"contentHash": "bc5d4ae7b424070dbdcb6e449c8bd55541a40df9bef95d60c2dea93bc439c774"
+		},
+		{
+			"targetId": "magical:ward:the-unbroken-circle",
+			"slug": "magical-ward-the-unbroken-circle",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/magical-ward-the-unbroken-circle.png",
+			"contentHash": "ef639008ee5aa6fc250825bd2dfb6d81adb166236a49e478b48b371a9de608dd"
+		},
+		{
+			"targetId": "magical:ward:unbinding",
+			"slug": "magical-ward-unbinding",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/magical-ward-unbinding.png",
+			"contentHash": "b0147015024e02acba70e1a5e04c76d04e060cd32ccf1af0059679d48790b5ee"
+		},
+		{
+			"targetId": "magical:ward:warding",
+			"slug": "magical-ward-warding",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/magical-ward-warding.png",
+			"contentHash": "2c43b06301af009b35b01c945c7ed0f987d0230d9c5ab6ec08581a3f96e51aea"
+		},
+		{
+			"targetId": "martial:blade:alternating-strike",
+			"slug": "martial-blade-alternating-strike",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-blade-alternating-strike.png",
+			"contentHash": "58bbb2c446918881f1e33e28578088a457f3fbc9226579153620457286975e95"
+		},
+		{
+			"targetId": "martial:blade:arterial-strike",
+			"slug": "martial-blade-arterial-strike",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-blade-arterial-strike.png",
+			"contentHash": "40a1b69e2c26c0628abebafceae48dd9285388d65fda6009ed337381fd20494c"
+		},
+		{
+			"targetId": "martial:blade:assassin-s-certainty",
+			"slug": "martial-blade-assassin-s-certainty",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-blade-assassin-s-certainty.png",
+			"contentHash": "130ece5b0ec8383df55315c0dd4da64479f4c5d5e8284f445b4106f9d7628a8b"
+		},
+		{
+			"targetId": "martial:blade:binding-cut",
+			"slug": "martial-blade-binding-cut",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-blade-binding-cut.png",
+			"contentHash": "5bac674f84dbc13c7a5b4ff0e75e04d940ef3ec6bcf1b47e70e9af06cde64384"
+		},
+		{
+			"targetId": "martial:blade:blade-dance",
+			"slug": "martial-blade-blade-dance",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-blade-blade-dance.png",
+			"contentHash": "f9a40c6d1e7046ece7b4396735fe2a75542ddb64433459e2aafa9d74761d1142"
+		},
+		{
+			"targetId": "martial:blade:blade-throw",
+			"slug": "martial-blade-blade-throw",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-blade-blade-throw.png",
+			"contentHash": "861d26e30c414508fd55d399063c4ce5f53cd4f09b74fc54a6707a03037c3277"
+		},
+		{
+			"targetId": "martial:blade:bleeding-edge",
+			"slug": "martial-blade-bleeding-edge",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-blade-bleeding-edge.png",
+			"contentHash": "6f1e846dc6a950e6a5171e57beabf585a431bd9060e0fc9318b1066f2de6c362"
+		},
+		{
+			"targetId": "martial:blade:blind-spot",
+			"slug": "martial-blade-blind-spot",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-blade-blind-spot.png",
+			"contentHash": "6f15556c1273871772b394129e25b4ac27a4f2f3b73bed9a0d3221d202078ed5"
+		},
+		{
+			"targetId": "martial:blade:boomerang-arc",
+			"slug": "martial-blade-boomerang-arc",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-blade-boomerang-arc.png",
+			"contentHash": "880e1625aa52ab1abe9168ff0bc5f5fd709e75ea29b411e2204a17f2190e954e"
+		},
+		{
+			"targetId": "martial:blade:bulwark-swing",
+			"slug": "martial-blade-bulwark-swing",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-blade-bulwark-swing.png",
+			"contentHash": "baae779991787fd1e8b090c053561c54a32a99c9634a4f7dc4f6b1ff2eb84aab"
+		},
+		{
+			"targetId": "martial:blade:cleave",
+			"slug": "martial-blade-cleave",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-blade-cleave.png",
+			"contentHash": "d6ccad2379116beae46a21dfe04a9a1f6176664efc5101e45486b6150c30ca52"
+		},
+		{
+			"targetId": "martial:blade:coated-blade",
+			"slug": "martial-blade-coated-blade",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-blade-coated-blade.png",
+			"contentHash": "fa4279862ff66a10bb1e850dc8dc955a0d8765c63b7d2c969eaf4c5c08c35653"
+		},
+		{
+			"targetId": "martial:blade:concealed-carry",
+			"slug": "martial-blade-concealed-carry",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-blade-concealed-carry.png",
+			"contentHash": "84f0fdcca400602d620d8eac4624d63e5602319eba616f2e332d0f6fc24e5522"
+		},
+		{
+			"targetId": "martial:blade:counter-flow",
+			"slug": "martial-blade-counter-flow",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-blade-counter-flow.png",
+			"contentHash": "dfaeae1343d252bd8d54e6db63c1536ef6336ca095538c24804e5714c99adb74"
+		},
+		{
+			"targetId": "martial:blade:crescent-sweep",
+			"slug": "martial-blade-crescent-sweep",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-blade-crescent-sweep.png",
+			"contentHash": "55856a130ffb997c58bb9181a62c56338d26ca678611555b519bee2e43f3c2ae"
+		},
+		{
+			"targetId": "martial:blade:cross-block",
+			"slug": "martial-blade-cross-block",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-blade-cross-block.png",
+			"contentHash": "5fda42f9b8aa2b1f08fbc6387bf15578e018f39e701f85fd27ce57f7c78c6909"
+		},
+		{
+			"targetId": "martial:blade:cross-guard",
+			"slug": "martial-blade-cross-guard",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-blade-cross-guard.png",
+			"contentHash": "6ee7fe9dfee2148b48f9b0a3ef22b2fe6d771605e78e122c400b69b0e6b3d1a4"
+		},
+		{
+			"targetId": "martial:blade:cut-purse",
+			"slug": "martial-blade-cut-purse",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-blade-cut-purse.png",
+			"contentHash": "8978c8ae5fce9d81a5949c563904ccb3aab5a7f14d40e1bc5908d82e065e41dd"
+		},
+		{
+			"targetId": "martial:blade:dance-of-two",
+			"slug": "martial-blade-dance-of-two",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-blade-dance-of-two.png",
+			"contentHash": "92e2f75f355f8ac1fd68cf018b4930bf21f20847119f47ab818120786fd07741"
+		},
+		{
+			"targetId": "martial:blade:double-parry",
+			"slug": "martial-blade-double-parry",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-blade-double-parry.png",
+			"contentHash": "1c64cf92f8a954636a48c349bcd2bfd094a237c38b362de893dc6367e0be8d9c"
+		},
+		{
+			"targetId": "martial:blade:drawing-cut",
+			"slug": "martial-blade-drawing-cut",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-blade-drawing-cut.png",
+			"contentHash": "455df5e742410800577ff401effd4852e0fd6d78b085b38c9c9e4a6c5ceb8b38"
+		},
+		{
+			"targetId": "martial:blade:earthbreaker",
+			"slug": "martial-blade-earthbreaker",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-blade-earthbreaker.png",
+			"contentHash": "9f24b6b35481846eae365fe69d8295b3429d4a23762b044be114ec803f553816"
+		},
+		{
+			"targetId": "martial:blade:edge-alignment",
+			"slug": "martial-blade-edge-alignment",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-blade-edge-alignment.png",
+			"contentHash": "d5ad88f6fe0e78513d4880499591e630f71fb3ab104bcd6f960189cc087a80d1"
+		},
+		{
+			"targetId": "martial:blade:edge-care",
+			"slug": "martial-blade-edge-care",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-blade-edge-care.png",
+			"contentHash": "c319e6fc85e47d15027f110ff2b2a25ea44e1ed327e2c0d886ef243d302d30b9"
+		},
+		{
+			"targetId": "martial:blade:executioner-s-drop",
+			"slug": "martial-blade-executioner-s-drop",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-blade-executioner-s-drop.png",
+			"contentHash": "a6e11be4a05a988442fae7ce98611c48ef39c3b11ccbd44d318a89e492d29ac4"
+		},
+		{
+			"targetId": "martial:blade:fan-throw",
+			"slug": "martial-blade-fan-throw",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-blade-fan-throw.png",
+			"contentHash": "fd13b4fa5847a07ced5a1d2c62a19f6334dab5ddb0b168d9e8eb8a7531f9bde6"
+		},
+		{
+			"targetId": "martial:blade:feinting-cut",
+			"slug": "martial-blade-feinting-cut",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-blade-feinting-cut.png",
+			"contentHash": "fdb669cfbcfd36e700d6134b01347b7270dfde324574f84b7de1df2bad5f9eac"
+		},
+		{
+			"targetId": "martial:blade:fleeting-step",
+			"slug": "martial-blade-fleeting-step",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-blade-fleeting-step.png",
+			"contentHash": "48531d49a111ee38f1e58f569a72918bea7b558b7a048f81f3b270242afeb663"
+		},
+		{
+			"targetId": "martial:blade:formless-blade",
+			"slug": "martial-blade-formless-blade",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-blade-formless-blade.png",
+			"contentHash": "fd38277bec261573c70c0fc3a67922a34eee99fbcbc16e053707f5edb99828cb"
+		},
+		{
+			"targetId": "martial:blade:ghost-step",
+			"slug": "martial-blade-ghost-step",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-blade-ghost-step.png",
+			"contentHash": "db40eb311dceb45455c1593e2be189c45a46a2c77052b7af9c6a58ee62f40c97"
+		},
+		{
+			"targetId": "martial:blade:great-blade",
+			"slug": "martial-blade-great-blade",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-blade-great-blade.png",
+			"contentHash": "2c4f55c4efcd1f675c286b85760e2d99504e75133fe04d3de835f326058e6a8e"
+		},
+		{
+			"targetId": "martial:blade:grit-throw",
+			"slug": "martial-blade-grit-throw",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-blade-grit-throw.png",
+			"contentHash": "21ab223cbb4c4cea6824f7bb0eb3af5ca425c4856b58ee5b2dd8cfacc3d0d569"
+		},
+		{
+			"targetId": "martial:blade:ground-slam",
+			"slug": "martial-blade-ground-slam",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-blade-ground-slam.png",
+			"contentHash": "6eea41fc71622177ec9f8bf6e795aba43c2dd40b137a44ff9ed104d5edf16c31"
+		},
+		{
+			"targetId": "martial:blade:guard-break",
+			"slug": "martial-blade-guard-break",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-blade-guard-break.png",
+			"contentHash": "b08799a25a8ef371235e0b0e8ed5b5f9f7483bc953d7a2752ecd7500e2e4878c"
+		},
+		{
+			"targetId": "martial:blade:half-sword",
+			"slug": "martial-blade-half-sword",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-blade-half-sword.png",
+			"contentHash": "705a5f7ffe4ca265df5fd0e68e306ac9a163484d49f255431bca3bcccb29611c"
+		},
+		{
+			"targetId": "martial:blade:hamstring",
+			"slug": "martial-blade-hamstring",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-blade-hamstring.png",
+			"contentHash": "ca278aa9a017ac08f3a56bba2f0f997f63c067d91e09bcf116fe7ce45f0d1e83"
+		},
+		{
+			"targetId": "martial:blade:heaven-s-fall",
+			"slug": "martial-blade-heaven-s-fall",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-blade-heaven-s-fall.png",
+			"contentHash": "36bca99d3fcd04974be3bc8ebc7f7387d29c52fa3cad2792e0d7db1576584444"
+		},
+		{
+			"targetId": "martial:blade:hewing-blow",
+			"slug": "martial-blade-hewing-blow",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-blade-hewing-blow.png",
+			"contentHash": "9607c822eb1bdf34631ea5baec0e0b6c20b23d95bf6e3f3e0a74d0c65177296a"
+		},
+		{
+			"targetId": "martial:blade:horizontal-slash",
+			"slug": "martial-blade-horizontal-slash",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-blade-horizontal-slash.png",
+			"contentHash": "d19cbbf810972f23bb785535fb722eb795b4e685dfa99773b6a7af792de916bd"
+		},
+		{
+			"targetId": "martial:blade:hundred-needles",
+			"slug": "martial-blade-hundred-needles",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-blade-hundred-needles.png",
+			"contentHash": "609c4da4b9bf33855b03f927512bb33de937770729db7fff9504d5f21e11f444"
+		},
+		{
+			"targetId": "martial:blade:knifework",
+			"slug": "martial-blade-knifework",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-blade-knifework.png",
+			"contentHash": "a160ec53f73249ceb4ffb15533e8c4d7f7980f7178d58a6de8293bce0ca2f583"
+		},
+		{
+			"targetId": "martial:blade:low-guard",
+			"slug": "martial-blade-low-guard",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-blade-low-guard.png",
+			"contentHash": "33b22ea541602eb648ce24fc845b40936492e6a0896f24915fdde160f917512e"
+		},
+		{
+			"targetId": "martial:blade:measured-cut",
+			"slug": "martial-blade-measured-cut",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-blade-measured-cut.png",
+			"contentHash": "c142509491c2bdfb364bbf63be536aa1bba2de2e43fd28226591ee15ba32a66c"
+		},
+		{
+			"targetId": "martial:blade:mirror-grip",
+			"slug": "martial-blade-mirror-grip",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-blade-mirror-grip.png",
+			"contentHash": "d44d27b01a7aafc8bf90ad8e3e3d8b48ba6300629d3d6b83442441fbd3fe079b"
+		},
+		{
+			"targetId": "martial:blade:mirrored-edge",
+			"slug": "martial-blade-mirrored-edge",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-blade-mirrored-edge.png",
+			"contentHash": "825620bdb834e605614dd836749df0c38d4e03d05db55da7346a278afd18b0e1"
+		},
+		{
+			"targetId": "martial:blade:momentum",
+			"slug": "martial-blade-momentum",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-blade-momentum.png",
+			"contentHash": "330a6adb095b636d15565ddb19dd8056d2837ee081364c088adc900df5ed3d0d"
+		},
+		{
+			"targetId": "martial:blade:mountain-cleaver",
+			"slug": "martial-blade-mountain-cleaver",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-blade-mountain-cleaver.png",
+			"contentHash": "e165a04d625257ea6690034aeeedc953041aeae0498f13602aedfcf5f5c8e9c8"
+		},
+		{
+			"targetId": "martial:blade:nightfall-flurry",
+			"slug": "martial-blade-nightfall-flurry",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-blade-nightfall-flurry.png",
+			"contentHash": "fc43f722fc055d265cdbf9ebde04f2c69bae3b77ac6c5ee28a9e22a1d43b2723"
+		},
+		{
+			"targetId": "martial:blade:one-blade-one-world",
+			"slug": "martial-blade-one-blade-one-world",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-blade-one-blade-one-world.png",
+			"contentHash": "11eef617a927e6a4a03d52305db8f16eedf57b07323bc6ebdc79d47e3aa526f4"
+		},
+		{
+			"targetId": "martial:blade:opening",
+			"slug": "martial-blade-opening",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-blade-opening.png",
+			"contentHash": "a9b1e368a2defe2d9da791805d14111b6306e6293a1a6c0a5116282739592861"
+		},
+		{
+			"targetId": "martial:blade:overhead-chop",
+			"slug": "martial-blade-overhead-chop",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-blade-overhead-chop.png",
+			"contentHash": "f299fac9615acfcfc5aefbba39bd12aea739be11b283d1a41897ce16a84e4a5e"
+		},
+		{
+			"targetId": "martial:blade:perfect-arc",
+			"slug": "martial-blade-perfect-arc",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-blade-perfect-arc.png",
+			"contentHash": "3c33fdc6e657852ec645508d293cc6156b361527015891ab3c076974d8394ff6"
+		},
+		{
+			"targetId": "martial:blade:perfect-symmetry",
+			"slug": "martial-blade-perfect-symmetry",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-blade-perfect-symmetry.png",
+			"contentHash": "88203e27f2a34876bbc91c9c6719f31bd3bc135c19566660a1f8ea08f560a9fd"
+		},
+		{
+			"targetId": "martial:blade:piercing-thrust",
+			"slug": "martial-blade-piercing-thrust",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-blade-piercing-thrust.png",
+			"contentHash": "767119e2c44c62ce5ad4627ceac1f3253f9dbaa4efb19f3a4057ec82cd56265f"
+		},
+		{
+			"targetId": "martial:blade:pommel-strike",
+			"slug": "martial-blade-pommel-strike",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-blade-pommel-strike.png",
+			"contentHash": "545b4cf76c71699012d34b5e13d8f4f8e4dec0bd5896cdc4ff50f09503fab9b6"
+		},
+		{
+			"targetId": "martial:blade:quick-draw",
+			"slug": "martial-blade-quick-draw",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-blade-quick-draw.png",
+			"contentHash": "1f360c7d4cf07e0cfe063977d15ac8b1911a92ea9dc74c7f94f8667ae1ceb265"
+		},
+		{
+			"targetId": "martial:blade:quick-stab",
+			"slug": "martial-blade-quick-stab",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-blade-quick-stab.png",
+			"contentHash": "d748c327c9220ef1495b5df82a8e4bae2f2f0a9e609e7b271915f5da27d063b7"
+		},
+		{
+			"targetId": "martial:blade:reversal-cut",
+			"slug": "martial-blade-reversal-cut",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-blade-reversal-cut.png",
+			"contentHash": "f9a9d4845a5f586a665664f201aa2cf728a77342b5aac0c34f030fcd3e5da049"
+		},
+		{
+			"targetId": "martial:blade:ricochet",
+			"slug": "martial-blade-ricochet",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-blade-ricochet.png",
+			"contentHash": "a392cef4ff3b490aa173d430a52b9166e40276234eaf3bc6e04f7c549f076299"
+		},
+		{
+			"targetId": "martial:blade:rising-moon",
+			"slug": "martial-blade-rising-moon",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-blade-rising-moon.png",
+			"contentHash": "1a7558d11978497584bc0fbaeaf36a57113eb47e6cd1ec9f26c5c421502c78e0"
+		},
+		{
+			"targetId": "martial:blade:rolling-guard",
+			"slug": "martial-blade-rolling-guard",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-blade-rolling-guard.png",
+			"contentHash": "1e1c53a1bc035f64af4c8c138c664c00aeaf40fa01a64b5df4d41d04b4e5e4c2"
+		},
+		{
+			"targetId": "martial:blade:scissor-cut",
+			"slug": "martial-blade-scissor-cut",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-blade-scissor-cut.png",
+			"contentHash": "423d955e217e5230c1043d1a235b66fda30528b68ab9f2bfa4e0b135b00027da"
+		},
+		{
+			"targetId": "martial:blade:severed-thread",
+			"slug": "martial-blade-severed-thread",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-blade-severed-thread.png",
+			"contentHash": "90964a248777bcb6fcfa6386dbeb7cf511935acdc08e2c2e0e8ab6455cf1a46b"
+		},
+		{
+			"targetId": "martial:blade:severing-cross",
+			"slug": "martial-blade-severing-cross",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-blade-severing-cross.png",
+			"contentHash": "36767d493f3007812d8ab7c775d73bb75b4b492da874620fe1336c1b23e410e8"
+		},
+		{
+			"targetId": "martial:blade:severing-intent",
+			"slug": "martial-blade-severing-intent",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-blade-severing-intent.png",
+			"contentHash": "c138abf440b13101560108a2b213a817e5fbc83d96b3d4c9acb50c3d115c2a37"
+		},
+		{
+			"targetId": "martial:blade:shadow-sever",
+			"slug": "martial-blade-shadow-sever",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-blade-shadow-sever.png",
+			"contentHash": "69452da8175f970b52ca41bf4d498a993570576b4ce8181606954e9e32f30329"
+		},
+		{
+			"targetId": "martial:blade:shoulder-set",
+			"slug": "martial-blade-shoulder-set",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-blade-shoulder-set.png",
+			"contentHash": "b2358781d1762afc9c2978f672741a446b0b176cb592ffac5754136bfb001da2"
+		},
+		{
+			"targetId": "martial:blade:silent-step",
+			"slug": "martial-blade-silent-step",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-blade-silent-step.png",
+			"contentHash": "5115d0936e80427d86248539dbbb88f3abbd91172d8e103279a4946f47cc9a3d"
+		},
+		{
+			"targetId": "martial:blade:slash-across",
+			"slug": "martial-blade-slash-across",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-blade-slash-across.png",
+			"contentHash": "1b3e4efaf320c8cb58d037cc9729e894d0ec0926e4dee1ecb135cfe11dcdfbfa"
+		},
+		{
+			"targetId": "martial:blade:still-water-stance",
+			"slug": "martial-blade-still-water-stance",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-blade-still-water-stance.png",
+			"contentHash": "a2998a10035f49725911e5d6451d45206ec74ef980d419dfdd198110a64bcce4"
+		},
+		{
+			"targetId": "martial:blade:storm-of-blades",
+			"slug": "martial-blade-storm-of-blades",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-blade-storm-of-blades.png",
+			"contentHash": "7307ad8a1a38333c6fe3c03d824b54f80dcc9b8518456cd10f748ff5a451e8da"
+		},
+		{
+			"targetId": "martial:blade:storm-of-steel",
+			"slug": "martial-blade-storm-of-steel",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-blade-storm-of-steel.png",
+			"contentHash": "d6a74ff7f243fb0178e348990469e1b194e480638f4e9c8a247d74b45359f330"
+		},
+		{
+			"targetId": "martial:blade:swordsmanship",
+			"slug": "martial-blade-swordsmanship",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-blade-swordsmanship.png",
+			"contentHash": "1e98ac32e21be0de817a1b79eba8a276af9df5200045285c47a8acd03ed2b240"
+		},
+		{
+			"targetId": "martial:blade:ten-thousand-leaves",
+			"slug": "martial-blade-ten-thousand-leaves",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-blade-ten-thousand-leaves.png",
+			"contentHash": "71cde4d5018b264e9a59a34e1b517bbb82702d795eb983fc92f28a2704ea5274"
+		},
+		{
+			"targetId": "martial:blade:thousand-cuts",
+			"slug": "martial-blade-thousand-cuts",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-blade-thousand-cuts.png",
+			"contentHash": "06151f3591363ece1b2491baba76fca64d05cf4ea463763f9ba655d186769e99"
+		},
+		{
+			"targetId": "martial:blade:thousand-silent-deaths",
+			"slug": "martial-blade-thousand-silent-deaths",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-blade-thousand-silent-deaths.png",
+			"contentHash": "4e6afae60bfa15f61010a14b43c0591b294481d1ccd37a81ff77a772c4edca6d"
+		},
+		{
+			"targetId": "martial:blade:twin-fangs",
+			"slug": "martial-blade-twin-fangs",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-blade-twin-fangs.png",
+			"contentHash": "a3eac5244e3776a4ead71040421ba62c6486f121b96ce31ea6bc7ec2f62137c6"
+		},
+		{
+			"targetId": "martial:blade:twin-grip",
+			"slug": "martial-blade-twin-grip",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-blade-twin-grip.png",
+			"contentHash": "c6780c81547c2f568f5b2daf380a21d401f4e6652b6a3950a233b1cda9561cf2"
+		},
+		{
+			"targetId": "martial:blade:twin-souls",
+			"slug": "martial-blade-twin-souls",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-blade-twin-souls.png",
+			"contentHash": "fe9234df97ea85b3ea3677cb88817e8ff43afb0b531e2a75e222f3c8840ace2a"
+		},
+		{
+			"targetId": "martial:blade:two-blades",
+			"slug": "martial-blade-two-blades",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-blade-two-blades.png",
+			"contentHash": "146337adc52b29484db01d1ebe1153f27380aa3adf3e584b5fdd800d7c192777"
+		},
+		{
+			"targetId": "martial:blade:two-blades-one-mind",
+			"slug": "martial-blade-two-blades-one-mind",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-blade-two-blades-one-mind.png",
+			"contentHash": "ce3758039cdc7a7cfd33cf7e6b4840bfdb25c821247a7c022d3222fb18e7a98b"
+		},
+		{
+			"targetId": "martial:blade:unstoppable",
+			"slug": "martial-blade-unstoppable",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-blade-unstoppable.png",
+			"contentHash": "e54a329b637b1eb809aad27b619abe6c1d3d834fba67554bb8e79cbb96ef8fb3"
+		},
+		{
+			"targetId": "martial:blade:vanish",
+			"slug": "martial-blade-vanish",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-blade-vanish.png",
+			"contentHash": "ef9f8c7fff971c9966423a767b71327179e11c9d52a62bdbcde6634ba26ef35e"
+		},
+		{
+			"targetId": "martial:blade:vital-nick",
+			"slug": "martial-blade-vital-nick",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-blade-vital-nick.png",
+			"contentHash": "ab2c046f7ba417201b69551afd0f6c1900022d3d0f2215ba3295299d9d93a4a7"
+		},
+		{
+			"targetId": "martial:blade:void-cut",
+			"slug": "martial-blade-void-cut",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-blade-void-cut.png",
+			"contentHash": "7efbf03f44b766098982c0aaf2aed1a6b29475efaf26118572281fda6d5d7e6a"
+		},
+		{
+			"targetId": "martial:blade:weight-shift",
+			"slug": "martial-blade-weight-shift",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-blade-weight-shift.png",
+			"contentHash": "3d5e7333040264670920c5ffbf864f93591ee6190686aa85d8c769d72a405c8f"
+		},
+		{
+			"targetId": "martial:blade:whirl-step",
+			"slug": "martial-blade-whirl-step",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-blade-whirl-step.png",
+			"contentHash": "c82f37e2bfb83c32d2e3e1336dec334070d235682c7ca8379f1bd7a77aeb67f0"
+		},
+		{
+			"targetId": "martial:blade:whirlwind",
+			"slug": "martial-blade-whirlwind",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-blade-whirlwind.png",
+			"contentHash": "7cd1bc7e0049db803b74941239b945bc2decc702a44e922c49c602ba7aa1dc21"
+		},
+		{
+			"targetId": "martial:blade:wide-arc",
+			"slug": "martial-blade-wide-arc",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-blade-wide-arc.png",
+			"contentHash": "ada40f54781bfbb2b4599a4a1dd1143291d9a15d1ebfaddb0bfbdf56e051a851"
+		},
+		{
+			"targetId": "martial:blade:wind-slash",
+			"slug": "martial-blade-wind-slash",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-blade-wind-slash.png",
+			"contentHash": "77743f47932a02608c7d61a1fd168f02f3d813c8797b05945cb85fd6ced3b8c5"
+		},
+		{
+			"targetId": "martial:blade:windmill",
+			"slug": "martial-blade-windmill",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-blade-windmill.png",
+			"contentHash": "ffe20408987d46dec425468d9288fd63c635ac5b88703fd26632c128d6166411"
+		},
+		{
+			"targetId": "martial:blade:world-ender",
+			"slug": "martial-blade-world-ender",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-blade-world-ender.png",
+			"contentHash": "111dfd6f7d56a68c44b545e0ebf6d7f45a30ce1184321b5a56f2f6574ee08809"
+		},
+		{
+			"targetId": "martial:body:afterimage",
+			"slug": "martial-body-afterimage",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-body-afterimage.png",
+			"contentHash": "138dc3da53edc5078002da86aa1dc2cb3c56181a5df41f9f32f4fff0e94f7586"
+		},
+		{
+			"targetId": "martial:body:air-walk",
+			"slug": "martial-body-air-walk",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-body-air-walk.png",
+			"contentHash": "4c49b76998494698745c3ac6eb23f860f6a77c893cd2d0841f431a14487f3303"
+		},
+		{
+			"targetId": "martial:body:basic-block",
+			"slug": "martial-body-basic-block",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-body-basic-block.png",
+			"contentHash": "311f03df8a0ce0f1f9d5c72dbf487250fcfddb3be2fd6fba87e2fb3cac354dda"
+		},
+		{
+			"targetId": "martial:body:battle-instinct",
+			"slug": "martial-body-battle-instinct",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-body-battle-instinct.png",
+			"contentHash": "e92b16059ea17d210bfff6ef8c76aacef66904683c5a8716009b4d960590134a"
+		},
+		{
+			"targetId": "martial:body:between-places",
+			"slug": "martial-body-between-places",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-body-between-places.png",
+			"contentHash": "75434c9e0d2638cb20bd255744a7ff19ee60623f7a3204b8cdffd365004ca240"
+		},
+		{
+			"targetId": "martial:body:bind-the-beast",
+			"slug": "martial-body-bind-the-beast",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-body-bind-the-beast.png",
+			"contentHash": "8c2fc2d11f07162fb337f7e6605351164a891eb7fc86944b8affd18665085072"
+		},
+		{
+			"targetId": "martial:body:blink-step",
+			"slug": "martial-body-blink-step",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-body-blink-step.png",
+			"contentHash": "542b3f5f90f67cccc8a9f49688b3b7ac373621e06c15ceb5f63d909aff1804a8"
+		},
+		{
+			"targetId": "martial:body:bonded-mount",
+			"slug": "martial-body-bonded-mount",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-body-bonded-mount.png",
+			"contentHash": "8d1e61aab0443b8194bb3d2e001e3fe1884c1aff30bd26c5878f5a415859ce4f"
+		},
+		{
+			"targetId": "martial:body:breathing-form",
+			"slug": "martial-body-breathing-form",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-body-breathing-form.png",
+			"contentHash": "917361b50808af0b59b50acd62a845c19506856a4c8517e3bdccd3f18c97ffd8"
+		},
+		{
+			"targetId": "martial:body:called-shot",
+			"slug": "martial-body-called-shot",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-body-called-shot.png",
+			"contentHash": "6bb7869c242d2d2a725283405c5f1e88cbb0de89c9743c07488f87dc08b31f31"
+		},
+		{
+			"targetId": "martial:body:chokehold",
+			"slug": "martial-body-chokehold",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-body-chokehold.png",
+			"contentHash": "91f7e085dab9d28f03bd8a00d60c1ecc8e3136627be5954eef6fe448f7ae7b76"
+		},
+		{
+			"targetId": "martial:body:climb",
+			"slug": "martial-body-climb",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-body-climb.png",
+			"contentHash": "e5e15e2614f625230bb8bfbe538abac7143b876baa741b2e47f026c079e4f832"
+		},
+		{
+			"targetId": "martial:body:combat-reading",
+			"slug": "martial-body-combat-reading",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-body-combat-reading.png",
+			"contentHash": "a4c5648043a6036c7ddfb72a7fd243bb31cc7add9d34c79ce5c25ae6ae803847"
+		},
+		{
+			"targetId": "martial:body:combination",
+			"slug": "martial-body-combination",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-body-combination.png",
+			"contentHash": "e16a694e50db988eadf9b7b93f40498b25ae44765b44fa3992a6a90a6e27d339"
+		},
+		{
+			"targetId": "martial:body:dash",
+			"slug": "martial-body-dash",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-body-dash.png",
+			"contentHash": "cd3ea99efb2daf4591bfa864cb45f00889231051ec36004a7e8953ee960c0385"
+		},
+		{
+			"targetId": "martial:body:diamond-body",
+			"slug": "martial-body-diamond-body",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-body-diamond-body.png",
+			"contentHash": "8f1120024e1567776045a73213d8df020a151a73ed30bce4a52c7276f3d50abe"
+		},
+		{
+			"targetId": "martial:body:disarm",
+			"slug": "martial-body-disarm",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-body-disarm.png",
+			"contentHash": "616bb31790738fe46f8a08799664f28e6a9b48788f15472e3d5d3acfcb523dac"
+		},
+		{
+			"targetId": "martial:body:dive",
+			"slug": "martial-body-dive",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-body-dive.png",
+			"contentHash": "d2f202626400828ad6527deeccbee224c8a472ae403fb14401c9d0c7431e3f0f"
+		},
+		{
+			"targetId": "martial:body:elbow-and-knee",
+			"slug": "martial-body-elbow-and-knee",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-body-elbow-and-knee.png",
+			"contentHash": "2db9a30a9a0f8a71dfe1f77ed2edbfeac131807e2b3c81b16c173f6750ecc136"
+		},
+		{
+			"targetId": "martial:body:empty-force",
+			"slug": "martial-body-empty-force",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-body-empty-force.png",
+			"contentHash": "d2917ca88beab2d77757743d4a0ff75582ef89eb3ffab5daa6d2e7d60f3c6466"
+		},
+		{
+			"targetId": "martial:body:feint",
+			"slug": "martial-body-feint",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-body-feint.png",
+			"contentHash": "5c4aab9733db574e142807abcc3f75349f7477ca9e543d9de5f561f243428d73"
+		},
+		{
+			"targetId": "martial:body:feint-chain",
+			"slug": "martial-body-feint-chain",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-body-feint-chain.png",
+			"contentHash": "21e7efb58fd6e6ab01ebc04704f65e8a7a38d2c7a59644b14da4c88a5a0f53f5"
+		},
+		{
+			"targetId": "martial:body:flowing-redirect",
+			"slug": "martial-body-flowing-redirect",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-body-flowing-redirect.png",
+			"contentHash": "38b2c2f7e1de5ef12043388c8a9824619fad1328a65ac52dbb1ca910864b796d"
+		},
+		{
+			"targetId": "martial:body:focused-strike",
+			"slug": "martial-body-focused-strike",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-body-focused-strike.png",
+			"contentHash": "dc50ec144c8612e336494d5c2017612c3571c4598e7487f9b40246b8df3705f6"
+		},
+		{
+			"targetId": "martial:body:footing",
+			"slug": "martial-body-footing",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-body-footing.png",
+			"contentHash": "3fb0c97723588a5ef6bc1d139d284c8ce2ce10476a6fa3cb0f454e401f5baafa"
+		},
+		{
+			"targetId": "martial:body:footwork",
+			"slug": "martial-body-footwork",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-body-footwork.png",
+			"contentHash": "057768c5f529aa397ad2bf70be743c6e4e39aff80b7b46143e04e8492085ddd9"
+		},
+		{
+			"targetId": "martial:body:formless-body",
+			"slug": "martial-body-formless-body",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-body-formless-body.png",
+			"contentHash": "ffe31b124097c7c6ddc56a13f713486891d9f3efe66a30e5ffbc49cb0501cbe8"
+		},
+		{
+			"targetId": "martial:body:giant-toss",
+			"slug": "martial-body-giant-toss",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-body-giant-toss.png",
+			"contentHash": "dda4068ca900a56e64f18abad03794772068a7f773536df39b1f078f653acc1a"
+		},
+		{
+			"targetId": "martial:body:grab",
+			"slug": "martial-body-grab",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-body-grab.png",
+			"contentHash": "e6532f0e9e6e4efaeaa4dbe5e972a15507576a217235011b46ae0aca87510b6b"
+		},
+		{
+			"targetId": "martial:body:grip",
+			"slug": "martial-body-grip",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-body-grip.png",
+			"contentHash": "4491f92e02bc1cd3a9363ef7af3fe5cb58a65150f04c86957c590391242a47d7"
+		},
+		{
+			"targetId": "martial:body:ground-control",
+			"slug": "martial-body-ground-control",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-body-ground-control.png",
+			"contentHash": "6e7683159aa95cc6b828219c7155e8f5f0318abc8cc9f983037ac86a4c82203c"
+		},
+		{
+			"targetId": "martial:body:hundred-hands",
+			"slug": "martial-body-hundred-hands",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-body-hundred-hands.png",
+			"contentHash": "cad3ca97dd2eb38631003b97664f15d5e92d27c2e280a6c69fccd75630c1c038"
+		},
+		{
+			"targetId": "martial:body:hundred-steps",
+			"slug": "martial-body-hundred-steps",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-body-hundred-steps.png",
+			"contentHash": "6448318945b9644e99598f624859b64bb3b037e5c3d7ee942586e91ed37e6729"
+		},
+		{
+			"targetId": "martial:body:immovable-grip",
+			"slug": "martial-body-immovable-grip",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-body-immovable-grip.png",
+			"contentHash": "a171f580b3eac1c826339fe6bb47364d52461b31a248d4b38cec3aef2cfeaeaf"
+		},
+		{
+			"targetId": "martial:body:iron-body",
+			"slug": "martial-body-iron-body",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-body-iron-body.png",
+			"contentHash": "edc5310fedf30c9b7bce06a8b2f3b75e50d4acb985462fe480e81ee83f06f1ae"
+		},
+		{
+			"targetId": "martial:body:joint-lock",
+			"slug": "martial-body-joint-lock",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-body-joint-lock.png",
+			"contentHash": "fb56da02ff87d448e9c813c33c2bdcf88764ff842e501fcee92729a41b2eb11f"
+		},
+		{
+			"targetId": "martial:body:low-kick",
+			"slug": "martial-body-low-kick",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-body-low-kick.png",
+			"contentHash": "d46710a9cdb7fb12bc8c2b6d2158d5255c13d66e4cb551058c413465935d33fd"
+		},
+		{
+			"targetId": "martial:body:martial-form",
+			"slug": "martial-body-martial-form",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-body-martial-form.png",
+			"contentHash": "f9032520c552c605401f7af121499560061c647308a112c2320e350a52508cb7"
+		},
+		{
+			"targetId": "martial:body:mounted-combat",
+			"slug": "martial-body-mounted-combat",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-body-mounted-combat.png",
+			"contentHash": "1a439e4f76216bf071fa2b6fb122a0bfbf6b89514a2838a59852a2dc97999572"
+		},
+		{
+			"targetId": "martial:body:never-where-struck",
+			"slug": "martial-body-never-where-struck",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-body-never-where-struck.png",
+			"contentHash": "5745f2636e629de2085ccb1c3e2e817d0565d0c9468635f6118cbc7a123f13cd"
+		},
+		{
+			"targetId": "martial:body:one-inch",
+			"slug": "martial-body-one-inch",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-body-one-inch.png",
+			"contentHash": "85972f1a3fb24bd938cbdf67675848c3c55ee2c4b3185b35a4150cdf6011676e"
+		},
+		{
+			"targetId": "martial:body:pack-bond",
+			"slug": "martial-body-pack-bond",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-body-pack-bond.png",
+			"contentHash": "ccccd65ddce3ae253a9d6c05c57dcf838654e4c2d13ceaf03c1557d75ce7790b"
+		},
+		{
+			"targetId": "martial:body:palm-block",
+			"slug": "martial-body-palm-block",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-body-palm-block.png",
+			"contentHash": "a03ec4c0f6954034b36d620ebcf4df129c8c4e3907c5522c2ddb2c9ca5da07c6"
+		},
+		{
+			"targetId": "martial:body:parry",
+			"slug": "martial-body-parry",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-body-parry.png",
+			"contentHash": "d872d0f5f1400664853b845752931ef85a96dc7b83d4f2c3d3cd43308737ddbe"
+		},
+		{
+			"targetId": "martial:body:perfect-parry",
+			"slug": "martial-body-perfect-parry",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-body-perfect-parry.png",
+			"contentHash": "95646789a3369f758190217591785271529483eca142775cc04edb932d4bacd2"
+		},
+		{
+			"targetId": "martial:body:recovery",
+			"slug": "martial-body-recovery",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-body-recovery.png",
+			"contentHash": "c424f15e94c9d20108f2e7a64f33e4342fff0de95c64c68c434f2f7de28f84e6"
+		},
+		{
+			"targetId": "martial:body:riding",
+			"slug": "martial-body-riding",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-body-riding.png",
+			"contentHash": "68488d07fcb265e674efcbacc9b0411a71ab0850f6d9fd86e417c2f3d94efa36"
+		},
+		{
+			"targetId": "martial:body:riposte",
+			"slug": "martial-body-riposte",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-body-riposte.png",
+			"contentHash": "24e6efbd3f508482328ede22743e6665d6f128b89644682fd35f455c44f14105"
+		},
+		{
+			"targetId": "martial:body:rising-kick",
+			"slug": "martial-body-rising-kick",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-body-rising-kick.png",
+			"contentHash": "b95396ef9f8447304f3b7d84cb8e51ee8e414ca4991ec39c8c49076e63d5b4ee"
+		},
+		{
+			"targetId": "martial:body:roll",
+			"slug": "martial-body-roll",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-body-roll.png",
+			"contentHash": "4f3b707927ff10d7d729def705a27fbea8eb5f47ce85c8bcdb4f2987b0e7d337"
+		},
+		{
+			"targetId": "martial:body:second-wind",
+			"slug": "martial-body-second-wind",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-body-second-wind.png",
+			"contentHash": "7dd367c5b7d83ea011cc196475f767f06a3c069afe652f7a1a015a70ee605115"
+		},
+		{
+			"targetId": "martial:body:set-jaw",
+			"slug": "martial-body-set-jaw",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-body-set-jaw.png",
+			"contentHash": "7c21bfe927a186a604663c0dcc52fdccd8742c97e761b7829b891dcff14ef1e6"
+		},
+		{
+			"targetId": "martial:body:shadowless",
+			"slug": "martial-body-shadowless",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-body-shadowless.png",
+			"contentHash": "75d3f4bca7f2d3597e41bc82962795458304a73b166375061ffa90dfa0c25a2c"
+		},
+		{
+			"targetId": "martial:body:shove",
+			"slug": "martial-body-shove",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-body-shove.png",
+			"contentHash": "438dad8dd5b2a86a3783bef955c147d83b25ed813ffb32ff545ddecdff2b0d6f"
+		},
+		{
+			"targetId": "martial:body:sidestep",
+			"slug": "martial-body-sidestep",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-body-sidestep.png",
+			"contentHash": "4fa078b64f6c07271c36d94bb6165e72857a5fbf9c8308596a8092d85fe9e531"
+		},
+		{
+			"targetId": "martial:body:storm-of-fists",
+			"slug": "martial-body-storm-of-fists",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-body-storm-of-fists.png",
+			"contentHash": "7039a9ec9fac8a2fa2638d43bf1c6e422513a748156475ba4451dafd9362814d"
+		},
+		{
+			"targetId": "martial:body:straight-punch",
+			"slug": "martial-body-straight-punch",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-body-straight-punch.png",
+			"contentHash": "6b4e15d780de133f349ccd76c230ad6dc2622d596c5f4b9cba80912f4d3dabd5"
+		},
+		{
+			"targetId": "martial:body:suplex",
+			"slug": "martial-body-suplex",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-body-suplex.png",
+			"contentHash": "a215981cae832646b8ad3e4ef3f65b2c5a8a2204ae83f493da8855ecc0f241ce"
+		},
+		{
+			"targetId": "martial:body:sure-step",
+			"slug": "martial-body-sure-step",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-body-sure-step.png",
+			"contentHash": "26d04c5ef46f1ed9bc18ab3a7a433f0d7a6754f8a3ebc5afc4f4347b39a4ed6b"
+		},
+		{
+			"targetId": "martial:body:the-fist-that-ends",
+			"slug": "martial-body-the-fist-that-ends",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-body-the-fist-that-ends.png",
+			"contentHash": "48fb707d47ca7beebe4ef5b10060a570f2f637a2105a23b61e4663b0df63366a"
+		},
+		{
+			"targetId": "martial:body:the-road-has-no-end",
+			"slug": "martial-body-the-road-has-no-end",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-body-the-road-has-no-end.png",
+			"contentHash": "a4522add11e698fdccf8648e77db6db92ef7146f51ccbc9ce8c0c94f6c2378f1"
+		},
+		{
+			"targetId": "martial:body:throw",
+			"slug": "martial-body-throw",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-body-throw.png",
+			"contentHash": "2a2633b5c4cfdd56a62fb270239d9b1d0d6b9b697b1c450e0693618a857b8120"
+		},
+		{
+			"targetId": "martial:body:trip",
+			"slug": "martial-body-trip",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-body-trip.png",
+			"contentHash": "dbc2d50bd2a821ce88d07f13f52f07866145eafbd7188df17923d5edcba18c41"
+		},
+		{
+			"targetId": "martial:body:unbroken-guard",
+			"slug": "martial-body-unbroken-guard",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-body-unbroken-guard.png",
+			"contentHash": "c4ca503c97ec280378feb4a051a234e84153027547ba50acfe7ddd00c07f804e"
+		},
+		{
+			"targetId": "martial:body:undying",
+			"slug": "martial-body-undying",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-body-undying.png",
+			"contentHash": "f58a02e79983b541a22a5a3aa6fb6319511a34286dc2cd530f568165195751e4"
+		},
+		{
+			"targetId": "martial:body:untouchable",
+			"slug": "martial-body-untouchable",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-body-untouchable.png",
+			"contentHash": "d3e92fcd8405158dde4fe58985b3bf76d3633626a60885076c1fe9c81a588570"
+		},
+		{
+			"targetId": "martial:body:vault",
+			"slug": "martial-body-vault",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-body-vault.png",
+			"contentHash": "5326897d5c993cf86f0003302d55a14c3f1e4f8d0f5158a81449a28a693be015"
+		},
+		{
+			"targetId": "martial:body:wall-run",
+			"slug": "martial-body-wall-run",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-body-wall-run.png",
+			"contentHash": "9342da83e8bce87e092ebcd36682f85387519850da3c9531674a18bcfcc9169a"
+		},
+		{
+			"targetId": "martial:body:weave",
+			"slug": "martial-body-weave",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-body-weave.png",
+			"contentHash": "70ab57b4a8fa984b0395cae3f0e16dbe9a8752d200810e9aeaa1c73153725b26"
+		},
+		{
+			"targetId": "martial:body:wrestling",
+			"slug": "martial-body-wrestling",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-body-wrestling.png",
+			"contentHash": "e7b6812d2f68385465b0a6975f83ff24400cc9be5485b30d12281c3e2112c295"
+		},
+		{
+			"targetId": "martial:polearm:anvil-strike",
+			"slug": "martial-polearm-anvil-strike",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-polearm-anvil-strike.png",
+			"contentHash": "bc37cf69c0fc9c60decafbf891077f21883a5a299b8ec9f77db6072443675141"
+		},
+		{
+			"targetId": "martial:polearm:bell-ringer",
+			"slug": "martial-polearm-bell-ringer",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-polearm-bell-ringer.png",
+			"contentHash": "45c184f5052a517b52d5c65a7427d687c272d7b54a69d00b8af4e4d31f761793"
+		},
+		{
+			"targetId": "martial:polearm:berserk-swing",
+			"slug": "martial-polearm-berserk-swing",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-polearm-berserk-swing.png",
+			"contentHash": "47528e5677ae768d29c65476219d63c6f69ace4ada464232bd19833cdcd9e668"
+		},
+		{
+			"targetId": "martial:polearm:bloodletting",
+			"slug": "martial-polearm-bloodletting",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-polearm-bloodletting.png",
+			"contentHash": "5f763bea7f72bbf4f1967e7ce391dc420a4ec2c9449af653b40f2935909b5085"
+		},
+		{
+			"targetId": "martial:polearm:bracing",
+			"slug": "martial-polearm-bracing",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-polearm-bracing.png",
+			"contentHash": "e89821e7568cf57dbf85140b27ba7d15fd560fac858350cd603ba6589ae00071"
+		},
+		{
+			"targetId": "martial:polearm:butt-strike",
+			"slug": "martial-polearm-butt-strike",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-polearm-butt-strike.png",
+			"contentHash": "e5c8a3e797104e0736a8940cbd7aeef49fed8d080638d6282e410ca5cf8adc42"
+		},
+		{
+			"targetId": "martial:polearm:chop",
+			"slug": "martial-polearm-chop",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-polearm-chop.png",
+			"contentHash": "c7431e854d8eac98386322b49d00c265bbf82bdd1020821dde611c0957ff9005"
+		},
+		{
+			"targetId": "martial:polearm:coiling-dragon",
+			"slug": "martial-polearm-coiling-dragon",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-polearm-coiling-dragon.png",
+			"contentHash": "f5331ce7207259e9400ac561c52aef2f9923b9781b30a0b12270213b77835290"
+		},
+		{
+			"targetId": "martial:polearm:concussive-blow",
+			"slug": "martial-polearm-concussive-blow",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-polearm-concussive-blow.png",
+			"contentHash": "ac67160b985d86666d6c435973df4b89bc5a70f7d7c7cff566f871d783c1c6eb"
+		},
+		{
+			"targetId": "martial:polearm:crush",
+			"slug": "martial-polearm-crush",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-polearm-crush.png",
+			"contentHash": "976ef60de3ec1ef9fb4a932d627ec03eca14393ebc8e1716306f3a5b7c437912"
+		},
+		{
+			"targetId": "martial:polearm:dragon-tail",
+			"slug": "martial-polearm-dragon-tail",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-polearm-dragon-tail.png",
+			"contentHash": "4202b702d7525b5de66737537fd6c37460ccf489f96731d5ebc4a9f2a6087fea"
+		},
+		{
+			"targetId": "martial:polearm:executioner-s-grip",
+			"slug": "martial-polearm-executioner-s-grip",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-polearm-executioner-s-grip.png",
+			"contentHash": "20935eacd1f8d4441e93f4f56cbfc888303e953c7075c2afc827ad65ab91f22d"
+		},
+		{
+			"targetId": "martial:polearm:halberd-handling",
+			"slug": "martial-polearm-halberd-handling",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-polearm-halberd-handling.png",
+			"contentHash": "265b659a1cc7e987c88a9636eccefee811b9c12867d7b07c7910ec4fbb187dec"
+		},
+		{
+			"targetId": "martial:polearm:heaven-piercer",
+			"slug": "martial-polearm-heaven-piercer",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-polearm-heaven-piercer.png",
+			"contentHash": "53e28cde41b30f37be87c420179d0446cc7f90fee32dd2ce53ee1095545c44e5"
+		},
+		{
+			"targetId": "martial:polearm:heavy-footing",
+			"slug": "martial-polearm-heavy-footing",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-polearm-heavy-footing.png",
+			"contentHash": "8e7fe1e09f76375145520d5575f21b28c93d159cd9877541b94e4f25b1539a5b"
+		},
+		{
+			"targetId": "martial:polearm:hook-and-pull",
+			"slug": "martial-polearm-hook-and-pull",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-polearm-hook-and-pull.png",
+			"contentHash": "8b60e65dca65a0314a8ebfa1e2ed8f29b99bfa310c0045a94d4f80efeb8fca6d"
+		},
+		{
+			"targetId": "martial:polearm:hook-shield",
+			"slug": "martial-polearm-hook-shield",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-polearm-hook-shield.png",
+			"contentHash": "eb79839476b72564ec6150f59f4bdc5b12f4bd6df84a407bf39584e0ec57d37a"
+		},
+		{
+			"targetId": "martial:polearm:keep-away",
+			"slug": "martial-polearm-keep-away",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-polearm-keep-away.png",
+			"contentHash": "6a7e9b7e6b0840c001d6ca7da75bd1f5f9d200cf2e4af00031cee61b61a26ec9"
+		},
+		{
+			"targetId": "martial:polearm:knee-breaker",
+			"slug": "martial-polearm-knee-breaker",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-polearm-knee-breaker.png",
+			"contentHash": "14849962e415a2fed37145cb2b964ab52a1f1911b0831ed8a113705fe740b18b"
+		},
+		{
+			"targetId": "martial:polearm:mountain-s-weight",
+			"slug": "martial-polearm-mountain-s-weight",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-polearm-mountain-s-weight.png",
+			"contentHash": "1713ec8c21a9ff5983a475201e234abd72a941578c4f34e2e153b09991f35d19"
+		},
+		{
+			"targetId": "martial:polearm:nothing-stands",
+			"slug": "martial-polearm-nothing-stands",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-polearm-nothing-stands.png",
+			"contentHash": "cce53e15a5c16b871c9191ddb73eb1b395322bcdc674a7d7aa18afa7e6e887f4"
+		},
+		{
+			"targetId": "martial:polearm:piercing-line",
+			"slug": "martial-polearm-piercing-line",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-polearm-piercing-line.png",
+			"contentHash": "9419644bb9382337eab20fa91c6ed61030d932be667c7681eaddbc7f452eccc2"
+		},
+		{
+			"targetId": "martial:polearm:polearm-handling",
+			"slug": "martial-polearm-polearm-handling",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-polearm-polearm-handling.png",
+			"contentHash": "22689097caefa26c79aeadced99dd512bf3b248bc58696b13760057de528d11d"
+		},
+		{
+			"targetId": "martial:polearm:polehammer-handling",
+			"slug": "martial-polearm-polehammer-handling",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-polearm-polehammer-handling.png",
+			"contentHash": "0ebcc51d1a2fc132d255d5091fcf9317817d1b371c0cc63965745bb7832411c9"
+		},
+		{
+			"targetId": "martial:polearm:reaping-arc",
+			"slug": "martial-polearm-reaping-arc",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-polearm-reaping-arc.png",
+			"contentHash": "8cd7336fc1c3de3ab25d725dfee430ab8c2ad0ee4025ef375e2d9562c37be074"
+		},
+		{
+			"targetId": "martial:polearm:red-harvest",
+			"slug": "martial-polearm-red-harvest",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-polearm-red-harvest.png",
+			"contentHash": "518b6ff378ac283d5c586e99e88012c3075b31eb2d0243e49b08230b9c7f86ef"
+		},
+		{
+			"targetId": "martial:polearm:rend-armour",
+			"slug": "martial-polearm-rend-armour",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-polearm-rend-armour.png",
+			"contentHash": "a127cb9138cbdaa162522c4418ab313caf952a5bfcc295b75d7fac3a01c97b97"
+		},
+		{
+			"targetId": "martial:polearm:ruin",
+			"slug": "martial-polearm-ruin",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-polearm-ruin.png",
+			"contentHash": "8cb3ec0b3d743c356265bb9950ea07e3fb2f311324e57fc74d458ec6add0bfb0"
+		},
+		{
+			"targetId": "martial:polearm:seismic-step",
+			"slug": "martial-polearm-seismic-step",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-polearm-seismic-step.png",
+			"contentHash": "4ec53b30850e70ad3e3e21c031d7b41ddbcc67316bdcc2a122096d87f1d957f9"
+		},
+		{
+			"targetId": "martial:polearm:serpent-s-tongue",
+			"slug": "martial-polearm-serpent-s-tongue",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-polearm-serpent-s-tongue.png",
+			"contentHash": "92d45ae8d730ac92d791f7c48daaa09107cf5baf1d40cdf5bf6752939ea1c3fa"
+		},
+		{
+			"targetId": "martial:polearm:shatter",
+			"slug": "martial-polearm-shatter",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-polearm-shatter.png",
+			"contentHash": "e12d575a2021445ea6933e63ef4402315703808577f7098176f27c69ef5e1101"
+		},
+		{
+			"targetId": "martial:polearm:silence-the-bell",
+			"slug": "martial-polearm-silence-the-bell",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-polearm-silence-the-bell.png",
+			"contentHash": "0e02d85dc61652254581e3a60beca40af25d5c19102f82930a99865ec5fb9a41"
+		},
+		{
+			"targetId": "martial:polearm:split-grip",
+			"slug": "martial-polearm-split-grip",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-polearm-split-grip.png",
+			"contentHash": "a0331d3384c64ff8a4b872a2dd9c54a6e128d7b36cf438c24067e49801f1e1fe"
+		},
+		{
+			"targetId": "martial:polearm:storm-of-iron",
+			"slug": "martial-polearm-storm-of-iron",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-polearm-storm-of-iron.png",
+			"contentHash": "dc873ae251bf2121430023bc48dbebcc37b37a738487ea8d941ea94d82919b76"
+		},
+		{
+			"targetId": "martial:polearm:straight-thrust",
+			"slug": "martial-polearm-straight-thrust",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-polearm-straight-thrust.png",
+			"contentHash": "2ea79d65338909012f8ccab06ac53e26c32db34895af1e5e0fcd2d7f3c5466fe"
+		},
+		{
+			"targetId": "martial:polearm:sweep-low",
+			"slug": "martial-polearm-sweep-low",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-polearm-sweep-low.png",
+			"contentHash": "6ef3e30ff9e484116058708b2bc12c947e8c1304217d5e4e70564595ea78da47"
+		},
+		{
+			"targetId": "martial:polearm:the-last-harvest",
+			"slug": "martial-polearm-the-last-harvest",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-polearm-the-last-harvest.png",
+			"contentHash": "db088b60f6ca328f51a337c024a9126d991be010f548bcc13cc82b95aaeaddf2"
+		},
+		{
+			"targetId": "martial:polearm:the-line-that-holds",
+			"slug": "martial-polearm-the-line-that-holds",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-polearm-the-line-that-holds.png",
+			"contentHash": "080cc3c6dd6afaaaad0e2b6681d87394d76d942d24be8d1b52f9d45451d7701b"
+		},
+		{
+			"targetId": "martial:polearm:thousand-li-thrust",
+			"slug": "martial-polearm-thousand-li-thrust",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-polearm-thousand-li-thrust.png",
+			"contentHash": "9faf2b408b57c78ad15ea528ff5a0c6bfaa7d687adb46d50932166faee98638a"
+		},
+		{
+			"targetId": "martial:polearm:tremor-field",
+			"slug": "martial-polearm-tremor-field",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-polearm-tremor-field.png",
+			"contentHash": "22320c2efdcabe68268f12030f6dbd5e381303805c746093486836bcca796b3d"
+		},
+		{
+			"targetId": "martial:polearm:unbreakable-line",
+			"slug": "martial-polearm-unbreakable-line",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-polearm-unbreakable-line.png",
+			"contentHash": "b4a594c0b073e4fc3f648c124225a6c4a26c61b97e0bbe5a3bd82b3288859f4e"
+		},
+		{
+			"targetId": "martial:polearm:unmaking",
+			"slug": "martial-polearm-unmaking",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-polearm-unmaking.png",
+			"contentHash": "82e934aff10363a7e71e4b0ea8a7b55b599ceff20599bb823cf161abc0e665e8"
+		},
+		{
+			"targetId": "martial:polearm:wall-of-points",
+			"slug": "martial-polearm-wall-of-points",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-polearm-wall-of-points.png",
+			"contentHash": "82282c85fa7c146a004f0d8b002ccb47cc52a9b05288bc9e9143ae61588eb39a"
+		},
+		{
+			"targetId": "martial:ranged:aimed-shot",
+			"slug": "martial-ranged-aimed-shot",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-ranged-aimed-shot.png",
+			"contentHash": "07267b508215a3ff80578bb670c782a3efbbbead98c0a976b28def693eaf18cc"
+		},
+		{
+			"targetId": "martial:ranged:archery",
+			"slug": "martial-ranged-archery",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-ranged-archery.png",
+			"contentHash": "be0d65e8dc162ef796dd41149c9d204c2bf0366d26b9a5aca910fa5d622e0208"
+		},
+		{
+			"targetId": "martial:ranged:arcing-volley",
+			"slug": "martial-ranged-arcing-volley",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-ranged-arcing-volley.png",
+			"contentHash": "727226fa467c956a7c01b3d13d94b67eb6f1db473e8e7a789a2710637ca9270f"
+		},
+		{
+			"targetId": "martial:ranged:ballista-form",
+			"slug": "martial-ranged-ballista-form",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-ranged-ballista-form.png",
+			"contentHash": "8786d05486c67a128dfd7b1d39deea145baa57dc58243c717ada845af9c6a7e0"
+		},
+		{
+			"targetId": "martial:ranged:bolt-craft",
+			"slug": "martial-ranged-bolt-craft",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-ranged-bolt-craft.png",
+			"contentHash": "bbc4394dccf9e90aed660c6bc50bd9a59d667566ccca2984f46e8f79c6c831e6"
+		},
+		{
+			"targetId": "martial:ranged:bolt-shot",
+			"slug": "martial-ranged-bolt-shot",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-ranged-bolt-shot.png",
+			"contentHash": "34fd7f7bf59049baf860bdd47b5de56fb9cd0821db0e519b389b195520d8bcf6"
+		},
+		{
+			"targetId": "martial:ranged:bolt-storm",
+			"slug": "martial-ranged-bolt-storm",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-ranged-bolt-storm.png",
+			"contentHash": "63ec46aa9ed12aea3a074ec1db06aec8fcb69e1530aba987b13602bab0d12822"
+		},
+		{
+			"targetId": "martial:ranged:braced-shot",
+			"slug": "martial-ranged-braced-shot",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-ranged-braced-shot.png",
+			"contentHash": "54c05ae122a98af65d46fbcf6b9b0089b00d34378f1f59fb22e4e3b04347dbf4"
+		},
+		{
+			"targetId": "martial:ranged:crossbow-handling",
+			"slug": "martial-ranged-crossbow-handling",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-ranged-crossbow-handling.png",
+			"contentHash": "468dc33cc97746ed1468e4b89783d661828cd9f244d0f64243c6fe359ffa11bf"
+		},
+		{
+			"targetId": "martial:ranged:fletching",
+			"slug": "martial-ranged-fletching",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-ranged-fletching.png",
+			"contentHash": "74007129d60463d1fc9878e169d0822db81f465fc5ac199d35424b1bddf8030f"
+		},
+		{
+			"targetId": "martial:ranged:heartseeker",
+			"slug": "martial-ranged-heartseeker",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-ranged-heartseeker.png",
+			"contentHash": "c9a6b429011e1152b3e8d0d8a3197c98c9b65683d989e8cb98ccb780264d62e8"
+		},
+		{
+			"targetId": "martial:ranged:hunter-s-mark",
+			"slug": "martial-ranged-hunter-s-mark",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-ranged-hunter-s-mark.png",
+			"contentHash": "5c532226acf255b86be61aa996dfb6db570987ff400e40809884250eaf1098e2"
+		},
+		{
+			"targetId": "martial:ranged:multishot",
+			"slug": "martial-ranged-multishot",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-ranged-multishot.png",
+			"contentHash": "7f84bab73a43f0e02e1433032e297836f146b9904bc43c91e5ba54fc508bbcd3"
+		},
+		{
+			"targetId": "martial:ranged:piercing-shot",
+			"slug": "martial-ranged-piercing-shot",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-ranged-piercing-shot.png",
+			"contentHash": "df887ddfe2be3afbc4d63db4e6551ef6d4c0586504ac8356f2b8ef46f5290d5f"
+		},
+		{
+			"targetId": "martial:ranged:pinning-shot",
+			"slug": "martial-ranged-pinning-shot",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-ranged-pinning-shot.png",
+			"contentHash": "17b88782d4e340a08ec2c49059d924969620f8b74e5abcc60fe3b7cacc54a837"
+		},
+		{
+			"targetId": "martial:ranged:power-draw",
+			"slug": "martial-ranged-power-draw",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-ranged-power-draw.png",
+			"contentHash": "ae8152ddbb363b4acaabfdd1b7ab1951c980ba93db4d1691d62d9ade1bb2482f"
+		},
+		{
+			"targetId": "martial:ranged:puncture",
+			"slug": "martial-ranged-puncture",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-ranged-puncture.png",
+			"contentHash": "6bed71c5dd81d1fb781153e58d89f513e1adab5a6d7934791ec8fb48412f7088"
+		},
+		{
+			"targetId": "martial:ranged:quick-loose",
+			"slug": "martial-ranged-quick-loose",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-ranged-quick-loose.png",
+			"contentHash": "082f70498cb73eaee164dbf09d4f8cae0e0a88f444a78f2427845b7178f3a68a"
+		},
+		{
+			"targetId": "martial:ranged:rain-of-arrows",
+			"slug": "martial-ranged-rain-of-arrows",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-ranged-rain-of-arrows.png",
+			"contentHash": "3cee77cfb1320bbbf54f7dcf5da00cb8ea455828f19b2bbfd5d1a45b9fde2560"
+		},
+		{
+			"targetId": "martial:ranged:reload-drill",
+			"slug": "martial-ranged-reload-drill",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-ranged-reload-drill.png",
+			"contentHash": "bcb8ab79fd79e9de2116ce8a36e5ce12ef6aec0f47c3314d9f9598343137dd50"
+		},
+		{
+			"targetId": "martial:ranged:repeating-mechanism",
+			"slug": "martial-ranged-repeating-mechanism",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-ranged-repeating-mechanism.png",
+			"contentHash": "a592eaa8fd7a3e619fb4c9cf8bfda71e4c8423ca30e39839efa2e56ea6c396cc"
+		},
+		{
+			"targetId": "martial:ranged:siege-bolt",
+			"slug": "martial-ranged-siege-bolt",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-ranged-siege-bolt.png",
+			"contentHash": "5df090fd6ef8182d59a8c8652ac75e68391e5dc2d57dd9c99f7d38252caa1be1"
+		},
+		{
+			"targetId": "martial:ranged:sky-piercer",
+			"slug": "martial-ranged-sky-piercer",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-ranged-sky-piercer.png",
+			"contentHash": "7fa573c97fc2aaf4bc8cb9e2e163361640bbb4818998f43e6a07ae0511c5431a"
+		},
+		{
+			"targetId": "martial:ranged:sling",
+			"slug": "martial-ranged-sling",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-ranged-sling.png",
+			"contentHash": "ceaf15e33ca1fbd15e4bd3db7255fc6345d2d0ff6defa0214ec21771dde6b792"
+		},
+		{
+			"targetId": "martial:ranged:split-arrow",
+			"slug": "martial-ranged-split-arrow",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-ranged-split-arrow.png",
+			"contentHash": "2976e233c967cb62489d8fb9ecb7ed7d1cfc4f43d829e5549f10f4c4e25c1112"
+		},
+		{
+			"targetId": "martial:ranged:steady-stance",
+			"slug": "martial-ranged-steady-stance",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-ranged-steady-stance.png",
+			"contentHash": "4592b91d1d65f87607970ce91f93651fcf6ff6b9bb4c00097c7f016c87c0ad09"
+		},
+		{
+			"targetId": "martial:ranged:storm-of-a-thousand",
+			"slug": "martial-ranged-storm-of-a-thousand",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-ranged-storm-of-a-thousand.png",
+			"contentHash": "e84004dbe6340694a03ab9b0b58eb64b00fb594c078d8d67d6b8f97d6dadb1a8"
+		},
+		{
+			"targetId": "martial:ranged:the-arrow-that-finds",
+			"slug": "martial-ranged-the-arrow-that-finds",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-ranged-the-arrow-that-finds.png",
+			"contentHash": "8381a12a9b2589f0321a71a121fe1cc502d1f4412bd54bed043084e9f16c3723"
+		},
+		{
+			"targetId": "martial:ranged:the-machine",
+			"slug": "martial-ranged-the-machine",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-ranged-the-machine.png",
+			"contentHash": "c28b5b2eb206149082e45f3b8e36e3e4b69ba657037f969f3551e2822ed21b80"
+		},
+		{
+			"targetId": "martial:ranged:trick-bolt",
+			"slug": "martial-ranged-trick-bolt",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-ranged-trick-bolt.png",
+			"contentHash": "52d5243d74903b4df71960750d38ce78204cdeb90a335d0a5c10f2df144684df"
+		},
+		{
+			"targetId": "martial:ranged:world-s-edge-shot",
+			"slug": "martial-ranged-world-s-edge-shot",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-ranged-world-s-edge-shot.png",
+			"contentHash": "f2d8cc2dd46486742f46472ba13e92266ff260d3e3d3b0512f420812d9919460"
+		},
+		{
+			"targetId": "martial:shield:aegis",
+			"slug": "martial-shield-aegis",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-shield-aegis.png",
+			"contentHash": "2e5e197629e45482f1ef87833031bbe008aa8ea0e1abfa5ab196ad0f1df7093b"
+		},
+		{
+			"targetId": "martial:shield:aegis-eternal",
+			"slug": "martial-shield-aegis-eternal",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-shield-aegis-eternal.png",
+			"contentHash": "37a1aed25b869579b63fea333dd155f21df92e02760f90f404866eabae49d9df"
+		},
+		{
+			"targetId": "martial:shield:brace",
+			"slug": "martial-shield-brace",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-shield-brace.png",
+			"contentHash": "18293cb5f26ed71a53eedc2f424e1e2a05ab2b04b93acb158838409a13c81b44"
+		},
+		{
+			"targetId": "martial:shield:cover",
+			"slug": "martial-shield-cover",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-shield-cover.png",
+			"contentHash": "235c4860e6b83cb05579116dc06db9973fb0a4b4f2ed5463aa5ade3681328ad2"
+		},
+		{
+			"targetId": "martial:shield:deflect",
+			"slug": "martial-shield-deflect",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-shield-deflect.png",
+			"contentHash": "13cc13dbc5211f202e3ebf3720781af9a991f08c86edd6fd08e7eff75a9ed19e"
+		},
+		{
+			"targetId": "martial:shield:draw-attention",
+			"slug": "martial-shield-draw-attention",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-shield-draw-attention.png",
+			"contentHash": "7a0fe37e4c44eb41e99a075f3d88c6a7805f8ab40350d34e9fa992f0aa77dcc6"
+		},
+		{
+			"targetId": "martial:shield:endure",
+			"slug": "martial-shield-endure",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-shield-endure.png",
+			"contentHash": "7344c8c9e77aa8e3a897d17b83e01a5859c7a161f53b92aef9439c7c97cef5c1"
+		},
+		{
+			"targetId": "martial:shield:guardian-s-oath",
+			"slug": "martial-shield-guardian-s-oath",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-shield-guardian-s-oath.png",
+			"contentHash": "4bc9b5ba6c45f35d14756f7ed883b1e672bb85758ea3313d82ddc09af3b146a3"
+		},
+		{
+			"targetId": "martial:shield:immovable",
+			"slug": "martial-shield-immovable",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-shield-immovable.png",
+			"contentHash": "a7849c4e4a0eaa3b789ca342c04d6b61752dcc6ad46bfef56bce72c6516125a7"
+		},
+		{
+			"targetId": "martial:shield:interpose",
+			"slug": "martial-shield-interpose",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-shield-interpose.png",
+			"contentHash": "58cff94936474621c4ababc36142d8185a5e90c5eacbefae9cb33735b969a292"
+		},
+		{
+			"targetId": "martial:shield:phalanx",
+			"slug": "martial-shield-phalanx",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-shield-phalanx.png",
+			"contentHash": "e69df228202609a280ef689a97f969b7fae76e5bd637a348f376b1c9af033a18"
+		},
+		{
+			"targetId": "martial:shield:raise-shield",
+			"slug": "martial-shield-raise-shield",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-shield-raise-shield.png",
+			"contentHash": "e88dc0578ea86abc9a53b9558e30d1fb25d8eb3018fc2a669c45137f85f431e8"
+		},
+		{
+			"targetId": "martial:shield:retaliation-ward",
+			"slug": "martial-shield-retaliation-ward",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-shield-retaliation-ward.png",
+			"contentHash": "7a7f8db22289b044aba4fa34f9917392713d663df5d931e623a72ee18cabf1dd"
+		},
+		{
+			"targetId": "martial:shield:shield-bash",
+			"slug": "martial-shield-shield-bash",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-shield-shield-bash.png",
+			"contentHash": "54df793aa866afb04496ef1b1a7d579edd424a4fc4637aaf466bf0d222908e13"
+		},
+		{
+			"targetId": "martial:shield:shield-charge",
+			"slug": "martial-shield-shield-charge",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-shield-shield-charge.png",
+			"contentHash": "9beeac7971f43400dc979bf3b1fbd45f24ba95c7b3d5a41f321df1f76d15bc67"
+		},
+		{
+			"targetId": "martial:shield:shield-push",
+			"slug": "martial-shield-shield-push",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-shield-shield-push.png",
+			"contentHash": "bc192b91b797fc7f5cd6cedf7a83aabcab4e4105ed6c343122dd894d0767be66"
+		},
+		{
+			"targetId": "martial:shield:shield-throw",
+			"slug": "martial-shield-shield-throw",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-shield-shield-throw.png",
+			"contentHash": "e00c6626c5d5e63dbe509b1637b34937a0517230a6d7f48b972bc8c2544e2f0d"
+		},
+		{
+			"targetId": "martial:shield:shield-use",
+			"slug": "martial-shield-shield-use",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-shield-shield-use.png",
+			"contentHash": "f0e5731ffc7c0edbe31727e3ec14555f3aeb031c0ce1a6d6e2d87b83ecc2e9d6"
+		},
+		{
+			"targetId": "martial:shield:taunt",
+			"slug": "martial-shield-taunt",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-shield-taunt.png",
+			"contentHash": "3214a30559053eb59e10b453eca2acccc79782abb4d584f3675ad2b28fcf5b6f"
+		},
+		{
+			"targetId": "martial:shield:the-last-wall",
+			"slug": "martial-shield-the-last-wall",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-shield-the-last-wall.png",
+			"contentHash": "fb5df23f2fd4737d772a0c8b55baeeb7b07b60498ac0ab7e7ee87603d782741b"
+		},
+		{
+			"targetId": "martial:shield:tower-form",
+			"slug": "martial-shield-tower-form",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-shield-tower-form.png",
+			"contentHash": "75c4ae852575fb1df0ea753be3a1de1ead2599d0519e7e59f022810457ee39c5"
+		},
+		{
+			"targetId": "martial:shield:unyielding",
+			"slug": "martial-shield-unyielding",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-shield-unyielding.png",
+			"contentHash": "89f5131dd737393577a365cedc102889c2f8cff323385ba020db605a66f30d03"
+		},
+		{
+			"targetId": "martial:shield:wall-stance",
+			"slug": "martial-shield-wall-stance",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-shield-wall-stance.png",
+			"contentHash": "9217c3692bb3e34f8432a6646ba727101ae28995bdad578cbfa57ff0807fe6b1"
+		}
+	],
+	"summary": { "skillCount": 457, "interiorCount": 457, "frameCount": 7 }
+}

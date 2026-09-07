@@ -50,8 +50,7 @@ export interface SkillIconMotifMap {
 type VisualStateRecord = Pick<
 	SkillIconRecord,
 	'targetId' | 'status' | 'visualSpec' | 'assets' | 'review'
-> &
-	Partial<Pick<Extract<SkillIconRecord, { status: 'candidate' | 'approved' }>, 'producerResult'>>;
+>;
 
 export interface SkillIconVisualSpecs {
 	readonly schemaVersion: 'skill-icon-visual-specs-v1';
@@ -70,14 +69,7 @@ export interface SkillIconCatalogSummary {
 }
 
 const MOTIF_ID_PATTERN = /^[a-z][a-z0-9-]*(?:\.[a-z][a-z0-9-]*)+$/u;
-const VISUAL_STATE_KEYS = new Set([
-	'targetId',
-	'status',
-	'visualSpec',
-	'producerResult',
-	'assets',
-	'review'
-]);
+const VISUAL_STATE_KEYS = new Set(['targetId', 'status', 'visualSpec', 'assets', 'review']);
 
 interface MarkdownBlockToken {
 	readonly type: string;
