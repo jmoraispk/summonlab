@@ -8,13 +8,14 @@
 		createRealtimeCombat,
 		type RealtimeCombatState
 	} from '$lib/components/living-village/realtime-combat/realtime-combat';
+	import { RAT_ENCOUNTER_REQUEST } from '$lib/components/living-village/realtime-combat/rat-encounter-fixture';
 	import { PLAYER_SETTINGS_EVENT } from '$lib/player-settings';
 
 	let mode = $state<CombatPresentationMode>('2.5d-v2');
 	let paused = $state(false);
 	let restartKey = $state(0);
 	let reducedMotion = $state(false);
-	let snapshot = $state<RealtimeCombatState>(createRealtimeCombat());
+	let snapshot = $state<RealtimeCombatState>(createRealtimeCombat(RAT_ENCOUNTER_REQUEST));
 	let hydrated = $state(false);
 
 	const heroes = $derived(snapshot.actors.filter((actor) => actor.team === 'heroes'));

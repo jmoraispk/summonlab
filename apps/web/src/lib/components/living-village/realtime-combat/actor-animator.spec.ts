@@ -1,11 +1,12 @@
 import { describe, expect, it } from 'vitest';
 
 import { createActorAnimator, frameIndexForClip, stepActorAnimator } from './actor-animator';
+import { RAT_ENCOUNTER_REQUEST } from './rat-encounter-fixture';
 import { createRealtimeCombat } from './realtime-combat';
 
 describe('actor animator', () => {
 	it('does not restart a clip while the simulation intent is unchanged', () => {
-		const actor = createRealtimeCombat().actors[0]!;
+		const actor = createRealtimeCombat(RAT_ENCOUNTER_REQUEST).actors[0]!;
 		const initial = createActorAnimator(actor);
 		const first = stepActorAnimator(initial, actor, 0.2);
 		const second = stepActorAnimator(first, actor, 0.2);
@@ -14,7 +15,7 @@ describe('actor animator', () => {
 	});
 
 	it('consumes attack and hit revisions once and gives defeat precedence', () => {
-		const actor = createRealtimeCombat().actors[0]!;
+		const actor = createRealtimeCombat(RAT_ENCOUNTER_REQUEST).actors[0]!;
 		let state = createActorAnimator(actor);
 		actor.actionRevision += 1;
 		state = stepActorAnimator(state, actor, 1 / 60);
@@ -33,7 +34,7 @@ describe('actor animator', () => {
 	});
 
 	it('loops movement frames and holds a non-looping final frame', () => {
-		const actor = createRealtimeCombat().actors[0]!;
+		const actor = createRealtimeCombat(RAT_ENCOUNTER_REQUEST).actors[0]!;
 		const moving = { ...createActorAnimator(actor), elapsedSeconds: 0.7 };
 		expect(frameIndexForClip(moving, 5, 10, true)).toBe(2);
 		expect(frameIndexForClip(moving, 5, 10, false)).toBe(4);

@@ -25,7 +25,8 @@
 		type ProjectedCombatPoint
 	} from './depth-projection';
 	import { layoutHealthBar } from './health-bar-layout';
-	import { motionPackVersionDiagnostic, REALTIME_COMBAT_MOTION } from './motion-pack-config';
+	import { motionPackVersionDiagnostic } from './motion-pack-config';
+	import { RAT_ENCOUNTER_REQUEST } from './rat-encounter-fixture';
 	import {
 		createRealtimeCombat,
 		stepRealtimeCombat,
@@ -49,7 +50,7 @@
 
 	let host: HTMLDivElement;
 	let canvas: HTMLCanvasElement;
-	let simulation = createRealtimeCombat();
+	let simulation = createRealtimeCombat(RAT_ENCOUNTER_REQUEST);
 	let activeRestartKey = -1;
 	let renderSimulation: ((snapshot: RealtimeCombatState) => void) | undefined;
 	let applyPresentation: ((next: CombatPresentationMode) => void) | undefined;
@@ -65,9 +66,21 @@
 		'rat-brute': `${ART_ROOT}/rat-brute-ready-v1.png`,
 		'plague-rat': `${ART_ROOT}/lesser-rat-ready-v1.png`
 	} as const;
-	const MOTION = REALTIME_COMBAT_MOTION;
+	const MOTION_BINDINGS = [
+		...RAT_ENCOUNTER_REQUEST.party,
+		...RAT_ENCOUNTER_REQUEST.enemies
+	].map((participant) => participant.presentation.motionPackBinding);
+	const MOTION = {
+		asha: MOTION_BINDINGS.find((binding) => binding.motionPackId === 'asha')!,
+		'iron-guardian': MOTION_BINDINGS.find(
+			(binding) => binding.motionPackId === 'iron-guardian'
+		)!,
+		'moss-archer': MOTION_BINDINGS.find((binding) => binding.motionPackId === 'moss-archer')!,
+		'rat-brute': MOTION_BINDINGS.find((binding) => binding.motionPackId === 'rat-brute')!,
+		'lesser-rat': MOTION_BINDINGS.find((binding) => binding.motionPackId === 'lesser-rat')!
+	} as const;
 	const MOTION_SOURCES = Object.values(MOTION).map((motionPack) => motionPack.source);
-	const MOTION_PACK_VERSIONS = motionPackVersionDiagnostic(MOTION);
+	const MOTION_PACK_VERSIONS = motionPackVersionDiagnostic(MOTION_BINDINGS);
 	const ART_SOURCES = [...Object.values(ART), ...MOTION_SOURCES];
 	const CLIP_META: Record<CombatClip, { framesPerSecond: number; loop: boolean }> = {
 		idle: { framesPerSecond: 6, loop: true },
@@ -80,7 +93,7 @@
 	$effect(() => {
 		if (restartKey === activeRestartKey) return;
 		activeRestartKey = restartKey;
-		simulation = createRealtimeCombat();
+		simulation = createRealtimeCombat(RAT_ENCOUNTER_REQUEST);
 		resetPresentationState?.(simulation);
 		renderSimulation?.(simulation);
 		onSnapshot(simulation);
@@ -458,7 +471,7 @@
 				if (!paused && simulation.phase === 'running') {
 					accumulator += frameSeconds;
 					while (accumulator >= 1 / 60) {
-						simulation = stepRealtimeCombat(simulation, 1 / 60);
+						simulation = stepRealtimeCombat(simulation, 1 / 60).state;
 						accumulator -= 1 / 60;
 					}
 				}
