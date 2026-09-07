@@ -28,6 +28,51 @@ test('replays the same seeded-random identity and first choice', async ({ reques
 	expect(left.storyBranch).toBe(right.storyBranch);
 });
 
+test('shows the four public combat attributes without exposing hidden learning data', async ({
+	page
+}) => {
+	const created = await page.request.post('/api/runs', {
+		data: {
+			recipe: { ...emberRecipe, seed: 'public-combat-attributes' },
+			controlMode: 'wait',
+			directive: ''
+		}
+	});
+	expect(created.status()).toBe(201);
+	const { runId } = (await created.json()) as { runId: string };
+	const publicResponse = await page.request.get(`/api/runs/${runId}`);
+	expect(publicResponse.status()).toBe(200);
+	const publicSnapshot = (await publicResponse.json()) as {
+		characterSchemaVersion?: string;
+		capabilityProfile?: {
+			attributes: Record<'might' | 'vitality' | 'agility' | 'spirit', number>;
+		};
+	};
+	const serialized = JSON.stringify(publicSnapshot);
+	expect(publicSnapshot.characterSchemaVersion).toBe('character-v2');
+	expect(serialized).not.toContain('cognitiveLearningScore');
+	expect(serialized).not.toContain('domainAptitudes');
+	expect(serialized).not.toMatch(/"(?:iq|intelligence)"/iu);
+	if (!publicSnapshot.capabilityProfile) throw new Error('Expected a public capability profile');
+
+	await page.goto(`/summon/${runId}`);
+	await page.getByRole('button', { name: /Break the seal/ }).click();
+	const attributes = page.getByTestId('public-combat-attributes');
+	await expect(attributes).toBeVisible({ timeout: 5_000 });
+	for (const [key, label] of [
+		['might', 'Might'],
+		['vitality', 'Vitality'],
+		['agility', 'Agility'],
+		['spirit', 'Spirit']
+	] as const) {
+		const entry = attributes.getByTestId(`combat-attribute-${key}`);
+		await expect(entry).toContainText(label);
+		await expect(entry).toContainText(String(publicSnapshot.capabilityProfile.attributes[key]));
+	}
+	await expect(attributes.getByTestId(/^combat-attribute-/u)).toHaveCount(4);
+	await expect(attributes).not.toContainText(/\b(?:IQ|intelligence)\b/iu);
+});
+
 test('uses honest non-character states when a generated hero has no approved art', async ({
 	page
 }) => {

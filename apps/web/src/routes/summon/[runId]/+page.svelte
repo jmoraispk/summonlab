@@ -500,6 +500,30 @@
 					<span>{snapshot.mind.primaryValue}</span>
 					<span>{snapshot.mind.dailyHabit.replaceAll('-', ' ')}</span>
 				</div>
+				{#if 'characterSchemaVersion' in snapshot}
+					<dl
+						class="combat-attributes"
+						data-testid="public-combat-attributes"
+						aria-label="Combat attributes"
+					>
+						<div data-testid="combat-attribute-might">
+							<dt>Might</dt>
+							<dd>{snapshot.capabilityProfile.attributes.might}</dd>
+						</div>
+						<div data-testid="combat-attribute-vitality">
+							<dt>Vitality</dt>
+							<dd>{snapshot.capabilityProfile.attributes.vitality}</dd>
+						</div>
+						<div data-testid="combat-attribute-agility">
+							<dt>Agility</dt>
+							<dd>{snapshot.capabilityProfile.attributes.agility}</dd>
+						</div>
+						<div data-testid="combat-attribute-spirit">
+							<dt>Spirit</dt>
+							<dd>{snapshot.capabilityProfile.attributes.spirit}</dd>
+						</div>
+					</dl>
+				{/if}
 				<blockquote>{snapshot.firstObservation}</blockquote>
 			</section>
 		{/if}
@@ -1471,6 +1495,43 @@
 		background: rgba(255, 255, 255, 0.03);
 		font-size: 0.55rem;
 		text-transform: capitalize;
+	}
+
+	.combat-attributes {
+		display: grid;
+		grid-template-columns: repeat(4, minmax(0, 1fr));
+		margin: 0 0 1rem;
+		padding: 0.65rem 0;
+		border-top: 1px solid rgba(210, 160, 77, 0.28);
+		border-bottom: 1px solid rgba(210, 160, 77, 0.18);
+	}
+
+	.combat-attributes div {
+		min-width: 0;
+		padding: 0 0.5rem;
+		border-left: 1px solid rgba(255, 255, 255, 0.08);
+	}
+
+	.combat-attributes div:first-child {
+		padding-left: 0;
+		border-left: 0;
+	}
+
+	.combat-attributes dt {
+		overflow: hidden;
+		color: rgba(246, 241, 231, 0.48);
+		font-family: ui-monospace, monospace;
+		font-size: 0.5rem;
+		letter-spacing: 0.08em;
+		text-overflow: ellipsis;
+		text-transform: uppercase;
+	}
+
+	.combat-attributes dd {
+		margin: 0.18rem 0 0;
+		color: #f6f1e7;
+		font-family: Georgia, serif;
+		font-size: 1.05rem;
 	}
 
 	.identity-card blockquote {

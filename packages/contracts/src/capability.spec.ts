@@ -20,6 +20,12 @@ import {
 	PublicProofRunSnapshotV2Schema
 } from './proof.js';
 
+function withoutKey<T extends object, K extends keyof T>(value: T, key: K): Omit<T, K> {
+	const copy: Partial<T> = { ...value };
+	delete copy[key];
+	return copy as Omit<T, K>;
+}
+
 function capabilityProfile() {
 	return {
 		profileVersion: 'character-capability-v1' as const,
@@ -119,8 +125,7 @@ function legacyProofRunSnapshot() {
 }
 
 function v2Mind() {
-	const { aptitudes: _aptitudes, ...mind } = legacyMind();
-	return mind;
+	return withoutKey(legacyMind(), 'aptitudes');
 }
 
 function v2ProofRunSnapshot() {
@@ -144,7 +149,7 @@ describe('character capability contracts', () => {
 		expect(
 			CombatAttributesSchema.safeParse({ ...capabilityProfile().attributes, agility: 1.5 }).success
 		).toBe(false);
-		const { vitality: _vitality, ...missingVitality } = capabilityProfile().attributes;
+		const missingVitality = withoutKey(capabilityProfile().attributes, 'vitality');
 		expect(CombatAttributesSchema.safeParse(missingVitality).success).toBe(false);
 		expect(
 			CombatAttributesSchema.safeParse({ ...capabilityProfile().attributes, morale: 1 }).success
@@ -173,8 +178,7 @@ describe('character capability contracts', () => {
 				domainAptitudes: { ...capabilityProfile().learning.domainAptitudes, martial: 1.5 }
 			}).success
 		).toBe(false);
-		const { social: _social, ...missingSocialDomain } =
-			capabilityProfile().learning.domainAptitudes;
+		const missingSocialDomain = withoutKey(capabilityProfile().learning.domainAptitudes, 'social');
 		expect(
 			CharacterLearningProfileSchema.safeParse({
 				...capabilityProfile().learning,
