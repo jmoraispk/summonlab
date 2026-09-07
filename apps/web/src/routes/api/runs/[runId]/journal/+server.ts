@@ -14,11 +14,7 @@ export const GET: RequestHandler = async ({ params }) => {
 			headers: { 'cache-control': 'no-store' }
 		});
 	} catch (error) {
-		return json(
-			{
-				message: error instanceof Error ? error.message : 'The player journal could not be built.'
-			},
-			{ status: 500 }
-		);
+		console.error('Player journal projection failed', error);
+		return json({ message: 'The player journal could not be built.' }, { status: 500 });
 	}
 };

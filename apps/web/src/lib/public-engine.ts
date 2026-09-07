@@ -1,8 +1,23 @@
-import type {
-	ActionSource,
-	AuthoritativeEvent,
-	RewardDelta
-} from '@summonlab/contracts';
+import type { ActionSource } from '@summonlab/contracts';
+
+export interface PublicRewardDelta {
+	readonly ownerId: string;
+	readonly kind:
+		| 'resource'
+		| 'experience'
+		| 'level'
+		| 'skill'
+		| 'item'
+		| 'durability'
+		| 'health'
+		| 'need'
+		| 'habit'
+		| 'relationship';
+	readonly key: string;
+	readonly before: number;
+	readonly after: number;
+	readonly delta: number;
+}
 
 export interface PublicActionSource {
 	readonly source: ActionSource['source'];
@@ -16,11 +31,9 @@ export interface PublicReplayCheck {
 	readonly actorId: string | null;
 	readonly source: PublicActionSource;
 	readonly summary: string;
-	readonly beforeStateHash: string;
-	readonly afterStateHash: string;
-	readonly computedStateHash: string;
 	readonly verified: boolean;
-	readonly deltas: readonly RewardDelta[];
+	readonly deltas: readonly PublicRewardDelta[];
+	readonly publicCheckHash: string;
 }
 
 export interface PublicScheduledEvent {
@@ -100,26 +113,36 @@ export interface PublicMissionTurnState {
 		readonly minedAmount?: number;
 		readonly quotaReachedOnRound?: number | null;
 	};
-	readonly monsters: Readonly<Record<string, {
-		readonly monsterId: string;
-		readonly dutySlotId: string;
-		readonly label: string;
-		readonly ordinal: number;
-		readonly nodeId: string;
-		readonly status: string;
-		readonly vitality: number;
-		readonly maximumVitality: number;
-		readonly alertState: string;
-		readonly defeatedOnRound: number | null;
-		readonly lastActionId: string | null;
-	}>>;
-	readonly partyGuard: Readonly<Record<string, {
-		readonly actorId: string;
-		readonly guard: number;
-		readonly maximumGuard: number;
-		readonly status: string;
-		readonly lastChangedOnRound: number;
-	}>>;
+	readonly monsters: Readonly<
+		Record<
+			string,
+			{
+				readonly monsterId: string;
+				readonly dutySlotId: string;
+				readonly label: string;
+				readonly ordinal: number;
+				readonly nodeId: string;
+				readonly status: string;
+				readonly vitality: number;
+				readonly maximumVitality: number;
+				readonly alertState: string;
+				readonly defeatedOnRound: number | null;
+				readonly lastActionId: string | null;
+			}
+		>
+	>;
+	readonly partyGuard: Readonly<
+		Record<
+			string,
+			{
+				readonly actorId: string;
+				readonly guard: number;
+				readonly maximumGuard: number;
+				readonly status: string;
+				readonly lastChangedOnRound: number;
+			}
+		>
+	>;
 	readonly arena: {
 		readonly furnaceState: string;
 		readonly coolingControlNodeId: string | null;
@@ -146,20 +169,30 @@ export interface PublicMissionTurnState {
 		readonly pressureStage: string;
 		readonly extractionQuota: number;
 		readonly cargoCapacityPerActor: number;
-		readonly deposits: Readonly<Record<string, {
-			readonly depositId: string;
-			readonly nodeId: string;
-			readonly resource: string;
-			readonly initialAmount: number;
-			readonly remainingAmount: number;
-			readonly mineAmountPerAction: number;
-		}>>;
-		readonly cargo: Readonly<Record<string, {
-			readonly actorId: string;
-			readonly resource: string;
-			readonly amount: number;
-			readonly capacity: number;
-		}>>;
+		readonly deposits: Readonly<
+			Record<
+				string,
+				{
+					readonly depositId: string;
+					readonly nodeId: string;
+					readonly resource: string;
+					readonly initialAmount: number;
+					readonly remainingAmount: number;
+					readonly mineAmountPerAction: number;
+				}
+			>
+		>;
+		readonly cargo: Readonly<
+			Record<
+				string,
+				{
+					readonly actorId: string;
+					readonly resource: string;
+					readonly amount: number;
+					readonly capacity: number;
+				}
+			>
+		>;
 		readonly oreLedger: readonly {
 			readonly entryId: string;
 			readonly sequence: number;
@@ -258,9 +291,14 @@ export interface PublicHeroState {
 	readonly maxHealth: number;
 	readonly mana: number | null;
 	readonly maxMana: number | null;
-	readonly manifestHash: string;
-	readonly progression: { readonly stars: number; readonly level: number; readonly experience: number };
-	readonly equipment: Readonly<Record<'mainHand' | 'offHand' | 'head' | 'torso' | 'legs' | 'boots', string | null>>;
+	readonly progression: {
+		readonly stars: number;
+		readonly level: number;
+		readonly experience: number;
+	};
+	readonly equipment: Readonly<
+		Record<'mainHand' | 'offHand' | 'head' | 'torso' | 'legs' | 'boots', string | null>
+	>;
 	readonly capabilityProfile?: {
 		readonly profileVersion: string;
 		readonly attributes: Readonly<Record<'might' | 'vitality' | 'agility' | 'spirit', number>>;
@@ -289,7 +327,10 @@ export interface PublicMissionAftermath {
 		readonly healthBefore: number;
 		readonly healthAfter: number;
 		readonly injury: { readonly kind: string } | null;
-		readonly itemWear: { readonly durabilityBefore: number; readonly durabilityAfter: number } | null;
+		readonly itemWear: {
+			readonly durabilityBefore: number;
+			readonly durabilityAfter: number;
+		} | null;
 		readonly witnesses: readonly { readonly heroId: string }[];
 	}[];
 	readonly archives: readonly {
@@ -319,7 +360,9 @@ export interface PublicMasterControl {
 		readonly policy: 'directed' | 'random';
 		readonly directionId: string;
 		readonly directionText: string;
-		readonly priorities: readonly ('protect-self' | 'protect-party' | 'focus-objective' | 'seek-secrets' | 'conserve-resources')[];
+		readonly priorities: readonly (
+			'protect-self' | 'protect-party' | 'focus-objective' | 'seek-secrets' | 'conserve-resources'
+		)[];
 		readonly protectedHeroId: string | null;
 		readonly safetyStops: {
 			readonly beforeIrreversibleAction: boolean;
@@ -354,11 +397,11 @@ export interface PublicPlayerJournalEntry {
 	readonly category: string;
 	readonly title: string;
 	readonly eventType: string;
-	readonly stateHash: string;
+	readonly publicEntryHash: string;
 	readonly dayNumber: number;
 	readonly summary: string;
 	readonly participantIds: readonly string[];
-	readonly deltas: readonly RewardDelta[];
+	readonly deltas: readonly PublicRewardDelta[];
 	readonly source: PublicActionSource;
 	readonly directionOutcome: 'advanced' | 'conflicted' | 'unavailable' | null;
 	readonly replayCursor: number;
@@ -412,12 +455,11 @@ export interface PublicPlayerJournalReport {
 	readonly fromCursor: number;
 	readonly toCursor: number;
 	readonly entryCount: number;
-	readonly eventStreamHash: string;
-	readonly reportHash: string;
+	readonly publicJournalHash: string;
 	readonly entries: readonly PublicPlayerJournalEntry[];
 	readonly deltaTotals: readonly {
 		readonly ownerId: string;
-		readonly kind: RewardDelta['kind'];
+		readonly kind: PublicRewardDelta['kind'];
 		readonly key: string;
 		readonly delta: number;
 	}[];
@@ -446,7 +488,17 @@ export interface PublicPlayerJournalReport {
 export interface PublicLegalAction {
 	readonly actionId: string;
 	readonly actorId: string;
-	readonly kind: 'move' | 'attack' | 'defend' | 'interact' | 'communicate' | 'work' | 'train' | 'rest' | 'retreat' | 'wait';
+	readonly kind:
+		| 'move'
+		| 'attack'
+		| 'defend'
+		| 'interact'
+		| 'communicate'
+		| 'work'
+		| 'train'
+		| 'rest'
+		| 'retreat'
+		| 'wait';
 	readonly label: string;
 	readonly description: string;
 	readonly targetIds: readonly string[];
@@ -476,9 +528,7 @@ export interface PublicEngineReplayReport {
 	readonly playerJournal: PublicPlayerJournalReport;
 	readonly scheduledEvents: readonly PublicScheduledEvent[];
 	readonly clock: PublicSimulationClock;
-	readonly snapshot: { readonly state: PublicEngineState; readonly stateHash: string };
-	readonly persistedStateHash: string;
-	readonly hashMatchesPersistedSnapshot: boolean;
+	readonly snapshot: { readonly state: PublicEngineState; readonly publicStateHash: string };
 	readonly playerActions: readonly PublicLegalAction[];
 	readonly heroControls: PublicHeroControls;
 }
@@ -507,36 +557,32 @@ export interface PublicEngineEvent {
 	readonly eventType: string;
 	readonly actorId: string | null;
 	readonly source: PublicActionSource;
-	readonly beforeStateHash: string;
-	readonly afterStateHash: string;
 	readonly contentVersion: string;
 	readonly summary: string | null;
 	readonly initiativeOrder: readonly string[];
 	readonly actions: readonly PublicEventAction[];
-	readonly rewardDeltas: readonly RewardDelta[];
+	readonly rewardDeltas: readonly PublicRewardDelta[];
 	readonly combatModeBinding: PublicCombatModeBinding | null;
+	readonly publicEventHash: string;
 }
 
 export interface PublicEngineCommitReceipt {
 	readonly runId: string;
 	readonly version: number;
 	readonly eventCursor: number;
-	readonly stateHash: string;
+	readonly publicStateHash: string;
 	readonly eventType: string | null;
 }
 
-export type PublicEventInput = Pick<
-	AuthoritativeEvent,
-	| 'eventId'
-	| 'runId'
-	| 'sequence'
-	| 'schemaVersion'
-	| 'gameTime'
-	| 'eventType'
-	| 'actorId'
-	| 'source'
-	| 'beforeStateHash'
-	| 'afterStateHash'
-	| 'contentVersion'
-	| 'payload'
->;
+export interface PublicEventInput {
+	readonly eventId: string;
+	readonly runId: string;
+	readonly sequence: number;
+	readonly schemaVersion: number;
+	readonly gameTime: string;
+	readonly eventType: string;
+	readonly actorId: string | null;
+	readonly source: ActionSource;
+	readonly contentVersion: string;
+	readonly payload: Readonly<Record<string, unknown>>;
+}

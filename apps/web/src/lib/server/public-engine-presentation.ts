@@ -1,4 +1,4 @@
-import { RewardDeltaSchema, type EngineCommit, type EngineReplayReport } from '@summonlab/contracts';
+import type { EngineCommit, EngineReplayReport, ReturnRecap } from '@summonlab/contracts';
 
 import type {
 	PublicActionSource,
@@ -14,8 +14,11 @@ import type {
 	PublicMissionAction,
 	PublicMissionAttempt,
 	PublicMissionRound,
-	PublicMissionTurnState
+	PublicMissionTurnState,
+	PublicRewardDelta
 } from '$lib/public-engine';
+
+import { hashPublicProjection } from './public-projection-hash';
 
 type UnknownRecord = Record<string, unknown>;
 
@@ -46,7 +49,46 @@ function boolean(value: unknown): boolean {
 }
 
 function strings(value: unknown): string[] {
-	return Array.isArray(value) ? value.filter((entry): entry is string => typeof entry === 'string') : [];
+	return Array.isArray(value)
+		? value.filter((entry): entry is string => typeof entry === 'string')
+		: [];
+}
+
+const publicRewardKinds = new Set<PublicRewardDelta['kind']>([
+	'resource',
+	'experience',
+	'level',
+	'skill',
+	'item',
+	'durability',
+	'health',
+	'need',
+	'habit',
+	'relationship'
+]);
+
+function publicRewardDelta(value: unknown): PublicRewardDelta | null {
+	const delta = record(value);
+	if (
+		typeof delta.ownerId !== 'string' ||
+		typeof delta.kind !== 'string' ||
+		!publicRewardKinds.has(delta.kind as PublicRewardDelta['kind']) ||
+		typeof delta.key !== 'string' ||
+		typeof delta.before !== 'number' ||
+		typeof delta.after !== 'number' ||
+		typeof delta.delta !== 'number' ||
+		delta.after - delta.before !== delta.delta
+	) {
+		return null;
+	}
+	return {
+		ownerId: delta.ownerId,
+		kind: delta.kind as PublicRewardDelta['kind'],
+		key: delta.key,
+		before: delta.before,
+		after: delta.after,
+		delta: delta.delta
+	};
 }
 
 function publicSource(source: PublicEventInput['source']): PublicActionSource {
@@ -55,7 +97,8 @@ function publicSource(source: PublicEventInput['source']): PublicActionSource {
 
 function publicCombatModeBinding(value: unknown): PublicCombatModeBinding | null {
 	const binding = record(value);
-	if (!binding.modeId || !binding.rulesVersion || !binding.contentHash || !binding.boundAt) return null;
+	if (!binding.modeId || !binding.rulesVersion || !binding.contentHash || !binding.boundAt)
+		return null;
 	return {
 		modeId: string(binding.modeId),
 		rulesVersion: string(binding.rulesVersion),
@@ -131,10 +174,16 @@ function publicObjective(value: unknown): PublicMissionTurnState['objective'] {
 		status: string(source.status),
 		...('carrierId' in source ? { carrierId: nullableString(source.carrierId) } : {}),
 		...('recoveredOnRound' in source
-			? { recoveredOnRound: source.recoveredOnRound === null ? null : number(source.recoveredOnRound) }
+			? {
+					recoveredOnRound:
+						source.recoveredOnRound === null ? null : number(source.recoveredOnRound)
+				}
 			: {}),
 		...('deliveredOnRound' in source
-			? { deliveredOnRound: source.deliveredOnRound === null ? null : number(source.deliveredOnRound) }
+			? {
+					deliveredOnRound:
+						source.deliveredOnRound === null ? null : number(source.deliveredOnRound)
+				}
 			: {}),
 		...(typeof source.quota === 'number' ? { quota: source.quota } : {}),
 		...(typeof source.minedAmount === 'number' ? { minedAmount: source.minedAmount } : {}),
@@ -232,7 +281,8 @@ function publicTurnState(value: unknown): PublicMissionTurnState {
 						vitality: number(monster.vitality),
 						maximumVitality: number(monster.maximumVitality),
 						alertState: string(monster.alertState),
-						defeatedOnRound: monster.defeatedOnRound === null ? null : number(monster.defeatedOnRound),
+						defeatedOnRound:
+							monster.defeatedOnRound === null ? null : number(monster.defeatedOnRound),
 						lastActionId: nullableString(monster.lastActionId)
 					}
 				];
@@ -372,7 +422,6 @@ function publicHero(value: unknown) {
 		maxHealth: number(hero.maxHealth),
 		mana: typeof hero.mana === 'number' ? hero.mana : null,
 		maxMana: typeof hero.maxMana === 'number' ? hero.maxMana : null,
-		manifestHash: string(hero.manifestHash),
 		progression: {
 			stars: number(progression.stars),
 			level: number(progression.level),
@@ -452,8 +501,14 @@ function publicMasterControl(value: unknown): PublicMasterControl | null {
 					directionId: string(fallback.directionId),
 					directionText: string(fallback.directionText),
 					priorities: strings(fallback.priorities).filter(
-						(value): value is 'protect-self' | 'protect-party' | 'focus-objective' | 'seek-secrets' | 'conserve-resources' =>
-							priorityIds.has(value)
+						(
+							value
+						): value is
+							| 'protect-self'
+							| 'protect-party'
+							| 'focus-objective'
+							| 'seek-secrets'
+							| 'conserve-resources' => priorityIds.has(value)
 					),
 					protectedHeroId: nullableString(fallback.protectedHeroId),
 					safetyStops: {
@@ -584,15 +639,8 @@ function heroControls(report: EngineReplayReport): PublicHeroControls {
 }
 
 export function projectPlayerJournalForPublic(report: EngineReplayReport['playerJournal']) {
-	return {
-		reportVersion: report.reportVersion,
-		runId: report.runId,
-		fromCursor: report.fromCursor,
-		toCursor: report.toCursor,
-		entryCount: report.entryCount,
-		eventStreamHash: report.eventStreamHash,
-		reportHash: report.reportHash,
-		entries: report.entries.map((entry) => ({
+	const entries = report.entries.map((entry) => {
+		const projection = {
 			journalEntryId: entry.journalEntryId,
 			entryVersion: entry.entryVersion,
 			runId: entry.runId,
@@ -603,18 +651,13 @@ export function projectPlayerJournalForPublic(report: EngineReplayReport['player
 			category: entry.category,
 			title: entry.title,
 			eventType: entry.eventType,
-			stateHash: entry.stateHash,
 			dayNumber: entry.dayNumber,
 			summary: entry.summary,
 			participantIds: [...entry.participantIds],
-			deltas: entry.deltas.map((delta) => ({
-				ownerId: delta.ownerId,
-				kind: delta.kind,
-				key: delta.key,
-				before: delta.before,
-				after: delta.after,
-				delta: delta.delta
-			})),
+			deltas: entry.deltas.flatMap((delta) => {
+				const projected = publicRewardDelta(delta);
+				return projected ? [projected] : [];
+			}),
 			source: publicSource(entry.source),
 			directionOutcome: entry.directionOutcome,
 			replayCursor: entry.replayCursor,
@@ -662,7 +705,19 @@ export function projectPlayerJournalForPublic(report: EngineReplayReport['player
 				after: change.after,
 				summary: change.summary
 			}))
-		})),
+		};
+		return {
+			...projection,
+			publicEntryHash: hashPublicProjection('journal-entry', projection)
+		};
+	});
+	const projection = {
+		reportVersion: report.reportVersion,
+		runId: report.runId,
+		fromCursor: report.fromCursor,
+		toCursor: report.toCursor,
+		entryCount: report.entryCount,
+		entries,
 		deltaTotals: report.deltaTotals.map((delta) => ({
 			ownerId: delta.ownerId,
 			kind: delta.kind,
@@ -690,27 +745,86 @@ export function projectPlayerJournalForPublic(report: EngineReplayReport['player
 			sources: [...report.filterOptions.sources]
 		}
 	};
+	return {
+		...projection,
+		publicJournalHash: hashPublicProjection('journal-report', projection)
+	};
+}
+
+export function projectReturnRecapForPublic(recap: ReturnRecap) {
+	return {
+		runId: recap.runId,
+		fromCursor: recap.fromCursor,
+		toCursor: recap.toCursor,
+		fromGameTime: recap.fromGameTime,
+		toGameTime: recap.toGameTime,
+		spanGameMinutes: recap.spanGameMinutes,
+		eventCount: recap.eventCount,
+		omittedEventCount: recap.omittedEventCount,
+		headline: recap.headline,
+		summary: recap.summary,
+		counts: {
+			plansCreated: recap.counts.plansCreated,
+			routinesCompleted: recap.counts.routinesCompleted,
+			activitiesCompleted: recap.counts.activitiesCompleted,
+			travelArrivals: recap.counts.travelArrivals,
+			failures: recap.counts.failures,
+			clockSyncs: recap.counts.clockSyncs
+		},
+		deltas: recap.deltas.map((delta) => ({
+			ownerId: delta.ownerId,
+			kind: delta.kind,
+			key: delta.key,
+			delta: delta.delta
+		})),
+		highlights: recap.highlights.map((entry) => ({
+			journalEntryId: entry.journalEntryId,
+			runId: entry.runId,
+			eventIds: [...entry.eventIds],
+			sequenceStart: entry.sequenceStart,
+			sequenceEnd: entry.sequenceEnd,
+			gameTime: entry.gameTime,
+			category: entry.category,
+			title: entry.title,
+			summary: entry.summary,
+			participantIds: [...entry.participantIds],
+			deltas: entry.deltas.flatMap((delta) => {
+				const projected = publicRewardDelta(delta);
+				return projected ? [projected] : [];
+			}),
+			source: publicSource(entry.source),
+			directionOutcome: entry.directionOutcome,
+			replayCursor: entry.replayCursor
+		}))
+	};
 }
 
 export function projectEngineReplayForPublic(report: EngineReplayReport): PublicEngineReplayReport {
 	const masterId = report.snapshot.state.master.masterId;
+	const publicState = projectEngineStateForPublic(report.snapshot.state);
 	return {
 		runId: report.runId,
 		verified: report.verified,
 		eventCount: report.eventCount,
-		checks: report.checks.map((check) => ({
-			sequence: check.sequence,
-			gameTime: check.gameTime,
-			eventType: check.eventType,
-			actorId: check.actorId,
-			source: publicSource(check.source),
-			summary: check.summary,
-			beforeStateHash: check.beforeStateHash,
-			afterStateHash: check.afterStateHash,
-			computedStateHash: check.computedStateHash,
-			verified: check.verified,
-			deltas: check.deltas.map((delta) => RewardDeltaSchema.parse(delta))
-		})),
+		checks: report.checks.map((check) => {
+			const projection = {
+				sequence: check.sequence,
+				gameTime: check.gameTime,
+				eventType: check.eventType,
+				actorId: check.actorId,
+				source: publicSource(check.source),
+				summary: check.summary,
+				verified: check.verified,
+				deltas: check.deltas.flatMap((delta) => {
+					const projected = publicRewardDelta(delta);
+					return projected ? [projected] : [];
+				})
+			};
+			return {
+				...projection,
+				publicCheckHash: hashPublicProjection('engine-check', projection)
+			};
+		}),
 		playerJournal: projectPlayerJournalForPublic(report.playerJournal),
 		scheduledEvents: report.scheduledEvents.map((scheduled) => ({
 			scheduledEventId: scheduled.scheduledEventId,
@@ -736,11 +850,9 @@ export function projectEngineReplayForPublic(report: EngineReplayReport): Public
 			leaseStatus: report.clock.leaseStatus
 		},
 		snapshot: {
-			state: projectEngineStateForPublic(report.snapshot.state),
-			stateHash: report.snapshot.stateHash
+			state: publicState,
+			publicStateHash: hashPublicProjection('engine-state', publicState)
 		},
-		persistedStateHash: report.persistedStateHash,
-		hashMatchesPersistedSnapshot: report.hashMatchesPersistedSnapshot,
 		playerActions: report.legalActions
 			.filter((action) => action.actorId === masterId)
 			.map((action) => ({
@@ -795,15 +907,15 @@ function eventCombatModeBinding(payload: UnknownRecord): PublicCombatModeBinding
 function publicRewardDeltas(payload: UnknownRecord) {
 	if (!Array.isArray(payload.rewardDeltas)) return [];
 	return payload.rewardDeltas.flatMap((candidate) => {
-		const parsed = RewardDeltaSchema.safeParse(candidate);
-		return parsed.success ? [parsed.data] : [];
+		const projected = publicRewardDelta(candidate);
+		return projected ? [projected] : [];
 	});
 }
 
 export function projectEngineEventForPublic(event: PublicEventInput): PublicEngineEvent {
 	const payload = record(event.payload);
 	const round = eventRound(payload);
-	return {
+	const projection = {
 		eventId: event.eventId,
 		runId: event.runId,
 		sequence: event.sequence,
@@ -812,8 +924,6 @@ export function projectEngineEventForPublic(event: PublicEventInput): PublicEngi
 		eventType: event.eventType,
 		actorId: event.actorId,
 		source: publicSource(event.source),
-		beforeStateHash: event.beforeStateHash,
-		afterStateHash: event.afterStateHash,
 		contentVersion: event.contentVersion,
 		summary: typeof payload.summary === 'string' ? payload.summary : null,
 		initiativeOrder: strings(round.initiativeOrder),
@@ -821,14 +931,19 @@ export function projectEngineEventForPublic(event: PublicEventInput): PublicEngi
 		rewardDeltas: publicRewardDeltas(payload),
 		combatModeBinding: eventCombatModeBinding(payload)
 	};
+	return {
+		...projection,
+		publicEventHash: hashPublicProjection('engine-event', projection)
+	};
 }
 
 export function projectEngineCommitReceipt(commit: EngineCommit): PublicEngineCommitReceipt {
+	const publicState = projectEngineStateForPublic(commit.snapshot.state);
 	return {
 		runId: commit.snapshot.state.runId,
 		version: commit.snapshot.state.version,
 		eventCursor: commit.snapshot.state.eventCursor,
-		stateHash: commit.snapshot.stateHash,
+		publicStateHash: hashPublicProjection('engine-state', publicState),
 		eventType: commit.events[0]?.eventType ?? null
 	};
 }

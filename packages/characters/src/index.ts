@@ -17,10 +17,14 @@ import { resolveCanonicalSummonableDraft } from './summonable.js';
 
 export {
 	SUMMONABLE_HERO_GENERATION_VERSION,
+	canonicalCharacterRecipeKey,
+	deriveCharacterCapabilityProfile,
+	derivePrivateEngineSeed,
 	generateLegacySummonableCharacterDraft,
 	generateSummonableCharacterDraft,
 	generateSummonableCompany,
-	listSummonableHeroDrafts
+	listSummonableHeroDrafts,
+	parseCapabilityEntropy
 } from './summonable.js';
 
 export const LEGACY_CHARACTER_GENERATION_VERSION = 'human-v1';

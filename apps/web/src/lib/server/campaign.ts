@@ -3,6 +3,7 @@ import { randomUUID } from 'node:crypto';
 import { FIRST_OBSERVATION, generateSummonableCompany } from '@summonlab/characters';
 import type {
 	CampaignControlMode,
+	CampaignHero,
 	CampaignRun,
 	CharacterDraft,
 	ClockSpeed
@@ -15,6 +16,82 @@ import {
 	createProofRun
 } from '@summonlab/database';
 import { projectCampaignObjectives } from '@summonlab/engine';
+
+import { projectProofManifestForPublic } from './proof-presentation';
+import { hashPublicProjection } from './public-projection-hash';
+
+function words(value: string): string {
+	return value.replaceAll('-', ' ');
+}
+
+function publicDemeanor(draft: CharacterDraft) {
+	return {
+		summary: `${draft.manifest.displayName} presents as ${words(draft.mind.socialStyle)} and appears guided by ${words(draft.mind.primaryValue)}.`,
+		dailyRhythm: `Often ${words(draft.mind.dailyHabit)}.`,
+		underPressure: `Tends to ${words(draft.mind.stressResponse)} under pressure.`,
+		drive: `Seems driven to ${words(draft.mind.primaryDrive)}.`
+	};
+}
+
+export function projectCampaignRunForPublic(campaign: CampaignRun) {
+	return {
+		runId: campaign.runId,
+		controlMode: campaign.controlMode,
+		lifecycle: campaign.lifecycle,
+		engineStatus: campaign.engineStatus,
+		onboardingStep: campaign.onboardingStep,
+		restartedFromRunId: campaign.restartedFromRunId,
+		heroes: campaign.heroes.map((hero) => ({
+			ordinal: hero.ordinal,
+			...projectProofManifestForPublic(hero.draft.manifest)
+		})),
+		createdAt: campaign.createdAt,
+		updatedAt: campaign.updatedAt
+	};
+}
+
+export type PublicCampaignRun = ReturnType<typeof projectCampaignRunForPublic>;
+
+export function projectCampaignHeroForPublic(
+	hero: CampaignHero,
+	firstReply: null | {
+		readonly exactText: string;
+		readonly publicReason: string;
+		readonly sourceEventId: string;
+	}
+) {
+	return {
+		ordinal: hero.ordinal,
+		...projectProofManifestForPublic(hero.draft.manifest),
+		demeanor: publicDemeanor(hero.draft),
+		firstReply
+	};
+}
+
+export function projectCampaignObjectivesForPublic(
+	objectives: ReturnType<typeof projectCampaignObjectives>
+) {
+	const projection = {
+		projectionVersion: objectives.projectionVersion,
+		runId: objectives.runId,
+		activeObjectiveId: objectives.activeObjectiveId,
+		completedCount: objectives.completedCount,
+		objectives: objectives.objectives.map((objective) => ({
+			objectiveId: objective.objectiveId,
+			chapter: objective.chapter,
+			title: objective.title,
+			detail: objective.detail,
+			status: objective.status,
+			evidence: [...objective.evidence]
+		}))
+	};
+	return {
+		...projection,
+		publicProjectionHash: hashPublicProjection('campaign-objectives', projection)
+	};
+}
+
+export type PublicCampaignObjectives = ReturnType<typeof projectCampaignObjectivesForPublic>;
 
 export async function generateCampaignCompany(
 	campaignSeed: string
@@ -71,11 +148,13 @@ export async function campaignExperienceView(databaseUrl: string, runId: string)
 	if (snapshot.state.schemaVersion !== 13) {
 		throw new Error(`Campaign run ${runId} is not using engine-v13`);
 	}
-	const objectives = projectCampaignObjectives({
-		campaign,
-		snapshot,
-		firstDestinationChosen: proof.destination !== null
-	});
+	const objectives = projectCampaignObjectivesForPublic(
+		projectCampaignObjectives({
+			campaign,
+			snapshot,
+			firstDestinationChosen: proof.destination !== null
+		})
+	);
 	const turns = Object.values(snapshot.state.society.conversationTurns);
 	const turnsByHero = turns.reduce((map, turn) => {
 		const current = map.get(turn.heroId);
@@ -85,22 +164,21 @@ export async function campaignExperienceView(databaseUrl: string, runId: string)
 		return map;
 	}, new Map<string, (typeof turns)[number]>());
 	return {
-		campaign,
+		campaign: projectCampaignRunForPublic(campaign),
 		objectives,
-		stateHash: snapshot.stateHash,
 		firstDestination: proof.destination,
 		heroes: campaign.heroes.map((hero) => {
 			const firstTurn = turnsByHero.get(hero.draft.manifest.characterId);
-			return {
-				...hero,
-				firstReply: firstTurn
+			return projectCampaignHeroForPublic(
+				hero,
+				firstTurn
 					? {
 							exactText: firstTurn.response.exactText,
 							publicReason: firstTurn.response.publicReason,
 							sourceEventId: firstTurn.sourceEventId
 						}
 					: null
-			};
+			);
 		})
 	};
 }

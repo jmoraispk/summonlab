@@ -11,6 +11,8 @@ import {
 import { IllegalActionError } from '@summonlab/engine';
 import { json } from '@sveltejs/kit';
 
+import { projectEngineCommitReceipt } from '$lib/server/public-engine-presentation';
+
 import type { RequestHandler } from './$types';
 
 export const POST: RequestHandler = async ({ params, request }) => {
@@ -69,27 +71,27 @@ export const POST: RequestHandler = async ({ params, request }) => {
 						rationale: parsed.data.rationale
 					};
 		const committed = await commitEngineCommand(config.databaseUrl, command);
-		return json({
-			version: committed.snapshot.state.version,
-			eventCursor: committed.snapshot.state.eventCursor,
-			stateHash: committed.snapshot.stateHash
-		});
+		return json(projectEngineCommitReceipt(committed));
 	} catch (error) {
 		if (error instanceof StaleRunVersionError) {
-			return json({ code: error.code, message: error.message }, { status: 409 });
+			return json(
+				{ code: error.code, message: 'The run changed before the Ember was bound.' },
+				{ status: 409 }
+			);
 		}
 		if (error instanceof IllegalActionError) {
 			return json(
-				{ code: error.code, message: error.message, legalActionIds: error.legalActionIds },
+				{ code: error.code, message: 'That First Ember action is not currently available.' },
 				{ status: 409 }
 			);
 		}
 		if (error instanceof IdempotencyConflictError) {
-			return json({ code: error.code, message: error.message }, { status: 409 });
+			return json(
+				{ code: error.code, message: 'That Ember action was already submitted differently.' },
+				{ status: 409 }
+			);
 		}
-		return json(
-			{ message: error instanceof Error ? error.message : 'The First Ember could not be bound.' },
-			{ status: 500 }
-		);
+		console.error('First Ember commit failed', error);
+		return json({ message: 'The First Ember could not be bound.' }, { status: 500 });
 	}
 };

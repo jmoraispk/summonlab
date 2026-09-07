@@ -1,9 +1,10 @@
 import { getConfig } from '@summonlab/config';
 import { HEARTH_01_DEFINITION } from '@summonlab/content';
-import { SettlementPresentationSchema } from '@summonlab/contracts';
 import { catchUpRun, getEngineSnapshot, getSimulationClock } from '@summonlab/database';
 import { projectSettlementPresentation } from '@summonlab/engine';
 import { json } from '@sveltejs/kit';
+
+import { projectSettlementForPublic } from '$lib/server/public-world-presentation';
 
 import type { RequestHandler } from './$types';
 
@@ -19,18 +20,13 @@ export const GET: RequestHandler = async ({ params }) => {
 		const snapshot = await getEngineSnapshot(config.databaseUrl, params.runId);
 		if (!snapshot) return json({ message: 'Engine run not found.' }, { status: 404 });
 		return json(
-			SettlementPresentationSchema.parse(
+			projectSettlementForPublic(
 				projectSettlementPresentation(snapshot, HEARTH_01_DEFINITION, clock.projectedGameTime)
 			),
 			{ headers: { 'cache-control': 'no-store' } }
 		);
 	} catch (error) {
-		return json(
-			{
-				message:
-					error instanceof Error ? error.message : 'The settlement projection could not be read.'
-			},
-			{ status: 500 }
-		);
+		console.error('Settlement projection failed', error);
+		return json({ message: 'The settlement projection could not be read.' }, { status: 500 });
 	}
 };

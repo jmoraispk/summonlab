@@ -1,5 +1,5 @@
 import { getConfig } from '@summonlab/config';
-import { EngineCursorGapSchema, ReturnRecapSchema } from '@summonlab/contracts';
+import { EngineCursorGapSchema } from '@summonlab/contracts';
 import {
 	EngineCursorGapError,
 	catchUpRun,
@@ -7,6 +7,8 @@ import {
 	getSimulationClock
 } from '@summonlab/database';
 import { json } from '@sveltejs/kit';
+
+import { projectReturnRecapForPublic } from '$lib/server/public-engine-presentation';
 
 import type { RequestHandler } from './$types';
 
@@ -29,7 +31,7 @@ export const GET: RequestHandler = async ({ params, url }) => {
 		}
 		const recap = await getReturnRecap(config.databaseUrl, params.runId, afterCursor);
 		if (!recap) return json({ message: 'Engine run not found.' }, { status: 404 });
-		return json(ReturnRecapSchema.parse(recap), {
+		return json(projectReturnRecapForPublic(recap), {
 			headers: { 'cache-control': 'no-store' }
 		});
 	} catch (error) {
@@ -44,9 +46,7 @@ export const GET: RequestHandler = async ({ params, url }) => {
 				{ status: 409 }
 			);
 		}
-		return json(
-			{ message: error instanceof Error ? error.message : 'The return recap could not be built.' },
-			{ status: 500 }
-		);
+		console.error('Return recap failed', error);
+		return json({ message: 'The return recap could not be built.' }, { status: 500 });
 	}
 };

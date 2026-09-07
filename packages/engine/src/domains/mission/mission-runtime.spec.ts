@@ -274,11 +274,14 @@ describe('mission runtime ownership', () => {
 			commandType: 'mission.deploy'
 		});
 		const deployedV13 = directlyApplyMissionCommand(preparedV13, deployV13).state;
-		const draftV25 = await generateSummonableCharacterDraft({
-			seed: 'mapping-v25-character',
-			generationVersion: 'human-v6',
-			cursors: { identity: 0, body: 0, features: 0, styling: 0, mind: 0, rarity: 0 }
-		});
+		const draftV25 = await generateSummonableCharacterDraft(
+			{
+				seed: 'mapping-v25-character',
+				generationVersion: 'human-v6',
+				cursors: { identity: 0, body: 0, features: 0, styling: 0, mind: 0, rarity: 0 }
+			},
+			{ capabilityEntropy: '4'.repeat(64) }
+		);
 		const initialV25 = EngineGameStateV25Schema.parse(
 			createBootstrapEngine({
 				runId: deterministicUuid('mapping-v25-run'),
@@ -564,7 +567,7 @@ describe('mission runtime ownership', () => {
 			{
 				commandType: 'mission.advance.automatic',
 				eventType: 'mission.round.resolved',
-				eventHash: '9994fc615be60d141d372ce27b59a977ca800a9072a0ff58c30d3ed345c22a54'
+				eventHash: '266c7b6b111ee64e41062037c0632dbac763d2650ca8eccd860827ee6ff9c96e'
 			},
 			{
 				commandType: 'mission.open.extraction',

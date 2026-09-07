@@ -11,9 +11,7 @@ export const GET: RequestHandler = async ({ params }) => {
 			? json(clock, { headers: { 'cache-control': 'no-store' } })
 			: json({ message: 'Simulation clock not found.' }, { status: 404 });
 	} catch (error) {
-		return json(
-			{ message: error instanceof Error ? error.message : 'Simulation clock could not be read.' },
-			{ status: 500 }
-		);
+		console.error('Simulation clock load failed', error);
+		return json({ message: 'Simulation clock could not be read.' }, { status: 500 });
 	}
 };

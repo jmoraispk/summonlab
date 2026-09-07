@@ -22,7 +22,9 @@
 						<span>{event.decisionSource}</span>
 					</div>
 					<p>{event.summary}</p>
-					<small title={event.eventHash}>hash {event.eventHash.slice(0, 10)}</small>
+					<small title={event.publicEventHash}
+						>public hash {event.publicEventHash.slice(0, 10)}</small
+					>
 				</div>
 			</li>
 		{/each}

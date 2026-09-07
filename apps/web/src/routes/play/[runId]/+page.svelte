@@ -5,7 +5,6 @@
 		FirstEmberRationale,
 		PublicProofRunSnapshot,
 		PublicProofRunSnapshotV2,
-		SettlementPresentation,
 		SimulationClock
 	} from '@summonlab/contracts';
 	import { onMount, tick } from 'svelte';
@@ -22,6 +21,7 @@
 	import { focusDialog, handleModalKeydown } from '$lib/modal-focus';
 	import type { PublicEngineEvent } from '$lib/public-engine';
 	import type { EquipmentWorkshopProjection } from '$lib/server/equipment-runtime';
+	import type { PublicSettlementPresentation } from '$lib/server/public-world-presentation';
 
 	let { data } = $props();
 	type PublicProofSnapshot = PublicProofRunSnapshot | PublicProofRunSnapshotV2;
@@ -34,7 +34,7 @@
 	// svelte-ignore state_referenced_locally
 	let clock = $state<SimulationClock | null>(data.clock);
 	// svelte-ignore state_referenced_locally
-	let presentation = $state<SettlementPresentation | null>(data.presentation);
+	let presentation = $state<PublicSettlementPresentation | null>(data.presentation);
 	// svelte-ignore state_referenced_locally
 	let equipment = $state<EquipmentWorkshopProjection | null>(data.equipment);
 	let eventCue = $state<PublicEngineEvent | null>(null);
@@ -153,7 +153,7 @@
 				: Promise.resolve(null)
 		]);
 		if (projectionResponse.ok)
-			presentation = (await projectionResponse.json()) as SettlementPresentation;
+			presentation = (await projectionResponse.json()) as PublicSettlementPresentation;
 		if (clockResponse.ok) clock = (await clockResponse.json()) as SimulationClock;
 		if (equipmentResponse?.ok) {
 			equipment = (await equipmentResponse.json()) as EquipmentWorkshopProjection;
@@ -517,7 +517,7 @@
 			</div>
 			<div class="proof-state">
 				<span>{walking ? 'In transit' : 'Persistent state updated'}</span>
-				<code>{snapshot.manifestHash.slice(0, 12)}</code>
+				<code>{snapshot.publicManifestHash.slice(0, 12)}</code>
 			</div>
 		</section>
 

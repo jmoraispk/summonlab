@@ -14,14 +14,17 @@ test('replays the same seeded-random identity and first choice', async ({ reques
 	const [leftResponse, rightResponse] = await Promise.all([create(), create()]);
 	expect(leftResponse.status()).toBe(201);
 	expect(rightResponse.status()).toBe(201);
-	const leftCreated = (await leftResponse.json()) as { runId: string; manifestHash: string };
-	const rightCreated = (await rightResponse.json()) as { runId: string; manifestHash: string };
+	const leftCreated = (await leftResponse.json()) as { runId: string; publicManifestHash: string };
+	const rightCreated = (await rightResponse.json()) as {
+		runId: string;
+		publicManifestHash: string;
+	};
 	const [left, right] = await Promise.all([
 		request.get(`/api/runs/${leftCreated.runId}`).then((response) => response.json()),
 		request.get(`/api/runs/${rightCreated.runId}`).then((response) => response.json())
 	]);
 
-	expect(leftCreated.manifestHash).toBe(rightCreated.manifestHash);
+	expect(leftCreated.publicManifestHash).toBe(rightCreated.publicManifestHash);
 	expect(left.manifest).toEqual(right.manifest);
 	expect(left.mind).toEqual(right.mind);
 	expect(left.destination).toBe(right.destination);

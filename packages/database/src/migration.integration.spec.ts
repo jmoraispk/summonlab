@@ -58,16 +58,27 @@ describe('database migration', () => {
 				from information_schema.columns
 				where table_schema = 'public'
 					and table_name = 'summonlab_proof_runs'
-					and column_name in ('capability_profile', 'character_schema_version')
+					and column_name in ('capability_entropy', 'capability_profile', 'character_schema_version')
 				order by column_name
 			`;
 			expect(proofColumns).toEqual([
+				{ column_name: 'capability_entropy', is_nullable: 'YES', column_default: null },
 				{ column_name: 'capability_profile', is_nullable: 'YES', column_default: null },
 				{
 					column_name: 'character_schema_version',
 					is_nullable: 'NO',
 					column_default: "'character-v1'::text"
 				}
+			]);
+			const entropyConstraints = await sql<{ constraint_name: string }[]>`
+				select constraint_name
+				from information_schema.table_constraints
+				where table_schema = 'public'
+					and table_name = 'summonlab_proof_runs'
+					and constraint_name = 'summonlab_proof_runs_capability_entropy_shape'
+			`;
+			expect(entropyConstraints).toEqual([
+				{ constraint_name: 'summonlab_proof_runs_capability_entropy_shape' }
 			]);
 		} finally {
 			await sql.end({ timeout: 5 });

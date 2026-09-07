@@ -8,6 +8,7 @@ import {
 	resolveEquipmentVisual,
 	type EquipmentApprovedSourceManifest
 } from './equipment-runtime.js';
+import { hashPublicProjection } from './public-projection-hash.js';
 
 function equipmentSnapshot() {
 	return createBootstrapEngine({
@@ -50,6 +51,8 @@ describe('Equipment workshop runtime projection', () => {
 			'legs',
 			'boots'
 		]);
+		const { publicProjectionHash, ...publicFields } = projection;
+		expect(publicProjectionHash).toBe(hashPublicProjection('equipment-workshop', publicFields));
 	});
 
 	it('rejects missing runtime aliases before a projection can escape', () => {

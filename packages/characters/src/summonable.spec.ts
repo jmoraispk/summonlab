@@ -1,11 +1,13 @@
 import { describe, expect, it } from 'vitest';
 
 import {
+	derivePrivateEngineSeed,
 	generateCharacterDraft,
 	generateLegacySummonableCharacterDraft,
 	generateSummonableCharacterDraft,
 	generateSummonableCompany,
 	listSummonableHeroDrafts,
+	parseCapabilityEntropy,
 	recipeFromSeed
 } from './index.js';
 
@@ -16,6 +18,15 @@ const capabilityScores = (draft: Awaited<ReturnType<typeof generateSummonableCha
 ];
 
 describe('approved summonable hero pool', () => {
+	it('requires private entropy for every new v2 capability profile', async () => {
+		const callWithoutPrivateEntropy = generateSummonableCharacterDraft as unknown as (
+			recipe: ReturnType<typeof recipeFromSeed>
+		) => ReturnType<typeof generateSummonableCharacterDraft>;
+		await expect(
+			callWithoutPrivateEntropy(recipeFromSeed('v2-private-entropy-required'))
+		).rejects.toThrow(/private capability entropy/u);
+	});
+
 	it('contains the 200 unique approved native one-star identities', () => {
 		const drafts = listSummonableHeroDrafts();
 
@@ -37,19 +48,19 @@ describe('approved summonable hero pool', () => {
 	it('selects a stable literal identity from a player seed', async () => {
 		const recipe = recipeFromSeed('campaign-alpha');
 		const [left, right] = await Promise.all([
-			generateSummonableCharacterDraft(recipe),
-			generateSummonableCharacterDraft(recipe)
+			generateSummonableCharacterDraft(recipe, { capabilityEntropy: '1'.repeat(64) }),
+			generateSummonableCharacterDraft(recipe, { capabilityEntropy: '1'.repeat(64) })
 		]);
 
 		expect(left.manifest.displayName).toBe('Kelu Grelun');
 		expect(right).toEqual(left);
 	});
 
-	it('generates the same bounded v2 mind and capability profile from the same recipe', async () => {
+	it('generates the same bounded v2 profile from the same recipe and private entropy', async () => {
 		const recipe = recipeFromSeed('capability-profile-alpha');
 		const [left, right] = await Promise.all([
-			generateSummonableCharacterDraft(recipe),
-			generateSummonableCharacterDraft(recipe)
+			generateSummonableCharacterDraft(recipe, { capabilityEntropy: '2'.repeat(64) }),
+			generateSummonableCharacterDraft(recipe, { capabilityEntropy: '2'.repeat(64) })
 		]);
 
 		expect(left.mind).toEqual(right.mind);
@@ -91,6 +102,29 @@ describe('approved summonable hero pool', () => {
 		expect(differentSecret.capabilityProfile).not.toEqual(left.capabilityProfile);
 	});
 
+	it('binds private capability entropy to the complete versioned recipe key', async () => {
+		const entropy = 'c'.repeat(64);
+		const leftRecipe = recipeFromSeed('private-capability-recipe-left');
+		const rightRecipe = recipeFromSeed('private-capability-recipe-right');
+		const [left, right] = await Promise.all([
+			generateSummonableCharacterDraft(leftRecipe, { capabilityEntropy: entropy }),
+			generateSummonableCharacterDraft(rightRecipe, { capabilityEntropy: entropy })
+		]);
+
+		expect(left.capabilityProfile).not.toEqual(right.capabilityProfile);
+		expect(derivePrivateEngineSeed(leftRecipe, entropy)).not.toBe(
+			derivePrivateEngineSeed(rightRecipe, entropy)
+		);
+		expect(derivePrivateEngineSeed(leftRecipe, entropy)).not.toBe(entropy);
+	});
+
+	it('accepts exactly 32 lowercase-hex entropy bytes at the capability boundary', () => {
+		expect(parseCapabilityEntropy('0'.repeat(64))).toBe('0'.repeat(64));
+		for (const invalid of ['0'.repeat(63), '0'.repeat(65), 'A'.repeat(64), 'z'.repeat(64)]) {
+			expect(() => parseCapabilityEntropy(invalid)).toThrow(/32 lowercase hexadecimal bytes/u);
+		}
+	});
+
 	it('keeps the historical summonable generator available for exact v1 replay', async () => {
 		const characters = await import('./index.js');
 		expect(characters).toHaveProperty('generateLegacySummonableCharacterDraft');
@@ -101,7 +135,7 @@ describe('approved summonable hero pool', () => {
 		const recipe = recipeFromSeed('campaign-alpha');
 		const [legacy, current] = await Promise.all([
 			generateLegacy(recipe),
-			generateSummonableCharacterDraft(recipe)
+			generateSummonableCharacterDraft(recipe, { capabilityEntropy: '3'.repeat(64) })
 		]);
 		expect(legacy.manifest.displayName).toBe('Kelu Grelun');
 		expect(legacy.mind).toHaveProperty('aptitudes');

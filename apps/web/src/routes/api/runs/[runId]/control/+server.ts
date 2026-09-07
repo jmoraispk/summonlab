@@ -76,14 +76,18 @@ export const PATCH: RequestHandler = async ({ params, request }) => {
 		return json(projectEngineCommitReceipt(committed));
 	} catch (error) {
 		if (error instanceof StaleRunVersionError || error instanceof IdempotencyConflictError) {
-			return json({ code: error.code, message: error.message }, { status: 409 });
+			return json(
+				{ code: error.code, message: 'The run changed before timing was updated.' },
+				{ status: 409 }
+			);
 		}
 		if (error instanceof IllegalActionError) {
-			return json({ code: error.code, message: error.message }, { status: 409 });
+			return json(
+				{ code: error.code, message: 'That timing action is not currently available.' },
+				{ status: 409 }
+			);
 		}
-		return json(
-			{ message: error instanceof Error ? error.message : 'Master timing could not change.' },
-			{ status: 500 }
-		);
+		console.error('Master timing update failed', error);
+		return json({ message: 'Master timing could not change.' }, { status: 500 });
 	}
 };

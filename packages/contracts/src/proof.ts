@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { CharacterCapabilityProfileV1Schema, CombatAttributesSchema } from './capability.js';
+import { CharacterCapabilityProfileV1Schema } from './capability.js';
 import {
 	CharacterGenerationRecipeSchema,
 	CharacterManifestSchema,
@@ -87,13 +87,38 @@ export const ProofRunSnapshotV2Schema = z
 
 export const PublicProofEventSchema = z
 	.object({
-		eventId: EntityIdSchema,
+		eventId: z.string().uuid(),
 		sequence: z.number().int().positive(),
 		eventType: z.string().regex(/^[a-z][a-z0-9.]{2,99}$/u),
 		summary: z.string().min(1).max(500),
-		decisionSource: DecisionSourceSchema,
-		eventHash: StateHashSchema,
-		createdAt: IsoDateTimeSchema
+		decisionSource: z.enum([
+			'manual',
+			'countdown',
+			'step',
+			'continuous',
+			'directed',
+			'random',
+			'scripted',
+			'model',
+			'habit',
+			'system'
+		]),
+		publicEventHash: z.string().regex(/^[a-f0-9]{64}$/u),
+		createdAt: z.string().datetime({ offset: true })
+	})
+	.strict();
+
+export const PublicCharacterManifestSchema = z
+	.object({
+		characterId: z.string().uuid(),
+		displayName: z.string().min(1).max(80),
+		rarityStars: z.number().int().min(1).max(7),
+		adultAge: z.number().int().min(18).max(42),
+		heightCm: z.number().int().min(140).max(210),
+		bodyBuild: z.enum(['wiry', 'lean', 'soft', 'athletic', 'solid', 'sturdy', 'powerful']),
+		voiceCadence: z.enum(['measured', 'quick', 'deliberate', 'lilting']),
+		posture: z.enum(['guarded', 'open', 'restless', 'grounded', 'formal']),
+		artKey: z.string().min(1).max(80).nullable()
 	})
 	.strict();
 
@@ -101,8 +126,8 @@ const PublicProofRunBaseShape = {
 	runId: EntityIdSchema,
 	storyEnvelopeId: z.literal('first-ember-v1'),
 	controlMode: ProofControlModeSchema,
-	manifest: CharacterManifestSchema,
-	manifestHash: StateHashSchema,
+	manifest: PublicCharacterManifestSchema,
+	publicManifestHash: z.string().regex(/^[a-f0-9]{64}$/u),
 	firstObservation: z.string().min(1),
 	firstLine: z.string().min(1).nullable(),
 	destination: FirstDestinationSchema.nullable(),
@@ -121,7 +146,14 @@ export const PublicProofRunSnapshotV2Schema = z
 		capabilityProfile: z
 			.object({
 				profileVersion: z.literal('character-capability-v1'),
-				attributes: CombatAttributesSchema
+				attributes: z
+					.object({
+						might: z.number().int().min(1).max(100),
+						vitality: z.number().int().min(1).max(100),
+						agility: z.number().int().min(1).max(100),
+						spirit: z.number().int().min(1).max(100)
+					})
+					.strict()
 			})
 			.strict()
 	})
@@ -135,5 +167,6 @@ export type ProofRunCreateRequest = z.infer<typeof ProofRunCreateRequestSchema>;
 export type ProofRunSnapshot = z.infer<typeof ProofRunSnapshotSchema>;
 export type ProofRunSnapshotV2 = z.infer<typeof ProofRunSnapshotV2Schema>;
 export type PublicProofEvent = z.infer<typeof PublicProofEventSchema>;
+export type PublicCharacterManifest = z.infer<typeof PublicCharacterManifestSchema>;
 export type PublicProofRunSnapshot = z.infer<typeof PublicProofRunSnapshotSchema>;
 export type PublicProofRunSnapshotV2 = z.infer<typeof PublicProofRunSnapshotV2Schema>;

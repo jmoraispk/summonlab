@@ -1,6 +1,11 @@
 import { createHash, randomUUID } from 'node:crypto';
 
 import {
+	deriveCharacterCapabilityProfile,
+	derivePrivateEngineSeed,
+	parseCapabilityEntropy
+} from '@summonlab/characters';
+import {
 	CharacterDraftSchema,
 	CharacterDraftV2Schema,
 	CharacterMindSchema,
@@ -362,8 +367,23 @@ export async function createProofRun(
 ): Promise<StoredProofRunSnapshot> {
 	const draft = StoredCharacterDraftSchema.parse(input.draft);
 	const isV2 = 'capabilityProfile' in draft;
-	if (input.capabilityEntropy !== undefined && (!isV2 || input.capabilityEntropy.length < 32)) {
-		throw new Error('Private capability entropy is valid only for v2 drafts and must be high entropy');
+	const capabilityEntropy =
+		input.capabilityEntropy === undefined ? null : parseCapabilityEntropy(input.capabilityEntropy);
+	let effectiveEngineSeed: string;
+	if (isV2) {
+		if (capabilityEntropy === null) {
+			throw new Error('New v2 proof runs require private capability entropy');
+		}
+		const auditedProfile = deriveCharacterCapabilityProfile(draft.recipe, capabilityEntropy);
+		if (JSON.stringify(auditedProfile) !== JSON.stringify(draft.capabilityProfile)) {
+			throw new Error('Persisted capability profile does not match its private derivation inputs');
+		}
+		effectiveEngineSeed = derivePrivateEngineSeed(draft.recipe, capabilityEntropy);
+	} else {
+		if (capabilityEntropy !== null) {
+			throw new Error('Private capability entropy is valid only for v2 drafts');
+		}
+		effectiveEngineSeed = input.engineSeed ?? draft.recipe.seed;
 	}
 	const usesDevelopmentEngineBootstrap = Boolean(
 		input.developmentMissionScenario || input.developmentEquipmentScenario
@@ -381,7 +401,7 @@ export async function createProofRun(
 					${transaction.json(draft.recipe)}, ${transaction.json(draft.manifest)},
 					${transaction.json(draft.mind)},
 					${isV2 ? transaction.json(draft.capabilityProfile) : null},
-					${isV2 ? 'character-v2' : 'character-v1'}, ${input.capabilityEntropy ?? null},
+					${isV2 ? 'character-v2' : 'character-v1'}, ${capabilityEntropy},
 					${draft.manifestHash},
 					${input.firstObservation}, ${input.choice?.firstLine ?? null},
 					${input.choice?.destination ?? null}, ${input.choice?.storyBranch ?? null}
@@ -391,14 +411,14 @@ export async function createProofRun(
 				isV2 && !usesDevelopmentEngineBootstrap
 					? await initializeEngineRun(transaction, {
 							runId: input.runId,
-							seed: input.engineSeed ?? draft.recipe.seed,
+							seed: effectiveEngineSeed,
 							draft,
 							...(input.additionalHeroes ? { additionalHeroes: input.additionalHeroes } : {}),
 							...(input.clockSpeed === undefined ? {} : { clockSpeed: input.clockSpeed })
 						})
 					: await initializeEngineRun(transaction, {
 							runId: input.runId,
-							seed: input.engineSeed ?? draft.recipe.seed,
+							seed: effectiveEngineSeed,
 							heroId: draft.manifest.characterId,
 							manifestHash: draft.manifestHash,
 							rarityStars: draft.manifest.rarityStars,

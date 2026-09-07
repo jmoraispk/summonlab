@@ -19,7 +19,17 @@ vi.mock('@summonlab/characters', async (importOriginal) => {
 				mocks.generatedEntropy = options.capabilityEntropy ?? null;
 				return {
 					recipe,
-					manifest: { characterId: '00000000-0000-4000-8000-000000000001' },
+					manifest: {
+						characterId: '00000000-0000-4000-8000-000000000001',
+						displayName: 'Public Hero',
+						rarityStars: 1,
+						adultAge: 24,
+						heightCm: 172,
+						bodyBuild: 'athletic',
+						voice: { cadence: 'measured' },
+						posture: 'grounded',
+						artKey: null
+					},
 					manifestHash: 'a'.repeat(64)
 				};
 			}
@@ -59,12 +69,14 @@ describe('POST /api/runs private capability entropy', () => {
 		expect(mocks.generatedEntropy).toMatch(/^[a-f0-9]{64}$/u);
 		expect(mocks.persistedEntropy).toBe(mocks.generatedEntropy);
 		const serialized = JSON.stringify(await response.json());
+		expect(Object.keys(JSON.parse(serialized)).sort()).toEqual(['publicManifestHash', 'runId']);
 		expect(serialized).not.toContain(mocks.generatedEntropy!);
 		expect(serialized).not.toContain('player-visible-recipe');
 	});
 
 	it('does not reflect persistence details that could contain the private entropy', async () => {
 		mocks.persistenceFailure = 'database rejected secret-value-that-must-stay-private';
+		const consoleError = vi.spyOn(console, 'error').mockImplementation(() => undefined);
 		try {
 			const response = (await POST({
 				request: new Request('http://summonlab.test/api/runs', {
@@ -83,9 +95,12 @@ describe('POST /api/runs private capability entropy', () => {
 			} as never)) as Response;
 
 			expect(response.status).toBe(503);
-			expect(JSON.stringify(await response.json())).not.toContain('secret-value-that-must-stay-private');
+			expect(JSON.stringify(await response.json())).not.toContain(
+				'secret-value-that-must-stay-private'
+			);
 		} finally {
 			mocks.persistenceFailure = null;
+			consoleError.mockRestore();
 		}
 	});
 });

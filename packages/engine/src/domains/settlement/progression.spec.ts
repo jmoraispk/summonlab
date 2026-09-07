@@ -59,7 +59,9 @@ async function capabilityState(key: string): Promise<{
 }> {
 	const legacyDraft = listSummonableHeroDrafts()[0];
 	if (!legacyDraft) throw new Error('Expected an approved summonable draft');
-	const draft = await generateSummonableCharacterDraft(legacyDraft.recipe);
+	const draft = await generateSummonableCharacterDraft(legacyDraft.recipe, {
+		capabilityEntropy: '6'.repeat(64)
+	});
 	const bootstrap = createBootstrapEngine({
 		runId: deterministicUuid(`progression:${key}:run`),
 		seed: `progression:${key}:seed`,

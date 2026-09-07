@@ -306,14 +306,18 @@ export const POST: RequestHandler = async ({ params, request }) => {
 		return json(projectEngineCommitReceipt(committed));
 	} catch (error) {
 		if (error instanceof StaleRunVersionError || error instanceof IdempotencyConflictError) {
-			return json({ code: error.code, message: error.message }, { status: 409 });
+			return json(
+				{ code: error.code, message: 'The run changed before the mission update.' },
+				{ status: 409 }
+			);
 		}
 		if (error instanceof IllegalActionError) {
-			return json({ code: error.code, message: error.message }, { status: 409 });
+			return json(
+				{ code: error.code, message: 'That mission action is not currently available.' },
+				{ status: 409 }
+			);
 		}
-		return json(
-			{ message: error instanceof Error ? error.message : 'The mission transition failed.' },
-			{ status: 500 }
-		);
+		console.error('Mission transition failed', error);
+		return json({ message: 'The mission transition failed.' }, { status: 500 });
 	}
 };

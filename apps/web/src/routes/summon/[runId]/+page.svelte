@@ -2,7 +2,6 @@
 	import { resolve } from '$app/paths';
 	import type {
 		DecisionJobClientView,
-		HeroConversationPresentation,
 		HeroDecisionPreview,
 		HeroPolicyResult,
 		PublicProofRunSnapshot,
@@ -11,13 +10,14 @@
 	import { onDestroy } from 'svelte';
 	import EventJournal from '$lib/components/EventJournal.svelte';
 	import HeroArtPlaceholder from '$lib/components/HeroArtPlaceholder.svelte';
+	import type { PublicHeroConversationPresentation } from '$lib/server/public-world-presentation';
 
 	let { data } = $props();
 	type PublicProofSnapshot = PublicProofRunSnapshot | PublicProofRunSnapshotV2;
 	// svelte-ignore state_referenced_locally
 	let snapshot = $state<PublicProofSnapshot>(data.snapshot);
 	// svelte-ignore state_referenced_locally
-	let conversation = $state<HeroConversationPresentation | null>(data.conversation);
+	let conversation = $state<PublicHeroConversationPresentation | null>(data.conversation);
 	// svelte-ignore state_referenced_locally
 	let decisionPreview = $state<HeroDecisionPreview | null>(data.decisionPreview);
 	let decisionPacket = $derived(decisionPreview?.packet ?? null);
@@ -128,7 +128,7 @@
 					delivery: communicationDelivery
 				})
 			});
-			const result = (await response.json()) as HeroConversationPresentation & {
+			const result = (await response.json()) as PublicHeroConversationPresentation & {
 				message?: string;
 			};
 			if (!response.ok) throw new Error(result.message ?? 'Those words could not be recorded.');
@@ -184,7 +184,7 @@
 					orderIntent: conversationKind === 'order' ? conversationOrderIntent : null
 				})
 			});
-			const result = (await response.json()) as HeroConversationPresentation & {
+			const result = (await response.json()) as PublicHeroConversationPresentation & {
 				message?: string;
 			};
 			if (!response.ok) throw new Error(result.message ?? 'The hero could not answer.');
@@ -469,7 +469,7 @@
 				<h1>A life waits<br />behind the seal.</h1>
 				<button type="button" onclick={beginReveal}>
 					<span>Break the seal</span>
-					<small>manifest hash {snapshot.manifestHash.slice(0, 12)}</small>
+					<small>public manifest hash {snapshot.publicManifestHash.slice(0, 12)}</small>
 				</button>
 			</div>
 		{/if}
@@ -484,7 +484,7 @@
 			<div class="system-callout">
 				<span>02</span>
 				<p>Identity made manifest</p>
-				<code>{snapshot.manifestHash}</code>
+				<code>{snapshot.publicManifestHash}</code>
 			</div>
 		{/if}
 
@@ -670,18 +670,10 @@
 										<div class="order-outcome">
 											<strong>{latestTurn.heroResponse.orderOutcome}</strong>
 											<span>{latestTurn.orderIntent?.replaceAll('-', ' ')}</span>
-											<em>+{latestTurn.heroResponse.preferenceWeight} preference</em>
 										</div>
 										<details>
 											<summary>Why this outcome?</summary>
 											<p>{latestTurn.heroResponse.publicReason}</p>
-											{#if latestTurn.heroResponse.orderScore}
-												<div class="score-grid">
-													{#each Object.entries(latestTurn.heroResponse.orderScore) as [key, value] (key)}
-														<span>{key}</span><strong>{value > 0 ? `+${value}` : value}</strong>
-													{/each}
-												</div>
-											{/if}
 										</details>
 									{/if}
 								</article>
@@ -1003,7 +995,7 @@
 			<EventJournal events={snapshot.events} />
 			<aside>
 				<p>Replay identity</p>
-				<code>{snapshot.manifestHash}</code>
+				<code>{snapshot.publicManifestHash}</code>
 				<span>Same recipe → same manifest bytes, mind, and policy choice.</span>
 			</aside>
 		</section>
@@ -1803,27 +1795,10 @@
 		letter-spacing: 0.1em;
 	}
 
-	.order-outcome em {
-		margin-left: auto;
-		color: #d2a04d;
-		font-style: normal;
-	}
-
 	.hero-reply details {
 		margin-top: 0.55rem;
 		color: rgba(246, 241, 231, 0.5);
 		font-size: 0.55rem;
-	}
-
-	.score-grid {
-		display: grid;
-		grid-template-columns: 1fr auto;
-		gap: 0.2rem 1rem;
-		margin-top: 0.45rem;
-	}
-
-	.score-grid strong {
-		color: #f1cf8b;
 	}
 
 	.context-preview {

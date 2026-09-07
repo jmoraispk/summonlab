@@ -85,11 +85,14 @@ async function callMission(body: unknown): Promise<Response> {
 
 describe('V25 legacy automatic mission API', () => {
 	beforeAll(async () => {
-		const draft = await generateSummonableCharacterDraft({
-			seed: 'web-legacy-auto-seed',
-			generationVersion: 'human-v6',
-			cursors: { identity: 0, body: 0, features: 0, styling: 0, mind: 0, rarity: 0 }
-		});
+		const draft = await generateSummonableCharacterDraft(
+			{
+				seed: 'web-legacy-auto-seed',
+				generationVersion: 'human-v6',
+				cursors: { identity: 0, body: 0, features: 0, styling: 0, mind: 0, rarity: 0 }
+			},
+			{ capabilityEntropy: '8'.repeat(64) }
+		);
 		snapshot = createBootstrapEngine({
 			runId: deterministicUuid('web-legacy-auto-run'),
 			seed: 'web-legacy-auto-engine',

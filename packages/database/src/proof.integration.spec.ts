@@ -1,8 +1,9 @@
-import { randomUUID } from 'node:crypto';
+import { randomBytes, randomUUID } from 'node:crypto';
 
 import {
 	FIRST_OBSERVATION,
 	chooseFirstDestination,
+	derivePrivateEngineSeed,
 	generateCharacterDraft,
 	generateSummonableCharacterDraft,
 	recipeFromSeed
@@ -17,9 +18,26 @@ const databaseUrl = process.env.TEST_DATABASE_URL;
 const run = databaseUrl ? it : it.skip;
 
 describe('summon proof persistence', () => {
+	it('rejects new v2 rows without private entropy before opening a database connection', async () => {
+		const draft = await generateSummonableCharacterDraft(
+			recipeFromSeed(`proof-missing-private-entropy-${randomUUID()}`),
+			{ capabilityEntropy: 'e'.repeat(64) }
+		);
+		await expect(
+			createProofRun('postgres://unused', {
+				runId: randomUUID(),
+				draft,
+				controlMode: 'wait',
+				directive: '',
+				firstObservation: FIRST_OBSERVATION,
+				choice: null
+			})
+		).rejects.toThrow(/private capability entropy/u);
+	});
+
 	run('stores v2 capability data internally and round-trips it by schema version', async () => {
 		if (!databaseUrl) throw new Error('TEST_DATABASE_URL is required');
-		const capabilityEntropy = randomUUID().repeat(2);
+		const capabilityEntropy = randomBytes(32).toString('hex');
 		const draft = await generateSummonableCharacterDraft(
 			recipeFromSeed(`proof-capability-${randomUUID()}`),
 			{ capabilityEntropy }
@@ -53,6 +71,8 @@ describe('summon proof persistence', () => {
 		}
 		const engine = await getEngineSnapshot(databaseUrl, runId);
 		if (engine?.state.schemaVersion !== 25) throw new Error('Expected engine-v25 state');
+		expect(engine.state.seed).toBe(derivePrivateEngineSeed(draft.recipe, capabilityEntropy));
+		expect(engine.state.seed).not.toBe(draft.recipe.seed);
 		expect(engine.state).toMatchObject({
 			schemaVersion: 25,
 			contentVersion: 'engine-v25',
@@ -73,54 +93,121 @@ describe('summon proof persistence', () => {
 		});
 	});
 
-	run('keeps legacy v2 rows with null capability entropy readable from persisted profiles', async () => {
+	run('rejects a v2 capability profile that does not match its private entropy', async () => {
 		if (!databaseUrl) throw new Error('TEST_DATABASE_URL is required');
+		const capabilityEntropy = randomBytes(32).toString('hex');
 		const draft = await generateSummonableCharacterDraft(
-			recipeFromSeed(`proof-legacy-null-entropy-${randomUUID()}`)
+			recipeFromSeed(`proof-private-audit-${randomUUID()}`),
+			{ capabilityEntropy }
 		);
-		const runId = randomUUID();
-		await createProofRun(databaseUrl, {
-			runId,
-			draft,
-			controlMode: 'wait',
-			directive: '',
-			firstObservation: FIRST_OBSERVATION,
-			choice: null
-		});
-		const loaded = await getProofRun(databaseUrl, runId);
-		expect(loaded).toMatchObject({ runId, capabilityProfile: draft.capabilityProfile });
-		const sql = postgres(databaseUrl, { max: 1 });
-		try {
-			const rows = await sql<{ capability_entropy: string | null }[]>`
-				select capability_entropy from summonlab_proof_runs where run_id = ${runId}
-			`;
-			expect(rows[0]?.capability_entropy).toBeNull();
-		} finally {
-			await sql.end({ timeout: 5 });
-		}
+		const might = draft.capabilityProfile.attributes.might;
+		const mismatched = {
+			...draft,
+			capabilityProfile: {
+				...draft.capabilityProfile,
+				attributes: {
+					...draft.capabilityProfile.attributes,
+					might: might === 100 ? 99 : might + 1
+				}
+			}
+		};
+
+		await expect(
+			createProofRun(databaseUrl, {
+				runId: randomUUID(),
+				draft: mismatched,
+				capabilityEntropy,
+				controlMode: 'wait',
+				directive: '',
+				firstObservation: FIRST_OBSERVATION,
+				choice: null
+			})
+		).rejects.toThrow(/does not match its private derivation inputs/u);
 	});
 
-	run('rejects mismatched character schema versions and capability profiles', async () => {
+	run('rejects non-canonical private entropy at the database boundary', async () => {
 		if (!databaseUrl) throw new Error('TEST_DATABASE_URL is required');
-		const [legacyDraft, v2Draft] = await Promise.all([
-			generateCharacterDraft(recipeFromSeed(`proof-legacy-mismatch-${randomUUID()}`)),
-			generateSummonableCharacterDraft(recipeFromSeed(`proof-v2-mismatch-${randomUUID()}`))
-		]);
-		const legacyRunId = randomUUID();
-		const v2RunId = randomUUID();
-		for (const [runId, draft] of [
-			[legacyRunId, legacyDraft],
-			[v2RunId, v2Draft]
-		] as const) {
+		const draft = await generateSummonableCharacterDraft(
+			recipeFromSeed(`proof-private-entropy-shape-${randomUUID()}`),
+			{ capabilityEntropy: 'd'.repeat(64) }
+		);
+		await expect(
+			createProofRun(databaseUrl, {
+				runId: randomUUID(),
+				draft,
+				capabilityEntropy: 'A'.repeat(64),
+				controlMode: 'wait',
+				directive: '',
+				firstObservation: FIRST_OBSERVATION,
+				choice: null
+			})
+		).rejects.toThrow(/32 lowercase hexadecimal bytes/u);
+	});
+
+	run(
+		'keeps legacy v2 rows with null capability entropy readable from persisted profiles',
+		async () => {
+			if (!databaseUrl) throw new Error('TEST_DATABASE_URL is required');
+			const capabilityEntropy = randomBytes(32).toString('hex');
+			const draft = await generateSummonableCharacterDraft(
+				recipeFromSeed(`proof-legacy-null-entropy-${randomUUID()}`),
+				{ capabilityEntropy }
+			);
+			const runId = randomUUID();
 			await createProofRun(databaseUrl, {
 				runId,
 				draft,
+				capabilityEntropy,
 				controlMode: 'wait',
 				directive: '',
 				firstObservation: FIRST_OBSERVATION,
 				choice: null
 			});
+			const sql = postgres(databaseUrl, { max: 1 });
+			try {
+				await sql`
+					update summonlab_proof_runs set capability_entropy = null where run_id = ${runId}
+				`;
+				const rows = await sql<{ capability_entropy: string | null }[]>`
+				select capability_entropy from summonlab_proof_runs where run_id = ${runId}
+			`;
+				expect(rows[0]?.capability_entropy).toBeNull();
+			} finally {
+				await sql.end({ timeout: 5 });
+			}
+			const loaded = await getProofRun(databaseUrl, runId);
+			expect(loaded).toMatchObject({ runId, capabilityProfile: draft.capabilityProfile });
 		}
+	);
+
+	run('rejects mismatched character schema versions and capability profiles', async () => {
+		if (!databaseUrl) throw new Error('TEST_DATABASE_URL is required');
+		const capabilityEntropy = randomBytes(32).toString('hex');
+		const [legacyDraft, v2Draft] = await Promise.all([
+			generateCharacterDraft(recipeFromSeed(`proof-legacy-mismatch-${randomUUID()}`)),
+			generateSummonableCharacterDraft(recipeFromSeed(`proof-v2-mismatch-${randomUUID()}`), {
+				capabilityEntropy
+			})
+		]);
+		const legacyRunId = randomUUID();
+		const v2RunId = randomUUID();
+		await createProofRun(databaseUrl, {
+			runId: legacyRunId,
+			draft: legacyDraft,
+			controlMode: 'wait',
+			directive: '',
+			firstObservation: FIRST_OBSERVATION,
+			choice: null
+		});
+		await createProofRun(databaseUrl, {
+			runId: v2RunId,
+			draft: v2Draft,
+			capabilityEntropy,
+			controlMode: 'wait',
+			directive: '',
+			firstObservation: FIRST_OBSERVATION,
+			choice: null
+		});
 		const sql = postgres(databaseUrl, { max: 1 });
 		try {
 			await sql`
@@ -146,8 +233,10 @@ describe('summon proof persistence', () => {
 
 	run('rejects malformed v2 drafts before writing proof or engine rows', async () => {
 		if (!databaseUrl) throw new Error('TEST_DATABASE_URL is required');
+		const capabilityEntropy = randomBytes(32).toString('hex');
 		const draft = await generateSummonableCharacterDraft(
-			recipeFromSeed(`proof-malformed-${randomUUID()}`)
+			recipeFromSeed(`proof-malformed-${randomUUID()}`),
+			{ capabilityEntropy }
 		);
 		const runId = randomUUID();
 		const malformedDraft = {
@@ -159,6 +248,7 @@ describe('summon proof persistence', () => {
 			createProofRun(databaseUrl, {
 				runId,
 				draft: malformedDraft as typeof draft,
+				capabilityEntropy,
 				controlMode: 'wait',
 				directive: '',
 				firstObservation: FIRST_OBSERVATION,

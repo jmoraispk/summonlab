@@ -82,6 +82,21 @@ function manifest() {
 	};
 }
 
+function publicManifest() {
+	const value = manifest();
+	return {
+		characterId: value.characterId,
+		displayName: value.displayName,
+		rarityStars: value.rarityStars,
+		adultAge: value.adultAge,
+		heightCm: value.heightCm,
+		bodyBuild: value.bodyBuild,
+		voiceCadence: value.voice.cadence,
+		posture: value.posture,
+		artKey: value.artKey
+	};
+}
+
 function legacyMind() {
 	return {
 		personality: {
@@ -249,14 +264,14 @@ describe('character capability contracts', () => {
 			characterSchemaVersion: internal.characterSchemaVersion,
 			storyEnvelopeId: internal.storyEnvelopeId,
 			controlMode: internal.controlMode,
-			manifest: internal.manifest,
-			manifestHash: internal.manifestHash,
+			manifest: publicManifest(),
+			publicManifestHash: 'b'.repeat(64),
 			firstObservation: internal.firstObservation,
 			firstLine: internal.firstLine,
 			destination: internal.destination,
 			storyBranch: internal.storyBranch,
 			arrived: internal.arrived,
-			events: internal.events.map(({ payload: _payload, ...event }) => event),
+			events: [],
 			createdAt: internal.createdAt,
 			capabilityProfile: {
 				profileVersion: internal.capabilityProfile.profileVersion,

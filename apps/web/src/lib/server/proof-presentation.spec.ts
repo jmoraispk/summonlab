@@ -125,14 +125,38 @@ describe('public proof presentation', () => {
 			spirit: 74
 		});
 		expect(projected.capabilityProfile).not.toHaveProperty('learning');
+		expect(Object.keys(projected.manifest).sort()).toEqual(
+			[
+				'characterId',
+				'displayName',
+				'rarityStars',
+				'adultAge',
+				'heightCm',
+				'bodyBuild',
+				'voiceCadence',
+				'posture',
+				'artKey'
+			].sort()
+		);
 		expect(serialized).not.toContain('cognitiveLearningScore');
 		expect(serialized).not.toContain('domainAptitudes');
 		expect(serialized).not.toContain('future-proof-secret');
 		expect(Object.keys(projected).sort()).toEqual(
 			[
-				'runId', 'characterSchemaVersion', 'storyEnvelopeId', 'controlMode', 'manifest',
-				'manifestHash', 'firstObservation', 'firstLine', 'destination', 'storyBranch',
-				'arrived', 'events', 'createdAt', 'capabilityProfile'
+				'runId',
+				'characterSchemaVersion',
+				'storyEnvelopeId',
+				'controlMode',
+				'manifest',
+				'publicManifestHash',
+				'firstObservation',
+				'firstLine',
+				'destination',
+				'storyBranch',
+				'arrived',
+				'events',
+				'createdAt',
+				'capabilityProfile'
 			].sort()
 		);
 	});
@@ -140,7 +164,11 @@ describe('public proof presentation', () => {
 	it('keeps legacy proof identity while removing legacy recipe and cognition', () => {
 		const legacy = legacySnapshot();
 		const projected = proofPresentation.projectProofRunForPublic(legacy);
-		expect(projected.manifest).toEqual(legacy.manifest);
+		expect(projected.manifest).toMatchObject({
+			characterId: legacy.manifest.characterId,
+			displayName: legacy.manifest.displayName
+		});
+		expect(projected.manifest).not.toHaveProperty('appearanceSeed');
 		expect(projected).not.toHaveProperty('recipe');
 		expect(projected).not.toHaveProperty('mind');
 		expect(projected).not.toHaveProperty('directive');

@@ -14,9 +14,7 @@ export const GET: RequestHandler = async ({ params }) => {
 			headers: { 'cache-control': 'no-store' }
 		});
 	} catch (error) {
-		return json(
-			{ message: error instanceof Error ? error.message : 'The proof run could not be loaded.' },
-			{ status: 500 }
-		);
+		console.error('Proof run load failed', error);
+		return json({ message: 'The proof run could not be loaded.' }, { status: 500 });
 	}
 };

@@ -6,6 +6,7 @@ import { error } from '@sveltejs/kit';
 
 import { runtimePortraitFor } from '$lib/server/runtime-portraits';
 import { projectProofRunForPublic } from '$lib/server/proof-presentation';
+import { projectHeroConversationForPublic } from '$lib/server/public-world-presentation';
 
 import type { PageServerLoad } from './$types';
 
@@ -18,23 +19,26 @@ export const load: PageServerLoad = async ({ params }) => {
 	]);
 	if (!snapshot) error(404, 'This summon could not be found. Is the local database running?');
 	const conversation = engineSnapshot
-		? projectHeroConversationPresentation(engineSnapshot, snapshot.manifest.characterId)
+		? projectHeroConversationForPublic(
+				projectHeroConversationPresentation(engineSnapshot, snapshot.manifest.characterId)
+			)
 		: null;
-	const decisionPreview = config.devRoutesEnabled && engineSnapshot
-		? await (async () => {
-				try {
-					const packet = assembleHeroDecisionPacket({
-						snapshot: engineSnapshot,
-						manifest: snapshot.manifest,
-						heroId: snapshot.manifest.characterId,
-						decisionKind: 'settlement-action'
-					});
-					return await createHeroDecisionPreview(packet, `${params.runId}:policy-preview-v1`);
-				} catch {
-					return null;
-				}
-			})()
-		: null;
+	const decisionPreview =
+		config.devRoutesEnabled && engineSnapshot
+			? await (async () => {
+					try {
+						const packet = assembleHeroDecisionPacket({
+							snapshot: engineSnapshot,
+							manifest: snapshot.manifest,
+							heroId: snapshot.manifest.characterId,
+							decisionKind: 'settlement-action'
+						});
+						return await createHeroDecisionPreview(packet, `${params.runId}:policy-preview-v1`);
+					} catch {
+						return null;
+					}
+				})()
+			: null;
 	const modelPolicy = {
 		enabled:
 			config.devRoutesEnabled && config.policyMode === 'model' && Boolean(config.openAiApiKey),

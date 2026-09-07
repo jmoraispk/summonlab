@@ -51,11 +51,14 @@ function commandBase(state: EngineGameStateV25, key: string) {
 }
 
 async function capabilityState(): Promise<EngineGameStateV25> {
-	const draft = await generateSummonableCharacterDraft({
-		seed: 'legacy-auto-capability-seed',
-		generationVersion: 'human-v6',
-		cursors: { identity: 0, body: 0, features: 0, styling: 0, mind: 0, rarity: 0 }
-	});
+	const draft = await generateSummonableCharacterDraft(
+		{
+			seed: 'legacy-auto-capability-seed',
+			generationVersion: 'human-v6',
+			cursors: { identity: 0, body: 0, features: 0, styling: 0, mind: 0, rarity: 0 }
+		},
+		{ capabilityEntropy: '5'.repeat(64) }
+	);
 	const bootstrap = createBootstrapEngine({
 		runId: deterministicUuid('legacy-auto-run'),
 		seed: 'legacy-auto-engine-seed',

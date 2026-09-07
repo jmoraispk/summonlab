@@ -90,7 +90,7 @@
 		</div>
 		<div class="binding">
 			<small>Event stream</small>
-			<code>{journal.eventStreamHash.slice(0, 12)}</code>
+			<code>{journal.publicJournalHash.slice(0, 12)}</code>
 			<strong>{journal.entryCount} transitions</strong>
 			<small>cursor #{journal.fromCursor}—#{journal.toCursor}</small>
 		</div>
@@ -288,7 +288,7 @@
 							{#each entry.facets as tag (tag)}<span class:failure={tag === 'failure'}>{tag}</span
 								>{/each}
 						</div>
-						<code>{entry.stateHash.slice(0, 10)}</code>
+						<code>{entry.publicEntryHash.slice(0, 10)}</code>
 						<small>
 							{entry.source.source}{entry.source.timing ? ` · ${entry.source.timing}` : ''}
 						</small>

@@ -15,9 +15,7 @@ export const POST: RequestHandler = async ({ params, request }) => {
 		if (!snapshot) return json({ message: 'Summon run not found.' }, { status: 404 });
 		return json(projectProofRunForPublic(snapshot));
 	} catch (error) {
-		return json(
-			{ message: error instanceof Error ? error.message : 'Arrival could not be recorded.' },
-			{ status: 500 }
-		);
+		console.error('Proof arrival failed', error);
+		return json({ message: 'Arrival could not be recorded.' }, { status: 500 });
 	}
 };

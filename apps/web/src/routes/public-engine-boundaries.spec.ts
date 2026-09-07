@@ -1,7 +1,7 @@
 import { generateSummonableCharacterDraft } from '@summonlab/characters';
 import {
 	EngineReplayReportSchema,
-	EngineGameStateV1Schema,
+	EngineGameStateSchema,
 	ProofRunSnapshotV2Schema,
 	type AuthoritativeEvent,
 	type EngineCommit,
@@ -13,12 +13,13 @@ import {
 	createBootstrapEngine,
 	createCombatModeBinding,
 	deterministicUuid,
+	hashCanonical,
 	legalActions,
 	projectJournal,
 	projectPlayerJournal,
 	replayEventsStrict
 } from '@summonlab/engine';
-import { ENGINE_REPLAY_VECTOR_CASES } from '../../../../packages/engine/src/compatibility/replay-vectors.js';
+import { ENGINE_COMPATIBILITY_STATE_FIXTURES } from '../../../../packages/contracts/src/engine-compatibility-states.snapshot.js';
 import { beforeAll, describe, expect, it, vi } from 'vitest';
 
 const mocks = vi.hoisted(() => ({
@@ -27,7 +28,8 @@ const mocks = vi.hoisted(() => ({
 	events: [] as AuthoritativeEvent[],
 	commit: null as EngineCommit | null,
 	devRoutesEnabled: true,
-	closed: false
+	closed: false,
+	failure: null as string | null
 }));
 
 vi.mock('@summonlab/config', () => ({
@@ -43,12 +45,30 @@ vi.mock('@summonlab/database', async (importOriginal) => {
 	return {
 		...actual,
 		catchUpRun: vi.fn(),
-		getEngineReplay: vi.fn(async () => mocks.report),
-		getEngineSnapshot: vi.fn(async () => mocks.report?.snapshot ?? null),
-		commitEngineCommand: vi.fn(async () => mocks.commit),
-		getProofRun: vi.fn(async () => mocks.proof),
-		markProofArrival: vi.fn(async () => mocks.proof),
-		resolveProofDecision: vi.fn(async () => mocks.proof),
+		getEngineReplay: vi.fn(async () => {
+			if (mocks.failure) throw new Error(mocks.failure);
+			return mocks.report;
+		}),
+		getEngineSnapshot: vi.fn(async () => {
+			if (mocks.failure) throw new Error(mocks.failure);
+			return mocks.report?.snapshot ?? null;
+		}),
+		commitEngineCommand: vi.fn(async () => {
+			if (mocks.failure) throw new Error(mocks.failure);
+			return mocks.commit;
+		}),
+		getProofRun: vi.fn(async () => {
+			if (mocks.failure) throw new Error(mocks.failure);
+			return mocks.proof;
+		}),
+		markProofArrival: vi.fn(async () => {
+			if (mocks.failure) throw new Error(mocks.failure);
+			return mocks.proof;
+		}),
+		resolveProofDecision: vi.fn(async () => {
+			if (mocks.failure) throw new Error(mocks.failure);
+			return mocks.proof;
+		}),
 		getSimulationClock: vi.fn(async () => mocks.report?.clock ?? null),
 		getEngineEventHead: vi.fn(async () =>
 			mocks.report
@@ -83,14 +103,25 @@ import { GET as getDecisionContext } from './api/runs/[runId]/decision-context/+
 import { GET as getDecisionPreview } from './api/runs/[runId]/decision-preview/+server.js';
 import { GET as getEvents } from './api/runs/[runId]/events/+server.js';
 import { POST as postMission } from './api/runs/[runId]/mission/+server.js';
+import { GET as getJournal } from './api/runs/[runId]/journal/+server.js';
+import { PATCH as patchControl } from './api/runs/[runId]/control/+server.js';
+import { POST as postDecisionWindow } from './api/runs/[runId]/decision-window/+server.js';
 import { GET as getProof } from './api/runs/[runId]/+server.js';
 import { POST as decideProof } from './api/runs/[runId]/decide/+server.js';
 import { POST as arriveProof } from './api/runs/[runId]/arrive/+server.js';
-import { projectEngineStateForPublic } from '../lib/server/public-engine-presentation.js';
+import {
+	projectEngineEventForPublic,
+	projectEngineReplayForPublic,
+	projectEngineStateForPublic
+} from '../lib/server/public-engine-presentation.js';
+import { projectProofRunForPublic } from '../lib/server/proof-presentation.js';
+import { hashPublicProjection } from '../lib/server/public-projection-hash.js';
+import { load as loadFirstBandArchive } from './first-band-archive/[runId]/+page.server.js';
 import { load as loadMission } from './mission/[runId]/+page.server.js';
 import { load as loadPlay } from './play/[runId]/+page.server.js';
 import { load as loadReplay } from './replay/[runId]/+page.server.js';
 import { load as loadSummon } from './summon/[runId]/+page.server.js';
+import { load as loadSynthesis } from './synthesis/[runId]/+page.server.js';
 
 function expectExactKeys(value: unknown, keys: readonly string[]): void {
 	expect(value).not.toBeNull();
@@ -110,11 +141,14 @@ function source() {
 
 beforeAll(async () => {
 	const runId = deterministicUuid('public-engine-boundary-run');
-	const draft = await generateSummonableCharacterDraft({
-		seed: 'private-character-seed',
-		generationVersion: 'human-v6',
-		cursors: { identity: 0, body: 0, features: 0, styling: 0, mind: 0, rarity: 0 }
-	});
+	const draft = await generateSummonableCharacterDraft(
+		{
+			seed: 'private-character-seed',
+			generationVersion: 'human-v6',
+			cursors: { identity: 0, body: 0, features: 0, styling: 0, mind: 0, rarity: 0 }
+		},
+		{ capabilityEntropy: '7'.repeat(64) }
+	);
 	const bootstrap = createBootstrapEngine({
 		runId,
 		seed: 'private-engine-master-seed',
@@ -222,10 +256,22 @@ beforeAll(async () => {
 		destination: 'kitchen',
 		storyBranch: 'first-ember-kitchen',
 		arrived: true,
-		events: [],
+		events: [
+			{
+				eventId: deterministicUuid(`${runId}:proof-event`),
+				sequence: 1,
+				eventType: 'hero.summoned',
+				summary: 'The hero crossed the gate.',
+				decisionSource: 'system',
+				payload: { hiddenProofDetail: 'private-proof-payload' },
+				eventHash: 'd'.repeat(64),
+				createdAt: advanced.state.simulatedAt
+			}
+		],
 		createdAt: advanced.state.simulatedAt
 	});
-	if (mocks.report.snapshot.state.schemaVersion !== 25) throw new Error('Expected public v25 fixture');
+	if (mocks.report.snapshot.state.schemaVersion !== 25)
+		throw new Error('Expected public v25 fixture');
 	const internalState = mocks.report.snapshot.state as unknown as Record<string, unknown>;
 	internalState.futurePrivateSentinel = 'never-serialize-state-sentinel';
 	(mocks.report.snapshot.state.master as unknown as Record<string, unknown>).futurePrivateSentinel =
@@ -237,10 +283,8 @@ beforeAll(async () => {
 	internalHero.futurePrivateSentinel = 'never-serialize-hero-sentinel';
 	const internalMission = mocks.report.snapshot.state.mission as unknown as Record<string, unknown>;
 	internalMission.futurePrivateSentinel = 'never-serialize-mission-sentinel';
-	const internalRound = mocks.report.snapshot.state.mission.attempt!.turnState.rounds[0] as unknown as Record<
-		string,
-		unknown
-	>;
+	const internalRound = mocks.report.snapshot.state.mission.attempt!.turnState
+		.rounds[0] as unknown as Record<string, unknown>;
 	internalRound.futurePrivateSentinel = 'never-serialize-round-sentinel';
 	(internalRound.actions as Record<string, unknown>[])[0]!.futurePrivateSentinel =
 		'never-serialize-action-sentinel';
@@ -248,10 +292,26 @@ beforeAll(async () => {
 		'never-serialize-event-sentinel';
 	(mocks.report.playerJournal as unknown as Record<string, unknown>).futurePrivateSentinel =
 		'never-serialize-journal-sentinel';
-	(mocks.report.playerJournal.entries[0] as unknown as Record<string, unknown>).futurePrivateSentinel =
-		'never-serialize-journal-entry-sentinel';
+	(
+		mocks.report.playerJournal.entries[0] as unknown as Record<string, unknown>
+	).futurePrivateSentinel = 'never-serialize-journal-entry-sentinel';
 	(mocks.proof as unknown as Record<string, unknown>).futurePrivateSentinel =
 		'never-serialize-proof-sentinel';
+	(mocks.proof.manifest as unknown as Record<string, unknown>).futurePrivateSentinel =
+		'never-serialize-manifest-sentinel';
+	(mocks.proof.events[0]!.payload as Record<string, unknown>).futurePrivateSentinel =
+		'never-serialize-proof-event-sentinel';
+	(mocks.events.at(-1)!.payload as Record<string, unknown>).rewardDeltas = [
+		{
+			ownerId: mocks.report.snapshot.state.master.masterId,
+			kind: 'health',
+			key: 'mission-round',
+			before: 100,
+			after: 99,
+			delta: -1,
+			futurePrivateSentinel: 'never-serialize-reward-sentinel'
+		}
+	];
 	// Prove the fixture contains secrets and unknown future fields before projection.
 	expect(JSON.stringify(mocks.events)).toContain('private-engine-master-seed');
 	expect(JSON.stringify(mocks.report)).toContain('never-serialize-state-sentinel');
@@ -264,6 +324,33 @@ function expectPublicBoundary(value: unknown): void {
 	expect(serialized).not.toContain('cognitiveLearningScore');
 	expect(serialized).not.toContain('domainAptitudes');
 	expect(serialized).not.toContain('never-serialize-');
+	expectNoInternalHashKeys(value);
+}
+
+function expectNoInternalHashKeys(value: unknown): void {
+	const forbidden = new Set([
+		'stateHash',
+		'eventHash',
+		'manifestHash',
+		'beforeStateHash',
+		'afterStateHash',
+		'computedStateHash',
+		'persistedStateHash',
+		'eventStreamHash',
+		'reportHash'
+	]);
+	const visit = (candidate: unknown): void => {
+		if (Array.isArray(candidate)) {
+			candidate.forEach(visit);
+			return;
+		}
+		if (!candidate || typeof candidate !== 'object') return;
+		for (const [key, nested] of Object.entries(candidate)) {
+			expect(forbidden.has(key), `internal hash key crossed boundary: ${key}`).toBe(false);
+			visit(nested);
+		}
+	};
+	visit(value);
 }
 
 async function readEngineEvent(
@@ -304,41 +391,7 @@ async function readEngineEvent(
 
 describe('player-facing engine boundaries', () => {
 	it('projects representative frozen v1-v24 states through the public compatibility shape', () => {
-		const legacyRunId = deterministicUuid('public-projection-v1-run');
-		const legacyHeroId = deterministicUuid('public-projection-v1-hero');
-		const v1 = EngineGameStateV1Schema.parse({
-			schemaVersion: 1,
-			runId: legacyRunId,
-			seed: 'historical-private-seed',
-			contentVersion: 'engine-v1',
-			status: 'active',
-			version: 0,
-			eventCursor: 1,
-			entropyCursor: 0,
-			simulatedAt: '2000-01-01T00:00:00.000Z',
-			master: {
-				masterId: deterministicUuid(`${legacyRunId}:master`),
-				lifeState: 'alive',
-				location: 'summoning-gate',
-				health: 100,
-				maxHealth: 100,
-				gateInspectionCount: 0,
-				lastGateResonance: null
-			},
-			heroes: {
-				[legacyHeroId]: {
-					heroId: legacyHeroId,
-					lifeState: 'active',
-					location: 'summoning-gate',
-					destination: null,
-					health: 100,
-					maxHealth: 100,
-					manifestHash: 'a'.repeat(64)
-				}
-			},
-			story: { envelopeId: 'first-ember-v1', branch: null }
-		});
-		const historical = [v1, ...ENGINE_REPLAY_VECTOR_CASES.map((entry) => entry.finalState)];
+		const historical = [...ENGINE_COMPATIBILITY_STATE_FIXTURES, mocks.report!.snapshot.state];
 		for (const state of historical) {
 			const projected = projectEngineStateForPublic(state);
 			expect(projected.schemaVersion).toBe(state.schemaVersion);
@@ -346,7 +399,7 @@ describe('player-facing engine boundaries', () => {
 			expect(JSON.stringify(projected)).not.toContain(state.seed);
 		}
 		expect(new Set(historical.map((state) => state.schemaVersion))).toEqual(
-			new Set([1, 5, 8, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24])
+			new Set(Array.from({ length: 25 }, (_, index) => index + 1))
 		);
 	});
 
@@ -368,7 +421,12 @@ describe('player-facing engine boundaries', () => {
 			'masterControl'
 		]);
 		expectExactKeys(projected.master, [
-			'masterId', 'lifeState', 'location', 'health', 'maxHealth', 'injuries'
+			'masterId',
+			'lifeState',
+			'location',
+			'health',
+			'maxHealth',
+			'injuries'
 		]);
 		const hero = Object.values(projected.heroes)[0]!;
 		expectExactKeys(hero, [
@@ -380,7 +438,6 @@ describe('player-facing engine boundaries', () => {
 			'maxHealth',
 			'mana',
 			'maxMana',
-			'manifestHash',
 			'progression',
 			'equipment',
 			'capabilityProfile'
@@ -404,6 +461,52 @@ describe('player-facing engine boundaries', () => {
 		expectPublicBoundary(projected);
 	});
 
+	it('hashes only explicit public projections, never hidden state or payload bytes', () => {
+		const internalReport = structuredClone(mocks.report!);
+		const baselineReplay = projectEngineReplayForPublic(internalReport);
+		const hiddenStateChange = structuredClone(internalReport);
+		const hiddenHero = Object.values(hiddenStateChange.snapshot.state.heroes)[0]!;
+		if (hiddenStateChange.snapshot.state.schemaVersion !== 25 || !hiddenHero.capabilityProfile) {
+			throw new Error('Expected a v25 hidden-learning fixture');
+		}
+		hiddenHero.capabilityProfile.learning.cognitiveLearningScore =
+			(hiddenHero.capabilityProfile.learning.cognitiveLearningScore + 1) % 101;
+		const hiddenReplay = projectEngineReplayForPublic(hiddenStateChange);
+		expect(hiddenReplay.snapshot).toEqual(baselineReplay.snapshot);
+
+		const publicStateChange = structuredClone(internalReport);
+		publicStateChange.snapshot.state.master.health -= 1;
+		const changedReplay = projectEngineReplayForPublic(publicStateChange);
+		expect(changedReplay.snapshot.publicStateHash).not.toBe(
+			baselineReplay.snapshot.publicStateHash
+		);
+		expect(baselineReplay.snapshot.publicStateHash).not.toBe(internalReport.snapshot.stateHash);
+
+		const internalEvent = structuredClone(mocks.events.at(-1)!);
+		const baselineEvent = projectEngineEventForPublic(internalEvent);
+		(internalEvent.payload as Record<string, unknown>).hiddenOnly = 'different-private-payload';
+		expect(projectEngineEventForPublic(internalEvent)).toEqual(baselineEvent);
+		internalEvent.actorId = deterministicUuid('different-public-event-actor');
+		expect(projectEngineEventForPublic(internalEvent).publicEventHash).not.toBe(
+			baselineEvent.publicEventHash
+		);
+		expect(baselineEvent.publicEventHash).not.toBe(mocks.events.at(-1)!.afterStateHash);
+
+		const internalProof = structuredClone(mocks.proof!);
+		const baselineProof = projectProofRunForPublic(internalProof);
+		internalProof.capabilityProfile.learning.cognitiveLearningScore =
+			(internalProof.capabilityProfile.learning.cognitiveLearningScore + 1) % 101;
+		internalProof.events[0]!.payload.hiddenProofDetail = 'changed-private-proof-payload';
+		expect(projectProofRunForPublic(internalProof)).toEqual(baselineProof);
+		internalProof.manifest.displayName = 'Changed Public Name';
+		const changedProof = projectProofRunForPublic(internalProof);
+		expect(changedProof.publicManifestHash).not.toBe(baselineProof.publicManifestHash);
+		expect(baselineProof.publicManifestHash).not.toBe(mocks.proof!.manifestHash);
+		expect(hashPublicProjection('proof-manifest', baselineProof.manifest)).toBe(
+			baselineProof.publicManifestHash
+		);
+	});
+
 	it('projects the mission SSR payload without private authoritative state', async () => {
 		const result = await loadMission({ params: { runId: mocks.report!.runId } } as never);
 		if (!result) throw new Error('Expected mission page data');
@@ -419,8 +522,19 @@ describe('player-facing engine boundaries', () => {
 			}
 		});
 		expectExactKeys(result.report.snapshot.state, [
-			'schemaVersion', 'runId', 'contentVersion', 'status', 'version', 'eventCursor',
-			'simulatedAt', 'master', 'heroes', 'items', 'settlement', 'mission', 'masterControl'
+			'schemaVersion',
+			'runId',
+			'contentVersion',
+			'status',
+			'version',
+			'eventCursor',
+			'simulatedAt',
+			'master',
+			'heroes',
+			'items',
+			'settlement',
+			'mission',
+			'masterControl'
 		]);
 	});
 
@@ -438,27 +552,29 @@ describe('player-facing engine boundaries', () => {
 		mocks.devRoutesEnabled = false;
 		try {
 			const runId = mocks.report!.runId;
-			const [getResponse, decideResponse, arriveResponse, summonPage, playPage] = await Promise.all([
-				getProof({ params: { runId } } as never) as Promise<Response>,
-				decideProof({
-					params: { runId },
-					request: new Request(`http://summonlab.test/api/runs/${runId}/decide`, {
-						method: 'POST',
-						headers: { 'content-type': 'application/json' },
-						body: JSON.stringify({ directive: '', trigger: 'step' })
-					})
-				} as never) as Promise<Response>,
-				arriveProof({
-					params: { runId },
-					request: new Request(`http://summonlab.test/api/runs/${runId}/arrive`, {
-						method: 'POST',
-						headers: { 'content-type': 'application/json' },
-						body: '{}'
-					})
-				} as never) as Promise<Response>,
-				loadSummon({ params: { runId } } as never),
-				loadPlay({ params: { runId } } as never)
-			]);
+			const [getResponse, decideResponse, arriveResponse, summonPage, playPage] = await Promise.all(
+				[
+					getProof({ params: { runId } } as never) as Promise<Response>,
+					decideProof({
+						params: { runId },
+						request: new Request(`http://summonlab.test/api/runs/${runId}/decide`, {
+							method: 'POST',
+							headers: { 'content-type': 'application/json' },
+							body: JSON.stringify({ directive: '', trigger: 'step' })
+						})
+					} as never) as Promise<Response>,
+					arriveProof({
+						params: { runId },
+						request: new Request(`http://summonlab.test/api/runs/${runId}/arrive`, {
+							method: 'POST',
+							headers: { 'content-type': 'application/json' },
+							body: '{}'
+						})
+					} as never) as Promise<Response>,
+					loadSummon({ params: { runId } } as never),
+					loadPlay({ params: { runId } } as never)
+				]
+			);
 			const payloads = [
 				await getResponse.json(),
 				await decideResponse.json(),
@@ -468,13 +584,35 @@ describe('player-facing engine boundaries', () => {
 			];
 			for (const payload of payloads) {
 				expectExactKeys(payload, [
-					'runId', 'characterSchemaVersion', 'storyEnvelopeId', 'controlMode', 'manifest',
-					'manifestHash', 'firstObservation', 'firstLine', 'destination', 'storyBranch',
-					'arrived', 'events', 'createdAt', 'capabilityProfile'
+					'runId',
+					'characterSchemaVersion',
+					'storyEnvelopeId',
+					'controlMode',
+					'manifest',
+					'publicManifestHash',
+					'firstObservation',
+					'firstLine',
+					'destination',
+					'storyBranch',
+					'arrived',
+					'events',
+					'createdAt',
+					'capabilityProfile'
 				]);
 				expectPublicBoundary(payload);
 				expect(payload).not.toHaveProperty('recipe');
 				expect(payload).not.toHaveProperty('mind');
+				expectExactKeys(payload.manifest, [
+					'characterId',
+					'displayName',
+					'rarityStars',
+					'adultAge',
+					'heightCm',
+					'bodyBuild',
+					'voiceCadence',
+					'posture',
+					'artKey'
+				]);
 			}
 			expectPublicBoundary(summonPage);
 			expectPublicBoundary(playPage);
@@ -498,13 +636,29 @@ describe('player-facing engine boundaries', () => {
 		const event = await readEngineEvent(response, finalEvent.sequence);
 		expectPublicBoundary(event);
 		expectExactKeys(event, [
-			'eventId', 'runId', 'sequence', 'schemaVersion', 'gameTime', 'eventType', 'actorId',
-			'source', 'beforeStateHash', 'afterStateHash', 'contentVersion', 'summary',
-			'initiativeOrder', 'actions', 'rewardDeltas', 'combatModeBinding'
+			'eventId',
+			'runId',
+			'sequence',
+			'schemaVersion',
+			'gameTime',
+			'eventType',
+			'actorId',
+			'source',
+			'contentVersion',
+			'summary',
+			'initiativeOrder',
+			'actions',
+			'rewardDeltas',
+			'combatModeBinding',
+			'publicEventHash'
 		]);
 		const eventActions = event.actions as Record<string, unknown>[];
 		expectExactKeys(eventActions[0], [
-			'actorId', 'actorKind', 'actionId', 'publicIntent', 'outcome'
+			'actorId',
+			'actorKind',
+			'actionId',
+			'publicIntent',
+			'outcome'
 		]);
 		expectExactKeys(event.source, ['source', 'timing']);
 		expect(event).toMatchObject({
@@ -543,8 +697,47 @@ describe('player-facing engine boundaries', () => {
 		} as never)) as Response;
 		expect(response.status).toBe(200);
 		const body = await response.json();
-		expectExactKeys(body, ['runId', 'version', 'eventCursor', 'stateHash', 'eventType']);
+		expectExactKeys(body, ['runId', 'version', 'eventCursor', 'publicStateHash', 'eventType']);
 		expectPublicBoundary(body);
+	});
+
+	it('returns the same minimal public receipt from control and decision-window mutations', async () => {
+		const originalReport = mocks.report!;
+		const originalCommit = mocks.commit!;
+		const legacyState = EngineGameStateSchema.parse(ENGINE_COMPATIBILITY_STATE_FIXTURES[19]!);
+		const legacySnapshot = { state: legacyState, stateHash: hashCanonical(legacyState) };
+		mocks.report = { ...originalReport, snapshot: legacySnapshot } as EngineReplayReport;
+		mocks.commit = { ...originalCommit, snapshot: legacySnapshot } as EngineCommit;
+		try {
+			const runId = legacyState.runId;
+			const responses = await Promise.all([
+				patchControl({
+					params: { runId },
+					request: new Request('http://summonlab.test/control', {
+						method: 'PATCH',
+						headers: { 'content-type': 'application/json' },
+						body: JSON.stringify({ action: 'timing', timing: 'step', countdownSeconds: 5 })
+					})
+				} as never) as Promise<Response>,
+				postDecisionWindow({
+					params: { runId },
+					request: new Request('http://summonlab.test/decision-window', {
+						method: 'POST',
+						headers: { 'content-type': 'application/json' },
+						body: '{}'
+					})
+				} as never) as Promise<Response>
+			]);
+			for (const response of responses) {
+				expect(response.status).toBe(200);
+				const body = await response.json();
+				expectExactKeys(body, ['runId', 'version', 'eventCursor', 'publicStateHash', 'eventType']);
+				expectPublicBoundary(body);
+			}
+		} finally {
+			mocks.report = originalReport;
+			mocks.commit = originalCommit;
+		}
 	});
 
 	it('development-gates raw decision packet inspectors', async () => {
@@ -565,6 +758,22 @@ describe('player-facing engine boundaries', () => {
 		}
 	});
 
+	it('development-gates SSR inspectors that carry internal view hashes', async () => {
+		mocks.devRoutesEnabled = false;
+		try {
+			const args = { params: { runId: mocks.report!.runId } } as never;
+			const results = await Promise.allSettled([loadFirstBandArchive(args), loadSynthesis(args)]);
+			for (const result of results) {
+				expect(result.status).toBe('rejected');
+				if (result.status === 'rejected') {
+					expect(result.reason).toMatchObject({ status: 404 });
+				}
+			}
+		} finally {
+			mocks.devRoutesEnabled = true;
+		}
+	});
+
 	it('retains public round intent, outcome, mode binding, and hash evidence', async () => {
 		const response = (await getReplayApi({
 			params: { runId: mocks.report!.runId }
@@ -573,7 +782,67 @@ describe('player-facing engine boundaries', () => {
 		expectPublicBoundary(body);
 		expect(JSON.stringify(body)).toContain('legacy-auto-v1');
 		expect(JSON.stringify(body)).toContain('publicIntent');
-		expect(JSON.stringify(body)).toContain('afterStateHash');
-		expect(JSON.stringify(body)).toContain(mocks.report!.snapshot.stateHash);
+		expect(JSON.stringify(body)).toContain('publicCheckHash');
+		expect(JSON.stringify(body)).toContain('publicStateHash');
+	});
+
+	it('never reflects unexpected server error details through public routes', async () => {
+		const secret = 'sentinel-private-error-message';
+		mocks.failure = secret;
+		const consoleError = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+		try {
+			const runId = mocks.report!.runId;
+			const responses = await Promise.all([
+				getProof({ params: { runId } } as never) as Promise<Response>,
+				decideProof({
+					params: { runId },
+					request: new Request('http://summonlab.test/decide', {
+						method: 'POST',
+						headers: { 'content-type': 'application/json' },
+						body: JSON.stringify({ directive: '', trigger: 'step' })
+					})
+				} as never) as Promise<Response>,
+				arriveProof({
+					params: { runId },
+					request: new Request('http://summonlab.test/arrive', {
+						method: 'POST',
+						headers: { 'content-type': 'application/json' },
+						body: '{}'
+					})
+				} as never) as Promise<Response>,
+				getJournal({ params: { runId } } as never) as Promise<Response>,
+				postMission({
+					params: { runId },
+					request: new Request('http://summonlab.test/mission', {
+						method: 'POST',
+						headers: { 'content-type': 'application/json' },
+						body: JSON.stringify({ action: 'advance-automatic-combat' })
+					})
+				} as never) as Promise<Response>,
+				patchControl({
+					params: { runId },
+					request: new Request('http://summonlab.test/control', {
+						method: 'PATCH',
+						headers: { 'content-type': 'application/json' },
+						body: JSON.stringify({ action: 'timing', timing: 'step', countdownSeconds: 5 })
+					})
+				} as never) as Promise<Response>,
+				postDecisionWindow({
+					params: { runId },
+					request: new Request('http://summonlab.test/decision-window', {
+						method: 'POST',
+						headers: { 'content-type': 'application/json' },
+						body: '{}'
+					})
+				} as never) as Promise<Response>
+			]);
+			for (const response of responses) {
+				expect(response.status).toBe(500);
+				expect(await response.text()).not.toContain(secret);
+			}
+		} finally {
+			mocks.failure = null;
+			consoleError.mockRestore();
+		}
 	});
 });

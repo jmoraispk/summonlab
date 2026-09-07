@@ -61,14 +61,18 @@ export const POST: RequestHandler = async ({ params, request }) => {
 		return json(projectEngineCommitReceipt(committed));
 	} catch (error) {
 		if (error instanceof StaleRunVersionError || error instanceof IdempotencyConflictError) {
-			return json({ code: error.code, message: error.message }, { status: 409 });
+			return json(
+				{ code: error.code, message: 'The run changed before the decision opened.' },
+				{ status: 409 }
+			);
 		}
 		if (error instanceof IllegalActionError) {
-			return json({ code: error.code, message: error.message }, { status: 409 });
+			return json(
+				{ code: error.code, message: 'A decision cannot open right now.' },
+				{ status: 409 }
+			);
 		}
-		return json(
-			{ message: error instanceof Error ? error.message : 'Decision window could not open.' },
-			{ status: 500 }
-		);
+		console.error('Decision window open failed', error);
+		return json({ message: 'Decision window could not open.' }, { status: 500 });
 	}
 };
