@@ -6,14 +6,14 @@
 		BuildingAssignmentRole,
 		CatchUpReport,
 		EngineCommand,
-		EngineReplayReport,
 		FirstEmberFacility,
 		FirstEmberRationale
 	} from '@summonlab/contracts';
+	import type { PublicEngineReplayReport } from '$lib/public-engine';
 
 	let { data } = $props();
 	// svelte-ignore state_referenced_locally
-	let report = $state<EngineReplayReport>(data.report);
+	let report = $state<PublicEngineReplayReport>(data.report);
 	let pending = $state(false);
 	let resultMessage = $state('');
 	let errorMessage = $state('');
@@ -129,7 +129,6 @@
 			: null
 	);
 	const routineHero = $derived(routineState && hero ? routineState.heroes[hero.heroId] : null);
-	const heroActions = $derived(hero ? (report.legalActionsByActor[hero.heroId] ?? []) : []);
 	const pendingSchedule = $derived(
 		report.scheduledEvents.find((scheduled) => scheduled.status === 'pending') ?? null
 	);
@@ -173,7 +172,7 @@
 
 	async function refresh() {
 		const response = await fetch(`/api/dev/replays/${report.runId}`);
-		const body = (await response.json()) as EngineReplayReport & { message?: string };
+		const body = (await response.json()) as PublicEngineReplayReport & { message?: string };
 		if (!response.ok) throw new Error(body.message ?? 'Replay refresh failed.');
 		report = body;
 	}
@@ -388,13 +387,13 @@
 	}
 
 	async function equipAlternateItem() {
-		const action = heroActions.find((candidate) => candidate.actionId.startsWith('hero.equip.'));
-		if (!survivalHero || !action) return;
+		const itemId = report.heroControls.equipItemId;
+		if (!survivalHero || !itemId) return;
 		await execute(
 			{
 				...commandMeta(survivalHero.heroId),
 				commandType: 'hero.equip.item',
-				itemId: action.actionId.replace('hero.equip.', '')
+				itemId
 			},
 			'Equipment changed through an authoritative event.'
 		);
@@ -414,11 +413,20 @@
 	}
 
 	function canHero(actionId: string) {
-		return heroActions.some((action) => action.actionId === actionId);
+		if (actionId === 'hero.travel') return report.heroControls.canTravel;
+		if (actionId === 'hero.plan.day') return report.heroControls.canPlanDay;
+		if (actionId === 'hero.follow.plan') return report.heroControls.canFollowPlan;
+		if (actionId.startsWith('hero.activity.')) {
+			const activity = actionId.slice(
+				'hero.activity.'.length
+			) as keyof typeof report.heroControls.activity;
+			return report.heroControls.activity[activity] ?? false;
+		}
+		return false;
 	}
 
 	function canMaster(actionId: string) {
-		return report.legalActions.some((action) => action.actionId === actionId);
+		return report.playerActions.some((action) => action.actionId === actionId);
 	}
 </script>
 
@@ -468,12 +476,12 @@
 		<div>
 			<span>Run version</span><strong data-testid="run-version">{engineState.version}</strong>
 		</div>
-		<div><span>Event cursor</span><strong>{engineState.eventCursor}</strong></div>
 		<div>
-			<span>Entropy cursor</span><strong data-testid="entropy-cursor"
-				>{engineState.entropyCursor}</strong
+			<span>Event cursor</span><strong data-testid="replay-event-cursor"
+				>{engineState.eventCursor}</strong
 			>
 		</div>
+		<div><span>State seal</span><strong>{report.snapshot.stateHash.slice(0, 8)}</strong></div>
 		<div>
 			<span>Game clock</span><strong data-testid="game-clock"
 				>{clock.currentGameTime.slice(11, 16)}</strong
@@ -566,22 +574,10 @@
 							<div class="routine-resolution" data-testid="routine-resolution">
 								<header>
 									<div>
-										<span>Resolver trace</span>
+										<span>Resolved choice</span>
 										<strong>{routineHero.currentRoutine.kind.replaceAll('-', ' ')}</strong>
 									</div>
-									<code
-										>margin {routineHero.currentRoutine.resolution.margin}{routineHero
-											.currentRoutine.resolution.decisionRecommended
-											? ' · fallback boundary'
-											: ' · decisive'}</code
-									>
 								</header>
-								{#each routineHero.currentRoutine.resolution.candidateScores as candidate (candidate.planEntryId)}
-									<div class:ineligible={!candidate.eligible}>
-										<span>{candidate.kind.replaceAll('-', ' ')}</span>
-										<strong>{candidate.score}</strong>
-									</div>
-								{/each}
 								<p>{routineHero.currentRoutine.resolution.summary}</p>
 							</div>
 						{/if}
@@ -733,50 +729,12 @@
 							</div>
 						{/if}
 						{#if socialState}
-							<div class="social-proof" data-testid="social-cognition-proof">
+							<div class="social-proof" data-testid="public-social-proof">
 								<div class="social-proof-heading">
-									<strong>Hero cognition · provenance ledger</strong>
-									<small>{socialState.contentVersion} · no omniscient roster context</small>
-								</div>
-								<div class="social-proof-grid">
-									<article>
-										<span>Direct observations</span>
-										{#each Object.values(socialState.observations).filter((entry) => entry.observerHeroId === hero.heroId) as observation (observation.observationId)}
-											<p><strong>{observation.kind}</strong>{observation.summary}</p>
-											<code>{observation.sourceEventId.slice(0, 12)}</code>
-										{/each}
-									</article>
-									<article>
-										<span>Held beliefs</span>
-										{#each Object.values(socialState.beliefs).filter((entry) => entry.holderHeroId === hero.heroId) as belief (belief.beliefId)}
-											<p><strong>{belief.predicate}</strong>{belief.confidence}% confidence</p>
-											<code>{belief.provenance.kind} · depth {belief.provenance.chainDepth}</code>
-										{/each}
-									</article>
-									<article>
-										<span>Relationship → Master</span>
-										{#each Object.values(socialState.relationships).filter((entry) => entry.fromHeroId === hero.heroId && entry.toEntityId === engineState.master.masterId) as relationship (relationship.relationshipId)}
-											<p>
-												{Object.entries(relationship.dimensions)
-													.map(([key, value]) => `${key} ${value}`)
-													.join(' · ')}
-											</p>
-											<code>{relationship.evidence.at(-1)?.summary ?? 'Neutral at awakening'}</code>
-										{/each}
-									</article>
-									<article>
-										<span>Authority → Master</span>
-										{#each Object.values(socialState.authority).filter((entry) => entry.observerHeroId === hero.heroId) as authority (authority.authorityId)}
-											<p>
-												{Object.entries(authority.dimensions)
-													.map(([key, value]) => `${key} ${value}`)
-													.join(' · ')}
-											</p>
-											<code
-												>{authority.evidence.at(-1)?.summary ?? 'No authority recognized yet'}</code
-											>
-										{/each}
-									</article>
+									<strong>Public social record</strong>
+									<small
+										>{socialState.contentVersion} · private beliefs remain with their holder</small
+									>
 								</div>
 								{#each Object.values(socialState.promises) as promise (promise.promiseId)}
 									<p class="social-promise"><span>{promise.status} promise</span>{promise.terms}</p>
@@ -826,12 +784,6 @@
 													</header>
 													<blockquote>“{turn.response.exactText}”</blockquote>
 													<p>{turn.response.publicReason}</p>
-													{#if turn.response.orderScore}
-														<code
-															>score {turn.response.orderScore.total} · preference +{turn.response
-																.preferenceWeight}</code
-														>
-													{/if}
 												</article>
 											{/each}
 										{/if}
@@ -980,9 +932,7 @@
 						class="secondary"
 						type="button"
 						onclick={equipAlternateItem}
-						disabled={pending ||
-							!heroActions.some((action) => action.actionId.startsWith('hero.equip.'))}
-						>Swap weapon</button
+						disabled={pending || report.heroControls.equipItemId === null}>Swap weapon</button
 					>
 					<button
 						class="secondary danger"
@@ -1025,9 +975,8 @@
 			{#if resultMessage}<output data-testid="command-result">{resultMessage}</output>{/if}
 			{#if errorMessage}<p class="error" role="alert">{errorMessage}</p>{/if}
 			<div class="legal">
-				<span>Legal actions</span>
-				{#each [...report.legalActions, ...heroActions] as action (action.actionId)}<code
-						>{action.actionId}</code
+				<span>Player actions</span>
+				{#each report.playerActions as action (action.actionId)}<code>{action.actionId}</code
 					>{/each}
 			</div>
 		</section>
@@ -1062,11 +1011,7 @@
 								>{delta.key} <strong>{delta.delta > 0 ? '+' : ''}{delta.delta}</strong></span
 							>
 						{/each}
-						{#if check.entropyDraws.length}
-							{#each check.entropyDraws as draw (`${draw.purpose}-${draw.cursor}`)}
-								<span>{draw.purpose} [{draw.cursor}] = <strong>{draw.value}</strong></span>
-							{/each}
-						{:else if check.deltas.length === 0}<span>no numerical delta</span>{/if}
+						{#if check.deltas.length === 0}<span>no numerical delta</span>{/if}
 					</div>
 				</li>
 			{/each}
@@ -1420,15 +1365,6 @@
 	.routine-resolution header strong {
 		display: block;
 	}
-	.routine-resolution > div:not(header) {
-		display: flex;
-		justify-content: space-between;
-		padding: 0.35rem 0.65rem;
-		border-top: 1px solid rgba(255, 255, 255, 0.05);
-	}
-	.routine-resolution > div.ineligible {
-		opacity: 0.35;
-	}
 	.routine-resolution p {
 		margin: 0;
 		padding: 0.55rem 0.65rem;
@@ -1643,18 +1579,11 @@
 			serif;
 	}
 	.social-proof-heading small,
-	.social-proof article > span,
 	.social-promise span {
 		color: rgba(244, 240, 232, 0.4);
 		font-size: 0.48rem;
 		letter-spacing: 0.08em;
 		text-transform: uppercase;
-	}
-	.social-proof-grid {
-		display: grid;
-		grid-template-columns: repeat(2, minmax(0, 1fr));
-		gap: 1px;
-		background: rgba(255, 255, 255, 0.07);
 	}
 	.social-proof article {
 		min-width: 0;

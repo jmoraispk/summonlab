@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
 	import type {
-		AuthoritativeEvent,
 		FirstEmberFacility,
 		FirstEmberRationale,
 		ProofRunSnapshot,
@@ -21,6 +20,7 @@
 	import VillageModeNav from '$lib/components/village-shell/VillageModeNav.svelte';
 	import VillageResidentsPanel from '$lib/components/village-shell/VillageResidentsPanel.svelte';
 	import { focusDialog, handleModalKeydown } from '$lib/modal-focus';
+	import type { PublicEngineEvent } from '$lib/public-engine';
 	import type { EquipmentWorkshopProjection } from '$lib/server/equipment-runtime';
 
 	let { data } = $props();
@@ -37,7 +37,7 @@
 	let presentation = $state<SettlementPresentation | null>(data.presentation);
 	// svelte-ignore state_referenced_locally
 	let equipment = $state<EquipmentWorkshopProjection | null>(data.equipment);
-	let eventCue = $state<AuthoritativeEvent | null>(null);
+	let eventCue = $state<PublicEngineEvent | null>(null);
 	let emberPending = $state(false);
 	let selectedEmberFacility = $state<FirstEmberFacility | null>(null);
 	let selectedEmberRationale = $state<FirstEmberRationale>('prepare-tower');
@@ -208,7 +208,7 @@
 		}
 	}
 
-	function showEventCue(event: AuthoritativeEvent) {
+	function showEventCue(event: PublicEngineEvent) {
 		eventCue = event;
 		if (eventCueTimer) clearTimeout(eventCueTimer);
 		eventCueTimer = setTimeout(() => (eventCue = null), 4_600);

@@ -1,12 +1,8 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
-	import type {
-		AuthoritativeEvent,
-		EngineCursorGap,
-		EngineStreamReady,
-		ReturnRecap
-	} from '@summonlab/contracts';
+	import type { EngineCursorGap, EngineStreamReady, ReturnRecap } from '@summonlab/contracts';
 	import { onMount } from 'svelte';
+	import type { PublicEngineEvent } from '$lib/public-engine';
 	import { trackPlaytestEvent } from '$lib/playtest-analytics';
 
 	let {
@@ -18,7 +14,7 @@
 		runId: string;
 		initialCursor: number;
 		onRefresh?: () => void | Promise<void>;
-		onEvent?: (event: AuthoritativeEvent) => void;
+		onEvent?: (event: PublicEngineEvent) => void;
 	} = $props();
 
 	let status = $state<'connecting' | 'live' | 'reconnecting' | 'offline' | 'resyncing'>(
@@ -101,7 +97,7 @@
 			}
 		});
 		eventSource.addEventListener('engine-event', (message) => {
-			const event = JSON.parse((message as MessageEvent<string>).data) as AuthoritativeEvent;
+			const event = JSON.parse((message as MessageEvent<string>).data) as PublicEngineEvent;
 			if (event.runId !== runId || !Number.isSafeInteger(event.sequence)) return;
 			currentCursor = Math.max(currentCursor, event.sequence);
 			if (!recapOpen) remember(currentCursor);

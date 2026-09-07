@@ -11,6 +11,10 @@ import { error } from '@sveltejs/kit';
 
 import { runtimePortraitFor } from '$lib/server/runtime-portraits';
 import { projectProofRunForPublic } from '$lib/server/proof-presentation';
+import {
+	projectEngineReplayForPublic,
+	projectPublicEngineValue
+} from '$lib/server/public-engine-presentation';
 
 import type { PageServerLoad } from './$types';
 
@@ -47,9 +51,10 @@ export const load: PageServerLoad = async ({ params }) => {
 	const knowledge = attempt?.knowledge ?? { discoveryIds: [], visitedNodeIds: [] };
 	const projection = projectMissionArenaKnowledge(missionPackage, knowledge);
 	const primaryObjective = missionPackage.objectives.find((objective) => objective.primary)!;
+	const publicReport = projectEngineReplayForPublic(report);
 	return {
-		report,
-		proof: projectProofRunForPublic(proof),
+		report: publicReport,
+		proof: projectPublicEngineValue(projectProofRunForPublic(proof)),
 		combatMode,
 		heroPortrait: runtimePortraitFor(proof.manifestHash, proof.manifest.artKey, 'roster'),
 		missionDefinition: {

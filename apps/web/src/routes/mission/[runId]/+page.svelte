@@ -145,7 +145,7 @@
 		)
 	});
 	const masterTurnActions = $derived(
-		(data.report.legalActionsByActor[engineState.master.masterId] ?? []).filter(
+		data.report.playerActions.filter(
 			(action) =>
 				action.actionId.startsWith('mission.move.') ||
 				action.actionId.startsWith('mission.inspect.') ||
@@ -156,9 +156,7 @@
 		)
 	);
 	const retreatAvailable = $derived(
-		(data.report.legalActionsByActor[engineState.master.masterId] ?? []).some(
-			(action) => action.actionId === 'mission.retreat'
-		)
+		data.report.playerActions.some((action) => action.actionId === 'mission.retreat')
 	);
 
 	$effect(() => {
@@ -727,10 +725,9 @@
 							{#if fallbackMasterControl?.lastResolution?.fallbackSelection}
 								{@const selection = fallbackMasterControl.lastResolution.fallbackSelection}
 								<div class="fallback-evidence" data-testid="fallback-evidence">
-									<span>{selection.policyId} · {selection.classification}</span>
+									<span>{selection.policy} · {selection.classification}</span>
 									<strong>{selection.selectedActionId}</strong>
 									<p>{selection.explanation}</p>
-									<code>{selection.policyResultHash.slice(0, 12)}</code>
 								</div>
 							{/if}
 						</div>
@@ -1849,10 +1846,6 @@
 		color: #8f9b98;
 		font-size: 0.58rem;
 		line-height: 1.4;
-	}
-	.fallback-evidence code {
-		color: #d7a956;
-		font-size: 0.52rem;
 	}
 	.control-status {
 		display: grid;

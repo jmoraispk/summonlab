@@ -2,14 +2,14 @@
 	import type {
 		DecisionSource,
 		PlayerJournalEntry,
-		PlayerJournalFacet,
-		PlayerJournalReport
+		PlayerJournalFacet
 	} from '@summonlab/contracts';
+	import type { PublicPlayerJournalReport } from '$lib/public-engine';
 
 	let {
 		journal,
 		actorLabels = {}
-	}: { journal: PlayerJournalReport; actorLabels?: Record<string, string> } = $props();
+	}: { journal: PublicPlayerJournalReport; actorLabels?: Record<string, string> } = $props();
 
 	let facet = $state<'all' | PlayerJournalFacet>('all');
 	let day = $state('all');

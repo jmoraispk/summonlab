@@ -283,12 +283,10 @@ test('forges, summons, directs, and follows one persistent hero', async ({ page 
 	await expect(page.getByText('simulation.advanced')).toBeVisible();
 	await expect(page.getByTestId('travel-proof')).toContainText('training-ring');
 	await expect(page.getByTestId('first-ember-proof')).toContainText('committed');
-	await expect(page.getByTestId('social-cognition-proof')).toContainText(
-		'Hero cognition · provenance ledger'
+	await expect(page.getByTestId('public-social-proof')).toContainText('Public social record');
+	await expect(page.getByTestId('public-social-proof')).toContainText(
+		'private beliefs remain with their holder'
 	);
-	await expect(page.getByTestId('social-cognition-proof')).toContainText('first-ember-commitment');
-	await expect(page.getByTestId('social-cognition-proof')).toContainText('made-founding-promise');
-	await expect(page.getByTestId('social-cognition-proof')).toContainText('consistency 7');
 	await expect(page.getByTestId('communication-witness-ledger')).toContainText(
 		'Communicative acts · witness chains'
 	);
@@ -299,7 +297,7 @@ test('forges, summons, directs, and follows one persistent hero', async ({ page 
 		'intended / addressed'
 	);
 	await expect(page.getByTestId('conversation-replay-turn')).toContainText('negotiated');
-	await expect(page.getByTestId('conversation-replay-turn')).toContainText('preference +12');
+	await expect(page.getByTestId('conversation-replay-turn')).not.toContainText('preference +12');
 	await expect(page.getByTestId('directive-replay-record')).toContainText('consumed direction');
 	await expect(page.getByTestId('directive-replay-record')).toContainText(
 		'Train, exercise, and prepare to fight in the tower.'
@@ -323,7 +321,7 @@ test('forges, summons, directs, and follows one persistent hero', async ({ page 
 	await expect(page.getByTestId('daily-plan')).toContainText('Four intentions');
 	await expect(page.getByTestId('daily-plan')).toContainText('pending');
 	await page.getByRole('button', { name: /Follow next intention/ }).click();
-	await expect(page.getByTestId('routine-resolution')).toContainText('Resolver trace');
+	await expect(page.getByTestId('routine-resolution')).toContainText('Resolved choice');
 	await expect(page.getByTestId('pending-schedule')).toContainText('hero.routine.complete');
 	await expect(page.getByTestId('daily-plan')).toContainText('active');
 	if (process.env.CAPTURE_PHASE4_ROUTINES) {
@@ -360,12 +358,17 @@ test('forges, summons, directs, and follows one persistent hero', async ({ page 
 	await page.getByRole('button', { name: /Advance to outcome/ }).click();
 	await expect(page.getByTestId('pending-schedule')).toHaveText('No pending work');
 
+	const cursorBeforeInspection = Number(await page.getByTestId('replay-event-cursor').innerText());
 	await page.getByRole('button', { name: /Draw gate resonance/ }).click();
-	await expect(page.getByTestId('entropy-cursor')).toHaveText('1');
+	await expect(page.getByTestId('replay-event-cursor')).toHaveText(
+		String(cursorBeforeInspection + 1)
+	);
 	await expect(page.getByText('master.gate.inspected')).toBeVisible();
 	await page.getByRole('button', { name: /Prove stale guard/ }).click();
 	await expect(page.getByTestId('command-result')).toHaveText('1 accepted · 1 rejected stale');
-	await expect(page.getByTestId('entropy-cursor')).toHaveText('2');
+	await expect(page.getByTestId('replay-event-cursor')).toHaveText(
+		String(cursorBeforeInspection + 2)
+	);
 	await expect(page.getByTestId('replay-status')).toContainText('Verified');
 
 	if (process.env.CAPTURE_PHASE2_REPLAY) {
