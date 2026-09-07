@@ -145,7 +145,7 @@ function contexts(): Readonly<Record<string, CombatActorContextState>> {
 			visibleCombatantIds: [ID.visibleMonster, ID.ally],
 			visibleTelegraphIds: [ID.telegraphVisible],
 			observableReadinessActorIds: [ID.ally],
-			visiblePositions: [
+			targetablePositions: [
 				{ x: 1, y: 1 },
 				{ x: 2, y: 1 },
 				{ x: 4, y: 1 },
@@ -163,7 +163,7 @@ function contexts(): Readonly<Record<string, CombatActorContextState>> {
 			visibleCombatantIds: [ID.hiddenMonster, ID.hero],
 			visibleTelegraphIds: [ID.telegraphHidden],
 			observableReadinessActorIds: [],
-			visiblePositions: [
+			targetablePositions: [
 				{ x: 1, y: 1 },
 				{ x: 2, y: 1 },
 				{ x: 6, y: 6 }
@@ -291,7 +291,7 @@ describe('frozen combat decision windows', () => {
 						...actorContexts,
 						[ID.hero]: {
 							...heroContext,
-							visiblePositions: [...heroContext.visiblePositions, { x: 8, y: 1 }]
+							targetablePositions: [...heroContext.targetablePositions, { x: 8, y: 1 }]
 						}
 					}
 				},
@@ -309,7 +309,7 @@ describe('frozen combat decision windows', () => {
 						...actorContexts,
 						[ID.hero]: {
 							...heroContext,
-							visiblePositions: [...heroContext.visiblePositions, { x: 0, y: 0 }],
+							targetablePositions: [...heroContext.targetablePositions, { x: 0, y: 0 }],
 							legalActionTemplates: [
 								{
 									actionId: 'move-into-wall',
@@ -319,6 +319,45 @@ describe('frozen combat decision windows', () => {
 									targetContract: {
 										kind: 'tile',
 										allowedPositions: [{ x: 0, y: 0 }]
+									},
+									reactionPriority: 0,
+									recoveryTicks: 2,
+									manaCost: 0,
+									fallbackOptions: [
+										{
+											fallbackId: 'stay',
+											publicLabel: 'Stay',
+											target: { kind: 'self' }
+										}
+									]
+								}
+							]
+						}
+					}
+				},
+				rules: COMBAT_RULES_V1,
+				readyActorIds: [ID.hero, ID.ally],
+				contentHash: COMBAT_CONTENT_BINDING.contentHash
+			})
+		).toThrow('Tile targets');
+
+		expect(() =>
+			assembleCombatDecisionWindow({
+				state: {
+					...state(),
+					actorContexts: {
+						...actorContexts,
+						[ID.hero]: {
+							...heroContext,
+							legalActionTemplates: [
+								{
+									actionId: 'move-outside-authored-destinations',
+									actionKind: 'move',
+									skillId: null,
+									publicLabel: 'Move outside authored destinations',
+									targetContract: {
+										kind: 'tile',
+										allowedPositions: [{ x: 3, y: 1 }]
 									},
 									reactionPriority: 0,
 									recoveryTicks: 2,
@@ -379,7 +418,7 @@ describe('frozen combat decision windows', () => {
 				readyActorIds: [ID.hero, ID.ally],
 				contentHash: COMBAT_CONTENT_BINDING.contentHash
 			})
-		).toThrow('Relative targets');
+		).toThrow('stale spatial targets');
 	});
 
 	it('returns a typed deterministic safety stop when a ready actor lacks engine-owned context', () => {
@@ -478,5 +517,96 @@ describe('frozen combat decision windows', () => {
 		expect(result.views.every((view) => view.snapshotHash === result.snapshot.snapshotHash)).toBe(
 			true
 		);
+	});
+
+	it.each([
+		['retains an observed moved entity', true],
+		['omits a moved entity removed from observation', false]
+	] as const)(
+		'%s without treating stale target destinations as an invalid scheduled effect',
+		(_, observed) => {
+			const arranged = state();
+			arranged.scheduledEffects = [
+				{
+					scheduledEffectId: '31000000-0000-4000-8000-000000000012',
+					resolvesAtTick: arranged.tick,
+					sourceCombatantId: ID.visibleMonster,
+					effects: [
+						{
+							kind: 'position',
+							combatantId: ID.visibleMonster,
+							before: { x: 4, y: 1 },
+							after: { x: 4, y: 2 }
+						}
+					]
+				}
+			];
+			if (!observed) {
+				const heroContext = arranged.actorContexts[ID.hero]!;
+				arranged.actorContexts[ID.hero] = {
+					...heroContext,
+					visibleCombatantIds: [ID.ally],
+					visibleTelegraphIds: [],
+					legalActionTemplates: [actionTemplate('cover-ally', ID.ally, 'Cover Ally')]
+				};
+			}
+
+			const result = advanceUntilDecision(arranged, COMBAT_RULES_V1);
+
+			expect(result.kind).toBe('decision-window');
+			if (result.kind !== 'decision-window') return;
+			const heroView = result.views.find((view) => view.actorId === ID.hero)!;
+			const moved = heroView.visibleCombatants.find(
+				(combatant) => combatant.combatantId === ID.visibleMonster
+			);
+			expect(moved?.position).toStrictEqual(observed ? { x: 4, y: 2 } : undefined);
+		}
+	);
+
+	it('reports stale ready-actor spatial choices as invalid state after applying a valid move', () => {
+		const arranged = state();
+		const heroContext = arranged.actorContexts[ID.hero]!;
+		arranged.actorContexts[ID.hero] = {
+			...heroContext,
+			targetablePositions: [...heroContext.targetablePositions, { x: 3, y: 1 }],
+			legalActionTemplates: [
+				{
+					actionId: 'advance-center',
+					actionKind: 'move',
+					skillId: null,
+					publicLabel: 'Advance center',
+					targetContract: { kind: 'tile', allowedPositions: [{ x: 3, y: 1 }] },
+					reactionPriority: 0,
+					recoveryTicks: 2,
+					manaCost: 0,
+					fallbackOptions: [{ fallbackId: 'stay', publicLabel: 'Stay', target: { kind: 'self' } }]
+				}
+			]
+		};
+		arranged.scheduledEffects = [
+			{
+				scheduledEffectId: '31000000-0000-4000-8000-000000000013',
+				resolvesAtTick: arranged.tick,
+				sourceCombatantId: ID.visibleMonster,
+				effects: [
+					{
+						kind: 'position',
+						combatantId: ID.visibleMonster,
+						before: { x: 4, y: 1 },
+						after: { x: 3, y: 1 }
+					}
+				]
+			}
+		];
+
+		const result = advanceUntilDecision(arranged, COMBAT_RULES_V1);
+
+		expect(result.kind).toBe('combat-result');
+		if (result.kind !== 'combat-result') return;
+		expect(result.result.safetyStop?.reason).toBe('invalid-state');
+		expect(result.result.finalCombatants[ID.visibleMonster]?.position).toStrictEqual({
+			x: 3,
+			y: 1
+		});
 	});
 });

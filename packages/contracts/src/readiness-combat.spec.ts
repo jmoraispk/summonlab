@@ -131,7 +131,7 @@ const heroActorContext = {
 	visibleCombatantIds: [ID.monster],
 	visibleTelegraphIds: [telegraph.telegraphId],
 	observableReadinessActorIds: [],
-	visiblePositions: [hero.position, monster.position, telegraph.target.position],
+	targetablePositions: [hero.position, telegraph.target.position],
 	visibleTerrainFeatureIds: [],
 	rememberedContext: ['The enemy favors the eastern lane.'],
 	doctrine: ['Protect the Master.'],
@@ -261,6 +261,35 @@ describe('readiness combat contracts', () => {
 			}).success
 		).toBe(false);
 		expect(JSON.stringify(heroActorContext)).not.toContain('actionInstanceId');
+	});
+
+	it('keeps observed entities independent from finite targetable action destinations', () => {
+		expect(heroActorContext.visibleCombatantIds).toContain(ID.monster);
+		expect(heroActorContext.targetablePositions).not.toContainEqual(monster.position);
+		expect(ReadinessCombatStateV1Schema.safeParse(state).success).toBe(true);
+
+		expect(
+			ReadinessCombatStateV1Schema.safeParse({
+				...state,
+				actorContexts: {
+					[ID.hero]: {
+						...heroActorContext,
+						legalActionTemplates: [
+							{
+								...legalActionTemplate,
+								actionId: 'advance-east',
+								actionKind: 'move',
+								skillId: null,
+								targetContract: {
+									kind: 'tile',
+									allowedPositions: [monster.position]
+								}
+							}
+						]
+					}
+				}
+			}).success
+		).toBe(false);
 	});
 
 	it('rejects duplicate telegraph and scheduled-effect identities', () => {

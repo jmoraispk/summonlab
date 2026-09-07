@@ -110,7 +110,7 @@ function canonicalActorContexts(
 					visibleCombatantIds: [...context.visibleCombatantIds].sort(),
 					visibleTelegraphIds: [...context.visibleTelegraphIds].sort(),
 					observableReadinessActorIds: [...context.observableReadinessActorIds].sort(),
-					visiblePositions: [...context.visiblePositions].sort(
+					targetablePositions: [...context.targetablePositions].sort(
 						(left, right) => left.y - right.y || left.x - right.x
 					),
 					visibleTerrainFeatureIds: [...context.visibleTerrainFeatureIds].sort(),
@@ -234,19 +234,116 @@ function validateProviderActionVisibility(
 	}
 }
 
+function actorContextSpatialTargetsAreCurrent(
+	state: ReadinessCombatStateV1,
+	actorId: string,
+	context: ActorCombatContext
+): boolean {
+	const actor = state.combatants[actorId];
+	if (!actor) return false;
+	const targetablePositions = new Set(
+		context.targetablePositions.map((position) => `${position.x}:${position.y}`)
+	);
+	const blockedPositions = new Set(
+		state.terrain.blockedTiles.map((position) => `${position.x}:${position.y}`)
+	);
+	const occupiedPositions = new Set(
+		Object.values(state.combatants).map(
+			(combatant) => `${combatant.position.x}:${combatant.position.y}`
+		)
+	);
+	const positionIsCurrent = (
+		position: Readonly<{ x: number; y: number }>,
+		actionKind: CombatLegalAction['actionKind']
+	): boolean => {
+		const key = `${position.x}:${position.y}`;
+		return (
+			position.x >= 0 &&
+			position.y >= 0 &&
+			position.x < state.terrain.width &&
+			position.y < state.terrain.height &&
+			targetablePositions.has(key) &&
+			!blockedPositions.has(key) &&
+			(actionKind !== 'move' || !occupiedPositions.has(key))
+		);
+	};
+	type RelativeRelation = 'adjacent' | 'behind' | 'flank-left' | 'flank-right';
+	const relativePositionIsCurrent = (combatantId: string, relation: RelativeRelation): boolean => {
+		const target = state.combatants[combatantId];
+		if (!target) return false;
+		const deltaX = target.position.x - actor.position.x;
+		const deltaY = target.position.y - actor.position.y;
+		const forward =
+			Math.abs(deltaX) >= Math.abs(deltaY)
+				? { x: Math.sign(deltaX) || 1, y: 0 }
+				: { x: 0, y: Math.sign(deltaY) || 1 };
+		const offsets =
+			relation === 'adjacent'
+				? [
+						{ x: -1, y: 0 },
+						{ x: 1, y: 0 },
+						{ x: 0, y: -1 },
+						{ x: 0, y: 1 }
+					]
+				: relation === 'behind'
+					? [forward]
+					: relation === 'flank-left'
+						? [{ x: -forward.y, y: forward.x }]
+						: [{ x: forward.y, y: -forward.x }];
+		return offsets.some((offset) =>
+			positionIsCurrent(
+				{ x: target.position.x + offset.x, y: target.position.y + offset.y },
+				'move'
+			)
+		);
+	};
+	const targetIsCurrent = (
+		target: CombatLegalAction['fallbackOptions'][number]['target'],
+		actionKind: CombatLegalAction['actionKind']
+	): boolean =>
+		target.kind === 'self' ||
+		target.kind === 'entity' ||
+		(target.kind === 'tile' && positionIsCurrent(target.position, actionKind)) ||
+		(target.kind === 'entity-relative-position' &&
+			relativePositionIsCurrent(target.combatantId, target.relation));
+
+	return context.legalActionTemplates.every((action) => {
+		const contract = action.targetContract;
+		const primaryIsCurrent =
+			contract.kind === 'self' ||
+			contract.kind === 'entity' ||
+			(contract.kind === 'tile' &&
+				contract.allowedPositions.every((position) =>
+					positionIsCurrent(position, action.actionKind)
+				)) ||
+			(contract.kind === 'entity-relative-position' &&
+				contract.allowedCombatantIds.every((combatantId) =>
+					contract.allowedRelations.every((relation) =>
+						relativePositionIsCurrent(combatantId, relation)
+					)
+				));
+		return (
+			primaryIsCurrent &&
+			action.fallbackOptions.every((fallback) =>
+				targetIsCurrent(fallback.target, action.actionKind)
+			)
+		);
+	});
+}
+
 function visibleTerrainProjection(
 	canonical: CombatTerrain,
 	context: ActorCombatContext
 ): CombatTerrain {
-	const visiblePositions = new Set(
-		context.visiblePositions.map((position) => `${position.x}:${position.y}`)
+	const targetablePositions = new Set(
+		context.targetablePositions.map((position) => `${position.x}:${position.y}`)
 	);
 	const visibleFeatures = new Set(context.visibleTerrainFeatureIds);
 	return canonicalTerrain({
 		width: canonical.width,
 		height: canonical.height,
 		blockedTiles: canonical.blockedTiles.filter((position) =>
-			visiblePositions.has(`${position.x}:${position.y}`)
+			targetablePositions.has(`${position.x}:${position.y}`)
 		),
 		features: canonical.features.filter((feature) => visibleFeatures.has(feature.featureId))
 	});
@@ -383,6 +480,14 @@ export function assembleCombatDecisionWindow(
 	if (snapshot.readyActorIds.some((actorId) => !state.actorContexts[actorId])) {
 		throw new Error('Combat actor contexts must include every ready actor');
 	}
+	if (
+		snapshot.readyActorIds.some(
+			(actorId) =>
+				!actorContextSpatialTargetsAreCurrent(state, actorId, state.actorContexts[actorId]!)
+		)
+	) {
+		throw new Error('Combat actor context has stale spatial targets');
+	}
 	const views = snapshot.readyActorIds.map((actorId) =>
 		actorView(snapshot, state.actorContexts[actorId]!, rules, actorId)
 	);
@@ -431,7 +536,12 @@ export function advanceUntilDecision(
 			CombatAdvanceSchema.parse({ kind: 'combat-result', result: advanced.result })
 		);
 	}
-	if (advanced.readyActorIds.some((actorId) => !advanced.state.actorContexts[actorId])) {
+	if (
+		advanced.readyActorIds.some((actorId) => {
+			const context = advanced.state.actorContexts[actorId];
+			return !context || !actorContextSpatialTargetsAreCurrent(advanced.state, actorId, context);
+		})
+	) {
 		return invalidDecisionContextResult(advanced.state);
 	}
 	return assembleCombatDecisionWindow({
