@@ -148,3 +148,44 @@ artifacts.
   outside-block mutations in both documents.
 - The producer Python suite, skill-icon typecheck, Prettier check, and `git diff --check` are
   recorded with this fix round's final verification.
+
+## Fix round 4 — action-scoped negative and reference-only allowances
+
+Addressed the remaining Important finding in the Task 3 static contract without changing skill
+prose or accepted assets.
+
+- Added deceptive-clause regressions for every guarded positive action: Attach, Include, Add, Use,
+  Supply, Provide, Give, Embed, Render, Compose, Apply, Put, Place, and Generate. Each remains
+  forbidden when the directive adds either an unrelated `do not change its color` clause or an
+  unrelated `keep the family sheet reference-only` clause.
+- Added preservation cases for directly negated actions (`Do not use ...`, `Never attach ...`) and
+  a framed family sheet used explicitly `as a reference-only presentation`.
+- Replaced the whole-directive blanket exemption with action-local checks. Directive clauses are
+  inspected independently; only a negator governing the matched action, a directly omitted frame
+  object, or the matched framed content's explicit reference-only use can allow it.
+
+### Fix-round 4 RED → GREEN evidence
+
+- RED, Node `v24.14.1`: after adding the deceptive-clause and preservation regressions first,
+  `corepack pnpm vitest run tools/summonlab-skill-creation-skill.spec.ts` failed with 1 failed and 5
+  passed tests. The first deceptive directive, `Attach a canonical frame in the individual prompt,
+  but do not change its color.`, incorrectly produced `[]` instead of the expected violation.
+- GREEN, Node `v24.14.1`: after scoping the exemptions to the action clause,
+  `corepack pnpm vitest run tools/summonlab-skill-creation-skill.spec.ts` passed all 6 tests.
+
+### Fix-round 4 files and verification
+
+- Changed `tools/summonlab-skill-creation-skill.spec.ts` and this report only.
+- The focused static suite passed 6 tests, `corepack pnpm typecheck:skill-icons` passed, the focused
+  Prettier check passed, and `git diff --check` passed under Node `v24.14.1`.
+- The Python producer suite was not run because no skill prose changed, matching this fix round's
+  conditional verification requirement.
+
+### Fix-round 4 self-review and concerns
+
+- The scan still covers both complete coordinator-facing documents and returns the original full
+  directive in violations; only its allowance decision is clause- and action-scoped.
+- Direct negation and genuine reference-only family-sheet presentation remain valid, while an
+  unrelated negative or reference-only clause cannot license a positive framed-individual action.
+- No skill instruction, producer behavior, composition rule, or accepted raster was changed. No
+  concerns remain in the requested scope.

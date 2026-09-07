@@ -69,19 +69,45 @@ function findUnapprovedFramedIndividualInstructions(documents: CoordinatorDocume
 		/\b(?:canonical|approved|rarity)?\s*(?:frame(?:d)?|crest|rank(?:\s+surround)?|border|rail|ornament)s?\b/i;
 	const generationContext =
 		/\b(?:producer|individual|prompt|imagegen|generation|generation-reference|reference)\b/i;
-	const explicitNegativeOrReferenceOnly =
-		/\b(?:no|never|not|without|forbid|forbidden|reject|must not|do not|does not|reference-only|common mistakes)\b/i;
+	const directlyNegatedAction =
+		/(?:\b(?:do|does|did|must|should|can|may|will|would)\s+not|\bnever|\bnot|\bwithout)\s*$/i;
+	const rejectedAction = /\b(?:forbid(?:s|den)?|rejects?)\b[^,;:.!?]*$/i;
+	const negatedFrameObject = new RegExp(
+		`\\b(?:no|without)\\s+(?:(?:canonical|approved|rarity)\\s+)?${frameContent.source}`,
+		'i'
+	);
+	const referenceOnlyFrameUse = new RegExp(
+		`${frameContent.source}[^,;:.!?]*\\bas\\s+(?:an?\\s+)?reference-only\\b`,
+		'i'
+	);
+	const actionPattern = new RegExp(positiveFrameVerb.source, 'gi');
+
+	const hasUnapprovedAction = (text: string): boolean => {
+		const clauses = text.split(/(?<=[.!?;])\s+|,\s+(?=(?:and|but|or)\b)/i);
+
+		return clauses.some((clause) => {
+			if (!frameContent.test(clause) || !generationContext.test(clause)) {
+				return false;
+			}
+
+			return Array.from(clause.matchAll(actionPattern)).some((match) => {
+				const actionIndex = match.index;
+				const actionPrefix = clause.slice(0, actionIndex);
+				const actionText = clause.slice(actionIndex);
+
+				return !(
+					directlyNegatedAction.test(actionPrefix) ||
+					rejectedAction.test(actionPrefix) ||
+					negatedFrameObject.test(actionText) ||
+					referenceOnlyFrameUse.test(actionText)
+				);
+			});
+		});
+	};
 
 	return documents.flatMap(({ path, content }) =>
 		coordinatorDirectives(content)
-			.filter(({ text }) => {
-				return (
-					positiveFrameVerb.test(text) &&
-					frameContent.test(text) &&
-					generationContext.test(text) &&
-					!explicitNegativeOrReferenceOnly.test(text)
-				);
-			})
+			.filter(({ text }) => hasUnapprovedAction(text))
 			.map(({ text }) => `${path}: ${text}`)
 	);
 }
@@ -257,6 +283,53 @@ describe('summonlab skill-icon producer and coordinator workflow', () => {
 					`${document.path}: ${directive}`
 				);
 			}
+		}
+	});
+
+	it('rejects framed directives despite an unrelated negative clause', () => {
+		const actions = [
+			'Attach a canonical frame in the individual prompt',
+			'Include a canonical crest in the individual generation',
+			'Add a canonical rank surround to the individual reference',
+			'Use a canonical border in the individual prompt',
+			'Supply a canonical rail in the individual generation',
+			'Provide a canonical ornament to the individual reference',
+			'Give a canonical frame in the individual prompt',
+			'Embed a canonical crest in the individual generation',
+			'Render a canonical rank surround in the individual reference',
+			'Compose a canonical border in the individual prompt',
+			'Apply a canonical rail in the individual generation',
+			'Put a canonical ornament in the individual reference',
+			'Place a canonical frame in the individual prompt',
+			'Generate a framed individual image'
+		];
+
+		for (const action of actions) {
+			for (const unrelatedAllowance of [
+				'but do not change its color',
+				'but keep the family sheet reference-only'
+			]) {
+				const directive = `${action}, ${unrelatedAllowance}.`;
+				const document = { path: 'deceptive-clause.md', content: directive };
+
+				expect(findUnapprovedFramedIndividualInstructions([document])).toEqual([
+					`${document.path}: ${directive}`
+				]);
+			}
+		}
+	});
+
+	it('allows directly negated frame actions and reference-only frame use', () => {
+		for (const directive of [
+			'Do not use a frame in an individual prompt.',
+			'Never attach a canonical frame to individual generation.',
+			'Use a complete framed family sheet as a reference-only presentation for individual lineage review.'
+		]) {
+			expect(
+				findUnapprovedFramedIndividualInstructions([
+					{ path: 'allowed-directive.md', content: directive }
+				])
+			).toEqual([]);
 		}
 	});
 });
