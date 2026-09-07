@@ -22,6 +22,7 @@ import {
 
 import { hashCanonical } from '../../hash.js';
 import { armourReduction } from './capability.js';
+import { positionIsAtFacingRelation } from './geometry.js';
 import { purposeKeyedInteger } from './randomness.js';
 import { advanceUntilDecision } from './window.js';
 
@@ -253,35 +254,19 @@ function validateResolutionProfile(
 	}
 }
 
-function facingDirection(
-	facing: ReadinessCombatStateV1['combatants'][string]['facing']
-): Readonly<{ x: number; y: number }> {
-	if (facing === 'north') return { x: 0, y: -1 };
-	if (facing === 'east') return { x: 1, y: 0 };
-	if (facing === 'south') return { x: 0, y: 1 };
-	return { x: -1, y: 0 };
-}
-
-function relativeCardinalDirection(
-	from: Readonly<{ x: number; y: number }>,
-	to: Readonly<{ x: number; y: number }>
-): Readonly<{ x: number; y: number }> | null {
-	const deltaX = to.x - from.x;
-	const deltaY = to.y - from.y;
-	if (deltaX === 0 && deltaY === 0) return null;
-	return Math.abs(deltaX) >= Math.abs(deltaY)
-		? { x: Math.sign(deltaX), y: 0 }
-		: { x: 0, y: Math.sign(deltaY) };
-}
-
 function isFlanking(
 	attacker: ReadinessCombatStateV1['combatants'][string],
 	defender: ReadinessCombatStateV1['combatants'][string]
 ): boolean {
-	const direction = relativeCardinalDirection(defender.position, attacker.position);
-	if (!direction) return false;
-	const facing = facingDirection(defender.facing);
-	return direction.x * facing.x + direction.y * facing.y === 0;
+	return (
+		positionIsAtFacingRelation(
+			attacker.position,
+			defender.position,
+			defender.facing,
+			'flank-left'
+		) ||
+		positionIsAtFacingRelation(attacker.position, defender.position, defender.facing, 'flank-right')
+	);
 }
 
 function isSurrounded(

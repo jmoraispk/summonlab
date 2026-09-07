@@ -317,7 +317,7 @@ describe('same-window combat arbitration', () => {
 				[ID.a]: moveTemplate({ actionId: 'flank-a', target: aTarget, fallback: { kind: 'self' } }),
 				[ID.b]: moveTemplate({ actionId: 'flank-b', target: bTarget, fallback: { kind: 'self' } })
 			},
-			positions: { [ID.a]: { x: 1, y: 1 }, [ID.b]: { x: 3, y: 1 } },
+			positions: { [ID.a]: { x: 1, y: 3 }, [ID.b]: { x: 3, y: 3 } },
 			readiness: { [ID.a]: 12_000, [ID.b]: 11_000 }
 		});
 		const result = applyCombatChoiceBatch(
@@ -330,7 +330,7 @@ describe('same-window combat arbitration', () => {
 		);
 		expect(result.events.map((event) => event.finalOutcome)).toStrictEqual(['applied', 'applied']);
 		expect(result.state.combatants[ID.a]!.position).toStrictEqual({ x: 3, y: 2 });
-		expect(result.state.combatants[ID.b]!.position).toStrictEqual({ x: 2, y: 2 });
+		expect(result.state.combatants[ID.b]!.position).toStrictEqual({ x: 3, y: 1 });
 	});
 
 	it('keeps a fixed-tile move fixed after an earlier action moves its observed target', () => {
@@ -430,7 +430,7 @@ describe('same-window combat arbitration', () => {
 		);
 		const canceled = result.events.find((event) => event.actorId === ID.b)!;
 		expect(canceled).toMatchObject({
-			conflictingEventId: result.events.find((event) => event.actorId === ID.a)!.eventId,
+			conflictingEventId: result.events.find((event) => event.actorId === ID.c)!.eventId,
 			fallbackApplied: null,
 			refundApplied: { mana: 'full', readiness: 'full' },
 			finalOutcome: 'canceled',
@@ -438,6 +438,54 @@ describe('same-window combat arbitration', () => {
 		});
 		expect(result.state.combatants[ID.b]!.resources.mana.current).toBe(20);
 		expect(result.state.combatants[ID.b]!.readiness.exactNumerator).toBe(11_000);
+	});
+
+	it('uses occupied-destination policy and exact causal event for an occupied entity-relative tile', () => {
+		const relative = {
+			kind: 'entity-relative-position' as const,
+			combatantId: ID.target,
+			relation: 'flank-left' as const
+		};
+		const alternate = { kind: 'tile' as const, position: { x: 5, y: 5 } };
+		const occupiedCancel: CombatActionConflictPolicy = {
+			invalidTarget: 'selected-fallback',
+			occupiedDestination: 'cancel',
+			cancellationRefund: { mana: 'full', readiness: 'full' }
+		};
+		const canonical = state({
+			actionByActor: {
+				[ID.a]: moveTemplate({
+					actionId: 'relative-a',
+					target: relative,
+					fallback: { kind: 'self' }
+				}),
+				[ID.b]: moveTemplate({
+					actionId: 'relative-b',
+					target: relative,
+					fallback: alternate,
+					conflictPolicy: occupiedCancel
+				})
+			},
+			readiness: { [ID.a]: 12_000, [ID.b]: 11_000 },
+			positions: { [ID.target]: { x: 3, y: 3 } }
+		});
+		const result = applyCombatChoiceBatch(
+			canonical,
+			choiceBatch(canonical, {
+				[ID.a]: { actionId: 'relative-a', target: relative },
+				[ID.b]: { actionId: 'relative-b', target: relative }
+			}),
+			COMBAT_RULES_V1
+		);
+		expect(result.events[1]).toMatchObject({
+			actorId: ID.b,
+			finalOutcome: 'canceled',
+			fallbackApplied: null,
+			conflictingEventId: result.events[0]!.eventId,
+			refundApplied: { mana: 'full', readiness: 'full' },
+			effects: []
+		});
+		expect(result.state.combatants[ID.b]!.position).toStrictEqual({ x: 4, y: 1 });
 	});
 
 	it('uses reaction priority before a purpose-keyed tie and is independent of submitted choice order', () => {
@@ -557,5 +605,36 @@ describe('same-window combat arbitration', () => {
 			exactNumerator: 20,
 			recoveryUntilTick: 26
 		});
+	});
+
+	it('keeps the next public decision window valid after ordinary successful movement', () => {
+		const destination = { kind: 'tile' as const, position: { x: 2, y: 2 } };
+		const canonical = state({
+			include: [ID.a, ID.target],
+			actionByActor: {
+				[ID.a]: moveTemplate({
+					actionId: 'repeatable-move',
+					target: destination,
+					fallback: { kind: 'self' }
+				})
+			},
+			readiness: { [ID.a]: 10_000 }
+		});
+		canonical.combatants[ID.target]!.attributes.agility = 1;
+		const first = applyCombatChoiceBatch(
+			canonical,
+			choiceBatch(canonical, {
+				[ID.a]: { actionId: 'repeatable-move', target: destination }
+			}),
+			COMBAT_RULES_V1
+		);
+		const next = advanceUntilDecision(first.state, COMBAT_RULES_V1);
+		expect(next.kind).toBe('decision-window');
+		if (next.kind !== 'decision-window') return;
+		const actorView = next.views.find((view) => view.actorId === ID.a)!;
+		expect(actorView.legalActions.map((action) => action.actionId)).toContain('guard-self');
+		expect(actorView.legalActions.map((action) => action.actionId)).not.toContain(
+			'repeatable-move'
+		);
 	});
 });

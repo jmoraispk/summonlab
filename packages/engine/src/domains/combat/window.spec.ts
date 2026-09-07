@@ -553,7 +553,7 @@ describe('frozen combat decision windows', () => {
 				readyActorIds: [ID.hero, ID.ally],
 				contentHash: COMBAT_CONTENT_BINDING.contentHash
 			})
-		).toThrow('stale spatial targets');
+		).toThrow('no current authored zero-Mana action');
 	});
 
 	it('returns a typed deterministic safety stop when a ready actor lacks engine-owned context', () => {

@@ -16,6 +16,7 @@ import { COMBAT_RULES_V1 } from '@summonlab/content';
 import type { z } from 'zod';
 
 import { deterministicUuid, hashCanonical } from '../../hash.js';
+import { resolveEntityRelativePosition } from './geometry.js';
 import { purposeKeyedInteger } from './randomness.js';
 import { advanceUntilReadyCohort } from './readiness.js';
 import {
@@ -169,99 +170,86 @@ function positionKey(position: Readonly<{ x: number; y: number }>): string {
 	return `${position.x}:${position.y}`;
 }
 
-function positionIsAvailable(
+type ProgressiveValidation =
+	| Readonly<{
+			valid: true;
+			reason: null;
+			resolvedPosition: Readonly<{ x: number; y: number }> | null;
+	  }>
+	| Readonly<{
+			valid: false;
+			reason: 'invalid-target' | 'occupied-destination';
+			resolvedPosition: Readonly<{ x: number; y: number }> | null;
+	  }>;
+
+function fixedTileValidation(
 	state: ReadinessCombatStateV1,
 	actorId: string,
 	position: Readonly<{ x: number; y: number }>
-): boolean {
-	return (
-		position.x >= 0 &&
-		position.y >= 0 &&
-		position.x < state.terrain.width &&
-		position.y < state.terrain.height &&
-		!state.terrain.blockedTiles.some((blocked) => positionKey(blocked) === positionKey(position)) &&
-		!Object.values(state.combatants).some(
-			(combatant) =>
-				combatant.combatantId !== actorId &&
-				positionKey(combatant.position) === positionKey(position)
-		)
+): ProgressiveValidation {
+	if (
+		position.x < 0 ||
+		position.y < 0 ||
+		position.x >= state.terrain.width ||
+		position.y >= state.terrain.height ||
+		state.terrain.blockedTiles.some((blocked) => positionKey(blocked) === positionKey(position))
+	) {
+		return { valid: false, reason: 'invalid-target', resolvedPosition: position };
+	}
+	const occupied = Object.values(state.combatants).some(
+		(combatant) =>
+			combatant.combatantId !== actorId && positionKey(combatant.position) === positionKey(position)
 	);
-}
-
-function relativeDestination(
-	state: ReadinessCombatStateV1,
-	actorId: string,
-	target: Extract<Target, { kind: 'entity-relative-position' }>
-): Readonly<{ x: number; y: number }> | null {
-	const actor = state.combatants[actorId];
-	const entity = state.combatants[target.combatantId];
-	if (!actor || !entity || !entity.active || entity.downed) return null;
-	const deltaX = entity.position.x - actor.position.x;
-	const deltaY = entity.position.y - actor.position.y;
-	const forward =
-		Math.abs(deltaX) >= Math.abs(deltaY)
-			? { x: Math.sign(deltaX) || 1, y: 0 }
-			: { x: 0, y: Math.sign(deltaY) || 1 };
-	const offsets =
-		target.relation === 'adjacent'
-			? [
-					{ x: -1, y: 0 },
-					{ x: 1, y: 0 },
-					{ x: 0, y: -1 },
-					{ x: 0, y: 1 }
-				]
-			: target.relation === 'behind'
-				? [forward]
-				: target.relation === 'flank-left'
-					? [{ x: -forward.y, y: forward.x }]
-					: [{ x: forward.y, y: -forward.x }];
-	for (const offset of offsets) {
-		const destination = { x: entity.position.x + offset.x, y: entity.position.y + offset.y };
-		if (positionIsAvailable(state, actorId, destination)) return destination;
-	}
-	return null;
-}
-
-function movementDestination(
-	state: ReadinessCombatStateV1,
-	actorId: string,
-	target: Target
-): Readonly<{ x: number; y: number }> | null {
-	if (target.kind === 'tile') {
-		return positionIsAvailable(state, actorId, target.position) ? target.position : null;
-	}
-	if (target.kind === 'entity-relative-position') {
-		return relativeDestination(state, actorId, target);
-	}
-	return target.kind === 'self' ? (state.combatants[actorId]?.position ?? null) : null;
+	return occupied
+		? { valid: false, reason: 'occupied-destination', resolvedPosition: position }
+		: { valid: true, reason: null, resolvedPosition: position };
 }
 
 function targetIsProgressivelyValid(
 	state: ReadinessCombatStateV1,
 	intent: CombatActionIntent,
 	target: Target
-): { valid: boolean; reason: 'invalid-target' | 'occupied-destination' | null } {
+): ProgressiveValidation {
 	const actor = state.combatants[intent.actorId];
 	if (!actor || !actor.active || actor.downed) {
-		return { valid: false, reason: 'invalid-target' };
+		return { valid: false, reason: 'invalid-target', resolvedPosition: null };
 	}
 	if (intent.actionKind === 'move') {
-		return movementDestination(state, intent.actorId, target) === null
-			? { valid: false, reason: target.kind === 'tile' ? 'occupied-destination' : 'invalid-target' }
-			: { valid: true, reason: null };
+		if (target.kind === 'tile') {
+			return fixedTileValidation(state, intent.actorId, target.position);
+		}
+		if (target.kind === 'entity-relative-position') {
+			const resolution = resolveEntityRelativePosition(
+				state,
+				intent.actorId,
+				target.combatantId,
+				target.relation
+			);
+			if (resolution.ok) {
+				return { valid: true, reason: null, resolvedPosition: resolution.position };
+			}
+			return {
+				valid: false,
+				reason: resolution.reason === 'occupied' ? 'occupied-destination' : 'invalid-target',
+				resolvedPosition: resolution.position
+			};
+		}
+		return target.kind === 'self'
+			? { valid: true, reason: null, resolvedPosition: actor.position }
+			: { valid: false, reason: 'invalid-target', resolvedPosition: null };
 	}
 	if (target.kind === 'entity' || target.kind === 'entity-relative-position') {
 		const entity = state.combatants[target.combatantId];
 		return entity?.active && !entity.downed
-			? { valid: true, reason: null }
-			: { valid: false, reason: 'invalid-target' };
+			? { valid: true, reason: null, resolvedPosition: null }
+			: { valid: false, reason: 'invalid-target', resolvedPosition: null };
 	}
 	if (target.kind === 'self') {
 		return intent.actionKind === 'attack' || intent.actionKind === 'skill'
-			? { valid: false, reason: 'invalid-target' }
-			: { valid: true, reason: null };
+			? { valid: false, reason: 'invalid-target', resolvedPosition: null }
+			: { valid: true, reason: null, resolvedPosition: null };
 	}
-	return { valid: true, reason: null };
+	return { valid: true, reason: null, resolvedPosition: null };
 }
 
 function readinessCostEffect(
@@ -296,7 +284,8 @@ function applyChosenAction(
 	state: ReadinessCombatStateV1,
 	choice: PreflightChoice,
 	target: Target,
-	rules: CombatRulesV1
+	rules: CombatRulesV1,
+	resolvedPosition: Readonly<{ x: number; y: number }> | null
 ): { state: ReadinessCombatStateV1; effects: ResolvedEffect[] } {
 	const resolvedIntent = { ...choice.intent, target };
 	const resolution = resolveBoundCombatAction({
@@ -308,7 +297,7 @@ function applyChosenAction(
 	const candidate = ReadinessCombatStateV1Schema.parse(resolution.state);
 	const effects = [...resolution.effects];
 	if (choice.intent.actionKind === 'move') {
-		const destination = movementDestination(candidate, choice.intent.actorId, target);
+		const destination = resolvedPosition;
 		if (destination === null) throw new Error('Progressive combat movement became invalid');
 		const actor = candidate.combatants[choice.intent.actorId]!;
 		const before = { ...actor.position };
@@ -360,10 +349,11 @@ function conflictingEvent(
 	events: readonly CombatResolvedEvent[],
 	intent: CombatActionIntent,
 	target: Target,
-	reason: 'invalid-target' | 'occupied-destination'
+	reason: 'invalid-target' | 'occupied-destination',
+	resolvedPosition: Readonly<{ x: number; y: number }> | null
 ): CombatResolvedEvent | undefined {
 	if (reason === 'occupied-destination') {
-		const destination = target.kind === 'tile' ? target.position : null;
+		const destination = resolvedPosition;
 		return [...events]
 			.reverse()
 			.find((event) =>
@@ -446,7 +436,13 @@ export function applyCombatChoiceBatch(
 	for (const [ordinal, choice] of choices.entries()) {
 		const primary = targetIsProgressivelyValid(progressive, choice.intent, choice.intent.target);
 		if (primary.valid) {
-			const applied = applyChosenAction(progressive, choice, choice.intent.target, rules);
+			const applied = applyChosenAction(
+				progressive,
+				choice,
+				choice.intent.target,
+				rules,
+				primary.resolvedPosition
+			);
 			progressive = applied.state;
 			events.push(
 				resolvedEvent({
@@ -464,7 +460,13 @@ export function applyCombatChoiceBatch(
 		}
 
 		const reason = primary.reason!;
-		const conflict = conflictingEvent(events, choice.intent, choice.intent.target, reason);
+		const conflict = conflictingEvent(
+			events,
+			choice.intent,
+			choice.intent.target,
+			reason,
+			primary.resolvedPosition
+		);
 		const policy =
 			reason === 'occupied-destination'
 				? choice.authority.legalAction.conflictPolicy.occupiedDestination
@@ -474,9 +476,15 @@ export function applyCombatChoiceBatch(
 		);
 		const fallbackValidity = selectedFallback
 			? targetIsProgressivelyValid(progressive, choice.intent, selectedFallback.target)
-			: { valid: false };
-		if (policy === 'selected-fallback' && selectedFallback && fallbackValidity.valid) {
-			const applied = applyChosenAction(progressive, choice, selectedFallback.target, rules);
+			: null;
+		if (policy === 'selected-fallback' && selectedFallback && fallbackValidity?.valid) {
+			const applied = applyChosenAction(
+				progressive,
+				choice,
+				selectedFallback.target,
+				rules,
+				fallbackValidity.resolvedPosition
+			);
 			progressive = applied.state;
 			events.push(
 				resolvedEvent({
@@ -494,12 +502,25 @@ export function applyCombatChoiceBatch(
 		}
 
 		const effects = applyCancellationCosts(progressive, choice, rules);
+		const cancellationConflict =
+			policy === 'selected-fallback' &&
+			selectedFallback &&
+			fallbackValidity &&
+			!fallbackValidity.valid
+				? (conflictingEvent(
+						events,
+						choice.intent,
+						selectedFallback.target,
+						fallbackValidity.reason,
+						fallbackValidity.resolvedPosition
+					) ?? conflict)
+				: conflict;
 		events.push(
 			resolvedEvent({
 				choice,
 				batch,
 				ordinal,
-				conflictingEventId: conflict?.eventId ?? null,
+				conflictingEventId: cancellationConflict?.eventId ?? null,
 				fallbackApplied: null,
 				finalOutcome: 'canceled',
 				refundApplied: choice.authority.legalAction.conflictPolicy.cancellationRefund,

@@ -9,6 +9,7 @@ import {
 	type CombatActorContextState,
 	type CombatAdvance,
 	type CombatLegalAction,
+	type CombatLegalActionTemplate,
 	type CombatRulesV1,
 	type CombatWindowSnapshot,
 	type ReadinessCombatStateV1
@@ -16,6 +17,7 @@ import {
 import { COMBAT_CONTENT_BINDING } from '@summonlab/content';
 
 import { deterministicUuid, hashCanonical } from '../../hash.js';
+import { resolveEntityRelativePosition } from './geometry.js';
 import { authorCombatLegalActions, canonicalCombatLegalActionTemplates } from './legal-actions.js';
 import { advanceUntilReadyCohort } from './readiness.js';
 
@@ -234,13 +236,13 @@ function validateProviderActionVisibility(
 	}
 }
 
-function actorContextSpatialTargetsAreCurrent(
+function currentLegalActionTemplates(
 	state: ReadinessCombatStateV1,
 	actorId: string,
 	context: ActorCombatContext
-): boolean {
+): readonly CombatLegalActionTemplate[] {
 	const actor = state.combatants[actorId];
-	if (!actor) return false;
+	if (!actor) return [];
 	const targetablePositions = new Set(
 		context.targetablePositions.map((position) => `${position.x}:${position.y}`)
 	);
@@ -269,66 +271,73 @@ function actorContextSpatialTargetsAreCurrent(
 	};
 	type RelativeRelation = 'adjacent' | 'behind' | 'flank-left' | 'flank-right';
 	const relativePositionIsCurrent = (combatantId: string, relation: RelativeRelation): boolean => {
-		const target = state.combatants[combatantId];
-		if (!target) return false;
-		const deltaX = target.position.x - actor.position.x;
-		const deltaY = target.position.y - actor.position.y;
-		const forward =
-			Math.abs(deltaX) >= Math.abs(deltaY)
-				? { x: Math.sign(deltaX) || 1, y: 0 }
-				: { x: 0, y: Math.sign(deltaY) || 1 };
-		const offsets =
-			relation === 'adjacent'
-				? [
-						{ x: -1, y: 0 },
-						{ x: 1, y: 0 },
-						{ x: 0, y: -1 },
-						{ x: 0, y: 1 }
-					]
-				: relation === 'behind'
-					? [forward]
-					: relation === 'flank-left'
-						? [{ x: -forward.y, y: forward.x }]
-						: [{ x: forward.y, y: -forward.x }];
-		return offsets.some((offset) =>
-			positionIsCurrent(
-				{ x: target.position.x + offset.x, y: target.position.y + offset.y },
-				'move'
-			)
-		);
+		const resolution = resolveEntityRelativePosition(state, actorId, combatantId, relation);
+		return resolution.ok && positionIsCurrent(resolution.position, 'move');
+	};
+	const entityIsCurrent = (combatantId: string): boolean => {
+		const combatant = state.combatants[combatantId];
+		return Boolean(combatant?.active && !combatant.downed);
 	};
 	const targetIsCurrent = (
 		target: CombatLegalAction['fallbackOptions'][number]['target'],
 		actionKind: CombatLegalAction['actionKind']
 	): boolean =>
 		target.kind === 'self' ||
-		target.kind === 'entity' ||
+		(target.kind === 'entity' && entityIsCurrent(target.combatantId)) ||
 		(target.kind === 'tile' && positionIsCurrent(target.position, actionKind)) ||
 		(target.kind === 'entity-relative-position' &&
 			relativePositionIsCurrent(target.combatantId, target.relation));
 
-	return context.legalActionTemplates.every((action) => {
+	const current: CombatLegalActionTemplate[] = [];
+	for (const action of context.legalActionTemplates) {
 		const contract = action.targetContract;
-		const primaryIsCurrent =
-			contract.kind === 'self' ||
-			contract.kind === 'entity' ||
-			(contract.kind === 'tile' &&
-				contract.allowedPositions.every((position) =>
-					positionIsCurrent(position, action.actionKind)
-				)) ||
-			(contract.kind === 'entity-relative-position' &&
-				contract.allowedCombatantIds.every((combatantId) =>
-					contract.allowedRelations.every((relation) =>
+		let targetContract: CombatLegalActionTemplate['targetContract'] | null = null;
+		if (contract.kind === 'self') {
+			targetContract = contract;
+		} else if (contract.kind === 'entity') {
+			const allowedCombatantIds = contract.allowedCombatantIds.filter(entityIsCurrent);
+			if (allowedCombatantIds.length > 0) targetContract = { ...contract, allowedCombatantIds };
+		} else if (contract.kind === 'tile') {
+			const allowedPositions = contract.allowedPositions.filter((position) =>
+				positionIsCurrent(position, action.actionKind)
+			);
+			if (allowedPositions.length > 0) targetContract = { ...contract, allowedPositions };
+		} else {
+			const candidates = contract.allowedCombatantIds
+				.filter(entityIsCurrent)
+				.map((combatantId) => ({
+					combatantId,
+					relations: contract.allowedRelations.filter((relation) =>
 						relativePositionIsCurrent(combatantId, relation)
 					)
-				));
-		return (
-			primaryIsCurrent &&
-			action.fallbackOptions.every((fallback) =>
-				targetIsCurrent(fallback.target, action.actionKind)
-			)
+				}))
+				.filter((candidate) => candidate.relations.length > 0);
+			if (candidates.length > 0) {
+				const commonRelations = contract.allowedRelations.filter((relation) =>
+					candidates.every((candidate) => candidate.relations.includes(relation))
+				);
+				const selected =
+					commonRelations.length > 0
+						? {
+								ids: candidates.map((candidate) => candidate.combatantId),
+								relations: commonRelations
+							}
+						: { ids: [candidates[0]!.combatantId], relations: candidates[0]!.relations };
+				targetContract = {
+					...contract,
+					allowedCombatantIds: selected.ids,
+					allowedRelations: selected.relations
+				};
+			}
+		}
+		const fallbackOptions = action.fallbackOptions.filter((fallback) =>
+			targetIsCurrent(fallback.target, action.actionKind)
 		);
-	});
+		if (targetContract && fallbackOptions.length > 0) {
+			current.push({ ...action, targetContract, fallbackOptions });
+		}
+	}
+	return current;
 }
 
 function visibleTerrainProjection(
@@ -353,7 +362,8 @@ function actorView(
 	snapshot: CombatWindowSnapshot,
 	contextInput: ActorCombatContext,
 	rules: CombatRulesV1,
-	actorId: string
+	actorId: string,
+	legalActionTemplates: readonly CombatLegalActionTemplate[]
 ): ActorDecisionView {
 	const self = snapshot.combatants[actorId];
 	if (!self) throw new Error(`Combat actor ${actorId} is absent from the canonical snapshot`);
@@ -372,7 +382,7 @@ function actorView(
 		actorId,
 		windowId: snapshot.windowId,
 		availableMana: self.resources.mana.current,
-		actions: contextInput.legalActionTemplates
+		actions: legalActionTemplates
 	});
 	validateProviderActionVisibility(actorId, visibleSet, legalActions);
 	const legalActionSetHash = hashCanonical(legalActions);
@@ -481,17 +491,13 @@ export function assembleCombatDecisionWindow(
 	if (snapshot.readyActorIds.some((actorId) => !state.actorContexts[actorId])) {
 		throw new Error('Combat actor contexts must include every ready actor');
 	}
-	if (
-		snapshot.readyActorIds.some(
-			(actorId) =>
-				!actorContextSpatialTargetsAreCurrent(state, actorId, state.actorContexts[actorId]!)
-		)
-	) {
-		throw new Error('Combat actor context has stale spatial targets');
-	}
-	const views = snapshot.readyActorIds.map((actorId) =>
-		actorView(snapshot, state.actorContexts[actorId]!, rules, actorId)
-	);
+	const views = snapshot.readyActorIds.map((actorId) => {
+		const templates = currentLegalActionTemplates(state, actorId, state.actorContexts[actorId]!);
+		if (!templates.some((action) => action.manaCost === 0)) {
+			throw new Error('Combat actor context has no current authored zero-Mana action');
+		}
+		return actorView(snapshot, state.actorContexts[actorId]!, rules, actorId, templates);
+	});
 	const advance = CombatAdvanceSchema.parse({ kind: 'decision-window', snapshot, views });
 	if (advance.kind !== 'decision-window') throw new Error('Expected a combat decision window');
 	return deepFreeze(advance);
@@ -540,7 +546,12 @@ export function advanceUntilDecision(
 	if (
 		advanced.readyActorIds.some((actorId) => {
 			const context = advanced.state.actorContexts[actorId];
-			return !context || !actorContextSpatialTargetsAreCurrent(advanced.state, actorId, context);
+			return (
+				!context ||
+				!currentLegalActionTemplates(advanced.state, actorId, context).some(
+					(action) => action.manaCost === 0
+				)
+			);
 		})
 	) {
 		return invalidDecisionContextResult(advanced.state);
