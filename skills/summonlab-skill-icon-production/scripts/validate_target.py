@@ -108,6 +108,16 @@ GEOMETRY_GUIDE_V2_PURPOSE = (
 )
 CALIBRATION_PURPOSE = "Approved motif-family calibration plate."
 PRIMARY_PARENT_PURPOSE = "Approved primary-parent master."
+FRAMELESS_SKILL_ART_PROMPT_CLAUSE = (
+    "Artwork layer only: no rarity frame, rank crest, rank letter, border rails, "
+    "backing, UI, label, logo, watermark, or text."
+)
+FORBIDDEN_SKILL_ART_LAYER_TERM = re.compile(
+    r"\b(?:rarity|rank|frame(?:d|s|work|ing)?|border(?:s|ed)?|rail(?:s)?|"
+    r"crest(?:s|ed)?|badge(?:s)?|medallion(?:s)?|backing|ui|label(?:s)?|"
+    r"logo(?:s)?|watermark(?:s)?|text|letter(?:s)?)\b",
+    re.IGNORECASE,
+)
 
 _CONTRACT_PROGRAM = r"""
 import fs from 'node:fs';
@@ -553,6 +563,30 @@ def _require_geometry_v2_guide_authority(target: dict[str, Any]) -> None:
         fail("geometry-v2 profile guide hash does not match its canonical authority")
 
 
+def _require_frameless_skill_art_prompt(target: dict[str, Any]) -> None:
+    if target.get("role") != "skill-art":
+        return
+    prompt = target.get("exactPrompt")
+    if (
+        not isinstance(prompt, str)
+        or prompt.count(FRAMELESS_SKILL_ART_PROMPT_CLAUSE) != 1
+    ):
+        fail(
+            "frameless skill-art prompt must include exactly one exact artwork-layer "
+            "exclusion clause"
+        )
+    artwork_request = prompt.replace(FRAMELESS_SKILL_ART_PROMPT_CLAUSE, "", 1)
+    conflicts = sorted(
+        {match.group(0).casefold() for match in FORBIDDEN_SKILL_ART_LAYER_TERM.finditer(artwork_request)}
+    )
+    if conflicts:
+        fail(
+            "frameless skill-art prompt contradicts its role by discussing forbidden "
+            "composite-layer terms outside the exclusion clause: "
+            + ", ".join(conflicts)
+        )
+
+
 def validate(
     target: dict[str, Any],
     assignment: dict[str, Any],
@@ -664,6 +698,7 @@ def validate(
         if snapshot.content_hash != expected_hash:
             fail(f"reference hash changed: {raw}")
         reference_snapshots.append((absolute, snapshot, raw))
+    _require_frameless_skill_art_prompt(target)
     _require_individual_authorities(target, catalog)
     _require_geometry_v2_guide_authority(target)
 

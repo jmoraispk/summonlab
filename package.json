@@ -165,6 +165,8 @@
 		"check:skill-icon-badge-tip-review": "tsx tools/render-skill-icon-badge-tip-review.ts --check",
 		"render:skill-icon-complete-frame-rollout-review": "tsx tools/render-skill-icon-complete-frame-rollout-review.ts --write",
 		"check:skill-icon-complete-frame-rollout-review": "tsx tools/render-skill-icon-complete-frame-rollout-review.ts --check",
+		"render:skill-icon-inner-frame-audit-review": "tsx tools/render-skill-icon-inner-frame-audit-review.ts --write",
+		"check:skill-icon-inner-frame-audit-review": "tsx tools/render-skill-icon-inner-frame-audit-review.ts --check",
 		"persist:skill-icon-mass-output": "tsx tools/persist-skill-icon-mass-output.ts",
 		"persist:skill-icon-cleanup-output": "tsx tools/persist-skill-icon-cleanup-output.ts",
 		"export:skill-icon-cleanup-v2-packets": "tsx tools/export-skill-icon-quality-cleanup-v2.ts --write",

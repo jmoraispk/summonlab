@@ -52,8 +52,10 @@ not authorize another reprocess attempt.
 ## Role checks
 
 - `skill-art`: Painted Emblem treatment; one dominant subject and at most one supporting cue; no
-  rarity frame, backing, badge, text, or scenery. Preserve calibrated family progression and change
-  only what distinguishes the child from an approved parent.
+  rarity frame, backing, badge, text, or scenery. Reject straight or faceted metallic rails, an
+  inner hexagonal border, a rank-letter medallion, crest fragments, or any other baked prior-frame
+  trace—even when the canonical frame would cover most of it. Preserve calibrated family
+  progression and change only what distinguishes the child from an approved parent.
 - `rarity-frame`: transparent central aperture, correct six-edge registration, no embedded art or
   backing, and readable rank material at small size.
 - `backing`: continuous aperture coverage without frame-like pixels or subject artwork.

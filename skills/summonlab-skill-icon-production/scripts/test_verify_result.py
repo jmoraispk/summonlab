@@ -163,7 +163,11 @@ class Packet:
             "skillTargetId": "martial:blade:horizontal-slash",
             "motifFamily": None,
             "rarity": None,
-            "exactPrompt": "Paint one polished sword cutting laterally through the center.",
+            "exactPrompt": (
+                "Paint one polished sword cutting laterally through the center. "
+                "Artwork layer only: no rarity frame, rank crest, rank letter, border rails, "
+                "backing, UI, label, logo, watermark, or text."
+            ),
             "references": references,
             "canvas": {"width": 1024, "height": 1024, "mediaType": "image/png"},
             "output": {"candidatePath": CANDIDATE_PATH, "resultPath": RESULT_PATH},
@@ -534,6 +538,58 @@ class SkillIconVerifierTests(unittest.TestCase):
     def test_rejects_target_assignment_mismatch(self) -> None:
         self.packet.assignment["jobId"] = "martial-blade-other-v1"
         self.assert_invalid("contract validation failed|identity")
+
+    def test_skill_art_preflight_rejects_a_baked_rarity_frame_prompt(self) -> None:
+        self.packet.target["exactPrompt"] = (
+            "Asset type: final full-resolution Summonlab framed skill icon. "
+            "Create exactly one complete framed skill tile. "
+            "Frame: exact E-rank treatment with integrated E crest. "
+            "Artwork layer only: no rarity frame, rank crest, rank letter, border rails, "
+            "backing, UI, label, logo, watermark, or text."
+        )
+        with self.assertRaisesRegex(ValueError, "frameless skill-art"):
+            validate(
+                self.packet.target,
+                self.packet.assignment,
+                self.packet.root,
+                allow_existing_outputs=True,
+                contract_root=REPOSITORY_ROOT,
+            )
+
+    def test_skill_art_preflight_rejects_baked_frame_paraphrases(self) -> None:
+        contradictory_requests = (
+            "Include the E-rank border and attached E medallion around the artwork.",
+            "Render a complete icon with a rank surround.",
+            "Bake in rarity rails around the finished artwork.",
+        )
+        for request in contradictory_requests:
+            with self.subTest(request=request):
+                self.packet.target["exactPrompt"] = (
+                    request
+                    + " Artwork layer only: no rarity frame, rank crest, rank letter, "
+                    "border rails, backing, UI, label, logo, watermark, or text."
+                )
+                with self.assertRaisesRegex(ValueError, "frameless skill-art"):
+                    validate(
+                        self.packet.target,
+                        self.packet.assignment,
+                        self.packet.root,
+                        allow_existing_outputs=True,
+                        contract_root=REPOSITORY_ROOT,
+                    )
+
+    def test_skill_art_preflight_requires_the_frameless_layer_clause(self) -> None:
+        self.packet.target["exactPrompt"] = (
+            "Paint one polished sword cutting laterally through the center."
+        )
+        with self.assertRaisesRegex(ValueError, "frameless skill-art"):
+            validate(
+                self.packet.target,
+                self.packet.assignment,
+                self.packet.root,
+                allow_existing_outputs=True,
+                contract_root=REPOSITORY_ROOT,
+            )
 
     def test_rejects_mixed_v1_v2_protocol_tuple(self) -> None:
         self.packet.assignment["schemaVersion"] = "skill-icon-assignment-v2"

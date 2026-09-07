@@ -47,6 +47,19 @@ Both target versions contain:
 Roles are `rarity-frame`, `backing`, `calibration-plate`, and `skill-art`. Standalone outputs are
 1024×1024 PNG. Output namespace and basename are derived from role and `jobId`.
 
+Every `skill-art` exact prompt must contain this exact literal clause:
+
+```text
+Artwork layer only: no rarity frame, rank crest, rank letter, border rails, backing, UI, label, logo, watermark, or text.
+```
+
+Outside that exact clause, the artwork request must not discuss any frame, rarity, rank, border,
+rail, crest, badge, medallion, backing, UI, label, logo, watermark, text, or letter. Treat those
+terms as a role contradiction rather than trying to infer whether the prose is positive or
+negative. Preflight rejects either omission or contradiction before image generation. This keeps
+shared-frame composition layer-pure: the canonical backing and rarity frame are separate
+authorities, and the rarity frame is applied later as the final layer.
+
 A v2 target is currently allowed only for a normalized `rarity-frame` or `backing` retry. New and
 revised `skill-art` and `calibration-plate` jobs remain v1 exact-source packets unless a future
 contract revision explicitly adds those roles. V2 adds explicit `logicalIdentity`, integer
