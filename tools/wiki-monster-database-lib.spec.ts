@@ -328,6 +328,20 @@ describe('canonical monster wiki database', () => {
 		});
 		expect(first.monsters).toHaveLength(150);
 		expect(first.monsters.every(({ variants }) => variants.length === 5)).toBe(true);
+		expect(first.families[0]).toMatchObject({
+			classificationNotes: expect.any(String),
+			escalationAxis: expect.any(String),
+			sourcePage: expect.any(String),
+			visualConstants: expect.any(Array)
+		});
+		expect(first.monsters[0]).toMatchObject({
+			battlefieldDuty: expect.any(String),
+			teachingGoal: expect.any(String),
+			signatureMechanic: expect.any(String),
+			telegraph: expect.any(String),
+			counterplay: expect.any(String),
+			lowerFormInteraction: null
+		});
 		expect(first.reconciliation.entries).toHaveLength(40);
 		expect(first.reconciliation.sourceStatus).toBe('candidate-only-reference');
 		expect(
@@ -522,12 +536,7 @@ describe('canonical monster wiki database', () => {
 				visualIndex,
 				pages,
 				familyPages,
-				existingFileNames: [
-					'README.md',
-					'reconciliation.md',
-					'visual-index.json',
-					...pages.keys()
-				],
+				existingFileNames: ['README.md', 'reconciliation.md', 'visual-index.json', ...pages.keys()],
 				existingFamilyFileNames: [...familyPages.keys()]
 			}
 		};

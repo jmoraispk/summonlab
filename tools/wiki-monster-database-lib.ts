@@ -822,9 +822,7 @@ Run \`pnpm export:wiki-monsters\` after source or catalog changes. Floor order r
 `;
 }
 
-export function buildMonsterReconciliationWikiPage(
-	database: CanonicalMonsterWikiDatabase
-): string {
+export function buildMonsterReconciliationWikiPage(database: CanonicalMonsterWikiDatabase): string {
 	const reconciliationRows = database.reconciliation
 		.map((entry) => {
 			const canonical =
@@ -867,6 +865,10 @@ export function buildMonsterVisualIndex(database: CanonicalMonsterWikiDatabase) 
 			familyId: family.familyId,
 			displayName: family.displayName,
 			sourceRaceNumber: family.sourceRaceNumber,
+			sourcePage: family.sourcePage,
+			classificationNotes: family.classificationNotes,
+			escalationAxis: family.escalationAxis,
+			visualConstants: family.visualConstants,
 			floorSlot: family.floorSlot,
 			pagePath: `docs/wiki/creatures/monsters/families/${family.familyId}.md`,
 			formIds: family.forms.map(({ formId }) => formId)
@@ -878,6 +880,12 @@ export function buildMonsterVisualIndex(database: CanonicalMonsterWikiDatabase) 
 			familyName: form.familyName,
 			tier: form.tier,
 			role: form.primaryArchetype,
+			battlefieldDuty: form.battlefieldDuty,
+			teachingGoal: form.teachingGoal,
+			signatureMechanic: form.signatureMechanic,
+			telegraph: form.telegraph,
+			counterplay: form.counterplay,
+			lowerFormInteraction: form.lowerFormInteraction,
 			floorSlot: form.floorSlot,
 			pagePath: `docs/wiki/creatures/monsters/${form.formId}.md`,
 			variants: form.coordinates.map((coordinate) => ({

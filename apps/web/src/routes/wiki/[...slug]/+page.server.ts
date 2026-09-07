@@ -2,6 +2,7 @@ import { error, redirect } from '@sveltejs/kit';
 
 import {
 	getLegacyMonsterWikiRedirect,
+	getMonsterFamilyVisualEntry,
 	getMonsterVisualDatabase,
 	getMonsterVisualEntry
 } from '$lib/server/monster-database';
@@ -52,6 +53,7 @@ export const load = (({ params }) => {
 			wikiPage.wikiId === 'skills.visual-catalog' ? getSkillVisualCatalog() : null,
 		monsterDatabase:
 			wikiPage.wikiId === 'creatures.monster-database' ? getMonsterVisualDatabase() : null,
+		monsterFamily: getMonsterFamilyVisualEntry(wikiPage.wikiId),
 		monsterVisual: getMonsterVisualEntry(wikiPage.wikiId),
 		visualPacket:
 			wikiPage.wikiId === 'art.living-village-heroes'

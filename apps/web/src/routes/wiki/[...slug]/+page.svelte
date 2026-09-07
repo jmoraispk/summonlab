@@ -1,10 +1,12 @@
 <script lang="ts">
 	import MonsterDatabase from '$lib/components/wiki/MonsterDatabase.svelte';
+	import MonsterFamily from '$lib/components/wiki/MonsterFamily.svelte';
 	import MonsterVisualMatrix from '$lib/components/wiki/MonsterVisualMatrix.svelte';
 	import SkillTree from '$lib/components/wiki/SkillTree.svelte';
 	import SkillVisualCatalog from '$lib/components/wiki/SkillVisualCatalog.svelte';
 
 	let { data } = $props();
+	const articleHtml = $derived(data.monsterVisual ? data.wikiPage.bodyHtml : data.wikiPage.html);
 </script>
 
 <svelte:head>
@@ -13,7 +15,9 @@
 
 <main>
 	{#if data.monsterDatabase}
-		<MonsterDatabase monsters={data.monsterDatabase} />
+		<MonsterDatabase families={data.monsterDatabase} />
+	{:else if data.monsterFamily}
+		<MonsterFamily family={data.monsterFamily} />
 	{:else if data.monsterVisual}
 		<MonsterVisualMatrix monster={data.monsterVisual} />
 	{/if}
@@ -78,7 +82,7 @@
 		</section>
 	{/if}
 
-	{#if data.monsterDatabase}
+	{#if data.monsterDatabase || data.monsterFamily}
 		<footer class="database-source">
 			<span>Canonical source</span>
 			<code>{data.wikiPage.sourcePath}</code>
@@ -102,7 +106,7 @@
 				<div class="article-body">{@html data.wikiPage.bodyHtml}</div>
 			{:else}
 				<!-- eslint-disable-next-line svelte/no-at-html-tags -- canonical repository Markdown is rendered by the server with raw HTML escaped -->
-				<div class="article-body">{@html data.wikiPage.html}</div>
+				<div class="article-body">{@html articleHtml}</div>
 			{/if}
 			<footer>
 				<span>Canonical source</span>
