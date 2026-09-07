@@ -102,7 +102,7 @@ assumed origin or ancestry.
 
 - [Pack 2 visual catalog](../../../assets/enemies/review/pack-2/catalog.json)
 - [Pack 2 generation record](../../../assets/enemies/review/pack-2/generation-record.md)
-- [Pack 2 monster validation plan](../../character-pack-2-plan.md)
+- [Canonical monster families](../creatures/monster-races/README.md)
 - [Shared art bible](../../art-bible.md)
 
 For each future image, the associated creature page should eventually show:

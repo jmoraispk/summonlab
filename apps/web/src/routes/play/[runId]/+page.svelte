@@ -252,7 +252,7 @@
 				Journal <span>{snapshot.events.length}</span>
 			</button>
 			<a href={resolve('/replay/[runId]', { runId: snapshot.runId })}>Replay</a>
-			<a href={resolve('/forge')}>New seed</a>
+			<a href={resolve('/wiki/art/hero-identity-and-evolution')}>Hero roster</a>
 		</nav>
 	</header>
 	{#if data.campaignView}

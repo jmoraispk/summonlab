@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
 	import hearthEnvironment from '../../../../../assets/settlements/hearth-01/hearth-01-environment-v1.png';
-	import rosterPair from '../../../../../assets/heroes/visuals/hearth-roster-pair-v1.png';
+	import rosterHero from '../../../../../assets/heroes/approved/summonable-roster-v1/sources/aear-soro/summon.png';
 	import goblinoids from '../../../../../assets/enemies/review/goblinoids-v1.webp';
 	import elementals from '../../../../../assets/enemies/review/pack-2/elementals-v1.png';
 </script>
@@ -51,18 +51,11 @@
 		</header>
 		<div class="collection-grid">
 			<a class="collection visual" href={resolve('/wiki/art/living-village-heroes')}>
-				<img
-					src={rosterPair}
-					alt="Two persistent Summonlab hero candidates"
-					width="1536"
-					height="1024"
-				/>
+				<img src={rosterHero} alt="Approved summonable hero Aear Soro" width="1024" height="1536" />
 				<div>
 					<span>Art book · human identity</span>
 					<h3>Living Village visual packet</h3>
-					<p>
-						The fixed six-person prototype roster and its cross-surface production requirements.
-					</p>
+					<p>The approved 200-hero roster and its cross-surface production requirements.</p>
 				</div>
 			</a>
 			<a class="collection" href={resolve('/wiki/mechanics/progression')}>

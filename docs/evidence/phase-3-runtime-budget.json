@@ -2,30 +2,21 @@
 	"schemaVersion": "web-build-budget-v1",
 	"budgets": {
 		"initialJavaScriptGzipBytes": 700000,
-		"runtimeInspectorLoadedJavaScriptGzipBytes": 700000,
-		"recognitionAuditLoadedJavaScriptGzipBytes": 700000,
 		"settlementRouteLabLoadedJavaScriptGzipBytes": 700000,
 		"missionPackageLabLoadedJavaScriptGzipBytes": 700000,
-		"missionLifecycleLoadedJavaScriptGzipBytes": 700000,
-		"runtimeVisualPayloadBytes": 8000000
+		"missionLifecycleLoadedJavaScriptGzipBytes": 700000
 	},
 	"measurements": {
-		"initialJavaScriptGzipBytes": 44328,
-		"runtimeInspectorLoadedJavaScriptGzipBytes": 304031,
-		"recognitionAuditLoadedJavaScriptGzipBytes": 48798,
-		"settlementRouteLabLoadedJavaScriptGzipBytes": 49531,
-		"missionPackageLabLoadedJavaScriptGzipBytes": 49139,
-		"missionLifecycleLoadedJavaScriptGzipBytes": 58495,
-		"largestRuntimeLazyChunkGzipBytes": 174946,
-		"runtimeVisualPayloadBytes": 195104
+		"initialJavaScriptGzipBytes": 43965,
+		"settlementRouteLabLoadedJavaScriptGzipBytes": 49157,
+		"missionPackageLabLoadedJavaScriptGzipBytes": 48800,
+		"missionLifecycleLoadedJavaScriptGzipBytes": 58132,
+		"largestRuntimeLazyChunkGzipBytes": 15262
 	},
 	"status": {
 		"initialJavaScript": "within-budget",
-		"runtimeInspectorLoadedJavaScript": "within-budget",
-		"recognitionAuditLoadedJavaScript": "within-budget",
 		"settlementRouteLabLoadedJavaScript": "within-budget",
 		"missionPackageLabLoadedJavaScript": "within-budget",
-		"missionLifecycleLoadedJavaScript": "within-budget",
-		"runtimeVisualPayload": "within-budget"
+		"missionLifecycleLoadedJavaScript": "within-budget"
 	}
 }

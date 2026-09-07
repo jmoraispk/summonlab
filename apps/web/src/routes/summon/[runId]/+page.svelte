@@ -413,7 +413,8 @@
 				<code>{snapshot.runId.slice(0, 8)}</code>
 			</div>
 			<nav class="gate-nav" aria-label="Run destinations">
-				<a class="forge-link" href={resolve('/forge')}>Forge</a>
+				<a class="forge-link" href={resolve('/wiki/art/hero-identity-and-evolution')}>Hero roster</a
+				>
 				<a class="mission-link" href={resolve('/mission/[runId]', { runId: snapshot.runId })}
 					>Floor 01</a
 				>

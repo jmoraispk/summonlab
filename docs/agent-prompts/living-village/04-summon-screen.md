@@ -58,7 +58,7 @@ apps/web/src/lib/components/living-village/summon/**
 docs/evidence/living-village-summon-*
 ```
 
-You may read `/visual-lab/summon-card`, current hero assets, summoning/progression wiki pages, and
+You may read current hero assets, summoning/progression wiki pages, and
 the Living Village milestone. Do not edit existing summon routes/APIs, shared layouts, homepage
 navigation, production contracts/economy, catalogs, other lab routes, or another agent's component
 folder. Use route-local typed fixtures and record proposed summon view-model fields in the handoff.

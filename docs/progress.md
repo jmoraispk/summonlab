@@ -131,11 +131,11 @@ Status: **in progress**. The first visual approval checkpoint completed on 2026-
 | `ART-001` | Production art bible fixes palette, line/value/material rules, camera tiers, continuity contract, motion, and approval rubric | [Art bible](art-bible.md) |
 | `ART-002` | `human-v2` preserves `human-v1` bytes while adding deterministic physiology; `human-v3` preserves both older versions while expanding names through an isolated stream; 1,000-seed diversity and 100-seed visible cohort coverage | Character generator, unit tests, and [contact sheet evidence](evidence/phase-3-contact-sheet.png) |
 | `ART-003` | Visual profiles retain identity locks and authored-state metadata; procedural character presentation was retired by ADR 0065 | `CharacterVisualProfileSchema`, asset catalog, and ADR 0065 |
-| `ART-004` | Complete: `/visual-lab` compares assets and records append-only accept/revise notes against exact hashes; `/forge/contact-sheet` prints or downloads a deterministic 100-seed audit; CI verifies source bytes and stale-hash rejection | [Visual lab evidence](evidence/phase-3-visual-lab.png), [contact sheet evidence](evidence/phase-3-contact-sheet.png), ADR 0006 |
+| `ART-004` | Historical: the superseded visual-review and contact-sheet labs were retired after the approved 200-hero roster replaced their experiment outputs | ADR 0006 and Git history |
 | `ART-005` | Two of twelve representative original humans: Mara Vey and Remy Nahl | Anchor and continuity assets under `assets/heroes/visuals` |
-| `ART-006` | Complete: `/visual-lab/summon-card` previews a deterministic manifest-authored image-edit request; paid execution is development-only, one-candidate, cost-acknowledged, no-retry, hash-verified, ephemeral, and non-canonical | [Summon-card lab evidence](evidence/phase-3-summon-card-lab.png), ADR 0007, provider-mock and browser tests |
-| `ART-007` | Complete: approved source assets export as purpose-sized, content-addressed WebP files plus a PixiJS v8 manifest; exact re-encoding and asset/build budgets run in `pnpm check`, while five candidates remain deferred | [Runtime bundle evidence](evidence/phase-3-runtime-bundles.png), [budget report](evidence/phase-3-runtime-budget.json), ADR 0008 |
-| `ART-008` | Historical evidence: a hash-bound seven-case procedural audit covered Mara expressions, camera tiers, equipment, gait, injury, and a 390×844/2× phone profile; ADR 0065 retired that renderer and console while preserving the audit record | [Mobile recognition evidence](evidence/phase-3-recognition-mobile.png), [recognition audit](../assets/heroes/visuals/recognition-audit.json), ADRs 0009–0010 and 0065 |
+| `ART-006` | Historical: the experimental summon-card generator was retired with the Forge packs | ADR 0007 and Git history |
+| `ART-007` | Superseded hero runtime bundles were retired; the canonical 200-hero runtime export remains checked | [Budget report](evidence/phase-3-runtime-budget.json), ADR 0008 |
+| `ART-008` | Historical recognition-audit evidence remains described by its decisions; the generated audit artifact was retired | ADRs 0009–0010 and 0065 |
 
 The image-generation skill produced the five new approval candidates through the built-in path. The
 catalog stores the final normalized prompt set, input references, dimensions, bytes, content hashes,
@@ -145,22 +145,12 @@ unoptimized until the visual gate accepts them.
 ### Reproduce the checkpoint
 
 ```powershell
-pnpm validate:visual-assets
-pnpm validate:recognition-audit
-pnpm dev
+pnpm validate:repository-assets
+pnpm validate:summonable-hero-runtime
 ```
 
-Open `http://localhost:5173/visual-lab`. Switch between Mara and Remy, compare their continuity
-sheets, inspect the settlement-scale recognition limit, and record an accept/revise note. Open
-`http://localhost:5173/forge/contact-sheet` to inspect all 100 manifests, save a PDF, or download the
-hash-bearing JSON audit. Open `http://localhost:5173/visual-lab/summon-card`, switch the identity
-anchor, add optional direction, and rebuild the outbound request without making a provider call.
-Paid execution remains disabled until a local developer explicitly enables it and supplies a key.
-Open `http://localhost:5173/visual-lab/runtime-bundles` to compare the approved Mara anchor at
-summon, dialogue, and roster sizes and verify that PixiJS loads it through the checked-in alias.
-The former procedural recognition route is retired. Review authored anchor, continuity, and
-settlement-scale images in `/visual-lab`; historical seven-case evidence remains preserved but is
-not a current interactive approval surface.
+The retired Forge and Visual Lab surfaces remain recoverable from Git history. Current hero review
+uses the approved roster and wiki.
 
 ## Next active slice
 
@@ -458,8 +448,7 @@ archetypes in four families and a checked Floor 1–20 progression contract with
 skill test, enemy combination, and new pressure on every floor. Prices, final odds, pity, variable
 pulls, on-demand art generation, and production enemy rigs remain explicitly held for review.
 
-Run `pnpm dev:app`; review `/forge` and `/forge/enemies` using the focused actions in
-[`docs/forge-component-review.md`](forge-component-review.md). The checked browser evidence includes
+Run `pnpm dev:app`; review `/forge/enemies`. The checked historical browser evidence includes
 [desktop summons](evidence/phase-7-forge-summons-desktop.png),
 [phone summons](evidence/phase-7-forge-summons-phone.png), and the
 [enemy/progression lab](evidence/phase-7-forge-enemies-desktop.png). ADR 0056 records why this

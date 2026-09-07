@@ -153,7 +153,7 @@
 		<div><span>MIS-005</span><strong>First band atlas</strong></div>
 		<nav aria-label="Mission lab links">
 			<a href={resolve('/settlement-lab')}>Hearth 01</a>
-			<a href={resolve('/forge')}>Forge</a>
+			<a href={resolve('/wiki/art/hero-identity-and-evolution')}>Hero roster</a>
 			<a href={resolve('/design-reference')}>Design reference</a>
 		</nav>
 	</header>

@@ -14,14 +14,9 @@ const generatedNodeRoot = resolve(
 	workspaceRoot,
 	'apps/web/.svelte-kit/generated/client-optimized/nodes'
 );
-const runtimeManifestPath = resolve(
-	workspaceRoot,
-	'apps/web/static/runtime/visual-catalog-v1/manifest.json'
-);
 const reportPath = resolve(workspaceRoot, 'docs/evidence/phase-3-runtime-budget.json');
 
 const manifest = JSON.parse(await readFile(manifestPath, 'utf8'));
-const runtimeManifest = JSON.parse(await readFile(runtimeManifestPath, 'utf8'));
 
 function entryKeyByName(name) {
 	const match = Object.entries(manifest).find(([, entry]) => entry.name === name);
@@ -69,21 +64,17 @@ const startKey = entryKeyByName('entry/start');
 const appKey = entryKeyByName('entry/app');
 const layoutKey = await routeNodeKey('src/routes/+layout.svelte');
 const homeKey = await routeNodeKey('src/routes/+page.svelte');
-const runtimeKey = await routeNodeKey('src/routes/visual-lab/runtime-bundles/+page.svelte');
-// The published evidence key keeps its v1 compatibility name; it now measures the canonical
-// authored-art continuity lab after the dedicated procedural recognition route was retired.
-const recognitionKey = await routeNodeKey('src/routes/visual-lab/+page.svelte');
 const settlementRouteKey = await routeNodeKey('src/routes/settlement-lab/+page.svelte');
 const missionPackageKey = await routeNodeKey('src/routes/mission-lab/+page.svelte');
 const missionLifecycleKey = await routeNodeKey('src/routes/mission/[runId]/+page.svelte');
 const initialEntries = collect([startKey, appKey, layoutKey, homeKey], false);
 const shellEntries = collect([startKey, appKey, layoutKey], false);
-const runtimeEntries = new Set([...shellEntries, ...collect([runtimeKey], true)]);
-const recognitionEntries = new Set([...shellEntries, ...collect([recognitionKey], true)]);
 const settlementRouteEntries = new Set([...shellEntries, ...collect([settlementRouteKey], true)]);
 const missionPackageEntries = new Set([...shellEntries, ...collect([missionPackageKey], true)]);
 const missionLifecycleEntries = new Set([...shellEntries, ...collect([missionLifecycleKey], true)]);
-const lazyEntries = [...runtimeEntries].filter((key) => !initialEntries.has(key));
+const lazyEntries = [
+	...new Set([...settlementRouteEntries, ...missionPackageEntries, ...missionLifecycleEntries])
+].filter((key) => !initialEntries.has(key));
 const lazySizes = await Promise.all(
 	lazyEntries.map(async (key) => ({ key, bytes: await gzipBytes(new Set([key])) }))
 );
@@ -92,48 +83,27 @@ const report = {
 	schemaVersion: 'web-build-budget-v1',
 	budgets: {
 		initialJavaScriptGzipBytes: JAVASCRIPT_BUDGET_BYTES,
-		runtimeInspectorLoadedJavaScriptGzipBytes: JAVASCRIPT_BUDGET_BYTES,
-		recognitionAuditLoadedJavaScriptGzipBytes: JAVASCRIPT_BUDGET_BYTES,
 		settlementRouteLabLoadedJavaScriptGzipBytes: JAVASCRIPT_BUDGET_BYTES,
 		missionPackageLabLoadedJavaScriptGzipBytes: JAVASCRIPT_BUDGET_BYTES,
-		missionLifecycleLoadedJavaScriptGzipBytes: JAVASCRIPT_BUDGET_BYTES,
-		runtimeVisualPayloadBytes: runtimeManifest.initialPayloadBudgetBytes
+		missionLifecycleLoadedJavaScriptGzipBytes: JAVASCRIPT_BUDGET_BYTES
 	},
 	measurements: {
 		initialJavaScriptGzipBytes: await gzipBytes(initialEntries),
-		runtimeInspectorLoadedJavaScriptGzipBytes: await gzipBytes(runtimeEntries),
-		recognitionAuditLoadedJavaScriptGzipBytes: await gzipBytes(recognitionEntries),
 		settlementRouteLabLoadedJavaScriptGzipBytes: await gzipBytes(settlementRouteEntries),
 		missionPackageLabLoadedJavaScriptGzipBytes: await gzipBytes(missionPackageEntries),
 		missionLifecycleLoadedJavaScriptGzipBytes: await gzipBytes(missionLifecycleEntries),
-		largestRuntimeLazyChunkGzipBytes: Math.max(...lazySizes.map(({ bytes }) => bytes)),
-		runtimeVisualPayloadBytes: runtimeManifest.initialPayloadBytes
+		largestRuntimeLazyChunkGzipBytes: Math.max(...lazySizes.map(({ bytes }) => bytes))
 	},
 	status: {
 		initialJavaScript: 'within-budget',
-		runtimeInspectorLoadedJavaScript: 'within-budget',
-		recognitionAuditLoadedJavaScript: 'within-budget',
 		settlementRouteLabLoadedJavaScript: 'within-budget',
 		missionPackageLabLoadedJavaScript: 'within-budget',
-		missionLifecycleLoadedJavaScript: 'within-budget',
-		runtimeVisualPayload: 'within-budget'
+		missionLifecycleLoadedJavaScript: 'within-budget'
 	}
 };
 
 if (report.measurements.initialJavaScriptGzipBytes > report.budgets.initialJavaScriptGzipBytes) {
 	throw new Error('Initial JavaScript exceeds the 700 KB compressed budget');
-}
-if (
-	report.measurements.runtimeInspectorLoadedJavaScriptGzipBytes >
-	report.budgets.runtimeInspectorLoadedJavaScriptGzipBytes
-) {
-	throw new Error('Loaded runtime inspector JavaScript exceeds the 700 KB compressed budget');
-}
-if (
-	report.measurements.recognitionAuditLoadedJavaScriptGzipBytes >
-	report.budgets.recognitionAuditLoadedJavaScriptGzipBytes
-) {
-	throw new Error('Loaded recognition audit JavaScript exceeds the 700 KB compressed budget');
 }
 if (
 	report.measurements.settlementRouteLabLoadedJavaScriptGzipBytes >
@@ -153,10 +123,6 @@ if (
 ) {
 	throw new Error('Loaded mission lifecycle JavaScript exceeds the 700 KB compressed budget');
 }
-if (report.measurements.runtimeVisualPayloadBytes > report.budgets.runtimeVisualPayloadBytes) {
-	throw new Error('Runtime visual payload exceeds the 8 MB phone budget');
-}
-
 const reportText = await format(JSON.stringify(report), {
 	parser: 'json',
 	useTabs: true,
@@ -171,13 +137,9 @@ if (process.argv.includes('--write')) {
 	const stableEvidenceMatches =
 		storedReport.schemaVersion === report.schemaVersion &&
 		JSON.stringify(storedReport.budgets) === JSON.stringify(report.budgets) &&
-		JSON.stringify(storedReport.status) === JSON.stringify(report.status) &&
-		storedReport.measurements.runtimeVisualPayloadBytes ===
-			report.measurements.runtimeVisualPayloadBytes;
+		JSON.stringify(storedReport.status) === JSON.stringify(report.status);
 	const javascriptEvidenceIsCurrent = [
 		'initialJavaScriptGzipBytes',
-		'runtimeInspectorLoadedJavaScriptGzipBytes',
-		'recognitionAuditLoadedJavaScriptGzipBytes',
 		'settlementRouteLabLoadedJavaScriptGzipBytes',
 		'missionPackageLabLoadedJavaScriptGzipBytes',
 		'missionLifecycleLoadedJavaScriptGzipBytes',

@@ -1,0 +1,19 @@
+{
+	"schemaVersion": "enemy-review-benchmarks-v1",
+	"catalogVersion": "character-pack-2-monsters-v1",
+	"assets": [
+		{
+			"assetType": "individual-monster-anchor",
+			"assetKey": "stone-breaker-anchor-v1",
+			"name": "Stone Breaker",
+			"result": "candidate",
+			"humanStatus": "candidate",
+			"sourceOutput": "exec-e2e81a5d-e120-49f7-b7a3-d32028dd5c72.png",
+			"file": "assets/enemies/review/pack-2/benchmarks/stone-breaker-anchor-v1.png",
+			"width": 1024,
+			"height": 1536,
+			"bytes": 2603356,
+			"contentHash": "60f46984679fe5f1bb16d2277b1d1aa7c6ca943f810d22e5dfe0ad82717f92c0"
+		}
+	]
+}

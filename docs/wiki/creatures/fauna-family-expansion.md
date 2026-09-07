@@ -17,7 +17,6 @@ boundary live in the
 Machine-readable family packets live under
 [`assets/enemies/experiments/fauna-family-v1`](../../../assets/enemies/experiments/fauna-family-v1/active-sources.json).
 The immutable candidate matrix remains available in the
-[visual review gallery](../../evidence/fauna-family-v1/index.html) and
 [machine-readable inventory](../../../assets/enemies/experiments/fauna-family-v1/inventory.json).
 The owner's [blanket acceptance](../../evidence/fauna-family-v1/owner-acceptance.md) is bound to the
 [approved-source manifest](../../../assets/enemies/approved/fauna-family-v1/manifest.json) and the
@@ -140,7 +139,8 @@ secondary archetypes. Other bridge expansion work is removed from the active roa
 
 Every one of the 200 active coordinates retains its hash-bound target, exclusive assignment,
 individual PNG candidate, and immutable `family-affinity-result-v1` provenance receipt. The
-[evidence inventory](../../evidence/fauna-family-v1/inventory.json) remains candidate-only history.
+[production inventory](../../../assets/enemies/experiments/fauna-family-v1/inventory.json) remains
+candidate-only history.
 Promotion copies the exact accepted bytes into the approved-source namespace, then derives one
 hash-addressed WebP for the wiki runtime. The promotion does not mutate candidate evidence.
 

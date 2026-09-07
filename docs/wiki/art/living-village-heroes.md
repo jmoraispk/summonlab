@@ -42,7 +42,7 @@ runtime summon pool.
   clothing/equipment state; changing a loadout does not regenerate the person's body or face.
 
 Use the full [art bible](../../art-bible.md) and
-[human art direction](../../character-pack-2-art-direction.md) as the production authority.
+[hero identity and evolution](hero-identity-and-evolution.md) as the production authority.
 
 The candidate [hero rarity frame system](hero-rarity-frames.md) defines the shared 1★–7★ portrait
 frame and deterministic warm-gold star treatment. It remains separate from approved hero identity

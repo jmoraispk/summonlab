@@ -200,7 +200,7 @@
 		<nav>
 			<a href={resolve('/forge/enemies')}>Pack 1 details</a>
 			<a href={resolve('/forge/enemies/pack-2')}>Pack 2 grades</a>
-			<a href={resolve('/forge/pack-2/revision')}>Revision proofs</a>
+			<a href={resolve('/wiki/art/monster-gallery')}>Monster wiki</a>
 		</nav>
 	</header>
 

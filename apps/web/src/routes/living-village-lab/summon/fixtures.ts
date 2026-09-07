@@ -1,9 +1,9 @@
-import daraAnchor from '../../../../../../assets/heroes/visuals/owner-playtest-v1/dara-zev-anchor-v1.png';
-import maraAnchor from '../../../../../../assets/heroes/ember-01-anchor-v1.png';
-import joriAnchor from '../../../../../../assets/heroes/visuals/owner-playtest-v1/jori-daro-anchor-v1.png';
-import kiraAnchor from '../../../../../../assets/heroes/visuals/forge-v2/pilot/kira-toren-anchor-v1.png';
-import ivenAnchor from '../../../../../../assets/heroes/visuals/forge-v2/pilot/iven-orra-anchor-v1.png';
-import remyAnchor from '../../../../../../assets/heroes/visuals/hearth-02-anchor-v1.png';
+import daraAnchor from '../village/cutouts/dara-zev.png';
+import ivenAnchor from '../village/cutouts/iven-orra.png';
+import joriAnchor from '../village/cutouts/jori-daro.png';
+import kiraAnchor from '../village/cutouts/kira-toren.png';
+import maraAnchor from '../village/cutouts/mara-vey.png';
+import remyAnchor from '../village/cutouts/remy-nahl.png';
 
 export type HeroId = 'dara' | 'mara' | 'jori' | 'kira' | 'iven' | 'remy';
 export type RevealDirection = 'gate' | 'constellation' | 'identity';

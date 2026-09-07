@@ -84,8 +84,7 @@
 		<div><span>SET-001 · SET-002</span><strong>Hearth 01 settlement lab</strong></div>
 		<nav aria-label="Settlement lab links">
 			<a href={resolve('/mission-lab')}>Mission lab</a>
-			<a href={resolve('/forge')}>Forge</a>
-			<a href={resolve('/visual-lab')}>Visual continuity</a>
+			<a href={resolve('/wiki/art/hero-identity-and-evolution')}>Hero roster</a>
 			<a href={resolve('/design-reference')}>Design reference</a>
 		</nav>
 	</header>
@@ -379,7 +378,7 @@
 			<code>pnpm validate:settlement-content</code> and
 			<code>pnpm validate:settlement-scene</code> verify topology, layers, assets, and routes.
 		</p>
-		<a href={resolve('/visual-lab')}>Return to the human visual gate →</a>
+		<a href={resolve('/wiki/art/hero-identity-and-evolution')}>Open the hero art direction →</a>
 	</footer>
 </main>
 

@@ -3,12 +3,12 @@
 Status: **approval candidate** for the Phase 3 visual gate.
 
 Pack-specific extensions must preserve this document's identity and representation boundaries. The
-medieval expansion is defined by the [Character Pack 2 art-direction contract](character-pack-2-art-direction.md).
+current canonical hero direction is maintained in the
+[hero identity and evolution wiki](wiki/art/hero-identity-and-evolution.md).
 
 This document converts the broader [visual direction](visual-direction.md) into production rules. It
-applies to original human characters, classic enemy families, the Character Forge, settlement
-scenes, dialogue, summon cards, and later runtime exports. The current review pair is Mara Vey and Remy Nahl in the
-[visual continuity lab](../apps/web/src/routes/visual-lab/+page.svelte).
+applies to original human characters, classic enemy families, settlement scenes, dialogue, summon
+cards, and later runtime exports.
 
 ## Visual thesis
 
@@ -121,9 +121,8 @@ An asset stays an `approval-candidate` until a human accepts it. A failed cue is
 For the current settlement sample, face recognition is intentionally **not claimed**; four other cues
 carry identity at that distance.
 
-The local `/visual-lab` records accept/revise decisions as append-only notes bound to the exact
-catalog version and asset SHA-256. The `/forge/contact-sheet` route prints or exports the deterministic
-100-seed distribution used to catch cohort-level repetition and correlation before portrait work.
+Review decisions must remain bound to exact asset hashes. Retired Visual Lab and Forge evidence is
+recoverable from Git history; current production review uses the approved roster and wiki.
 
 ## Motion
 

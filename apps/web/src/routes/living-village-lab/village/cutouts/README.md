@@ -1,16 +1,16 @@
 # Route-local Village cutouts
 
-These six PNGs are visual-development fixtures for the Living Village lab only: Dara Zev, Mara
-Vey, Jori Daro, Kira Toren, Iven Orra, and Remy Nahl. They are absent from the approved
-summonable-hero roster and must never be imported by `/play` or used as a fallback for a persistent
-Village resident. Canonical playable-hero ownership remains exclusively with
+These six PNGs are retained visual-development fixtures for the Living Village lab only: Dara Zev,
+Mara Vey, Jori Daro, Kira Toren, Iven Orra, and Remy Nahl. They are separate from the approved
+summonable-hero roster and must never be used as a fallback for a persistent Village resident.
+Canonical playable-hero ownership remains exclusively with
 `assets/heroes/approved/summonable-roster-v1/catalog.json` and its runtime derivatives.
 
 The fixtures are alpha-background derivatives of their lab identity anchors. No face, clothing,
 pose, or painted character content was regenerated. Background isolation used `rembg`'s
 `u2net_human_seg` model with alpha matting and edge decontamination.
 
-| Cutout | Approved source |
+| Cutout | Historical source |
 | --- | --- |
 | `dara-zev.png` | `assets/heroes/visuals/owner-playtest-v1/dara-zev-anchor-v1.png` |
 | `mara-vey.png` | `assets/heroes/ember-01-anchor-v1.png` |
@@ -19,5 +19,6 @@ pose, or painted character content was regenerated. Background isolation used `r
 | `iven-orra.png` | `assets/heroes/visuals/forge-v2/pilot/iven-orra-anchor-v1.png` |
 | `remy-nahl.png` | `assets/heroes/visuals/hearth-02-anchor-v1.png` |
 
-The repository's existing source and runtime variants are all opaque RGB images; these derivatives
-remain route-local until an approved shared transparent export exists.
+The source Forge and owner-playtest experiments were retired on 2026-09-07. Their full provenance
+remains recoverable from Git history; these route-local derivatives remain because the lab consumes
+them directly.

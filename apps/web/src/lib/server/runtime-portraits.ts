@@ -1,20 +1,13 @@
-import {
-	RuntimeVisualManifestSchema,
-	SummonableHeroRuntimeManifestSchema,
-	type RuntimeVisualUsage
-} from '@summonlab/contracts';
+import { SummonableHeroRuntimeManifestSchema, type RuntimeVisualUsage } from '@summonlab/contracts';
 
-import runtimeVisualManifestSource from '../../../static/runtime/visual-catalog-v1/manifest.json';
 import summonableHeroRuntimeManifestSource from '../../../static/runtime/summonable-heroes-v1/manifest.json';
 
-const runtimeVisualManifest = RuntimeVisualManifestSchema.parse(runtimeVisualManifestSource);
 const summonableHeroRuntimeManifest = SummonableHeroRuntimeManifestSchema.parse(
 	summonableHeroRuntimeManifestSource
 );
-const runtimePortraits = [
-	...runtimeVisualManifest.bundles.flatMap((bundle) => bundle.assets),
-	...summonableHeroRuntimeManifest.entries.flatMap((entry) => entry.bundle.assets)
-];
+const runtimePortraits = summonableHeroRuntimeManifest.entries.flatMap(
+	(entry) => entry.bundle.assets
+);
 
 export interface RuntimePortrait {
 	readonly publicPath: string;

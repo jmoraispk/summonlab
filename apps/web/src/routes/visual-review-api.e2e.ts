@@ -3,101 +3,7 @@ import { readFile } from 'node:fs/promises';
 
 import { expect, test } from '@playwright/test';
 
-test('records an idempotent review only against the current asset hash', async ({ request }) => {
-	const visualCatalog = JSON.parse(
-		await readFile(
-			new URL('../../../../assets/heroes/visuals/catalog.json', import.meta.url),
-			'utf8'
-		)
-	) as {
-		catalogVersion: string;
-		assets: Array<{ assetKey: string; status: string; contentHash: string }>;
-	};
-	const asset = visualCatalog.assets.find(
-		(candidate) => candidate.status === 'approval-candidate'
-	)!;
-	const payload = {
-		reviewId: randomUUID(),
-		assetKey: asset.assetKey,
-		catalogVersion: visualCatalog.catalogVersion,
-		assetContentHash: asset.contentHash,
-		verdict: 'revise',
-		note: 'Automated API contract proof.',
-		reviewer: 'test:playwright-api'
-	};
-
-	const created = await request.post('/api/dev/visual-reviews', { data: payload });
-	expect(created.status()).toBe(201);
-	expect((await created.json()).reviewId).toBe(payload.reviewId);
-	const retried = await request.post('/api/dev/visual-reviews', { data: payload });
-	expect(retried.status()).toBe(200);
-	const conflicted = await request.post('/api/dev/visual-reviews', {
-		data: { ...payload, note: 'A conflicting retry.' }
-	});
-	expect(conflicted.status()).toBe(409);
-	const stale = await request.post('/api/dev/visual-reviews', {
-		data: { ...payload, reviewId: randomUUID(), assetContentHash: '0'.repeat(64) }
-	});
-	expect(stale.status()).toBe(409);
-
-	const listed = await request.get('/api/dev/visual-reviews?includeAutomated=true');
-	expect(listed.status()).toBe(200);
-	const body = (await listed.json()) as {
-		reviews: Array<{ reviewId: string }>;
-		latestByAsset: Record<string, { reviewId: string }>;
-	};
-	expect(body.reviews.some((review) => review.reviewId === payload.reviewId)).toBe(true);
-	expect(body.latestByAsset[asset.assetKey]).toBeDefined();
-
-	const packTwoCatalog = JSON.parse(
-		await readFile(
-			new URL('../../../../assets/heroes/visuals/forge-v2/catalog.json', import.meta.url),
-			'utf8'
-		)
-	) as {
-		catalogVersion: string;
-		assets: Array<{ assetKey: string; contentHash: string }>;
-	};
-	const packTwoAsset = packTwoCatalog.assets[0]!;
-	const packTwoReview = await request.post('/api/dev/visual-reviews', {
-		data: {
-			...payload,
-			reviewId: randomUUID(),
-			assetKey: packTwoAsset.assetKey,
-			catalogVersion: packTwoCatalog.catalogVersion,
-			assetContentHash: packTwoAsset.contentHash,
-			note: 'Pack 2 catalog routing proof.'
-		}
-	});
-	expect(packTwoReview.status()).toBe(201);
-	const packTwoListed = await request.get(
-		`/api/dev/visual-reviews?catalogVersion=${packTwoCatalog.catalogVersion}&includeAutomated=true`
-	);
-	expect(packTwoListed.status()).toBe(200);
-	expect((await packTwoListed.json()).latestByAsset[packTwoAsset.assetKey]).toBeDefined();
-	const benchmarkSamples = JSON.parse(
-		await readFile(
-			new URL('../../../../assets/benchmarks/pack-two/samples.json', import.meta.url),
-			'utf8'
-		)
-	) as {
-		samples: Array<{ assetType: string; assetKey: string; contentHash: string }>;
-	};
-	const progressionAsset = benchmarkSamples.samples.find(
-		(sample) => sample.assetType === 'evolution-variant'
-	)!;
-	const progressionReview = await request.post('/api/dev/visual-reviews', {
-		data: {
-			...payload,
-			reviewId: randomUUID(),
-			assetKey: progressionAsset.assetKey,
-			catalogVersion: packTwoCatalog.catalogVersion,
-			assetContentHash: progressionAsset.contentHash,
-			note: 'Pack 2 progression-asset routing proof.'
-		}
-	});
-	expect(progressionReview.status()).toBe(201);
-
+test('records reviews only for the retained enemy catalog', async ({ request }) => {
 	const monsterCatalog = JSON.parse(
 		await readFile(
 			new URL('../../../../assets/enemies/review/pack-2/catalog.json', import.meta.url),
@@ -107,62 +13,34 @@ test('records an idempotent review only against the current asset hash', async (
 		catalogVersion: string;
 		plates: Array<{ assetKey: string; contentHash: string }>;
 	};
-	const monsterPlate = monsterCatalog.plates[0]!;
-	const monsterReview = await request.post('/api/dev/visual-reviews', {
-		data: {
-			...payload,
-			reviewId: randomUUID(),
-			assetKey: monsterPlate.assetKey,
-			catalogVersion: monsterCatalog.catalogVersion,
-			assetContentHash: monsterPlate.contentHash,
-			note: 'Monster catalog routing proof.'
-		}
+	const plate = monsterCatalog.plates[0]!;
+	const payload = {
+		reviewId: randomUUID(),
+		assetKey: plate.assetKey,
+		catalogVersion: monsterCatalog.catalogVersion,
+		assetContentHash: plate.contentHash,
+		verdict: 'revise',
+		note: 'Retained monster catalog routing proof.',
+		reviewer: 'test:playwright-api'
+	};
+
+	const created = await request.post('/api/dev/visual-reviews', { data: payload });
+	expect(created.status()).toBe(201);
+	const retried = await request.post('/api/dev/visual-reviews', { data: payload });
+	expect(retried.status()).toBe(200);
+	const stale = await request.post('/api/dev/visual-reviews', {
+		data: { ...payload, reviewId: randomUUID(), assetContentHash: '0'.repeat(64) }
 	});
-	expect(monsterReview.status()).toBe(201);
-	const monsterListed = await request.get(
+	expect(stale.status()).toBe(409);
+
+	const listed = await request.get(
 		`/api/dev/visual-reviews?catalogVersion=${monsterCatalog.catalogVersion}&includeAutomated=true`
 	);
-	expect(monsterListed.status()).toBe(200);
-	expect((await monsterListed.json()).latestByAsset[monsterPlate.assetKey]).toBeDefined();
-	const monsterAnchor = benchmarkSamples.samples.find(
-		(sample) => sample.assetType === 'individual-monster-anchor'
-	)!;
-	const monsterAnchorReview = await request.post('/api/dev/visual-reviews', {
-		data: {
-			...payload,
-			reviewId: randomUUID(),
-			assetKey: monsterAnchor.assetKey,
-			catalogVersion: monsterCatalog.catalogVersion,
-			assetContentHash: monsterAnchor.contentHash,
-			note: 'Pack 2 individual-monster routing proof.'
-		}
-	});
-	expect(monsterAnchorReview.status()).toBe(201);
+	expect(listed.status()).toBe(200);
+	expect((await listed.json()).latestByAsset[plate.assetKey]).toBeDefined();
 
-	const revisionCatalog = JSON.parse(
-		await readFile(
-			new URL('../../../../assets/heroes/visuals/forge-v2/revisions/catalog.json', import.meta.url),
-			'utf8'
-		)
-	) as {
-		catalogVersion: string;
-		assets: Array<{ assetKey: string; contentHash: string }>;
-	};
-	const revisionAsset = revisionCatalog.assets[0]!;
-	const revisionReview = await request.post('/api/dev/visual-reviews', {
-		data: {
-			...payload,
-			reviewId: randomUUID(),
-			assetKey: revisionAsset.assetKey,
-			catalogVersion: revisionCatalog.catalogVersion,
-			assetContentHash: revisionAsset.contentHash,
-			note: 'Pack 2 revision-proof routing proof.'
-		}
-	});
-	expect(revisionReview.status()).toBe(201);
-	const revisionListed = await request.get(
-		`/api/dev/visual-reviews?catalogVersion=${revisionCatalog.catalogVersion}&includeAutomated=true`
+	const retired = await request.get(
+		'/api/dev/visual-reviews?catalogVersion=character-visual-catalog-v1'
 	);
-	expect(revisionListed.status()).toBe(200);
-	expect((await revisionListed.json()).latestByAsset[revisionAsset.assetKey]).toBeDefined();
+	expect(retired.status()).toBe(404);
 });

@@ -33,6 +33,8 @@ export interface RepositoryAssetValidationSummary {
 	readonly approvedHeroCount: number;
 	readonly approvedHeroImageCount: number;
 	readonly approvedHeroBytes: number;
+	readonly retainedHeroVisualImageCount: number;
+	readonly retainedHeroVisualBytes: number;
 	readonly approvedFaunaImageCount: number;
 	readonly approvedFaunaBytes: number;
 	readonly approvedEquipmentImageCount: number;
@@ -134,9 +136,49 @@ export function expectedApprovedHeroVisualPath(heroId: string, role: HeroVisualR
 
 export function findRepositoryAssetPathViolations(paths: readonly string[]): string[] {
 	const violations: string[] = [];
+	const retiredHeroVisualFiles = new Set([
+		'assets/heroes/visuals/catalog.json',
+		'assets/heroes/visuals/recognition-audit.json',
+		'assets/heroes/visuals/ember-01-continuity-v1.png',
+		'assets/heroes/visuals/hearth-02-anchor-v1.png',
+		'assets/heroes/visuals/hearth-02-continuity-v1.png',
+		'assets/heroes/visuals/hearth-roster-pair-v1.png',
+		'assets/heroes/visuals/hearth-settlement-scale-v1.png'
+	]);
+	const supersededAnimationSheets = new Set([
+		'assets/heroes/visuals/realtime-combat-study-v1/animation-canary-v1/asha/asha-motion-sheet-source-v1.png',
+		'assets/heroes/visuals/realtime-combat-study-v1/animation-canary-v1/iron-guardian/iron-guardian-motion-sheet-source-v1.png',
+		'assets/heroes/visuals/realtime-combat-study-v1/animation-canary-v1/iron-guardian/iron-guardian-motion-sheet-source-v2.png',
+		'assets/heroes/visuals/realtime-combat-study-v1/animation-canary-v1/moss-archer/moss-archer-motion-sheet-source-v1.png'
+	]);
 	for (const path of paths) {
 		if (path.startsWith('assets/heroes/experiments/')) {
 			violations.push(`Hero experiment output must not be tracked: ${path}`);
+		}
+		if (
+			path.startsWith('assets/heroes/visuals/forge-v1/') ||
+			path.startsWith('assets/heroes/visuals/forge-v2/') ||
+			path.startsWith('assets/heroes/visuals/owner-playtest-v1/') ||
+			retiredHeroVisualFiles.has(path)
+		) {
+			violations.push(`Retired hero visual path must not be tracked: ${path}`);
+		}
+		if (supersededAnimationSheets.has(path)) {
+			violations.push(`Superseded hero animation sheet must not be tracked: ${path}`);
+		}
+		if (path.startsWith('apps/web/static/runtime/visual-catalog-v1/')) {
+			violations.push(`Retired hero runtime catalog must not be tracked: ${path}`);
+		}
+		if (
+			path.startsWith('apps/web/src/routes/visual-lab/') ||
+			path === 'apps/web/src/routes/visual-lab.e2e.ts' ||
+			(/^apps\/web\/src\/routes\/forge\/(?!enemies(?:\/|$))/u.test(path) &&
+				path !== 'apps/web/src/routes/forge/enemies/+page.svelte') ||
+			path === 'apps/web/src/routes/forge/+page.server.ts' ||
+			path === 'apps/web/src/routes/forge/+page.svelte' ||
+			path === 'apps/web/src/routes/forge/forge.e2e.ts'
+		) {
+			violations.push(`Retired hero review route must not be tracked: ${path}`);
 		}
 		if (path.includes('/__pycache__/') || path.endsWith('.pyc')) {
 			violations.push(`Python cache output must not be tracked: ${path}`);
@@ -555,6 +597,22 @@ export async function validateRepositoryAssets(
 		entry.visuals.summon,
 		entry.visuals.combatChibi
 	]);
+	const retainedHeroVisualPaths = tracked.filter(
+		(path) => path.startsWith('assets/heroes/visuals/') && path.endsWith('.png')
+	);
+	const retainedHeroVisualFilters = lfsFilters(workspaceRoot, retainedHeroVisualPaths);
+	let retainedHeroVisualBytes = 0;
+	for (const path of retainedHeroVisualPaths) {
+		if (retainedHeroVisualFilters.get(path) !== 'lfs') {
+			violations.push(`Retained hero visual PNG is not covered by Git LFS: ${path}`);
+		}
+		retainedHeroVisualBytes += (await stat(resolve(workspaceRoot, path))).size;
+	}
+	if (retainedHeroVisualPaths.length !== 61 || retainedHeroVisualBytes !== 120_449_565) {
+		violations.push(
+			`Retained hero visual set must contain exactly 61 PNGs and 120449565 bytes, found ${retainedHeroVisualPaths.length} PNGs and ${retainedHeroVisualBytes} bytes`
+		);
+	}
 	const approvedFaunaManifest = JSON.parse(
 		await readFile(resolve(workspaceRoot, FAUNA_APPROVED_MANIFEST_PATH), 'utf8')
 	) as { records: Array<{ candidate: { path: string }; approved: { path: string } }> };
@@ -653,6 +711,8 @@ export async function validateRepositoryAssets(
 		approvedHeroCount: catalog.entries.length,
 		approvedHeroImageCount: visualRecords.length,
 		approvedHeroBytes,
+		retainedHeroVisualImageCount: retainedHeroVisualPaths.length,
+		retainedHeroVisualBytes,
 		approvedFaunaImageCount: approvedFauna.approvedCount,
 		approvedFaunaBytes: approvedFauna.approvedBytes,
 		approvedEquipmentImageCount:

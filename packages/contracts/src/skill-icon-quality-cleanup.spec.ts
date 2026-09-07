@@ -243,8 +243,10 @@ describe('skill-icon quality-cleanup contracts', () => {
 		const result = validResult();
 		expect(SkillIconCleanupResultSchema.safeParse(result).success).toBe(true);
 		const { cleanupInterior: _cleanupInterior, ...withoutInteriorEvidence } = result;
+		void _cleanupInterior;
 		expect(SkillIconCleanupResultSchema.safeParse(withoutInteriorEvidence).success).toBe(false);
 		const { compositionAuthority: _compositionAuthority, ...withoutLayerEvidence } = result;
+		void _compositionAuthority;
 		expect(SkillIconCleanupResultSchema.safeParse(withoutLayerEvidence).success).toBe(false);
 		expect(
 			SkillIconCleanupResultSchema.safeParse({

@@ -1,61 +1,29 @@
 import { getConfig } from '@summonlab/config';
-import {
-	CharacterVisualCatalogSchema,
-	VisualReviewCreateRequestSchema,
-	VisualReviewListSchema
-} from '@summonlab/contracts';
+import { VisualReviewCreateRequestSchema, VisualReviewListSchema } from '@summonlab/contracts';
 import {
 	VisualReviewIdempotencyConflictError,
 	createVisualAssetReview,
 	listVisualAssetReviews
 } from '@summonlab/database';
 import { json } from '@sveltejs/kit';
-import visualCatalogSource from '../../../../../../../assets/heroes/visuals/catalog.json';
-import packTwoBenchmarkSource from '../../../../../../../assets/benchmarks/pack-two/samples.json';
-import packTwoCatalogSource from '../../../../../../../assets/heroes/visuals/forge-v2/catalog.json';
-import packTwoRevisionCatalogSource from '../../../../../../../assets/heroes/visuals/forge-v2/revisions/catalog.json';
 import packTwoMonsterCatalogSource from '../../../../../../../assets/enemies/review/pack-2/catalog.json';
+import monsterBenchmarkCatalogSource from '../../../../../../../assets/enemies/review/pack-2/benchmarks/catalog.json';
 
 import type { RequestHandler } from './$types';
 
-const catalog = CharacterVisualCatalogSchema.parse(visualCatalogSource);
-const humanBenchmarkAssets = packTwoBenchmarkSource.samples.filter(
-	(sample) => sample.assetType !== 'individual-monster-anchor'
-);
-const monsterBenchmarkAssets = packTwoBenchmarkSource.samples.filter(
-	(sample) => sample.assetType === 'individual-monster-anchor'
-);
 const supportedCatalogs = new Map([
 	[
-		catalog.catalogVersion,
-		catalog.assets.map((asset) => ({ assetKey: asset.assetKey, contentHash: asset.contentHash }))
-	],
-	[
-		packTwoCatalogSource.catalogVersion,
-		[...packTwoCatalogSource.assets, ...humanBenchmarkAssets].map((asset) => ({
-			assetKey: asset.assetKey,
-			contentHash: asset.contentHash
-		}))
-	],
-	[
 		packTwoMonsterCatalogSource.catalogVersion,
-		[...packTwoMonsterCatalogSource.plates, ...monsterBenchmarkAssets].map((plate) => ({
-			assetKey: plate.assetKey,
-			contentHash: plate.contentHash
-		}))
-	],
-	[
-		packTwoRevisionCatalogSource.catalogVersion,
-		packTwoRevisionCatalogSource.assets.map((asset) => ({
-			assetKey: asset.assetKey,
-			contentHash: asset.contentHash
-		}))
+		[...packTwoMonsterCatalogSource.plates, ...monsterBenchmarkCatalogSource.assets].map(
+			(asset) => ({ assetKey: asset.assetKey, contentHash: asset.contentHash })
+		)
 	]
 ]);
 
 export const GET: RequestHandler = async ({ url }) => {
 	if (!getConfig().devRoutesEnabled) return json({ message: 'Not found.' }, { status: 404 });
-	const catalogVersion = url.searchParams.get('catalogVersion') ?? catalog.catalogVersion;
+	const catalogVersion =
+		url.searchParams.get('catalogVersion') ?? packTwoMonsterCatalogSource.catalogVersion;
 	if (!supportedCatalogs.has(catalogVersion)) {
 		return json({ message: 'Unknown visual catalog.' }, { status: 404 });
 	}

@@ -12,32 +12,12 @@ import { getWikiAsset, getWikiPage } from '$lib/server/wiki';
 import type { PageServerLoad } from './$types';
 
 const visualPacketHeroes = [
-	[
-		'Dara Zev',
-		'assets/heroes/visuals/owner-playtest-v1/dara-zev-anchor-v1.png',
-		'Fixed LV roster · approved identity'
-	],
-	['Mara Vey', 'assets/heroes/ember-01-anchor-v1.png', 'Fixed LV roster · approved identity'],
-	[
-		'Jori Daro',
-		'assets/heroes/visuals/owner-playtest-v1/jori-daro-anchor-v1.png',
-		'Fixed LV roster · approved identity'
-	],
-	[
-		'Kira Toren',
-		'assets/heroes/visuals/forge-v2/pilot/kira-toren-anchor-v1.png',
-		'Fixed LV roster · candidate identity'
-	],
-	[
-		'Iven Orra',
-		'assets/heroes/visuals/forge-v2/pilot/iven-orra-anchor-v1.png',
-		'Fixed LV roster · candidate identity'
-	],
-	[
-		'Remy Nahl',
-		'assets/heroes/visuals/hearth-02-anchor-v1.png',
-		'Fixed LV roster · approval candidate'
-	]
+	['Dara Zev', 'dara-zev.png'],
+	['Mara Vey', 'mara-vey.png'],
+	['Jori Daro', 'jori-daro.png'],
+	['Kira Toren', 'kira-toren.png'],
+	['Iven Orra', 'iven-orra.png'],
+	['Remy Nahl', 'remy-nahl.png']
 ] as const;
 
 export const load = (({ params }) => {
@@ -58,13 +38,14 @@ export const load = (({ params }) => {
 		visualPacket:
 			wikiPage.wikiId === 'art.living-village-heroes'
 				? {
-						heroes: visualPacketHeroes.map(([name, repositoryPath, status]) => ({
+						heroes: visualPacketHeroes.map(([name, fileName]) => ({
 							name,
-							image: getWikiAsset(repositoryPath),
-							status
+							image: getWikiAsset(
+								`apps/web/src/routes/living-village-lab/village/cutouts/${fileName}`
+							),
+							status: 'Retained lab cutout · source in Git history'
 						})),
-						environment: getWikiAsset('assets/settlements/hearth-01/hearth-01-environment-v1.png'),
-						roster: getWikiAsset('assets/heroes/visuals/hearth-roster-pair-v1.png')
+						environment: getWikiAsset('assets/settlements/hearth-01/hearth-01-environment-v1.png')
 					}
 				: null
 	};

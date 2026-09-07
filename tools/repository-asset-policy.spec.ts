@@ -57,6 +57,33 @@ describe('repository asset retention policy', () => {
 		]);
 	});
 
+	it('rejects retired hero Forge, experiment, and superseded animation paths', () => {
+		expect(
+			findRepositoryAssetPathViolations([
+				'assets/heroes/visuals/forge-v1/kavi-garo-anchor-v1.webp',
+				'assets/heroes/visuals/forge-v2/catalog.json',
+				'assets/heroes/visuals/owner-playtest-v1/dara-zev-anchor-v1.png',
+				'assets/heroes/visuals/catalog.json',
+				'assets/heroes/visuals/hearth-roster-pair-v1.png',
+				'assets/heroes/visuals/realtime-combat-study-v1/animation-canary-v1/asha/asha-motion-sheet-source-v1.png',
+				'apps/web/static/runtime/visual-catalog-v1/manifest.json',
+				'apps/web/src/routes/forge/pack-2/+page.svelte',
+				'apps/web/src/routes/visual-lab/+page.svelte',
+				'apps/web/src/routes/forge/enemies/+page.svelte'
+			])
+		).toEqual([
+			'Retired hero visual path must not be tracked: assets/heroes/visuals/forge-v1/kavi-garo-anchor-v1.webp',
+			'Retired hero visual path must not be tracked: assets/heroes/visuals/forge-v2/catalog.json',
+			'Retired hero visual path must not be tracked: assets/heroes/visuals/owner-playtest-v1/dara-zev-anchor-v1.png',
+			'Retired hero visual path must not be tracked: assets/heroes/visuals/catalog.json',
+			'Retired hero visual path must not be tracked: assets/heroes/visuals/hearth-roster-pair-v1.png',
+			'Superseded hero animation sheet must not be tracked: assets/heroes/visuals/realtime-combat-study-v1/animation-canary-v1/asha/asha-motion-sheet-source-v1.png',
+			'Retired hero runtime catalog must not be tracked: apps/web/static/runtime/visual-catalog-v1/manifest.json',
+			'Retired hero review route must not be tracked: apps/web/src/routes/forge/pack-2/+page.svelte',
+			'Retired hero review route must not be tracked: apps/web/src/routes/visual-lab/+page.svelte'
+		]);
+	});
+
 	it('defines stable approved paths for both hero visual roles', () => {
 		expect(expectedApprovedHeroVisualPath('aear-soro', 'summon')).toBe(
 			'assets/heroes/approved/summonable-roster-v1/sources/aear-soro/summon.png'
@@ -114,6 +141,8 @@ describe('repository asset retention policy', () => {
 
 	it('protects the complete canonical family-affinity pack with Git LFS', async () => {
 		await expect(validateRepositoryAssets(process.cwd())).resolves.toMatchObject({
+			retainedHeroVisualImageCount: 61,
+			retainedHeroVisualBytes: 120_449_565,
 			approvedFaunaImageCount: 200,
 			approvedFaunaBytes: 560_162_021,
 			approvedEquipmentImageCount: 168,

@@ -102,8 +102,7 @@
 		<nav>
 			<a href={resolve('/forge/enemies/all')}>All enemies</a>
 			<a href={resolve('/forge/enemies')}>Pack 1 monsters</a>
-			<a href={resolve('/forge/pack-2')}>Pack 2 humans</a>
-			<a href={resolve('/forge/pack-2/revision')}>Revision proofs</a>
+			<a href={resolve('/wiki/art/monster-gallery')}>Monster wiki</a>
 		</nav>
 	</header>
 

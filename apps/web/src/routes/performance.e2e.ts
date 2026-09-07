@@ -183,10 +183,8 @@ test('meets the complete target-phone performance budget', async ({ browser, req
 				encodedBodySize: entry.encodedBodySize
 			}))
 	);
-	const settlementResources = playResources.filter(
-		(resource) =>
-			resource.name.includes('/runtime/settlements/hearth-01/') ||
-			resource.name.includes('/runtime/visual-catalog-v1/hero-ember-01-anchor-v1/dialogue.')
+	const settlementResources = playResources.filter((resource) =>
+		resource.name.includes('/runtime/settlements/hearth-01/')
 	);
 	expect(settlementResources.some((resource) => resource.name.includes('/hearth-01/'))).toBe(true);
 	expect(

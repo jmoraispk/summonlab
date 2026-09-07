@@ -59,8 +59,8 @@ jobs:
       - name: Validate visual assets
         run: >-
           pnpm validate:wiki-skill-visual-catalog &&
-          pnpm validate:visual-assets &&
-          pnpm validate:runtime-visuals &&
+          pnpm validate:repository-assets &&
+          pnpm validate:summonable-hero-runtime &&
           pnpm validate:player-visuals &&
           pnpm validate:phone-performance
 

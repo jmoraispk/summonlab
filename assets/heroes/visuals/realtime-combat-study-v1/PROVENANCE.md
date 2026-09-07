@@ -9,6 +9,11 @@
 
 The two gameplay recordings used for motion and camera study are reference-only and are not copied into the repository. No Last Asylum assets, packages, extracted data, or screenshots ship with this study.
 
+On 2026-09-07 the superseded Asha v1, iron-guardian v1/v2, and moss-archer v1 motion sheets were
+removed from the current tree. Their hashes and production history remain below for auditability and
+the files remain recoverable from Git history. Later accepted sheets, strips, support records, and
+the complete realtime-combat runtime study remain active.
+
 ## Generated derivatives
 
 All generated images below were produced with the built-in Codex image generation tool on 2026-09-03. Generation originals remain in Codex-managed storage; gameplay-ready copies live under `apps/web/static/runtime/combat/realtime-study-v1/`.

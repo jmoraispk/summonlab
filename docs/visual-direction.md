@@ -1,8 +1,8 @@
 # Visual direction
 
 The production rules derived from this direction live in the
-[Summonlab art bible](art-bible.md). The Phase 3 approval pair and scale studies are available in the
-local `/visual-lab` route.
+[Summonlab art bible](art-bible.md). Current hero identity and scale direction is maintained in the
+[hero identity and evolution wiki](wiki/art/hero-identity-and-evolution.md).
 
 ## Prototype
 

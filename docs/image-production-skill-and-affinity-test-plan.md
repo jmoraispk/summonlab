@@ -9,10 +9,10 @@ Scope: reusable image-production skill, structured target manifests, elemental-a
 species preservation, compound goblin variation, parallel image-generation workloads, provenance,
 review, and concurrency measurement.
 
-This is a post-production extension of [Character Pack 2](character-pack-2-plan.md). It uses the
-accepted Pack 2 monster language as a controlled test bed without changing or automatically
-promoting any accepted Pack 2 candidate. Generated results remain experimental approval candidates
-until a human records a review decision.
+This is a post-production extension of the retained Pack 2 monster language. It uses that monster
+language as a controlled test bed without changing or automatically promoting any accepted Pack 2
+candidate. Generated results remain experimental approval candidates until a human records a review
+decision.
 
 ## Execution record
 

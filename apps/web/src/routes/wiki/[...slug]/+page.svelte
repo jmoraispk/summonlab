@@ -36,9 +36,8 @@
 				<p>Visual production packet · Living Village v1</p>
 				<h1>Six lives.<br />One recognizable company.</h1>
 				<span>
-					This is the complete prototype roster. Summoning reveals only these six persistent
-					identities; production may finish their cross-surface assets, but it will not generate new
-					faces for Living Village.
+					These six retained cutouts are the Living Village lab fixture. The approved summonable
+					catalog contains the full 200-hero roster.
 				</span>
 			</header>
 		</section>
@@ -46,10 +45,10 @@
 		<section class="reference-cohort" aria-labelledby="cohort-heading">
 			<header>
 				<div>
-					<p>Fixed prototype cohort</p>
+					<p>Retained prototype cohort</p>
 					<h2 id="cohort-heading">The Living Village six</h2>
 				</div>
-				<span>Roster fixed · asset approval varies</span>
+				<span>Lab fixture · canonical roster documented separately</span>
 			</header>
 			<div class="hero-grid">
 				{#each data.visualPacket.heroes as hero, index (hero.name)}
@@ -65,20 +64,6 @@
 					</figure>
 				{/each}
 			</div>
-			<figure class="continuity">
-				<img
-					src={data.visualPacket.roster}
-					alt="Two hero candidates together before the Hearth gate"
-					width="1536"
-					height="1024"
-					loading="lazy"
-				/>
-				<figcaption>
-					<span>Cohort proof</span><strong
-						>Identity must survive shared scale, lighting, and distance.</strong
-					>
-				</figcaption>
-			</figure>
 		</section>
 	{/if}
 
@@ -245,42 +230,13 @@
 		font-size: 1.28rem;
 		font-weight: 400;
 	}
-	.hero-grid span,
-	.continuity figcaption span {
+	.hero-grid span {
 		color: #d4773d;
 		font:
 			0.62rem ui-monospace,
 			monospace;
 		letter-spacing: 0.09em;
 		text-transform: uppercase;
-	}
-	.continuity {
-		position: relative;
-		margin: 2rem 0 0;
-		overflow: hidden;
-	}
-	.continuity img {
-		display: block;
-		width: 100%;
-		max-height: 42rem;
-		object-fit: cover;
-		filter: saturate(0.72);
-	}
-	.continuity figcaption {
-		position: absolute;
-		right: 0;
-		bottom: 0;
-		left: 0;
-		display: flex;
-		flex-direction: column;
-		gap: 0.4rem;
-		padding: 5rem 1.5rem 1.3rem;
-		background: linear-gradient(transparent, rgba(6, 5, 4, 0.94));
-	}
-	.continuity figcaption strong {
-		font-family: Georgia, serif;
-		font-size: clamp(1.3rem, 2.4vw, 2.2rem);
-		font-weight: 400;
 	}
 	.wiki-article {
 		width: min(76rem, calc(100% - 2rem));

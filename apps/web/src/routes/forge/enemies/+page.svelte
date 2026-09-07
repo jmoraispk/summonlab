@@ -42,9 +42,7 @@
 		<nav>
 			<a href={resolve('/forge/enemies/all')}>All enemies</a>
 			<a href={resolve('/forge/enemies/pack-2')}>Pack 2 monsters</a>
-			<a href={resolve('/forge')}>Hero summons</a><a href={resolve('/forge/contact-sheet')}
-				>Seed audit</a
-			>
+			<a href={resolve('/wiki/art/monster-gallery')}>Monster wiki</a>
 		</nav>
 	</header>
 
@@ -150,7 +148,7 @@
 				Floor 10, 35 at Floor 50, and 70 at Floor 100. Every fifth floor is a threshold; every tenth
 				is a boss and promotion-readiness check.
 			</p>
-			<a href={resolve('/forge')}>Return to hero summons <span>→</span></a>
+			<a href={resolve('/wiki/art/monster-gallery')}>Open the monster wiki <span>→</span></a>
 		</footer>
 	</section>
 </main>
