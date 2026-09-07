@@ -106,6 +106,25 @@ const ACTION = {
 } as const satisfies CombatLegalAction;
 
 describe('agent-readiness one-tick cohorts', () => {
+	it('rejects a schema-valid capped value that contradicts the exact authoritative numerator', () => {
+		const arranged = state({
+			[ID.hero]: {
+				...combatant(ID.hero),
+				readiness: { value: 0, exactNumerator: 10_000, recoveryUntilTick: 0 }
+			}
+		});
+		const before = hashCanonical(arranged);
+		const result = advanceUntilReadyCohort(arranged, COMBAT_RULES_V1);
+		expect(result.kind).toBe('combat-result');
+		if (result.kind !== 'combat-result') return;
+		expect(result.result.safetyStop?.reason).toBe('invalid-state');
+		expect(result.state.tick).toBe(0);
+		expect(result.state.combatants[ID.hero]?.readiness).toStrictEqual(
+			arranged.combatants[ID.hero]?.readiness
+		);
+		expect(hashCanonical(arranged)).toBe(before);
+	});
+
 	it('stops on the first crossing tick and never emits an actor before it is ready', () => {
 		const result = advanceUntilReadyCohort(
 			state({ [ID.hero]: combatant(ID.hero, { readiness: 9_000, agility: 1 }) }),
@@ -172,7 +191,10 @@ describe('agent-readiness one-tick cohorts', () => {
 		expect(ready.state.combatants[ID.hero]?.readiness.recoveryUntilTick).toBe(0);
 		expect(ready.state.combatants[ID.hero]?.readiness.exactNumerator).toBe(10_001);
 
-		const afterChoice = applyReadinessActionCost(ready.state, ID.hero, ACTION, COMBAT_RULES_V1);
+		const paid = applyReadinessActionCost(ready.state, ID.hero, ACTION, COMBAT_RULES_V1);
+		expect(paid.kind).toBe('applied');
+		if (paid.kind !== 'applied') return;
+		const afterChoice = paid.state;
 		expect(afterChoice.combatants[ID.hero]?.readiness).toStrictEqual({
 			value: 1,
 			exactNumerator: 1,
@@ -298,8 +320,10 @@ describe('agent-readiness one-tick cohorts', () => {
 		);
 		expect(first.kind).toBe('decision-window');
 		if (first.kind !== 'decision-window') return;
-		const afterChoice = applyReadinessActionCost(first.state, ID.hero, ACTION, COMBAT_RULES_V1);
-		const second = advanceUntilReadyCohort(afterChoice, COMBAT_RULES_V1);
+		const paid = applyReadinessActionCost(first.state, ID.hero, ACTION, COMBAT_RULES_V1);
+		expect(paid.kind).toBe('applied');
+		if (paid.kind !== 'applied') return;
+		const second = advanceUntilReadyCohort(paid.state, COMBAT_RULES_V1);
 		expect(second.kind).toBe('decision-window');
 		if (second.kind !== 'decision-window') return;
 		expect(second.state.tick).toBe(104);
@@ -401,6 +425,197 @@ describe('agent-readiness one-tick cohorts', () => {
 		expect(result.result).not.toHaveProperty('timeout');
 		expect(result.state.status).toBe('complete');
 		expect(result.state.result).toStrictEqual(result.result);
+	});
+
+	it.each([
+		[
+			'tick increment',
+			state(
+				{ [ID.hero]: combatant(ID.hero) },
+				{
+					tick: Number.MAX_SAFE_INTEGER,
+					safety: { ticksAdvanced: 0, eventsEmitted: 0, noProgressCycles: 0 }
+				}
+			),
+			COMBAT_RULES_V1
+		],
+		[
+			'gain multiplication',
+			state({ [ID.hero]: combatant(ID.hero) }),
+			{
+				...COMBAT_RULES_V1,
+				readiness: {
+					...COMBAT_RULES_V1.readiness,
+					threshold: Number.MAX_SAFE_INTEGER,
+					agilityGainPerTick: Number.MAX_SAFE_INTEGER
+				}
+			}
+		],
+		[
+			'numerator gain',
+			state({
+				[ID.hero]: {
+					...combatant(ID.hero),
+					readiness: {
+						value: Number.MAX_SAFE_INTEGER - 1,
+						exactNumerator: Number.MAX_SAFE_INTEGER - 1,
+						recoveryUntilTick: 0
+					}
+				}
+			}),
+			{
+				...COMBAT_RULES_V1,
+				readiness: { ...COMBAT_RULES_V1.readiness, threshold: Number.MAX_SAFE_INTEGER }
+			}
+		],
+		[
+			'scheduled event counter',
+			state(
+				{ [ID.hero]: combatant(ID.hero) },
+				{
+					safety: {
+						ticksAdvanced: 0,
+						eventsEmitted: Number.MAX_SAFE_INTEGER,
+						noProgressCycles: 0
+					},
+					scheduledEffects: [
+						{
+							scheduledEffectId: ID.effect,
+							resolvesAtTick: 0,
+							sourceCombatantId: ID.monster,
+							effects: [
+								{
+									kind: 'resource',
+									combatantId: ID.hero,
+									resource: 'mana',
+									before: 10,
+									after: 9,
+									delta: -1
+								}
+							]
+						}
+					]
+				}
+			),
+			{
+				...COMBAT_RULES_V1,
+				readiness: {
+					...COMBAT_RULES_V1.readiness,
+					safety: {
+						...COMBAT_RULES_V1.readiness.safety,
+						maximumEventsEmitted: Number.MAX_SAFE_INTEGER
+					}
+				}
+			}
+		]
+	] as const)(
+		'returns an arithmetic safety stop before unsafe %s mutation',
+		(_label, arranged, rules) => {
+			const before = hashCanonical(arranged);
+			const result = advanceUntilReadyCohort(arranged, rules);
+			expect(result.kind).toBe('combat-result');
+			if (result.kind !== 'combat-result') return;
+			expect(result.result.safetyStop?.reason).toBe('arithmetic-overflow');
+			expect(result.state.tick).toBe(arranged.tick);
+			expect(result.state.combatants).toStrictEqual(arranged.combatants);
+			expect(hashCanonical(arranged)).toBe(before);
+		}
+	);
+
+	it('resolves a scheduled effect at the final safe tick without overflowing time', () => {
+		const result = advanceUntilReadyCohort(
+			state(
+				{ [ID.hero]: combatant(ID.hero, { readiness: 9_899, agility: 1 }) },
+				{
+					tick: Number.MAX_SAFE_INTEGER - 1,
+					scheduledEffects: [
+						{
+							scheduledEffectId: ID.effect,
+							resolvesAtTick: Number.MAX_SAFE_INTEGER,
+							sourceCombatantId: ID.monster,
+							effects: [
+								{
+									kind: 'resource',
+									combatantId: ID.hero,
+									resource: 'mana',
+									before: 10,
+									after: 9,
+									delta: -1
+								}
+							]
+						}
+					]
+				}
+			),
+			COMBAT_RULES_V1
+		);
+		expect(result.kind).toBe('decision-window');
+		expect(result.state.tick).toBe(Number.MAX_SAFE_INTEGER);
+		expect(result.state.safety.eventsEmitted).toBe(1);
+		expect(result.state.scheduledEffects).toStrictEqual([]);
+	});
+
+	it('returns an arithmetic safety stop before recovery would overflow the tick domain', () => {
+		const arranged = state(
+			{ [ID.hero]: combatant(ID.hero, { readiness: 10_000 }) },
+			{ tick: Number.MAX_SAFE_INTEGER - 1 }
+		);
+		const result = applyReadinessActionCost(arranged, ID.hero, ACTION, COMBAT_RULES_V1);
+		expect(result.kind).toBe('combat-result');
+		if (result.kind !== 'combat-result') return;
+		expect(result.result.safetyStop?.reason).toBe('arithmetic-overflow');
+		expect(result.state.tick).toBe(arranged.tick);
+		expect(result.state.combatants[ID.hero]?.readiness).toStrictEqual(
+			arranged.combatants[ID.hero]?.readiness
+		);
+	});
+
+	it('returns a typed invalid-state stop when action payment is requested before exact readiness', () => {
+		const arranged = state({ [ID.hero]: combatant(ID.hero, { readiness: 9_999 }) });
+		const result = applyReadinessActionCost(arranged, ID.hero, ACTION, COMBAT_RULES_V1);
+		expect(result.kind).toBe('combat-result');
+		if (result.kind !== 'combat-result') return;
+		expect(result.result.safetyStop?.reason).toBe('invalid-state');
+		expect(result.state.combatants[ID.hero]?.readiness).toStrictEqual(
+			arranged.combatants[ID.hero]?.readiness
+		);
+	});
+
+	it.each([
+		['outside the arena', { x: 8, y: 1 }],
+		['onto an occupied tile', { x: 2, y: 1 }],
+		['onto blocked terrain', { x: 4, y: 1 }]
+	] as const)('safety-stops a scheduled move %s before spatial mutation', (_label, destination) => {
+		const arranged = {
+			...state({
+				[ID.hero]: combatant(ID.hero),
+				[ID.ally]: combatant(ID.ally)
+			}),
+			terrain: { width: 8, height: 8, blockedTiles: [{ x: 4, y: 1 }], features: [] },
+			scheduledEffects: [
+				{
+					scheduledEffectId: ID.effect,
+					resolvesAtTick: 0,
+					sourceCombatantId: ID.monster,
+					effects: [
+						{
+							kind: 'position' as const,
+							combatantId: ID.hero,
+							before: { x: 1, y: 1 },
+							after: destination
+						}
+					]
+				}
+			]
+		};
+		const before = hashCanonical(arranged);
+		const result = advanceUntilReadyCohort(arranged, COMBAT_RULES_V1);
+		expect(result.kind).toBe('combat-result');
+		if (result.kind !== 'combat-result') return;
+		expect(result.result.safetyStop?.reason).toBe('invalid-scheduled-effect');
+		expect(result.state.combatants[ID.hero]?.position).toStrictEqual({ x: 1, y: 1 });
+		expect(result.state.combatants[ID.ally]?.position).toStrictEqual({ x: 2, y: 1 });
+		expect(hashCanonical(arranged)).toBe(before);
 	});
 
 	it('is pure and retains exact numerators only in authoritative state', () => {

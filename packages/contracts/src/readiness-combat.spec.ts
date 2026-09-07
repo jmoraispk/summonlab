@@ -216,6 +216,18 @@ describe('readiness combat contracts', () => {
 				...state,
 				combatants: {
 					...state.combatants,
+					[ID.hero]: {
+						...hero,
+						readiness: { ...hero.readiness, value: 10_000, exactNumerator: 9_999 }
+					}
+				}
+			}).success
+		).toBe(false);
+		expect(
+			ReadinessCombatStateV1Schema.safeParse({
+				...state,
+				combatants: {
+					...state.combatants,
 					[ID.hero]: { ...hero, lastDamagedAtTick: state.tick + 1 }
 				}
 			}).success
@@ -368,6 +380,9 @@ describe('readiness combat contracts', () => {
 			noProgressCycles: 10
 		} as const;
 		expect(CombatSafetyStopSchema.parse(stop)).toStrictEqual(stop);
+		for (const reason of ['invalid-state', 'arithmetic-overflow', 'invalid-scheduled-effect']) {
+			expect(CombatSafetyStopSchema.safeParse({ ...stop, reason }).success).toBe(true);
+		}
 		expect(
 			CombatClaimSchema.parse({
 				claimVersion: 'combat-claim-v1',

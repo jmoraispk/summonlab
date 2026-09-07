@@ -39,7 +39,10 @@ export const CombatReadinessSchema = z
 		exactNumerator: z.number().int().nonnegative(),
 		recoveryUntilTick: TickSchema
 	})
-	.strict();
+	.strict()
+	.refine((readiness) => readiness.value <= readiness.exactNumerator, {
+		message: 'Capped readiness cannot exceed its exact authoritative numerator'
+	});
 
 export const CombatConditionSchema = z
 	.object({
@@ -484,7 +487,15 @@ export const CombatSafetyCountersSchema = z
 
 export const CombatSafetyStopSchema = CombatSafetyCountersSchema.extend({
 	safetyStopVersion: z.literal('combat-safety-stop-v1'),
-	reason: z.enum(['total-ticks', 'emitted-events', 'no-progress-cycles', 'provider-budget']),
+	reason: z.enum([
+		'total-ticks',
+		'emitted-events',
+		'no-progress-cycles',
+		'provider-budget',
+		'invalid-state',
+		'arithmetic-overflow',
+		'invalid-scheduled-effect'
+	]),
 	disposition: z.enum(['stalemate', 'forced-retreat', 'diagnostic'])
 }).strict();
 
