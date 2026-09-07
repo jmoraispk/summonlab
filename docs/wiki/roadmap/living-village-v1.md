@@ -20,10 +20,17 @@ the wiki and may continue through independent design or concept-art work.
 | Tower species hunts | `on` | Sequential Floors 1–10 expose known species hunts with a remaining-Health return threshold and material haul |
 | Material inventory | `partial` | Engine-v24 persists bounded seeded material lots and exposes their Forging uses; full Gathering acquisition is not implemented |
 | Forging and Gathering loop | `partial` | Standard Forging consumes one seeded rank-bearing lot; Gathering remains the enabled source family but has no complete node/harvest economy yet |
-| Combat | `placeholder` | Forthcoming combat design plugs into a deterministic request/receipt boundary; a transparent mathematical resolver may prove integration first |
+| Combat | `on` | Shipped operator-owned `legacy-auto-v1` is the beta default; **Continue battle** advances its automatic seeded policy, while `agent-readiness-v1` remains planned and unavailable |
 | Rewards and engagement | `placeholder` | First-clear, training, repeat-hunt, material, and daily-return claims use a small versioned reward table |
 | Save/reload/replay | `on` | Canonical state and deterministic receipts survive reload |
 | Core visuals | `on` | The fixed six heroes, three runtime monster races, initial skill effects/icons, 140 lazy Equipment card/detail pairs, one Hearth, one tower backdrop |
+
+Combat mode is release configuration, not a player preference. Each prepared attempt stores its
+mode/rules/content binding; a later operator-default change cannot switch an active attempt. The
+player cannot submit a mode, actor action, target, policy, or choice batch. Per-hero intent calls,
+readiness windows, collision arbitration, and purpose-keyed hit/critical resolution belong to the
+[agent-readiness combat plan](../../superpowers/plans/2026-09-06-agent-readiness-combat.md), not this
+shipped legacy slice.
 
 ## Fixed hero roster
 
@@ -84,7 +91,7 @@ runtime command is a deterministic rejection, not a hidden no-op.
 | Hero promotion above the first band | `off` | Runtime remains 1★ and levels 1–10 |
 | Synthesis | `off` | Irreversible social/economic loop is not needed for v1 |
 | Portals, neighbors, airships, and mounts | `off` | Later world/base milestones |
-| Permanent death, injury, and recovery | `off` | Return resets Health and Mana in the placeholder loop |
+| Permanent death, injury, and recovery | `off` | Return resets Health and Mana in the legacy automatic loop |
 
 ## Reward decisions
 

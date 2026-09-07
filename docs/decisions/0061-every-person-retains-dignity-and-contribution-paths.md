@@ -22,14 +22,23 @@ disposable labor and turn capability into a human-value score.
   output.
 - Specialists have opportunity costs, and other people can own routine or overlooked work, improve
   it, and develop expertise. This is revisable comparative advantage, not permanent caste.
-- Insight remains a mechanical attribute for explicit checks, learning, perception, and evidence;
-  there is no IQ, genetic quality, or worth statistic.
+- Learning differences belong to a hidden bounded cognitive factor and separate domain aptitudes,
+  not to a visible combat attribute. There is no player-facing IQ, genetic quality, or worth
+  statistic, and the learning profile never changes model reasoning or human value.
 - All heroes can learn non-exclusive skills. They may request development or reassignment, refuse,
   change goals, become bored, or react when a system undervalues them.
 - Quiet civic contributions, teaching, knowledge, relationships, and institutional memory must
   remain mechanically legible enough that higher rarity does not erase them.
 - Systems may portray exploitation, but its personal and institutional consequences remain causal;
   the game does not endorse it through a hidden optimal bonus.
+
+## Supersession
+
+[ADR 0072](0072-four-attributes-and-operator-owned-combat-modes.md) supersedes only this record's
+earlier treatment of Insight as a mechanical attribute. Might, Vitality, Agility, and Spirit are the
+four visible combat attributes; learning uses the separate hidden profile described above. The
+intrinsic-dignity principle, revisable contribution paths, and every other decision in this record
+remain accepted.
 
 ## Consequences
 
