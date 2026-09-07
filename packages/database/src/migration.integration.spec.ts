@@ -140,6 +140,69 @@ describe.sequential('database migration', () => {
 		}
 	);
 
+	run('rejects combat-shaped legacy jobs and non-combat v3 jobs at the SQL boundary', async () => {
+		if (!databaseUrl) throw new Error('TEST_DATABASE_URL is required');
+		const sql = postgres(databaseUrl, { max: 1 });
+		const runId = randomUUID();
+		const windowId = randomUUID();
+		const actorId = randomUUID();
+		const attemptId = randomUUID();
+		const hash = 'e'.repeat(64);
+		try {
+			await sql`
+				insert into summonlab_proof_runs (
+					run_id, control_mode, recipe, manifest, mind, manifest_hash, first_observation
+				) values (${runId}, 'wait', ${sql.json({})}, ${sql.json({})}, ${sql.json({})},
+					${hash}, 'constraint fixture')
+			`;
+			await sql`
+				insert into summonlab_engine_runs (
+					run_id, seed, content_version, status, version, event_cursor, entropy_cursor,
+					simulated_at, state_hash
+				) values (${runId}, 'seed', 'engine-v26', 'active', 0, 1, 0, now(), ${hash})
+			`;
+			await sql`
+				insert into summonlab_combat_decision_windows (
+					window_id, run_id, attempt_id, tick, snapshot_hash, expected_run_version,
+					expected_event_cursor, snapshot
+				) values (${windowId}, ${runId}, ${attemptId}, 0, ${hash}, 0, 1, ${sql.json({})})
+			`;
+
+			const v2JobId = randomUUID();
+			await expect(
+				sql`
+					insert into summonlab_decision_jobs (
+						decision_job_id, schema_version, root_job_id, run_id, hero_id, decision_kind,
+						requested_policy, expected_run_version, expected_event_cursor,
+						decision_game_time, packet_id, packet_hash, state_hash, legal_action_hash,
+						prompt_version, context_policy_version, packet
+					) values (${v2JobId}, 'decision-job-v2', ${v2JobId}, ${runId}, ${actorId},
+						'combat-action', 'scripted', 0, 1, now(), ${randomUUID()}, ${hash}, ${hash},
+						${hash}, 'legacy-prompt-v1', 'legacy-context-v1', ${sql.json({})})
+				`
+			).rejects.toMatchObject({ code: '23514' });
+
+			const v3JobId = randomUUID();
+			await expect(
+				sql`
+					insert into summonlab_decision_jobs (
+						decision_job_id, schema_version, root_job_id, run_id, hero_id, decision_kind,
+						requested_policy, expected_run_version, expected_event_cursor,
+						decision_game_time, packet_id, packet_hash, state_hash, legal_action_hash,
+						prompt_version, context_policy_version, packet, window_id, actor_view_hash,
+						deterministic_fallback
+					) values (${v3JobId}, 'decision-job-v3', ${v3JobId}, ${runId}, ${actorId},
+						'settlement-action', 'scripted', 0, 1, now(), ${windowId}, ${hash}, ${hash},
+						${hash}, 'combat-action-prompt-v1', 'actor-decision-view-v1', ${sql.json({})},
+						${windowId}, ${hash}, ${sql.json({})})
+				`
+			).rejects.toMatchObject({ code: '23514' });
+		} finally {
+			await sql`delete from summonlab_proof_runs where run_id = ${runId}`;
+			await sql.end({ timeout: 5 });
+		}
+	});
+
 	run('recovers the combat migration ledger with v3 rows present and then no-ops', async () => {
 		if (!databaseUrl) throw new Error('TEST_DATABASE_URL is required');
 		const sql = postgres(databaseUrl, { max: 1 });

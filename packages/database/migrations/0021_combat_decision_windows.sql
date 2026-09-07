@@ -12,6 +12,8 @@ create table if not exists summonlab_combat_decision_windows (
   choice_batch jsonb,
   batch_hash text check (batch_hash ~ '^[a-f0-9]{64}$'),
   applied_event_cursor integer check (applied_event_cursor > 0),
+  applied_command_id uuid,
+  applied_event_id uuid,
   ready_at timestamptz,
   applied_at timestamptz,
   created_at timestamptz not null default now(),
@@ -22,6 +24,41 @@ create table if not exists summonlab_combat_decision_windows (
   check ((status = 'applied') = (applied_event_cursor is not null)),
   check ((applied_event_cursor is null) = (applied_at is null))
 );
+
+alter table summonlab_combat_decision_windows
+  add column if not exists applied_command_id uuid,
+  add column if not exists applied_event_id uuid;
+
+do $migration$
+begin
+  if not exists (
+    select 1 from pg_constraint where conname = 'summonlab_combat_windows_applied_command_fk'
+  ) then
+    alter table summonlab_combat_decision_windows
+      add constraint summonlab_combat_windows_applied_command_fk
+      foreign key (applied_command_id) references summonlab_engine_commands(command_id);
+  end if;
+  if not exists (
+    select 1 from pg_constraint where conname = 'summonlab_combat_windows_applied_event_fk'
+  ) then
+    alter table summonlab_combat_decision_windows
+      add constraint summonlab_combat_windows_applied_event_fk
+      foreign key (applied_event_id) references summonlab_engine_events(event_id);
+  end if;
+  if not exists (
+    select 1 from pg_constraint where conname = 'summonlab_combat_windows_applied_receipt_check'
+  ) then
+    alter table summonlab_combat_decision_windows
+      add constraint summonlab_combat_windows_applied_receipt_check check (
+        (status = 'applied') = (
+          applied_event_cursor is not null
+          and applied_command_id is not null
+          and applied_event_id is not null
+        )
+      );
+  end if;
+end
+$migration$;
 
 alter table summonlab_decision_jobs
   add column if not exists window_id uuid,
@@ -67,6 +104,9 @@ alter table summonlab_decision_jobs
   add constraint summonlab_decision_jobs_combat_binding_check
     check (
       (schema_version in ('decision-job-v1', 'decision-job-v2')
+        and decision_kind in (
+          'settlement-action', 'mission-action', 'conversation-response', 'story-expression'
+        )
         and window_id is null and actor_view_hash is null and deterministic_fallback is null)
       or
       (schema_version = 'decision-job-v3' and decision_kind = 'combat-action'
@@ -80,6 +120,13 @@ create unique index if not exists summonlab_decision_jobs_window_actor
 
 create index if not exists summonlab_combat_decision_windows_run_status
   on summonlab_combat_decision_windows(run_id, status, created_at, window_id);
+
+alter table summonlab_engine_events
+  drop constraint if exists summonlab_engine_events_event_type_check;
+
+alter table summonlab_engine_events
+  add constraint summonlab_engine_events_event_type_check
+  check (event_type ~ '^[a-z][a-z0-9.-]{2,99}$');
 
 comment on table summonlab_combat_decision_windows is
   'One frozen readiness cohort. Actor jobs may finish in any order; only a bound complete batch becomes ready.';

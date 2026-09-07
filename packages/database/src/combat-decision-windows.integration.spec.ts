@@ -18,7 +18,8 @@ import {
 	getCombatDecisionWindow,
 	queueCombatDecisionJob,
 	recoverExpiredCombatDecisionJobs,
-	refreshCombatDecisionWindow
+	refreshCombatDecisionWindow,
+	type CombatDecisionBatchCommit
 } from './combat-decision-windows.js';
 import { listDispatchableDecisionJobIds } from './decision-jobs.js';
 
@@ -168,6 +169,52 @@ async function insertRun(runId: string): Promise<void> {
 	}
 }
 
+function persistBatchEvent(failAfterWrite = false): CombatDecisionBatchCommit {
+	return async (transaction, command) => {
+		const eventId = randomUUID();
+		const afterStateHash = 'c'.repeat(64);
+		await transaction`
+			insert into summonlab_engine_commands (
+				command_id, run_id, expected_version, command_type, command, correlation_id,
+				accepted_sequence
+			) values (${command.commandId}, ${command.runId}, ${command.expectedVersion},
+				${command.commandType}, ${transaction.json(command as never)}, ${command.correlationId}, 5)
+		`;
+		await transaction`
+			insert into summonlab_engine_events (
+				event_id, run_id, sequence, schema_version, event_type, simulated_at, actor_id,
+				command_id, causation_id, correlation_id, source, seed_cursor, before_state_hash,
+				after_state_hash, content_version, payload
+			) values (${eventId}, ${command.runId}, 5, 26, 'mission.combat.choice-batch.applied',
+				now(), ${command.actorId}, ${command.commandId}, null, ${command.correlationId},
+				${transaction.json(command.source as never)}, 0, ${HASH.state}, ${afterStateHash},
+				'engine-v26', ${transaction.json({ batch: command.batch, resolvedEvents: [] })})
+		`;
+		await transaction`
+			update summonlab_engine_runs set version = 4, event_cursor = 5, state_hash = ${afterStateHash}
+			where run_id = ${command.runId} and version = 3 and event_cursor = 4
+		`;
+		if (failAfterWrite) throw new Error('simulated crash after engine event');
+	};
+}
+
+async function within<T>(promise: Promise<T>, milliseconds = 2_000): Promise<T> {
+	let timeout: ReturnType<typeof setTimeout> | undefined;
+	try {
+		return await Promise.race([
+			promise,
+			new Promise<never>((_resolve, reject) => {
+				timeout = setTimeout(
+					() => reject(new Error('concurrent database operations timed out')),
+					milliseconds
+				);
+			})
+		]);
+	} finally {
+		if (timeout) clearTimeout(timeout);
+	}
+}
+
 describe.sequential('durable combat decision cohorts', () => {
 	let runId: string;
 
@@ -207,7 +254,26 @@ describe.sequential('durable combat decision cohorts', () => {
 			const retried = await createCombatDecisionWindow(databaseUrl, input);
 			expect(created.jobs).toHaveLength(2);
 			expect(retried).toEqual(created);
-			expect(await listDispatchableDecisionJobIds(databaseUrl)).not.toEqual(
+			const legacyJobId = randomUUID();
+			const legacySql = postgres(databaseUrl, { max: 1 });
+			try {
+				await legacySql`
+					insert into summonlab_decision_jobs (
+						decision_job_id, schema_version, root_job_id, run_id, hero_id, decision_kind,
+						requested_policy, expected_run_version, expected_event_cursor,
+						decision_game_time, packet_id, packet_hash, state_hash, legal_action_hash,
+						prompt_version, context_policy_version, packet
+					) values (${legacyJobId}, 'decision-job-v2', ${legacyJobId}, ${runId},
+						${randomUUID()}, 'settlement-action', 'scripted', 3, 4, now(), ${randomUUID()},
+						${HASH.state}, ${HASH.state}, ${HASH.state}, 'legacy-prompt-v1',
+						'legacy-context-v1', ${legacySql.json({})})
+				`;
+			} finally {
+				await legacySql.end({ timeout: 5 });
+			}
+			const legacyDispatch = await listDispatchableDecisionJobIds(databaseUrl);
+			expect(legacyDispatch).toContain(legacyJobId);
+			expect(legacyDispatch).not.toEqual(
 				expect.arrayContaining(created.jobs.map((job) => job.decisionJobId))
 			);
 			await expect(
@@ -239,14 +305,117 @@ describe.sequential('durable combat decision cohorts', () => {
 			);
 			expect(await refreshCombatDecisionWindow(databaseUrl, f.snapshot.windowId)).toEqual(ready);
 
+			await expect(
+				applyCombatDecisionWindowBatch(
+					databaseUrl,
+					f.snapshot.windowId,
+					ready.batch!,
+					f.views[0]!.actorId,
+					persistBatchEvent(true)
+				)
+			).rejects.toThrow(/simulated crash/u);
+			expect((await getCombatDecisionWindow(databaseUrl, f.snapshot.windowId))?.status).toBe(
+				'ready'
+			);
+			const crashSql = postgres(databaseUrl, { max: 1 });
+			try {
+				expect(
+					await crashSql<{ version: number; event_cursor: number }[]>`
+						select version, event_cursor from summonlab_engine_runs where run_id = ${runId}
+					`
+				).toEqual([{ version: 3, event_cursor: 4 }]);
+				expect(
+					await crashSql<{ count: number }[]>`
+						select count(*)::integer as count from summonlab_engine_events
+						where run_id = ${runId} and event_type = 'mission.combat.choice-batch.applied'
+					`
+				).toEqual([{ count: 0 }]);
+			} finally {
+				await crashSql.end({ timeout: 5 });
+			}
+			let successfulCommits = 0;
+			const commit = persistBatchEvent();
+			const countedCommit: CombatDecisionBatchCommit = async (transaction, command) => {
+				successfulCommits += 1;
+				await commit(transaction, command);
+			};
 			const applied = await Promise.all([
-				applyCombatDecisionWindowBatch(databaseUrl, f.snapshot.windowId, ready.batch!, 5),
-				applyCombatDecisionWindowBatch(databaseUrl, f.snapshot.windowId, ready.batch!, 5)
+				applyCombatDecisionWindowBatch(
+					databaseUrl,
+					f.snapshot.windowId,
+					ready.batch!,
+					f.views[0]!.actorId,
+					countedCommit
+				),
+				applyCombatDecisionWindowBatch(
+					databaseUrl,
+					f.snapshot.windowId,
+					ready.batch!,
+					f.views[0]!.actorId,
+					countedCommit
+				)
 			]);
 			expect(applied.map((entry) => entry.disposition).sort()).toEqual([
 				'already-applied',
 				'applied'
 			]);
+			expect(successfulCommits).toBe(1);
+			expect(applied.every((entry) => entry.window.appliedEventCursor === 5)).toBe(true);
+			expect(applied[0]!.receipt).toEqual(applied[1]!.receipt);
+			expect(applied[0]!.receipt).toMatchObject({
+				windowId: f.snapshot.windowId,
+				batchHash: ready.batch!.batchHash,
+				eventCursor: 5,
+				runVersion: 4,
+				stateHash: 'c'.repeat(64)
+			});
+			const appliedSql = postgres(databaseUrl, { max: 1 });
+			try {
+				const events = await appliedSql<
+					{ event_id: string; command_id: string; sequence: number; payload: unknown }[]
+				>`
+					select event_id, command_id, sequence, payload from summonlab_engine_events
+					where run_id = ${runId} and event_type = 'mission.combat.choice-batch.applied'
+				`;
+				expect(events).toHaveLength(1);
+				expect(events[0]).toMatchObject({
+					event_id: applied[0]!.receipt.eventId,
+					command_id: applied[0]!.receipt.commandId,
+					sequence: applied[0]!.receipt.eventCursor,
+					payload: { batch: ready.batch!, resolvedEvents: [] }
+				});
+			} finally {
+				await appliedSql.end({ timeout: 5 });
+			}
+			const laterSql = postgres(databaseUrl, { max: 1 });
+			try {
+				await laterSql`
+					update summonlab_engine_runs set version = 5, event_cursor = 6,
+						state_hash = ${'f'.repeat(64)} where run_id = ${runId}
+				`;
+			} finally {
+				await laterSql.end({ timeout: 5 });
+			}
+			const lateDuplicate = await applyCombatDecisionWindowBatch(
+				databaseUrl,
+				f.snapshot.windowId,
+				ready.batch!,
+				f.views[0]!.actorId,
+				async () => {
+					throw new Error('duplicate application must not call the engine commit');
+				}
+			);
+			expect(lateDuplicate.disposition).toBe('already-applied');
+			expect(lateDuplicate.receipt).toEqual(applied[0]!.receipt);
+			await expect(
+				applyCombatDecisionWindowBatch(
+					databaseUrl,
+					f.snapshot.windowId,
+					{ ...ready.batch!, batchHash: 'd'.repeat(64) },
+					f.views[0]!.actorId,
+					persistBatchEvent()
+				)
+			).rejects.toThrow(/different bindings/u);
 		}
 	);
 
@@ -315,6 +484,108 @@ describe.sequential('durable combat decision cohorts', () => {
 		).rejects.toThrow(/another window|binding/u);
 	});
 
+	run('recovers an abandoned queued reservation exactly once after ten minutes', async () => {
+		if (!databaseUrl) throw new Error('TEST_DATABASE_URL is required');
+		const f = fixture(runId);
+		const created = await createCombatDecisionWindow(databaseUrl, {
+			runId,
+			expectedRunVersion: 3,
+			expectedEventCursor: 4,
+			snapshot: f.snapshot,
+			actors: f.views.map((view) => ({
+				view,
+				requestedPolicy: 'scripted' as const,
+				deterministicFallback: f.result(view)
+			}))
+		});
+		const job = created.jobs[0]!;
+		expect(await queueCombatDecisionJob(databaseUrl, job.decisionJobId)).toBe(true);
+		const sql = postgres(databaseUrl, { max: 1 });
+		try {
+			await sql`
+				update summonlab_decision_jobs
+				set updated_at = now() - interval '10 minutes'
+				where decision_job_id = ${job.decisionJobId}
+			`;
+		} finally {
+			await sql.end({ timeout: 5 });
+		}
+
+		const recovered = await Promise.all([
+			recoverExpiredCombatDecisionJobs(databaseUrl),
+			recoverExpiredCombatDecisionJobs(databaseUrl)
+		]);
+		expect(recovered.sort()).toEqual([0, 1]);
+		const window = await getCombatDecisionWindow(databaseUrl, f.snapshot.windowId);
+		expect(
+			window?.jobs.find((candidate) => candidate.decisionJobId === job.decisionJobId)?.status
+		).toBe('created');
+		expect(await queueCombatDecisionJob(databaseUrl, job.decisionJobId)).toBe(true);
+	});
+
+	run('serializes create retries with refresh and atomic apply without deadlock', async () => {
+		if (!databaseUrl) throw new Error('TEST_DATABASE_URL is required');
+		const f = fixture(runId);
+		const input = {
+			runId,
+			expectedRunVersion: 3,
+			expectedEventCursor: 4,
+			snapshot: f.snapshot,
+			actors: f.views.map((view) => ({
+				view,
+				requestedPolicy: 'scripted' as const,
+				deterministicFallback: f.result(view)
+			}))
+		};
+		const created = await createCombatDecisionWindow(databaseUrl, input);
+		const [retried, refreshed] = await within(
+			Promise.all([
+				createCombatDecisionWindow(databaseUrl, input),
+				refreshCombatDecisionWindow(databaseUrl, f.snapshot.windowId)
+			])
+		);
+		expect(retried.windowId).toBe(created.windowId);
+		expect(refreshed.windowId).toBe(created.windowId);
+
+		for (const job of created.jobs) {
+			await queueCombatDecisionJob(databaseUrl, job.decisionJobId);
+			await claimCombatDecisionJob(databaseUrl, job.decisionJobId);
+			const view = f.views.find((candidate) => candidate.actorId === job.heroId)!;
+			await completeCombatDecisionJobAttempt(databaseUrl, job.decisionJobId, f.result(view), 0);
+		}
+		const ready = await refreshCombatDecisionWindow(databaseUrl, f.snapshot.windowId);
+		let enteredCommit!: () => void;
+		const commitEntered = new Promise<void>((resolve) => {
+			enteredCommit = resolve;
+		});
+		let releaseCommit!: () => void;
+		const commitReleased = new Promise<void>((resolve) => {
+			releaseCommit = resolve;
+		});
+		const persist = persistBatchEvent();
+		const blockingCommit: CombatDecisionBatchCommit = async (transaction, command) => {
+			await persist(transaction, command);
+			enteredCommit();
+			await commitReleased;
+		};
+		const applying = applyCombatDecisionWindowBatch(
+			databaseUrl,
+			f.snapshot.windowId,
+			ready.batch!,
+			f.views[0]!.actorId,
+			blockingCommit
+		);
+		await within(commitEntered);
+		const retrying = createCombatDecisionWindow(databaseUrl, input);
+		releaseCommit();
+		const settled = await within(Promise.allSettled([applying, retrying]));
+		expect(settled[0]).toMatchObject({ status: 'fulfilled' });
+		expect(settled[1]).toMatchObject({
+			status: 'rejected',
+			reason: expect.objectContaining({ message: expect.stringMatching(/stale/u) })
+		});
+	});
+
 	run(
 		'recovers leases, exhausts a provider into deterministic fallback, and marks stale windows',
 		async () => {
@@ -371,9 +642,8 @@ describe.sequential('durable combat decision cohorts', () => {
 				second.deterministicFallback,
 				0
 			);
-			expect((await refreshCombatDecisionWindow(databaseUrl, f.snapshot.windowId)).status).toBe(
-				'ready'
-			);
+			const ready = await refreshCombatDecisionWindow(databaseUrl, f.snapshot.windowId);
+			expect(ready.status).toBe('ready');
 
 			const stale = fixture(runId);
 			const staleCreated = await createCombatDecisionWindow(databaseUrl, {
@@ -394,6 +664,19 @@ describe.sequential('durable combat decision cohorts', () => {
 			} finally {
 				await staleSql.end({ timeout: 5 });
 			}
+			let staleCommitCalls = 0;
+			await expect(
+				applyCombatDecisionWindowBatch(
+					databaseUrl,
+					f.snapshot.windowId,
+					ready.batch!,
+					f.views[0]!.actorId,
+					async () => {
+						staleCommitCalls += 1;
+					}
+				)
+			).rejects.toThrow(/not ready/u);
+			expect(staleCommitCalls).toBe(0);
 			expect(
 				await claimCombatDecisionJob(databaseUrl, staleCreated.jobs[0]!.decisionJobId)
 			).toBeNull();

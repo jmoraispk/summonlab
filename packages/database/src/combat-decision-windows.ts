@@ -2,9 +2,11 @@ import { randomUUID } from 'node:crypto';
 
 import {
 	ActorDecisionViewSchema,
+	ApplyCombatChoiceBatchCommandSchema,
 	COMBAT_DECISION_JOB_VERSION,
 	CombatActionIntentSchema,
 	CombatChoiceBatchV1Schema,
+	CombatChoiceBatchAppliedEventSchema,
 	CombatDecisionJobRecordV3Schema,
 	CombatDecisionJobResultBindingSchema,
 	CombatWindowSnapshotSchema,
@@ -46,6 +48,8 @@ interface WindowRow {
 	choice_batch: unknown | null;
 	batch_hash: string | null;
 	applied_event_cursor: number | null;
+	applied_command_id: string | null;
+	applied_event_id: string | null;
 	ready_at: Date | string | null;
 	applied_at: Date | string | null;
 	created_at: Date | string;
@@ -84,6 +88,32 @@ interface RunRow {
 	version: number;
 	event_cursor: number;
 	state_hash: string;
+}
+
+interface AppliedEventRow {
+	stored_command: unknown;
+	accepted_sequence: number;
+	event_id: string;
+	run_id: string;
+	sequence: number;
+	schema_version: number;
+	event_type: string;
+	simulated_at: Date | string;
+	actor_id: string | null;
+	command_id: string;
+	causation_id: string | null;
+	correlation_id: string;
+	source: unknown;
+	seed_cursor: number;
+	before_state_hash: string;
+	after_state_hash: string;
+	content_version: string;
+	payload: unknown;
+}
+
+interface WindowLocatorRow {
+	window_id: string;
+	run_id: string;
 }
 
 export interface CombatDecisionJob {
@@ -133,6 +163,23 @@ export interface CombatDecisionWindow {
 	readonly createdAt: string;
 	readonly updatedAt: string;
 	readonly jobs: readonly CombatDecisionJob[];
+}
+
+type ApplyCombatChoiceBatchCommand = ReturnType<typeof ApplyCombatChoiceBatchCommandSchema.parse>;
+
+export type CombatDecisionBatchCommit = (
+	transaction: postgres.TransactionSql,
+	command: ApplyCombatChoiceBatchCommand
+) => Promise<unknown>;
+
+export interface CombatDecisionBatchReceipt {
+	readonly windowId: string;
+	readonly batchHash: string;
+	readonly commandId: string;
+	readonly eventId: string;
+	readonly eventCursor: number;
+	readonly runVersion: number;
+	readonly stateHash: string;
 }
 
 export interface CreateCombatDecisionWindowInput {
@@ -291,6 +338,47 @@ async function windowRow(sql: Queryable, windowId: string, forUpdate = false) {
 	return rows[0] ?? null;
 }
 
+async function lockRunThenWindow(
+	sql: postgres.TransactionSql,
+	windowId: string
+): Promise<{ readonly run: RunRow | undefined; readonly window: WindowRow } | null> {
+	const locator = (
+		await sql<WindowLocatorRow[]>`
+			select window_id, run_id from summonlab_combat_decision_windows
+			where window_id = ${windowId}
+		`
+	)[0];
+	if (!locator) return null;
+	const run = (
+		await sql<RunRow[]>`
+			select version, event_cursor, state_hash from summonlab_engine_runs
+			where run_id = ${locator.run_id} for update
+		`
+	)[0];
+	const window = await windowRow(sql, windowId, true);
+	if (!window || window.run_id !== locator.run_id) return null;
+	return { run, window };
+}
+
+async function lockRunThenWindowForJob(
+	sql: postgres.TransactionSql,
+	jobId: string
+): Promise<{ readonly run: RunRow | undefined; readonly window: WindowRow } | null> {
+	const locator = (
+		await sql<WindowLocatorRow[]>`
+			select jobs.window_id, windows.run_id
+			from summonlab_decision_jobs jobs
+			join summonlab_combat_decision_windows windows on windows.window_id = jobs.window_id
+			where jobs.decision_job_id = ${jobId}
+				and jobs.schema_version = ${COMBAT_DECISION_JOB_VERSION}
+		`
+	)[0];
+	if (!locator) return null;
+	const locked = await lockRunThenWindow(sql, locator.window_id);
+	if (!locked || locked.window.run_id !== locator.run_id) return null;
+	return locked;
+}
+
 async function readWindow(sql: Queryable, row: WindowRow): Promise<CombatDecisionWindow> {
 	const jobs = await jobsFor(sql, row.window_id);
 	return {
@@ -340,6 +428,99 @@ function staleWindowBinding(row: WindowRow, run: RunRow | undefined): boolean {
 		run.event_cursor !== row.expected_event_cursor ||
 		run.state_hash !== snapshot.stateHash
 	);
+}
+
+function batchCommand(
+	row: WindowRow,
+	batch: CombatChoiceBatchV1,
+	actorId: string
+): ApplyCombatChoiceBatchCommand {
+	const commandId = deterministicUuid(`combat-decision-window:${row.window_id}:${batch.batchHash}`);
+	return ApplyCombatChoiceBatchCommandSchema.parse({
+		commandId,
+		runId: row.run_id,
+		actorId,
+		expectedVersion: row.expected_run_version,
+		correlationId: commandId,
+		source: {
+			source: 'system',
+			timing: null,
+			fallbackPolicy: null,
+			directiveIds: [],
+			decisionJobId: null
+		},
+		commandType: 'mission.apply.combat-choice-batch',
+		batch
+	});
+}
+
+async function verifiedAppliedReceipt(
+	sql: Queryable,
+	row: WindowRow,
+	batch: CombatChoiceBatchV1,
+	command: ApplyCombatChoiceBatchCommand,
+	run: RunRow | undefined,
+	requireExactCurrentRun: boolean
+): Promise<CombatDecisionBatchReceipt> {
+	const persisted = (
+		await sql<AppliedEventRow[]>`
+			select commands.command as stored_command, commands.accepted_sequence, events.*
+			from summonlab_engine_commands commands
+			join summonlab_engine_events events
+				on events.run_id = commands.run_id and events.sequence = commands.accepted_sequence
+			where commands.command_id = ${command.commandId}
+		`
+	)[0];
+	if (!persisted || !run) {
+		throw new Error('Applied combat decision engine receipt was not persisted');
+	}
+	const storedCommand = ApplyCombatChoiceBatchCommandSchema.parse(persisted.stored_command);
+	const event = CombatChoiceBatchAppliedEventSchema.parse({
+		eventId: persisted.event_id,
+		runId: persisted.run_id,
+		sequence: persisted.sequence,
+		schemaVersion: persisted.schema_version,
+		gameTime: iso(persisted.simulated_at),
+		eventType: persisted.event_type,
+		actorId: persisted.actor_id,
+		commandId: persisted.command_id,
+		causationId: persisted.causation_id,
+		correlationId: persisted.correlation_id,
+		source: persisted.source,
+		seedCursor: persisted.seed_cursor,
+		beforeStateHash: persisted.before_state_hash,
+		afterStateHash: persisted.after_state_hash,
+		contentVersion: persisted.content_version,
+		payload: persisted.payload
+	});
+	if (
+		hashCanonical(storedCommand) !== hashCanonical(command) ||
+		hashCanonical(event.payload.batch) !== hashCanonical(batch) ||
+		event.commandId !== command.commandId ||
+		event.actorId !== command.actorId ||
+		persisted.accepted_sequence !== event.sequence ||
+		event.sequence !== row.expected_event_cursor + 1 ||
+		(requireExactCurrentRun && run.version !== row.expected_run_version + 1) ||
+		(requireExactCurrentRun && run.event_cursor !== event.sequence) ||
+		(!requireExactCurrentRun && run.version < row.expected_run_version + 1) ||
+		(!requireExactCurrentRun && run.event_cursor < event.sequence) ||
+		event.beforeStateHash !== CombatWindowSnapshotSchema.parse(row.snapshot).stateHash ||
+		(requireExactCurrentRun && run.state_hash !== event.afterStateHash) ||
+		(row.applied_command_id !== null && row.applied_command_id !== event.commandId) ||
+		(row.applied_event_id !== null && row.applied_event_id !== event.eventId) ||
+		(row.applied_event_cursor !== null && row.applied_event_cursor !== event.sequence)
+	) {
+		throw new Error('Combat decision engine receipt does not match the exact window batch');
+	}
+	return {
+		windowId: row.window_id,
+		batchHash: batch.batchHash,
+		commandId: event.commandId,
+		eventId: event.eventId,
+		eventCursor: event.sequence,
+		runVersion: row.expected_run_version + 1,
+		stateHash: event.afterStateHash
+	};
 }
 
 async function markWindowStale(sql: Queryable, row: WindowRow): Promise<WindowRow> {
@@ -539,20 +720,9 @@ export async function queueCombatDecisionJob(databaseUrl: string, jobId: string)
 	const sql = postgres(databaseUrl, { max: 1 });
 	try {
 		return await sql.begin(async (transaction) => {
-			const locators = await transaction<{ window_id: string }[]>`
-				select window_id from summonlab_decision_jobs where decision_job_id = ${jobId}
-					and schema_version = ${COMBAT_DECISION_JOB_VERSION}
-			`;
-			const locator = locators[0];
-			if (!locator) return false;
-			const window = await windowRow(transaction, locator.window_id, true);
-			if (!window) return false;
-			const run = (
-				await transaction<RunRow[]>`
-					select version, event_cursor, state_hash from summonlab_engine_runs
-					where run_id = ${window.run_id} for update
-				`
-			)[0];
+			const locked = await lockRunThenWindowForJob(transaction, jobId);
+			if (!locked) return false;
+			const { run, window } = locked;
 			if (staleWindowBinding(window, run)) {
 				await markWindowStale(transaction, window);
 				return false;
@@ -583,20 +753,9 @@ export async function claimCombatDecisionJob(
 	const sql = postgres(databaseUrl, { max: 1 });
 	try {
 		return await sql.begin(async (transaction) => {
-			const locators = await transaction<{ window_id: string }[]>`
-				select window_id from summonlab_decision_jobs where decision_job_id = ${jobId}
-					and schema_version = ${COMBAT_DECISION_JOB_VERSION}
-			`;
-			const locator = locators[0];
-			if (!locator) return null;
-			const window = await windowRow(transaction, locator.window_id, true);
-			if (!window) return null;
-			const run = (
-				await transaction<RunRow[]>`
-					select version, event_cursor, state_hash from summonlab_engine_runs
-					where run_id = ${window.run_id} for update
-				`
-			)[0];
+			const locked = await lockRunThenWindowForJob(transaction, jobId);
+			if (!locked) return null;
+			const { run, window } = locked;
 			if (staleWindowBinding(window, run)) {
 				await markWindowStale(transaction, window);
 				return null;
@@ -763,15 +922,59 @@ export async function recoverExpiredCombatDecisionJobs(
 	if (!Number.isSafeInteger(limit) || limit < 1 || limit > 256) {
 		throw new Error('Combat decision recovery limit must be from 1 to 256');
 	}
+	const queuedBefore = new Date(Date.parse(now) - 30_000).toISOString();
 	const sql = postgres(databaseUrl, { max: 1 });
 	try {
 		return await sql.begin(async (transaction) => {
-			const rows = await transaction<JobRow[]>`
-				select * from summonlab_decision_jobs where schema_version = ${COMBAT_DECISION_JOB_VERSION}
-					and status = 'in_progress' and lease_expires_at <= ${now}
-				order by updated_at, decision_job_id limit ${limit} for update skip locked
+			const candidates = await transaction<{ decision_job_id: string }[]>`
+				select decision_job_id from summonlab_decision_jobs
+				where schema_version = ${COMBAT_DECISION_JOB_VERSION}
+					and ((status = 'in_progress' and lease_expires_at <= ${now})
+						or (status = 'queued' and updated_at <= ${queuedBefore}))
+				order by updated_at, decision_job_id limit ${limit}
 			`;
-			for (const row of rows) {
+			let recovered = 0;
+			for (const candidate of candidates) {
+				const locked = await lockRunThenWindowForJob(transaction, candidate.decision_job_id);
+				if (!locked) continue;
+				if (staleWindowBinding(locked.window, locked.run)) {
+					await markWindowStale(transaction, locked.window);
+					continue;
+				}
+				const row = (
+					await transaction<JobRow[]>`
+						select * from summonlab_decision_jobs where decision_job_id = ${candidate.decision_job_id}
+							and schema_version = ${COMBAT_DECISION_JOB_VERSION} for update
+					`
+				)[0];
+				if (!row) continue;
+				const queuedExpired = row.status === 'queued' && iso(row.updated_at) <= queuedBefore;
+				const leaseExpired =
+					row.status === 'in_progress' &&
+					row.lease_expires_at !== null &&
+					iso(row.lease_expires_at) <= now;
+				if (!queuedExpired && !leaseExpired) continue;
+				if (queuedExpired) {
+					const status =
+						row.next_attempt_kind === 'fallback'
+							? ('fallback' as const)
+							: row.next_attempt_kind === 'retry'
+								? ('retry_wait' as const)
+								: ('created' as const);
+					await transaction`
+						update summonlab_decision_jobs set status = ${status}, updated_at = now()
+						where decision_job_id = ${row.decision_job_id}
+					`;
+					await appendTransition(
+						transaction,
+						row.decision_job_id,
+						'queued',
+						status,
+						'queue-reservation-expired'
+					);
+					recovered += 1;
+					continue;
+				}
 				const failure = DecisionJobFailureSchema.parse({
 					code: 'worker-lease-expired',
 					message: 'The worker lease expired before the attempt completed.',
@@ -792,8 +995,9 @@ export async function recoverExpiredCombatDecisionJobs(
 					next.status,
 					'worker-lease-expired'
 				);
+				recovered += 1;
 			}
-			return rows.length;
+			return recovered;
 		});
 	} finally {
 		await sql.end({ timeout: 5 });
@@ -807,14 +1011,11 @@ export async function refreshCombatDecisionWindow(
 	const sql = postgres(databaseUrl, { max: 1 });
 	try {
 		return await sql.begin(async (transaction) => {
-			const row = await windowRow(transaction, windowId, true);
-			if (!row) throw new Error(`Combat decision window not found: ${windowId}`);
+			const locked = await lockRunThenWindow(transaction, windowId);
+			if (!locked) throw new Error(`Combat decision window not found: ${windowId}`);
+			const { run, window: row } = locked;
 			if (['applied', 'stale', 'failed'].includes(row.status))
 				return await readWindow(transaction, row);
-			const run = (
-				await transaction<RunRow[]>`select version, event_cursor, state_hash
-				from summonlab_engine_runs where run_id = ${row.run_id} for update`
-			)[0];
 			if (staleWindowBinding(row, run)) {
 				return await readWindow(transaction, await markWindowStale(transaction, row));
 			}
@@ -856,52 +1057,83 @@ export async function applyCombatDecisionWindowBatch(
 	databaseUrl: string,
 	windowId: string,
 	batchInput: CombatChoiceBatchV1,
-	appliedEventCursor: number
+	actorId: string,
+	commitBatch: CombatDecisionBatchCommit
 ): Promise<{
 	readonly disposition: 'applied' | 'already-applied';
 	readonly window: CombatDecisionWindow;
+	readonly receipt: CombatDecisionBatchReceipt;
 }> {
 	const batch = CombatChoiceBatchV1Schema.parse(batchInput);
 	const sql = postgres(databaseUrl, { max: 1 });
 	try {
 		return await sql.begin(async (transaction) => {
-			const row = await windowRow(transaction, windowId, true);
-			if (!row) throw new Error(`Combat decision window not found: ${windowId}`);
+			const locked = await lockRunThenWindow(transaction, windowId);
+			if (!locked) throw new Error(`Combat decision window not found: ${windowId}`);
+			const { run: initialRun, window: row } = locked;
+			const command = batchCommand(row, batch, actorId);
 			if (row.status === 'applied') {
-				if (row.batch_hash !== batch.batchHash || row.applied_event_cursor !== appliedEventCursor) {
+				if (row.batch_hash !== batch.batchHash) {
 					throw new Error('Combat decision batch was already applied with different bindings');
 				}
+				const receipt = await verifiedAppliedReceipt(
+					transaction,
+					row,
+					batch,
+					command,
+					initialRun,
+					false
+				);
 				return {
 					disposition: 'already-applied' as const,
-					window: await readWindow(transaction, row)
+					window: await readWindow(transaction, row),
+					receipt
 				};
 			}
-			const run = (
-				await transaction<RunRow[]>`
-				select version, event_cursor, state_hash from summonlab_engine_runs
-				where run_id = ${row.run_id} for update
-			`
-			)[0];
 			if (
 				row.status !== 'ready' ||
 				row.batch_hash !== batch.batchHash ||
 				hashCanonical(row.choice_batch) !== hashCanonical(batch) ||
-				!run ||
-				run.version !== row.expected_run_version ||
-				run.event_cursor !== row.expected_event_cursor ||
-				staleWindowBinding(row, run) ||
-				appliedEventCursor <= row.expected_event_cursor
+				!initialRun ||
+				staleWindowBinding(row, initialRun)
 			) {
 				throw new Error('Combat decision window is not ready for this exact batch application');
 			}
+			await commitBatch(transaction, command);
+			const run = (
+				await transaction<RunRow[]>`
+					select version, event_cursor, state_hash from summonlab_engine_runs
+					where run_id = ${row.run_id}
+				`
+			)[0];
+			const provisionalRow: WindowRow = {
+				...row,
+				applied_command_id: command.commandId,
+				applied_event_id: null,
+				applied_event_cursor: null
+			};
+			const receipt = await verifiedAppliedReceipt(
+				transaction,
+				provisionalRow,
+				batch,
+				command,
+				run,
+				true
+			);
 			const updated = await transaction<WindowRow[]>`
 				update summonlab_combat_decision_windows set status = 'applied',
-					applied_event_cursor = ${appliedEventCursor}, applied_at = now(), updated_at = now()
+					applied_event_cursor = ${receipt.eventCursor},
+					applied_command_id = ${receipt.commandId}, applied_event_id = ${receipt.eventId},
+					applied_at = now(), updated_at = now()
 				where window_id = ${windowId} and status = 'ready' and batch_hash = ${batch.batchHash}
 				returning *
 			`;
 			if (!updated[0]) throw new Error('Combat decision batch compare-and-swap failed');
-			return { disposition: 'applied' as const, window: await readWindow(transaction, updated[0]) };
+			return {
+				disposition: 'applied' as const,
+				window: await readWindow(transaction, updated[0]),
+				receipt
+			};
 		});
 	} finally {
 		await sql.end({ timeout: 5 });
