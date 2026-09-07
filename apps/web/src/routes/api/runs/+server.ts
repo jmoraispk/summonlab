@@ -1,4 +1,4 @@
-import { randomUUID } from 'node:crypto';
+import { randomBytes, randomUUID } from 'node:crypto';
 
 import {
 	FIRST_OBSERVATION,
@@ -22,7 +22,10 @@ export const POST: RequestHandler = async ({ request }) => {
 	}
 
 	try {
-		const draft = await generateSummonableCharacterDraft(parsed.data.recipe);
+		const capabilityEntropy = randomBytes(32).toString('hex');
+		const draft = await generateSummonableCharacterDraft(parsed.data.recipe, {
+			capabilityEntropy
+		});
 		const shouldResolve = ['autonomous', 'random'].includes(parsed.data.controlMode);
 		const choice = shouldResolve
 			? chooseFirstDestination(draft, parsed.data.controlMode, parsed.data.directive)
@@ -32,18 +35,16 @@ export const POST: RequestHandler = async ({ request }) => {
 			runId: randomUUID(),
 			draft,
 			controlMode: parsed.data.controlMode,
+			capabilityEntropy,
 			directive: parsed.data.directive,
 			firstObservation: FIRST_OBSERVATION,
 			choice,
 			clockSpeed: config.simulationSpeed
 		});
 		return json({ runId: snapshot.runId, manifestHash: snapshot.manifestHash }, { status: 201 });
-	} catch (error) {
+	} catch {
 		return json(
-			{
-				message: 'The local gate could not persist this summon. Start PostgreSQL with pnpm dev.',
-				detail: error instanceof Error ? error.message : 'unknown persistence failure'
-			},
+			{ message: 'The local gate could not persist this summon. Start PostgreSQL with pnpm dev.' },
 			{ status: 503 }
 		);
 	}

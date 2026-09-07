@@ -71,6 +71,26 @@ describe('approved summonable hero pool', () => {
 		).toBe(true);
 	});
 
+	it('requires private capability entropy to reproduce hidden learning scores', async () => {
+		const recipe = recipeFromSeed('public-recipe-cannot-recover-learning');
+		const [left, replayed, differentSecret] = await Promise.all([
+			generateSummonableCharacterDraft(recipe, {
+				capabilityEntropy: 'a'.repeat(64)
+			}),
+			generateSummonableCharacterDraft(recipe, {
+				capabilityEntropy: 'a'.repeat(64)
+			}),
+			generateSummonableCharacterDraft(recipe, {
+				capabilityEntropy: 'b'.repeat(64)
+			})
+		]);
+
+		expect(replayed).toEqual(left);
+		expect(differentSecret.manifest).toEqual(left.manifest);
+		expect(differentSecret.manifestHash).toBe(left.manifestHash);
+		expect(differentSecret.capabilityProfile).not.toEqual(left.capabilityProfile);
+	});
+
 	it('keeps the historical summonable generator available for exact v1 replay', async () => {
 		const characters = await import('./index.js');
 		expect(characters).toHaveProperty('generateLegacySummonableCharacterDraft');

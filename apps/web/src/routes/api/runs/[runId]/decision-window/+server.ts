@@ -15,6 +15,8 @@ import {
 import { IllegalActionError } from '@summonlab/engine';
 import { json } from '@sveltejs/kit';
 
+import { projectEngineCommitReceipt } from '$lib/server/public-engine-presentation';
+
 import type { RequestHandler } from './$types';
 
 const manualSource: ActionSource = {
@@ -56,23 +58,13 @@ export const POST: RequestHandler = async ({ params, request }) => {
 		) {
 			throw new Error('Decision opening changed the engine schema.');
 		}
-		return json({
-			runId: committed.snapshot.state.runId,
-			version: committed.snapshot.state.version,
-			eventCursor: committed.snapshot.state.eventCursor,
-			stateHash: committed.snapshot.stateHash,
-			masterControl: committed.snapshot.state.masterControl,
-			eventType: committed.events[0]?.eventType ?? null
-		});
+		return json(projectEngineCommitReceipt(committed));
 	} catch (error) {
 		if (error instanceof StaleRunVersionError || error instanceof IdempotencyConflictError) {
 			return json({ code: error.code, message: error.message }, { status: 409 });
 		}
 		if (error instanceof IllegalActionError) {
-			return json(
-				{ code: error.code, message: error.message, legalActionIds: error.legalActionIds },
-				{ status: 409 }
-			);
+			return json({ code: error.code, message: error.message }, { status: 409 });
 		}
 		return json(
 			{ message: error instanceof Error ? error.message : 'Decision window could not open.' },

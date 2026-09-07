@@ -1,6 +1,7 @@
 import {
-	ProofRunSnapshotSchema,
+	PublicProofRunSnapshotSchema,
 	PublicProofRunSnapshotV2Schema,
+	type PublicProofRunSnapshot,
 	type ProofRunSnapshot,
 	type ProofRunSnapshotV2,
 	type PublicProofRunSnapshotV2
@@ -8,10 +9,33 @@ import {
 
 export function projectProofRunForPublic(
 	snapshot: ProofRunSnapshot | ProofRunSnapshotV2
-): ProofRunSnapshot | PublicProofRunSnapshotV2 {
-	if (!('characterSchemaVersion' in snapshot)) return ProofRunSnapshotSchema.parse(snapshot);
+): PublicProofRunSnapshot | PublicProofRunSnapshotV2 {
+	const base = {
+		runId: snapshot.runId,
+		storyEnvelopeId: snapshot.storyEnvelopeId,
+		controlMode: snapshot.controlMode,
+		manifest: snapshot.manifest,
+		manifestHash: snapshot.manifestHash,
+		firstObservation: snapshot.firstObservation,
+		firstLine: snapshot.firstLine,
+		destination: snapshot.destination,
+		storyBranch: snapshot.storyBranch,
+		arrived: snapshot.arrived,
+		events: snapshot.events.map((event) => ({
+			eventId: event.eventId,
+			sequence: event.sequence,
+			eventType: event.eventType,
+			summary: event.summary,
+			decisionSource: event.decisionSource,
+			eventHash: event.eventHash,
+			createdAt: event.createdAt
+		})),
+		createdAt: snapshot.createdAt
+	};
+	if (!('characterSchemaVersion' in snapshot)) return PublicProofRunSnapshotSchema.parse(base);
 	return PublicProofRunSnapshotV2Schema.parse({
-		...snapshot,
+		...base,
+		characterSchemaVersion: snapshot.characterSchemaVersion,
 		capabilityProfile: {
 			profileVersion: snapshot.capabilityProfile.profileVersion,
 			attributes: snapshot.capabilityProfile.attributes

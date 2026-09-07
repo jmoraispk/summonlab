@@ -290,10 +290,7 @@
 						</div>
 						<code>{entry.stateHash.slice(0, 10)}</code>
 						<small>
-							{entry.source.source}{entry.source.timing ? ` · ${entry.source.timing}` : ''}{entry
-								.source.fallbackPolicy
-								? ` · ${entry.source.fallbackPolicy}`
-								: ''}
+							{entry.source.source}{entry.source.timing ? ` · ${entry.source.timing}` : ''}
 						</small>
 					</aside>
 				</article>

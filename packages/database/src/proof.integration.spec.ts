@@ -19,14 +19,17 @@ const run = databaseUrl ? it : it.skip;
 describe('summon proof persistence', () => {
 	run('stores v2 capability data internally and round-trips it by schema version', async () => {
 		if (!databaseUrl) throw new Error('TEST_DATABASE_URL is required');
+		const capabilityEntropy = randomUUID().repeat(2);
 		const draft = await generateSummonableCharacterDraft(
-			recipeFromSeed(`proof-capability-${randomUUID()}`)
+			recipeFromSeed(`proof-capability-${randomUUID()}`),
+			{ capabilityEntropy }
 		);
 		const runId = randomUUID();
 		const choice = chooseFirstDestination(draft, 'wait', 'Please train and prepare for the tower.');
 		const created = await createProofRun(databaseUrl, {
 			runId,
 			draft,
+			capabilityEntropy,
 			controlMode: 'wait',
 			directive: '',
 			firstObservation: FIRST_OBSERVATION,
@@ -38,6 +41,16 @@ describe('summon proof persistence', () => {
 		expect(created.mind).not.toHaveProperty('aptitudes');
 		expect(created.capabilityProfile).toEqual(draft.capabilityProfile);
 		expect(await getProofRun(databaseUrl, runId)).toEqual(created);
+		const privateSql = postgres(databaseUrl, { max: 1 });
+		try {
+			const rows = await privateSql<{ capability_entropy: string | null }[]>`
+				select capability_entropy from summonlab_proof_runs where run_id = ${runId}
+			`;
+			expect(rows[0]?.capability_entropy).toBe(capabilityEntropy);
+			expect(JSON.stringify(created)).not.toContain(capabilityEntropy);
+		} finally {
+			await privateSql.end({ timeout: 5 });
+		}
 		const engine = await getEngineSnapshot(databaseUrl, runId);
 		if (engine?.state.schemaVersion !== 25) throw new Error('Expected engine-v25 state');
 		expect(engine.state).toMatchObject({
@@ -58,6 +71,33 @@ describe('summon proof persistence', () => {
 			location: choice.destination,
 			capabilityProfile: draft.capabilityProfile
 		});
+	});
+
+	run('keeps legacy v2 rows with null capability entropy readable from persisted profiles', async () => {
+		if (!databaseUrl) throw new Error('TEST_DATABASE_URL is required');
+		const draft = await generateSummonableCharacterDraft(
+			recipeFromSeed(`proof-legacy-null-entropy-${randomUUID()}`)
+		);
+		const runId = randomUUID();
+		await createProofRun(databaseUrl, {
+			runId,
+			draft,
+			controlMode: 'wait',
+			directive: '',
+			firstObservation: FIRST_OBSERVATION,
+			choice: null
+		});
+		const loaded = await getProofRun(databaseUrl, runId);
+		expect(loaded).toMatchObject({ runId, capabilityProfile: draft.capabilityProfile });
+		const sql = postgres(databaseUrl, { max: 1 });
+		try {
+			const rows = await sql<{ capability_entropy: string | null }[]>`
+				select capability_entropy from summonlab_proof_runs where run_id = ${runId}
+			`;
+			expect(rows[0]?.capability_entropy).toBeNull();
+		} finally {
+			await sql.end({ timeout: 5 });
+		}
 	});
 
 	run('rejects mismatched character schema versions and capability profiles', async () => {

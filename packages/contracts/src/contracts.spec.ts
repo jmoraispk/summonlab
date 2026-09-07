@@ -139,7 +139,19 @@ describe('foundation contracts', () => {
 			createdAt: '2026-09-06T00:00:00.000Z'
 		});
 		const publicProof = PublicProofRunSnapshotV2Schema.parse({
-			...internalProof,
+			runId: internalProof.runId,
+			characterSchemaVersion: internalProof.characterSchemaVersion,
+			storyEnvelopeId: internalProof.storyEnvelopeId,
+			controlMode: internalProof.controlMode,
+			manifest: internalProof.manifest,
+			manifestHash: internalProof.manifestHash,
+			firstObservation: internalProof.firstObservation,
+			firstLine: internalProof.firstLine,
+			destination: internalProof.destination,
+			storyBranch: internalProof.storyBranch,
+			arrived: internalProof.arrived,
+			events: [],
+			createdAt: internalProof.createdAt,
 			capabilityProfile: {
 				profileVersion: internalProof.capabilityProfile.profileVersion,
 				attributes: internalProof.capabilityProfile.attributes

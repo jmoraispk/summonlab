@@ -69,6 +69,8 @@ export interface ResolvedFirstChoice {
 export interface CreateProofRunInput {
 	readonly runId: string;
 	readonly draft: CharacterDraft | CharacterDraftV2;
+	/** Server-generated audit secret. Never returned by proof or engine read models. */
+	readonly capabilityEntropy?: string;
 	readonly engineSeed?: string;
 	readonly controlMode: ProofControlMode;
 	readonly directive: string;
@@ -360,6 +362,9 @@ export async function createProofRun(
 ): Promise<StoredProofRunSnapshot> {
 	const draft = StoredCharacterDraftSchema.parse(input.draft);
 	const isV2 = 'capabilityProfile' in draft;
+	if (input.capabilityEntropy !== undefined && (!isV2 || input.capabilityEntropy.length < 32)) {
+		throw new Error('Private capability entropy is valid only for v2 drafts and must be high entropy');
+	}
 	const usesDevelopmentEngineBootstrap = Boolean(
 		input.developmentMissionScenario || input.developmentEquipmentScenario
 	);
@@ -369,14 +374,15 @@ export async function createProofRun(
 			await transaction`
 				insert into summonlab_proof_runs (
 					run_id, control_mode, directive, recipe, manifest, mind, capability_profile,
-					character_schema_version, manifest_hash,
+					character_schema_version, capability_entropy, manifest_hash,
 					first_observation, first_line, destination, story_branch
 				) values (
 					${input.runId}, ${input.controlMode}, ${input.directive},
 					${transaction.json(draft.recipe)}, ${transaction.json(draft.manifest)},
 					${transaction.json(draft.mind)},
 					${isV2 ? transaction.json(draft.capabilityProfile) : null},
-					${isV2 ? 'character-v2' : 'character-v1'}, ${draft.manifestHash},
+					${isV2 ? 'character-v2' : 'character-v1'}, ${input.capabilityEntropy ?? null},
+					${draft.manifestHash},
 					${input.firstObservation}, ${input.choice?.firstLine ?? null},
 					${input.choice?.destination ?? null}, ${input.choice?.storyBranch ?? null}
 				)

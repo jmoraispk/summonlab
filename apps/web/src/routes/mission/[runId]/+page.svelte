@@ -94,6 +94,7 @@
 	const portalTurnState = $derived(
 		engineState.schemaVersion === 15 ? (engineState.mission.attempt?.turnState ?? null) : null
 	);
+	const portalRuntime = $derived(portalTurnState?.portal ?? null);
 	const combatTurnState = $derived(
 		engineState.schemaVersion === 13 ||
 			engineState.schemaVersion === 16 ||
@@ -561,10 +562,10 @@
 						<div class="objective-banner delivered">
 							{data.missionDefinition.objectiveTitle} returned to threshold
 						</div>
-					{:else if portalTurnState}
+					{:else if portalTurnState && portalRuntime}
 						<div class="objective-banner" data-testid="portal-board-status">
 							{portalTurnState.objective.minedAmount}/{portalTurnState.objective.quota} ore secured ·
-							{portalTurnState.portal.roundsRemaining} rounds remain
+							{portalRuntime.roundsRemaining} rounds remain
 						</div>
 					{/if}
 				</div>
@@ -585,16 +586,16 @@
 		</div>
 
 		<div class="operations">
-			{#if portalTurnState}
-				<div class="portal-clock {portalTurnState.portal.pressureStage}" data-testid="portal-clock">
+			{#if portalTurnState && portalRuntime}
+				<div class="portal-clock {portalRuntime.pressureStage}" data-testid="portal-clock">
 					<div>
 						<span>Scar integrity</span>
-						<strong>{portalTurnState.portal.roundsRemaining}</strong>
+						<strong>{portalRuntime.roundsRemaining}</strong>
 						<small>rounds remaining</small>
 					</div>
 					<div>
 						<span>Pressure</span>
-						<strong>{portalTurnState.portal.pressureStage}</strong>
+						<strong>{portalRuntime.pressureStage}</strong>
 						<small>collapse at zero</small>
 					</div>
 					<div>
@@ -773,7 +774,7 @@
 								? 'The Master died permanently. Every unfinished activity was canceled; the chronicle and replay remain available.'
 								: attempt?.status === 'success'
 									? isPortal
-										? `Iron Moon extraction credited ${portalTurnState?.portal.extractedAmount ?? 0} ore.`
+										? `Iron Moon extraction credited ${portalRuntime?.extractedAmount ?? 0} ore.`
 										: 'Floor 01 is complete. This run cannot farm the First Ember twice.'
 									: attempt?.status === 'death'
 										? 'A summoned hero died permanently. The wound, damaged gear, witnesses, and social reaction remain in this run.'
@@ -1015,7 +1016,7 @@
 		</div>
 	</section>
 
-	{#if portalTurnState}
+	{#if portalTurnState && portalRuntime}
 		<section class="ore-console" data-testid="ore-console">
 			<div class="ore-heading">
 				<div>
@@ -1027,7 +1028,7 @@
 			<div class="ore-grid">
 				<div>
 					<h3>Finite deposits</h3>
-					{#each Object.values(portalTurnState.portal.deposits) as deposit (deposit.depositId)}
+					{#each Object.values(portalRuntime.deposits) as deposit (deposit.depositId)}
 						<article>
 							<span>{deposit.nodeId.replaceAll('-', ' ')}</span>
 							<strong>{deposit.remainingAmount}/{deposit.initialAmount}</strong>
@@ -1037,7 +1038,7 @@
 				</div>
 				<div>
 					<h3>Carried ore</h3>
-					{#each Object.values(portalTurnState.portal.cargo) as cargo (cargo.actorId)}
+					{#each Object.values(portalRuntime.cargo) as cargo (cargo.actorId)}
 						<article>
 							<span>{actorName(cargo.actorId)}</span>
 							<strong>{cargo.amount}/{cargo.capacity}</strong>
@@ -1047,10 +1048,10 @@
 				</div>
 				<div class="ore-events">
 					<h3>Ore ledger</h3>
-					{#if portalTurnState.portal.oreLedger.length === 0}
+					{#if portalRuntime.oreLedger.length === 0}
 						<p>No ore has changed hands.</p>
 					{:else}
-						{#each portalTurnState.portal.oreLedger.slice().reverse() as entry (entry.entryId)}
+						{#each portalRuntime.oreLedger.slice().reverse() as entry (entry.entryId)}
 							<article>
 								<span>#{entry.sequence} · {entry.kind}</span>
 								<strong>{entry.amount} iron ore</strong>
@@ -1152,14 +1153,13 @@
 						<div>
 							<span
 								>{partyAction
-									? `${partyAction.actorKind} · ${partyAction.choiceSource}`
+									? partyAction.actorKind
 									: `monster · ${monsterAction!.kind.replaceAll('-', ' ')}`}</span
 							>
 							<strong>{actorName(actorId)}</strong>
 							<p>{resolved.summary}</p>
 							{#if partyAction?.actorKind === 'hero'}<small>{partyAction.publicIntent}</small>{/if}
 						</div>
-						<code>{resolved.initiative}</code>
 					</article>
 				{/each}
 			</div>
@@ -2260,10 +2260,6 @@
 		margin: 0.2rem 0;
 		color: #a6aeab;
 		font-size: 0.72rem;
-	}
-	.initiative-actions code {
-		color: #d9ab5e;
-		font-size: 1rem;
 	}
 	.state-rail div {
 		padding: 1rem;

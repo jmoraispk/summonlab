@@ -20,7 +20,7 @@ export const load: PageServerLoad = async ({ params }) => {
 	const conversation = engineSnapshot
 		? projectHeroConversationPresentation(engineSnapshot, snapshot.manifest.characterId)
 		: null;
-	const decisionPreview = engineSnapshot
+	const decisionPreview = config.devRoutesEnabled && engineSnapshot
 		? await (async () => {
 				try {
 					const packet = assembleHeroDecisionPacket({

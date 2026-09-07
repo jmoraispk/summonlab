@@ -245,7 +245,19 @@ describe('character capability contracts', () => {
 
 		expect(PublicProofRunSnapshotV2Schema.safeParse(internal).success).toBe(false);
 		const publicSnapshot = PublicProofRunSnapshotV2Schema.parse({
-			...internal,
+			runId: internal.runId,
+			characterSchemaVersion: internal.characterSchemaVersion,
+			storyEnvelopeId: internal.storyEnvelopeId,
+			controlMode: internal.controlMode,
+			manifest: internal.manifest,
+			manifestHash: internal.manifestHash,
+			firstObservation: internal.firstObservation,
+			firstLine: internal.firstLine,
+			destination: internal.destination,
+			storyBranch: internal.storyBranch,
+			arrived: internal.arrived,
+			events: internal.events.map(({ payload: _payload, ...event }) => event),
+			createdAt: internal.createdAt,
 			capabilityProfile: {
 				profileVersion: internal.capabilityProfile.profileVersion,
 				attributes: internal.capabilityProfile.attributes
@@ -259,5 +271,9 @@ describe('character capability contracts', () => {
 			internal.capabilityProfile.attributes
 		);
 		expect(publicSnapshot.capabilityProfile).not.toHaveProperty('learning');
+		expect(publicSnapshot).not.toHaveProperty('recipe');
+		expect(publicSnapshot).not.toHaveProperty('mind');
+		expect(publicSnapshot).not.toHaveProperty('directive');
+		expect(publicSnapshot.events).toEqual([]);
 	});
 });

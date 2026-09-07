@@ -1,7 +1,7 @@
 <script lang="ts">
-	import type { ProofEvent } from '@summonlab/contracts';
+	import type { PublicProofEvent } from '@summonlab/contracts';
 
-	let { events, compact = false }: { events: ProofEvent[]; compact?: boolean } = $props();
+	let { events, compact = false }: { events: PublicProofEvent[]; compact?: boolean } = $props();
 </script>
 
 <section class:compact class="journal" aria-labelledby="journal-title">

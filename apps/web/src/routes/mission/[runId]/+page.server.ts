@@ -11,10 +11,7 @@ import { error } from '@sveltejs/kit';
 
 import { runtimePortraitFor } from '$lib/server/runtime-portraits';
 import { projectProofRunForPublic } from '$lib/server/proof-presentation';
-import {
-	projectEngineReplayForPublic,
-	projectPublicEngineValue
-} from '$lib/server/public-engine-presentation';
+import { projectEngineReplayForPublic } from '$lib/server/public-engine-presentation';
 
 import type { PageServerLoad } from './$types';
 
@@ -54,7 +51,7 @@ export const load: PageServerLoad = async ({ params }) => {
 	const publicReport = projectEngineReplayForPublic(report);
 	return {
 		report: publicReport,
-		proof: projectPublicEngineValue(projectProofRunForPublic(proof)),
+		proof: projectProofRunForPublic(proof),
 		combatMode,
 		heroPortrait: runtimePortraitFor(proof.manifestHash, proof.manifest.artKey, 'roster'),
 		missionDefinition: {

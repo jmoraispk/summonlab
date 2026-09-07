@@ -1,3 +1,5 @@
+import { createHash } from 'node:crypto';
+
 import {
 	CharacterDraftV2Schema,
 	CharacterGenerationRecipeSchema,
@@ -63,13 +65,14 @@ export function resolveCanonicalSummonableDraft(
 	return entry.draft;
 }
 
-function scoreForRecipeLabel(
-	recipe: CharacterGenerationRecipe,
+function scoreForCapabilityLabel(
+	capabilityKey: string,
 	label: string,
 	minimum: number,
 	maximum: number
 ): number {
-	return minimum + (hash32(`${selectionKey(recipe)}\0${label}`) % (maximum - minimum + 1));
+	const digest = createHash('sha256').update(capabilityKey).update('\0').update(label).digest();
+	return minimum + (digest.readUInt32BE(0) % (maximum - minimum + 1));
 }
 
 export async function generateLegacySummonableCharacterDraft(
@@ -80,31 +83,41 @@ export async function generateLegacySummonableCharacterDraft(
 }
 
 export async function generateSummonableCharacterDraft(
-	input: CharacterGenerationRecipe
+	input: CharacterGenerationRecipe,
+	options: { readonly capabilityEntropy?: string } = {}
 ): Promise<CharacterDraftV2> {
 	const legacy = await generateLegacySummonableCharacterDraft(input);
 	const { aptitudes: legacyAptitudes, ...mind } = legacy.mind;
 	void legacyAptitudes;
 	const recipe = legacy.recipe;
+	const capabilityKey = options.capabilityEntropy ?? selectionKey(recipe);
+	if (options.capabilityEntropy !== undefined && options.capabilityEntropy.length < 32) {
+		throw new Error('Private capability entropy must contain at least 32 characters');
+	}
 	return CharacterDraftV2Schema.parse({
 		...legacy,
 		mind,
 		capabilityProfile: {
 			profileVersion: 'character-capability-v1',
 			attributes: {
-				might: scoreForRecipeLabel(recipe, 'combat-attribute:might:v1', 1, 100),
-				vitality: scoreForRecipeLabel(recipe, 'combat-attribute:vitality:v1', 1, 100),
-				agility: scoreForRecipeLabel(recipe, 'combat-attribute:agility:v1', 1, 100),
-				spirit: scoreForRecipeLabel(recipe, 'combat-attribute:spirit:v1', 1, 100)
+				might: scoreForCapabilityLabel(capabilityKey, 'combat-attribute:might:v1', 1, 100),
+				vitality: scoreForCapabilityLabel(capabilityKey, 'combat-attribute:vitality:v1', 1, 100),
+				agility: scoreForCapabilityLabel(capabilityKey, 'combat-attribute:agility:v1', 1, 100),
+				spirit: scoreForCapabilityLabel(capabilityKey, 'combat-attribute:spirit:v1', 1, 100)
 			},
 			learning: {
-				cognitiveLearningScore: scoreForRecipeLabel(recipe, 'learning:cognitive:v1', 0, 100),
+				cognitiveLearningScore: scoreForCapabilityLabel(
+					capabilityKey,
+					'learning:cognitive:v1',
+					0,
+					100
+				),
 				domainAptitudes: {
-					martial: scoreForRecipeLabel(recipe, 'learning:domain:martial:v1', 0, 100),
-					magical: scoreForRecipeLabel(recipe, 'learning:domain:magical:v1', 0, 100),
-					crafting: scoreForRecipeLabel(recipe, 'learning:domain:crafting:v1', 0, 100),
-					survival: scoreForRecipeLabel(recipe, 'learning:domain:survival:v1', 0, 100),
-					social: scoreForRecipeLabel(recipe, 'learning:domain:social:v1', 0, 100)
+					martial: scoreForCapabilityLabel(capabilityKey, 'learning:domain:martial:v1', 0, 100),
+					magical: scoreForCapabilityLabel(capabilityKey, 'learning:domain:magical:v1', 0, 100),
+					crafting: scoreForCapabilityLabel(capabilityKey, 'learning:domain:crafting:v1', 0, 100),
+					survival: scoreForCapabilityLabel(capabilityKey, 'learning:domain:survival:v1', 0, 100),
+					social: scoreForCapabilityLabel(capabilityKey, 'learning:domain:social:v1', 0, 100)
 				}
 			}
 		}

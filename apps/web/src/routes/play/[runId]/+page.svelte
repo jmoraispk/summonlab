@@ -3,7 +3,7 @@
 	import type {
 		FirstEmberFacility,
 		FirstEmberRationale,
-		ProofRunSnapshot,
+		PublicProofRunSnapshot,
 		PublicProofRunSnapshotV2,
 		SettlementPresentation,
 		SimulationClock
@@ -24,7 +24,7 @@
 	import type { EquipmentWorkshopProjection } from '$lib/server/equipment-runtime';
 
 	let { data } = $props();
-	type PublicProofSnapshot = ProofRunSnapshot | PublicProofRunSnapshotV2;
+	type PublicProofSnapshot = PublicProofRunSnapshot | PublicProofRunSnapshotV2;
 	// svelte-ignore state_referenced_locally
 	let snapshot = $state<PublicProofSnapshot>(data.snapshot);
 	// svelte-ignore state_referenced_locally
@@ -326,9 +326,7 @@
 				<div class:in-transit={walking} class:at-destination={!walking} class="walker">
 					<div class="thought">
 						{walking
-							? snapshot.mind.dailyHabit === 'checks-exits'
-								? 'One gate. Two towers. Three exits.'
-								: `First: ${snapshot.destination === 'kitchen' ? 'names' : 'limits'}. Then answers.`
+							? `First: ${snapshot.destination === 'kitchen' ? 'names' : 'limits'}. Then answers.`
 							: snapshot.destination === 'kitchen'
 								? 'Listen before speaking.'
 								: 'Balance first. Then reach.'}

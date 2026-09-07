@@ -5,7 +5,7 @@
 		HeroConversationPresentation,
 		HeroDecisionPreview,
 		HeroPolicyResult,
-		ProofRunSnapshot,
+		PublicProofRunSnapshot,
 		PublicProofRunSnapshotV2
 	} from '@summonlab/contracts';
 	import { onDestroy } from 'svelte';
@@ -13,7 +13,7 @@
 	import HeroArtPlaceholder from '$lib/components/HeroArtPlaceholder.svelte';
 
 	let { data } = $props();
-	type PublicProofSnapshot = ProofRunSnapshot | PublicProofRunSnapshotV2;
+	type PublicProofSnapshot = PublicProofRunSnapshot | PublicProofRunSnapshotV2;
 	// svelte-ignore state_referenced_locally
 	let snapshot = $state<PublicProofSnapshot>(data.snapshot);
 	// svelte-ignore state_referenced_locally
@@ -28,8 +28,7 @@
 	let decisionJobError = $state('');
 	let queueingDecisionJob = $state(false);
 	let stage = $state(0);
-	// svelte-ignore state_referenced_locally
-	let directive = $state(snapshot.directive);
+	let directive = $state('');
 	let directiveScope = $state<'decision' | 'mission' | 'day' | 'until_revoked'>('decision');
 	let directiveSending = $state(false);
 	let directiveStatus = $state('');
@@ -479,7 +478,7 @@
 			<div class="system-callout">
 				<span>01</span>
 				<p>Recipe accepted</p>
-				<code>{snapshot.recipe.seed} / {snapshot.recipe.generationVersion}</code>
+				<code>public manifest / hidden capability draw</code>
 			</div>
 		{:else if stage === 2}
 			<div class="system-callout">
@@ -497,8 +496,8 @@
 				<div class="traits">
 					<span>{snapshot.manifest.adultAge} years</span>
 					<span>{snapshot.manifest.heightCm} cm</span>
-					<span>{snapshot.mind.primaryValue}</span>
-					<span>{snapshot.mind.dailyHabit.replaceAll('-', ' ')}</span>
+					<span>personality private</span>
+					<span>learning profile private</span>
 				</div>
 				{#if 'characterSchemaVersion' in snapshot}
 					<dl

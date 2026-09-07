@@ -112,7 +112,9 @@ function legacySnapshot(): ProofRunSnapshot {
 
 describe('public proof presentation', () => {
 	it('retains visible v2 attributes while removing the entire learning profile', () => {
-		const projected = proofPresentation.projectProofRunForPublic(v2Snapshot());
+		const internal = v2Snapshot() as ProofRunSnapshotV2 & { futureSecret?: string };
+		internal.futureSecret = 'future-proof-secret';
+		const projected = proofPresentation.projectProofRunForPublic(internal);
 		const serialized = JSON.stringify(projected);
 		if (!('characterSchemaVersion' in projected)) throw new Error('Expected a v2 projection');
 
@@ -125,11 +127,24 @@ describe('public proof presentation', () => {
 		expect(projected.capabilityProfile).not.toHaveProperty('learning');
 		expect(serialized).not.toContain('cognitiveLearningScore');
 		expect(serialized).not.toContain('domainAptitudes');
+		expect(serialized).not.toContain('future-proof-secret');
+		expect(Object.keys(projected).sort()).toEqual(
+			[
+				'runId', 'characterSchemaVersion', 'storyEnvelopeId', 'controlMode', 'manifest',
+				'manifestHash', 'firstObservation', 'firstLine', 'destination', 'storyBranch',
+				'arrived', 'events', 'createdAt', 'capabilityProfile'
+			].sort()
+		);
 	});
 
-	it('preserves legacy proof snapshots without synthesizing capabilities', () => {
+	it('keeps legacy proof identity while removing legacy recipe and cognition', () => {
 		const legacy = legacySnapshot();
-		expect(proofPresentation.projectProofRunForPublic(legacy)).toEqual(legacy);
+		const projected = proofPresentation.projectProofRunForPublic(legacy);
+		expect(projected.manifest).toEqual(legacy.manifest);
+		expect(projected).not.toHaveProperty('recipe');
+		expect(projected).not.toHaveProperty('mind');
+		expect(projected).not.toHaveProperty('directive');
+		expect(projected).not.toHaveProperty('capabilityProfile');
 	});
 
 	it('projects separate display and percentage values for legacy resolve and v2 vitality', () => {
