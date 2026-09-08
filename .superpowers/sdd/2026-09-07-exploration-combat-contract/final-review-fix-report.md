@@ -168,3 +168,78 @@ new stage integrity path does not use Node runtime crypto.
 There are no approved production rat-study motion packs/catalog entries in this repository. The
 default production path therefore intentionally rejects until application-owned approved catalog
 content is supplied. The exact canonical fixture is the only fixture-art exception.
+
+## Scoped correction round 1/3
+
+This correction keeps the trusted-content, verified-byte, source-plus-hash ownership, Pixi v8, and
+raster-only boundaries from the preceding fix wave intact.
+
+### 1. Terminal entries are routed before presentation projection
+
+#### RED evidence
+
+`pnpm --filter @summonlab/web test:unit -- stage-lifecycle.spec.ts` failed with 1 failed / 246
+passed tests across 37 files because the new forged-production regression called the absent
+`routeStageEntry` helper (`TypeError: ...routeStageEntry is not a function`). The regression builds a
+valid-shaped production request that aliases the battlefield source while retaining a different
+hash; it is session-rejected and `requestAssetBindings()` would throw if projection ran.
+
+#### GREEN evidence
+
+`routeStageEntry()` now reports completed/rejected entries before invoking its projector. The stage
+derives raster, motion, verified-source, and motion-version bindings only from a validated live or
+replay session request. `pnpm --filter @summonlab/web test:unit -- stage-lifecycle.spec.ts
+RealtimeCombatStage.spec.ts` passed 37 files / 247 tests: `onRejected` fires exactly once, the
+projection/asset-loader/claim spies stay unused, and no synchronous or unhandled throw is observed.
+
+### 2. Late decoded Pixi resources have disposal ownership
+
+#### RED evidence
+
+`pnpm --filter @summonlab/web test:unit -- stage-decoded-assets.spec.ts` initially failed to import
+the absent `./stage-decoded-assets` module (1 failed file; 247 existing tests passed). The controlled
+deferred test makes one motion decode fail, starts cleanup, and then resolves a sibling sheet.
+
+#### GREEN evidence
+
+`createDecodedStageAssetOwner()` snapshots and clears owned sheets/object URLs at release, destroys
+each sheet at most once, revokes each blob URL at most once, and forces a second Pixi unload only
+when a late texture completion could have repopulated the cache. The stage clears its decoded maps
+and asset lookup before release; late textures/sheets are refused and disposed rather than retained.
+The controlled regression passed 38 files / 248 tests, proving normal and late sheets are destroyed
+once, each blob URL is revoked once, retained counts reach zero, and repeat cleanup does not double
+dispose.
+
+### 3. Task 4 self-review correction
+
+The remaining stale sentence now says replay reruns the unified deterministic mechanics to
+regenerate a candidate trace and receipt; it explicitly no longer claims replay consumes stored trace
+records.
+
+### Correction self-review and remaining limitation
+
+- Presentation projection is now structurally downstream of a live/replay session entry, so a
+  rejected untrusted request cannot reach request-derived asset ownership.
+- The disposal owner handles both already-owned sheets and resources that finish after release; the
+  stage does not retain late decoded maps or object URLs.
+- The deferred lifecycle coverage is deterministic unit-level ownership coverage; the final fresh
+  browser route run below remains the integration check for Pixi and verified-byte loading.
+
+### Correction verification
+
+| Command | Result |
+| --- | --- |
+| `pnpm --filter @summonlab/contracts test` | 14 files / 127 tests passed |
+| `pnpm --filter @summonlab/contracts typecheck` | passed |
+| `pnpm --filter @summonlab/web test:unit` | 38 files / 248 tests passed |
+| `pnpm --filter @summonlab/web typecheck` | 0 errors, 0 warnings |
+| `pnpm --filter @summonlab/web lint` | passed |
+| `pnpm --filter @summonlab/web build` | passed in 9.62 s |
+| targeted stage integrity/lifecycle unit command | 38 files / 248 tests passed |
+| fresh `ENABLE_DEV_ROUTES=true ENABLE_IMAGE_GENERATION=false` build | passed in 9.48 s |
+| route Playwright on fresh `0.0.0.0:4197` preview | 7 / 7 passed in 1.6 min |
+| `git diff --check` | passed |
+
+The fresh preview listener was confirmed as `0.0.0.0:4197` before Playwright and was stopped after
+the run. The build retained only the existing Vite node:crypto externalization and optional sharp
+adapter warnings; both builds exited successfully.

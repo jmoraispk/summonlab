@@ -4,6 +4,7 @@ import type {
 	CombatSession,
 	CombatSessionDependencies,
 	CombatClaimPolicyBinding,
+	CombatSessionEntry,
 	CombatUnavailableState
 } from './combat-session';
 
@@ -154,6 +155,36 @@ export function stageSessionDependencies(
 	return fixtureRequestHash === undefined
 		? { claimPolicy, claimPolicyBinding }
 		: { claimPolicy, claimPolicyBinding, fixtureRequestHash };
+}
+
+export type StageEntryCallbacks = Readonly<{
+	onComplete: (receipt: NonNullable<CombatSession['receipt']>) => void;
+	onRejected: (rejection: Extract<CombatSessionEntry, { kind: 'rejected' }>['rejection']) => void;
+}>;
+
+export type RoutedStageEntry<TPresentation> = Readonly<{
+	session: CombatSession;
+	presentation: TPresentation;
+}>;
+
+/**
+ * Delivers terminal entry notifications before allowing any presentation work to
+ * inspect request-owned asset declarations. A rejected request is intentionally
+ * never projected into stage assets.
+ */
+export function routeStageEntry<TPresentation>(
+	entry: CombatSessionEntry,
+	callbacks: StageEntryCallbacks & Readonly<{ project: (session: CombatSession) => TPresentation }>
+): RoutedStageEntry<TPresentation> | undefined {
+	if (entry.kind === 'completed') {
+		callbacks.onComplete(entry.receipt);
+		return undefined;
+	}
+	if (entry.kind === 'rejected') {
+		callbacks.onRejected(entry.rejection);
+		return undefined;
+	}
+	return { session: entry.session, presentation: callbacks.project(entry.session) };
 }
 
 export type StageStepSession<TCombat> = Readonly<{

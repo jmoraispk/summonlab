@@ -38,9 +38,11 @@
 		requestAssetBindings,
 		type VerifiedStageAsset
 	} from './stage-asset-integrity';
+	import { createDecodedStageAssetOwner } from './stage-decoded-assets';
 	import {
 		advanceStageSession,
 		bindStageSessionNotifications,
+		routeStageEntry,
 		stageSessionDependencies,
 		stageAssetOwner,
 		type StageAssetClaim
@@ -135,18 +137,27 @@
 				session: createReplayCombatSession(requestForSession, replayForSession, dependencies)
 			}
 		: enterCombatSession(requestForSession, dependencies, registryForSession);
-	const presentationRequest = entry.kind === 'session' ? entry.session.request : requestForSession;
-	const rasterBindings = combatRasterBindings(presentationRequest);
-	const motionBindings = combatMotionBindings(presentationRequest);
-	const sources = requestAssetBindings(presentationRequest);
-	const motionPackVersions = motionPackVersionDiagnostic(motionBindings);
-	let session: CombatSession | undefined;
-	if (entry.kind === 'completed') onCompleteForSession(entry.receipt);
-	else if (entry.kind === 'rejected') onRejectedForSession(entry.rejection);
-	else {
-		session = entry.session;
-		simulation = session.combat;
-	}
+	const routedEntry = routeStageEntry(entry, {
+		onComplete: onCompleteForSession,
+		onRejected: onRejectedForSession,
+		project: (liveSession) => {
+			const presentationRequest = liveSession.request;
+			const rasterBindings = combatRasterBindings(presentationRequest);
+			const motionBindings = combatMotionBindings(presentationRequest);
+			return {
+				rasterBindings,
+				motionBindings,
+				sources: requestAssetBindings(presentationRequest),
+				motionPackVersions: motionPackVersionDiagnostic(motionBindings)
+			};
+		}
+	});
+	const session: CombatSession | undefined = routedEntry?.session;
+	const rasterBindings = routedEntry?.presentation.rasterBindings ?? [];
+	const motionBindings = routedEntry?.presentation.motionBindings ?? [];
+	const sources = routedEntry?.presentation.sources ?? [];
+	const motionPackVersions = routedEntry?.presentation.motionPackVersions ?? [];
+	simulation = session?.combat;
 	const CLIP_META: Record<CombatClip, { framesPerSecond: number; loop: boolean }> = {
 		idle: { framesPerSecond: 6, loop: true },
 		advance: { framesPerSecond: 10, loop: true },
@@ -209,23 +220,19 @@
 					return;
 				}
 
-				const assetBySource = new Map(verifiedAssets.map((asset) => [asset.source, asset]));
-				const objectUrls: string[] = [];
+				const assetBySource = new SvelteMap(verifiedAssets.map((asset) => [asset.source, asset]));
 				const decodedTextures = new SvelteMap<string, Texture>();
 				const decodedSheets = new SvelteMap<string, Spritesheet>();
-				let decodedAssetsReleased = false;
+				const decodedAssetOwner = createDecodedStageAssetOwner<Spritesheet>({
+					destroySheet: (sheet) => sheet.destroy(false),
+					unloadObjectUrl: (objectUrl) => Assets.unload(objectUrl),
+					revokeObjectUrl: (objectUrl) => URL.revokeObjectURL(objectUrl)
+				});
 				releaseDecodedAssets = async () => {
-					if (decodedAssetsReleased) return;
-					decodedAssetsReleased = true;
-					for (const sheet of decodedSheets.values()) {
-						try {
-							sheet.destroy(false);
-						} catch {
-							// Cleanup must not leave a rejected promise after a local asset failure.
-						}
-					}
-					await Promise.allSettled(objectUrls.map((objectUrl) => Assets.unload(objectUrl)));
-					for (const objectUrl of objectUrls) URL.revokeObjectURL(objectUrl);
+					assetBySource.clear();
+					decodedTextures.clear();
+					decodedSheets.clear();
+					await decodedAssetOwner.release();
 				};
 				const assetFor = (source: string): VerifiedStageAsset => {
 					const asset = assetBySource.get(source);
@@ -234,15 +241,25 @@
 				};
 				const textureForSource = async (source: string): Promise<Texture> => {
 					const cached = decodedTextures.get(source);
-					if (cached) return cached;
+					if (cached) {
+						if (decodedAssetOwner.released) {
+							throw new Error('Decoded stage assets were released before texture use.');
+						}
+						return cached;
+					}
 					const asset = assetFor(source);
 					const objectUrl = URL.createObjectURL(
 						new Blob([asset.bytes], {
 							type: source.endsWith('.webp') ? 'image/webp' : 'image/png'
 						})
 					);
-					objectUrls.push(objectUrl);
+					if (!decodedAssetOwner.retainObjectUrl(objectUrl)) {
+						throw new Error('Decoded stage assets were released before texture decode.');
+					}
 					const texture = (await Assets.load({ src: objectUrl, parser: 'texture' })) as Texture;
+					if (!(await decodedAssetOwner.settleObjectUrl(objectUrl))) {
+						throw new Error('Decoded stage assets were released during texture decode.');
+					}
 					decodedTextures.set(source, texture);
 					return texture;
 				};
@@ -254,8 +271,14 @@
 							data: JSON.parse(new TextDecoder().decode(assetFor(binding.source).bytes)),
 							cachePrefix: `${binding.motionPackId}-v${binding.version}-`
 						});
-						decodedSheets.set(binding.source, sheet);
+						if (!decodedAssetOwner.retainSheet(sheet)) {
+							throw new Error('Decoded stage assets were released before spritesheet parse.');
+						}
 						await sheet.parse();
+						if (decodedAssetOwner.released) {
+							throw new Error('Decoded stage assets were released during spritesheet parse.');
+						}
+						decodedSheets.set(binding.source, sheet);
 					})
 				);
 				if (disposed) {

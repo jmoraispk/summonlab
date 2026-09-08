@@ -33,7 +33,8 @@ describe('RealtimeCombatStage session boundary', () => {
 		expect(stageSource).toContain(
 			'const motionBindings = combatMotionBindings(presentationRequest);'
 		);
-		expect(stageSource).toContain('const sources = requestAssetBindings(presentationRequest);');
+		expect(stageSource).toContain('routeStageEntry(entry, {');
+		expect(stageSource).toContain('sources: requestAssetBindings(presentationRequest),');
 		expect(stageSource).toContain(
 			'stageAssetOwner(createVerifiedStageAssetLoader()).claim(sources);'
 		);

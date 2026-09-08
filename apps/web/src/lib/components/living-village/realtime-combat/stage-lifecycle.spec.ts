@@ -1,5 +1,10 @@
-import { describe, expect, it } from 'vitest';
+import {
+	ExplorationEncounterRequestSchema,
+	type ExplorationEncounterRequest
+} from '@summonlab/contracts';
+import { describe, expect, it, vi } from 'vitest';
 
+import { combatRequestHash } from './combat-hash';
 import {
 	CombatSessionRegistry,
 	enterCombatSession,
@@ -14,10 +19,12 @@ import {
 	RAT_ENCOUNTER_CLAIM_POLICY_BINDING,
 	RAT_ENCOUNTER_REQUEST
 } from './rat-encounter-fixture';
+import { requestAssetBindings } from './stage-asset-integrity';
 import {
 	advanceStageSession,
 	bindStageSessionNotifications,
 	createStageAssetOwner,
+	routeStageEntry,
 	stageSessionDependencies,
 	stageAssetOwner
 } from './stage-lifecycle';
@@ -32,7 +39,105 @@ function deferred<T>() {
 	return { promise, resolve: resolve!, reject: reject! };
 }
 
+function productionRequestWithConflictingAssetHashes(): ExplorationEncounterRequest {
+	const request = structuredClone(RAT_ENCOUNTER_REQUEST);
+	const candidate = {
+		...request,
+		visualStatus: 'production' as const,
+		party: request.party.map((hero, index) => ({
+			...hero,
+			presentation: {
+				...hero.presentation,
+				combatAssetBinding: {
+					...hero.presentation.combatAssetBinding,
+					approvalStatus: 'approved' as const,
+					...(index === 0
+						? { source: request.battlefieldBinding.environmentAssetBinding.source }
+						: {})
+				},
+				motionPackBinding: {
+					...hero.presentation.motionPackBinding,
+					approvalStatus: 'approved' as const
+				}
+			}
+		})),
+		enemies: request.enemies.map((enemy) => ({
+			...enemy,
+			presentation: {
+				...enemy.presentation,
+				combatAssetBinding: {
+					...enemy.presentation.combatAssetBinding,
+					approvalStatus: 'approved' as const
+				},
+				motionPackBinding: {
+					...enemy.presentation.motionPackBinding,
+					approvalStatus: 'approved' as const
+				}
+			}
+		})),
+		battlefieldBinding: {
+			...request.battlefieldBinding,
+			environmentAssetBinding: {
+				...request.battlefieldBinding.environmentAssetBinding,
+				approvalStatus: 'approved' as const
+			},
+			occluderAssetBindings: request.battlefieldBinding.occluderAssetBindings.map((binding) => ({
+				...binding,
+				approvalStatus: 'approved' as const
+			}))
+		}
+	};
+
+	return ExplorationEncounterRequestSchema.parse({
+		...candidate,
+		requestHash: combatRequestHash(candidate as ExplorationEncounterRequest)
+	});
+}
+
 describe('stage asset lifecycle', () => {
+	it('routes a rejected conflicting request before any presentation asset projection', async () => {
+		const request = productionRequestWithConflictingAssetHashes();
+		expect(request.party[0]!.presentation.combatAssetBinding.contentHash).not.toBe(
+			request.battlefieldBinding.environmentAssetBinding.contentHash
+		);
+		expect(() => requestAssetBindings(request)).toThrow('conflicting hashes');
+
+		const entry = enterCombatSession(
+			request,
+			stageSessionDependencies(RAT_ENCOUNTER_CLAIM_POLICY, RAT_ENCOUNTER_CLAIM_POLICY_BINDING),
+			new CombatSessionRegistry()
+		);
+		expect(entry.kind).toBe('rejected');
+
+		const onRejected = vi.fn();
+		const assetLoader = vi.fn();
+		const assetClaim = vi.fn();
+		const unhandled: unknown[] = [];
+		const onUnhandled = (reason: unknown) => unhandled.push(reason);
+		process.on('unhandledRejection', onUnhandled);
+		try {
+			expect(() =>
+				routeStageEntry(entry, {
+					onComplete: vi.fn(),
+					onRejected,
+					project: () => {
+						assetLoader();
+						assetClaim();
+						return requestAssetBindings(request);
+					}
+				})
+			).not.toThrow();
+			await Promise.resolve();
+		} finally {
+			process.off('unhandledRejection', onUnhandled);
+		}
+
+		expect(onRejected).toHaveBeenCalledTimes(1);
+		expect(assetLoader).not.toHaveBeenCalled();
+		expect(assetClaim).not.toHaveBeenCalled();
+		expect(unhandled).toEqual([]);
+	});
+
 	it('shares one owner across stage imports', () => {
 		const loader = {
 			load: async (source: string) => ({ source }),

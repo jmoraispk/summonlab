@@ -65,8 +65,9 @@ errors and zero warnings; targeted ESLint and whitespace checks exit zero.
   intentionally the same object so duplicate entry cannot recompute an encounter.
 - The registry transition occurs through the first internal completion subscriber, before any caller
   can re-enter from a completion callback.
-- Replay consumes immutable stored trace records and final receipt resources rather than invoking
-  `stepRealtimeCombat`; it emits only replay verification and leaves `receipt` unset.
+- Replay reruns the unified deterministic mechanics to regenerate a candidate trace and receipt;
+  it does not consume stored trace records. It emits only replay verification and leaves `receipt`
+  unset.
 - No Pixi stage, Svelte route, claim application, or artwork asset changes are included.
 
 ## Concerns
