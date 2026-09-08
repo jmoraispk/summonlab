@@ -257,11 +257,27 @@ describe('family-affinity source lineage resealing', () => {
 			promptSha256: result.promptSha256,
 			sourceSha256: staleDigest
 		};
+		const failurePath =
+			'assets/enemies/experiments/family-affinity-v1/generation-failures/elementals/fixture/fire/attempt-v2.json';
+		const failure = {
+			schemaVersion: 'family-affinity-generation-failure-v1',
+			targetId: target.targetId,
+			producerRuns: [
+				{
+					canonicalPromptSha256: result.promptSha256,
+					calls: [
+						{ kind: 'initial', promptSha256: result.promptSha256 },
+						{ kind: 'correction', promptSha256: result.promptSha256 }
+					]
+				}
+			]
+		};
 		const documents = [
 			{ path: targetPath, contents: `${JSON.stringify(target)}\n` },
 			{ path: assignmentPath, contents: `${JSON.stringify(assignment)}\n` },
 			{ path: resultPath, contents: `${JSON.stringify(result)}\n` },
-			{ path: receiptPath, contents: `${JSON.stringify(receipt)}\n` }
+			{ path: receiptPath, contents: `${JSON.stringify(receipt)}\n` },
+			{ path: failurePath, contents: `${JSON.stringify(failure)}\n` }
 		];
 
 		const changed = resealFamilyAffinitySourceLineageDocuments(
@@ -269,12 +285,14 @@ describe('family-affinity source lineage resealing', () => {
 			documents
 		);
 		const byPath = new Map(
-			changed.map((document) => [document.path, JSON.parse(document.contents)])
+			documents.map((document) => [document.path, JSON.parse(document.contents)])
 		);
+		for (const document of changed) byPath.set(document.path, JSON.parse(document.contents));
 		const updatedTarget = byPath.get(targetPath);
 		const updatedAssignment = byPath.get(assignmentPath);
 		const updatedResult = byPath.get(resultPath);
 		const updatedReceipt = byPath.get(receiptPath);
+		const updatedFailure = byPath.get(failurePath);
 		expect(updatedTarget.sources.familyPacketSha256).toBe(sourceDigest);
 		expect(updatedAssignment.targetSha256).toBe(familyAffinitySha256(updatedTarget));
 		expect(updatedResult.targetSha256).toBe(familyAffinitySha256(updatedTarget));
@@ -283,6 +301,15 @@ describe('family-affinity source lineage resealing', () => {
 		);
 		expect(updatedReceipt.promptSha256).toBe(updatedResult.promptSha256);
 		expect(updatedReceipt.sourceSha256).toBe(updatedResult.sourceSha256);
+		expect(updatedFailure.producerRuns).toEqual([
+			{
+				canonicalPromptSha256: updatedResult.promptSha256,
+				calls: [
+					{ kind: 'initial', promptSha256: updatedResult.promptSha256 },
+					{ kind: 'correction', promptSha256: updatedResult.promptSha256 }
+				]
+			}
+		]);
 	});
 
 	it('selects every active tracked family-affinity JSON lineage', () => {
