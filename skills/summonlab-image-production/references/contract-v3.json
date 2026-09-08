@@ -66,11 +66,7 @@
 				"sha256": "2f70076d0367960ed139c0dff49b93777009ad7fed2dd13a31ac9d0abaa47d02"
 			}
 		],
-		"environment": {
-			"LANG": "C.UTF-8",
-			"LC_ALL": "C.UTF-8",
-			"TZ": "UTC"
-		}
+		"environment": { "LANG": "C.UTF-8", "LC_ALL": "C.UTF-8", "TZ": "UTC" }
 	},
 	"profiles": {
 		"image-production-family-target-v1": {

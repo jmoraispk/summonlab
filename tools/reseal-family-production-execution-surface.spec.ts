@@ -4,6 +4,7 @@ import { tmpdir } from 'node:os';
 import path from 'node:path';
 
 import { afterEach, describe, expect, it } from 'vitest';
+import { format, resolveConfig } from 'prettier';
 
 import { resealFamilyProductionExecutionSurface } from './reseal-family-production-execution-surface.js';
 
@@ -46,5 +47,24 @@ describe('family production execution-surface resealing', () => {
 			expectedNonContractSha256: before.executionSurface.expectedNonContractSha256
 		}).toEqual(before.executionSurface);
 		expect({ ...after, executionSurface: before.executionSurface }).toEqual(before);
+	});
+
+	it('writes repository-formatted contract JSON', async () => {
+		const repositoryRoot = await mkdtemp(path.join(tmpdir(), 'family-production-surface-format-'));
+		temporaryRoots.push(repositoryRoot);
+		const skillRoot = path.join(repositoryRoot, 'skills/summonlab-image-production');
+		await cp(path.resolve('skills/summonlab-image-production'), skillRoot, { recursive: true });
+		await writeFile(
+			path.join(repositoryRoot, '.prettierrc.json'),
+			'{"useTabs":true,"singleQuote":true,"trailingComma":"none","printWidth":100}\n'
+		);
+		const contractPath = path.join(skillRoot, 'references/contract-v3.json');
+
+		await resealFamilyProductionExecutionSurface({ repositoryRoot, write: true });
+
+		const written = await readFile(contractPath, 'utf8');
+		const prettierConfig = await resolveConfig(contractPath, { useCache: false });
+		expect(prettierConfig).not.toBeNull();
+		expect(written).toBe(await format(written, { ...prettierConfig, filepath: contractPath }));
 	});
 });

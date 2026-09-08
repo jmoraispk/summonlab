@@ -1,6 +1,7 @@
 import { readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
+import { format, resolveConfig } from 'prettier';
 
 import { computeFamilyAffinityProductionSurface } from './check-family-affinity-production-dispatch.js';
 import { stableFamilyAffinityJson } from './family-affinity-production-lib.js';
@@ -79,13 +80,6 @@ export async function resealFamilyProductionExecutionSurface(input: {
 			.map(({ path: surfacePath, sha256 }) => [surfacePath, sha256])
 	);
 	const current = contract.executionSurface.expectedNonContractSha256;
-	const drifted =
-		stableFamilyAffinityJson(current) !== stableFamilyAffinityJson(expectedNonContractSha256);
-	if (!drifted) {
-		return { mode: 'check' as const, files: Object.keys(expectedNonContractSha256).length };
-	}
-	if (!input.write) throw new Error('Family production execution surface seal drifted');
-
 	const resealed = {
 		...contract,
 		executionSurface: {
@@ -93,7 +87,20 @@ export async function resealFamilyProductionExecutionSurface(input: {
 			expectedNonContractSha256
 		}
 	};
-	await writeFile(contractPath, `${JSON.stringify(resealed, null, '\t')}\n`, 'utf8');
+	const prettierConfig = await resolveConfig(contractPath, { useCache: false });
+	const serialized = await format(JSON.stringify(resealed), {
+		...prettierConfig,
+		filepath: contractPath
+	});
+	const drifted =
+		stableFamilyAffinityJson(current) !== stableFamilyAffinityJson(expectedNonContractSha256) ||
+		source !== serialized;
+	if (!drifted) {
+		return { mode: 'check' as const, files: Object.keys(expectedNonContractSha256).length };
+	}
+	if (!input.write) throw new Error('Family production execution surface seal drifted');
+
+	await writeFile(contractPath, serialized, 'utf8');
 	return { mode: 'write' as const, files: Object.keys(expectedNonContractSha256).length };
 }
 
