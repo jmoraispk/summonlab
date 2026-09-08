@@ -1050,9 +1050,10 @@ class ReplayCombatSession implements CombatSession {
 
 	markUnavailable(state: CombatUnavailableState): void {
 		if (!this.candidate) return;
+		const previousStatus = this.currentStatus;
 		this.candidate.markUnavailable(state);
 		this.syncCandidate();
-		if (this.unavailableState) {
+		if (previousStatus !== 'unavailable' && this.currentStatus === 'unavailable' && this.unavailableState) {
 			for (const listener of [...this.unavailableListeners]) listener(this.unavailableState);
 		}
 	}

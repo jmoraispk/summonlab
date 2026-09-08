@@ -121,3 +121,30 @@ and diff checks also pass.
 - Replay uses expected receipt data only after strict parsing and only as the comparison target; live
   snapshots and terminal combat state come from the candidate rerun.
 - The approved registry implementation was left unchanged.
+
+## Fix round 2/5
+
+### Changes
+
+- Guarded replay-wrapper unavailable notifications on the actual candidate transition into
+  `unavailable`. Repeated `markUnavailable()` calls now remain silent after the first transition;
+  the live session implementation was not changed.
+
+### RED
+
+The new focused regression called replay `markUnavailable()` twice and failed against
+`2f2d9a3a2` as intended:
+
+```text
+AssertionError: expected "vi.fn()" to be called 1 times, but got 2 times
+```
+
+### GREEN
+
+After the transition guard, the focused session suite reported 34 test files and 217 tests passing.
+
+### Self-review
+
+- The guard compares the wrapper's prior and current candidate status, so the initial unavailable
+  transition still notifies every active subscriber once.
+- No registry or live-session unavailable behavior changed.

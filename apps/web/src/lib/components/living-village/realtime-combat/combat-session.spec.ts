@@ -357,6 +357,24 @@ describe('combat session', () => {
 		});
 	});
 
+	it('notifies replay unavailable subscribers only for the unavailable transition', () => {
+		const receipt = runToTerminal(createCombatSession(RAT_ENCOUNTER_REQUEST, dependencies));
+		if (!receipt) throw new Error('expected receipt');
+		const replay = createReplayCombatSession(RAT_ENCOUNTER_REQUEST, receipt, dependencies);
+		const unavailable = vi.fn();
+		replay.subscribeUnavailable(unavailable);
+
+		replay.markUnavailable({ code: 'asset-load-failed', message: 'fixture atlas missing' });
+		replay.markUnavailable({ code: 'asset-load-failed', message: 'fixture atlas missing' });
+
+		expect(replay.status).toBe('unavailable');
+		expect(unavailable).toHaveBeenCalledTimes(1);
+		expect(unavailable).toHaveBeenCalledWith({
+			code: 'asset-load-failed',
+			message: 'fixture atlas missing'
+		});
+	});
+
 	it('preserves a deeply frozen request while it runs', () => {
 		const before = structuredClone(RAT_ENCOUNTER_REQUEST);
 
