@@ -1,10 +1,8 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import {
-		ExplorationEncounterRequestSchema,
 		type ExplorationCombatReceipt,
-		type ExplorationCombatRejection,
-		type ExplorationEncounterRequest
+		type ExplorationCombatRejection
 	} from '@summonlab/contracts';
 
 	import LabBackLink from '$lib/components/living-village/LabBackLink.svelte';
@@ -19,7 +17,6 @@
 		RAT_ENCOUNTER_REQUEST
 	} from '$lib/components/living-village/realtime-combat/rat-encounter-fixture';
 	import { CombatSessionRegistry } from '$lib/components/living-village/realtime-combat/combat-session';
-	import { combatValueHash } from '$lib/components/living-village/realtime-combat/combat-hash';
 	import type {
 		CombatReplayVerification,
 		CombatUnavailableState
@@ -29,7 +26,6 @@
 	let mode = $state<CombatPresentationMode>('2.5d-v2');
 	let paused = $state(false);
 	let reducedMotion = $state(false);
-	let request = $state<ExplorationEncounterRequest>(RAT_ENCOUNTER_REQUEST);
 	let snapshot = $state<RealtimeCombatState>(createRealtimeCombat(RAT_ENCOUNTER_REQUEST));
 	let hydrated = $state(false);
 	const registry = new CombatSessionRegistry();
@@ -42,6 +38,7 @@
 	let receipt = $state<ExplorationCombatReceipt>();
 	let rejection = $state<ExplorationCombatRejection>();
 	let unavailable = $state<CombatUnavailableState>();
+	let replayUnavailable = $state<CombatUnavailableState>();
 	let replayVerification = $state<CombatReplayVerification>({ kind: 'pending' });
 	let completionCount = $state(0);
 
@@ -81,50 +78,37 @@
 		completionCount += 1;
 	}
 
-	function createNextRequest(): ExplorationEncounterRequest {
-		const { requestHash: _requestHash, ...fixture } = structuredClone(RAT_ENCOUNTER_REQUEST);
-		void _requestHash;
-		const identity = crypto.randomUUID();
-		const next = {
-			...fixture,
-			requestId: crypto.randomUUID(),
-			idempotencyKey: `rat-study-field-test-${identity}`,
-			runId: crypto.randomUUID(),
-			correlationId: crypto.randomUUID()
-		};
-		return ExplorationEncounterRequestSchema.parse({
-			...next,
-			requestHash: combatValueHash(next)
-		});
-	}
-
 	function replay(): void {
 		if (!receipt) return;
 		paused = false;
 		replayOf = receipt;
-		replayVerification = { kind: 'pending' };
-		stageKey += 1;
-	}
-
-	function rerunLiveEncounter(): void {
-		request = createNextRequest();
-		snapshot = createRealtimeCombat(request);
-		paused = false;
-		replayOf = undefined;
-		receipt = undefined;
-		rejection = undefined;
-		unavailable = undefined;
+		replayUnavailable = undefined;
 		replayVerification = { kind: 'pending' };
 		stageKey += 1;
 	}
 
 	function retryUnavailable(): void {
-		snapshot = createRealtimeCombat(request);
+		snapshot = createRealtimeCombat(RAT_ENCOUNTER_REQUEST);
 		paused = false;
-		replayOf = undefined;
 		unavailable = undefined;
 		replayVerification = { kind: 'pending' };
 		stageKey += 1;
+	}
+
+	function retryReplayUnavailable(): void {
+		if (!replayOf) return;
+		paused = false;
+		replayUnavailable = undefined;
+		replayVerification = { kind: 'pending' };
+		stageKey += 1;
+	}
+
+	function acceptLiveUnavailable(next: CombatUnavailableState): void {
+		unavailable = next;
+	}
+
+	function acceptReplayUnavailable(next: CombatUnavailableState): void {
+		replayUnavailable = next;
 	}
 </script>
 
@@ -157,7 +141,7 @@
 		<div class="battlefield" data-testid="realtime-combat-stage">
 			{#key stageKey}
 				<RealtimeCombatStage
-					{request}
+					request={RAT_ENCOUNTER_REQUEST}
 					claimPolicy={dependencies.claimPolicy}
 					fixtureRequestHash={dependencies.fixtureRequestHash}
 					{registry}
@@ -168,7 +152,7 @@
 					onSnapshot={(next) => (snapshot = next)}
 					onComplete={acceptCompletion}
 					onRejected={(next) => (rejection = next)}
-					onUnavailable={(next) => (unavailable = next)}
+					onUnavailable={replayOf ? acceptReplayUnavailable : acceptLiveUnavailable}
 					onReplayVerified={(next) => (replayVerification = next)}
 				/>
 			{/key}
@@ -202,7 +186,6 @@
 							? 'Village threshold secured'
 							: 'Reinforce and return'}</strong
 					>
-					<button type="button" onclick={rerunLiveEncounter}>Run it again</button>
 				</div>
 			{/if}
 		</div>
@@ -258,6 +241,19 @@
 						<span class="replay-status" data-testid="combat-replay-status"
 							>Replay verification failed: {replayVerification.field}</span
 						>
+					{/if}
+					{#if replayUnavailable}
+						<div
+							class="replay-unavailable"
+							data-testid="combat-replay-unavailable"
+							role="status"
+							aria-live="polite"
+						>
+							<span>Replay presentation could not be loaded.</span>
+							<button type="button" onclick={retryReplayUnavailable}
+								>Retry replay presentation</button
+							>
+						</div>
 					{/if}
 				</section>
 			{:else if rejection}
@@ -583,10 +579,6 @@
 			serif;
 	}
 
-	.resolution button {
-		margin-top: 1.2rem;
-	}
-
 	.terminal-receipt {
 		display: grid;
 		gap: 0.55rem;
@@ -624,6 +616,14 @@
 	.replay-status {
 		color: #79c3cf;
 		font-weight: 800;
+	}
+
+	.replay-unavailable {
+		display: grid;
+		gap: 0.55rem;
+		padding-top: 0.7rem;
+		border-top: 1px solid rgba(216, 155, 66, 0.35);
+		color: #e3c083;
 	}
 
 	aside {
@@ -729,8 +729,8 @@
 	}
 
 	.playback button,
-	.resolution button,
-	.terminal-receipt button {
+	.terminal-receipt button,
+	.replay-unavailable button {
 		min-height: 2.8rem;
 		padding: 0.6rem;
 	}

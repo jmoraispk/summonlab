@@ -95,14 +95,13 @@ test('returns one bounded receipt and replays without a second completion', asyn
 	await expect(page.getByTestId('combat-receipt-id')).toHaveText(receiptId!);
 });
 
-test('creates a newly keyed fixture request from Run it again', async ({ page }) => {
+test('offers only verified replay after the fixture completes', async ({ page }) => {
 	test.setTimeout(60_000);
 	await page.goto(combatUrl);
 	await expect(page.getByTestId('combat-resolution')).toBeVisible({ timeout: 45_000 });
 
-	await page.getByRole('button', { name: 'Run it again' }).click();
-	await expect(page.getByTestId('combat-rejection')).toContainText('canonical fixture request');
-	await expect(page.getByTestId('combat-receipt')).toHaveCount(0);
+	await expect(page.getByRole('button', { name: 'Run it again' })).toHaveCount(0);
+	await expect(page.getByRole('button', { name: 'Replay verified fight' })).toBeVisible();
 });
 
 test('reports an unavailable presentation without a defeat receipt', async ({ page }) => {
@@ -111,4 +110,33 @@ test('reports an unavailable presentation without a defeat receipt', async ({ pa
 	await expect(page.getByTestId('combat-unavailable')).toContainText('could not be loaded');
 	await expect(page.getByTestId('combat-receipt')).toHaveCount(0);
 	await expect(page.getByText('Party overwhelmed')).toHaveCount(0);
+});
+
+test('retries replay presentation without replacing the original receipt', async ({ page }) => {
+	test.setTimeout(90_000);
+	let abortReplayMotion = false;
+	await page.route('**/rat-brute-motion-v1.json', (route) => {
+		if (abortReplayMotion) return route.abort();
+		return route.continue();
+	});
+	await page.goto(combatUrl);
+	await expect(page.getByTestId('combat-resolution')).toBeVisible({ timeout: 45_000 });
+	const receiptId = await page.getByTestId('combat-receipt-id').textContent();
+	await expect(page.getByTestId('combat-completion-count')).toHaveText('1');
+
+	abortReplayMotion = true;
+	await page.getByRole('button', { name: 'Replay verified fight' }).click();
+	await expect(page.getByTestId('combat-replay-unavailable')).toContainText('could not be loaded', {
+		timeout: 15_000
+	});
+	await expect(page.getByTestId('combat-receipt-id')).toHaveText(receiptId!);
+	await expect(page.getByTestId('combat-completion-count')).toHaveText('1');
+
+	abortReplayMotion = false;
+	await page.getByRole('button', { name: 'Retry replay presentation' }).click();
+	await expect(page.getByTestId('combat-replay-status')).toHaveText('Replay verified', {
+		timeout: 45_000
+	});
+	await expect(page.getByTestId('combat-receipt-id')).toHaveText(receiptId!);
+	await expect(page.getByTestId('combat-completion-count')).toHaveText('1');
 });

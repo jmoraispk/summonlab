@@ -18,11 +18,8 @@ mutate exploration, inventory, progression, loot/cache, fog, or tiles.
   claim application path.
 - Presentation load failure is separate from defeat and rejection. Retry recreates the stage with
   the same unresolved request; it does not make a new idempotency entry.
-- `Run it again` now creates fresh request, run, correlation, idempotency, and request-hash values
-  before replacing the stage. Because the new request retains fixture-only visual bindings, the
-  explicit canonical fixture gate rejects it; the route shows that typed rejection rather than
-  silently resuming the old completed session. This is intentional until a production-art request
-  producer exists.
+- The terminal presents the one approved next action, `Replay verified fight`; production creation
+  of a distinct next encounter remains deferred until it can provide approved non-fixture art.
 - Lens, pause, and reduced-motion changes do not touch `stageKey`. The only keyed replacements are
   replay, unavailable retry, and the explicit new encounter action.
 
@@ -87,5 +84,72 @@ the actual renderer-ready, mode-switch, pause, terminal, replay, and unavailable
 - Receipt claims are displayed explicitly as uncommitted and never sent to a claim consumer.
 - Replay is constructed from the original request and receipt only; it neither enters the registry
   nor increments the live completion count.
-- The fresh request uses a new UUID-backed idempotency slug and a recomputed canonical request hash,
-  while the initial canonical fixture alone receives the narrow fixture-art approval dependency.
+- The canonical fixture alone receives the narrow fixture-art approval dependency; the route does
+  not manufacture a new fixture request, idempotency slug, or request hash.
+
+## Fix round 1/5 — replay failure and terminal control
+
+### Scope
+
+- Removed the `Run it again` control and all fresh fixture-request generation. The route now offers
+  the approved one canonical live fixture and verified replay only; a production new-encounter
+  producer remains deferred.
+- Added replay-specific unavailable state alongside the preserved receipt. Its retry keys a new
+  replay stage from the same original request and receipt, without clearing the receipt, entering a
+  live registry session, incrementing completion, or applying claims.
+- Kept initial live-presentation unavailability and its same-request retry behavior separate.
+- Bound live and replay unavailable callbacks to distinct handlers selected with the keyed stage,
+  so a stale live callback cannot be rendered as a replay failure.
+
+### Exact RED
+
+```sh
+PATH=/tmp/summonlab-node-24.14.1/bin:$PATH pnpm --filter @summonlab/web test:e2e -- src/routes/living-village-lab/realtime-combat/realtime-combat.e2e.ts --grep "offers only verified replay"
+```
+
+The new terminal-control test failed as expected: `getByRole('button', { name: 'Run it again' })`
+resolved to one element when the assertion required zero.
+
+```sh
+PATH=/tmp/summonlab-node-24.14.1/bin:$PATH pnpm --filter @summonlab/web test:e2e -- src/routes/living-village-lab/realtime-combat/realtime-combat.e2e.ts --grep "retries replay presentation"
+```
+
+The replay asset-route test failed as expected after the live receipt: the required
+`combat-replay-unavailable` element did not exist. The route handler continued the first
+rat-brute motion request, then aborted the replay reload; disabling Playwright's HTTP cache through
+routing made the asset failure deterministic.
+
+### GREEN
+
+The two focused browser cases pass after the route-only state split. Full route Playwright now
+passes six cases, including receipt/replay, no terminal rerun control, initial unavailable, and
+replay unavailable followed by successful replay retry with the original receipt ID and completion
+count still equal to one.
+
+### Verification
+
+Passed with `PATH=/tmp/summonlab-node-24.14.1/bin:$PATH`:
+
+```sh
+pnpm --filter @summonlab/contracts test -- exploration-combat.spec.ts
+pnpm --filter @summonlab/contracts typecheck
+pnpm --filter @summonlab/web test:unit -- src/lib/components/living-village/realtime-combat/rat-encounter-fixture.spec.ts src/lib/components/living-village/realtime-combat/combat-session.spec.ts src/lib/components/living-village/realtime-combat/realtime-combat.spec.ts src/lib/components/living-village/realtime-combat/actor-animator.spec.ts src/lib/components/living-village/realtime-combat/actor-visual-registration.spec.ts src/lib/components/living-village/realtime-combat/motion-pack-config.spec.ts src/lib/components/living-village/realtime-combat/combat-spatial.spec.ts src/lib/components/living-village/realtime-combat/depth-projection.spec.ts src/lib/components/living-village/realtime-combat/health-bar-layout.spec.ts
+pnpm --filter @summonlab/web typecheck
+pnpm --filter @summonlab/web lint
+pnpm --filter @summonlab/web test:e2e -- src/routes/living-village-lab/realtime-combat/realtime-combat.e2e.ts
+pnpm --filter @summonlab/web build
+git diff --check
+```
+
+Results: contracts 14 files / 126 tests, web units 36 files / 235 tests, typecheck 0 errors and 0
+warnings, lint clean, six route browser cases passing, and build passing. Build warnings remain the
+pre-existing browser `node:crypto`, chunk-size, and optional `sharp` platform warnings.
+
+### Self-review
+
+- The persistent receipt contains the original receipt/replay reference only; replay failure and
+  retry do not publish a new receipt, claim, or completion.
+- The retry action preserves `replayOf`, resets only replay presentation/verification state, and
+  increments `stageKey` exactly once for a new non-publishing replay session.
+- There is no generic fixture authorization, new request hash, idempotency slug, or live rerun
+  path in the route. The canonical fixture exemption remains explicit at the stage boundary.
