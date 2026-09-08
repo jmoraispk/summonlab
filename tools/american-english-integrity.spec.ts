@@ -617,6 +617,8 @@ describe('integrity binding classification', () => {
 	});
 
 	it('materializes family production compatibility seals from the migrated skill surface', () => {
+		const contractPath = 'skills/summonlab-image-production/references/contract-v3.json';
+		const bundlePath = 'skills/summonlab-image-production/scripts/family_dispatch_gate.mjs';
 		const commands = visualProductionIntegrityOwner.intentMaterialization?.commands ?? [];
 		const buildBundle = ['pnpm', 'build:family-affinity-dispatch-bundle'];
 		const resealSurface = [
@@ -643,10 +645,23 @@ describe('integrity binding classification', () => {
 			commands.findIndex((command) => command.join(' ') === resealCompatibility.join(' '))
 		);
 		expect(visualProductionIntegrityOwner.intentMaterialization?.paths).toEqual(
-			expect.arrayContaining([
-				'skills/summonlab-image-production/scripts/family_dispatch_gate.mjs',
-				'skills/summonlab-image-production/references/contract-v3.json'
-			])
+			expect.arrayContaining([bundlePath, contractPath])
+		);
+		expect(
+			visualProductionIntegrityOwner.owns(
+				contractPath,
+				'/executionSurface/expectedNonContractSha256/references~1species-grammar.md'
+			)
+		).toBe(true);
+		expect(visualProductionIntegrityOwner.owns(bundlePath, '')).toBe(true);
+		expect(visualProductionIntegrityOwner.owns(contractPath, '/sealedLauncher/bundle/sha256')).toBe(
+			true
+		);
+		expect(visualProductionIntegrityOwner.owns(contractPath, '/repositoryDispatch/sha256')).toBe(
+			true
+		);
+		expect(visualProductionIntegrityOwner.owns(contractPath, '/unregisteredApproval/sha256')).toBe(
+			false
 		);
 	});
 

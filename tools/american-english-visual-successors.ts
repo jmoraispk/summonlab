@@ -15,6 +15,17 @@ import {
 import { OWNER_DIGEST_POINTER_PATTERNS } from './american-english-integrity-pointers.js';
 import { selectFamilyAffinitySourceLineagePaths } from './reseal-family-affinity-source-lineage.js';
 
+const FAMILY_PRODUCTION_CONTRACT_PATH =
+	'skills/summonlab-image-production/references/contract-v3.json';
+const FAMILY_PRODUCTION_BUNDLE_PATH =
+	'skills/summonlab-image-production/scripts/family_dispatch_gate.mjs';
+const FAMILY_PRODUCTION_CONTRACT_DIGEST_POINTER_PATTERNS = [
+	/^\/executionSurface\/expectedNonContractSha256\/[^/]+$/u,
+	/^\/repositoryDispatch\/sha256$/u,
+	/^\/sealedLauncher\/(?:bundle|node)\/sha256$/u,
+	/^\/sealedLauncher\/sources\/(?:0|[1-9]\d*)\/sha256$/u
+] as const;
+
 export const VISUAL_PRODUCTION_INTEGRITY_PATH_PATTERNS = [
 	/^assets\/(?:enemies|heroes|wiki)\//u,
 	/^apps\/web\/static\/runtime\/(?:enemies\/monster-wiki-v1|summonable-heroes-v1)\//u,
@@ -122,13 +133,23 @@ export const visualProductionIntegrityOwner: AmericanEnglishIntegrityOwner = {
 		return null;
 	},
 	ownsPath(path) {
-		return VISUAL_PRODUCTION_INTEGRITY_PATH_PATTERNS.some((pattern) => pattern.test(path));
+		return (
+			path === FAMILY_PRODUCTION_CONTRACT_PATH ||
+			path === FAMILY_PRODUCTION_BUNDLE_PATH ||
+			VISUAL_PRODUCTION_INTEGRITY_PATH_PATTERNS.some((pattern) => pattern.test(path))
+		);
 	},
 	regeneratesPath(path) {
 		return this.ownsPath(path) && !path.includes('/migrations/');
 	},
 	owns(path, jsonPointer) {
 		if (!this.ownsPath(path)) return false;
+		if (path === FAMILY_PRODUCTION_BUNDLE_PATH) return jsonPointer === '';
+		if (path === FAMILY_PRODUCTION_CONTRACT_PATH) {
+			return FAMILY_PRODUCTION_CONTRACT_DIGEST_POINTER_PATTERNS.some((pattern) =>
+				pattern.test(jsonPointer)
+			);
+		}
 		if (jsonPointer === '') {
 			return [
 				...VISUAL_PRODUCTION_FILE_BINDING_PATH_PATTERNS,
