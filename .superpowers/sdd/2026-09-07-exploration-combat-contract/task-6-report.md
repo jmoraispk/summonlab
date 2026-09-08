@@ -21,7 +21,7 @@ mutate exploration, inventory, progression, loot/cache, fog, or tiles.
 - The terminal presents the one approved next action, `Replay verified fight`; production creation
   of a distinct next encounter remains deferred until it can provide approved non-fixture art.
 - Lens, pause, and reduced-motion changes do not touch `stageKey`. The only keyed replacements are
-  replay, unavailable retry, and the explicit new encounter action.
+  replay and unavailable retry.
 
 ## TDD evidence
 
@@ -41,11 +41,13 @@ That producer omission was fixed separately in commit `6188842c1` before the rou
 the added no-rejection assertion protects the canonical route-to-stage integration; the new
 unavailable browser case verifies the stage now reaches the presentation failure callback.
 
-### GREEN
+### GREEN (pre-fix evidence)
 
-The full route browser file passes five cases: stable presentation/pause, mobile layout, one live
-receipt plus verified replay without another completion, a fresh keyed `Run it again` rejection,
-and asset-unavailable rendering without a defeat receipt.
+Before fix round 1 removed the misleading control, the route browser file passed five cases:
+stable presentation/pause, mobile layout, one live receipt plus verified replay without another
+completion, a fresh keyed `Run it again` rejection, and asset-unavailable rendering without a
+defeat receipt. This is historical evidence only; the final suite has six cases and no
+`Run it again` rejection path.
 
 ## Verification
 
