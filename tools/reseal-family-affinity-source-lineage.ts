@@ -215,12 +215,13 @@ export function resealFamilyAffinitySourceLineageDocuments(
 			const target = targets.get(targetId);
 			const assignment = assignments.get(targetId);
 			if (!target || !assignment) continue;
-			if (!target.document.dirty && !assignment.document.dirty) continue;
-			const promptSha256 = familyAffinityPromptSha256(target.value, assignment.value);
-			if (result.promptSha256 !== promptSha256) {
-				result.promptSha256 = promptSha256;
-				document.dirty = true;
-				changed = true;
+			if (target.document.dirty || assignment.document.dirty) {
+				const promptSha256 = familyAffinityPromptSha256(target.value, assignment.value);
+				if (result.promptSha256 !== promptSha256) {
+					result.promptSha256 = promptSha256;
+					document.dirty = true;
+					changed = true;
+				}
 			}
 			results.set(targetId, { document, value: result });
 		}
@@ -269,7 +270,12 @@ export function resealFamilyAffinitySourceLineageDocuments(
 			const resultDocument =
 				typeof review.resultPath === 'string' ? byPath.get(review.resultPath) : undefined;
 			if (!target || !assignment || !result || !resultDocument) continue;
-			if (!target.document.dirty && !assignment.document.dirty && !result.document.dirty) {
+			if (
+				!document.dirty &&
+				!target.document.dirty &&
+				!assignment.document.dirty &&
+				!result.document.dirty
+			) {
 				continue;
 			}
 			const issuerAttestationSha256 = familyAffinityReviewIssuerAttestationSha256({

@@ -5,6 +5,8 @@ import { describe, expect, it } from 'vitest';
 
 import {
 	familyAffinityPromptSha256,
+	familyAffinityRawSha256,
+	familyAffinityReviewIssuerAttestationSha256,
 	familyAffinitySha256
 } from './family-affinity-production-lib.js';
 import {
@@ -156,6 +158,79 @@ describe('family-affinity source lineage resealing', () => {
 				familyAffinitySha256(JSON.parse(sources[index]!.contents))
 			);
 		}
+	});
+
+	it('reseals review attestations after a later packet changes the shared manifest', async () => {
+		const manifestPath = 'assets/enemies/experiments/family-affinity-v1/manifest.json';
+		const goblinPacketPath =
+			'assets/enemies/experiments/family-affinity-v1/families/01-goblins.json';
+		const orcPacketPath = 'assets/enemies/experiments/family-affinity-v1/families/02-orcs.json';
+		const goblinTargetPath =
+			'assets/enemies/experiments/family-affinity-v1/targets/goblins/goblin-runt/normal/target-v1.json';
+		const goblinAssignmentPath =
+			'assets/enemies/experiments/family-affinity-v1/assignments/goblins/goblin-runt/normal/assignment-v1.json';
+		const goblinResultPath =
+			'assets/enemies/experiments/family-affinity-v1/results/goblins/goblin-runt/normal-v1.json';
+		const goblinReviewPath =
+			'assets/enemies/experiments/family-affinity-v1/review/assignments/decisions/goblins/goblin-runt/normal/candidate-v1-ordinary-v1-assignment.json';
+		const orcTargetPath =
+			'assets/enemies/experiments/family-affinity-v1/targets/orcs/orc-berserker/normal/target-v1.json';
+		const orcAssignmentPath =
+			'assets/enemies/experiments/family-affinity-v1/assignments/orcs/orc-berserker/normal/assignment-v1.json';
+		const documentPaths = [
+			manifestPath,
+			goblinTargetPath,
+			goblinAssignmentPath,
+			goblinResultPath,
+			goblinReviewPath,
+			orcTargetPath,
+			orcAssignmentPath
+		];
+		const documents = await Promise.all(
+			documentPaths.map(async (repositoryPath) => ({
+				path: repositoryPath,
+				contents: await readFile(path.resolve(repositoryPath), 'utf8')
+			}))
+		);
+		const sources = await Promise.all(
+			[goblinPacketPath, orcPacketPath].map(async (repositoryPath) => ({
+				path: repositoryPath,
+				contents: (await readFile(path.resolve(repositoryPath), 'utf8'))
+					.replaceAll('grey', 'gray')
+					.replaceAll('ochre', 'ocher')
+			}))
+		);
+
+		const changed = resealFamilyAffinitySourceLineagesDocuments(sources, documents);
+		const updated = new Map(
+			documents.map((document) => [
+				document.path,
+				changed.find(({ path: changedPath }) => changedPath === document.path) ?? document
+			])
+		);
+		const target = JSON.parse(updated.get(goblinTargetPath)!.contents);
+		const assignment = JSON.parse(updated.get(goblinAssignmentPath)!.contents);
+		const resultDocument = updated.get(goblinResultPath)!;
+		const result = JSON.parse(resultDocument.contents);
+		const review = JSON.parse(updated.get(goblinReviewPath)!.contents);
+
+		expect(review.issuerAttestationSha256).toBe(
+			familyAffinityReviewIssuerAttestationSha256({
+				issuerId: review.issuerId,
+				reviewerId: review.reviewerId,
+				kind: review.reviewKind,
+				manifestPath: review.manifestPath,
+				manifestSha256: review.manifestSha256,
+				target,
+				targetPath: goblinTargetPath,
+				productionAssignment: assignment,
+				productionAssignmentPath: goblinAssignmentPath,
+				result,
+				resultSha256: familyAffinityRawSha256(resultDocument.contents),
+				decisionVersion: review.decisionVersion,
+				permittedReceiptPath: review.permittedReceiptPath
+			})
+		);
 	});
 
 	it('reseals target and prompt lineage after the family packet digest changes', async () => {
