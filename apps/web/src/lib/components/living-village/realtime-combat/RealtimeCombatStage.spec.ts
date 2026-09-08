@@ -11,6 +11,10 @@ const stageSource = readFileSync(
 describe('RealtimeCombatStage session boundary', () => {
 	it('owns a request-bound live or replay session instead of a local fixture simulation', () => {
 		expect(stageSource).toContain('request: ExplorationEncounterRequest;');
+		expect(stageSource).toContain('fixtureRequestHash?: string;');
+		expect(stageSource).toContain(
+			'stageSessionDependencies(\n\t\tclaimPolicyForSession,\n\t\tfixtureRequestHashForSession\n\t)'
+		);
 		expect(stageSource).toContain(
 			'enterCombatSession(requestForSession, dependencies, registryForSession)'
 		);

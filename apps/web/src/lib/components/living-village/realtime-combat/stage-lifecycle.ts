@@ -1,6 +1,8 @@
 import type {
+	CombatClaimPolicy,
 	CombatReplayVerification,
 	CombatSession,
+	CombatSessionDependencies,
 	CombatUnavailableState
 } from './combat-session';
 
@@ -109,6 +111,13 @@ let sharedStageAssetOwner: ReturnType<typeof createStageAssetOwner> | undefined;
 export function stageAssetOwner(loader: StageAssetLoader) {
 	sharedStageAssetOwner ??= createStageAssetOwner(loader);
 	return sharedStageAssetOwner;
+}
+
+export function stageSessionDependencies(
+	claimPolicy: CombatClaimPolicy,
+	fixtureRequestHash?: string
+): CombatSessionDependencies {
+	return fixtureRequestHash === undefined ? { claimPolicy } : { claimPolicy, fixtureRequestHash };
 }
 
 export type StageStepSession<TCombat> = Readonly<{

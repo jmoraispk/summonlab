@@ -1,16 +1,20 @@
 import { describe, expect, it } from 'vitest';
 
-import type {
-	CombatReplayVerification,
-	CombatSession,
-	CombatSessionListener,
-	CombatSessionSubscription,
-	CombatUnavailableListener
+import {
+	CombatSessionRegistry,
+	enterCombatSession,
+	type CombatReplayVerification,
+	type CombatSession,
+	type CombatSessionListener,
+	type CombatSessionSubscription,
+	type CombatUnavailableListener
 } from './combat-session';
+import { RAT_ENCOUNTER_CLAIM_POLICY, RAT_ENCOUNTER_REQUEST } from './rat-encounter-fixture';
 import {
 	advanceStageSession,
 	bindStageSessionNotifications,
 	createStageAssetOwner,
+	stageSessionDependencies,
 	stageAssetOwner
 } from './stage-lifecycle';
 
@@ -258,6 +262,27 @@ describe('stage asset lifecycle', () => {
 
 		expect(loaded).toEqual(['/runtime/duplicate.png']);
 		expect(unloaded).toEqual(['/runtime/duplicate.png']);
+	});
+});
+
+describe('stage session dependencies', () => {
+	it('admits only the canonical fixture hash into a loading fixture session', () => {
+		const accepted = enterCombatSession(
+			RAT_ENCOUNTER_REQUEST,
+			stageSessionDependencies(RAT_ENCOUNTER_CLAIM_POLICY, RAT_ENCOUNTER_REQUEST.requestHash),
+			new CombatSessionRegistry()
+		);
+		expect(accepted.kind).toBe('session');
+		if (accepted.kind === 'session') expect(accepted.session.status).toBe('loading');
+
+		for (const fixtureRequestHash of [undefined, 'incorrect-fixture-hash']) {
+			const rejected = enterCombatSession(
+				RAT_ENCOUNTER_REQUEST,
+				stageSessionDependencies(RAT_ENCOUNTER_CLAIM_POLICY, fixtureRequestHash),
+				new CombatSessionRegistry()
+			);
+			expect(rejected.kind).toBe('rejected');
+		}
 	});
 });
 

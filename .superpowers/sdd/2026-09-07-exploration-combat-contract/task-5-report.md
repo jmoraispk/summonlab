@@ -226,3 +226,48 @@ warnings.
   its later final release performs the next unload attempt exactly once.
 - Both explicit release errors and detached transition errors are observed. Existing overlap,
   pending-failure, and successful unload-reclaim cases remain in the full suite.
+
+## Integration fix round 4/5 — Fixture session dependency forwarding
+
+### Exact RED/GREEN evidence
+
+#### RED
+
+```sh
+PATH=/tmp/summonlab-node-24.14.1/bin:$PATH pnpm --filter @summonlab/web test:unit -- src/lib/components/living-village/realtime-combat/stage-lifecycle.spec.ts src/lib/components/living-village/realtime-combat/RealtimeCombatStage.spec.ts
+```
+
+The new stage-dependency behavior test found no `stageSessionDependencies` factory, while the stage
+static boundary lacked the `fixtureRequestHash` prop. As a result the canonical RAT request entered
+`enterCombatSession` without its explicit fixture approval and was rejected before request-declared
+Pixi motion assets could load.
+
+#### GREEN
+
+`RealtimeCombatStage` now accepts an optional request-bound `fixtureRequestHash`, snapshots it with
+the other session inputs, and builds the exact typed dependencies passed to both live and replay
+entry points. The behavior test proves the canonical hash creates a session in `loading`; missing
+and incorrect hashes remain rejected.
+
+### Verification
+
+Passed with `PATH=/tmp/summonlab-node-24.14.1/bin:$PATH`:
+
+```sh
+pnpm --filter @summonlab/web test:unit
+pnpm --filter @summonlab/web typecheck
+pnpm --filter @summonlab/web exec eslint src/lib/components/living-village/realtime-combat/RealtimeCombatStage.svelte src/lib/components/living-village/realtime-combat/RealtimeCombatStage.spec.ts src/lib/components/living-village/realtime-combat/stage-lifecycle.ts src/lib/components/living-village/realtime-combat/stage-lifecycle.spec.ts
+git diff --check
+```
+
+The focused and full unit suites pass at 36 files / 235 tests, and typecheck reports zero errors or
+warnings. I intentionally skipped the production build because the shared worktree contains active
+Task 6 route/E2E edits; the requested Task 5 evidence remains isolated.
+
+### Fix-round self-review
+
+- The approved fixture exception remains narrow: missing or incorrect hashes do not broaden it.
+- Live and replay creation share the same immutable stage dependency object, so they receive the
+  same fixture approval input.
+- Only Task 5 stage/helper/test files are committed in this integration round. The uncommitted Task
+  6 route and E2E files are preserved for their owner.

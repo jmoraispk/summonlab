@@ -35,6 +35,7 @@
 	import {
 		advanceStageSession,
 		bindStageSessionNotifications,
+		stageSessionDependencies,
 		stageAssetOwner,
 		type StageAssetClaim
 	} from './stage-lifecycle';
@@ -51,6 +52,7 @@
 	let {
 		request,
 		claimPolicy,
+		fixtureRequestHash,
 		registry,
 		replayOf,
 		mode,
@@ -64,6 +66,7 @@
 	}: {
 		request: ExplorationEncounterRequest;
 		claimPolicy: CombatClaimPolicy;
+		fixtureRequestHash?: string;
 		registry: CombatSessionRegistry;
 		replayOf?: ExplorationCombatReceipt;
 		mode: CombatPresentationMode;
@@ -106,6 +109,7 @@
 
 	const requestForSession = untrack(() => request);
 	const claimPolicyForSession = untrack(() => claimPolicy);
+	const fixtureRequestHashForSession = untrack(() => fixtureRequestHash);
 	const registryForSession = untrack(() => registry);
 	const replayForSession = untrack(() => replayOf);
 	const onCompleteForSession = untrack(() => onComplete);
@@ -119,7 +123,10 @@
 		])
 	];
 	const motionPackVersions = motionPackVersionDiagnostic(motionBindings);
-	const dependencies = { claimPolicy: claimPolicyForSession };
+	const dependencies = stageSessionDependencies(
+		claimPolicyForSession,
+		fixtureRequestHashForSession
+	);
 	const entry = replayForSession
 		? {
 				kind: 'session' as const,
