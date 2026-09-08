@@ -55,7 +55,7 @@
 				"opponent": "lowest-health-policy-authored-tower-floor-01-enemy",
 				"pruning": "remove-other-authored-enemies-before-the-first-readiness-window"
 			},
-			"providerFailurePolicy": "first-legal-guard-without-provider-retry",
+			"providerFailurePolicy": "first-frozen-legal-action-without-provider-lifecycle",
 			"productionPrimitives": [
 				"createMissionReadinessState",
 				"advanceUntilDecision",
@@ -67,7 +67,7 @@
 				"maximumEvents": 100000
 			}
 		},
-		"profileHash": "fa5bae604122e371d8abeed47bbb1f4fa2440b6b4a33f001e0a8ed2522d334c4",
+		"profileHash": "b933bbb7a372ecd94b6046a9da606389ae9eab3705d6d73a870ed28fbea1a454",
 		"trialsPerBenchmark": 10000,
 		"encountersPerArchetype": 100,
 		"percentileMethod": "nearest-rank",
@@ -10079,7 +10079,8 @@
 			"distinctBenchmarkSeeds": 10000,
 			"benchmarkAdvanceCalls": 10000,
 			"benchmarkResolverCalls": 20000,
-			"providerFallbackEvaluations": 20000,
+			"productionFallbackIntentBuilds": 20000,
+			"productionFallbackSelectionsApplied": 40000,
 			"completeEncounters": 400,
 			"encounterAdvanceCalls": 3433,
 			"encounterResolverCalls": 3033
@@ -10144,8 +10145,8 @@
 		},
 		"collisions": {
 			"trials": 10000,
-			"collisionTrials": 10000,
-			"rateBasisPoints": 10000
+			"collisionTrials": 0,
+			"rateBasisPoints": 0
 		},
 		"noProgress": {
 			"trials": 10000,
@@ -10154,18 +10155,18 @@
 		},
 		"passiveRegeneration": {
 			"trials": 10000,
-			"stalemates": 0,
-			"durationTicks": {
+			"firstEligiblePulseDelayTicks": {
 				"p50": 50,
 				"p95": 50
 			}
 		},
 		"providerFallback": {
 			"trials": 10000,
-			"providerFailures": 20000,
+			"modeledProviderFailures": 20000,
 			"fallbackTrialsResolvedLegally": 10000,
 			"legalFallbackSelections": 20000,
-			"fallbackSelectorEvaluations": 20000,
+			"fallbackIntentBuilds": 20000,
+			"fallbackSelectionsApplied": 40000,
 			"resolutionRateBasisPoints": 10000
 		},
 		"determinism": {
@@ -10187,7 +10188,12 @@
 				"p50": 18,
 				"p95": 35
 			},
-			"safetyStops": 0
+			"safetyStops": 0,
+			"noProgressStops": 0,
+			"damageApplied": 1195,
+			"passiveHealthRecovered": 195,
+			"recoveryObservedEncounters": 78,
+			"regenerationStalemates": 0
 		},
 		{
 			"archetypeId": "peer-level-40",
@@ -10202,7 +10208,12 @@
 				"p50": 10,
 				"p95": 23
 			},
-			"safetyStops": 0
+			"safetyStops": 0,
+			"noProgressStops": 0,
+			"damageApplied": 1130,
+			"passiveHealthRecovered": 130,
+			"recoveryObservedEncounters": 71,
+			"regenerationStalemates": 0
 		},
 		{
 			"archetypeId": "peer-level-70",
@@ -10217,7 +10228,12 @@
 				"p50": 7,
 				"p95": 14
 			},
-			"safetyStops": 0
+			"safetyStops": 0,
+			"noProgressStops": 0,
+			"damageApplied": 1022,
+			"passiveHealthRecovered": 22,
+			"recoveryObservedEncounters": 17,
+			"regenerationStalemates": 0
 		},
 		{
 			"archetypeId": "peer-level-99",
@@ -10232,7 +10248,12 @@
 				"p50": 4,
 				"p95": 11
 			},
-			"safetyStops": 0
+			"safetyStops": 0,
+			"noProgressStops": 0,
+			"damageApplied": 1016,
+			"passiveHealthRecovered": 16,
+			"recoveryObservedEncounters": 14,
+			"regenerationStalemates": 0
 		}
 	],
 	"gates": {
@@ -10246,7 +10267,12 @@
 		},
 		"passiveRegenerationStalemates": {
 			"status": "passed",
-			"count": 0
+			"count": 0,
+			"safetyStops": 0,
+			"noProgressStops": 0,
+			"aggregateDamageApplied": 4363,
+			"aggregatePassiveHealthRecovered": 363,
+			"recoveryObservedEncounters": 180
 		},
 		"safetyStops": {
 			"status": "passed",

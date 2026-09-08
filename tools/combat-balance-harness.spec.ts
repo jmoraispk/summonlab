@@ -17,6 +17,7 @@ import {
 	READINESS_TRIALS_PER_BENCHMARK,
 	createAgentReadinessEvidence,
 	createCombatBalanceEvidence,
+	evaluateReadinessRegenerationGate,
 	evaluateAffinityCompletionPair,
 	serializeAgentReadinessEvidence,
 	serializeCombatBalanceEvidence
@@ -550,6 +551,102 @@ describe('four-attribute combat balance evidence', () => {
 	});
 });
 
+describe('agent-readiness production fallback qualification', () => {
+	it('applies the exact production deterministic fallbacks in every benchmark resolver', async () => {
+		const sample = await createAgentReadinessEvidence({
+			trialsPerBenchmark: 2,
+			encountersPerArchetype: 1,
+			workerCount: 1
+		});
+
+		expect(sample.simulation.evaluations).toMatchObject({
+			benchmarkTrials: 2,
+			benchmarkResolverCalls: 4,
+			productionFallbackIntentBuilds: 4,
+			productionFallbackSelectionsApplied: 8
+		});
+		expect(sample.benchmarks.providerFallback).toMatchObject({
+			trials: 2,
+			modeledProviderFailures: 4,
+			fallbackTrialsResolvedLegally: 2,
+			legalFallbackSelections: 4,
+			fallbackIntentBuilds: 4,
+			fallbackSelectionsApplied: 8,
+			resolutionRateBasisPoints: 10_000
+		});
+	});
+
+	it('proves sustained authored attacks overcome observed production recovery', async () => {
+		const sample = await createAgentReadinessEvidence({
+			trialsPerBenchmark: 1,
+			encountersPerArchetype: 1,
+			workerCount: 1
+		});
+		const aggregateDamage = sample.encounters.reduce(
+			(total, encounter) => total + encounter.damageApplied,
+			0
+		);
+		const aggregateRecovery = sample.encounters.reduce(
+			(total, encounter) => total + encounter.passiveHealthRecovered,
+			0
+		);
+
+		expect(sample.encounters.every((encounter) => encounter.completed === encounter.trials)).toBe(
+			true
+		);
+		expect(sample.encounters.some((encounter) => encounter.recoveryObservedEncounters > 0)).toBe(
+			true
+		);
+		expect(aggregateDamage).toBeGreaterThan(aggregateRecovery);
+		expect(sample.gates.passiveRegenerationStalemates).toMatchObject({
+			status: 'passed',
+			count: 0,
+			aggregateDamageApplied: aggregateDamage,
+			aggregatePassiveHealthRecovered: aggregateRecovery,
+			recoveryObservedEncounters: expect.any(Number)
+		});
+	});
+
+	it('rejects recovery-observed no-progress and overpowering recovery evidence', () => {
+		expect(
+			evaluateReadinessRegenerationGate([
+				{
+					trials: 1,
+					completed: 0,
+					safetyStops: 1,
+					noProgressStops: 1,
+					damageApplied: 5,
+					passiveHealthRecovered: 10,
+					recoveryObservedEncounters: 1,
+					regenerationStalemates: 1
+				}
+			])
+		).toStrictEqual({
+			status: 'failed',
+			count: 1,
+			safetyStops: 1,
+			noProgressStops: 1,
+			aggregateDamageApplied: 5,
+			aggregatePassiveHealthRecovered: 10,
+			recoveryObservedEncounters: 1
+		});
+		expect(
+			evaluateReadinessRegenerationGate([
+				{
+					trials: 1,
+					completed: 1,
+					safetyStops: 1,
+					noProgressStops: 0,
+					damageApplied: 10,
+					passiveHealthRecovered: 1,
+					recoveryObservedEncounters: 1,
+					regenerationStalemates: 0
+				}
+			]).status
+		).toBe('failed');
+	});
+});
+
 describe('agent-readiness qualification evidence', () => {
 	let evidence: Awaited<ReturnType<typeof createAgentReadinessEvidence>>;
 
@@ -610,17 +707,18 @@ describe('agent-readiness qualification evidence', () => {
 			rateBasisPoints: expect.any(Number)
 		});
 		expect(evidence.benchmarks.passiveRegeneration).toMatchObject({
-			stalemates: 0,
-			durationTicks: { p50: expect.any(Number), p95: expect.any(Number) }
+			firstEligiblePulseDelayTicks: { p50: expect.any(Number), p95: expect.any(Number) }
 		});
 		expect(evidence.benchmarks.providerFallback).toMatchObject({
-			providerFailures: 20_000,
+			modeledProviderFailures: 20_000,
 			fallbackTrialsResolvedLegally: 10_000,
 			legalFallbackSelections: 20_000,
-			fallbackSelectorEvaluations: 20_000,
+			fallbackIntentBuilds: 20_000,
+			fallbackSelectionsApplied: 40_000,
 			resolutionRateBasisPoints: 10_000
 		});
-		expect(evidence.simulation.evaluations.providerFallbackEvaluations).toBe(20_000);
+		expect(evidence.simulation.evaluations.productionFallbackIntentBuilds).toBe(20_000);
+		expect(evidence.simulation.evaluations.productionFallbackSelectionsApplied).toBe(40_000);
 		expect(evidence.benchmarks.determinism).toMatchObject({ mismatches: 0 });
 		expect(evidence.replay).toMatchObject({ providerCalls: 0, nondeterministicReplays: 0 });
 	});
@@ -631,6 +729,19 @@ describe('agent-readiness qualification evidence', () => {
 		expect(Object.values(evidence.gates).every((gate) => gate.status === 'passed')).toBe(true);
 		expect(evidence.gates.unclassifiedCancellations.count).toBe(0);
 		expect(evidence.gates.passiveRegenerationStalemates.count).toBe(0);
+		expect(evidence.gates.passiveRegenerationStalemates).toMatchObject({
+			safetyStops: 0,
+			noProgressStops: 0,
+			aggregateDamageApplied: expect.any(Number),
+			aggregatePassiveHealthRecovered: expect.any(Number),
+			recoveryObservedEncounters: expect.any(Number)
+		});
+		expect(evidence.gates.passiveRegenerationStalemates.aggregateDamageApplied).toBeGreaterThan(
+			evidence.gates.passiveRegenerationStalemates.aggregatePassiveHealthRecovered
+		);
+		expect(evidence.gates.passiveRegenerationStalemates.recoveryObservedEncounters).toBeGreaterThan(
+			0
+		);
 		expect(evidence.gates.safetyStops.count).toBe(0);
 		expect(evidence.gates.providerFallback.resolutionRateBasisPoints).toBe(10_000);
 		expect(serializeAgentReadinessEvidence(second)).toBe(serializeAgentReadinessEvidence(evidence));

@@ -1,7 +1,7 @@
 import { expect, test } from '@playwright/test';
 
 const recipe = {
-	seed: 'legacy-ember-01',
+	seed: 'task10-dual-mode-recipe-v1',
 	generationVersion: 'human-v1',
 	cursors: { identity: 0, body: 0, features: 0, styling: 0, mind: 0, rarity: 0 }
 };

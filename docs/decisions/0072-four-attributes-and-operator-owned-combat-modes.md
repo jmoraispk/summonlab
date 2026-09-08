@@ -122,10 +122,13 @@ old aptitudes in new canonical mechanics.
 - Passing balance evidence does not promote every harness formula. Relative-Agility accuracy,
   attack cadence/variance, affinity application, production armour magnitudes, and a magical active
   remain hash-bound benchmark candidates until their owning runtime/content work lands.
-- `agent-readiness-v1.json` records 10,000 distinct deterministic trials, 20,000 production scripted
-  fallback selections, and 400 complete minimal authored level-archetype encounters. Deterministic
-  replay, classified collision fallback, passive-regeneration progress, encounter budgets, zero
-  safety stops, and 100% legal fallback selection pass. Policy-authored monsters currently hold
+- `agent-readiness-v1.json` records 10,000 distinct deterministic trials, 20,000 modeled provider
+  failures resolved by exact production deterministic fallback intents, 40,000 applied fallback
+  selections across the primary and deterministic repeat resolver passes, and 400 complete minimal
+  authored level-archetype encounters. Recovery occurs in 180 encounters, with 4,363 applied Health
+  damage exceeding 363 passive Health recovery. Deterministic replay, classified collision fallback,
+  encounter budgets, zero safety/no-progress stops, and 100% legal fallback
+  selection pass. Policy-authored monsters currently hold
   rather than attack, so this qualifies the technical mode for operator evaluation without claiming
   finished hostile-AI balance.
 - The qualification preserves the historical `combat-rules-v1` hash
@@ -154,5 +157,5 @@ The following pages carry the operative replacement:
 ## Implementation records
 
 - [Four-attribute legacy combat foundation](../superpowers/plans/2026-09-06-four-attribute-legacy-combat.md)
-- [Agent-readiness combat, next plan](../superpowers/plans/2026-09-06-agent-readiness-combat.md)
+- [Agent-readiness combat implementation plan](../superpowers/plans/2026-09-06-agent-readiness-combat.md)
 - [Accepted design](../superpowers/specs/2026-09-06-attributes-and-combat-modes-design.md)

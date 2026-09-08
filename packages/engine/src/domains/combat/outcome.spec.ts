@@ -8,7 +8,7 @@ import { CombatResultSchema } from '@summonlab/contracts';
 import { COMBAT_CONTENT_BINDING, COMBAT_RULES_V1 } from '@summonlab/content';
 import { describe, expect, it } from 'vitest';
 
-import { hashCanonical } from '../../hash.js';
+import { deterministicUuid, hashCanonical } from '../../hash.js';
 import { adaptV26LegacyCombatOutcome } from '../../orchestration/combat-claims.js';
 import {
 	emitCombatOutcome,
@@ -16,13 +16,14 @@ import {
 	type CombatTermination
 } from './outcome.js';
 
+const SAME_SEEDED_ATTEMPT = 'task10-common-combat-result-seed-v1';
 const ID = {
-	attempt: '61000000-0000-4000-8000-000000000001',
-	hero: '61000000-0000-4000-8000-000000000002',
-	monster: '61000000-0000-4000-8000-000000000003',
-	window: '61000000-0000-4000-8000-000000000004',
-	action: '61000000-0000-4000-8000-000000000005',
-	event: '61000000-0000-4000-8000-000000000006'
+	attempt: deterministicUuid(`${SAME_SEEDED_ATTEMPT}:attempt`),
+	hero: deterministicUuid(`${SAME_SEEDED_ATTEMPT}:hero`),
+	monster: deterministicUuid(`${SAME_SEEDED_ATTEMPT}:monster`),
+	window: deterministicUuid(`${SAME_SEEDED_ATTEMPT}:window`),
+	action: deterministicUuid(`${SAME_SEEDED_ATTEMPT}:action`),
+	event: deterministicUuid(`${SAME_SEEDED_ATTEMPT}:event`)
 } as const;
 
 function combatant(
@@ -174,6 +175,96 @@ function activeState(downed = false): ReadinessCombatStateV1 {
 }
 
 describe('common combat outcomes', () => {
+	it('emits exact common outer result and claim keys from one seeded attempt in both modes', () => {
+		const results = [emit('legacy-auto-v1', 'retreat'), emit('agent-readiness-v1', 'retreat')];
+		const resultKeys = [
+			'attemptId',
+			'claimEvidence',
+			'claims',
+			'decisiveEventIds',
+			'endedAtTick',
+			'finalCombatants',
+			'modeId',
+			'outcome',
+			'resultId',
+			'resultVersion',
+			'rulesVersion',
+			'safetyStop',
+			'traceHash'
+		];
+		const evidenceKeys = [
+			'engineDamageTakenByHeroId',
+			'engineRecoveredCombatantIds',
+			'evidenceVersion',
+			'objectiveStates',
+			'partyHeroIds',
+			'resolvedEvents',
+			'securedLoot'
+		];
+		const claimKeys = {
+			'attempt-outcome': ['claimId', 'claimType', 'claimVersion', 'idempotencyKey', 'outcome'],
+			'final-resource': [
+				'claimId',
+				'claimType',
+				'claimVersion',
+				'combatantId',
+				'idempotencyKey',
+				'resource',
+				'value'
+			],
+			harm: [
+				'claimId',
+				'claimType',
+				'claimVersion',
+				'damageTaken',
+				'downed',
+				'heroId',
+				'idempotencyKey'
+			],
+			loot: [
+				'claimId',
+				'claimType',
+				'claimVersion',
+				'idempotencyKey',
+				'lootId',
+				'ownerId',
+				'quantity'
+			],
+			objective: [
+				'claimId',
+				'claimType',
+				'claimVersion',
+				'completed',
+				'idempotencyKey',
+				'objectiveId'
+			],
+			'skill-practice': [
+				'claimId',
+				'claimType',
+				'claimVersion',
+				'heroId',
+				'idempotencyKey',
+				'practiceEvidence',
+				'skillId'
+			]
+		} as const;
+
+		for (const result of results) {
+			expect(result.attemptId).toBe(ID.attempt);
+			expect(Object.keys(result).sort()).toStrictEqual(resultKeys);
+			expect(Object.keys(result.claimEvidence).sort()).toStrictEqual(evidenceKeys);
+			expect(
+				Object.fromEntries(
+					result.claims.map((claim) => [claim.claimType, Object.keys(claim).sort()])
+				)
+			).toStrictEqual(claimKeys);
+		}
+		expect(results.map((result) => result.modeId)).toStrictEqual([
+			'legacy-auto-v1',
+			'agent-readiness-v1'
+		]);
+	});
+
 	it('adapts a bound legacy terminal only at the V26 orchestration boundary', () => {
 		const result = adaptV26LegacyCombatOutcome({
 			combatModeBinding: {

@@ -3,9 +3,7 @@ import { randomUUID } from 'node:crypto';
 import { getConfig } from '@summonlab/config';
 import {
 	MissionLifecycleRequestSchema,
-	type ActorDecisionView,
 	type ActionSource,
-	type CombatActionIntent,
 	type EngineCommand,
 	type EngineSnapshot,
 	type MissionTurnChoice
@@ -34,7 +32,7 @@ import {
 	supportsMissionApi
 } from '@summonlab/engine';
 import { COMBAT_RULES_V1 } from '@summonlab/content';
-import { ScriptedPolicy } from '@summonlab/policies';
+import { ScriptedPolicy, buildDeterministicCombatFallbackIntent } from '@summonlab/policies';
 import { json } from '@sveltejs/kit';
 
 import { projectEngineCommitReceipt } from '$lib/server/public-engine-presentation';
@@ -49,44 +47,6 @@ const manualSource: ActionSource = {
 	directiveIds: [],
 	decisionJobId: null
 };
-
-function deterministicFallback(
-	view: ActorDecisionView,
-	attemptId: string,
-	tick: number,
-	snapshotHash: string
-): CombatActionIntent {
-	const action = view.legalActions[0]!;
-	const contract = action.targetContract;
-	const target =
-		contract.kind === 'self'
-			? ({ kind: 'self' } as const)
-			: contract.kind === 'entity'
-				? ({ kind: 'entity', combatantId: contract.allowedCombatantIds[0]! } as const)
-				: contract.kind === 'tile'
-					? ({ kind: 'tile', position: contract.allowedPositions[0]! } as const)
-					: ({
-							kind: 'entity-relative-position',
-							combatantId: contract.allowedCombatantIds[0]!,
-							relation: contract.allowedRelations[0]!
-						} as const);
-	return {
-		windowId: view.windowId,
-		attemptId,
-		tick,
-		actorId: view.actorId,
-		snapshotHash,
-		actorViewHash: view.actorViewHash,
-		legalActionSetHash: view.legalActionSetHash,
-		actionId: action.actionId,
-		actionInstanceId: action.actionInstanceId,
-		actionKind: action.actionKind,
-		skillId: action.skillId,
-		target,
-		fallbackId: action.fallbackOptions[0]?.fallbackId ?? null,
-		publicIntent: `Follow the deterministic fallback: ${action.publicLabel}.`
-	};
-}
 
 async function assembleMissionChoices(
 	snapshot: EngineSnapshot,
@@ -335,12 +295,11 @@ export const POST: RequestHandler = async ({ params, request }) => {
 					actors: advance.views.map((view) => ({
 						view,
 						requestedPolicy: config.policyMode,
-						deterministicFallback: deterministicFallback(
-							view,
-							advance.snapshot.attemptId,
-							advance.snapshot.tick,
-							advance.snapshot.snapshotHash
-						),
+						deterministicFallback: buildDeterministicCombatFallbackIntent(view, {
+							attemptId: advance.snapshot.attemptId,
+							tick: advance.snapshot.tick,
+							snapshotHash: advance.snapshot.snapshotHash
+						}),
 						maxProviderAttempts: config.decisionJobMaxProviderAttempts
 					}))
 				});

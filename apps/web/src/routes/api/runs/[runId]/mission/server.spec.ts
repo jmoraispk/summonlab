@@ -160,6 +160,18 @@ describe('operator-bound mission combat', () => {
 				expect.objectContaining({ requestedPolicy: 'scripted', maxProviderAttempts: 2 })
 			])
 		});
+		const windowInput = mocks.createWindow.mock.calls[0]?.[1];
+		const heroActor = windowInput?.actors.find(
+			(actor: { view: ActorDecisionView }) => actor.view.actorId === heroId
+		);
+		expect(
+			heroActor?.view.legalActions.map((action: { actionId: string }) => action.actionId)
+		).toEqual(expect.arrayContaining(['combat-skill-basic-sword-strike', 'guard']));
+		expect(heroActor?.deterministicFallback).toMatchObject({
+			actionId: 'combat-skill-basic-sword-strike',
+			target: { kind: 'entity' },
+			fallbackId: 'guard-instead'
+		});
 		expect(body).toMatchObject({ status: 'collecting', readyActors: 0 });
 		expect(body).not.toHaveProperty('snapshot');
 		expect(body).not.toHaveProperty('jobs');

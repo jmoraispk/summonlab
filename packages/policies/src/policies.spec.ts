@@ -28,6 +28,7 @@ import {
 	RandomPolicy,
 	ScriptedCombatPolicy,
 	ScriptedPolicy,
+	buildDeterministicCombatFallbackIntent,
 	createHeroDecisionPreview,
 	policyResultBytes,
 	validateCombatPolicyResponse,
@@ -415,6 +416,36 @@ describe('packet-bound hero policies', () => {
 });
 
 describe('frozen-view combat policies', () => {
+	it('builds the production deterministic fallback from the first supplied legal action', async () => {
+		const view = combatViewFixture();
+		const leastCostResponse = await new ScriptedCombatPolicy().decide(view);
+		const firstAction = view.legalActions[0]!;
+		if (firstAction.targetContract.kind !== 'entity') {
+			throw new Error('Fallback divergence fixture requires an entity-targeting first action');
+		}
+		const intent = buildDeterministicCombatFallbackIntent(view, {
+			attemptId: deterministicUuid('policy-combat-attempt'),
+			tick: 17,
+			snapshotHash: view.snapshotHash
+		});
+
+		expect(view.legalActions.map((action) => action.actionId)).toStrictEqual([
+			'strike-nearby',
+			'wait-here'
+		]);
+		expect(leastCostResponse.actionId).toBe('wait-here');
+		expect(CombatActionIntentSchema.parse(intent)).toEqual(intent);
+		expect(intent).toMatchObject({
+			actionId: 'strike-nearby',
+			actionInstanceId: firstAction.actionInstanceId,
+			actionKind: 'attack',
+			skillId: 'combat-skill-strike',
+			target: { kind: 'entity', combatantId: firstAction.targetContract.allowedCombatantIds[0] },
+			fallbackId: 'guard-instead',
+			publicIntent: 'Follow the deterministic fallback: Strike nearby.'
+		});
+	});
+
 	it('returns only a legal selection and four frozen-view bindings', async () => {
 		const view = combatViewFixture();
 		const response = await new ScriptedCombatPolicy().decide(view);

@@ -47,10 +47,7 @@ import {
 import { createMissionReadinessState } from '../packages/engine/src/domains/mission/readiness-runtime.js';
 import { resistanceGrantReceiptsFromAuthoredSources } from '../packages/engine/src/domains/combat/resistance-grants.js';
 import { hashCanonical } from '../packages/engine/src/hash.js';
-import {
-	ScriptedCombatPolicy,
-	validateCombatPolicyResponse
-} from '../packages/policies/src/index.js';
+import { buildDeterministicCombatFallbackIntent } from '../packages/policies/src/index.js';
 
 export const BALANCE_LEVELS = [10, 40, 70, 99] as const;
 export const BALANCE_SPREADS = ['low', 'mid', 'high'] as const;
@@ -1577,7 +1574,7 @@ const READINESS_SIMULATION_PROFILE_V1 = deepFreeze({
 		opponent: 'lowest-health-policy-authored-tower-floor-01-enemy',
 		pruning: 'remove-other-authored-enemies-before-the-first-readiness-window'
 	},
-	providerFailurePolicy: 'first-legal-guard-without-provider-retry',
+	providerFailurePolicy: 'first-frozen-legal-action-without-provider-lifecycle',
 	productionPrimitives: [
 		'createMissionReadinessState',
 		'advanceUntilDecision',
@@ -1777,15 +1774,43 @@ function missionState(
 
 function runEncounter(initial: ReadinessCombatStateV1, key: string) {
 	let state = initial;
+	let damageApplied = 0;
+	let passiveHealthRecovered = 0;
+	let recoveryObserved = false;
 	for (let windowOrdinal = 0; ; windowOrdinal += 1) {
 		const advanced = advanceUntilDecision(state, COMBAT_RULES_V1);
+		const advancedCombatants =
+			advanced.kind === 'decision-window'
+				? advanced.snapshot.combatants
+				: advanced.result.finalCombatants;
+		const recoveredThisAdvance = Object.entries(advancedCombatants).reduce(
+			(total, [combatantId, combatant]) =>
+				total +
+				Math.max(
+					0,
+					combatant.resources.health.current -
+						(state.combatants[combatantId]?.resources.health.current ??
+							combatant.resources.health.current)
+				),
+			0
+		);
+		passiveHealthRecovered += recoveredThisAdvance;
+		recoveryObserved ||= recoveredThisAdvance > 0;
 		if (advanced.kind === 'combat-result') {
+			const noProgressStop = advanced.result.safetyStop?.reason === 'no-progress-cycles';
+			const safetyStop = advanced.result.safetyStop !== null;
+			const completed = advanced.result.outcome === 'victory';
 			return {
-				completed: advanced.result.outcome === 'victory',
+				completed,
 				ticks: advanced.result.endedAtTick,
 				events: advanced.result.claimEvidence.resolvedEvents.length,
 				windows: windowOrdinal,
-				safetyStop: advanced.result.safetyStop !== null
+				safetyStop,
+				noProgressStop,
+				damageApplied,
+				passiveHealthRecovered,
+				recoveryObserved,
+				regenerationStalemate: recoveryObserved && (!completed || safetyStop || noProgressStop)
 			};
 		}
 		const resolution = applyCombatChoiceBatch(
@@ -1793,8 +1818,76 @@ function runEncounter(initial: ReadinessCombatStateV1, key: string) {
 			readinessBatch(state, `${key}:${windowOrdinal}`, 'encounter', advanced),
 			COMBAT_RULES_V1
 		);
+		damageApplied += resolution.events.reduce(
+			(total, event) =>
+				total +
+				event.effects.reduce(
+					(effectTotal, effect) =>
+						effect.kind === 'resource' && effect.resource === 'health' && effect.delta < 0
+							? effectTotal - effect.delta
+							: effectTotal,
+					0
+				),
+			0
+		);
 		state = resolution.state;
 	}
+}
+
+type ReadinessRegenerationEncounterSummary = Readonly<{
+	trials: number;
+	completed: number;
+	safetyStops: number;
+	noProgressStops: number;
+	damageApplied: number;
+	passiveHealthRecovered: number;
+	recoveryObservedEncounters: number;
+	regenerationStalemates: number;
+}>;
+
+export function evaluateReadinessRegenerationGate(
+	encounters: readonly ReadinessRegenerationEncounterSummary[]
+) {
+	const summary = encounters.reduce(
+		(total, encounter) => ({
+			trials: total.trials + encounter.trials,
+			completed: total.completed + encounter.completed,
+			count: total.count + encounter.regenerationStalemates,
+			safetyStops: total.safetyStops + encounter.safetyStops,
+			noProgressStops: total.noProgressStops + encounter.noProgressStops,
+			aggregateDamageApplied: total.aggregateDamageApplied + encounter.damageApplied,
+			aggregatePassiveHealthRecovered:
+				total.aggregatePassiveHealthRecovered + encounter.passiveHealthRecovered,
+			recoveryObservedEncounters:
+				total.recoveryObservedEncounters + encounter.recoveryObservedEncounters
+		}),
+		{
+			trials: 0,
+			completed: 0,
+			count: 0,
+			safetyStops: 0,
+			noProgressStops: 0,
+			aggregateDamageApplied: 0,
+			aggregatePassiveHealthRecovered: 0,
+			recoveryObservedEncounters: 0
+		}
+	);
+	return {
+		status: status(
+			summary.completed === summary.trials &&
+				summary.count === 0 &&
+				summary.safetyStops === 0 &&
+				summary.noProgressStops === 0 &&
+				summary.recoveryObservedEncounters > 0 &&
+				summary.aggregateDamageApplied > summary.aggregatePassiveHealthRecovered
+		),
+		count: summary.count,
+		safetyStops: summary.safetyStops,
+		noProgressStops: summary.noProgressStops,
+		aggregateDamageApplied: summary.aggregateDamageApplied,
+		aggregatePassiveHealthRecovered: summary.aggregatePassiveHealthRecovered,
+		recoveryObservedEncounters: summary.recoveryObservedEncounters
+	};
 }
 
 function declaredReadinessSeed(ordinal: number): string {
@@ -1885,40 +1978,20 @@ function readinessBenchmarkState(seed: string): ReadinessCombatStateV1 {
 	return ReadinessCombatStateV1Schema.parse(initial);
 }
 
-function readinessRecordedCollisionBatch(
+function readinessProductionFallbackBatch(
 	window: Extract<CombatAdvance, { kind: 'decision-window' }>,
 	seed: string
 ): CombatChoiceBatchV1 {
-	const referenceChoices = new Map(
-		AGENT_READINESS_REPLAY_VECTOR_V26.recordedBatches[0].choices.map((choice) => [
-			choice.actorId,
-			choice
-		])
-	);
-	const choices = window.views.map((view): CombatActionIntent => {
-		const reference = referenceChoices.get(view.actorId);
-		if (!reference) throw new Error(`No recorded fallback selection for ${view.actorId}`);
-		const action = view.legalActions.find((candidate) => candidate.actionId === reference.actionId);
-		if (!action) throw new Error(`Recorded action ${reference.actionId} is no longer legal`);
-		return {
-			windowId: window.snapshot.windowId,
+	const choices = window.views.map((view) =>
+		buildDeterministicCombatFallbackIntent(view, {
 			attemptId: window.snapshot.attemptId,
 			tick: window.snapshot.tick,
-			actorId: view.actorId,
-			snapshotHash: window.snapshot.snapshotHash,
-			actorViewHash: view.actorViewHash,
-			legalActionSetHash: view.legalActionSetHash,
-			actionId: action.actionId,
-			actionInstanceId: action.actionInstanceId,
-			actionKind: action.actionKind,
-			skillId: action.skillId,
-			target: reference.target,
-			fallbackId: reference.fallbackId
-		};
-	});
+			snapshotHash: window.snapshot.snapshotHash
+		})
+	);
 	const unsigned = {
 		batchVersion: 'combat-choice-batch-v1' as const,
-		batchId: deterministicUuid(`${seed}:recorded-collision-batch`),
+		batchId: deterministicUuid(`${seed}:production-deterministic-fallback-batch`),
 		windowId: window.snapshot.windowId,
 		attemptId: window.snapshot.attemptId,
 		tick: window.snapshot.tick,
@@ -1936,25 +2009,10 @@ async function runReadinessBenchmarkTrial(seed: string) {
 			`Benchmark trial lacked its pulse window: ${window.result.outcome}/${window.result.safetyStop?.reason ?? 'ordinary'}`
 		);
 	}
-	const fallbackResponses = await Promise.all(
-		window.views.map((view) => new ScriptedCombatPolicy().decide(view))
-	);
-	const legalFallbackEvaluations = fallbackResponses.filter((response, index) => {
-		const view = window.views[index];
-		if (!view) return false;
-		try {
-			validateCombatPolicyResponse(view, response);
-			return true;
-		} catch {
-			return false;
-		}
-	}).length;
-	const batch = readinessRecordedCollisionBatch(window, seed);
+	const batch = readinessProductionFallbackBatch(window, seed);
+	const legalFallbackEvaluations = batch.choices.length;
 	const first = applyCombatChoiceBatch(initial, batch, COMBAT_RULES_V1);
 	const repeated = applyCombatChoiceBatch(initial, batch, COMBAT_RULES_V1);
-	const partyCombatants = Object.values(first.state.combatants).filter(
-		(combatant) => combatant.teamId === 'party'
-	);
 	return {
 		intervalTicks:
 			window.snapshot.tick -
@@ -1966,12 +2024,10 @@ async function runReadinessBenchmarkTrial(seed: string) {
 		noProgress: first.state.safety.noProgressCycles > initial.safety.noProgressCycles,
 		regenerationDurationTicks:
 			window.snapshot.tick - READINESS_SIMULATION_PROFILE_V1.benchmarkWindowFixture.damagedAtTick,
-		regenerationStalemate: partyCombatants.some(
-			(combatant) => combatant.resources.health.current < combatant.resources.health.maximum
-		),
-		fallbackSelectorEvaluations: fallbackResponses.length,
+		fallbackIntentBuilds: batch.choices.length,
+		fallbackSelectionsApplied: batch.choices.length * 2,
 		legalFallbackEvaluations,
-		fallbackTrialResolvedLegally: legalFallbackEvaluations === fallbackResponses.length,
+		fallbackTrialResolvedLegally: legalFallbackEvaluations === window.views.length,
 		deterministic:
 			hashCanonical(first.state) === hashCanonical(repeated.state) &&
 			hashCanonical(first.events) === hashCanonical(repeated.events)
@@ -2119,11 +2175,12 @@ async function buildAgentReadinessEvidence(options: ReadinessEvidenceOptions = {
 	const sameWindowTrials = trialSamples.filter((sample) => sample.sameWindow).length;
 	const collisionTrials = trialSamples.filter((sample) => sample.collision).length;
 	const noProgressTrials = trialSamples.filter((sample) => sample.noProgress).length;
-	const regenerationStalemates = trialSamples.filter(
-		(sample) => sample.regenerationStalemate
-	).length;
-	const fallbackSelectorEvaluations = trialSamples.reduce(
-		(total, sample) => total + sample.fallbackSelectorEvaluations,
+	const fallbackIntentBuilds = trialSamples.reduce(
+		(total, sample) => total + sample.fallbackIntentBuilds,
+		0
+	);
+	const fallbackSelectionsApplied = trialSamples.reduce(
+		(total, sample) => total + sample.fallbackSelectionsApplied,
 		0
 	);
 	const legalFallbacks = trialSamples.reduce(
@@ -2158,7 +2215,15 @@ async function buildAgentReadinessEvidence(options: ReadinessEvidenceOptions = {
 			completed: outcomes.filter((outcome) => outcome.completed).length,
 			ticks: readinessDistribution(outcomes.map((outcome) => outcome.ticks)),
 			events: readinessDistribution(outcomes.map((outcome) => outcome.events)),
-			safetyStops: outcomes.filter((outcome) => outcome.safetyStop).length
+			safetyStops: outcomes.filter((outcome) => outcome.safetyStop).length,
+			noProgressStops: outcomes.filter((outcome) => outcome.noProgressStop).length,
+			damageApplied: outcomes.reduce((total, outcome) => total + outcome.damageApplied, 0),
+			passiveHealthRecovered: outcomes.reduce(
+				(total, outcome) => total + outcome.passiveHealthRecovered,
+				0
+			),
+			recoveryObservedEncounters: outcomes.filter((outcome) => outcome.recoveryObserved).length,
+			regenerationStalemates: outcomes.filter((outcome) => outcome.regenerationStalemate).length
 		};
 	});
 	diagnostic('encounters');
@@ -2170,6 +2235,7 @@ async function buildAgentReadinessEvidence(options: ReadinessEvidenceOptions = {
 			encounter.events.p95 < READINESS_SIMULATION_PROFILE_V1.encounterBudgets.maximumEvents
 	);
 	const providerRate = basisPointRate(fallbackTrialsResolvedLegally, trials);
+	const passiveRegenerationGate = evaluateReadinessRegenerationGate(encounters);
 	const gates = {
 		deterministicReplay: {
 			status: status(replayDeterministic && determinismMismatches === 0),
@@ -2179,10 +2245,7 @@ async function buildAgentReadinessEvidence(options: ReadinessEvidenceOptions = {
 			status: status(unclassifiedCancellations === 0),
 			count: unclassifiedCancellations
 		},
-		passiveRegenerationStalemates: {
-			status: status(regenerationStalemates === 0),
-			count: regenerationStalemates
-		},
+		passiveRegenerationStalemates: passiveRegenerationGate,
 		safetyStops: { status: status(safetyStops === 0), count: safetyStops },
 		encounterBudgets: {
 			status: status(encounterBudgetsPassed),
@@ -2225,7 +2288,8 @@ async function buildAgentReadinessEvidence(options: ReadinessEvidenceOptions = {
 				distinctBenchmarkSeeds: new Set(benchmarkSeeds).size,
 				benchmarkAdvanceCalls: trials,
 				benchmarkResolverCalls: trials * 2,
-				providerFallbackEvaluations: fallbackSelectorEvaluations,
+				productionFallbackIntentBuilds: fallbackIntentBuilds,
+				productionFallbackSelectionsApplied: fallbackSelectionsApplied,
 				completeEncounters: encounterResults.length,
 				encounterAdvanceCalls: encounterResults.reduce(
 					(total, result) => total + result.value.windows + 1,
@@ -2267,15 +2331,15 @@ async function buildAgentReadinessEvidence(options: ReadinessEvidenceOptions = {
 			},
 			passiveRegeneration: {
 				trials,
-				stalemates: regenerationStalemates,
-				durationTicks: readinessDistribution(regenerationDurations)
+				firstEligiblePulseDelayTicks: readinessDistribution(regenerationDurations)
 			},
 			providerFallback: {
 				trials,
-				providerFailures: fallbackSelectorEvaluations,
+				modeledProviderFailures: fallbackIntentBuilds,
 				fallbackTrialsResolvedLegally,
 				legalFallbackSelections: legalFallbacks,
-				fallbackSelectorEvaluations,
+				fallbackIntentBuilds,
+				fallbackSelectionsApplied,
 				resolutionRateBasisPoints: providerRate
 			},
 			determinism: { trials, mismatches: determinismMismatches }

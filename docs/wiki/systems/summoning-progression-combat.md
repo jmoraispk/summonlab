@@ -246,10 +246,12 @@ promotion gates; they do not become runtime mechanics merely because the evidenc
 
 The separate [agent-readiness qualification evidence](../../evidence/agent-readiness-v1.json) binds
 the exact production rules and combat-content hashes. It records 10,000 distinct deterministic
-readiness/fallback trials, 20,000 production scripted fallback selections, and 100 complete
-encounters for each level-10/40/70/99 archetype. All 400 minimal authored encounters completed with
-zero safety stops; deterministic replay, classified collision fallback, passive-regeneration
-progress, encounter-budget, and 100% legal fallback-selection gates passed. The current
+readiness trials, models 20,000 provider failures by building the exact production deterministic
+fallback intents, exercises 40,000 applied fallback selections across the primary and deterministic
+repeat resolver passes, and runs 100 complete encounters for each level-10/40/70/99 archetype. All
+400 minimal authored encounters completed with zero safety or no-progress stops. Recovery occurred
+in 180 encounters; 4,363 applied Health damage exceeded 363 passive Health recovery. Deterministic
+replay, classified collision fallback, encounter-budget, and 100% legal fallback-selection gates passed. The current
 policy-authored monster holds position rather than attacking, so this is technical qualification of
 timing, resolution, and safety—not a claim that hostile AI balance is finished and not automatic
 promotion to the release default.
@@ -318,8 +320,9 @@ The broader design includes tick-driven readiness, ten total affinities (four ba
 status applications, threat, authored Break mechanics, group formations, consumables,
 kill-sensitive drops, gathering, and permanent consequences. The accepted family consolidation
 keeps form tier, numerical level, and affinity rank as separate axes; any restriction on low-tier
-affinity use must be authored explicitly. Engine-v25 ships the four-attribute and automatic-mode
-foundation only. Production armour magnitudes, magical active skills, readiness intent, permanent
+affinity use must be authored explicitly. Engine-v26 implements both the four-attribute legacy mode
+and operator-controlled readiness timing, intent, deterministic arbitration, and common result
+contracts. Production armour magnitudes, magical active skills, attacking hostile policy, permanent
 injury/death, free-roaming gathering, and model narration remain unshipped.
 
 ### Accepted combat presentation direction

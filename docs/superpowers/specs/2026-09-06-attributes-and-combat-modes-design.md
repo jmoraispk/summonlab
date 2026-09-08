@@ -227,7 +227,7 @@ accuracy. Initial experience targets are 65-70% for a novice against an ordinary
 for a trained peer matchup, and 90-95% for mastery against an ordinary peer. Exact scales and clamps
 come from simulation rather than being frozen in this design.
 
-In planned `agent-readiness-v1`, hit/miss and critical rolls use stable purpose-keyed engine
+In implemented `agent-readiness-v1`, hit/miss and critical rolls use stable purpose-keyed engine
 randomness. Shipped `legacy-auto-v1` retains its frozen sequential entropy. Critical opportunity
 comes from the skill's authored behavior, target state, and explicit practice bonuses. Target
 conditions such as flanked, unaware, or staggered may create a strong critical opportunity without
@@ -270,7 +270,7 @@ choice batches instead of calling providers.
 
 ### Randomness
 
-Planned `agent-readiness-v1` derives every roll from stable purpose keys rather than consuming one
+Implemented `agent-readiness-v1` derives every roll from stable purpose keys rather than consuming one
 sequential stream:
 
 ```text
@@ -520,7 +520,8 @@ entropy purposes remain frozen behind explicit version guards.
 - An invalid model choice is rejected before resolution and receives a bounded retry or the
   attempt's deterministic fallback policy.
 - A response whose snapshot, actor-view, or legal-action hash is stale cannot mutate state.
-- Provider timeout and unavailability use an explicit scripted fallback and are recorded.
+- Provider timeout and unavailability use the exact first frozen legal action as a deterministic
+  fallback intent and are recorded.
 - A same-window collision uses authored fallback rules and never opens an unbounded re-query loop.
 - A missing historical ruleset fails replay explicitly rather than silently using current rules.
 - A disabled combat mode cannot start a new attempt but remains loadable for historical replay.
@@ -547,8 +548,11 @@ The implementation plan must include tests and fixtures for:
 - target hit-rate, regeneration, action-cadence, affinity-nudge, and cross-mode balance evidence.
 
 The recorded `agent-readiness-v1.json` evidence passes these mechanical gates with 10,000 distinct
-trials, 20,000 production scripted fallback selections, and 400 complete minimal authored
-level-archetype encounters. It preserves the historical `combat-rules-v1` binding and records the
+trials, 20,000 modeled provider failures resolved by exact production deterministic fallback
+intents, 40,000 applied fallback selections across the primary and deterministic repeat resolver
+passes, and 400 complete minimal authored level-archetype encounters. Recovery occurs in 180 of
+those encounters, with 4,363 applied Health damage exceeding 363 passive Health recovery. The
+evidence preserves the historical `combat-rules-v1` binding and records the
 separate readiness-owned rules binding: respectively
 `13b2b27b683e4b0023a2a2c2ee4926127437db3bbf1ace91776def69ef286eff` and
 `eb7296798dbc911526603b1fb908cd3a7ea3661caf7d69793fc1fc0ab09cc5ba`. The current monster policy
