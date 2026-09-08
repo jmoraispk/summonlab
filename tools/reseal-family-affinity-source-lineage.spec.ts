@@ -85,11 +85,39 @@ describe('family-affinity source lineage resealing', () => {
 				sourceSha256: 'b'.repeat(64)
 			})}\n`
 		};
+		const unrelatedTargetPath =
+			'assets/enemies/experiments/family-affinity-v1/targets/deep-ones/deep-one-abyssal-hunter/earth/target-v1.json';
+		const unrelatedAssignmentPath =
+			'assets/enemies/experiments/family-affinity-v1/assignments/deep-ones/deep-one-abyssal-hunter/earth/assignment-v1.json';
+		const unrelatedResultPath =
+			'assets/enemies/experiments/family-affinity-v1/results/deep-ones/deep-one-abyssal-hunter/earth-v1.json';
+		const unrelatedTarget = {
+			path: unrelatedTargetPath,
+			contents: (await readFile(path.resolve(unrelatedTargetPath), 'utf8')).replaceAll(
+				String.fromCharCode(103, 114, 101, 121),
+				'gray'
+			)
+		};
+		const unrelatedAssignment = {
+			path: unrelatedAssignmentPath,
+			contents: await readFile(path.resolve(unrelatedAssignmentPath), 'utf8')
+		};
+		const unrelatedResult = {
+			path: unrelatedResultPath,
+			contents: await readFile(path.resolve(unrelatedResultPath), 'utf8')
+		};
 
 		expect(
 			resealFamilyAffinitySourceLineageDocuments(
 				{ path: goblinsPacketPath, contents: sourceContents },
-				[document, unrelatedSource, unrelatedReference]
+				[
+					document,
+					unrelatedSource,
+					unrelatedReference,
+					unrelatedTarget,
+					unrelatedAssignment,
+					unrelatedResult
+				]
 			)
 		).toEqual([
 			{
