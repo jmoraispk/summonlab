@@ -72,6 +72,7 @@ export const visualProductionIntegrityOwner: AmericanEnglishIntegrityOwner = {
 	intentMaterialization: {
 		commands: [
 			['pnpm', 'tsx', 'tools/reseal-family-affinity-source-lineage.ts'],
+			['pnpm', 'tsx', 'tools/reseal-family-production-compatibility.ts', '--write'],
 			['pnpm', 'tsx', 'tools/reseal-character-generation-expectations.ts'],
 			['pnpm', 'export:wiki-monster-visuals'],
 			['pnpm', 'export:player-visuals'],

@@ -612,6 +612,15 @@ describe('integrity binding classification', () => {
 		);
 	});
 
+	it('materializes family production compatibility seals from the migrated skill surface', () => {
+		expect(visualProductionIntegrityOwner.intentMaterialization?.commands).toContainEqual([
+			'pnpm',
+			'tsx',
+			'tools/reseal-family-production-compatibility.ts',
+			'--write'
+		]);
+	});
+
 	it('materializes equipment runtime and integration self-derived outputs', () => {
 		expect(equipmentIntegrityOwner.intentMaterialization?.commands).toEqual(
 			expect.arrayContaining([
