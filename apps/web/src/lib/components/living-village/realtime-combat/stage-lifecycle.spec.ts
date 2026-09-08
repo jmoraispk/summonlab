@@ -146,6 +146,31 @@ describe('stage asset lifecycle', () => {
 		expect(unloaded).toEqual(['/runtime/ready.png', '/runtime/missing.png']);
 	});
 
+	it('rejects promptly when a sibling source remains pending after a load failure', async () => {
+		const missing = deferred<unknown>();
+		const pending = deferred<{ source: string }>();
+		const unloaded: string[] = [];
+		const owner = createStageAssetOwner({
+			load: (source) => (source === '/runtime/missing.png' ? missing.promise : pending.promise),
+			unload: async (source) => {
+				unloaded.push(source);
+			}
+		});
+
+		const failedClaim = owner.claim(['/runtime/missing.png', '/runtime/pending.png']);
+		await Promise.resolve();
+		missing.reject(new Error('missing'));
+		await expect(failedClaim.ready).rejects.toThrow('missing');
+
+		const replacement = owner.claim(['/runtime/pending.png']);
+		pending.resolve({ source: '/runtime/pending.png' });
+		await replacement.ready;
+		expect(unloaded).toEqual(['/runtime/missing.png']);
+
+		await replacement.release();
+		expect(unloaded).toEqual(['/runtime/missing.png', '/runtime/pending.png']);
+	});
+
 	it('makes duplicate sources and repeated release idempotent', async () => {
 		const loaded: string[] = [];
 		const unloaded: string[] = [];

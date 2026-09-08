@@ -561,7 +561,7 @@
 				onSnapshot(simulation);
 				activeSession.markAssetsReady();
 			} catch {
-				await releaseAssets();
+				void releaseAssets();
 				if (disposed) return;
 				const unavailable = {
 					code: failedDuringInit ? 'renderer-initialization-failed' : 'asset-load-failed',

@@ -86,12 +86,10 @@ export function createStageAssetOwner(loader: StageAssetLoader) {
 				}
 				return releasePromise;
 			};
-			const ready = Promise.all(claimedEntries.map(([, entry]) => entry.ready)).catch(
-				async (error) => {
-					await release();
-					throw error;
-				}
-			);
+			const ready = Promise.all(claimedEntries.map(([, entry]) => entry.ready)).catch((error) => {
+				void release().catch(() => undefined);
+				throw error;
+			});
 
 			return { ready, release };
 		}

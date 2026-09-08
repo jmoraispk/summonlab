@@ -133,3 +133,50 @@ and optional-platform `sharp` warnings.
 - Asset errors and unmounts release claims promptly. Failure teardown is idempotent and removes
   active callbacks, ticker, observer, render functions, and the Pixi application before a stale
   stage can publish or complete.
+
+## Fix round 2/5 — Prompt partial-load failure
+
+### Exact RED/GREEN evidence
+
+#### RED
+
+```sh
+PATH=/tmp/summonlab-node-24.14.1/bin:$PATH pnpm --filter @summonlab/web test:unit -- src/lib/components/living-village/realtime-combat/stage-lifecycle.spec.ts
+```
+
+The new rejected-source/pending-sibling behavior test timed out at Vitest's five-second limit.
+`claim.ready` caught the failed source but awaited `release()`, whose deferred cleanup correctly
+waited for the sibling loader and therefore prevented the stage unavailable path from running.
+
+#### GREEN
+
+The failure path now decrements all ownership synchronously and schedules release cleanup with a
+handled detached promise. `claim.ready` rethrows the original load error immediately; the stage
+also schedules rather than awaits release before entering its unavailable teardown. A replacement
+claim made before the pending sibling resolves stays claimed, then owns its final unload.
+
+### Verification
+
+Passed with `PATH=/tmp/summonlab-node-24.14.1/bin:$PATH`:
+
+```sh
+pnpm --filter @summonlab/web test:unit
+pnpm --filter @summonlab/web typecheck
+pnpm --filter @summonlab/web exec eslint src/lib/components/living-village/realtime-combat/RealtimeCombatStage.svelte src/lib/components/living-village/realtime-combat/stage-lifecycle.ts src/lib/components/living-village/realtime-combat/stage-lifecycle.spec.ts
+pnpm --filter @summonlab/web build
+git diff --check
+```
+
+All commands passed: 36 unit files / 232 tests and Svelte typecheck with zero errors or warnings.
+The build retains its existing `node:crypto` browser-externalization and optional-platform `sharp`
+warnings.
+
+### Fix-round self-review
+
+- A failed source no longer waits for an indefinitely pending sibling before `claim.ready` rejects
+  and the request-bound stage can report unavailable.
+- Ownership counts still decrement once per unique source. Cleanup promises are retained for later
+  safe unload/reload transitions and their errors are handled, so a detached failure is not
+  unhandled and cannot block a replacement stage.
+- The new behavioral test exercises failure, pending cleanup, a reclaimed pending source, and its
+  eventual final unload. No route or presentation behavior changed.
