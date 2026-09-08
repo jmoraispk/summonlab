@@ -181,6 +181,16 @@ describe('combat session', () => {
 		});
 	});
 
+	it('rejects malformed external input without accessing its incomplete bindings', () => {
+		const malformed = { requestId: 'not-a-uuid', visualStatus: 'production' };
+
+		expect(() => createCombatSession(malformed, dependencies)).not.toThrow();
+		expect(createCombatSession(malformed, dependencies)).toMatchObject({
+			status: 'rejected',
+			rejection: { code: 'invalid-request' }
+		});
+	});
+
 	it('rejects unsupported ruleset and stale policy bindings before asset readiness', () => {
 		const unsupported = withRehashedRequest({
 			rulesetVersion: 'unsupported-combat-v1',
@@ -231,6 +241,82 @@ describe('combat session', () => {
 			status: 'rejected',
 			rejection: { code: 'unapproved-character-art' }
 		});
+	});
+
+	it('accepts a noncanonical fixture request when every binding is approved', () => {
+		const productionRequest = withProductionApprovals({});
+		const approvedFixture = withRehashedRequest({
+			...productionRequest,
+			visualStatus: 'fixture',
+			seed: 'approved-fixture-variant'
+		});
+
+		expect(createCombatSession(approvedFixture, dependencies)).toMatchObject({ status: 'loading' });
+	});
+
+	it('rejects altered and surplus ruleset or claim-policy bindings', () => {
+		const productionRequest = withProductionApprovals({});
+		const changedRulesetId = withRehashedRequest({
+			...productionRequest,
+			contentBindings: productionRequest.contentBindings.map((binding) =>
+				binding.kind === 'ruleset' ? { ...binding, contentId: 'alternate-combat-rules' } : binding
+			)
+		});
+		const changedRulesetHash = withRehashedRequest({
+			...productionRequest,
+			contentBindings: productionRequest.contentBindings.map((binding) =>
+				binding.kind === 'ruleset' ? { ...binding, contentHash: '2'.repeat(64) } : binding
+			)
+		});
+		const surplusRuleset = withRehashedRequest({
+			...productionRequest,
+			contentBindings: [
+				...productionRequest.contentBindings,
+				{
+					kind: 'ruleset',
+					contentId: 'alternate-combat-rules',
+					version: 'alternate-combat-rules-v1',
+					contentHash: '3'.repeat(64)
+				}
+			]
+		});
+		const surplusPolicy = withRehashedRequest({
+			...productionRequest,
+			contentBindings: [
+				...productionRequest.contentBindings,
+				{
+					kind: 'claim-policy',
+					contentId: 'alternate-claim-policy',
+					version: 'alternate-claim-policy-v1',
+					contentHash: '4'.repeat(64)
+				}
+			]
+		});
+		const surplusAction = withRehashedRequest({
+			...productionRequest,
+			contentBindings: [
+				...productionRequest.contentBindings,
+				{
+					kind: 'action',
+					contentId: 'saffron-strike-v1',
+					version: 'saffron-strike-v1-alternate-v1',
+					contentHash: '5'.repeat(64)
+				}
+			]
+		});
+
+		for (const request of [
+			changedRulesetId,
+			changedRulesetHash,
+			surplusRuleset,
+			surplusPolicy,
+			surplusAction
+		]) {
+			expect(createCombatSession(request, dependencies)).toMatchObject({
+				status: 'rejected',
+				rejection: { code: 'stale-content-binding' }
+			});
+		}
 	});
 
 	it('becomes unavailable without generating a receipt', () => {
@@ -286,6 +372,28 @@ describe('combat session', () => {
 
 	it('is independent of render accumulator scheduling', () => {
 		expect(runWithFrames([1 / 60])).toEqual(runWithFrames([1 / 30, 1 / 120, 1 / 120]));
+	});
+
+	it('exposes detached frozen combat and trace views that cannot affect the receipt', () => {
+		const expectedReceipt = runToTerminal(createCombatSession(RAT_ENCOUNTER_REQUEST, dependencies));
+		const session = createCombatSession(RAT_ENCOUNTER_REQUEST, dependencies);
+		session.markAssetsReady();
+		const combat = session.combat;
+		const snapshot = session.advanceFixedStep();
+
+		expect(Object.isFrozen(combat)).toBe(true);
+		expect(Object.isFrozen(combat.actors)).toBe(true);
+		expect(Object.isFrozen(snapshot.combat)).toBe(true);
+		expect(Object.isFrozen(snapshot.events)).toBe(true);
+		expect(() => {
+			combat.actors[0]!.health = 0;
+		}).toThrow();
+		expect(() => {
+			(snapshot.events as unknown as ExplorationEncounterRequest[]).shift();
+		}).toThrow();
+		expect(session.combat.actors[0]?.health).toBe(RAT_ENCOUNTER_REQUEST.party[0]?.resources.health);
+		expect(session.advanceFixedStep().events[0]?.kind).toBe('encounter-started');
+		expect(runToTerminal(session)).toEqual(expectedReceipt);
 	});
 
 	it('notifies each active completion subscription exactly once with a frozen receipt', () => {

@@ -98,3 +98,55 @@ zero warnings. Targeted ESLint and whitespace checks exited zero.
 `SUPPORTED_RULESET_VERSION` intentionally scopes this first unified session to the existing rat
 mechanics. Supporting later rulesets requires an explicit mechanics implementation and binding policy,
 not a silent fallback.
+
+## Fix round 1/5
+
+### Changes
+
+- Moved all ordinary request inspection behind `ExplorationEncounterRequestSchema.safeParse`; the only
+  pre-parse production-art classification now uses defensive record and array guards, so partial
+  external input cannot throw. Invalid input yields a typed `invalid-request` rejection.
+- Applied the fixture exemption to `fixture-only` bindings rather than `visualStatus`. A noncanonical
+  request may retain `visualStatus: fixture` when every binding is approved; any request with a
+  fixture-only binding must match `fixtureRequestHash` exactly.
+- Public combat state and snapshots now return deep-frozen structured-clone views. Internal mechanics
+  and trace arrays remain private and mutable only within the session.
+- Hardened content validation to require exactly one supported ruleset binding with its canonical
+  content ID, version, and hash; exactly one supplied claim-policy binding; and exactly one binding
+  for every declared action reference with no surplus action binding.
+
+### RED
+
+```sh
+PATH=/tmp/summonlab-node-24.14.1/bin:$PATH pnpm --filter @summonlab/web test:unit -- src/lib/components/living-village/realtime-combat/combat-session.spec.ts
+```
+
+The new regressions failed against `c887c6a3c` as expected:
+
+```text
+Test Files  1 failed | 33 passed (34)
+Tests  4 failed | 191 passed (195)
+```
+
+The failures respectively showed the unsafe `request.party is not iterable` access, rejection of an
+approved noncanonical fixture, acceptance of altered/surplus binding entries, and mutable public combat
+state.
+
+### GREEN
+
+After the boundary, binding, and immutable-view changes, the focused session suite reported:
+
+```text
+Test Files  34 passed (34)
+Tests  195 passed (195)
+```
+
+### Self-review
+
+- Confirmed production fixture-only art still receives the existing explicit art rejection through the
+  defensive pre-parse classification, while arbitrary malformed production objects receive
+  `invalid-request` without throwing.
+- Confirmed frozen public views are detached from the `currentCombat` and `trace` state used by
+  `advanceFixedStep`, preserving atomic capacity checks and deterministic receipt hashes.
+- Confirmed policy/ruleset duplicates are rejected by cardinality rather than by whichever entry
+  `.find()` happened to return, and action references cannot be satisfied by a broad kind/ID subset.

@@ -85,6 +85,43 @@ function deepFreeze<T>(value: T): T {
 	return value;
 }
 
+function immutableCopy<T>(value: T): T {
+	return deepFreeze(structuredClone(value));
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+	return typeof value === 'object' && value !== null;
+}
+
+function safelyHasFixtureOnlyArt(input: unknown): boolean {
+	if (!isRecord(input)) return false;
+	const participants = [
+		...(Array.isArray(input.party) ? input.party : []),
+		...(Array.isArray(input.enemies) ? input.enemies : [])
+	];
+	const participantBindings = participants.flatMap((participant) => {
+		if (!isRecord(participant) || !isRecord(participant.presentation)) return [];
+		return [
+			participant.presentation.combatAssetBinding,
+			participant.presentation.motionPackBinding
+		];
+	});
+	const battlefield = isRecord(input.battlefieldBinding) ? input.battlefieldBinding : undefined;
+	const battlefieldBindings = battlefield
+		? [
+				battlefield.environmentAssetBinding,
+				...(Array.isArray(battlefield.occluderAssetBindings)
+					? battlefield.occluderAssetBindings
+					: [])
+			]
+		: [];
+	return [...participantBindings, ...battlefieldBindings].some(
+		(binding) => isRecord(binding) && binding.approvalStatus === 'fixture-only'
+	);
+}
+
+const REJECTED_REQUEST = deepFreeze({}) as ExplorationEncounterRequest;
+
 function emptyCombat(): RealtimeCombatState {
 	return {
 		elapsedSeconds: 0,
@@ -136,17 +173,28 @@ function validateBindings(
 			['rulesetVersion']
 		);
 	}
-	const rulesetBinding = request.contentBindings.find((binding) => binding.kind === 'ruleset');
-	if (!rulesetBinding || rulesetBinding.version !== request.rulesetVersion) {
+	const rulesetBindings = request.contentBindings.filter((binding) => binding.kind === 'ruleset');
+	const rulesetBinding = rulesetBindings[0];
+	if (
+		rulesetBindings.length !== 1 ||
+		!rulesetBinding ||
+		rulesetBinding.contentId !== 'realtime-rat-combat' ||
+		rulesetBinding.version !== request.rulesetVersion ||
+		rulesetBinding.contentHash !== combatValueHash({ ruleset: SUPPORTED_RULESET_VERSION })
+	) {
 		return createRejection(
 			request.requestId,
 			'stale-content-binding',
-			'The ruleset binding does not match the requested ruleset version.',
+			'The encounter must declare exactly the supported ruleset binding.',
 			['contentBindings']
 		);
 	}
-	const claimPolicyBinding = request.contentBindings.find((binding) => binding.kind === 'claim-policy');
+	const claimPolicyBindings = request.contentBindings.filter(
+		(binding) => binding.kind === 'claim-policy'
+	);
+	const claimPolicyBinding = claimPolicyBindings[0];
 	if (
+		claimPolicyBindings.length !== 1 ||
 		!claimPolicyBinding ||
 		claimPolicyBinding.contentId !== claimPolicy.contentId ||
 		claimPolicyBinding.version !== claimPolicy.version ||
@@ -164,6 +212,20 @@ function validateBindings(
 			'capability' in entry ? entry.capability.actionDefinitionRefs : entry.actionDefinitionRefs
 		)
 	);
+	const actionBindings = request.contentBindings.filter((binding) => binding.kind === 'action');
+	if (
+		actionBindings.length !== expectedActions.size ||
+		[...expectedActions].some(
+			(actionId) => actionBindings.filter((binding) => binding.contentId === actionId).length !== 1
+		)
+	) {
+		return createRejection(
+			request.requestId,
+			'stale-content-binding',
+			'Every declared action binding must match exactly one requested action reference.',
+			['contentBindings']
+		);
+	}
 	const expectedEnemies = new Map(
 		request.enemies.map((enemy) => [
 			enemy.definitionRef.enemyDefinitionId,
@@ -199,8 +261,12 @@ function validateBindings(
 		);
 	}
 	for (const binding of request.contentBindings) {
-		if (binding.kind === 'ruleset' || binding.kind === 'claim-policy') continue;
-		if (binding.kind === 'action' && expectedActions.has(binding.contentId)) continue;
+		if (
+			binding.kind === 'ruleset' ||
+			binding.kind === 'claim-policy' ||
+			binding.kind === 'action'
+		)
+			continue;
 		if (
 			binding.kind === 'enemy' &&
 			expectedEnemies.get(binding.contentId)?.version === binding.version &&
@@ -225,13 +291,17 @@ function validateBindings(
 }
 
 function validateRequest(
-	input: ExplorationEncounterRequest,
+	input: unknown,
 	dependencies: CombatSessionDependencies
 ): ValidationResult {
-	if (input.visualStatus === 'production' && fixtureOnlyArt(input)) {
+	if (
+		isRecord(input) &&
+		input.visualStatus === 'production' &&
+		safelyHasFixtureOnlyArt(input)
+	) {
 		return {
 			rejection: createRejection(
-				input.requestId,
+				undefined,
 				'unapproved-character-art',
 				'Production encounters require approved visual bindings.',
 				['visualStatus']
@@ -242,7 +312,7 @@ function validateRequest(
 	if (!parsed.success) {
 		return {
 			rejection: createRejection(
-				input.requestId,
+				undefined,
 				'invalid-request',
 				'Encounter request failed contract validation.',
 				parsed.error.issues.map((issue) => issue.path.join('.')).filter(Boolean)
@@ -262,26 +332,13 @@ function validateRequest(
 	}
 	const bindingRejection = validateBindings(request, dependencies.claimPolicy);
 	if (bindingRejection) return { rejection: bindingRejection };
-	if (
-		request.visualStatus === 'fixture' &&
-		dependencies.fixtureRequestHash !== request.requestHash
-	) {
+	if (fixtureOnlyArt(request) && dependencies.fixtureRequestHash !== request.requestHash) {
 		return {
 			rejection: createRejection(
 				request.requestId,
 				'unapproved-character-art',
 				'Fixture-only visual bindings are permitted only for the canonical fixture request.',
 				['requestHash']
-			)
-		};
-	}
-	if (fixtureOnlyArt(request) && request.visualStatus !== 'fixture') {
-		return {
-			rejection: createRejection(
-				request.requestId,
-				'unapproved-character-art',
-				'Non-fixture encounters require approved visual bindings.',
-				['visualStatus']
 			)
 		};
 	}
@@ -424,11 +481,11 @@ class CombatSessionImpl implements CombatSession {
 	private listeners: CombatSessionListener[] = [];
 
 	constructor(
-		input: ExplorationEncounterRequest,
+		input: unknown,
 		private readonly dependencies: CombatSessionDependencies,
 		validation: ValidationResult
 	) {
-		this.request = deepFreeze('request' in validation ? validation.request : input);
+		this.request = 'request' in validation ? deepFreeze(validation.request) : REJECTED_REQUEST;
 		this.currentStatus = 'rejection' in validation ? 'rejected' : 'loading';
 		this.currentCombat = 'request' in validation ? createRealtimeCombat(validation.request) : emptyCombat();
 		this.finalRejection = 'rejection' in validation ? deepFreeze(validation.rejection) : undefined;
@@ -440,7 +497,7 @@ class CombatSessionImpl implements CombatSession {
 	}
 
 	get combat() {
-		return this.currentCombat;
+		return immutableCopy(this.currentCombat);
 	}
 
 	get receipt() {
@@ -657,9 +714,9 @@ class CombatSessionImpl implements CombatSession {
 	private snapshot(): CombatSessionSnapshot {
 		return {
 			status: this.currentStatus,
-			combat: this.currentCombat,
+			combat: immutableCopy(this.currentCombat),
 			simulationTick: this.simulationTick,
-			events: this.trace,
+			events: immutableCopy(this.trace),
 			...(this.finalReceipt ? { receipt: this.finalReceipt } : {}),
 			...(this.finalRejection ? { rejection: this.finalRejection } : {}),
 			...(this.unavailableState ? { unavailable: this.unavailableState } : {})
@@ -668,7 +725,7 @@ class CombatSessionImpl implements CombatSession {
 }
 
 export function createCombatSession(
-	input: ExplorationEncounterRequest,
+	input: unknown,
 	dependencies: CombatSessionDependencies
 ): CombatSession {
 	return new CombatSessionImpl(input, dependencies, validateRequest(input, dependencies));
