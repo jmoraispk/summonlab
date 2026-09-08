@@ -33,20 +33,28 @@ export function createStageAssetOwner(loader: StageAssetLoader) {
 		if (entry.claimCount > 0) return Promise.resolve();
 		if (entry.releasePromise) return entry.releasePromise;
 
+		const reload = () => {
+			const reloaded = Promise.resolve().then(() => loader.load(source));
+			entry.ready = reloaded;
+			return reloaded;
+		};
 		const readyBeforeRelease = entry.ready;
 		const settledReady = readyBeforeRelease
 			.catch(() => undefined)
 			.then(async (loadedAsset) => {
 				if (entry.claimCount !== 0) return loadedAsset;
-				await loader.unload(source);
-				if (entry.claimCount !== 0) {
-					const reloaded = Promise.resolve().then(() => loader.load(source));
-					entry.ready = reloaded;
-					return reloaded;
+				try {
+					await loader.unload(source);
+				} catch (error) {
+					if (entry.claimCount !== 0) return reload();
+					if (entries.get(source) === entry) entries.delete(source);
+					throw error;
 				}
+				if (entry.claimCount !== 0) return reload();
 				if (entries.get(source) === entry) entries.delete(source);
 			});
 		entry.ready = settledReady;
+		void settledReady.catch(() => undefined);
 		const releasePromise = settledReady.then(() => undefined);
 		entry.releasePromise = releasePromise;
 		void releasePromise.then(

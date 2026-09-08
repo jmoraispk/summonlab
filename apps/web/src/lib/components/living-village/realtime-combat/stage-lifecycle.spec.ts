@@ -128,6 +128,74 @@ describe('stage asset lifecycle', () => {
 		expect(unloaded).toEqual(['/runtime/unloading.png', '/runtime/unloading.png']);
 	});
 
+	it('reacquires a source after its final unload rejects', async () => {
+		const loaded: string[] = [];
+		const unloaded: string[] = [];
+		const owner = createStageAssetOwner({
+			load: async (source) => {
+				loaded.push(source);
+				return { source };
+			},
+			unload: async (source) => {
+				unloaded.push(source);
+				if (unloaded.length === 1) throw new Error('unload failed');
+			}
+		});
+
+		const first = owner.claim(['/runtime/rejected-unload.png']);
+		await first.ready;
+		await expect(first.release()).rejects.toThrow('unload failed');
+
+		const replacement = owner.claim(['/runtime/rejected-unload.png']);
+		await expect(replacement.ready).resolves.toEqual([{ source: '/runtime/rejected-unload.png' }]);
+		expect(loaded).toEqual(['/runtime/rejected-unload.png', '/runtime/rejected-unload.png']);
+
+		await replacement.release();
+		expect(unloaded).toEqual(['/runtime/rejected-unload.png', '/runtime/rejected-unload.png']);
+	});
+
+	it('reloads a replacement when an in-flight unload rejects', async () => {
+		const unloadStarted = deferred<void>();
+		const rejectUnload = deferred<void>();
+		const loaded: string[] = [];
+		const unloaded: string[] = [];
+		const owner = createStageAssetOwner({
+			load: async (source) => {
+				loaded.push(source);
+				return { source };
+			},
+			unload: async (source) => {
+				unloaded.push(source);
+				if (unloaded.length === 1) {
+					unloadStarted.resolve();
+					await rejectUnload.promise;
+					throw new Error('in-flight unload failed');
+				}
+			}
+		});
+
+		const first = owner.claim(['/runtime/in-flight-rejected-unload.png']);
+		await first.ready;
+		const firstRelease = first.release();
+		await unloadStarted.promise;
+		const replacement = owner.claim(['/runtime/in-flight-rejected-unload.png']);
+		rejectUnload.resolve();
+		await expect(firstRelease).resolves.toBeUndefined();
+		await expect(replacement.ready).resolves.toEqual([
+			{ source: '/runtime/in-flight-rejected-unload.png' }
+		]);
+		expect(loaded).toEqual([
+			'/runtime/in-flight-rejected-unload.png',
+			'/runtime/in-flight-rejected-unload.png'
+		]);
+
+		await replacement.release();
+		expect(unloaded).toEqual([
+			'/runtime/in-flight-rejected-unload.png',
+			'/runtime/in-flight-rejected-unload.png'
+		]);
+	});
+
 	it('releases every claimed source after a partial load failure', async () => {
 		const unloaded: string[] = [];
 		const owner = createStageAssetOwner({

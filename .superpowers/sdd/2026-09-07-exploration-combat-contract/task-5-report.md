@@ -180,3 +180,49 @@ warnings.
   unhandled and cannot block a replacement stage.
 - The new behavioral test exercises failure, pending cleanup, a reclaimed pending source, and its
   eventual final unload. No route or presentation behavior changed.
+
+## Fix round 3/5 — Unload-rejection reacquisition
+
+### Exact RED/GREEN evidence
+
+#### RED
+
+```sh
+PATH=/tmp/summonlab-node-24.14.1/bin:$PATH pnpm --filter @summonlab/web test:unit -- src/lib/components/living-village/realtime-combat/stage-lifecycle.spec.ts
+```
+
+The two new unload-rejection tests failed: a replacement after final release inherited `Error:
+unload failed`, and a replacement arriving during a controlled rejected unload also inherited the
+rejected transition. Vitest additionally reported the latter as an unhandled rejection.
+
+#### GREEN
+
+On an unclaimed final-unload error, the owner removes that stale entry so a later claimant starts a
+fresh `loader.load`. If the source is reclaimed while unload fails, the transition reloads and
+fulfills the replacement's already-captured readiness promise. Transition errors now have an
+explicit observer while callers retain the controlled release rejection when no claimant remains.
+
+### Verification
+
+Passed with `PATH=/tmp/summonlab-node-24.14.1/bin:$PATH`:
+
+```sh
+pnpm --filter @summonlab/web test:unit
+pnpm --filter @summonlab/web typecheck
+pnpm --filter @summonlab/web exec eslint src/lib/components/living-village/realtime-combat/RealtimeCombatStage.svelte src/lib/components/living-village/realtime-combat/stage-lifecycle.ts src/lib/components/living-village/realtime-combat/stage-lifecycle.spec.ts
+pnpm --filter @summonlab/web build
+git diff --check
+```
+
+All commands passed: 36 unit files / 234 tests and Svelte typecheck with zero errors or warnings.
+The build retains its existing `node:crypto` browser-externalization and optional-platform `sharp`
+warnings.
+
+### Fix-round self-review
+
+- A final unload rejection cannot leave a globally retained rejected `ready` promise: the stale
+  unclaimed entry is removed and a later stage loads again.
+- A claimant arriving during an unload rejection receives a reload before its readiness settles;
+  its later final release performs the next unload attempt exactly once.
+- Both explicit release errors and detached transition errors are observed. Existing overlap,
+  pending-failure, and successful unload-reclaim cases remain in the full suite.
