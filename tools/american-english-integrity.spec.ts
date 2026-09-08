@@ -617,12 +617,49 @@ describe('integrity binding classification', () => {
 	});
 
 	it('materializes family production compatibility seals from the migrated skill surface', () => {
-		expect(visualProductionIntegrityOwner.intentMaterialization?.commands).toContainEqual([
+		const commands = visualProductionIntegrityOwner.intentMaterialization?.commands ?? [];
+		const buildBundle = ['pnpm', 'build:family-affinity-dispatch-bundle'];
+		const resealSurface = [
+			'pnpm',
+			'tsx',
+			'tools/reseal-family-production-execution-surface.ts',
+			'--write'
+		];
+		const resealCompatibility = [
 			'pnpm',
 			'tsx',
 			'tools/reseal-family-production-compatibility.ts',
 			'--write'
+		];
+		expect(commands).toEqual(
+			expect.arrayContaining([buildBundle, resealSurface, resealCompatibility])
+		);
+		expect(
+			commands.findIndex((command) => command.join(' ') === buildBundle.join(' '))
+		).toBeLessThan(commands.findIndex((command) => command.join(' ') === resealSurface.join(' ')));
+		expect(
+			commands.findIndex((command) => command.join(' ') === resealSurface.join(' '))
+		).toBeLessThan(
+			commands.findIndex((command) => command.join(' ') === resealCompatibility.join(' '))
+		);
+		expect(visualProductionIntegrityOwner.intentMaterialization?.paths).toEqual(
+			expect.arrayContaining([
+				'skills/summonlab-image-production/scripts/family_dispatch_gate.mjs',
+				'skills/summonlab-image-production/references/contract-v3.json'
+			])
+		);
+	});
+
+	it('reseals historical Earth bridge raw-source bindings after language migration', () => {
+		expect(visualProductionIntegrityOwner.intentMaterialization?.commands).toContainEqual([
+			'pnpm',
+			'tsx',
+			'tools/reseal-historical-earth-bridge-sources.ts',
+			'--write'
 		]);
+		expect(visualProductionIntegrityOwner.intentMaterialization?.paths).toContain(
+			'assets/enemies/experiments/family-affinity-v1/waves/earth-bridge-v1.json'
+		);
 	});
 
 	it('materializes equipment runtime and integration self-derived outputs', () => {

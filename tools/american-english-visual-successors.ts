@@ -72,7 +72,10 @@ export const visualProductionIntegrityOwner: AmericanEnglishIntegrityOwner = {
 	intentMaterialization: {
 		commands: [
 			['pnpm', 'tsx', 'tools/reseal-family-affinity-source-lineage.ts'],
+			['pnpm', 'build:family-affinity-dispatch-bundle'],
+			['pnpm', 'tsx', 'tools/reseal-family-production-execution-surface.ts', '--write'],
 			['pnpm', 'tsx', 'tools/reseal-family-production-compatibility.ts', '--write'],
+			['pnpm', 'tsx', 'tools/reseal-historical-earth-bridge-sources.ts', '--write'],
 			['pnpm', 'tsx', 'tools/reseal-character-generation-expectations.ts'],
 			['pnpm', 'export:wiki-monster-visuals'],
 			['pnpm', 'export:player-visuals'],
@@ -82,8 +85,11 @@ export const visualProductionIntegrityOwner: AmericanEnglishIntegrityOwner = {
 			['pnpm', 'prettier', '--write', 'packages/contracts/src/character.ts']
 		],
 		paths: [
+			'assets/enemies/experiments/family-affinity-v1/waves/earth-bridge-v1.json',
 			'assets/wiki/skills/icon-production-v1/mass-production-v1/manifest.json',
 			'apps/web/static/wiki-media/skills/visual-catalog-v1/manifest.json',
+			'skills/summonlab-image-production/references/contract-v3.json',
+			'skills/summonlab-image-production/scripts/family_dispatch_gate.mjs',
 			'packages/contracts/src/character.ts',
 			'packages/characters/src/characters.spec.ts',
 			'assets/wiki/skills/icon-production-v2/overlay.json',
