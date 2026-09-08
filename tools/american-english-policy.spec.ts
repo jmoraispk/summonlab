@@ -62,6 +62,22 @@ function titleCase(value: string): string {
 	return `${value[0]!.toUpperCase()}${value.slice(1)}`;
 }
 
+function runRootAudit(repository: string, format: 'text' | 'json' = 'text') {
+	const packageManager = process.platform === 'win32' ? 'pnpm.cmd' : 'pnpm';
+	return spawnSync(
+		packageManager,
+		[
+			'--silent',
+			'check:american-english',
+			'--',
+			'--repository-root',
+			repository,
+			...(format === 'json' ? ['--format', 'json'] : [])
+		],
+		{ cwd: path.resolve('.'), encoding: 'utf8' }
+	);
+}
+
 describe('American English finite policy', () => {
 	it('builds the complete tracked-path inventory independently of content', () => {
 		const form = retired('gray');
@@ -255,6 +271,86 @@ describe('American English finite policy', () => {
 });
 
 describe('American English audit CLI', () => {
+	it('runs the root audit command end to end for clean and violating tracked trees', async () => {
+		const textForm = retired('armor');
+		const pathForm = retired('gray');
+		const repository = await makeRepository({
+			'notes.txt': 'safe\n',
+			'z-safe.txt': 'safe\n'
+		});
+
+		const cleanResult = runRootAudit(repository);
+		expect(cleanResult.status).toBe(0);
+		expect(cleanResult.stderr).toBe('');
+		expect(cleanResult.stdout).toContain(
+			'American English audit: 0 violation(s) (0 content, 0 path).'
+		);
+
+		await writeFile(path.join(repository, 'notes.txt'), `${textForm}\n`);
+		const violatingPath = `z-${pathForm}.txt`;
+		execFileSync('git', ['mv', 'z-safe.txt', violatingPath], { cwd: repository });
+
+		const textResult = runRootAudit(repository);
+		expect(textResult.status).toBe(1);
+		expect(textResult.stderr).toBe('');
+		expect(textResult.stdout).toBe(
+			[
+				`notes.txt:1:1: ${textForm} -> armor [armor/content]`,
+				`${violatingPath}: ${pathForm} -> gray [gray/path]`,
+				'American English audit: 2 violation(s) (1 content, 1 path).',
+				''
+			].join('\n')
+		);
+
+		const jsonResult = runRootAudit(repository, 'json');
+		expect(jsonResult.status).toBe(1);
+		expect(jsonResult.stderr).toBe('');
+		const report = JSON.parse(jsonResult.stdout) as {
+			readonly head: string;
+			readonly counts: {
+				readonly total: number;
+				readonly content: number;
+				readonly path: number;
+				readonly byRule: Readonly<Record<string, number>>;
+				readonly byRoot: Readonly<Record<string, number>>;
+			};
+			readonly violations: readonly Record<string, unknown>[];
+			readonly exceptionsUsed: readonly unknown[];
+		};
+		expect(Object.keys(report)).toEqual(['head', 'counts', 'violations', 'exceptionsUsed']);
+		expect(report.head).toMatch(/^[0-9a-f]{40}$/u);
+		expect(Object.keys(report.counts)).toEqual(['total', 'content', 'path', 'byRule', 'byRoot']);
+		expect(report.counts).toMatchObject({
+			total: 2,
+			content: 1,
+			path: 1,
+			byRule: { armor: 1, gray: 1 },
+			byRoot: { '(root)': 2 }
+		});
+		expect(Object.keys(report.counts.byRule)).toEqual([...AMERICAN_ENGLISH_RULE_IDS]);
+		expect(report.violations).toEqual([
+			{
+				kind: 'content',
+				ruleId: 'armor',
+				found: textForm,
+				recommended: 'armor',
+				path: 'notes.txt',
+				line: 1,
+				column: 1
+			},
+			{
+				kind: 'path',
+				ruleId: 'gray',
+				found: pathForm,
+				recommended: 'gray',
+				path: violatingPath,
+				line: null,
+				column: null
+			}
+		]);
+		expect(report.exceptionsUsed).toEqual([]);
+	});
+
 	it('prints a zero-count text summary and exits zero for a clean repository', async () => {
 		const repository = await makeRepository({ 'notes.txt': 'safe\n' });
 		const result = spawnSync(

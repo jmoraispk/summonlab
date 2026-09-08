@@ -3,11 +3,16 @@
 ## Language
 
 - Use conventional American English for all new or modified repository-owned prose, UI copy, code
-  symbols, schema literals, IDs, filenames, and directory names—for example, `armor`, `color`,
-  `gray`, and `behavior`.
+  symbols, schema literals, IDs, tests, fixtures, generated content, filenames, and directory
+  paths—for example, `armor`, `color`, `gray`, and `behavior`.
 - Do not introduce British or Commonwealth spelling variants as precedent for new work.
 - Preserve character names, other proper names, and required third-party package or API identifiers
   verbatim.
+- Run `pnpm check:american-english` before committing repository changes.
+- Do not add aliases, suppressions, dual spellings, or legacy-path compatibility to bypass the
+  audit.
+- Any allowed occurrence must be an explicitly approved character or proper name, or an unavoidable
+  exact external identifier, already modeled narrowly by the policy.
 - Do not casually rename legacy identifiers. Normalize them only in an explicitly scoped migration
   that updates every reference, generated artifact, compatibility boundary, and hash or checksum
   binding together.
