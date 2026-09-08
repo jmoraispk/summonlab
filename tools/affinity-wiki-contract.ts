@@ -49,7 +49,7 @@ const BASE_DEFINITIONS = [
 	{ name: 'Wind', status: 'Lacerate' },
 	{ name: 'Water', status: 'Chill' }
 ] as const;
-const BASE_TABLE_HEADERS = ['Affinity', 'Color', 'Character', 'Status', 'Behaviour'] as const;
+const BASE_TABLE_HEADERS = ['Affinity', 'Color', 'Character', 'Status', 'Behavior'] as const;
 
 const requiredBaseNames = BASE_AFFINITIES.join(', ');
 const requiredDualNames = DUAL_AFFINITIES.map(({ name }) => name).join(', ');

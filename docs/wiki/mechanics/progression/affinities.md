@@ -31,7 +31,7 @@ Dual affinities do not nudge attributes at all. Their reward is elemental, not s
 
 Four base affinities. The set is chosen for legibility over tradition: each one is something a player can picture instantly, name without a glossary, and recognize on a monster at a glance.
 
-| Affinity | Color | Character | Status | Behaviour |
+| Affinity | Color | Character | Status | Behavior |
 |---|---|---|---|---|
 | **Fire** | Vermilion | Expansion, aggression, consumption | **Burn** | Damage over time; intensity stacks rather than duration |
 | **Earth** | Ocher-brown | Stability, endurance, weight | **Weight** | Reduces poise and action speed; increases stagger taken |
@@ -131,7 +131,7 @@ This is the mechanic that should make a tier-five boss encounter feel structural
 
 Skills at grade B and above carry **affinity slots**. A hero may infuse a slot with any affinity they hold.
 
-**Infusion is additive.** It never replaces or converts the skill's base behaviour — it layers on top of it:
+**Infusion is additive.** It never replaces or converts the skill's base behavior — it layers on top of it:
 
 | Layer | Source | Present when |
 |---|---|---|
