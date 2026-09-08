@@ -194,6 +194,8 @@ export const VISUAL_PRODUCTION_DIGEST_POINTERS = [
 	'/evidence/contactSheets/catalog/*/contentHash',
 	'/evidence/contactSheets/families/*/contentHash',
 	'/evidenceSetCanonicalSha256',
+	'/executionSurface/bundleSha256',
+	'/executionSurface/files/*/sha256',
 	'/exclusionEvidence/excludedIdentitySignaturesSha256',
 	'/exclusionEvidence/excludedIdsSha256',
 	'/exclusionEvidence/excludedNormalizedDisplayNamesSha256',
@@ -328,6 +330,11 @@ export const VISUAL_PRODUCTION_DIGEST_POINTERS = [
 	'/result/contentHash',
 	'/review/contentHash',
 	'/reviewManifest/sha256',
+	'/repositoryDispatch/sha256',
+	'/sealedLauncher/bundle/sha256',
+	'/sealedLauncher/node/sha256',
+	'/sealedLauncher/sources/*/sha256',
+	'/skillContractSha256',
 	'/rosterPlanSha256',
 	'/runtimeCatalog/sha256',
 	'/selectedPairs/*/chibiSourceSha256',
@@ -449,6 +456,10 @@ export const OWNER_DIGEST_PATH_REFERENCES = {
 		{ digestPointer: '/candidateSha256', pathPointer: '/candidatePath' },
 		{ digestPointer: '/cells/*/candidateSha256', pathPointer: '/cells/*/candidatePath' },
 		{ digestPointer: '/derivatives/*/sourceSha256', pathPointer: '/derivatives/*/sourcePath' },
+		{
+			digestPointer: '/executionSurface/files/*/sha256',
+			pathPointer: '/executionSurface/files/*/path'
+		},
 		{ digestPointer: '/entries/*/combatChibi/sha256', pathPointer: '/entries/*/combatChibi/path' },
 		{ digestPointer: '/entries/*/summon/sha256', pathPointer: '/entries/*/summon/path' },
 		{
@@ -466,7 +477,14 @@ export const OWNER_DIGEST_PATH_REFERENCES = {
 		{ digestPointer: '/records/*/approved/sha256', pathPointer: '/records/*/approved/path' },
 		{ digestPointer: '/records/*/candidate/sha256', pathPointer: '/records/*/candidate/path' },
 		{ digestPointer: '/records/*/source/sha256', pathPointer: '/records/*/source/path' },
+		{ digestPointer: '/repositoryDispatch/sha256', pathPointer: '/repositoryDispatch/path' },
 		{ digestPointer: '/resultSha256', pathPointer: '/resultPath' },
+		{ digestPointer: '/sealedLauncher/bundle/sha256', pathPointer: '/sealedLauncher/bundle/path' },
+		{
+			digestPointer: '/sealedLauncher/sources/*/sha256',
+			pathPointer: '/sealedLauncher/sources/*/path'
+		},
+		{ digestPointer: '/skillContractSha256', pathPointer: '/skillContractPath' },
 		{ digestPointer: '/targetSha256', pathPointer: '/targetPath' },
 		{ digestPointer: '/targets/*/chibiSha256', pathPointer: '/targets/*/chibi' },
 		{ digestPointer: '/targets/*/summonSha256', pathPointer: '/targets/*/summon' }

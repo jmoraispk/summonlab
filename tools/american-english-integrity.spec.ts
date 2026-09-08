@@ -24,6 +24,10 @@ import {
 import { equipmentIntegrityOwner } from './american-english-equipment-successors.js';
 import { runtimeAndEngineIntegrityOwner } from './american-english-runtime-successors.js';
 import { visualProductionIntegrityOwner } from './american-english-visual-successors.js';
+import {
+	OWNER_DIGEST_PATH_REFERENCES,
+	OWNER_DIGEST_POINTER_PATTERNS
+} from './american-english-integrity-pointers.js';
 import { canonicalJson as characterCanonicalJson } from '../packages/characters/src/index.js';
 import {
 	canonicalJson as engineCanonicalJson,
@@ -1124,6 +1128,47 @@ describe('integrity binding classification', () => {
 				jsonPointer: '/references/arbitrary/sha256'
 			})
 		]);
+	});
+
+	it('registers every family production compatibility digest contract', () => {
+		const pointers = [
+			'/executionSurface/bundleSha256',
+			'/executionSurface/files/0/sha256',
+			'/repositoryDispatch/sha256',
+			'/sealedLauncher/bundle/sha256',
+			'/sealedLauncher/node/sha256',
+			'/sealedLauncher/sources/0/sha256',
+			'/skillContractSha256'
+		];
+		for (const pointer of pointers) {
+			expect(
+				OWNER_DIGEST_POINTER_PATTERNS['visual-production'].some((pattern) => pattern.test(pointer))
+			).toBe(true);
+		}
+		expect(OWNER_DIGEST_PATH_REFERENCES['visual-production']).toEqual(
+			expect.arrayContaining([
+				{
+					digestPointer: '/executionSurface/files/*/sha256',
+					pathPointer: '/executionSurface/files/*/path'
+				},
+				{
+					digestPointer: '/repositoryDispatch/sha256',
+					pathPointer: '/repositoryDispatch/path'
+				},
+				{
+					digestPointer: '/sealedLauncher/bundle/sha256',
+					pathPointer: '/sealedLauncher/bundle/path'
+				},
+				{
+					digestPointer: '/sealedLauncher/sources/*/sha256',
+					pathPointer: '/sealedLauncher/sources/*/path'
+				},
+				{
+					digestPointer: '/skillContractSha256',
+					pathPointer: '/skillContractPath'
+				}
+			])
+		);
 	});
 
 	it('blocks every selected binary move without exactly one raw-file owner', async () => {
