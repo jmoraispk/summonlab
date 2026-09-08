@@ -312,6 +312,61 @@ describe('family-affinity source lineage resealing', () => {
 		]);
 	});
 
+	it('reseals generation-failure prompts without requiring a result document', async () => {
+		const targetPath =
+			'assets/enemies/experiments/family-affinity-v1/targets/elementals/elemental-spirit/fire/target-v2.json';
+		const assignmentPath =
+			'assets/enemies/experiments/family-affinity-v1/assignments/elementals/elemental-spirit/fire/assignment-v2.json';
+		const failurePath =
+			'assets/enemies/experiments/family-affinity-v1/generation-failures/elementals/fixture/fire/attempt-v2.json';
+		const sourceContents = await readFile(path.resolve(sourcePath), 'utf8');
+		const target = JSON.parse(await readFile(path.resolve(targetPath), 'utf8'));
+		target.sources.familyPacketSha256 = 'f'.repeat(64);
+		const assignment = JSON.parse(await readFile(path.resolve(assignmentPath), 'utf8'));
+		assignment.targetSha256 = familyAffinitySha256(target);
+		const stalePromptSha256 = familyAffinityPromptSha256(target, assignment);
+		const failure = {
+			schemaVersion: 'family-affinity-generation-failure-v1',
+			targetId: target.targetId,
+			producerRuns: [
+				{
+					canonicalPromptSha256: stalePromptSha256,
+					calls: [
+						{ kind: 'initial', promptSha256: stalePromptSha256 },
+						{ kind: 'correction', promptSha256: stalePromptSha256 }
+					]
+				}
+			]
+		};
+		const documents = [
+			{ path: targetPath, contents: `${JSON.stringify(target)}\n` },
+			{ path: assignmentPath, contents: `${JSON.stringify(assignment)}\n` },
+			{ path: failurePath, contents: `${JSON.stringify(failure)}\n` }
+		];
+
+		const changed = resealFamilyAffinitySourceLineageDocuments(
+			{ path: sourcePath, contents: sourceContents },
+			documents
+		);
+		const updated = new Map(
+			documents.map((document) => [document.path, JSON.parse(document.contents)])
+		);
+		for (const document of changed) updated.set(document.path, JSON.parse(document.contents));
+		const updatedTarget = updated.get(targetPath);
+		const updatedAssignment = updated.get(assignmentPath);
+		const updatedPromptSha256 = familyAffinityPromptSha256(updatedTarget, updatedAssignment);
+
+		expect(updated.get(failurePath).producerRuns).toEqual([
+			{
+				canonicalPromptSha256: updatedPromptSha256,
+				calls: [
+					{ kind: 'initial', promptSha256: updatedPromptSha256 },
+					{ kind: 'correction', promptSha256: updatedPromptSha256 }
+				]
+			}
+		]);
+	});
+
 	it('selects every active tracked family-affinity JSON lineage', () => {
 		expect(
 			selectFamilyAffinitySourceLineagePaths([

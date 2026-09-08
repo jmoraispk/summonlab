@@ -196,6 +196,51 @@ export function resealFamilyAffinitySourceLineageDocuments(
 			}
 		}
 		if (changed) continue;
+		for (const document of materialized) {
+			const value = document.value;
+			if (
+				value === null ||
+				typeof value !== 'object' ||
+				Array.isArray(value) ||
+				(value as Record<string, unknown>).schemaVersion !== 'family-affinity-generation-failure-v1'
+			)
+				continue;
+			const failure = value as Record<string, unknown>;
+			const targetId = failure.targetId;
+			const target = typeof targetId === 'string' ? targets.get(targetId) : undefined;
+			const assignment = typeof targetId === 'string' ? assignments.get(targetId) : undefined;
+			if (
+				!target ||
+				!assignment ||
+				(!target.document.dirty && !assignment.document.dirty) ||
+				!Array.isArray(failure.producerRuns)
+			)
+				continue;
+			const promptSha256 = familyAffinityPromptSha256(target.value, assignment.value);
+			for (const runValue of failure.producerRuns) {
+				if (runValue === null || typeof runValue !== 'object' || Array.isArray(runValue)) {
+					continue;
+				}
+				const run = runValue as Record<string, unknown>;
+				if (run.canonicalPromptSha256 !== promptSha256) {
+					run.canonicalPromptSha256 = promptSha256;
+					document.dirty = true;
+					changed = true;
+				}
+				if (!Array.isArray(run.calls)) continue;
+				for (const callValue of run.calls) {
+					if (callValue === null || typeof callValue !== 'object' || Array.isArray(callValue)) {
+						continue;
+					}
+					const call = callValue as Record<string, unknown>;
+					if (call.promptSha256 !== promptSha256) {
+						call.promptSha256 = promptSha256;
+						document.dirty = true;
+						changed = true;
+					}
+				}
+			}
+		}
 		const results = new Map<
 			string,
 			{ document: (typeof materialized)[number]; value: Record<string, unknown> }
@@ -239,33 +284,6 @@ export function resealFamilyAffinitySourceLineageDocuments(
 					if (typeof record[key] === 'string' && record[key] !== result.value[key]) {
 						record[key] = result.value[key];
 						bindingChanged = true;
-					}
-				}
-				if (
-					record.schemaVersion === 'family-affinity-generation-failure-v1' &&
-					typeof result.value.promptSha256 === 'string' &&
-					Array.isArray(record.producerRuns)
-				) {
-					for (const runValue of record.producerRuns) {
-						if (runValue === null || typeof runValue !== 'object' || Array.isArray(runValue)) {
-							continue;
-						}
-						const run = runValue as Record<string, unknown>;
-						if (run.canonicalPromptSha256 !== result.value.promptSha256) {
-							run.canonicalPromptSha256 = result.value.promptSha256;
-							bindingChanged = true;
-						}
-						if (!Array.isArray(run.calls)) continue;
-						for (const callValue of run.calls) {
-							if (callValue === null || typeof callValue !== 'object' || Array.isArray(callValue)) {
-								continue;
-							}
-							const call = callValue as Record<string, unknown>;
-							if (call.promptSha256 !== result.value.promptSha256) {
-								call.promptSha256 = result.value.promptSha256;
-								bindingChanged = true;
-							}
-						}
 					}
 				}
 			}
