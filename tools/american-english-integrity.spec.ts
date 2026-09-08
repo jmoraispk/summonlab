@@ -137,6 +137,65 @@ describe('canonical serializer characterization', () => {
 });
 
 describe('integrity owner successor planning', () => {
+	it('preserves a manifest-relative asset reference when the asset path spelling changes', async () => {
+		const experimentRoot = 'assets/heroes/experiments/relative-reference-v1';
+		const manifestPath = `${experimentRoot}/manifest.json`;
+		const retiredDescriptor = ['och', 're'].join('');
+		const sourceAssetPath = `${experimentRoot}/summon/${retiredDescriptor}-braid.png`;
+		const successorAssetPath = `${experimentRoot}/summon/ocher-braid.png`;
+		const assetBytes = Buffer.from('relative-reference-asset');
+		const assetSha256 = createHash('sha256').update(assetBytes).digest('hex');
+		const currentManifest = {
+			targets: [
+				{
+					summon: `summon/${retiredDescriptor}-braid.png`,
+					summonSha256: assetSha256
+				}
+			]
+		};
+		const projectedManifest = {
+			targets: [{ summon: 'summon/ocher-braid.png', summonSha256: assetSha256 }]
+		};
+		const report = await classifyIntegrityBindings(
+			{
+				entries: [
+					{
+						path: manifestPath,
+						bytes: Buffer.from(`${JSON.stringify(currentManifest)}\n`),
+						projectedBytes: Buffer.from(`${JSON.stringify(projectedManifest)}\n`),
+						binary: false
+					},
+					{
+						path: sourceAssetPath,
+						projectedPath: successorAssetPath,
+						bytes: assetBytes,
+						projectedBytes: assetBytes,
+						baselineBytes: assetBytes,
+						binary: true
+					}
+				]
+			},
+			{
+				textEdits: [{ path: manifestPath }],
+				pathMoves: [{ source: sourceAssetPath }]
+			},
+			undefined,
+			['ocher']
+		);
+
+		expect(report.problems).toEqual([]);
+		const manifestBytes = report.ownerPlans
+			.find(({ id }) => id === 'visual-production')
+			?.successorIntents.find(
+				({ path: successorPath }) => successorPath === manifestPath
+			)?.projectedBytes;
+		expect(manifestBytes).toBeDefined();
+		const manifest = JSON.parse(Buffer.from(manifestBytes!).toString('utf8')) as {
+			readonly targets: readonly { readonly summon: string }[];
+		};
+		expect(manifest.targets[0]?.summon).toBe('summon/ocher-braid.png');
+	});
+
 	it('registers every live digest pointer selected by the visual terminology slice', () => {
 		const visualPointers = [
 			'/approvedSourceContentHash',

@@ -1,4 +1,5 @@
 import { createHash } from 'node:crypto';
+import path from 'node:path';
 import { isDeepStrictEqual } from 'node:util';
 
 export type IntegrityBindingKind =
@@ -201,13 +202,17 @@ export async function planTopologicalIntegritySuccessors(
 			});
 			for (const binding of node.dependencyBindings ?? []) {
 				const source = completed.get(binding.sourcePath)!;
+				const previous = getJsonPointer(value, binding.jsonPointer);
 				const replacement =
 					binding.replacement === 'path'
-						? source.path
+						? typeof previous === 'string' &&
+							path.posix.normalize(path.posix.join(path.posix.dirname(node.path), previous)) ===
+								source.path
+							? previous
+							: source.path
 						: binding.replacement === 'raw-digest'
 							? source.rawDigest
 							: source.digest;
-				const previous = getJsonPointer(value, binding.jsonPointer);
 				value = setJsonPointer(value, binding.jsonPointer, replacement);
 				if (typeof previous === 'string') {
 					rawBytes = Buffer.from(
