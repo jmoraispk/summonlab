@@ -281,7 +281,7 @@ export async function extractReversalCutFrameLayer(
 			`<svg width="${WORKING_SIZE}" height="${WORKING_SIZE}" xmlns="http://www.w3.org/2000/svg"><rect width="100%" height="100%" fill="#000"/><polygon points="${polygon}" fill="#fff"/><polygon points="${crest}" fill="#000"/></svg>`
 		)
 	)
-		.greyscale()
+		.grayscale()
 		.raw()
 		.toBuffer();
 	for (let pixel = 0; pixel < WORKING_SIZE * WORKING_SIZE; pixel += 1) {

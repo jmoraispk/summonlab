@@ -73,7 +73,7 @@ function review(
 	const value = {
 		targetId: targetManifest.targetId,
 		candidateContentHash: HASH,
-		identifiedSpeciesId: input.correct === false ? 'grey-wolf' : targetManifest.speciesId,
+		identifiedSpeciesId: input.correct === false ? 'gray-wolf' : targetManifest.speciesId,
 		identifiedAffinity:
 			input.correct === false
 				? targetManifest.affinity === 'normal'

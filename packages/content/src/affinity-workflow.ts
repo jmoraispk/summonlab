@@ -9,10 +9,10 @@ export const ELEMENTAL_REGRESSION_VERSION = 'v2';
 export const CORRECTION_REGRESSION_VERSION = 'v2';
 
 const IMMUTABLE_SAFE_FRAME_V3_TARGET_IDS = new Set([
-	'affinity-workflow-v1-grey-wolf-wood',
-	'affinity-workflow-v1-grey-wolf-metal',
-	'affinity-workflow-v1-grey-wolf-water',
-	'affinity-workflow-v1-grey-wolf-wind',
+	'affinity-workflow-v1-gray-wolf-wood',
+	'affinity-workflow-v1-gray-wolf-metal',
+	'affinity-workflow-v1-gray-wolf-water',
+	'affinity-workflow-v1-gray-wolf-wind',
 	'affinity-workflow-v1-cave-bear-normal',
 	'affinity-workflow-v1-cave-bear-wood',
 	'affinity-workflow-v1-cave-bear-fire'
@@ -27,7 +27,7 @@ export type AffinityCohortId = (typeof AFFINITY_COHORT_IDS)[number];
 export const AFFINITY_SPECIES_IDS = [
 	'death-knight',
 	'elemental',
-	'grey-wolf',
+	'gray-wolf',
 	'cave-bear',
 	'goblin',
 	'tunnel-boar',
@@ -185,11 +185,11 @@ const REFERENCES = {
 		purpose:
 			'Exact Bound Vanguard headless shallow-concave chassis, proportions, planted stance, wedge forearms, and pale sternum core only; do not treat its neutral ceramic material as the affinity substance for non-Normal targets'
 	},
-	greyWolf: {
+	grayWolf: {
 		path: 'assets/enemies/review/beasts-v1.webp',
 		contentHash: 'd15b5b5e714076756e769ecdbb3b10c92bc9abf1e76bbf8094fd32537d47cc33',
 		purpose:
-			'First subject only: established Grey Wolf anatomy, coat, ground contact, and flanking silhouette; do not transfer the Dire Wolf, Cave Bear, or Tunnel Boar'
+			'First subject only: established Gray Wolf anatomy, coat, ground contact, and flanking silhouette; do not transfer the Dire Wolf, Cave Bear, or Tunnel Boar'
 	},
 	caveBear: {
 		path: 'assets/enemies/review/beasts-v1.webp',
@@ -275,8 +275,8 @@ export const AFFINITY_SPECIES = [
 		references: [REFERENCES.elementalChassis, REFERENCES.elemental, REFERENCES.packTwoStyle]
 	},
 	{
-		id: 'grey-wolf',
-		name: 'Grey Wolf',
+		id: 'gray-wolf',
+		name: 'Gray Wolf',
 		cohort: 'controlled',
 		constructionMode: 'organic-quadruped',
 		battlefieldDuty: 'flanking-predator',
@@ -288,7 +288,7 @@ export const AFFINITY_SPECIES = [
 		],
 		anatomyInvariants: ['canine anatomy', 'exactly four legs', 'credible ground contact'],
 		prohibitedTraits: ['humanoid armor', 'antlers', 'wings', 'dragon anatomy'],
-		references: [REFERENCES.greyWolf, REFERENCES.packTwoStyle]
+		references: [REFERENCES.grayWolf, REFERENCES.packTwoStyle]
 	},
 	{
 		id: 'cave-bear',
@@ -427,10 +427,10 @@ export const GOBLIN_ATTRIBUTE_OPTIONS = {
 	asymmetry: ['subtle-eye-height', 'crooked-smile', 'uneven-ears', 'off-center-nose', 'balanced'],
 	skinPalette: [
 		'moss-olive',
-		'lichen-grey',
+		'lichen-gray',
 		'warm-umber-green',
 		'desaturated-jade',
-		'ochre-olive',
+		'ocher-olive',
 		'cool-sage'
 	],
 	markings: ['none', 'freckles', 'ritual-dots', 'mud-stripes', 'ash-smudge', 'pale-mottling'],
@@ -658,7 +658,7 @@ export function createAffinityWorkflowTarget(
 	const legacyBasicAuthoring =
 		speciesId === 'death-knight' ||
 		speciesId === 'elemental' ||
-		(speciesId === 'grey-wolf' && affinityId === 'normal');
+		(speciesId === 'gray-wolf' && affinityId === 'normal');
 	const source = {
 		schemaVersion: 'image-production-target-v1',
 		targetId,
@@ -669,7 +669,7 @@ export function createAffinityWorkflowTarget(
 			speciesId === 'death-knight'
 				? 'canonical-v1'
 				: speciesId === 'elemental' ||
-					  (speciesId === 'grey-wolf' && ['normal', 'fire'].includes(affinityId))
+					  (speciesId === 'gray-wolf' && ['normal', 'fire'].includes(affinityId))
 					? 'safe-frame-v2'
 					: IMMUTABLE_SAFE_FRAME_V3_TARGET_IDS.has(targetId)
 						? 'safe-frame-v3'
@@ -1050,11 +1050,11 @@ const CORRECTION_SOURCE_REFERENCES = {
 		purpose:
 			'Normal Death Knight candidate is a negative contrast reference only: the corrected Metal construction must remain recognizably related while differing through structural forged anatomy, articulation, and metallic marrow'
 	},
-	greyWolfFire: {
-		path: 'assets/enemies/experiments/affinity-workflow-v1/candidates/grey-wolf/fire-v1.png',
+	grayWolfFire: {
+		path: 'assets/enemies/experiments/affinity-workflow-v1/candidates/gray-wolf/fire-v1.png',
 		contentHash: 'e845d07374a1d7709b520570f84c36cc441170012b57dc4c64808cea9243cfed',
 		purpose:
-			'Previous Fire Grey Wolf candidate supplies the retained wolf identity, fire integration, stance, and finish; reproduce that design through canonical manifest-bound prompt provenance rather than copying unrelated traits'
+			'Previous Fire Gray Wolf candidate supplies the retained wolf identity, fire integration, stance, and finish; reproduce that design through canonical manifest-bound prompt provenance rather than copying unrelated traits'
 	},
 	caveBearWood: {
 		path: 'assets/enemies/experiments/affinity-workflow-v1/candidates/cave-bear/wood-v1.png',
@@ -1077,7 +1077,7 @@ const CORRECTION_SOURCE_REFERENCES = {
 } as const satisfies Record<string, ImageProductionReference>;
 
 type CorrectionRegressionConfig = Readonly<{
-	speciesId: 'death-knight' | 'grey-wolf' | 'cave-bear' | 'elemental';
+	speciesId: 'death-knight' | 'gray-wolf' | 'cave-bear' | 'elemental';
 	affinityId: 'metal' | 'fire' | 'wood' | 'wind';
 	version: 'v2' | 'v3';
 	sourceTarget: AffinityWorkflowTarget;
@@ -1121,14 +1121,14 @@ const CORRECTION_REGRESSION_CONFIGS = [
 		}
 	},
 	{
-		speciesId: 'grey-wolf',
+		speciesId: 'gray-wolf',
 		affinityId: 'fire',
 		version: CORRECTION_REGRESSION_VERSION,
-		sourceTarget: createAffinityWorkflowTarget('grey-wolf', 'fire'),
-		references: [CORRECTION_SOURCE_REFERENCES.greyWolfFire, REFERENCES.greyWolf],
+		sourceTarget: createAffinityWorkflowTarget('gray-wolf', 'fire'),
+		references: [CORRECTION_SOURCE_REFERENCES.grayWolfFire, REFERENCES.grayWolf],
 		prohibitedTraits: ['uncanonical prompt or incomplete reference provenance'],
 		composition:
-			'Exactly one full-body Fire Grey Wolf in the approved flanking stance; nose, tail, paws, flame tips, smoke, and heat distortion remain centered inside the inner eighty-four percent of the fully finished canvas.',
+			'Exactly one full-body Fire Gray Wolf in the approved flanking stance; nose, tail, paws, flame tips, smoke, and heat distortion remain centered inside the inner eighty-four percent of the fully finished canvas.',
 		correctionCriterion: {
 			criterionId: 'canonical-provenance-rerun',
 			description:

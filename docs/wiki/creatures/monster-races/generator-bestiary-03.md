@@ -13,14 +13,14 @@ before promoting an entry to canon.
 
 **Visual constants**
 - **Silhouette:** Humanoid torso, large wings replacing or extending the arms, backward-jointed bird legs with huge talons, feathered crest on the head.
-- **Palette:** Slate grey, brown, dirty cream at low tiers, moving to vivid iridescent blue-green, storm purple and white at high tiers.
+- **Palette:** Slate gray, brown, dirty cream at low tiers, moving to vivid iridescent blue-green, storm purple and white at high tiers.
 - **Material:** Feather, hollow bone, sinew, raw hide, gold.
 - **Ornamentation:** Bone jewelry, braided hair, ankle rings, trophy feathers taken from rivals.
 - **Escalation axis:** Feather quality and talon size.
 
 | Tier | Name | Visual |
 |------|------|--------|
-| T1 | Screecher | Scraggly and half-molted, patchy grey feathers, thin claws, wild matted hair. |
+| T1 | Screecher | Scraggly and half-molted, patchy gray feathers, thin claws, wild matted hair. |
 | T2 | Talon | Full brown plumage, hooked talons, bone bead necklaces, spread wings held wide. |
 | T3 | Skyrender | Vivid iridescent feathers, a raised feathered crest, spear-length claws, wing tips banded in color. |
 | T4 | Matriarch | Ceremonial plumage worn like a cloak, gold ankle rings above the talons, elaborate crest, hair braided with feathers. |
@@ -70,7 +70,7 @@ before promoting an entry to canon.
 
 **Visual constants**
 - **Silhouette:** Upright reptile, forward-leaning with a long counterbalancing tail, crested head, dorsal ridge.
-- **Palette:** Swamp green, mud brown, moss, ochre, with warning-bright throat and crest colors (orange, red, yellow).
+- **Palette:** Swamp green, mud brown, moss, ocher, with warning-bright throat and crest colors (orange, red, yellow).
 - **Material:** Scale, bone, obsidian, hide, river reed, mud, feather.
 - **Ornamentation:** Tribal paint, bone piercings, trophy skulls, woven reed shields, feather headdress.
 - **Escalation axis:** Crest height, dorsal spines, and natural plating.

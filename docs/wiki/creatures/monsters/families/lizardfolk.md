@@ -16,7 +16,7 @@ Wiki ID: `monster-family.lizardfolk`
 ## Visual constants
 
 - An upright forward-leaning reptilian body keeps clawed hands and feet, a long counterbalancing tail, a crocodilian or iguana-like head, and an escalating dorsal ridge.
-- Swamp green, mud brown, moss, and ochre are punctuated by warning-bright orange, red, or yellow throat and crest colors.
+- Swamp green, mud brown, moss, and ocher are punctuated by warning-bright orange, red, or yellow throat and crest colors.
 - Scale, bone, obsidian, hide, river reed, ordinary mud, and feather remain separately legible materials.
 - Paint, bone piercings, trophy skulls, woven shields, and feather headdresses accumulate without obscuring natural plating.
 - Tail angle, crest posture, dorsal plates, hands, and planted feet preserve the direction and recovery of each attack.

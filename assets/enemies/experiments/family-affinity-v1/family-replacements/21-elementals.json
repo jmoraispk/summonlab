@@ -17,7 +17,7 @@
 	"affinityThemes": {
 		"normal": {
 			"constructionDimensions": [
-				"Unaffiliated forms use desaturated silver-grey, softly translucent neutral spell-matter folded inward around a matte charcoal binding seed or core.",
+				"Unaffiliated forms use desaturated silver-gray, softly translucent neutral spell-matter folded inward around a matte charcoal binding seed or core.",
 				"Motion remains smooth, quiet, and self-contained, leaving only a brief colorless distortion with no elemental particles, status cue, or environmental residue."
 			],
 			"counterplaySignal": "The charcoal seed, channel gap, core ring, mantle shutter, or sovereign facet dulls after the form commits to its family mechanic.",
@@ -33,15 +33,15 @@
 		},
 		"earth": {
 			"constructionDimensions": [
-				"Ochre-brown and umber earth magic forms the complete body from circulating soil, clay, silt, and fine mineral grains held in the family's flame-like contours.",
-				"Motion compresses, folds, and settles downward; load-bearing mineral seams and restrained pale-ochre faults articulate channels, mantle sections, and core facets without turning the form into a Golem."
+				"Ocher-brown and umber earth magic forms the complete body from circulating soil, clay, silt, and fine mineral grains held in the family's flame-like contours.",
+				"Motion compresses, folds, and settles downward; load-bearing mineral seams and restrained pale-ocher faults articulate channels, mantle sections, and core facets without turning the form into a Golem."
 			],
 			"counterplaySignal": "A loaded seam compacts, hairline faults spread, and the seed, channel gap, mantle shutter, or sovereign facet loosens after the committed action.",
 			"forbidden": ["Red or yellow combustion", "Embers, smoke, char, lava, or molten rock", "A solid rock projectile or ordinary masonry body", "Brown palette without earthen material behavior"]
 		},
 		"wind": {
 			"constructionDimensions": [
-				"Pale green-grey compressed air, translucent pressure sheets, directional ribbons, and thin shear edges form the complete body around a clear still core.",
+				"Pale green-gray compressed air, translucent pressure sheets, directional ribbons, and thin shear edges form the complete body around a clear still core.",
 				"Motion stretches laterally and spirals through aligned channels, vanes, mantle planes, and facets while visible debris vectors remain sparse and local."
 			],
 			"counterplaySignal": "The still core or channel gap becomes sharply clear when the surrounding pressure body commits to a drift, sweep, convergence, or arena pattern.",

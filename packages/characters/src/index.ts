@@ -997,7 +997,7 @@ function generateManifest(recipe: CharacterGenerationRecipe): CharacterManifest 
 						'dark brown',
 						'warm brown',
 						'hazel',
-						'grey',
+						'gray',
 						'green',
 						'amber'
 					] as const),

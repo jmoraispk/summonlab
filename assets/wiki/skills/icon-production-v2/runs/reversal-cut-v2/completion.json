@@ -4,7 +4,7 @@
 	"completedAt": "2026-09-04T18:42:00.000Z",
 	"manifest": {
 		"path": "assets/wiki/skills/icon-production-v2/runs/reversal-cut-v2/manifest.json",
-		"contentHash": "ed1b9e42b0655280161155c0ce025e83f46f14e977769be2180ede2fe649b9a8"
+		"contentHash": "4cc752d8a25ebbd0ef35098ba329c0db460f9e298f1a5ac103bc8dd0742e9bcf"
 	},
 	"target": {
 		"path": "assets/wiki/skills/icon-production-v1/targets/calibration/blade-guard-flow-reversal-cut-v2.json",

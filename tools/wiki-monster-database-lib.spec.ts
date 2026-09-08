@@ -363,10 +363,10 @@ describe('canonical monster wiki database', () => {
 			rationale: sourceRationaleByCurrentClassId.get('hill-giant')
 		});
 		expect(
-			first.reconciliation.entries.find(({ currentClassId }) => currentClassId === 'grey-wolf')
+			first.reconciliation.entries.find(({ currentClassId }) => currentClassId === 'gray-wolf')
 		).toMatchObject({
 			disposition: 'fauna',
-			rationale: sourceRationaleByCurrentClassId.get('grey-wolf')
+			rationale: sourceRationaleByCurrentClassId.get('gray-wolf')
 		});
 		expect(first.reconciliation.entries.flatMap(({ references }) => references)).toHaveLength(160);
 		expect(
@@ -490,7 +490,7 @@ describe('canonical monster wiki database', () => {
 		const entries = [
 			{ wikiId: 'creatures.monster-database' },
 			{ wikiId: 'monster.goblin-runt' },
-			{ wikiId: 'monster.grey-wolf' },
+			{ wikiId: 'monster.gray-wolf' },
 			{ wikiId: 'monster.hand-authored-encounter' },
 			{ wikiId: 'system.visuals' }
 		];
@@ -591,9 +591,9 @@ describe('canonical monster wiki database', () => {
 
 	it('detects a managed extra old page independently', async () => {
 		const { database, stored } = await freshStoredOutputs();
-		stored.existingFileNames = [...stored.existingFileNames, 'grey-wolf.md'];
+		stored.existingFileNames = [...stored.existingFileNames, 'gray-wolf.md'];
 		expect(() => assertGeneratedMonsterWikiFreshness(database, stored)).toThrow(
-			/managed legacy.*grey-wolf/iu
+			/managed legacy.*gray-wolf/iu
 		);
 	});
 
@@ -744,7 +744,7 @@ describe('canonical monster wiki database', () => {
 		expect(
 			routes.find(({ currentClassId }) => currentClassId === 'death-knight')?.destination
 		).toBe('/wiki/creatures/monsters/reconciliation');
-		expect(routes.find(({ currentClassId }) => currentClassId === 'grey-wolf')?.destination).toBe(
+		expect(routes.find(({ currentClassId }) => currentClassId === 'gray-wolf')?.destination).toBe(
 			'/wiki/creatures/monsters/reconciliation'
 		);
 		for (const route of routes) {

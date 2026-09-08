@@ -213,7 +213,7 @@ const PRESENTATION_CONTRACT = {
 const DERIVED_APPROVED_SIGNAL_IDS = new Set([
 	'cave-bear',
 	'dire-wolf',
-	'grey-wolf',
+	'gray-wolf',
 	'tunnel-boar',
 	'crystal-guardian',
 	'iron-sentinel',
@@ -268,7 +268,7 @@ const DERIVED_APPROVED_SIGNALS: Readonly<
 		counterplay: 'guard timing, weapon handling, target focus',
 		rosterLines: 'lines 6-12'
 	},
-	'grey-wolf': {
+	'gray-wolf': {
 		telegraph: 'shoulder/gaze shifts to flank before trip',
 		counterplay: 'footwork, perception, ally protection',
 		rosterLines: 'lines 24-30'

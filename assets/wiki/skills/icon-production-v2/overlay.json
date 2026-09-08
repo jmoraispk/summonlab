@@ -7,11 +7,11 @@
 		},
 		"visualSpecs": {
 			"path": "assets/wiki/skills/icon-production-v1/visual-specs.json",
-			"contentHash": "15dbb8b5d8cd5c83bec18d22015b054f2b0a0938392ec247b411d5d744f9f022"
+			"contentHash": "1ec92e6597d2efa07a8df96293dd5365c0ba5583af8c66aff4b86c3d674f97e1"
 		},
 		"catalog": {
 			"path": "assets/wiki/skills/icon-production-v1/catalog.json",
-			"contentHash": "c3505a68a38909927127e53233e12adbebfc1f65c98c7bd6fb449f13986c92a1"
+			"contentHash": "bdcaf53dc0f846cdab7b5b62c9c48e2661f69a2339892447fd5ec9cf1ec36a6a"
 		}
 	},
 	"motifSource": {

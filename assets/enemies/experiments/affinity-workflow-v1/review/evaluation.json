@@ -161,10 +161,10 @@
 			"resolution": "Added semantic-v2 gates for manifest fidelity, real multi-dimensional affinity construction or unaffiliated Normal construction, and a visibly readable counterplay cue. Completed pilot targets retain basic-v1 for immutable provenance."
 		},
 		{
-			"failureId": "grey-wolf-normal-empty-provider-output",
-			"targetId": "affinity-workflow-v1-grey-wolf-normal",
+			"failureId": "gray-wolf-normal-empty-provider-output",
+			"targetId": "affinity-workflow-v1-gray-wolf-normal",
 			"layer": "generator-variance",
-			"description": "The first Grey Wolf Normal generation returned no bindable image payload and consumed the sole retry.",
+			"description": "The first Gray Wolf Normal generation returned no bindable image payload and consumed the sole retry.",
 			"resolution": "The second call returned a verifiable candidate; retain the provider-failure attempt as evidence and do not generalize a new visual rule from one empty response."
 		},
 		{
@@ -182,11 +182,11 @@
 			"resolution": "Use three image workers as the safe ceiling in this environment. Run 8-, 12-, and 16-worker stages only in a newly provisioned task that exposes those slots; do not infer capacity from configuration alone."
 		},
 		{
-			"failureId": "grey-wolf-fire-prompt-provenance-v1",
-			"targetId": "affinity-workflow-v1-grey-wolf-fire",
+			"failureId": "gray-wolf-fire-prompt-provenance-v1",
+			"targetId": "affinity-workflow-v1-gray-wolf-fire",
 			"layer": "execution-contract",
-			"description": "The visually strong Fire Grey Wolf v1 remained revise because its submitted first prompt did not match the immutable canonical prompt bytes.",
-			"resolution": "The versioned safe-frame-v4 semantic-v2 Fire Grey Wolf rerun passed on its first attempt with exact prompt and reference provenance."
+			"description": "The visually strong Fire Gray Wolf v1 remained revise because its submitted first prompt did not match the immutable canonical prompt bytes.",
+			"resolution": "The versioned safe-frame-v4 semantic-v2 Fire Gray Wolf rerun passed on its first attempt with exact prompt and reference provenance."
 		},
 		{
 			"failureId": "elemental-fire-safe-margin-v2",
@@ -209,9 +209,9 @@
 		"Queue delay is unknown because dispatch and provider-queue timestamps are not separately recorded. Effective speedup is the observed summed-job-time to wave-wall-time ratio, not a causal serial-control benchmark.",
 		"P90 and P95 remain null at these sample sizes. Candidate rates are producer-authoring outcomes; blind human recognition and approval remain pending.",
 		"Rejected intermediate images retain prompt, source identifier, timing, and findings but not byte-level persistence receipts; complete provenance currently refers to selected retained candidates.",
-		"Safe-frame-v2 produced first-attempt framing passes for five of six Elementals; Fire still required one correction for a top-edge flame wake and head-like chassis. Grey Wolf Normal used its retry for an empty provider response rather than framing.",
+		"Safe-frame-v2 produced first-attempt framing passes for five of six Elementals; Fire still required one correction for a top-edge flame wake and head-like chassis. Gray Wolf Normal used its retry for an empty provider response rather than framing.",
 		"The six-target semantic Elemental regression ran at three effective workers in two scheduler waves: five producer candidates, one revise, full provenance, no throttle, timeout, collision, or integration error. The final v4 Bear wave produced two first-attempt candidates and one bounded revise with the same workflow integrity.",
 		"The controlled matrix is complete at 21 producer candidates and 3 revise results, but only 10 of 24 were first-attempt candidates versus the plan threshold of 20. Human blind species/affinity recognition is still zero because no human review has been recorded, so the breadth release gate remains closed.",
-		"The six-target final correction regression completed with four producer candidates and two revise outcomes across ten model calls, 964793 ms of summed audited job time, zero path conflicts, and complete selected-output provenance. Rejected intermediate images retain their prompt, provider source identifier, timing, and findings but not byte-level persistence receipts. Fire Grey Wolf v2, Wood Cave Bear v2, Fire Elemental v3, and Metal Death Knight v3 are candidates. Metal Death Knight v2 is retained as framing-revision evidence, and Wind Cave Bear v2 remains revise after repeated far-hind-paw occlusion."
+		"The six-target final correction regression completed with four producer candidates and two revise outcomes across ten model calls, 964793 ms of summed audited job time, zero path conflicts, and complete selected-output provenance. Rejected intermediate images retain their prompt, provider source identifier, timing, and findings but not byte-level persistence receipts. Fire Gray Wolf v2, Wood Cave Bear v2, Fire Elemental v3, and Metal Death Knight v3 are candidates. Metal Death Knight v2 is retained as framing-revision evidence, and Wind Cave Bear v2 remains revise after repeated far-hind-paw occlusion."
 	]
 }

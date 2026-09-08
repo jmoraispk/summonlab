@@ -53,7 +53,7 @@ Interrupt the inhale or cross through the temporarily stationary wing before the
 
 ### Lower-form interaction
 
-Grey Wolves gain longer flank probes and Dire Wolves immediately swap pursuit sides when their wing is called.
+Gray Wolves gain longer flank probes and Dire Wolves immediately swap pursuit sides when their wing is called.
 
 ## Five-coordinate approved runtime matrix
 

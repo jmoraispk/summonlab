@@ -34,8 +34,8 @@ Four base affinities. The set is chosen for legibility over tradition: each one 
 | Affinity | Color | Character | Status | Behaviour |
 |---|---|---|---|---|
 | **Fire** | Vermilion | Expansion, aggression, consumption | **Burn** | Damage over time; intensity stacks rather than duration |
-| **Earth** | Ochre-brown | Stability, endurance, weight | **Weight** | Reduces poise and action speed; increases stagger taken |
-| **Wind** | Pale green-grey | Motion, severance, displacement | **Lacerate** | Cutting damage scaling with the target's movement |
+| **Earth** | Ocher-brown | Stability, endurance, weight | **Weight** | Reduces poise and action speed; increases stagger taken |
+| **Wind** | Pale green-gray | Motion, severance, displacement | **Lacerate** | Cutting damage scaling with the target's movement |
 | **Water** | Deep blue | Flow, depth, patience | **Chill** | Reduces attack speed and mana regeneration; escalates toward torpor |
 
 **On Chill.** Chill's escalation endpoint is *torpor* — action speed floored and mana regeneration halted — and not freezing. Freezing belongs to Ice, which is Water's child. A parent affinity should not pre-empt the signature effect of the dual it produces.
@@ -174,9 +174,9 @@ Produced by two affinities standing in an overcoming relationship. Something is 
 
 | Dual | From | Color | Character | Status |
 |---|---|---|---|---|
-| **Mist** | Water ✕ Fire | Near-white grey | Scalding vapor, obscurement, concealment | **Shroud** — accuracy loss; breaks target lock |
+| **Mist** | Water ✕ Fire | Near-white gray | Scalding vapor, obscurement, concealment | **Shroud** — accuracy loss; breaks target lock |
 | **Lightning** | Fire ✕ Wind | Gold-violet | Discharge, instantaneity, the storm's own convection | **Shock** — interrupts casts; chains between nearby targets |
-| **Sand** | Wind ✕ Earth | Tan-ochre | Erosion, abrasion, the scouring storm | **Abrade** — armor shred plus blind |
+| **Sand** | Wind ✕ Earth | Tan-ocher | Erosion, abrasion, the scouring storm | **Abrade** — armor shred plus blind |
 | **Rot** | Earth ✕ Water | Sickly green | Decay, disease, waterlogged ground | **Decay** — stacking degeneration that ignores armor |
 
 ### Materials — from neutral pairs

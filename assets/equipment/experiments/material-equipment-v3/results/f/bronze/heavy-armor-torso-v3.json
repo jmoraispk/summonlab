@@ -9,7 +9,7 @@
 	"completedAt": "2026-09-03T17:28:32.833Z",
 	"provider": "OpenAI image generation",
 	"model": "gpt-imagegen-2.0",
-	"promptSha256": "b897da4537e19f3aea787ad76659edd2d7eada08040e17517741b7ce8ebf4b0f",
+	"promptSha256": "a16fd71762681a652470b94a4852393dc067bada4556f5e9b5ce06ba42cb8d61",
 	"references": [
 		{
 			"path": "assets/equipment/experiments/rank-first-calibration-2026-09-02/heavy-armor-metal-ranks-v1.png",

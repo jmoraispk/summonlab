@@ -57,17 +57,17 @@
   "forms": [
     {
       "tier": "T1",
-      "formId": "wolf-grey-wolf",
-      "displayName": "Grey Wolf",
+      "formId": "wolf-gray-wolf",
+      "displayName": "Gray Wolf",
       "primaryArchetype": "Flank-Probe Initiate",
       "battlefieldDuty": "Circle toward an exposed side and commit to one tripping bite when the target turns away.",
       "teachingGoal": "Teach players to track facing and deny a simple flank before learning full pack coordination.",
-      "signatureMechanic": "Cross-Step Trip: the Grey Wolf crosses its outside forepaw inward before lunging at the target's rear leg.",
+      "signatureMechanic": "Cross-Step Trip: the Gray Wolf crosses its outside forepaw inward before lunging at the target's rear leg.",
       "telegraph": "Its shoulders drop and the outside forepaw crosses inward while its gaze fixes on the exposed leg.",
       "counterplay": "Face the Wolf or step across its approach, then punish the missed bite during the low recovery.",
-      "visualDelta": "Lean ordinary wolf with a grey coat, long legs, intact ears, light rib visibility, and no equipment.",
+      "visualDelta": "Lean ordinary wolf with a gray coat, long legs, intact ears, light rib visibility, and no equipment.",
       "lowerFormInteraction": null,
-      "sourceReferences": ["grey-wolf", "Owner-approved fauna expansion"]
+      "sourceReferences": ["gray-wolf", "Owner-approved fauna expansion"]
     },
     {
       "tier": "T2",
@@ -80,7 +80,7 @@
       "telegraph": "Its head flattens beside the shoulder as the partner visibly widens formation.",
       "counterplay": "Break their angle with terrain or stagger the committed biter before the partner completes the swap.",
       "visualDelta": "Heavier chest and jaws, darker coarse coat, old flank scars, and a lower pursuit posture while remaining fully lupine.",
-      "lowerFormInteraction": "Grey Wolves probe the opposite flank and create the turn that lets the Dire Wolf claim the rear quarter.",
+      "lowerFormInteraction": "Gray Wolves probe the opposite flank and create the turn that lets the Dire Wolf claim the rear quarter.",
       "sourceReferences": ["dire-wolf", "Owner-approved fauna expansion"]
     },
     {
@@ -94,7 +94,7 @@
       "telegraph": "Its pale throat ruff expands and its muzzle points directly toward the wing that will advance.",
       "counterplay": "Interrupt the inhale or cross through the temporarily stationary wing before the advancing side closes.",
       "visualDelta": "Tall narrow-chested wolf with a large pale throat ruff, deep rib cage, long muzzle, and a visibly working throat cavity.",
-      "lowerFormInteraction": "Grey Wolves gain longer flank probes and Dire Wolves immediately swap pursuit sides when their wing is called.",
+      "lowerFormInteraction": "Gray Wolves gain longer flank probes and Dire Wolves immediately swap pursuit sides when their wing is called.",
       "sourceReferences": ["Owner-approved fauna expansion"]
     },
     {
@@ -108,7 +108,7 @@
       "telegraph": "Its tail locks level, nose paints a visible scent line, and one foreleg braces toward the marked target.",
       "counterplay": "Cross strong terrain to break the scent line or bait the intercept away before attacking the lesser Wolves.",
       "visualDelta": "Broad mature wolf with a torn ear, deep neck mantle, dominant upright posture, and accumulated scars rather than armor.",
-      "lowerFormInteraction": "It intercepts for Grey Wolves, completes Dire Wolf pursuit swaps, and changes wings on the Howler's cue.",
+      "lowerFormInteraction": "It intercepts for Gray Wolves, completes Dire Wolf pursuit swaps, and changes wings on the Howler's cue.",
       "sourceReferences": ["Owner-approved fauna expansion"]
     },
     {
@@ -118,7 +118,7 @@
       "primaryArchetype": "Hunt-Circle Sovereign",
       "battlefieldDuty": "Tighten an arena-scale hunt circle and assign every lower Wolf form to a readable breach point.",
       "teachingGoal": "Test facing, pursuit swaps, howl direction, and commander separation as one coordinated pack encounter.",
-      "signatureMechanic": "Closing Hunt: four breach points contract in sequence while the Greatwolf assigns Grey Wolves to probe, Dire Wolves to pin, the Howler to change tempo, and the Alpha to close the weakest exit.",
+      "signatureMechanic": "Closing Hunt: four breach points contract in sequence while the Greatwolf assigns Gray Wolves to probe, Dire Wolves to pin, the Howler to change tempo, and the Alpha to close the weakest exit.",
       "telegraph": "Hackles rise in sequence around the circle and the Greatwolf's broken upper canine points toward the next closing breach.",
       "counterplay": "Defeat or displace the assigned lower form and escape through its opening before the Greatwolf commits to that breach.",
       "visualDelta": "Monumental but anatomical wolf with a deep mane, long scarred muzzle, distinctive broken upper canine, and arena-command posture.",

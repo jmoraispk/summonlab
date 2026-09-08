@@ -12,7 +12,7 @@ Rank identity:
 gothic prestige silhouette with elegant arcs and a forged central crest; no dragon.
 
 No-affinity material language:
-- Dormant charcoal iron, neutral grey steel, and restrained antique-gold edge work only.
+- Dormant charcoal iron, neutral gray steel, and restrained antique-gold edge work only.
 - No gemstone, crystal, sapphire, blue or colored enamel, colored eye, magical emission, breath light, or elemental cue.
 - Dragon eyes, when present, are dark charcoal with only tiny ivory-white or pale-steel reflections and no emission.
 - Rarity grows through silhouette, relief depth, scale density, wing mass, crown structure, and metal polish—not affinity color.
@@ -32,7 +32,7 @@ Integrated stars:
 - Stars appear nowhere else and never change color.
 
 Style:
-Premium cinematic fantasy-game frame concept art, symmetrical polished 3D forged metalwork, crisp silhouette, realistic charcoal iron / grey steel / antique gold separation, matte low-emission response, clean studio lighting, high detail, and a broad empty opening.
+Premium cinematic fantasy-game frame concept art, symmetrical polished 3D forged metalwork, crisp silhouette, realistic charcoal iron / gray steel / antique gold separation, matte low-emission response, clean studio lighting, high detail, and a broad empty opening.
 
 Avoid:
 multiple frames, enlarged crop, gems, crystals, blue, cyan, sapphire, colored eye glow, colored enamel, affinity effects, independent or floating stars, incorrect star count, different star shapes, label, text, hero, scenery, dark hero opening, horizontal sprawl, more than 20% family opening-width variation, open mouths before rank 7, closed mouths at rank 7, perspective, crop, logo, watermark, browser chrome, or the word "master".

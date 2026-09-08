@@ -15,9 +15,9 @@
 			"candidatePath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-bronze-heavy-armor-legs-v3/attempt-2/candidate.png",
 			"candidateSha256": "32279610b7b21def8a709097d8d22a2706f9bb3e526d2f14a4d180f236ded2a3",
 			"assignmentPath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-bronze-heavy-armor-legs-v3/attempt-2/assignment.json",
-			"assignmentSha256": "980d3f0dbd45b315bf6bccdc2d7d1d24c1b8005733213794c1303f378de6e143",
+			"assignmentSha256": "939f4522cf9f2b9d05ee618cad6befebab17a4542fdc55e99176e62642b59d96",
 			"resultPath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-bronze-heavy-armor-legs-v3/attempt-2/result.json",
-			"resultSha256": "cf9dea17dd06a6ea17d799f12e3e47eb645a3ae85710a790d5f487fa63b9a33f",
+			"resultSha256": "f23bf188ac959f346efa193f61c85828fa5f3bff780eddb59b16aa3e766f5c67",
 			"reason": "class-rule-violation: Render only the Bronze Legs slot: belt, fauld or tassets, hip, thigh, and knee protection. Remove all boots, shoes, sabatons, greaves that belong to footwear, and any detached extra item; stop cleanly above the Boots slot."
 		},
 		{

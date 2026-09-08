@@ -315,7 +315,7 @@ Copy fidelity and the number of simultaneous borrowed identities advance from bl
 
 Opportunistic flanking becomes alternating pursuit, directional pack timing, marked-prey command, and finally an arena-scale hunt circle controlled by an apex Greatwolf.
 
-- **T1:** [Grey Wolf](wolf-grey-wolf.md) — Flank-Probe Initiate
+- **T1:** [Gray Wolf](wolf-gray-wolf.md) — Flank-Probe Initiate
 - **T2:** [Dire Wolf](wolf-dire-wolf.md) — Hamstring Pursuer
 - **T3:** [Howler](wolf-howler.md) — Pack-Tempo Specialist
 - **T4:** [Pack Alpha](wolf-pack-alpha.md) — Prey-Marking Champion

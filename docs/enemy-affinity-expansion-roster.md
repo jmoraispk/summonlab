@@ -10,7 +10,7 @@ Date: **2026-08-29**
 The enemy archive contains 40 canonical archetypes across 10 families. Six archetypes now link
 directly to complete Normal, Wood, Fire, Metal, Water, and Wind image sets:
 
-- Grey Wolf
+- Gray Wolf
 - Tunnel Boar
 - Cave Bear
 - Death Knight
@@ -37,7 +37,7 @@ pending. The interactive review page is `/forge/enemies/affinity-expansion`.
 | 2 | Goblin Archer | Goblinoid warband | Goblin family pilot |
 | 3 | Goblin Hexweaver | Goblinoid warband | Goblin family pilot |
 | 4 | Goblin Chieftain | Goblinoid warband | Goblin family pilot |
-| 5 | Dire Wolf | Tower beasts | Grey Wolf quadruped grammar |
+| 5 | Dire Wolf | Tower beasts | Gray Wolf quadruped grammar |
 | 6 | Ember Wisp | Elemental manifestations | Bound Vanguard material grammar; new airborne chassis |
 | 7 | Stone Breaker | Elemental manifestations | Bound Vanguard material grammar; existing Stone Breaker anchor |
 | 8 | Storm Stalker | Elemental manifestations | Bound Vanguard material grammar; new quadruped chassis |

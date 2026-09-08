@@ -27,13 +27,13 @@ Shared visual constants and the complete T1–T5 comparison live on the [Doppelg
 
 **Escalation axis:** Copy fidelity and the number of simultaneous borrowed identities advance from blank smooth flesh to a body-wide sovereign mask procession.
 
-**This form's visual delta:** Half-copied form with one unformed grey arm and a nearly right face blurred at the mouth.
+**This form's visual delta:** Half-copied form with one unformed gray arm and a nearly right face blurred at the mouth.
 
 ## Combat reading
 
 ### Battlefield duty
 
-Repeat copied weapon pressure from a partial disguise whose one grey arm cannot complete the same motion.
+Repeat copied weapon pressure from a partial disguise whose one gray arm cannot complete the same motion.
 
 ### Teaching goal
 
@@ -41,7 +41,7 @@ Teach that the blurred mouth announces the copied strike while the unfinished ar
 
 ### Signature mechanic
 
-Half-Learned Cut: the finished side copies a simple cut as the unformed grey arm attempts and fails to mirror it.
+Half-Learned Cut: the finished side copies a simple cut as the unformed gray arm attempts and fails to mirror it.
 
 ### Telegraph
 

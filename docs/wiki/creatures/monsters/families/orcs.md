@@ -16,7 +16,7 @@ Wiki ID: `monster-family.orcs`
 ## Visual constants
 
 - Tall, broad, top-heavy humanoid silhouette with a thick neck, wide shoulders, heavy jaw, forward lean, and lower tusks rising past the lip.
-- Grey-green or ash-grey skin is framed by blood red, black, dark iron, bone white, and readable red or white war paint.
+- Gray-green or ash-gray skin is framed by blood red, black, dark iron, bone white, and readable red or white war paint.
 - Boiled leather, fur, riveted iron, bone, and crude steel remain thick, weighty, and practical rather than elegant or finely matched.
 - Scars, paint, tusk rings, piercings, skull trophies, spiked pauldrons, and clan totems communicate earned encounter rank without becoming a biological claim.
 - Tusk length, muscle mass, posture, and carried trophies escalate together, but every form retains committed heavy motion and exposed recovery as the family combat grammar.

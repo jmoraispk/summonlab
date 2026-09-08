@@ -9,7 +9,7 @@
 	"completedAt": "2026-09-03T13:23:45.504Z",
 	"provider": "OpenAI image generation",
 	"model": "gpt-imagegen-2.0",
-	"promptSha256": "abc1d9b6f5b3b95f0a2172e91851e848014300b0f5cc50a365e3d719aaea5cb9",
+	"promptSha256": "4f0771812114b02eb9d1613b983659726543834f2978f59b713a6df002115aba",
 	"references": [
 		{
 			"path": "assets/equipment/experiments/rank-first-calibration-2026-09-02/axe-metal-ranks-v1.png",

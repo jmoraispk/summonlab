@@ -9,11 +9,11 @@ before promoting an entry to canon.
 
 ## 1. Goblins
 
-**What they are.** Small, wiry humanoids roughly the size of a child, with green or grey skin, oversized pointed ears, hooked noses and mouths crowded with crooked teeth. They live in filthy warrens, caves and sewers in large numbers, and are individually weak but overwhelming in a mob. Goblins build nothing of their own — every tool, weapon and scrap of armor they carry was stolen, scavenged from a battlefield, or hammered together from broken pieces of somebody else's property. Their culture is a pecking order enforced by violence, and the biggest, luckiest and most heavily looted goblin rules the rest.
+**What they are.** Small, wiry humanoids roughly the size of a child, with green or gray skin, oversized pointed ears, hooked noses and mouths crowded with crooked teeth. They live in filthy warrens, caves and sewers in large numbers, and are individually weak but overwhelming in a mob. Goblins build nothing of their own — every tool, weapon and scrap of armor they carry was stolen, scavenged from a battlefield, or hammered together from broken pieces of somebody else's property. Their culture is a pecking order enforced by violence, and the biggest, luckiest and most heavily looted goblin rules the rest.
 
 **Visual constants**
 - **Silhouette:** Short, hunched, long-armed, oversized head and ears, disproportionately large hands and feet.
-- **Palette:** Sickly green and grey-green skin, muddy browns, rust-orange, dull iron. Accents of stolen gold.
+- **Palette:** Sickly green and gray-green skin, muddy browns, rust-orange, dull iron. Accents of stolen gold.
 - **Material:** Rags, patched leather, cracked wood, rusted scrap metal, bone, rope.
 - **Ornamentation:** Trophies and loot — mismatched helmets, coin necklaces, teeth, stolen banners.
 - **Escalation axis:** Scrap becomes treasure, and the posture straightens from a cringing crouch to an upright swagger.
@@ -28,11 +28,11 @@ before promoting an entry to canon.
 
 ## 2. Orcs
 
-**What they are.** Tall, heavily muscled humanoids with grey, green or ashen skin, jutting lower jaws and prominent tusks that grow up from the bottom lip. They are a warrior species organized into clans, where status is earned in battle and displayed openly on the body — war paint, scars, piercings, and trophies taken from the fallen. Orcs are strong enough that they favor heavy, brutal weapons over finesse, and their armor tends to be thick, riveted iron rather than anything elegant. A clan is led by whoever can physically dominate the others.
+**What they are.** Tall, heavily muscled humanoids with gray, green or ashen skin, jutting lower jaws and prominent tusks that grow up from the bottom lip. They are a warrior species organized into clans, where status is earned in battle and displayed openly on the body — war paint, scars, piercings, and trophies taken from the fallen. Orcs are strong enough that they favor heavy, brutal weapons over finesse, and their armor tends to be thick, riveted iron rather than anything elegant. A clan is led by whoever can physically dominate the others.
 
 **Visual constants**
 - **Silhouette:** Broad, top-heavy, thick-necked, slightly forward-leaning stance. Wide shoulders, heavy jaw.
-- **Palette:** Grey-green and ash-grey skin, blood red, black, dark iron, bone white. War paint in red and white.
+- **Palette:** Gray-green and ash-gray skin, blood red, black, dark iron, bone white. War paint in red and white.
 - **Material:** Boiled leather, fur, riveted iron, bone, crude steel.
 - **Ornamentation:** War paint, ritual scarring, tusk rings, skull trophies, spiked pauldrons, clan totems.
 - **Escalation axis:** Muscle mass and tusk length — tusks grow longer and curve further up the face with each tier.
@@ -51,7 +51,7 @@ before promoting an entry to canon.
 
 **Visual constants**
 - **Silhouette:** Human proportions scaled up, but with heavier brow, thicker limbs and a slight stoop under its own weight.
-- **Palette:** Stone grey, granite blue-grey, earth brown, moss green, glacier white. Warm ember tones in the eyes.
+- **Palette:** Stone gray, granite blue-gray, earth brown, moss green, glacier white. Warm ember tones in the eyes.
 - **Material:** Rough hide, raw stone, moss, lichen, pine, iron chain, rope.
 - **Ornamentation:** Chains, standing-stone jewelry, carved runes on the skin, whole trees used as decoration.
 - **Escalation axis:** Raw scale, plus how much geology has spread across the body.
@@ -70,7 +70,7 @@ before promoting an entry to canon.
 
 **Visual constants**
 - **Silhouette:** Tall, stooped, disproportionately long arms reaching past the knees, small head on a thick neck, potbelly.
-- **Palette:** Bog green, liver-brown, sallow grey, bruise purple. Wet, glistening highlights.
+- **Palette:** Bog green, liver-brown, sallow gray, bruise purple. Wet, glistening highlights.
 - **Material:** Rubbery hide, scar tissue, bark-hard callus, mud, rope, scavenged rags.
 - **Ornamentation:** Almost none by choice — piercings that healed over, bones embedded in flesh, half-swallowed weapons still lodged in the body.
 - **Escalation axis:** Regeneration made visible — wounds that never close, and the accumulated wrongness of everything healed badly.

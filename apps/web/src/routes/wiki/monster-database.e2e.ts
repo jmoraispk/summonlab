@@ -69,16 +69,16 @@ test('renders all five original-family images with truthful evidence labels', as
 
 test('renders all five fauna images from the existing runtime catalog', async ({ page }) => {
 	await page.setViewportSize({ width: 1440, height: 900 });
-	await page.goto('/wiki/creatures/monsters/wolf-grey-wolf');
+	await page.goto('/wiki/creatures/monsters/wolf-gray-wolf');
 
 	await expect(
-		page.locator('.matrix').getByRole('heading', { name: 'Grey Wolf', exact: true })
+		page.locator('.matrix').getByRole('heading', { name: 'Gray Wolf', exact: true })
 	).toBeVisible();
 	await expect(page.locator('.matrix img')).toHaveCount(5);
 	await expect(page.locator('.matrix')).toContainText('runtime');
 	await expect(page.locator('.matrix img').first()).toHaveAttribute(
 		'src',
-		/runtime\/enemies\/fauna-family-v1\/wolves\/wolf-grey-wolf\/normal\.[a-f0-9]{12}\.webp$/u
+		/runtime\/enemies\/fauna-family-v1\/wolves\/wolf-gray-wolf\/normal\.[a-f0-9]{12}\.webp$/u
 	);
 });
 
@@ -101,10 +101,10 @@ test('wraps the tier cards without horizontal document overflow', async ({ page 
 	).toBe(true);
 });
 
-test('redirects the legacy Grey Wolf route to its canonical fauna form', async ({ page }) => {
-	await page.goto('/wiki/creatures/monsters/grey-wolf');
-	await expect(page).toHaveURL(/\/wiki\/creatures\/monsters\/wolf-grey-wolf$/u);
+test('redirects the legacy Gray Wolf route to its canonical fauna form', async ({ page }) => {
+	await page.goto('/wiki/creatures/monsters/gray-wolf');
+	await expect(page).toHaveURL(/\/wiki\/creatures\/monsters\/wolf-gray-wolf$/u);
 	await expect(
-		page.locator('.matrix').getByRole('heading', { name: 'Grey Wolf', exact: true })
+		page.locator('.matrix').getByRole('heading', { name: 'Gray Wolf', exact: true })
 	).toBeVisible();
 });

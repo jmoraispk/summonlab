@@ -192,7 +192,7 @@ families=30 forms=150 tiersPerFamily=5 sourceFormsReconciled=150
 ```text
 armored-brood-guard, giant-broodmother, tunnel-spider, web-caster,
 hex-adept, tower-archmage, tower-summoner, ward-mage,
-cave-bear, dire-wolf, grey-wolf, tunnel-boar,
+cave-bear, dire-wolf, gray-wolf, tunnel-boar,
 bone-mage, death-knight, grave-sentinel, tower-wraith,
 clay-golem, crystal-guardian, iron-sentinel, stone-golem,
 armored-elder-drake, cave-drake, giant-tower-dragon, venom-wyvern,

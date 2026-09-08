@@ -6,7 +6,7 @@
 	"canonicalAuthority": {
 		"catalog": {
 			"path": "assets/wiki/skills/icon-production-v2/catalog.json",
-			"contentHash": "eb637b457f0e916fd5a341ea6e94d97c869e52541f7ef22c146841d190ee86a9"
+			"contentHash": "4980c60d406f725d39a2900d00bf33fb5e30d928eaf1d30e3105e26ffc8c1ed2"
 		},
 		"motifMap": {
 			"path": "assets/wiki/skills/icon-production-v2/motif-map.json",
@@ -14,7 +14,7 @@
 		},
 		"visualSpecs": {
 			"path": "assets/wiki/skills/icon-production-v2/visual-specs.json",
-			"contentHash": "d4fb8f27cecc881786161b08b26bd8e83724839deaa935f3f86088e627e0e57b"
+			"contentHash": "cc6657d29bc2cc2430447bafa10af463587fae8b39ef7d576210b91606f61e8e"
 		}
 	},
 	"calibration": {

@@ -18,7 +18,7 @@
 
 	const artBySpecies: Record<SpeciesFixture['id'], string> = {
 		'goblin-skirmisher': goblinoids,
-		'grey-wolf': beasts,
+		'gray-wolf': beasts,
 		'ember-wisp': elementals
 	};
 </script>

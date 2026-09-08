@@ -205,7 +205,7 @@ export const AffinityWaveAllocationV1SourceSchema = z
 const FinalControlledPlanTargetSchema = z
 	.object({
 		key: SlugSchema,
-		speciesId: z.enum(['death-knight', 'elemental', 'grey-wolf', 'cave-bear']),
+		speciesId: z.enum(['death-knight', 'elemental', 'gray-wolf', 'cave-bear']),
 		affinity: z.enum(['normal', 'wood', 'fire', 'metal', 'water', 'wind']),
 		version: z.enum(['v3', 'v4'])
 	})
@@ -323,7 +323,7 @@ const EXPECTED_FINAL_COORDINATES = (
 	[
 		['death-knight', 'v4'],
 		['elemental', 'v4'],
-		['grey-wolf', 'v3'],
+		['gray-wolf', 'v3'],
 		['cave-bear', 'v3']
 	] as const
 ).flatMap(([speciesId, version]) =>
@@ -588,24 +588,24 @@ const FINAL_WORKLOAD_COORDINATES = {
 	'final-controlled-a': [
 		'elemental-normal-v4',
 		'elemental-wood-v4',
-		'grey-wolf-fire-v3',
-		'grey-wolf-metal-v3',
+		'gray-wolf-fire-v3',
+		'gray-wolf-metal-v3',
 		'cave-bear-water-v3',
 		'cave-bear-wind-v3'
 	],
 	'final-controlled-b': [
 		'elemental-fire-v4',
 		'elemental-metal-v4',
-		'grey-wolf-water-v3',
-		'grey-wolf-wind-v3',
+		'gray-wolf-water-v3',
+		'gray-wolf-wind-v3',
 		'cave-bear-normal-v3',
 		'cave-bear-wood-v3'
 	],
 	'final-controlled-c': [
 		'elemental-water-v4',
 		'elemental-wind-v4',
-		'grey-wolf-normal-v3',
-		'grey-wolf-wood-v3',
+		'gray-wolf-normal-v3',
+		'gray-wolf-wood-v3',
 		'cave-bear-fire-v3',
 		'cave-bear-metal-v3'
 	]

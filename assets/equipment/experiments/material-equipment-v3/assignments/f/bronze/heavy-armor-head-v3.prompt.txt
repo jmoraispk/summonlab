@@ -3,7 +3,7 @@ Render only the head item from the accepted full set. Preserve its exact materia
 CLASS DIRECTION: Broad articulated metal protection comprising exactly Head, Torso, Legs, and Boots. Empty self-supporting full set in a consistent mild three-quarter front view; no mannequin or wearer. Use the accepted progression reference as the authoritative design for the F column while reconstructing it as a dedicated render. Preserve rank silhouette and distinctive structural cues; do not crop.
 
 MATERIAL BRIEF — Bronze:
-Palette: Warm ochre-brown metal with muted gold edges and dark umber recesses.
+Palette: Warm ocher-brown metal with muted gold edges and dark umber recesses.
 Value: Middle-dark overall; restrained highlights, no mirror polish.
 Surface/wear: Cast grain, rubbed edges, shallow dents, and small green-brown oxidation traces.
 Construction: Simple cast or hammered plates, broad rivets, plain sockets, thick practical sections.

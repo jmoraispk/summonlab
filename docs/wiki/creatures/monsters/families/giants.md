@@ -16,7 +16,7 @@ Wiki ID: `monster-family.giants`
 ## Visual constants
 
 - Humanlike proportions scaled upward with a heavy brow, thick limbs, dense bone, and a slight stoop that communicates the body's own weight.
-- Stone grey, granite blue-grey, earth brown, moss green, glacier white, and warm amber eyes remain the family palette without requiring an elemental origin.
+- Stone gray, granite blue-gray, earth brown, moss green, glacier white, and warm amber eyes remain the family palette without requiring an elemental origin.
 - Rough hide, raw stone, moss, lichen, pine, iron chain, and rope accumulate as bodily geology and oversized practical tools.
 - Chains, standing-stone jewelry, skin runes, and whole trees function as ornament at a scale that stays legible from the arena.
 - Raw scale and geological coverage escalate together until the Sovereign carries a valley, but every form retains recognizable humanoid load paths and slow committed motion.

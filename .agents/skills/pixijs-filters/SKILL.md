@@ -54,7 +54,7 @@ const blur = new BlurFilter({
 });
 
 // Color matrix — brightness is one of many presets. Others: tint, hue,
-// contrast, saturate, desaturate, greyscale/grayscale, blackAndWhite,
+// contrast, saturate, desaturate, grayscale/grayscale, blackAndWhite,
 // negative, sepia, technicolor, polaroid, kodachrome, browni, vintage,
 // colorTone, night, predator, lsd, reset. Direct access via
 // `colorMatrix.matrix` (20-element array) and `colorMatrix.alpha` (blend

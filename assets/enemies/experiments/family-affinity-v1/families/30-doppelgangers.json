@@ -7,7 +7,7 @@
   "classificationNotes": "Source-draft Doppelgangers are treated as a copy-quality and leaking-disguise visual and encounter-production family. Claims about infiltration, motive, social behavior, cognition, agency, personhood, and hostility remain proposals pending taxonomy review.",
   "visualConstants": [
     "A generic humanoid copy silhouette retains one deliberate flaw until layered face and mask motifs appear at explicit upper tiers.",
-    "Clay-grey skin, putty, borrowed colors, porcelain, copied cloth, and smooth flesh remain discrete source materials rather than Earth affinity.",
+    "Clay-gray skin, putty, borrowed colors, porcelain, copied cloth, and smooth flesh remain discrete source materials rather than Earth affinity.",
     "Seams, wrong joints, ill-fitting clothes, and layered masks reveal copy quality while preserving the readable original-copy relationship.",
     "Disguise fidelity escalates from an entirely blank true form to a sovereign carrying many stolen-looking faces at once."
   ],
@@ -16,7 +16,7 @@
   "affinityThemes": {
     "normal": {
       "constructionDimensions": [
-        "Family-native, non-affinity clay-grey skin, copied colors or borrowed colors, shapeshifting, masks and faces, and smooth flesh remain source-supported body material, disguise behavior, and identity leakage—not Earth or any other affinity.",
+        "Family-native, non-affinity clay-gray skin, copied colors or borrowed colors, shapeshifting, masks and faces, and smooth flesh remain source-supported body material, disguise behavior, and identity leakage—not Earth or any other affinity.",
         "Putty, mask porcelain, borrowed cloth, seams, wrong joints, and deliberately imperfect fit preserve copy readability without elemental substitution."
       ],
       "counterplaySignal": "The established blank wrist, unfinished limb, jaw seam, rotating face edge, or mask-crown latch remains readable against the borrowed copy.",
@@ -36,7 +36,7 @@
         "Motion/process branches: T1 the blank featureless limb briefly loads its external silhouette clamp; T2 the partial copy transfers weight away from the unfinished arm; T3 the wrong hand loads the jaw-seam key; T4 layered faces rotate one mask-clasp load; T5 body-wide faces load and release one mask-crown latch."
       ],
       "counterplaySignal": "Affinity counterplay branches: T1 the blank smooth-flesh featureless limb exposes its external silhouette-clamp fault after load; T2 the partial copy exposes a fracture at the unfinished arm; T3 the jaw seam and wrong hand expose the active load key after correction; T4 layered faces expose the mask-clasp fault after rotation; T5 body-wide faces expose the mask-crown fracture latch after load, preserving copy readability.",
-      "forbidden": ["Palette-only brown copy", "Glow-only earth treatment", "Treating clay-grey skin as stone", "Mineral mass that hides the copied identity"]
+      "forbidden": ["Palette-only brown copy", "Glow-only earth treatment", "Treating clay-gray skin as stone", "Mineral mass that hides the copied identity"]
     },
     "wind": {
       "constructionDimensions": [
@@ -59,15 +59,15 @@
     {
       "tier": "T1", "formId": "doppelganger-blank", "displayName": "Blank", "primaryArchetype": "Featureless-Reach Initiate (Initiate)",
       "battlefieldDuty": "Probe close timing with one smooth unfinished reach from a deliberately generic stance.", "teachingGoal": "Teach that the blank wrist briefly creases before featureless fingers extend.",
-      "signatureMechanic": "Unpainted Reach: one clay-grey arm lengthens without a shoulder turn, then returns through a visible wrist crease.", "telegraph": "The smooth wrist dimples while the blank head with no face, hair, or clothing remains perfectly still.",
-      "counterplay": "Step across the extending arm and strike the temporary wrist crease before it smooths.", "visualDelta": "Blank smooth grey humanoid with no face, no hair, no clothing, and an unfinished mannequin-like surface.",
+      "signatureMechanic": "Unpainted Reach: one clay-gray arm lengthens without a shoulder turn, then returns through a visible wrist crease.", "telegraph": "The smooth wrist dimples while the blank head with no face, hair, or clothing remains perfectly still.",
+      "counterplay": "Step across the extending arm and strike the temporary wrist crease before it smooths.", "visualDelta": "Blank smooth gray humanoid with no face, no hair, no clothing, and an unfinished mannequin-like surface.",
       "lowerFormInteraction": null, "sourceReferences": ["Blank"]
     },
     {
       "tier": "T2", "formId": "doppelganger-halfling-copy", "displayName": "Halfling Copy", "primaryArchetype": "Unfinished-Side Soldier (Soldier)",
-      "battlefieldDuty": "Repeat copied weapon pressure from a partial disguise whose one grey arm cannot complete the same motion.", "teachingGoal": "Teach that the blurred mouth announces the copied strike while the unfinished arm remains the safe side.",
-      "signatureMechanic": "Half-Learned Cut: the finished side copies a simple cut as the unformed grey arm attempts and fails to mirror it.", "telegraph": "The nearly right face blurs at the mouth and borrowed color drains toward the finished shoulder.",
-      "counterplay": "Cross the unfinished-arm side and punish its smooth shoulder after the copied cut.", "visualDelta": "Half-copied form with one unformed grey arm and a nearly right face blurred at the mouth.",
+      "battlefieldDuty": "Repeat copied weapon pressure from a partial disguise whose one gray arm cannot complete the same motion.", "teachingGoal": "Teach that the blurred mouth announces the copied strike while the unfinished arm remains the safe side.",
+      "signatureMechanic": "Half-Learned Cut: the finished side copies a simple cut as the unformed gray arm attempts and fails to mirror it.", "telegraph": "The nearly right face blurs at the mouth and borrowed color drains toward the finished shoulder.",
+      "counterplay": "Cross the unfinished-arm side and punish its smooth shoulder after the copied cut.", "visualDelta": "Half-copied form with one unformed gray arm and a nearly right face blurred at the mouth.",
       "lowerFormInteraction": "Blanks reach from the copied side; striking the unfinished shoulder exposes both wrist creases.", "sourceReferences": ["Halfling Copy"]
     },
     {

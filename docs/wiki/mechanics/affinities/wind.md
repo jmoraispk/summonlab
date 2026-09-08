@@ -8,7 +8,7 @@ Wiki ID: `affinity.wind`
 
 **Attribute nudge:** Agility on level-up.
 
-**Material language:** Pale green-grey displaced dust, pressure ripples, cloth, hair, vegetation,
+**Material language:** Pale green-gray displaced dust, pressure ripples, cloth, hair, vegetation,
 particles, and trajectory cues.
 
 See the canonical [Affinities](../progression/affinities.md) rules.

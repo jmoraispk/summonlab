@@ -76,7 +76,7 @@ describe('affinity workflow content', () => {
 	it('versions all five known corrections under the repaired safe-frame protocol', () => {
 		expect(CORRECTION_REGRESSION_TARGETS.map((target) => target.targetId)).toEqual([
 			'affinity-workflow-v1-death-knight-metal-v2',
-			'affinity-workflow-v1-grey-wolf-fire-v2',
+			'affinity-workflow-v1-gray-wolf-fire-v2',
 			'affinity-workflow-v1-cave-bear-wood-v2',
 			'affinity-workflow-v1-cave-bear-wind-v2',
 			'affinity-workflow-v1-elemental-fire-v3'
@@ -120,7 +120,7 @@ describe('affinity workflow content', () => {
 			'forged-body-distinction'
 		);
 
-		const wolf = target('grey-wolf', 'fire');
+		const wolf = target('gray-wolf', 'fire');
 		expect(wolf.acceptanceCriteria.map((criterion) => criterion.criterionId)).toContain(
 			'canonical-provenance-rerun'
 		);

@@ -205,7 +205,7 @@ The plan is now backed by a runnable implementation rather than being a design-o
   label-visible inspection and a controlled-only server-stripped blind workflow, verifies candidate
   bytes before serving them, and records append-only hash-bound reviews with server-derived mode
   provenance and no promotion;
-- the Death Knight six-affinity pilot, the first Grey Wolf canaries, and the neutral-chassis
+- the Death Knight six-affinity pilot, the first Gray Wolf canaries, and the neutral-chassis
   Elemental regression have produced measured, hash-bound evidence;
 - all 24 controlled results, six Elemental regression results, and six final correction results are
   complete: 30 producer candidates and six bounded `revise` outcomes, all unapproved;
@@ -253,7 +253,7 @@ real-time; model generation of a novel finished portrait should be treated as as
 production or background enrichment rather than a frame-time operation.
 
 The final correction regression exercised the reusable skill with prior candidates as narrowly
-routed design references. Fire Grey Wolf v2, Wood Cave Bear v2, Fire Elemental v3, and Metal Death
+routed design references. Fire Gray Wolf v2, Wood Cave Bear v2, Fire Elemental v3, and Metal Death
 Knight v3 are verified producer candidates. Metal Death Knight v2 remains immutable framing
 evidence superseded by v3. Wind Cave Bear v2 remains `revise` after both attempts again occluded the
 far hind paw; the repeated target-specific failure is recorded without weakening the four-paw gate
@@ -408,7 +408,7 @@ The first matrix isolates affinity as much as practical across four construction
 | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |
 | Death Knight | Undead body, armor, weapon, and binding | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
 | Elemental | Body made from the affinity substance | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
-| Grey Wolf | Organic quadruped with integrated affinity | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
+| Gray Wolf | Organic quadruped with integrated affinity | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
 | Cave Bear | Heavy organic quadruped with integrated affinity | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
 
 Core total: **24 unique targets**, excluding corrective retries.
@@ -483,7 +483,7 @@ Every variant retains:
 
 Affinity is the body itself for an elemental, not an exterior particle overlay.
 
-### Grey Wolf
+### Gray Wolf
 
 Every variant retains recognizable canine anatomy, four-legged predatory locomotion, wolf facial
 structure, and a fast flanking silhouette. It must not acquire humanoid armor, antlers, wings, or
@@ -646,7 +646,7 @@ assets/enemies/experiments/affinity-workflow-v1/
 ├── candidates/
 │   ├── death-knight/
 │   ├── elemental/
-│   ├── grey-wolf/
+│   ├── gray-wolf/
 │   ├── cave-bear/
 │   ├── goblin/
 │   ├── tunnel-boar/
@@ -696,9 +696,9 @@ Successful canaries count toward the 24-image matrix.
 
 ### Phase 3 — Balanced six-job matrix
 
-Generate the remaining Elemental, Grey Wolf, and Cave Bear targets in three balanced waves:
+Generate the remaining Elemental, Gray Wolf, and Cave Bear targets in three balanced waves:
 
-| Wave | Elemental | Grey Wolf | Cave Bear |
+| Wave | Elemental | Gray Wolf | Cave Bear |
 | --- | --- | --- | --- |
 | A | Normal, Wood | Fire, Metal | Water, Wind |
 | B | Fire, Metal | Water, Wind | Normal, Wood |
@@ -734,9 +734,9 @@ because Canary and Controlled each occur more than once:
 | --- | ---: | --- | --- |
 | `final-canary` | 2 | Death Knight Normal and Fire | Human-approved final-manifest activation |
 | `final-pilot` | 4 | Remaining Death Knight affinities | Final Canary pass |
-| `final-controlled-a` | 6 | Balanced Elemental, Grey Wolf, Cave Bear wave A | Final Pilot pass |
-| `final-controlled-b` | 6 | Balanced Elemental, Grey Wolf, Cave Bear wave B | Controlled A pass |
-| `final-controlled-c` | 6 | Balanced Elemental, Grey Wolf, Cave Bear wave C | Controlled B pass |
+| `final-controlled-a` | 6 | Balanced Elemental, Gray Wolf, Cave Bear wave A | Final Pilot pass |
+| `final-controlled-b` | 6 | Balanced Elemental, Gray Wolf, Cave Bear wave B | Controlled A pass |
+| `final-controlled-c` | 6 | Balanced Elemental, Gray Wolf, Cave Bear wave C | Controlled B pass |
 | `breadth-canary` | 2 | Goblin Normal and Tunnel Boar Fire | Passed final human review |
 | `breadth` | 8 | Goblin, Tunnel Boar, Cave Drake, Tower Basilisk | Breadth Canary pass |
 | `load` | 12 | Remaining Breadth jobs plus six activated sentinels | Breadth-8 pass |
@@ -815,7 +815,7 @@ most common earlier failure. Recommended coverage:
 
 - Normal and Water Death Knights;
 - Metal Elemental;
-- Wind Grey Wolf;
+- Wind Gray Wolf;
 - Fire Cave Bear;
 - one compound Goblin;
 - one Cave Drake or Tower Basilisk;

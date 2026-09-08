@@ -21,7 +21,7 @@ import {
 	createImageProductionAssignments
 } from './image-production-lib.js';
 
-const SPECIES = ['death-knight', 'elemental', 'grey-wolf', 'cave-bear'] as const;
+const SPECIES = ['death-knight', 'elemental', 'gray-wolf', 'cave-bear'] as const;
 const AFFINITIES = ['normal', 'wood', 'fire', 'metal', 'water', 'wind'] as const;
 const PLAN_PATH = `${AFFINITY_EXPERIMENT_ROOT}/review/final-controlled-rerun-plan.json`;
 const PREVIEW_PREFIX = 'affinity-final-controlled-rerun-';
@@ -40,10 +40,10 @@ export const REQUIRED_NONBLOCKING_DESIGN_RISK_COORDINATES = [
 	'elemental-normal-v4',
 	'elemental-water-v4',
 	'elemental-wind-v4',
-	'grey-wolf-normal-v3',
+	'gray-wolf-normal-v3',
 	'elemental-wood-v4',
-	'grey-wolf-wood-v3',
-	'grey-wolf-water-v3'
+	'gray-wolf-wood-v3',
+	'gray-wolf-water-v3'
 ] as const;
 const DESIGN_RISK_COORDINATES = [
 	...REQUIRED_BLOCKING_DESIGN_RISK_COORDINATES,
@@ -64,7 +64,7 @@ export const FinalControlledRerunPlanSchema = z
 			.object({
 				'death-knight': z.literal('v4'),
 				elemental: z.literal('v4'),
-				'grey-wolf': z.literal('v3'),
+				'gray-wolf': z.literal('v3'),
 				'cave-bear': z.literal('v3')
 			})
 			.strict(),

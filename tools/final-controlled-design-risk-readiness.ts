@@ -33,7 +33,7 @@ import {
 import { repositoryPathIsAbsent } from './report-final-controlled-activation-readiness.js';
 import { validateAffinityWorkflowWorkspace } from './validate-affinity-workflow.js';
 
-const SPECIES = ['death-knight', 'elemental', 'grey-wolf', 'cave-bear'] as const;
+const SPECIES = ['death-knight', 'elemental', 'gray-wolf', 'cave-bear'] as const;
 const AFFINITIES = ['normal', 'wood', 'fire', 'metal', 'water', 'wind'] as const;
 export const FINAL_CONTROLLED_BASELINE_TARGET_IDS = SPECIES.flatMap((species) =>
 	AFFINITIES.map((affinity) => `affinity-workflow-v1-${species}-${affinity}`)

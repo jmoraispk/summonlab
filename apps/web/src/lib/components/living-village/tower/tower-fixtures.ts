@@ -11,7 +11,7 @@ export type MaterialFixture = {
 };
 
 export type SpeciesFixture = {
-	id: 'goblin-skirmisher' | 'grey-wolf' | 'ember-wisp';
+	id: 'goblin-skirmisher' | 'gray-wolf' | 'ember-wisp';
 	name: string;
 	family: string;
 	affinity: Affinity;
@@ -80,8 +80,8 @@ export const SPECIES: SpeciesFixture[] = [
 		]
 	},
 	{
-		id: 'grey-wolf',
-		name: 'Grey Wolf',
+		id: 'gray-wolf',
+		name: 'Gray Wolf',
 		family: 'Beasts',
 		affinity: 'Wood',
 		role: 'Pack pursuit',
@@ -90,7 +90,7 @@ export const SPECIES: SpeciesFixture[] = [
 		baseDamage: 9,
 		baseAgility: 20,
 		materials: [
-			{ id: 'grey-hide', name: 'Grey hide', minimum: 1, maximum: 2 },
+			{ id: 'gray-hide', name: 'Gray hide', minimum: 1, maximum: 2 },
 			{ id: 'keen-fang', name: 'Keen fang', minimum: 0, maximum: 1 }
 		]
 	},
@@ -112,16 +112,16 @@ export const SPECIES: SpeciesFixture[] = [
 ];
 
 const FLOOR_SPECIES: SpeciesFixture['id'][][] = [
-	['goblin-skirmisher', 'grey-wolf'],
-	['grey-wolf', 'goblin-skirmisher'],
+	['goblin-skirmisher', 'gray-wolf'],
+	['gray-wolf', 'goblin-skirmisher'],
 	['ember-wisp', 'goblin-skirmisher'],
-	['grey-wolf', 'ember-wisp'],
-	['goblin-skirmisher', 'grey-wolf'],
-	['ember-wisp', 'grey-wolf'],
+	['gray-wolf', 'ember-wisp'],
+	['goblin-skirmisher', 'gray-wolf'],
+	['ember-wisp', 'gray-wolf'],
 	['goblin-skirmisher', 'ember-wisp'],
-	['grey-wolf', 'goblin-skirmisher'],
+	['gray-wolf', 'goblin-skirmisher'],
 	['ember-wisp', 'goblin-skirmisher'],
-	['grey-wolf', 'ember-wisp']
+	['gray-wolf', 'ember-wisp']
 ];
 
 const FLOOR_NAMES = [

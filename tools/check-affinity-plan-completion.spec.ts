@@ -59,7 +59,7 @@ function finalControlledDesignRiskLifecycleFixture() {
 	const species = [
 		['death-knight', 'v4'],
 		['elemental', 'v4'],
-		['grey-wolf', 'v3'],
+		['gray-wolf', 'v3'],
 		['cave-bear', 'v3']
 	] as const;
 	const targets = species.flatMap(([speciesId, version]) =>

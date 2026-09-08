@@ -114,7 +114,7 @@
 			"opaqueLabel": "S17",
 			"targetId": "affinity-workflow-v1-goblin-wind",
 			"resultId": "result-affinity-workflow-v1-goblin-wind",
-			"resultCanonicalSha256": "8db7da2a92cbed56863234c3b8a4b6402bfabb0a4175e693dba4c0be87da4fee",
+			"resultCanonicalSha256": "c7be15825538dd57c2b1854e03f09aa807ab3e6a33a388271b5dfc8585dfd7b4",
 			"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/goblin/wind-v1.png",
 			"candidateByteSha256": "96014cced19157d53ef873da7b62d002c7a448781c1f1eba9d32f261859dc5f7"
 		},
@@ -132,7 +132,7 @@
 			"opaqueLabel": "S19",
 			"targetId": "affinity-workflow-v1-goblin-fire",
 			"resultId": "result-affinity-workflow-v1-goblin-fire",
-			"resultCanonicalSha256": "ec6f70b982b80d9e96aa7fbdc9e12caddd4ce88bc445609fbb1e8bc1e8100c6a",
+			"resultCanonicalSha256": "ce733ede56544a0419d3b51faae9a394227ae2ffa2f02d2ae4d5ba35715bdddf",
 			"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/goblin/fire-v1.png",
 			"candidateByteSha256": "3953b3d5a43a1a6d5d0ba8eae5c37263933e1fdb6c28cb6e8a068678c720faaa"
 		},

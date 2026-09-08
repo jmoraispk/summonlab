@@ -3,7 +3,7 @@ Render one dedicated Bronze Sword, rank F, as a new individual image—not a cro
 CLASS DIRECTION: Long cutting blade and usable one- or two-hand grip. Single weapon upright on its pommel with a slight rightward diagonal; blade fully readable. Use the accepted progression reference as the authoritative design for the F column while reconstructing it as a dedicated render. Preserve rank silhouette and distinctive structural cues; do not crop.
 
 MATERIAL BRIEF — Bronze:
-Palette: Warm ochre-brown metal with muted gold edges and dark umber recesses.
+Palette: Warm ocher-brown metal with muted gold edges and dark umber recesses.
 Value: Middle-dark overall; restrained highlights, no mirror polish.
 Surface/wear: Cast grain, rubbed edges, shallow dents, and small green-brown oxidation traces.
 Construction: Simple cast or hammered plates, broad rivets, plain sockets, thick practical sections.

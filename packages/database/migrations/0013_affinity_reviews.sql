@@ -7,7 +7,7 @@ create table if not exists summonlab_affinity_workflow_reviews (
   identified_species_id text not null check (identified_species_id in (
     'death-knight',
     'elemental',
-    'grey-wolf',
+    'gray-wolf',
     'cave-bear',
     'goblin',
     'tunnel-boar',

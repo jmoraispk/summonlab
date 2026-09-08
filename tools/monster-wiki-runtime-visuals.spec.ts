@@ -79,7 +79,7 @@ describe('monster wiki runtime visuals', () => {
 		catalog.records[0]!.runtime.publicUrl = '/runtime/enemies/wrong.webp';
 
 		expect(() => buildMonsterWikiVisualPlan(database, catalog)).toThrow(
-			/fauna.*binding.*wolves\/wolf-grey-wolf\/normal/iu
+			/fauna.*binding.*wolves\/wolf-gray-wolf\/normal/iu
 		);
 	});
 

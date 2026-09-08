@@ -162,13 +162,13 @@
 			}
 		},
 		{
-			"currentClassId": "grey-wolf",
+			"currentClassId": "gray-wolf",
 			"sourceRoster": "docs/wiki/creatures/monsters/visual-index.json",
 			"sourceFamilyLabel": "Beasts",
 			"disposition": "fauna",
 			"canonicalFamilyId": null,
 			"canonicalFormId": null,
-			"rationale": "Keep the grey wolf as ordinary expedition fauna outside the thirty floor families. Its fast flanking and trip lesson is distinct from the dire wolf's relentless pack pressure and remains useful in exploration. Existing candidates remain ineligible until a fauna bridge target binds exact duty, anatomy, counterplay, and framing to each affinity.",
+			"rationale": "Keep the gray wolf as ordinary expedition fauna outside the thirty floor families. Its fast flanking and trip lesson is distinct from the dire wolf's relentless pack pressure and remains useful in exploration. Existing candidates remain ineligible until a fauna bridge target binds exact duty, anatomy, counterplay, and framing to each affinity.",
 			"candidateReuseByAffinity": {
 				"normal": false,
 				"fire": false,

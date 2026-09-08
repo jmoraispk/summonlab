@@ -12,7 +12,7 @@ human renderer.
 ## Accepted rendering register
 
 Hero art uses **cinematic semi-realistic painted character art**. The accepted realism ceiling is
-the [Ochre Braid progression reference](../../../assets/heroes/visuals/style-references/current-hero-rendering/ochre-braid-progression-reference.png),
+the [Ocher Braid progression reference](../../../assets/heroes/visuals/style-references/current-hero-rendering/ocher-braid-progression-reference.png),
 whose manifest explicitly limits approval to rendering direction.
 
 The target combines believable adult anatomy, weight, skin, hair, textile construction, leather,
@@ -315,7 +315,7 @@ receive 1★, 3★, 5★, and 7★ evolution studies so the team can judge both 
 continuity before producing a large roster.
 
 After a reviewed wave, explicit Keep decisions survive into the next pair review. Correct only the
-failed side of a surviving pair when possible: the wave-002 carry-forward retained Ochre Braid and
+failed side of a surviving pair when possible: the wave-002 carry-forward retained Ocher Braid and
 Nera Voss unchanged, narrowed Oren Dae's chibi shoulders and arms to match his slight summon body,
 and added modest lean muscle and warmer paint cohesion to Zuri Pell's summon while preserving her
 narrow frame and accepted chibi. Rejected or undecided photographic identities do not constrain new
@@ -330,7 +330,7 @@ reference.
   review evidence. Their pixels and prompts must not be used as forward hero-style references.
 - The shortlist-first production workflow remains viable independently of the rejected rendering
   style: generate 1★ identity candidates, approve anchors, then invest in their evolution states.
-- On 2026-09-02, the owner kept Ochre Braid, Nera Voss, Oren Dae, and Zuri Pell from mass wave 001.
+- On 2026-09-02, the owner kept Ocher Braid, Nera Voss, Oren Dae, and Zuri Pell from mass wave 001.
   Wave 002 records that exported decision file as review evidence and presents those survivors
   beside twelve completely new painted identities.
 - Wave-002 review reinforced the pair-first rule, requested a more standard head ratio for Tor

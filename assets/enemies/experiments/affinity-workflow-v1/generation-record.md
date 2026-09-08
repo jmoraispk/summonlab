@@ -82,7 +82,7 @@ unapproved and awaits human blind review; image generation is complete.
 | --- | ---: | ---: | ---: | --- |
 | Death Knight | 6 | 0 | 0 | All canonical-v1 first attempts needed framing correction; Metal and several other affinities remain vulnerable to armor-plus-overlay readings. |
 | Bound Vanguard Elemental v1 | 6 | 0 | 5 | The original stone anchor biased non-stone variants toward stone, ice, or surface effects despite polished output. |
-| Grey Wolf | 5 | 1 | 2 | Fire is visually strong but quarantined for prompt-provenance mismatch; other variants preserve wolf anatomy, with Wood less legible at thumbnail size. |
+| Gray Wolf | 5 | 1 | 2 | Fire is visually strong but quarantined for prompt-provenance mismatch; other variants preserve wolf anatomy, with Wood less legible at thumbnail size. |
 | Cave Bear | 4 | 2 | 3 | Wood and Wind exhausted the retry ceiling with the far hind paw still occluded; v4 Metal and Water passed framing on their first attempts. |
 
 The controlled workflow threshold of at least 20 first-attempt candidates is not met: the measured
@@ -113,7 +113,7 @@ weaknesses found in the independent audit:
 
 | Target | Status | Attempts | Outcome |
 | --- | --- | ---: | --- |
-| Fire Grey Wolf v2 | Candidate | 1 | Restored exact canonical prompt provenance while preserving the strong integrated Fire design. |
+| Fire Gray Wolf v2 | Candidate | 1 | Restored exact canonical prompt provenance while preserving the strong integrated Fire design. |
 | Wood Cave Bear v2 | Candidate | 2 | A targeted stance correction produced four independently readable grounded paws. |
 | Wind Cave Bear v2 | Revise | 2 | Safe framing and affinity passed, but the far hind paw remained occluded in both attempts. |
 | Fire Elemental v3 | Candidate | 1 | Preserved the substance-bodied v2 chassis and contained every combustion extent inside the safe frame. |
@@ -127,7 +127,7 @@ findings, but not byte-level persistence receipts. There were no collisions, sha
 throttles, or integration errors. The Wind Bear result is kept as evidence of repeated
 target/generator variance rather than accepted with hidden anatomy.
 
-The immutable Grey Wolf and Fire Elemental correction prompts use `approved` and `accepted` to mean
+The immutable Gray Wolf and Fire Elemental correction prompts use `approved` and `accepted` to mean
 producer-retained designs from earlier runs, not human approval or shared-catalog promotion. Future
 manifests use `retained` explicitly; these completed prompt records remain unchanged so their hashes
 continue to match the submitted generation requests.

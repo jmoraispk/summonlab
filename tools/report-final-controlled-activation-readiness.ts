@@ -134,7 +134,7 @@ export function buildFinalControlledActivationReadiness(
 	const originals = targets.filter(
 		(target) =>
 			target.cohort === 'controlled' &&
-			['death-knight', 'elemental', 'grey-wolf', 'cave-bear'].includes(target.speciesId)
+			['death-knight', 'elemental', 'gray-wolf', 'cave-bear'].includes(target.speciesId)
 	);
 	const candidateIds = originals
 		.filter((target) => results.find((r) => r.targetId === target.targetId)?.status === 'candidate')

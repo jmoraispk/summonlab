@@ -27,7 +27,7 @@ Shared visual constants and the complete T1–T5 comparison live on the [Wraiths
 
 **Escalation axis:** A barely held mist learns to drag anchors, weaponize the boundary between wall and room, spread a crowned cloak territory, and finally command a court through hollow regalia whose seals can be permanently opened.
 
-**This form's visual delta:** A faint smear of ash-grey cold vapor with two pale points of light and only the suggestion of a hooded humanoid upper body, never feet.
+**This form's visual delta:** A faint smear of ash-gray cold vapor with two pale points of light and only the suggestion of a hooded humanoid upper body, never feet.
 
 ## Combat reading
 

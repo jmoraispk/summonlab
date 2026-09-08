@@ -28,7 +28,7 @@ for legacy v1/v2 targets.
 - Normal uses rough tower stone, dust, and pale neutral arcane binding.
 - Reject generic humanoid recolors and substance effects that erase the action silhouette.
 
-## Grey Wolf
+## Gray Wolf
 
 - Canine head, shoulders, spine, tail, four legs, and fast flanking posture.
 - Affinity integrates through coat, breath, claws, locomotion, and environmental wake.
@@ -78,7 +78,7 @@ for legacy v1/v2 targets.
 ## Dire Wolf
 
 - Exactly four canine legs, a dense pursuit frame, recognizable wolf head, grounded paws, and a
-  coherent tail. It is larger and more relentless than the Grey Wolf without becoming a bear or
+  coherent tail. It is larger and more relentless than the Gray Wolf without becoming a bear or
   dragon.
 
 ## Expansion elementals
@@ -128,7 +128,7 @@ for legacy v1/v2 targets.
 
 ## Large threats
 
-- Ogoblin Brute is a squat boss-scale goblinoid bruiser; Cave Troll is a stooped grey cavern giant
+- Ogoblin Brute is a squat boss-scale goblinoid bruiser; Cave Troll is a stooped gray cavern giant
   with disproportionately long arms; Hill Giant is upright with a practical stone maul; Frost Giant
   is an organic cold-adapted giant in fur and ancient iron.
 - Every giant has exactly two arms and two legs. Reject cloned bare-chested loincloth silhouettes and

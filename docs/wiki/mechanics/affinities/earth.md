@@ -8,6 +8,6 @@ Wiki ID: `affinity.earth`
 
 **Attribute nudge:** Vitality on level-up.
 
-**Material language:** Ochre-brown stone stress, displaced dust, and pressure.
+**Material language:** Ocher-brown stone stress, displaced dust, and pressure.
 
 See the canonical [Affinities](../progression/affinities.md) rules.

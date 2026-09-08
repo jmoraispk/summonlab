@@ -9,7 +9,7 @@
 	"completedAt": "2026-09-03T13:23:02.971Z",
 	"provider": "OpenAI image generation",
 	"model": "gpt-imagegen-2.0",
-	"promptSha256": "9d34b7e9fda2118ad18b84a81fec0770914fcd7f4a45a3249aeee3e099073f31",
+	"promptSha256": "cbd94f83ade61b7066446aadd57b1560dbbea6b7afb84d80970287c1d9123c87",
 	"references": [
 		{
 			"path": "assets/equipment/experiments/material-vs-class-calibration-2026-09-02/approach-b-dagger-class-progression-v1.png",

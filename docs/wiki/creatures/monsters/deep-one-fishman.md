@@ -27,7 +27,7 @@ Shared visual constants and the complete T1–T5 comparison live on the [Deep On
 
 **Escalation axis:** Pressure adaptation and deep-sea command progress from a gasping raider to a sovereign whose court and kraken limbs divide the arena.
 
-**This form's visual delta:** Hunched dull-grey fish humanoid with visible gills, wet scales, and a rusted hook or gutting knife.
+**This form's visual delta:** Hunched dull-gray fish humanoid with visible gills, wet scales, and a rusted hook or gutting knife.
 
 ## Combat reading
 
@@ -37,7 +37,7 @@ Probe close spacing with a single hook rush followed by a visible gill recovery.
 
 ### Teaching goal
 
-Teach that gasping opens the dull-grey gill-neck after every committed cut.
+Teach that gasping opens the dull-gray gill-neck after every committed cut.
 
 ### Signature mechanic
 

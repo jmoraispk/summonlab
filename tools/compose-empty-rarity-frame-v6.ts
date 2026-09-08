@@ -54,7 +54,7 @@ async function polygonMask(points: Array<[number, number]>): Promise<Buffer> {
 	const serialized = points.map(([x, y]) => `${x},${y}`).join(' ');
 	const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${canvasSize}" height="${canvasSize}" viewBox="0 0 ${canvasSize} ${canvasSize}"><polygon points="${serialized}" fill="#fff"/></svg>`;
 	const { data, info } = await sharp(Buffer.from(svg))
-		.greyscale()
+		.grayscale()
 		.raw()
 		.toBuffer({ resolveWithObject: true });
 	if (info.channels !== 1) throw new Error('Polygon mask did not render as one channel');
@@ -64,7 +64,7 @@ async function polygonMask(points: Array<[number, number]>): Promise<Buffer> {
 async function circleMask(radius: number): Promise<Buffer> {
 	const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${canvasSize}" height="${canvasSize}" viewBox="0 0 ${canvasSize} ${canvasSize}"><circle cx="512" cy="512" r="${radius}" fill="#fff"/></svg>`;
 	const { data, info } = await sharp(Buffer.from(svg))
-		.greyscale()
+		.grayscale()
 		.raw()
 		.toBuffer({ resolveWithObject: true });
 	if (info.channels !== 1) throw new Error('Circle mask did not render as one channel');

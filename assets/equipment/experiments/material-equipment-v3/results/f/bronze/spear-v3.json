@@ -9,7 +9,7 @@
 	"completedAt": "2026-09-03T13:23:24.724Z",
 	"provider": "OpenAI image generation",
 	"model": "gpt-imagegen-2.0",
-	"promptSha256": "431ea5dc4cb37e022478ee900447a1d45a027b8fd955ec0eab351028fee47121",
+	"promptSha256": "316ab54c634e8d64d1214d6ff3673a32aa2277e08a8203fd48ebb13ebc74d800",
 	"references": [
 		{
 			"path": "assets/equipment/experiments/rank-first-calibration-2026-09-02/spear-metal-ranks-v1.png",

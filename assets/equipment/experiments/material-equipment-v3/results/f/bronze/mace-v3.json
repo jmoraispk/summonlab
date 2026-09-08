@@ -9,7 +9,7 @@
 	"completedAt": "2026-09-03T13:25:12.242Z",
 	"provider": "OpenAI image generation",
 	"model": "gpt-imagegen-2.0",
-	"promptSha256": "00735a0c820ca8a5844f8e709f63bfac1f3989c302ee25ccdb08c90f5cf31f1d",
+	"promptSha256": "726dadb8a9d6fc2d4c03c442632c5cd44a74158c85a66654b4ba067630ca0890",
 	"references": [
 		{
 			"path": "assets/equipment/experiments/rank-first-calibration-2026-09-02/mace-metal-ranks-v1.png",

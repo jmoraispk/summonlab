@@ -119,7 +119,7 @@
 
 - [x] **Step 1: Add the wiki page and index links**
 
-  Present the eight progressions in compact tables, link the preserved Normal candidates for Grey Wolf, Dire Wolf, Cave Bear, Tunnel Boar, and Burrowing Worm, and label all inherited imagery as candidate/reference-only.
+  Present the eight progressions in compact tables, link the preserved Normal candidates for Gray Wolf, Dire Wolf, Cave Bear, Tunnel Boar, and Burrowing Worm, and label all inherited imagery as candidate/reference-only.
 
 - [x] **Step 2: Verify generated-wiki compatibility**
 

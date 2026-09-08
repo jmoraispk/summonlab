@@ -16,7 +16,7 @@ Wiki ID: `monster-family.rotwalkers`
 ## Visual constants
 
 - A recognizably human but wrong silhouette retains dislocated shoulders, a dragging or mismatched gait, a hanging jaw, and a head or torso held at an impossible angle.
-- Grey-green and bruise-purple flesh, dried-blood brown, bile yellow, and dirty linen white remain bodily and funerary rather than elemental colors.
+- Gray-green and bruise-purple flesh, dried-blood brown, bile yellow, and dirty linen white remain bodily and funerary rather than elemental colors.
 - Rotting flesh, exposed sinew, wet bone, grave dirt, torn burial clothing, and the visible marks or embedded tools of death preserve each corpse's material history.
 - Every form is wet and partly open, with readable seams at tendons, ribs, sutures, or fused bodies that explain both animation and counterplay.
 - Escalation reverses decay into coordination: sagging fragments become corded muscle, reinforced bone, cooperative corpse anatomy, and finally a plague court built from many still-legible bodies.

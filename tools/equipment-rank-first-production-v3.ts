@@ -60,7 +60,7 @@ export const EQUIPMENT_MATERIAL_BRIEFS_V3 = [
 		displayName: 'Bronze',
 		family: 'metal',
 		rank: 'F',
-		palette: 'Warm ochre-brown metal with muted gold edges and dark umber recesses.',
+		palette: 'Warm ocher-brown metal with muted gold edges and dark umber recesses.',
 		valueRange: 'Middle-dark overall; restrained highlights, no mirror polish.',
 		surfaceAndWear:
 			'Cast grain, rubbed edges, shallow dents, and small green-brown oxidation traces.',

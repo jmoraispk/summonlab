@@ -12,7 +12,7 @@ The isolated route combines:
 
 - Floors 1–10 with two cleared hunting grounds, one first-clear frontier, sequential locks,
   difficulty, known species, material previews, and first-clear/repeat reward differences;
-- an illustrated known-monster pool using existing Goblin Skirmisher, Grey Wolf, and Ember Wisp
+- an illustrated known-monster pool using existing Goblin Skirmisher, Gray Wolf, and Ember Wisp
   review art, with no player-authored species target;
 - Dara Zev, Mara Vey, and Jori Daro as one three-slot party, with incomplete and unavailable typed
   rejection states;

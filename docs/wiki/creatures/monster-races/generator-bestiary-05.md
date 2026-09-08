@@ -13,7 +13,7 @@ before promoting an entry to canon.
 
 **Visual constants**
 - **Silhouette:** Human frame with animal proportions — hunched shoulders, elongated muzzle, backward-jointed legs, long arms, tail.
-- **Palette:** Grey, black, russet or silver fur, with yellow or moon-white eye glow, torn cloth in muted human colors.
+- **Palette:** Gray, black, russet or silver fur, with yellow or moon-white eye glow, torn cloth in muted human colors.
 - **Material:** Fur, hide, torn clothing, broken chain, iron collar, claw and fang.
 - **Ornamentation:** Shredded remnants of human dress, snapped restraints, ritual scars, moon-motif jewelry from the human life.
 - **Escalation axis:** How far into the beast form the body is locked, and how little of the human remains.
@@ -32,7 +32,7 @@ before promoting an entry to canon.
 
 **Visual constants**
 - **Silhouette:** Squat and crouching, hunched shoulders, folded wings above the back, clawed grip, horned head.
-- **Palette:** Sandstone tan, granite grey, weathered green-black, marble white and verdigris bronze at the top. Rune-glow in amber.
+- **Palette:** Sandstone tan, granite gray, weathered green-black, marble white and verdigris bronze at the top. Rune-glow in amber.
 - **Material:** Carved stone, sandstone, granite, marble, bronze, mortar, moss and water-staining.
 - **Ornamentation:** Architectural carving, relief detail, water-spout mouths, glowing seams, pedestal fragments still attached.
 - **Escalation axis:** Stone quality and the architecture of the wings.
@@ -104,19 +104,19 @@ before promoting an entry to canon.
 
 ## 30. Doppelgangers
 
-**What they are.** Shapeshifters that copy people. In their true form they are blank grey humanoids — smooth, featureless, no hair, no face, no distinguishing marks at all, like an unpainted mannequin. They take the shape of others to infiltrate, and the quality of the copy is their entire measure of power. Weak ones produce obviously flawed imitations. Strong ones are indistinguishable from the original. The very strongest stop bothering to be one person at a time and wear many stolen faces at once.
+**What they are.** Shapeshifters that copy people. In their true form they are blank gray humanoids — smooth, featureless, no hair, no face, no distinguishing marks at all, like an unpainted mannequin. They take the shape of others to infiltrate, and the quality of the copy is their entire measure of power. Weak ones produce obviously flawed imitations. Strong ones are indistinguishable from the original. The very strongest stop bothering to be one person at a time and wear many stolen faces at once.
 
 **Visual constants**
 - **Silhouette:** Human, generic, deliberately unremarkable. Higher tiers add layered faces and mask motifs.
-- **Palette:** Blank clay grey and putty, with borrowed colors from stolen forms bleeding in at the edges.
+- **Palette:** Blank clay gray and putty, with borrowed colors from stolen forms bleeding in at the edges.
 - **Material:** Smooth featureless flesh, clay-like skin, mask porcelain, borrowed cloth.
 - **Ornamentation:** Seams, wrong joints, stolen clothing that doesn't quite fit, masks worn in layers.
 - **Escalation axis:** How convincing the disguise is, and what leaks through it.
 
 | Tier | Name | Visual |
 |------|------|--------|
-| T1 | Blank | Smooth grey humanoid, no face, no hair, no clothing. Unfinished-looking. |
-| T2 | Halfling Copy | A half-copied form — one arm still unformed grey, a face that is nearly right but blurred at the mouth. |
+| T1 | Blank | Smooth gray humanoid, no face, no hair, no clothing. Unfinished-looking. |
+| T2 | Halfling Copy | A half-copied form — one arm still unformed gray, a face that is nearly right but blurred at the mouth. |
 | T3 | Mimic | A near-perfect human copy, betrayed only by faint seams at the jaw and one hand jointed the wrong way. |
 | T4 | Facewearer | A flawless copy wearing three faces at once, layered like masks, each shifting to the front in turn. |
 | T5 | Faceless Sovereign | A shifting parade of stolen faces moving across the entire body — chest, arms, back — under a crown made of masks. |

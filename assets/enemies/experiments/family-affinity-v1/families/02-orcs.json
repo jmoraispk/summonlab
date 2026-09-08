@@ -7,7 +7,7 @@
 	"classificationNotes": "Source-draft Orcs are treated as a visual and encounter-production family, not as proof of universal culture, allegiance, morality, or personhood. This packet preserves their top-heavy anatomy, tusks, battle marks, heavy equipment, and visible status language while assigning each hostile form a specific authored combat duty.",
 	"visualConstants": [
 		"Tall, broad, top-heavy humanoid silhouette with a thick neck, wide shoulders, heavy jaw, forward lean, and lower tusks rising past the lip.",
-		"Grey-green or ash-grey skin is framed by blood red, black, dark iron, bone white, and readable red or white war paint.",
+		"Gray-green or ash-gray skin is framed by blood red, black, dark iron, bone white, and readable red or white war paint.",
 		"Boiled leather, fur, riveted iron, bone, and crude steel remain thick, weighty, and practical rather than elegant or finely matched.",
 		"Scars, paint, tusk rings, piercings, skull trophies, spiked pauldrons, and clan totems communicate earned encounter rank without becoming a biological claim.",
 		"Tusk length, muscle mass, posture, and carried trophies escalate together, but every form retains committed heavy motion and exposed recovery as the family combat grammar."
@@ -17,7 +17,7 @@
 	"affinityThemes": {
 		"normal": {
 			"constructionDimensions": [
-				"Materials remain mundane and clan-marked: scarred grey-green skin, boiled leather, dark fur, riveted iron, crude steel, bone trophies, and mineral war paint show physical wear and repair.",
+				"Materials remain mundane and clan-marked: scarred gray-green skin, boiled leather, dark fur, riveted iron, crude steel, bone trophies, and mineral war paint show physical wear and repair.",
 				"Motion and surface effects stay bodily and mechanical: shifting weight, flexing leather, iron scrape, breath, sweat, kicked dust, and flaking paint reveal attack commitment without supernatural residue."
 			],
 			"counterplaySignal": "War paint, planted feet, drawn-back shoulders, weapon arcs, banner ropes, and exposed armor joins preserve the mechanic-specific tells and recovery windows of every form.",
@@ -43,7 +43,7 @@
 		},
 		"earth": {
 			"constructionDimensions": [
-				"Equipment takes on quarry-built weight through slate lamellae, basalt axe cheeks, rawhide stone cradles, ochre mineral paint, and clan totems set into cracked load-bearing plinths.",
+				"Equipment takes on quarry-built weight through slate lamellae, basalt axe cheeks, rawhide stone cradles, ocher mineral paint, and clan totems set into cracked load-bearing plinths.",
 				"Stance and locomotion become braced and fault-driven: wider planted feet, dragged stone counterweights, dust compression, and visible fracture lines show where mass is anchored before it releases."
 			],
 			"counterplaySignal": "Pale fault lines spread from a planted boot through the loaded weapon or totem; striking the marked joint after the committed release breaks the brace and exposes the trailing side.",

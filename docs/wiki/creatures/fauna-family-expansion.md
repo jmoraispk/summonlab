@@ -30,7 +30,7 @@ Pack geometry progresses from a readable flank probe to an arena-scale coordinat
 
 | Tier | Form | Primary archetype | Defining lesson |
 | --- | --- | --- | --- |
-| T1 | Grey Wolf | Flank-Probe Initiate | Face or cross a simple tripping approach |
+| T1 | Gray Wolf | Flank-Probe Initiate | Face or cross a simple tripping approach |
 | T2 | Dire Wolf | Hamstring Pursuer | Break two-sided pursuit geometry |
 | T3 | Howler | Pack-Tempo Specialist | Read which wing a directional howl releases |
 | T4 | Pack Alpha | Prey-Marking Champion | Separate an intercepting commander from its pack |
@@ -125,7 +125,7 @@ Natural birds of prey progress from a shadow dive to multi-band airspace control
 The following individual Normal images remain useful identity references. They are historical
 **candidates**, not approved anchors and not runtime assets:
 
-- [Grey Wolf Normal candidate](../../../assets/enemies/experiments/affinity-workflow-v1/candidates/grey-wolf/normal-v1.png)
+- [Gray Wolf Normal candidate](../../../assets/enemies/experiments/affinity-workflow-v1/candidates/gray-wolf/normal-v1.png)
 - [Dire Wolf Normal candidate](../../../assets/enemies/experiments/affinity-expansion-v1/candidates/dire-wolf/normal-v1.png)
 - [Cave Bear Normal candidate](../../../assets/enemies/experiments/affinity-workflow-v1/candidates/cave-bear/normal-v1.png)
 - [Tunnel Boar Normal candidate](../../../assets/enemies/experiments/affinity-workflow-v1/candidates/tunnel-boar/normal-v1.png)

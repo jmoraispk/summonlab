@@ -67,19 +67,19 @@
 		{
 			"index": 9,
 			"opaqueLabel": "S09",
-			"targetId": "affinity-workflow-v1-grey-wolf-water",
-			"resultId": "result-affinity-workflow-v1-grey-wolf-water",
-			"resultCanonicalSha256": "2819388e3a7274bbe057c8dc7d1c8a0004f7eb04f21c87b3eb3e2d22e9def687",
-			"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/grey-wolf/water-v1.png",
+			"targetId": "affinity-workflow-v1-gray-wolf-water",
+			"resultId": "result-affinity-workflow-v1-gray-wolf-water",
+			"resultCanonicalSha256": "02690ad374cf82a605ced94a3c4948751496e8907764bc5a48c5ee8e424665e2",
+			"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/gray-wolf/water-v1.png",
 			"candidateByteSha256": "c49cef7a3291189961b887721e5e98e5b13c275bef97e3377a49a09b1eea28c4"
 		},
 		{
 			"index": 13,
 			"opaqueLabel": "S13",
-			"targetId": "affinity-workflow-v1-grey-wolf-normal",
-			"resultId": "result-affinity-workflow-v1-grey-wolf-normal",
-			"resultCanonicalSha256": "21e7628120f27492b1153b9d3adcef8cb2b42abfc35ac2310325056d8da8ff46",
-			"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/grey-wolf/normal-v1.png",
+			"targetId": "affinity-workflow-v1-gray-wolf-normal",
+			"resultId": "result-affinity-workflow-v1-gray-wolf-normal",
+			"resultCanonicalSha256": "cfd128e4e112644147e56cf8948616e6dd2f3b203774ef80bf9892c88aad8699",
+			"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/gray-wolf/normal-v1.png",
 			"candidateByteSha256": "c6fb5e9523f741c34503a97dcd4a5a7a0bf9e9ede447ef97d2778548d94c0777"
 		},
 		{
@@ -112,19 +112,19 @@
 		{
 			"index": 17,
 			"opaqueLabel": "S17",
-			"targetId": "affinity-workflow-v1-grey-wolf-fire",
-			"resultId": "result-affinity-workflow-v1-grey-wolf-fire",
-			"resultCanonicalSha256": "086581fcaae4ead548a2a6e0a132a02053dc5a41acc9cdb604af911352e154c1",
-			"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/grey-wolf/fire-v1.png",
+			"targetId": "affinity-workflow-v1-gray-wolf-fire",
+			"resultId": "result-affinity-workflow-v1-gray-wolf-fire",
+			"resultCanonicalSha256": "68347b8da41cd0e1e27ec6902cea3afcdf047e641796ab24846690640cf823ca",
+			"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/gray-wolf/fire-v1.png",
 			"candidateByteSha256": "e845d07374a1d7709b520570f84c36cc441170012b57dc4c64808cea9243cfed"
 		},
 		{
 			"index": 18,
 			"opaqueLabel": "S18",
-			"targetId": "affinity-workflow-v1-grey-wolf-wind",
-			"resultId": "result-affinity-workflow-v1-grey-wolf-wind",
-			"resultCanonicalSha256": "3b4e579578b5161b755854ed1e6c12d2aa16a10200abafff71cb9b28e1fb71a8",
-			"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/grey-wolf/wind-v1.png",
+			"targetId": "affinity-workflow-v1-gray-wolf-wind",
+			"resultId": "result-affinity-workflow-v1-gray-wolf-wind",
+			"resultCanonicalSha256": "6fd7f9ff1a0911a6e20d20b5023f077b3567c416d0749b56c192548441d23768",
+			"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/gray-wolf/wind-v1.png",
 			"candidateByteSha256": "a0ee4e9a5e55f622cf878586a5aa82301047bb24de896a1b6a25a03fc6afc16d"
 		},
 		{

@@ -27,7 +27,7 @@ Shared visual constants and the complete T1–T5 comparison live on the [Harpies
 
 **Escalation axis:** Feather quality, talon reach, crest authority, and control of aerial lanes grow from a ragged noise probe into flock formations and a cliff-spanning sovereign storm court.
 
-**This form's visual delta:** Scraggly and half-molted with patchy grey feathers, thin claws, wild matted hair, a low crest, and visibly weak wing edges.
+**This form's visual delta:** Scraggly and half-molted with patchy gray feathers, thin claws, wild matted hair, a low crest, and visibly weak wing edges.
 
 ## Combat reading
 

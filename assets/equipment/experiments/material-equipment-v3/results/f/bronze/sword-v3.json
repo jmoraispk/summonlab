@@ -9,7 +9,7 @@
 	"completedAt": "2026-09-03T13:22:41.392Z",
 	"provider": "OpenAI image generation",
 	"model": "gpt-imagegen-2.0",
-	"promptSha256": "8076f31a45c752f8cecc647f7bb899f8cfd9c76ca6caa9dafe0bfb64e67ed64c",
+	"promptSha256": "e189ccdad876ac30846618f06035e219d67f600c9b2e06747dd604b6f266f73c",
 	"references": [
 		{
 			"path": "assets/equipment/experiments/rank-first-calibration-2026-09-02/sword-metal-ranks-v1.png",

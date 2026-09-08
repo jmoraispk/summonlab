@@ -152,8 +152,8 @@ function paletteFor(record: CatalogRecord): readonly string[] {
 	const element = elementFor(record)?.toLowerCase();
 	if (element === 'fire') return ['ember orange', 'charcoal black', 'hot gold'];
 	if (element === 'water') return ['deep blue', 'clear cyan', 'cold silver'];
-	if (element === 'wind') return ['pale cyan', 'storm grey', 'white'];
-	if (element === 'earth') return ['mineral green', 'stone grey', 'warm umber'];
+	if (element === 'wind') return ['pale cyan', 'storm gray', 'white'];
+	if (element === 'earth') return ['mineral green', 'stone gray', 'warm umber'];
 	if (record.domain === 'Martial')
 		return ['tempered steel', 'charcoal black', 'restrained warm sparks'];
 	if (record.domain === 'Magical') return ['arcane gold', 'deep indigo', 'pale spectral light'];

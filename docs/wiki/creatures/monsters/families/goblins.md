@@ -16,7 +16,7 @@ Wiki ID: `monster-family.goblins`
 ## Visual constants
 
 - Short, hunched, long-armed humanoid silhouette with an oversized head and pointed ears, disproportionately large hands and feet, hooked nose, and crowded crooked teeth.
-- Sickly green or grey-green skin against muddy browns, rust-orange, dull iron, and sparse accents of stolen gold.
+- Sickly green or gray-green skin against muddy browns, rust-orange, dull iron, and sparse accents of stolen gold.
 - Every carried object reads as stolen, scavenged, or crudely repaired: rags, patched leather, cracked wood, rusted scrap metal, bone, and rope rather than purpose-built matching equipment.
 - Loot is the status language: mismatched helmets, coin necklaces, teeth, rings, captured banners, and trophies accumulate with rank.
 - Posture and finish communicate hierarchy, from a knock-kneed cringing crouch to an upright swagger amid increasingly prestigious plunder.
