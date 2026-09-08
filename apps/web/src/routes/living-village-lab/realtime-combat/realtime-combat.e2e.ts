@@ -14,6 +14,7 @@ test('switches presentation without restarting the autonomous fight', async ({ p
 		'data-applied-presentation-mode',
 		'2.5d-v2'
 	);
+	await expect(page.getByTestId('combat-rejection')).toHaveCount(0);
 	await expect(page.getByTestId('realtime-combat-pixi-host')).toHaveAttribute(
 		'data-animated-actor-count',
 		'8'
@@ -75,4 +76,39 @@ test('keeps the mobile battlefield and controls readable', async ({ page }) => {
 		() => document.documentElement.scrollWidth - window.innerWidth
 	);
 	expect(horizontalOverflow).toBeLessThanOrEqual(0);
+});
+
+test('returns one bounded receipt and replays without a second completion', async ({ page }) => {
+	test.setTimeout(60_000);
+	await page.goto(combatUrl);
+	await expect(page.getByTestId('combat-resolution')).toBeVisible({ timeout: 45_000 });
+	await expect(page.getByTestId('combat-receipt')).toContainText('Victory');
+	await expect(page.getByTestId('combat-receipt')).toContainText('3 heroes · 5 enemies');
+	await expect(page.getByTestId('combat-completion-count')).toHaveText('1');
+	const receiptId = await page.getByTestId('combat-receipt-id').textContent();
+
+	await page.getByRole('button', { name: 'Replay verified fight' }).click();
+	await expect(page.getByTestId('combat-replay-status')).toHaveText('Replay verified', {
+		timeout: 45_000
+	});
+	await expect(page.getByTestId('combat-completion-count')).toHaveText('1');
+	await expect(page.getByTestId('combat-receipt-id')).toHaveText(receiptId!);
+});
+
+test('creates a newly keyed fixture request from Run it again', async ({ page }) => {
+	test.setTimeout(60_000);
+	await page.goto(combatUrl);
+	await expect(page.getByTestId('combat-resolution')).toBeVisible({ timeout: 45_000 });
+
+	await page.getByRole('button', { name: 'Run it again' }).click();
+	await expect(page.getByTestId('combat-rejection')).toContainText('canonical fixture request');
+	await expect(page.getByTestId('combat-receipt')).toHaveCount(0);
+});
+
+test('reports an unavailable presentation without a defeat receipt', async ({ page }) => {
+	await page.route('**/rat-brute-motion-v1.json', (route) => route.abort());
+	await page.goto(combatUrl);
+	await expect(page.getByTestId('combat-unavailable')).toContainText('could not be loaded');
+	await expect(page.getByTestId('combat-receipt')).toHaveCount(0);
+	await expect(page.getByText('Party overwhelmed')).toHaveCount(0);
 });

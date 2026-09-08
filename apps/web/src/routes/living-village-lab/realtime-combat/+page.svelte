@@ -1,5 +1,11 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import {
+		ExplorationEncounterRequestSchema,
+		type ExplorationCombatReceipt,
+		type ExplorationCombatRejection,
+		type ExplorationEncounterRequest
+	} from '@summonlab/contracts';
 
 	import LabBackLink from '$lib/components/living-village/LabBackLink.svelte';
 	import RealtimeCombatStage from '$lib/components/living-village/realtime-combat/RealtimeCombatStage.svelte';
@@ -13,14 +19,31 @@
 		RAT_ENCOUNTER_REQUEST
 	} from '$lib/components/living-village/realtime-combat/rat-encounter-fixture';
 	import { CombatSessionRegistry } from '$lib/components/living-village/realtime-combat/combat-session';
+	import { combatValueHash } from '$lib/components/living-village/realtime-combat/combat-hash';
+	import type {
+		CombatReplayVerification,
+		CombatUnavailableState
+	} from '$lib/components/living-village/realtime-combat/combat-session';
 	import { PLAYER_SETTINGS_EVENT } from '$lib/player-settings';
 
 	let mode = $state<CombatPresentationMode>('2.5d-v2');
 	let paused = $state(false);
 	let reducedMotion = $state(false);
+	let request = $state<ExplorationEncounterRequest>(RAT_ENCOUNTER_REQUEST);
 	let snapshot = $state<RealtimeCombatState>(createRealtimeCombat(RAT_ENCOUNTER_REQUEST));
 	let hydrated = $state(false);
-	const combatSessions = new CombatSessionRegistry();
+	const registry = new CombatSessionRegistry();
+	const dependencies = {
+		claimPolicy: RAT_ENCOUNTER_CLAIM_POLICY,
+		fixtureRequestHash: RAT_ENCOUNTER_REQUEST.requestHash
+	};
+	let stageKey = $state(0);
+	let replayOf = $state<ExplorationCombatReceipt>();
+	let receipt = $state<ExplorationCombatReceipt>();
+	let rejection = $state<ExplorationCombatRejection>();
+	let unavailable = $state<CombatUnavailableState>();
+	let replayVerification = $state<CombatReplayVerification>({ kind: 'pending' });
+	let completionCount = $state(0);
 
 	const heroes = $derived(snapshot.actors.filter((actor) => actor.team === 'heroes'));
 	const ratsAlive = $derived(
@@ -50,8 +73,58 @@
 		};
 	});
 
+	function acceptCompletion(next: ExplorationCombatReceipt): void {
+		if (receipt) return;
+		receipt = next;
+		rejection = undefined;
+		unavailable = undefined;
+		completionCount += 1;
+	}
+
+	function createNextRequest(): ExplorationEncounterRequest {
+		const { requestHash: _requestHash, ...fixture } = structuredClone(RAT_ENCOUNTER_REQUEST);
+		void _requestHash;
+		const identity = crypto.randomUUID();
+		const next = {
+			...fixture,
+			requestId: crypto.randomUUID(),
+			idempotencyKey: `rat-study-field-test-${identity}`,
+			runId: crypto.randomUUID(),
+			correlationId: crypto.randomUUID()
+		};
+		return ExplorationEncounterRequestSchema.parse({
+			...next,
+			requestHash: combatValueHash(next)
+		});
+	}
+
 	function replay(): void {
+		if (!receipt) return;
 		paused = false;
+		replayOf = receipt;
+		replayVerification = { kind: 'pending' };
+		stageKey += 1;
+	}
+
+	function rerunLiveEncounter(): void {
+		request = createNextRequest();
+		snapshot = createRealtimeCombat(request);
+		paused = false;
+		replayOf = undefined;
+		receipt = undefined;
+		rejection = undefined;
+		unavailable = undefined;
+		replayVerification = { kind: 'pending' };
+		stageKey += 1;
+	}
+
+	function retryUnavailable(): void {
+		snapshot = createRealtimeCombat(request);
+		paused = false;
+		replayOf = undefined;
+		unavailable = undefined;
+		replayVerification = { kind: 'pending' };
+		stageKey += 1;
 	}
 </script>
 
@@ -82,19 +155,23 @@
 
 	<section class="study" aria-label="Realtime combat presentation study">
 		<div class="battlefield" data-testid="realtime-combat-stage">
-			<RealtimeCombatStage
-				request={RAT_ENCOUNTER_REQUEST}
-				claimPolicy={RAT_ENCOUNTER_CLAIM_POLICY}
-				registry={combatSessions}
-				{mode}
-				{paused}
-				{reducedMotion}
-				onSnapshot={(next) => (snapshot = next)}
-				onComplete={() => {}}
-				onRejected={() => {}}
-				onUnavailable={() => {}}
-				onReplayVerified={() => {}}
-			/>
+			{#key stageKey}
+				<RealtimeCombatStage
+					{request}
+					claimPolicy={dependencies.claimPolicy}
+					fixtureRequestHash={dependencies.fixtureRequestHash}
+					{registry}
+					{replayOf}
+					{mode}
+					{paused}
+					{reducedMotion}
+					onSnapshot={(next) => (snapshot = next)}
+					onComplete={acceptCompletion}
+					onRejected={(next) => (rejection = next)}
+					onUnavailable={(next) => (unavailable = next)}
+					onReplayVerified={(next) => (replayVerification = next)}
+				/>
+			{/key}
 
 			<div class="battle-hud">
 				<div class="encounter-state" data-testid="combat-phase">
@@ -117,7 +194,7 @@
 				<small>Agent report</small><span>{snapshot.lastEvent}</span>
 			</div>
 
-			{#if snapshot.phase !== 'running'}
+			{#if snapshot.phase !== 'running' && !replayOf && !unavailable}
 				<div class="resolution" data-testid="combat-resolution">
 					<p>{snapshot.phase === 'victory' ? 'The pack breaks' : 'The gate falls'}</p>
 					<strong
@@ -125,7 +202,7 @@
 							? 'Village threshold secured'
 							: 'Reinforce and return'}</strong
 					>
-					<button type="button" onclick={replay}>Run it again</button>
+					<button type="button" onclick={rerunLiveEncounter}>Run it again</button>
 				</div>
 			{/if}
 		</div>
@@ -161,6 +238,39 @@
 				</div>
 			</div>
 
+			{#if receipt}
+				<section class="terminal-receipt" data-testid="combat-receipt" aria-live="polite">
+					<strong>{receipt.outcome === 'victory' ? 'Victory' : 'Defeat'}</strong>
+					<span>{receipt.finalHeroes.length} heroes · {receipt.finalEnemies.length} enemies</span>
+					<code data-testid="combat-receipt-id">{receipt.receiptId}</code>
+					<span>{receipt.claims.length} uncommitted claims</span>
+					<span class="replay-reference">Replay ref · {receipt.replayRef.requestId}</span>
+					<ul aria-label="Final hero resources">
+						{#each receipt.finalHeroes as hero (hero.heroId)}
+							<li>{hero.heroId}: Health {hero.health} · Mana {hero.mana}</li>
+						{/each}
+					</ul>
+					<span class="sr-only" data-testid="combat-completion-count">{completionCount}</span>
+					<button type="button" onclick={replay}>Replay verified fight</button>
+					{#if replayVerification.kind === 'verified'}
+						<span class="replay-status" data-testid="combat-replay-status">Replay verified</span>
+					{:else if replayVerification.kind === 'mismatch'}
+						<span class="replay-status" data-testid="combat-replay-status"
+							>Replay verification failed: {replayVerification.field}</span
+						>
+					{/if}
+				</section>
+			{:else if rejection}
+				<section class="terminal-receipt" data-testid="combat-rejection">
+					Encounter rejected: {rejection.summary}
+				</section>
+			{:else if unavailable}
+				<section class="terminal-receipt" data-testid="combat-unavailable">
+					<span>Combat presentation could not be loaded.</span>
+					<button type="button" onclick={retryUnavailable}>Retry presentation</button>
+				</section>
+			{/if}
+
 			<div class="evidence" data-testid="presentation-evidence">
 				<span>What changes</span>
 				<strong
@@ -187,7 +297,9 @@
 				>
 					{paused ? 'Resume agents' : 'Pause agents'}
 				</button>
-				<button type="button" onclick={replay} disabled={!hydrated}>Replay same fight</button>
+				<button type="button" onclick={replay} disabled={!hydrated || !receipt}
+					>Replay same fight</button
+				>
 			</div>
 
 			<details>
@@ -475,6 +587,45 @@
 		margin-top: 1.2rem;
 	}
 
+	.terminal-receipt {
+		display: grid;
+		gap: 0.55rem;
+		padding: 0.9rem;
+		border: 1px solid rgba(121, 195, 207, 0.32);
+		background: rgba(7, 15, 21, 0.78);
+		color: #c9c0af;
+		font-size: 0.7rem;
+		line-height: 1.45;
+	}
+
+	.terminal-receipt > strong {
+		color: #79c3cf;
+		font:
+			400 1.45rem Georgia,
+			serif;
+	}
+
+	.terminal-receipt code,
+	.replay-reference {
+		color: #d89b42;
+		font-size: 0.58rem;
+		overflow-wrap: anywhere;
+	}
+
+	.terminal-receipt ul {
+		display: grid;
+		gap: 0.18rem;
+		margin: 0;
+		padding: 0;
+		list-style: none;
+		color: #aab5b4;
+	}
+
+	.replay-status {
+		color: #79c3cf;
+		font-weight: 800;
+	}
+
 	aside {
 		display: flex;
 		flex-direction: column;
@@ -578,9 +729,22 @@
 	}
 
 	.playback button,
-	.resolution button {
+	.resolution button,
+	.terminal-receipt button {
 		min-height: 2.8rem;
 		padding: 0.6rem;
+	}
+
+	.sr-only {
+		position: absolute;
+		width: 1px;
+		height: 1px;
+		padding: 0;
+		margin: -1px;
+		overflow: hidden;
+		clip: rect(0, 0, 0, 0);
+		white-space: nowrap;
+		border: 0;
 	}
 
 	details {
