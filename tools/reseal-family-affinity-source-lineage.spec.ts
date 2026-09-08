@@ -193,12 +193,11 @@ describe('family-affinity source lineage resealing', () => {
 			}))
 		);
 		const sources = await Promise.all(
-			[goblinPacketPath, orcPacketPath].map(async (repositoryPath) => ({
-				path: repositoryPath,
-				contents: (await readFile(path.resolve(repositoryPath), 'utf8'))
-					.replaceAll('grey', 'gray')
-					.replaceAll('ochre', 'ocher')
-			}))
+			[goblinPacketPath, orcPacketPath].map(async (repositoryPath) => {
+				const packet = JSON.parse(await readFile(path.resolve(repositoryPath), 'utf8'));
+				packet.classificationNotes = `${packet.classificationNotes} Fixture update.`;
+				return { path: repositoryPath, contents: `${JSON.stringify(packet)}\n` };
+			})
 		);
 
 		const changed = resealFamilyAffinitySourceLineagesDocuments(sources, documents);
