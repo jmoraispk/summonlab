@@ -8,15 +8,19 @@
 		createRealtimeCombat,
 		type RealtimeCombatState
 	} from '$lib/components/living-village/realtime-combat/realtime-combat';
-	import { RAT_ENCOUNTER_REQUEST } from '$lib/components/living-village/realtime-combat/rat-encounter-fixture';
+	import {
+		RAT_ENCOUNTER_CLAIM_POLICY,
+		RAT_ENCOUNTER_REQUEST
+	} from '$lib/components/living-village/realtime-combat/rat-encounter-fixture';
+	import { CombatSessionRegistry } from '$lib/components/living-village/realtime-combat/combat-session';
 	import { PLAYER_SETTINGS_EVENT } from '$lib/player-settings';
 
 	let mode = $state<CombatPresentationMode>('2.5d-v2');
 	let paused = $state(false);
-	let restartKey = $state(0);
 	let reducedMotion = $state(false);
 	let snapshot = $state<RealtimeCombatState>(createRealtimeCombat(RAT_ENCOUNTER_REQUEST));
 	let hydrated = $state(false);
+	const combatSessions = new CombatSessionRegistry();
 
 	const heroes = $derived(snapshot.actors.filter((actor) => actor.team === 'heroes'));
 	const ratsAlive = $derived(
@@ -47,7 +51,6 @@
 	});
 
 	function replay(): void {
-		restartKey += 1;
 		paused = false;
 	}
 </script>
@@ -80,11 +83,17 @@
 	<section class="study" aria-label="Realtime combat presentation study">
 		<div class="battlefield" data-testid="realtime-combat-stage">
 			<RealtimeCombatStage
+				request={RAT_ENCOUNTER_REQUEST}
+				claimPolicy={RAT_ENCOUNTER_CLAIM_POLICY}
+				registry={combatSessions}
 				{mode}
 				{paused}
-				{restartKey}
 				{reducedMotion}
 				onSnapshot={(next) => (snapshot = next)}
+				onComplete={() => {}}
+				onRejected={() => {}}
+				onUnavailable={() => {}}
+				onReplayVerified={() => {}}
 			/>
 
 			<div class="battle-hud">
