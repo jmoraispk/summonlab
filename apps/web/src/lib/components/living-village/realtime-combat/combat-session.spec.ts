@@ -5,7 +5,7 @@ import {
 } from '@summonlab/contracts';
 import { describe, expect, it, vi } from 'vitest';
 
-import { combatRequestHash } from './combat-hash';
+import { combatDeterministicId, combatRequestHash, combatValueHash } from './combat-hash';
 import {
 	CombatSessionRegistry,
 	createCombatSession,
@@ -235,6 +235,125 @@ describe('combat session', () => {
 		expect(runReplayToTerminal(createReplayCombatSession(RAT_ENCOUNTER_REQUEST, tampered, dependencies))).toMatchObject({
 			kind: 'mismatch',
 			field: 'requestHash'
+		});
+	});
+
+	it('replays the same intermediate mechanics state as a live session', () => {
+		const receipt = runToTerminal(createCombatSession(RAT_ENCOUNTER_REQUEST, dependencies));
+		if (!receipt) throw new Error('expected receipt');
+		const live = createCombatSession(RAT_ENCOUNTER_REQUEST, dependencies);
+		const replay = createReplayCombatSession(RAT_ENCOUNTER_REQUEST, receipt, dependencies);
+		live.markAssetsReady();
+		replay.markAssetsReady();
+
+		let changed = false;
+		for (let tick = 0; tick < 1_000 && live.status === 'running'; tick += 1) {
+			live.advanceFixedStep();
+			replay.advanceFixedStep();
+			changed ||= live.combat.actors.some(
+				(actor, index) =>
+					actor.health !==
+					[...RAT_ENCOUNTER_REQUEST.party, ...RAT_ENCOUNTER_REQUEST.enemies][index]?.resources.health
+			);
+			if (changed) break;
+		}
+
+		expect(changed).toBe(true);
+		expect(replay.combat).toEqual(live.combat);
+		expect(replay.replayVerification).toEqual({ kind: 'pending' });
+	});
+
+	it('fails closed against a coherent receipt for a different rerun', () => {
+		const alternateRequest = withProductionApprovals({ seed: 'independent-replay-seed' });
+		const alternateReceipt = runToTerminal(createCombatSession(alternateRequest, dependencies));
+		if (!alternateReceipt) throw new Error('expected alternate receipt');
+
+		expect(runReplayToTerminal(createReplayCombatSession(RAT_ENCOUNTER_REQUEST, alternateReceipt, dependencies))).toMatchObject({
+			kind: 'mismatch',
+			field: 'requestHash'
+		});
+	});
+
+	it('rejects coordinated receipt tampering against an independently rerun candidate', () => {
+		const receipt = runToTerminal(createCombatSession(RAT_ENCOUNTER_REQUEST, dependencies));
+		if (!receipt) throw new Error('expected receipt');
+		const events = receipt.events.map((event, index) =>
+			index === 1 ? { ...event, publicSummary: 'A forged authoritative event.' } : event
+		);
+		const finalHeroes = receipt.finalHeroes.map((hero) =>
+			hero.heroId === 'moss-archer' ? { ...hero, mana: hero.mana - 1 } : hero
+		);
+		const traceHash = combatValueHash(events);
+		const outputStateHash = combatValueHash({
+			outcome: receipt.outcome,
+			finalHeroes,
+			finalEnemies: receipt.finalEnemies,
+			defeatedEnemyIds: receipt.defeatedEnemyIds,
+			claims: receipt.claims
+		});
+		const receiptId = combatDeterministicId('exploration-combat-receipt-v1', {
+			requestHash: receipt.requestHash,
+			traceHash
+		});
+		const forged = {
+			...receipt,
+			events,
+			finalHeroes,
+			traceHash,
+			outputStateHash,
+			receiptId,
+			replayRef: { ...receipt.replayRef, traceHash, receiptId }
+		};
+
+		expect(ExplorationCombatReceiptSchema.safeParse(forged).success).toBe(true);
+		expect(runReplayToTerminal(createReplayCombatSession(RAT_ENCOUNTER_REQUEST, forged, dependencies))).toMatchObject({
+			kind: 'mismatch'
+		});
+	});
+
+	it.each([
+		['request identity', (receipt: NonNullable<ReturnType<typeof runToTerminal>>) => ({
+			...receipt,
+			requestId: '00000000-0000-4000-8000-000000000001',
+			replayRef: { ...receipt.replayRef, requestId: '00000000-0000-4000-8000-000000000001' }
+		})],
+		['run identity', (receipt: NonNullable<ReturnType<typeof runToTerminal>>) => ({
+			...receipt,
+			runId: '00000000-0000-4000-8000-000000000002'
+		})],
+		['ruleset reference', (receipt: NonNullable<ReturnType<typeof runToTerminal>>) => ({
+			...receipt,
+			rulesetVersion: 'alternate-combat-v1',
+			replayRef: { ...receipt.replayRef, rulesetVersion: 'alternate-combat-v1' }
+		})],
+		['presentation reference', (receipt: NonNullable<ReturnType<typeof runToTerminal>>) => ({
+			...receipt,
+			replayRef: { ...receipt.replayRef, battlefieldBindingHash: 'f'.repeat(64) }
+		})],
+		['terminal tick', (receipt: NonNullable<ReturnType<typeof runToTerminal>>) => ({
+			...receipt,
+			endedAtTick: receipt.endedAtTick + 1
+		})]
+	] as const)('fails replay verification for a changed %s', (_label, tamper) => {
+		const receipt = runToTerminal(createCombatSession(RAT_ENCOUNTER_REQUEST, dependencies));
+		if (!receipt) throw new Error('expected receipt');
+
+		expect(runReplayToTerminal(createReplayCombatSession(RAT_ENCOUNTER_REQUEST, tamper(receipt), dependencies))).toMatchObject({
+			kind: 'mismatch'
+		});
+	});
+
+	it('returns terminal replay verification for schema-invalid receipt and request inputs', () => {
+		const receipt = runToTerminal(createCombatSession(RAT_ENCOUNTER_REQUEST, dependencies));
+		if (!receipt) throw new Error('expected receipt');
+		const malformedReceipt = { ...receipt, receiptId: 'not-a-uuid' };
+		const malformedRequest = { requestId: 'not-a-uuid' } as ExplorationEncounterRequest;
+
+		expect(runReplayToTerminal(createReplayCombatSession(RAT_ENCOUNTER_REQUEST, malformedReceipt, dependencies))).toMatchObject({
+			kind: 'mismatch'
+		});
+		expect(runReplayToTerminal(createReplayCombatSession(malformedRequest, receipt, dependencies))).toMatchObject({
+			kind: 'mismatch'
 		});
 	});
 

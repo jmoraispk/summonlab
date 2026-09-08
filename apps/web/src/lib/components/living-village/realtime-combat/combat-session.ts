@@ -525,7 +525,8 @@ class CombatSessionImpl implements CombatSession {
 	constructor(
 		input: unknown,
 		private readonly dependencies: CombatSessionDependencies,
-		validation: ValidationResult
+		validation: ValidationResult,
+		private readonly publishCompletion = true
 	) {
 		this.request = 'request' in validation ? deepFreeze(validation.request) : REJECTED_REQUEST;
 		this.currentStatus = 'rejection' in validation ? 'rejected' : 'loading';
@@ -761,7 +762,9 @@ class CombatSessionImpl implements CombatSession {
 			})
 		);
 		this.currentStatus = outcome;
-		for (const listener of [...this.listeners]) listener(this.finalReceipt);
+		if (this.publishCompletion) {
+			for (const listener of [...this.listeners]) listener(this.finalReceipt);
+		}
 	}
 
 	private snapshot(): CombatSessionSnapshot {
@@ -914,16 +917,6 @@ export function enterCombatSession(
 	return { kind: 'session', session };
 }
 
-function replayOutputStateHash(receipt: ExplorationCombatReceipt): string {
-	return combatValueHash({
-		outcome: receipt.outcome,
-		finalHeroes: receipt.finalHeroes,
-		finalEnemies: receipt.finalEnemies,
-		defeatedEnemyIds: receipt.defeatedEnemyIds,
-		claims: receipt.claims
-	});
-}
-
 function encounterInputStateHash(request: ExplorationEncounterRequest): string {
 	const { expectedExplorationStateHash, requestHash, ...inputState } = request;
 	void expectedExplorationStateHash;
@@ -931,106 +924,98 @@ function encounterInputStateHash(request: ExplorationEncounterRequest): string {
 	return combatValueHash(inputState);
 }
 
-function replayVerificationFor(
-	request: ExplorationEncounterRequest,
-	receipt: ExplorationCombatReceipt
-): CombatReplayVerification {
-	if (
-		request.requestHash !== receipt.requestHash ||
-		combatRequestHash(request) !== request.requestHash ||
-		receipt.inputStateHash !== encounterInputStateHash(request) ||
-		receipt.replayRef.requestHash !== receipt.requestHash ||
-		receipt.replayRef.requestId !== request.requestId ||
-		combatValueHash(receipt.contentBindings) !== combatValueHash(request.contentBindings)
-	) {
-		return deepFreeze({ kind: 'mismatch', field: 'requestHash' });
-	}
-	if (
-		receipt.rulesetVersion !== request.rulesetVersion ||
-		receipt.replayRef.rulesetVersion !== receipt.rulesetVersion
-	) {
-		return deepFreeze({ kind: 'mismatch', field: 'rulesetVersion' });
-	}
-	if (
-		receipt.replayRef.battlefieldBindingHash !== combatValueHash(request.battlefieldBinding) ||
-		receipt.replayRef.participantPresentationBindingsHash !==
-			combatValueHash([...request.party, ...request.enemies].map((entry) => entry.presentation))
-	) {
-		return deepFreeze({ kind: 'mismatch', field: 'presentationBindings' });
-	}
-	const traceHash = combatValueHash(receipt.events);
-	if (receipt.traceHash !== traceHash || receipt.replayRef.traceHash !== receipt.traceHash) {
-		return deepFreeze({ kind: 'mismatch', field: 'traceHash' });
-	}
-	if (receipt.outputStateHash !== replayOutputStateHash(receipt)) {
-		return deepFreeze({ kind: 'mismatch', field: 'outputStateHash' });
-	}
-	const receiptId = combatDeterministicId('exploration-combat-receipt-v1', {
-		requestHash: request.requestHash,
-		traceHash
-	});
-	if (receipt.receiptId !== receiptId || receipt.replayRef.receiptId !== receipt.receiptId) {
-		return deepFreeze({ kind: 'mismatch', field: 'receiptId' });
-	}
-	return deepFreeze({ kind: 'verified', receiptId: receipt.receiptId });
+function replayMismatch(field: Extract<CombatReplayVerification, { kind: 'mismatch' }>['field']) {
+	return deepFreeze({ kind: 'mismatch', field } as const);
 }
 
-function replayTerminalCombat(
-	combat: RealtimeCombatState,
-	receipt: ExplorationCombatReceipt
-): RealtimeCombatState {
-	type FinalResource = Readonly<{
-		health: number;
-		maximumHealth: number;
-		mana: number;
-		maximumMana: number;
-		combatState: 'defeated' | 'combat-capable';
-	}>;
-	const finalResources = new Map<string, FinalResource>();
-	for (const hero of receipt.finalHeroes) finalResources.set(hero.heroId, hero);
-	for (const enemy of receipt.finalEnemies) finalResources.set(enemy.enemyInstanceId, enemy);
-	return {
-		...combat,
-		phase: receipt.outcome,
-		defeatedEnemies: receipt.defeatedEnemyIds.length,
-		lastEvent: receipt.decisiveCause.summary,
-		actors: combat.actors.map((actor) => {
-			const final = finalResources.get(actor.id);
-			return final
-				? {
-						...actor,
-						health: final.health,
-						maximumHealth: final.maximumHealth,
-						mana: final.mana,
-						maximumMana: final.maximumMana,
-						intent: final.combatState === 'defeated' ? 'down' : actor.intent
-					}
-				: actor;
-		})
-	};
+function replayVerificationFor(
+	expected: ExplorationCombatReceipt,
+	candidate: ExplorationCombatReceipt
+): CombatReplayVerification {
+	if (
+		expected.requestId !== candidate.requestId ||
+		expected.idempotencyKey !== candidate.idempotencyKey ||
+		expected.runId !== candidate.runId ||
+		expected.correlationId !== candidate.correlationId ||
+		expected.encounterId !== candidate.encounterId ||
+		expected.explorationAttemptId !== candidate.explorationAttemptId ||
+		expected.requestHash !== candidate.requestHash ||
+		expected.inputStateHash !== candidate.inputStateHash ||
+		combatValueHash(expected.contentBindings) !== combatValueHash(candidate.contentBindings)
+	) {
+		return replayMismatch('requestHash');
+	}
+	if (
+		expected.rulesetVersion !== candidate.rulesetVersion ||
+		expected.replayRef.rulesetVersion !== candidate.replayRef.rulesetVersion
+	) {
+		return replayMismatch('rulesetVersion');
+	}
+	if (
+		expected.replayRef.battlefieldBindingHash !== candidate.replayRef.battlefieldBindingHash ||
+		expected.replayRef.participantPresentationBindingsHash !==
+			candidate.replayRef.participantPresentationBindingsHash
+	) {
+		return replayMismatch('presentationBindings');
+	}
+	if (
+		expected.startedAtTick !== candidate.startedAtTick ||
+		expected.endedAtTick !== candidate.endedAtTick ||
+		combatValueHash(expected.events) !== combatValueHash(candidate.events) ||
+		expected.traceHash !== candidate.traceHash ||
+		expected.replayRef.traceHash !== candidate.replayRef.traceHash ||
+		combatValueHash(expected.decisiveCause) !== combatValueHash(candidate.decisiveCause)
+	) {
+		return replayMismatch('traceHash');
+	}
+	if (
+		expected.outcome !== candidate.outcome ||
+		combatValueHash(expected.finalHeroes) !== combatValueHash(candidate.finalHeroes) ||
+		combatValueHash(expected.finalEnemies) !== combatValueHash(candidate.finalEnemies) ||
+		combatValueHash(expected.defeatedEnemyIds) !== combatValueHash(candidate.defeatedEnemyIds) ||
+		combatValueHash(expected.claims) !== combatValueHash(candidate.claims) ||
+		expected.outputStateHash !== candidate.outputStateHash
+	) {
+		return replayMismatch('outputStateHash');
+	}
+	if (
+		expected.receiptId !== candidate.receiptId ||
+		expected.replayRef.receiptId !== candidate.replayRef.receiptId
+	) {
+		return replayMismatch('receiptId');
+	}
+	if (
+		expected.replayRef.requestId !== candidate.replayRef.requestId ||
+		expected.replayRef.requestHash !== candidate.replayRef.requestHash ||
+		expected.replayRef.seed !== candidate.replayRef.seed ||
+		expected.replayRef.entropyCursor !== candidate.replayRef.entropyCursor
+	) {
+		return replayMismatch('requestHash');
+	}
+	return deepFreeze({ kind: 'verified', receiptId: candidate.receiptId });
 }
 
 class ReplayCombatSession implements CombatSession {
 	readonly request: ExplorationEncounterRequest;
-	private currentStatus: CombatSessionStatus = 'loading';
+	private currentStatus: CombatSessionStatus;
 	private currentCombat: RealtimeCombatState;
-	private readonly capturedEvents: readonly ExplorationCombatEvent[];
-	private readonly trace: ExplorationCombatEvent[];
+	private trace: readonly ExplorationCombatEvent[] = [];
 	private simulationTick = 0;
 	private unavailableState: CombatUnavailableState | undefined;
-	private currentVerification: CombatReplayVerification = deepFreeze({ kind: 'pending' });
+	private currentVerification: CombatReplayVerification;
 	private readonly unavailableListeners: CombatUnavailableListener[] = [];
 	private readonly verificationListeners: ((verification: CombatReplayVerification) => void)[] = [];
-	private readonly terminalTick: number;
 
-	constructor(request: ExplorationEncounterRequest, private readonly expectedReceipt: ExplorationCombatReceipt) {
+	constructor(
+		request: ExplorationEncounterRequest,
+		private readonly candidate: CombatSessionImpl | undefined,
+		private readonly expectedReceipt: ExplorationCombatReceipt | undefined,
+		initialVerification: CombatReplayVerification
+	) {
 		this.request = deepFreeze(request);
-		this.currentCombat = createRealtimeCombat(this.request);
-		this.capturedEvents = immutableCopy(expectedReceipt.events);
-		this.trace = this.capturedEvents.filter((event) => event.simulationTick === 0);
-		this.terminalTick = Number.isSafeInteger(expectedReceipt.endedAtTick)
-			? Math.max(0, expectedReceipt.endedAtTick)
-			: 0;
+		this.currentStatus = candidate?.status ?? 'rejected';
+		this.currentCombat = candidate?.combat ?? emptyCombat();
+		this.currentVerification = deepFreeze(initialVerification);
 	}
 
 	get status() {
@@ -1058,33 +1043,25 @@ class ReplayCombatSession implements CombatSession {
 	}
 
 	markAssetsReady(): void {
-		if (this.currentStatus !== 'loading') return;
-		this.currentStatus = 'ready';
-		this.currentStatus = 'running';
+		if (!this.candidate) return;
+		this.candidate.markAssetsReady();
+		this.syncCandidate();
 	}
 
 	markUnavailable(state: CombatUnavailableState): void {
-		if (this.currentStatus !== 'loading' && this.currentStatus !== 'ready') return;
-		this.unavailableState = deepFreeze({ ...state });
-		this.currentStatus = 'unavailable';
-		for (const listener of [...this.unavailableListeners]) listener(this.unavailableState);
+		if (!this.candidate) return;
+		this.candidate.markUnavailable(state);
+		this.syncCandidate();
+		if (this.unavailableState) {
+			for (const listener of [...this.unavailableListeners]) listener(this.unavailableState);
+		}
 	}
 
 	advanceFixedStep(): CombatSessionSnapshot {
-		if (this.currentStatus !== 'running') return this.snapshot();
-		this.simulationTick += 1;
-		const capturedAtTick = this.capturedEvents.filter(
-			(event) => event.simulationTick === this.simulationTick
-		);
-		this.trace.push(...capturedAtTick);
-		if (capturedAtTick.length > 0) {
-			this.currentCombat = {
-				...this.currentCombat,
-				elapsedSeconds: this.simulationTick / 60,
-				lastEvent: capturedAtTick.at(-1)!.publicSummary
-			};
-		}
-		if (this.simulationTick >= this.terminalTick) this.finishReplay();
+		if (!this.candidate || this.currentStatus !== 'running') return this.snapshot();
+		const snapshot = this.candidate.advanceFixedStep();
+		this.syncCandidate(snapshot);
+		if (snapshot.receipt) this.finishReplay(snapshot.receipt);
 		return this.snapshot();
 	}
 
@@ -1111,12 +1088,20 @@ class ReplayCombatSession implements CombatSession {
 		};
 	}
 
-	private finishReplay(): void {
-		if (this.currentStatus !== 'running') return;
-		this.currentCombat = replayTerminalCombat(this.currentCombat, this.expectedReceipt);
-		this.currentStatus = this.expectedReceipt.outcome;
-		this.currentVerification = replayVerificationFor(this.request, this.expectedReceipt);
+	private finishReplay(candidateReceipt: ExplorationCombatReceipt): void {
+		if (!this.expectedReceipt) return;
+		this.currentVerification = replayVerificationFor(this.expectedReceipt, candidateReceipt);
 		for (const listener of [...this.verificationListeners]) listener(this.currentVerification);
+	}
+
+	private syncCandidate(snapshot?: CombatSessionSnapshot): void {
+		this.currentStatus = this.candidate!.status;
+		this.currentCombat = this.candidate!.combat;
+		this.unavailableState = this.candidate!.unavailable;
+		if (snapshot) {
+			this.simulationTick = snapshot.simulationTick;
+			this.trace = snapshot.events;
+		}
 	}
 
 	private snapshot(): CombatSessionSnapshot {
@@ -1130,13 +1115,53 @@ class ReplayCombatSession implements CombatSession {
 	}
 }
 
+function replayMismatchForInvalidReceipt(
+	issues: readonly Readonly<{ path: readonly PropertyKey[] }>[]
+): CombatReplayVerification {
+	const paths = issues.map((issue) => issue.path.join('.'));
+	if (paths.some((path) => path.includes('traceHash') || path.includes('events') || path.includes('endedAtTick'))) {
+		return replayMismatch('traceHash');
+	}
+	if (paths.some((path) => path.includes('outputStateHash') || path.includes('final') || path.includes('claims'))) {
+		return replayMismatch('outputStateHash');
+	}
+	if (paths.some((path) => path.includes('rulesetVersion'))) return replayMismatch('rulesetVersion');
+	if (paths.some((path) => path.includes('battlefieldBindingHash') || path.includes('participantPresentationBindingsHash'))) {
+		return replayMismatch('presentationBindings');
+	}
+	return replayMismatch('receiptId');
+}
+
 export function createReplayCombatSession(
 	request: ExplorationEncounterRequest,
 	expectedReceipt: ExplorationCombatReceipt,
 	dependencies: CombatSessionDependencies
 ): CombatSession {
+	const parsedReceipt = ExplorationCombatReceiptSchema.safeParse(expectedReceipt);
 	const validation = validateRequest(request, dependencies);
-	return 'request' in validation
-		? new ReplayCombatSession(validation.request, immutableCopy(expectedReceipt))
-		: new CombatSessionImpl(request, dependencies, validation);
+	if (!parsedReceipt.success) {
+		const parsedRequest = ExplorationEncounterRequestSchema.safeParse(request);
+		return new ReplayCombatSession(
+			parsedRequest.success ? parsedRequest.data : REJECTED_REQUEST,
+			undefined,
+			undefined,
+			replayMismatchForInvalidReceipt(parsedReceipt.error.issues)
+		);
+	}
+	if (!('request' in validation)) {
+		const parsedRequest = ExplorationEncounterRequestSchema.safeParse(request);
+		return new ReplayCombatSession(
+			parsedRequest.success ? parsedRequest.data : REJECTED_REQUEST,
+			undefined,
+			immutableCopy(parsedReceipt.data),
+			replayMismatch('requestHash')
+		);
+	}
+	const candidate = new CombatSessionImpl(validation.request, dependencies, validation, false);
+	return new ReplayCombatSession(
+		validation.request,
+		candidate,
+		immutableCopy(parsedReceipt.data),
+		deepFreeze({ kind: 'pending' })
+	);
 }

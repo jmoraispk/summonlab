@@ -73,3 +73,51 @@ errors and zero warnings; targeted ESLint and whitespace checks exit zero.
 
 The registry is intentionally in-memory and scoped to the lab session. Durable cross-process
 idempotency would need a server-side persistence layer with the same request-hash and receipt rules.
+
+## Fix round 1/5
+
+### Changes
+
+- Replaced trace-driven replay with a private, non-publishing rerun of the normal `CombatSessionImpl`.
+  The candidate advances the same fixed mechanics steps, derives events, terminal state, claims, and
+  all receipt hashes independently, while the public replay wrapper never exposes its receipt or
+  invokes completion subscribers.
+- Validates the expected receipt through `ExplorationCombatReceiptSchema` before using it and compares
+  the independently generated candidate against request identity, content bindings, ruleset,
+  presentation bindings, trace/terminal details, output resources/claims, receipt ID, and complete
+  replay-reference data.
+- Schema-invalid expected receipts and malformed or incompatible requests now produce a terminal
+  replay mismatch (`receiptId`/the closest applicable mismatch field or `requestHash`) instead of a
+  normal rejected session without verification.
+- Added regressions for intermediate mechanics state, a coherent receipt from another rerun,
+  coordinated events/resources/hashes tampering, individual identity/ruleset/presentation/tick
+  changes, and malformed receipt/request inputs.
+
+### RED
+
+The new focused replay suite failed against `3a88aff9e` as intended:
+
+```text
+Test Files  1 failed | 33 passed (34)
+Tests  4 failed | 211 passed (215)
+```
+
+Failures showed that replay snapshots retained initial actor state instead of mechanics-applied
+state, changed run identity and terminal tick still verified, and a malformed request returned a
+plain rejected session with no replay verification. The coordinated-receipt regression additionally
+demonstrates a schema-valid self-consistent forged receipt that must be rejected only by an
+independent rerun.
+
+### GREEN
+
+After the candidate-session replay implementation, the focused session suite reports 34 test files
+and 216 tests passing. Web typecheck reports zero errors and zero warnings; contracts, targeted lint,
+and diff checks also pass.
+
+### Self-review
+
+- The candidate is the existing unified session with `publishCompletion` disabled, so it preserves
+  mechanics/claims/receipt construction while preventing replay publication.
+- Replay uses expected receipt data only after strict parsing and only as the comparison target; live
+  snapshots and terminal combat state come from the candidate rerun.
+- The approved registry implementation was left unchanged.
