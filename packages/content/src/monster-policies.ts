@@ -89,6 +89,33 @@ function deepFreeze<T>(value: T): T {
 
 export const MONSTER_POLICY_CATALOG = deepFreeze(MissionMonsterPolicyCatalogSchema.parse(source));
 
+/** Explicit zero-Mana duty fallbacks for readiness combat; policies do not imply player skills. */
+export const MONSTER_READINESS_DUTY_ACTIONS_V1 = deepFreeze(
+	Object.fromEntries(
+		MONSTER_POLICY_CATALOG.policies.map((policy) => [
+			policy.policyId,
+			{
+				actionId: `monster-hold-${policy.policyId}`,
+				publicLabel: policy.label,
+				fallbackId: 'hold-duty',
+				fallbackLabel: 'Hold duty',
+				recoveryTicks: 8
+			}
+		])
+	) as Readonly<
+		Record<
+			string,
+			Readonly<{
+				actionId: string;
+				publicLabel: string;
+				fallbackId: string;
+				fallbackLabel: string;
+				recoveryTicks: number;
+			}>
+		>
+	>
+);
+
 export function monsterPolicy(policyId: string): MissionMonsterPolicyDefinition {
 	const policy = MONSTER_POLICY_CATALOG.policies.find(
 		(candidate) => candidate.policyId === policyId

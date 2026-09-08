@@ -120,6 +120,11 @@ describe('legacy automatic combat', () => {
 		});
 		const agentBinding = createCombatModeBinding('agent-readiness-v1', BOUND_AT);
 		expect(combatModeAvailability(agentBinding)).toStrictEqual({
+			status: 'not-yet-live',
+			modeId: 'agent-readiness-v1',
+			message: 'Combat mode agent-readiness-v1 is not yet live'
+		});
+		expect(combatModeAvailability(agentBinding, 26)).toStrictEqual({
 			status: 'available',
 			modeId: 'agent-readiness-v1',
 			message: null

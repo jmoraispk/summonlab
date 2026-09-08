@@ -10,6 +10,7 @@ export const AGENT_READINESS_RULES_VERSION = 'agent-readiness-rules-v1' as const
 
 export type CombatModeAvailability =
 	| { readonly status: 'available'; readonly modeId: CombatModeId; readonly message: null }
+	| { readonly status: 'not-yet-live'; readonly modeId: CombatModeId; readonly message: string }
 	| { readonly status: 'unavailable'; readonly modeId: CombatModeId; readonly message: string };
 
 export function createCombatModeBinding(modeId: CombatModeId, boundAt: string): CombatModeBinding {
@@ -31,7 +32,10 @@ export function assertLegacyAutoBinding(binding: CombatModeBinding): void {
 	throw new Error(availability.message);
 }
 
-export function combatModeAvailability(binding: CombatModeBinding): CombatModeAvailability {
+export function combatModeAvailability(
+	binding: CombatModeBinding,
+	runtimeSchemaVersion = 25
+): CombatModeAvailability {
 	const parsed = CombatModeBindingSchema.parse(binding);
 	if (parsed.modeId === 'agent-readiness-v1') {
 		if (
@@ -44,7 +48,13 @@ export function combatModeAvailability(binding: CombatModeBinding): CombatModeAv
 				message: 'Combat mode agent-readiness-v1 rules binding is unavailable'
 			};
 		}
-		return { status: 'available', modeId: parsed.modeId, message: null };
+		return runtimeSchemaVersion === 26
+			? { status: 'available', modeId: parsed.modeId, message: null }
+			: {
+					status: 'not-yet-live',
+					modeId: parsed.modeId,
+					message: 'Combat mode agent-readiness-v1 is not yet live'
+				};
 	}
 	if (
 		parsed.rulesVersion !== LEGACY_AUTO_RULES_VERSION ||

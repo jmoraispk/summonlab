@@ -447,7 +447,10 @@ export function missionLegalActions(
 				state.mission.attempt!.combatModeBinding.modeId !== 'legacy-auto-v1'
 			)
 				return [];
-			if (combatModeAvailability(state.mission.attempt!.combatModeBinding).status !== 'available')
+			if (
+				combatModeAvailability(state.mission.attempt!.combatModeBinding, state.schemaVersion)
+					.status !== 'available'
+			)
 				return [];
 			return [
 				missionAction({

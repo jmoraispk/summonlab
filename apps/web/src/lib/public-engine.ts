@@ -214,6 +214,41 @@ export interface PublicMissionTurnState {
 	};
 }
 
+export type PublicReadinessEffect =
+	| {
+			readonly kind: 'resource';
+			readonly combatantId: string;
+			readonly resource: 'health' | 'mana';
+			readonly before: number;
+			readonly after: number;
+			readonly delta: number;
+	  }
+	| {
+			readonly kind: 'position';
+			readonly combatantId: string;
+			readonly before: { readonly x: number; readonly y: number };
+			readonly after: { readonly x: number; readonly y: number };
+	  }
+	| {
+			readonly kind: 'condition';
+			readonly combatantId: string;
+			readonly operation: 'applied' | 'removed';
+			readonly conditionId: string;
+	  }
+	| { readonly kind: 'downed'; readonly combatantId: string };
+
+export interface PublicReadinessResolvedEvent {
+	readonly eventId: string;
+	readonly tick: number;
+	readonly actorId: string;
+	readonly actorKind: 'master' | 'hero' | 'monster';
+	readonly actionId: string;
+	readonly actionLabel: string;
+	readonly publicIntent: string;
+	readonly outcome: 'applied' | 'superseded' | 'canceled';
+	readonly effects: readonly PublicReadinessEffect[];
+}
+
 export interface PublicMissionAttempt {
 	readonly attemptId: string;
 	readonly ordinal: number;
@@ -243,6 +278,7 @@ export interface PublicMissionAttempt {
 		readonly status: 'active' | 'complete';
 		readonly outcome: string | null;
 		readonly resolvedEventCount: number;
+		readonly resolvedEvents: readonly PublicReadinessResolvedEvent[];
 	};
 }
 

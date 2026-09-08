@@ -516,6 +516,8 @@ describe('player-facing engine boundaries', () => {
 		internal.contentVersion = 'engine-v26';
 		const mission = internal.mission as Record<string, unknown>;
 		const attempt = mission.attempt as Record<string, unknown>;
+		const party = attempt.party as { heroIds: string[] };
+		const heroId = party.heroIds[0]!;
 		delete attempt.turnState;
 		attempt.combatState = {
 			modeId: 'agent-readiness-v1',
@@ -523,10 +525,71 @@ describe('player-facing engine boundaries', () => {
 				tick: 19,
 				status: 'active',
 				result: null,
-				actorContexts: { private: 'never-serialize-actor-view' },
+				combatants: {
+					[heroId]: {
+						combatantId: heroId,
+						combatantKind: 'hero',
+						teamId: 'party',
+						privateState: 'never-serialize-combatant-state'
+					}
+				},
+				actorContexts: {
+					[heroId]: {
+						legalActionTemplates: [
+							{
+								actionId: 'combat-skill-basic-sword-strike',
+								publicLabel: 'Basic Sword Strike',
+								resolutionProfile: { private: 'never-serialize-resolution-profile' }
+							}
+						],
+						private: 'never-serialize-actor-view'
+					}
+				},
 				seed: 'never-serialize-readiness-seed',
 				outcomeEvidence: {
-					resolvedEvents: [{ private: 'never-serialize-resolved-event' }]
+					resolvedEvents: [
+						{
+							eventId: '10000000-0000-4000-8000-000000000004',
+							tick: 18,
+							actorId: heroId,
+							actionId: 'guard',
+							finalOutcome: 'applied',
+							originalIntent: { publicIntent: 'I hold the line.' },
+							effects: []
+						},
+						{
+							eventId: '10000000-0000-4000-8000-000000000001',
+							windowId: '10000000-0000-4000-8000-000000000002',
+							tick: 19,
+							actorId: heroId,
+							actionId: 'combat-skill-basic-sword-strike',
+							finalOutcome: 'applied',
+							snapshotHash: 'a'.repeat(64),
+							actorViewHash: 'b'.repeat(64),
+							legalActionSetHash: 'c'.repeat(64),
+							originalIntent: {
+								publicIntent: 'I press the opening before it closes.',
+								privateProviderOutput: 'never-serialize-provider-output'
+							},
+							effects: [
+								{
+									kind: 'resource',
+									combatantId: '10000000-0000-4000-8000-000000000003',
+									resource: 'health',
+									before: 20,
+									after: 13,
+									delta: -7
+								},
+								{
+									kind: 'readiness',
+									combatantId: heroId,
+									before: { exactNumerator: 10_000 },
+									after: { exactNumerator: 0 },
+									exactNumeratorDelta: -10_000
+								}
+							]
+						}
+					]
 				}
 			}
 		};
@@ -534,10 +597,37 @@ describe('player-facing engine boundaries', () => {
 		const projected = projectEngineStateForPublic(internal);
 		expect(projected.mission.attempt).toMatchObject({
 			turnState: null,
-			readiness: { tick: 19, status: 'active', outcome: null, resolvedEventCount: 1 }
+			readiness: {
+				tick: 19,
+				status: 'active',
+				outcome: null,
+				resolvedEventCount: 2,
+				resolvedEvents: [
+					{
+						eventId: '10000000-0000-4000-8000-000000000001',
+						tick: 19,
+						actorId: heroId,
+						actorKind: 'hero',
+						actionId: 'combat-skill-basic-sword-strike',
+						actionLabel: 'Basic Sword Strike',
+						publicIntent: 'I press the opening before it closes.',
+						outcome: 'applied',
+						effects: [
+							{
+								kind: 'resource',
+								combatantId: '10000000-0000-4000-8000-000000000003',
+								resource: 'health',
+								before: 20,
+								after: 13,
+								delta: -7
+							}
+						]
+					}
+				]
+			}
 		});
 		expect(JSON.stringify(projected)).not.toMatch(
-			/actorContexts|actor-view|readiness-seed|resolved-event/iu
+			/actorContexts|actor-view|combatant-state|readiness-seed|resolution-profile|provider-output|snapshotHash|actorViewHash|legalActionSetHash|exactNumerator|windowId/iu
 		);
 	});
 

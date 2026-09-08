@@ -269,7 +269,10 @@ export const POST: RequestHandler = async ({ params, request }) => {
 				throw new IllegalActionError('mission.advance.automatic');
 			}
 			const attempt = snapshot.state.mission.attempt;
-			const availability = combatModeAvailability(attempt.combatModeBinding);
+			const availability = combatModeAvailability(
+				attempt.combatModeBinding,
+				snapshot.state.schemaVersion
+			);
 			if (availability.status !== 'available') {
 				return json({ message: availability.message }, { status: 409 });
 			}
@@ -280,6 +283,15 @@ export const POST: RequestHandler = async ({ params, request }) => {
 				const readinessAttempt = snapshot.state.mission.attempt!;
 				if (readinessAttempt.combatState.modeId !== 'agent-readiness-v1') {
 					throw new IllegalActionError('mission.advance.automatic');
+				}
+				const persistedResult = readinessAttempt.combatState.readinessState.result;
+				if (persistedResult) {
+					return json({
+						status: 'terminal',
+						outcome: persistedResult.outcome,
+						tick: persistedResult.endedAtTick,
+						missionStatus: readinessAttempt.status
+					});
 				}
 				const advance = advanceUntilDecision(
 					readinessAttempt.combatState.readinessState,

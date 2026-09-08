@@ -1,7 +1,6 @@
 import {
 	MissionRunStateV10Schema,
 	ReadinessCombatStateV1Schema,
-	CombatLegalActionTemplateSchema,
 	type CombatLegalActionTemplate,
 	type EngineGameStateV25,
 	type EngineGameStateV26,
@@ -12,19 +11,22 @@ import {
 import {
 	BASIC_SWORD_STRIKE,
 	COMBAT_CONTENT_BINDING,
+	COMBAT_EQUIPMENT_PROFILES_BY_ID,
+	COMBAT_SKILL_CATALOG,
 	COMBAT_SKILL_CONFLICT_POLICIES_V1,
+	COMBAT_SKILLS_BY_ID,
+	MONSTER_READINESS_DUTY_ACTIONS_V1,
 	MONSTER_POLICY_CATALOG
 } from '@summonlab/content';
 
 import { IllegalActionError } from '../../errors.js';
 import { deterministicUuid, hashCanonical } from '../../hash.js';
 import { verifiedMissionContent } from '../../core/content-bindings.js';
-
-function canonicalTemplates(templates: readonly CombatLegalActionTemplate[]) {
-	return CombatLegalActionTemplateSchema.array().parse(
-		[...templates].sort((left, right) => left.actionId.localeCompare(right.actionId))
-	);
-}
+import {
+	canonicalCombatLegalActionTemplates,
+	legalCombatSkillActions,
+	type LegalCombatSkillAction
+} from '../../core/combat-legal-actions.js';
 
 function initialOutcomeEvidence(
 	attemptId: string,
@@ -174,45 +176,108 @@ const GUARD_TEMPLATE = {
 	}
 } as const satisfies CombatLegalActionTemplate;
 
-function actionCatalog(enemyIds: readonly string[]): readonly CombatLegalActionTemplate[] {
-	if (enemyIds.length === 0) return canonicalTemplates([GUARD_TEMPLATE]);
-	const mastery = BASIC_SWORD_STRIKE.masteryProgression[0]!;
-	const conflictPolicy = COMBAT_SKILL_CONFLICT_POLICIES_V1[BASIC_SWORD_STRIKE.skillId]!;
-	return canonicalTemplates([
-		{
-			actionId: BASIC_SWORD_STRIKE.skillId,
-			actionKind: 'attack',
-			skillId: BASIC_SWORD_STRIKE.skillId,
-			publicLabel: BASIC_SWORD_STRIKE.displayName,
-			targetContract: { kind: 'entity', allowedCombatantIds: [...enemyIds] },
-			reactionPriority: 0,
-			recoveryTicks: 10,
-			manaCost: 0,
-			conflictPolicy,
-			fallbackOptions: [
-				{ fallbackId: 'guard-instead', publicLabel: 'Guard instead', target: { kind: 'self' } }
-			],
-			resolutionProfile: {
-				profileKind: 'attack',
-				rulesVersion: 'combat-rules-v1',
-				contentHash: COMBAT_CONTENT_BINDING.contentHash,
-				deliveryTag: BASIC_SWORD_STRIKE.deliveryTags[0]!,
-				masteryStepMinimum: mastery.minimumMastery,
-				skillAccuracyBasisPoints: mastery.accuracyBasisPoints,
-				damage: {
-					channel: 'physical',
-					tags: BASIC_SWORD_STRIKE.damageTags,
-					baseMagnitude: 5,
-					coefficientBasisPoints: 5_000,
-					affinityContributionBasisPoints: 0,
-					criticalChanceBasisPoints: 500,
-					criticalMultiplierBasisPoints: 15_000,
-					penetration: 0,
-					status: null
-				}
+function combatSkillTemplate(
+	action: LegalCombatSkillAction,
+	enemyIds: readonly string[]
+): CombatLegalActionTemplate {
+	const skill = COMBAT_SKILLS_BY_ID[action.skillId];
+	const conflictPolicy =
+		COMBAT_SKILL_CONFLICT_POLICIES_V1[
+			action.skillId as keyof typeof COMBAT_SKILL_CONFLICT_POLICIES_V1
+		];
+	if (!skill || !conflictPolicy || action.kind !== 'attack') {
+		throw new Error(`No readiness attack profile for ${action.skillId}`);
+	}
+	const mastery = skill.masteryProgression.findLast(
+		(step) => step.accuracyBasisPoints === action.accuracyBasisPoints
+	)!;
+	return {
+		actionId: action.skillId,
+		actionKind: 'attack',
+		skillId: action.skillId,
+		publicLabel: action.displayName,
+		targetContract: { kind: 'entity', allowedCombatantIds: [...enemyIds] },
+		reactionPriority: 0,
+		recoveryTicks: 10,
+		manaCost: 0,
+		conflictPolicy,
+		fallbackOptions: [
+			{ fallbackId: 'guard-instead', publicLabel: 'Guard instead', target: { kind: 'self' } }
+		],
+		resolutionProfile: {
+			profileKind: 'attack',
+			rulesVersion: 'combat-rules-v1',
+			contentHash: COMBAT_CONTENT_BINDING.contentHash,
+			deliveryTag: action.deliveryTag,
+			masteryStepMinimum: mastery.minimumMastery,
+			skillAccuracyBasisPoints: action.accuracyBasisPoints,
+			damage: {
+				channel: 'physical',
+				tags: skill.damageTags,
+				baseMagnitude: 5,
+				coefficientBasisPoints: 5_000,
+				affinityContributionBasisPoints: 0,
+				criticalChanceBasisPoints: 500,
+				criticalMultiplierBasisPoints: 15_000,
+				penetration: 0,
+				status: null
 			}
-		},
+		}
+	};
+}
+
+function heroActionCatalog(
+	state: EngineGameStateV26,
+	heroId: string,
+	enemyIds: readonly string[]
+): readonly CombatLegalActionTemplate[] {
+	const hero = state.heroes[heroId]!;
+	const equipment = Object.values(state.items)
+		.filter((item) => item.equippedById === heroId)
+		.map((item) => {
+			const profile = COMBAT_EQUIPMENT_PROFILES_BY_ID[item.definitionId];
+			if (!profile) throw new Error(`No combat equipment profile for ${item.definitionId}`);
+			return profile;
+		});
+	const swordProgress = hero.progression.skills.swordFighting;
+	const skills = legalCombatSkillActions({
+		intrinsicMight: hero.capabilityProfile.attributes.might,
+		effectiveLoadMight: hero.capabilityProfile.attributes.might,
+		proficiencyTags: [],
+		equipment,
+		skills: COMBAT_SKILL_CATALOG.skills,
+		learnedSkills: [
+			{
+				schemaVersion: 'learned-combat-skill-v1',
+				skillId: BASIC_SWORD_STRIKE.skillId,
+				mastery: swordProgress.rank * 5,
+				trainedDeliveryTags: ['one-handed-blade']
+			}
+		]
+	});
+	return canonicalCombatLegalActionTemplates([
+		...skills.map((action) => combatSkillTemplate(action, enemyIds)),
 		GUARD_TEMPLATE
+	]);
+}
+
+function monsterActionCatalog(policyId: string): readonly CombatLegalActionTemplate[] {
+	const authored = MONSTER_READINESS_DUTY_ACTIONS_V1[policyId];
+	if (!authored) throw new Error(`No readiness duty action for monster policy ${policyId}`);
+	return canonicalCombatLegalActionTemplates([
+		{
+			...GUARD_TEMPLATE,
+			actionId: authored.actionId,
+			publicLabel: authored.publicLabel,
+			recoveryTicks: authored.recoveryTicks,
+			fallbackOptions: [
+				{
+					fallbackId: authored.fallbackId,
+					publicLabel: authored.fallbackLabel,
+					target: { kind: 'self' }
+				}
+			]
+		}
 	]);
 }
 
@@ -231,6 +296,9 @@ export function createMissionReadinessState(
 		);
 	const monsterIds = monsterSeeds.map(({ duty, ordinal }) =>
 		deterministicUuid(`${attemptId}:${duty.dutySlotId}:${ordinal}:readiness-monster`)
+	);
+	const monsterPolicyById = new Map(
+		monsterIds.map((monsterId, index) => [monsterId, monsterSeeds[index]!.duty.policyId] as const)
 	);
 	const combatants = {
 		...Object.fromEntries(
@@ -324,7 +392,12 @@ export function createMissionReadinessState(
 					doctrine: [],
 					relationships: [],
 					masterDirections: [],
-					legalActionTemplates: actionCatalog(enemies)
+					legalActionTemplates:
+						combatant.combatantKind === 'master'
+							? canonicalCombatLegalActionTemplates([GUARD_TEMPLATE])
+							: combatant.combatantKind === 'hero'
+								? heroActionCatalog(state, combatant.combatantId, enemies)
+								: monsterActionCatalog(monsterPolicyById.get(combatant.combatantId)!)
 				}
 			];
 		})

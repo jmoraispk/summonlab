@@ -11,6 +11,7 @@
 	import CharacterArtMissing from '$lib/components/CharacterArtMissing.svelte';
 	import MissionHeroRosterArt from '$lib/components/MissionHeroRosterArt.svelte';
 	import PlayerJournal from '$lib/components/PlayerJournal.svelte';
+	import type { PublicReadinessResolvedEvent } from '$lib/public-engine';
 
 	let { data } = $props();
 	let busy = $state(false);
@@ -103,6 +104,11 @@
 	const attempt = $derived(mission?.attempt ?? null);
 	const turnState = $derived(attempt?.turnState ?? null);
 	const readinessState = $derived(attempt?.readiness ?? null);
+	const readinessEvents = $derived(readinessState?.resolvedEvents ?? []);
+	const lastResolvedReadinessTick = $derived(readinessEvents.at(-1)?.tick ?? null);
+	const lastReadinessTickEvents = $derived(
+		readinessEvents.filter((event) => event.tick === lastResolvedReadinessTick)
+	);
 	const portalTurnState = $derived(
 		engineState.schemaVersion === 15 ? (engineState.mission.attempt?.turnState ?? null) : null
 	);
@@ -497,6 +503,32 @@
 			: actorId === hero?.heroId
 				? data.proof.manifest.displayName
 				: 'Unknown hero';
+	}
+
+	function readinessActorName(event: PublicReadinessResolvedEvent) {
+		if (event.actorKind === 'master') return 'The Master';
+		if (event.actorKind === 'hero' && event.actorId === hero?.heroId) {
+			return data.proof.manifest.displayName;
+		}
+		return event.actorKind === 'monster' ? 'Tower defender' : 'Company hero';
+	}
+
+	function readinessEffectSummary(event: PublicReadinessResolvedEvent) {
+		if (event.effects.length === 0) return `Action ${event.outcome}.`;
+		return event.effects
+			.map((effect) => {
+				if (effect.kind === 'resource') {
+					return `${effect.resource} ${effect.before} → ${effect.after}`;
+				}
+				if (effect.kind === 'position') {
+					return `moved (${effect.before.x}, ${effect.before.y}) → (${effect.after.x}, ${effect.after.y})`;
+				}
+				if (effect.kind === 'condition') {
+					return `${effect.conditionId.replaceAll('-', ' ')} ${effect.operation}`;
+				}
+				return 'combatant downed';
+			})
+			.join(' · ');
 	}
 
 	function guardFor(actorId: string) {
@@ -1372,6 +1404,29 @@
 							<strong>{actorName(actorId)}</strong>
 							<p>{resolved.summary}</p>
 							{#if partyAction?.actorKind === 'hero'}<small>{partyAction.publicIntent}</small>{/if}
+						</div>
+					</article>
+				{/each}
+			</div>
+		</section>
+	{:else if lastReadinessTickEvents.length > 0}
+		<section class="initiative-report" data-testid="combat-resolution-trace" aria-live="polite">
+			<div class="round-header">
+				<div>
+					<span>Resolved actions</span>
+					<h2>Battle tick {lastResolvedReadinessTick}</h2>
+				</div>
+				<strong>FIELD FACTS</strong>
+			</div>
+			<div class="initiative-actions">
+				{#each lastReadinessTickEvents as event, index (event.eventId)}
+					<article class:superseded={event.outcome !== 'applied'}>
+						<div class="initiative-rank">{String(index + 1).padStart(2, '0')}</div>
+						<div>
+							<span>{event.actorKind} · {event.outcome}</span>
+							<strong>{readinessActorName(event)}</strong>
+							<p>{event.actionLabel} · {readinessEffectSummary(event)}</p>
+							{#if event.publicIntent}<small>{event.publicIntent}</small>{/if}
 						</div>
 					</article>
 				{/each}

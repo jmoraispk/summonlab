@@ -15,6 +15,8 @@ import type {
 	PublicMissionAttempt,
 	PublicMissionRound,
 	PublicMissionTurnState,
+	PublicReadinessEffect,
+	PublicReadinessResolvedEvent,
 	PublicRewardDelta
 } from '$lib/public-engine';
 
@@ -326,6 +328,88 @@ function publicTurnState(value: unknown): PublicMissionTurnState {
 	};
 }
 
+function publicReadinessEffect(value: unknown): PublicReadinessEffect | null {
+	const effect = record(value);
+	const combatantId = string(effect.combatantId);
+	if (!combatantId) return null;
+	if (effect.kind === 'resource' && (effect.resource === 'health' || effect.resource === 'mana')) {
+		return {
+			kind: 'resource',
+			combatantId,
+			resource: effect.resource,
+			before: number(effect.before),
+			after: number(effect.after),
+			delta: number(effect.delta)
+		};
+	}
+	if (effect.kind === 'position') {
+		const before = record(effect.before);
+		const after = record(effect.after);
+		return {
+			kind: 'position',
+			combatantId,
+			before: { x: number(before.x), y: number(before.y) },
+			after: { x: number(after.x), y: number(after.y) }
+		};
+	}
+	if (effect.kind === 'condition') {
+		const condition = record(effect.condition);
+		if (
+			(effect.operation === 'applied' || effect.operation === 'removed') &&
+			typeof condition.conditionId === 'string'
+		) {
+			return {
+				kind: 'condition',
+				combatantId,
+				operation: effect.operation,
+				conditionId: condition.conditionId
+			};
+		}
+	}
+	if (effect.kind === 'downed') return { kind: 'downed', combatantId };
+	return null;
+}
+
+function publicReadinessEvents(readinessState: UnknownRecord): PublicReadinessResolvedEvent[] {
+	const evidence = record(readinessState.outcomeEvidence);
+	const combatants = record(readinessState.combatants);
+	const contexts = record(readinessState.actorContexts);
+	const events = records(evidence.resolvedEvents);
+	const latestTick = events.reduce((maximum, event) => Math.max(maximum, number(event.tick)), -1);
+	return events
+		.filter((event) => number(event.tick) === latestTick)
+		.flatMap((event) => {
+			const combatant = record(combatants[event.actorId as string]);
+			const actorKind = combatant.combatantKind;
+			if (actorKind !== 'master' && actorKind !== 'hero' && actorKind !== 'monster') return [];
+			const context = record(contexts[event.actorId as string]);
+			const action = records(context.legalActionTemplates).find(
+				(candidate) => candidate.actionId === event.actionId
+			);
+			const originalIntent = record(event.originalIntent);
+			const outcome =
+				event.finalOutcome === 'applied' || event.finalOutcome === 'superseded'
+					? event.finalOutcome
+					: 'canceled';
+			return [
+				{
+					eventId: string(event.eventId),
+					tick: number(event.tick),
+					actorId: string(event.actorId),
+					actorKind,
+					actionId: string(event.actionId),
+					actionLabel: string(action?.publicLabel, 'Resolved action'),
+					publicIntent: string(originalIntent.publicIntent),
+					outcome,
+					effects: records(event.effects).flatMap((effect) => {
+						const projected = publicReadinessEffect(effect);
+						return projected ? [projected] : [];
+					})
+				}
+			];
+		});
+}
+
 function publicMissionAttempt(value: unknown): PublicMissionAttempt | null {
 	if (!value) return null;
 	const attempt = record(value);
@@ -336,6 +420,7 @@ function publicMissionAttempt(value: unknown): PublicMissionAttempt | null {
 	const readinessState = record(combatState.readinessState);
 	const readinessResult = record(readinessState.result);
 	const readinessEvidence = record(readinessState.outcomeEvidence);
+	const readinessEvents = publicReadinessEvents(readinessState);
 	const turnStateSource =
 		attempt.turnState ?? (combatState.modeId === 'legacy-auto-v1' ? combatState.turnState : null);
 	return {
@@ -373,7 +458,8 @@ function publicMissionAttempt(value: unknown): PublicMissionAttempt | null {
 						status:
 							readinessState.status === 'complete' ? ('complete' as const) : ('active' as const),
 						outcome: nullableString(readinessResult.outcome),
-						resolvedEventCount: records(readinessEvidence.resolvedEvents).length
+						resolvedEventCount: records(readinessEvidence.resolvedEvents).length,
+						resolvedEvents: readinessEvents
 					}
 				}
 			: {})

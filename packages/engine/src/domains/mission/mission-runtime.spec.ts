@@ -51,8 +51,12 @@ import { retreatMissionAttempt } from './lifecycle.js';
 import { createCombatModeBinding } from './combat-mode.js';
 import { masterFallbackSafetySource } from './master-control.js';
 import { applyCombatChoiceBatch, combatChoiceBatchHash } from '../combat/arbitration.js';
-import { createReadinessCombatOutcomeEvidence } from '../combat/outcome.js';
+import {
+	createReadinessCombatOutcomeEvidence,
+	finalizeReadinessCombatOutcome
+} from '../combat/outcome.js';
 import { advanceUntilDecision } from '../combat/window.js';
+import { finalizeReadinessMission } from '../../orchestration/readiness-terminal.js';
 
 import {
 	deriveMonsterIntents,
@@ -373,7 +377,7 @@ describe('mission runtime ownership', () => {
 			{ capabilityEntropy: '9'.repeat(64) }
 		);
 		for (const modeId of ['legacy-auto-v1', 'agent-readiness-v1'] as const) {
-			const initial = createBootstrapEngine({
+			let initial = createBootstrapEngine({
 				runId: deterministicUuid(`v26-attempt-mode-binding-${modeId}`),
 				seed: `v26-attempt-mode-binding-${modeId}-seed`,
 				draft,
@@ -381,6 +385,24 @@ describe('mission runtime ownership', () => {
 			}).snapshot.state;
 			if (initial.schemaVersion !== 26) throw new Error('Expected current v26 run');
 			const heroId = Object.keys(initial.heroes)[0]!;
+			if (modeId === 'agent-readiness-v1') {
+				initial = EngineGameStateV26Schema.parse({
+					...initial,
+					heroes: {
+						...initial.heroes,
+						[heroId]: {
+							...initial.heroes[heroId]!,
+							capabilityProfile: {
+								...initial.heroes[heroId]!.capabilityProfile,
+								attributes: {
+									...initial.heroes[heroId]!.capabilityProfile.attributes,
+									might: 20
+								}
+							}
+						}
+					}
+				});
+			}
 			const binding = createCombatModeBinding(modeId, initial.simulatedAt);
 			const prepared = applyCommand(initial, {
 				...missionTestCommand(initial, `v26-${modeId}-prepare`, {
@@ -403,15 +425,30 @@ describe('mission runtime ownership', () => {
 					status: 'active',
 					result: null
 				});
-				expect(combat.readinessState.actorContexts[heroId]?.legalActionTemplates).toEqual(
-					expect.arrayContaining([
-						expect.objectContaining({
-							resolutionProfile: expect.objectContaining({
-								rulesVersion: 'combat-rules-v1'
-							})
-						})
-					])
-				);
+				const masterId = prepared.master.masterId;
+				expect(
+					combat.readinessState.actorContexts[heroId]?.legalActionTemplates.map(
+						(action) => action.actionId
+					)
+				).toStrictEqual(['combat-skill-basic-sword-strike', 'guard']);
+				expect(
+					combat.readinessState.actorContexts[masterId]?.legalActionTemplates.map(
+						(action) => action.actionId
+					)
+				).toStrictEqual(['guard']);
+				const monsterActions = Object.values(combat.readinessState.combatants)
+					.filter((combatant) => combatant.combatantKind === 'monster')
+					.map((combatant) =>
+						combat.readinessState.actorContexts[combatant.combatantId]!.legalActionTemplates.map(
+							(action) => action.actionId
+						)
+					);
+				expect(monsterActions).toHaveLength(3);
+				expect(monsterActions.every((actions) => actions.length === 1)).toBe(true);
+				expect(monsterActions.flat()).not.toContain('combat-skill-basic-sword-strike');
+				expect(
+					monsterActions.flat().every((actionId) => actionId.startsWith('monster-hold-'))
+				).toBe(true);
 			}
 		}
 	});
@@ -652,6 +689,70 @@ describe('mission runtime ownership', () => {
 		};
 		expect(() => reduceEvent(terminal, forgedCheckpoint)).toThrow(ReplayIntegrityError);
 	});
+
+	it.each([
+		{ disposition: 'diagnostic' as const, status: 'failure', outcome: 'failure' },
+		{ disposition: 'stalemate' as const, status: 'failure', outcome: 'failure' },
+		{ disposition: 'forced-retreat' as const, status: 'retreat', outcome: 'retreat' }
+	])(
+		'preserves a $disposition readiness safety stop in the outer mission lifecycle',
+		async ({ disposition, status, outcome }) => {
+			const draft = await generateSummonableCharacterDraft(
+				{
+					seed: `readiness-${disposition}-character`,
+					generationVersion: 'human-v6',
+					cursors: { identity: 0, body: 0, features: 0, styling: 0, mind: 0, rarity: 0 }
+				},
+				{ capabilityEntropy: '6'.repeat(64) }
+			);
+			const initial = createBootstrapEngine({
+				runId: deterministicUuid(`readiness-${disposition}-run`),
+				seed: `readiness-${disposition}-engine`,
+				draft,
+				combatMode: 'agent-readiness-v1'
+			}).snapshot.state;
+			if (initial.schemaVersion !== 26) throw new Error('Expected v26 state');
+			const heroId = Object.keys(initial.heroes)[0]!;
+			const prepared = applyCommand(initial, {
+				...missionTestCommand(initial, `readiness-${disposition}-prepare`, {
+					commandType: 'mission.prepare',
+					heroIds: [heroId],
+					combatModeBinding: createCombatModeBinding('agent-readiness-v1', initial.simulatedAt)
+				})
+			}).state;
+			const deployed = applyCommand(prepared, {
+				...missionTestCommand(prepared, `readiness-${disposition}-deploy`, {
+					commandType: 'mission.deploy'
+				})
+			}).state;
+			if (deployed.schemaVersion !== 26) throw new Error('Expected v26 state');
+			const combat = deployed.mission.attempt!.combatState;
+			if (combat.modeId !== 'agent-readiness-v1') throw new Error('Expected readiness state');
+			const terminal = finalizeReadinessCombatOutcome({
+				state: combat.readinessState,
+				safetyStop: {
+					safetyStopVersion: 'combat-safety-stop-v1',
+					reason: 'no-progress-cycles',
+					disposition,
+					...combat.readinessState.safety
+				}
+			});
+			const finalized = finalizeReadinessMission(
+				deployed,
+				terminal.state,
+				deterministicUuid(`readiness-${disposition}-event`)
+			).state;
+
+			expect(finalized.mission.attempt).toMatchObject({ status, outcome });
+			expect(finalized.mission.attempt?.combatState).toMatchObject({
+				modeId: 'agent-readiness-v1',
+				readinessState: {
+					status: 'complete',
+					result: { outcome: 'safety-stop', safetyStop: { disposition } }
+				}
+			});
+		}
+	);
 
 	it('round-trips the composed handler through every mission-capable schema version', () => {
 		const observedHashes = Object.fromEntries(

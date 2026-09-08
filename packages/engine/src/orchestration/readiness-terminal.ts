@@ -70,15 +70,6 @@ function terminalAttemptPatch(
 			completedObjectiveIds: [...completedObjectiveIds]
 		};
 	}
-	if (result.outcome === 'safety-stop') {
-		return {
-			status: 'retreat' as const,
-			outcome: 'retreat' as const,
-			endedAt: state.simulatedAt,
-			extractionOpenedAt: null,
-			completedObjectiveIds: [...completedObjectiveIds]
-		};
-	}
 	return {
 		status: transition.status,
 		outcome: transition.outcome,

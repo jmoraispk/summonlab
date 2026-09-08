@@ -51,7 +51,10 @@ export const load: PageServerLoad = async ({ params }) => {
 	const combatMode =
 		(report.snapshot.state.schemaVersion === 25 || report.snapshot.state.schemaVersion === 26) &&
 		attempt
-			? combatModeAvailability(report.snapshot.state.mission.attempt!.combatModeBinding)
+			? combatModeAvailability(
+					report.snapshot.state.mission.attempt!.combatModeBinding,
+					report.snapshot.state.schemaVersion
+				)
 			: null;
 	const knowledge = attempt?.knowledge ?? { discoveryIds: [], visitedNodeIds: [] };
 	const projection = projectMissionArenaKnowledge(missionPackage, knowledge);

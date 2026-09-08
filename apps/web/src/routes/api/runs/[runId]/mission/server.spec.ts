@@ -1,10 +1,12 @@
 import { generateSummonableCharacterDraft } from '@summonlab/characters';
 import type { ActorDecisionView, CombatModeId, EngineSnapshot } from '@summonlab/contracts';
+import { IdempotencyConflictError } from '@summonlab/database';
 import {
 	applyCommand,
 	createBootstrapEngine,
 	createCombatModeBinding,
 	deterministicUuid,
+	hashCanonical,
 	hashGameState,
 	legalActions
 } from '@summonlab/engine';
@@ -15,7 +17,7 @@ const mocks = vi.hoisted(() => ({
 	snapshot: null as EngineSnapshot | null,
 	commit: vi.fn(),
 	createWindow: vi.fn(),
-	commitsById: new Map<string, unknown>()
+	commitsById: new Map<string, { commandHash: string; receipt: unknown }>()
 }));
 
 vi.mock('@summonlab/config', () => ({
@@ -113,11 +115,17 @@ describe('operator-bound mission combat', () => {
 		mocks.commitsById.clear();
 		mocks.commit.mockReset().mockImplementation(async (_databaseUrl, command) => {
 			const existing = mocks.commitsById.get(command.commandId);
-			if (existing) return existing;
+			const commandHash = hashCanonical(command);
+			if (existing) {
+				if (existing.commandHash !== commandHash) {
+					throw new IdempotencyConflictError(command.commandId);
+				}
+				return existing.receipt;
+			}
 			const applied = applyCommand(mocks.snapshot!.state, command);
 			mocks.snapshot = { state: applied.state, stateHash: hashGameState(applied.state) };
 			const receipt = { snapshot: mocks.snapshot, events: applied.events, legalActions: [] };
-			mocks.commitsById.set(command.commandId, receipt);
+			mocks.commitsById.set(command.commandId, { commandHash, receipt });
 			return receipt;
 		});
 		mocks.createWindow.mockReset().mockImplementation(async (_databaseUrl, input) => ({
@@ -260,10 +268,8 @@ describe('operator-bound mission combat', () => {
 
 		const retry = await call({ action: 'advance-automatic-combat' });
 		expect(retry.status, JSON.stringify(await retry.clone().json())).toBe(200);
-		expect(mocks.commit).toHaveBeenCalledTimes(2);
-		expect(mocks.commit.mock.calls[1]?.[1].commandId).toBe(
-			mocks.commit.mock.calls[0]?.[1].commandId
-		);
+		expect(await retry.json()).toStrictEqual(body);
+		expect(mocks.commit).toHaveBeenCalledOnce();
 	});
 
 	it('rejects client mode, provider, action, and target overrides before dispatch', async () => {

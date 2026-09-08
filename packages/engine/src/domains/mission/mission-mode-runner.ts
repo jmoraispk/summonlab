@@ -28,7 +28,10 @@ export function assertMissionModeAdvanceAvailable(state: MissionModeState): 'leg
 	if (state.schemaVersion === 26 && state.mission.attempt.combatState.modeId !== 'legacy-auto-v1') {
 		throw new IllegalActionError('mission.advance.automatic');
 	}
-	const availability = combatModeAvailability(state.mission.attempt.combatModeBinding);
+	const availability = combatModeAvailability(
+		state.mission.attempt.combatModeBinding,
+		state.schemaVersion
+	);
 	if (availability.status !== 'available' || availability.modeId !== 'legacy-auto-v1') {
 		throw new Error(
 			availability.message ?? 'Readiness combat does not use automatic turn resolution'
@@ -44,7 +47,7 @@ export function resolveMissionModeTurn(
 	// Dispatch authority is the persisted attempt binding. Schema version only establishes that
 	// this state can carry the binding; it never chooses a combat implementation.
 	switch (assertMissionModeAdvanceAvailable(state)) {
-		case 'legacy-auto-v1':
+		case 'legacy-auto-v1': {
 			if (state.schemaVersion === 25) return resolveLegacyAutoV1Turn(state, sourceEventId);
 			const resolved = resolveLegacyAutoV1Turn(
 				projectCurrentStateForLegacyResolver(state),
@@ -54,5 +57,6 @@ export function resolveMissionModeTurn(
 				...resolved,
 				mission: restoreCurrentLegacyMission(state, resolved.mission as MissionRunStateV9)
 			};
+		}
 	}
 }

@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import {
 	MONSTER_POLICY_CATALOG,
+	MONSTER_READINESS_DUTY_ACTIONS_V1,
 	calculateMonsterPolicyContentHash,
 	loadMonsterPolicyCatalog,
 	monsterPolicy
@@ -31,5 +32,15 @@ describe('monster policy catalog', () => {
 		expect(
 			TOWER_FLOOR_01_PACKAGE.monsterDuties.some((duty) => duty.policyId === warden.policyId)
 		).toBe(false);
+	});
+
+	it('authors one zero-Mana readiness duty fallback for every monster policy', () => {
+		expect(Object.keys(MONSTER_READINESS_DUTY_ACTIONS_V1).sort()).toStrictEqual(
+			MONSTER_POLICY_CATALOG.policies.map((policy) => policy.policyId).sort()
+		);
+		for (const action of Object.values(MONSTER_READINESS_DUTY_ACTIONS_V1)) {
+			expect(action.actionId).toMatch(/^monster-hold-/u);
+			expect(action.fallbackId).toBe('hold-duty');
+		}
 	});
 });

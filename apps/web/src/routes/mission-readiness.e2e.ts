@@ -6,6 +6,11 @@ const recipe = {
 	cursors: { identity: 0, body: 0, features: 0, styling: 0, mind: 0, rarity: 0 }
 };
 
+test.skip(
+	process.env.COMBAT_MODE !== 'agent-readiness-v1',
+	'Readiness combat is an explicit operator-configured browser gate.'
+);
+
 test('continues readiness combat, restores its pending window, and exposes no player mode controls', async ({
 	page,
 	request

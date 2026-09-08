@@ -45,7 +45,7 @@ import { z } from 'zod';
 
 import { createEntropyCursor } from '../../entropy.js';
 import { IllegalActionError } from '../../errors.js';
-import { deterministicUuid, hashCanonical } from '../../hash.js';
+import { deterministicUuid } from '../../hash.js';
 import {
 	CombatClaimReceiptSchema,
 	parseCombatClaimReceipt,
@@ -273,7 +273,7 @@ function prepareV26MissionAttempt(
 ): MissionRunStateV10 {
 	if (combatModeBinding.boundAt !== state.simulatedAt)
 		throw new IllegalActionError('mission.prepare');
-	const availability = combatModeAvailability(combatModeBinding);
+	const availability = combatModeAvailability(combatModeBinding, state.schemaVersion);
 	if (availability.status !== 'available') throw new IllegalActionError('mission.prepare');
 	const structural = prepareMissionAttempt(
 		projectCurrentStateForLegacyResolver(state),
