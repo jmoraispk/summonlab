@@ -16,6 +16,8 @@ const ids = {
 	attempt: '44444444-4444-4444-8444-444444444444',
 	receipt: '55555555-5555-4555-8555-555555555555',
 	start: '66666666-6666-4666-8666-666666666666',
+	action: '99999999-9999-4999-8999-999999999999',
+	defeat: 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',
 	end: '77777777-7777-4777-8777-777777777777',
 	claim: '88888888-8888-4888-8888-888888888888'
 } as const;
@@ -71,7 +73,8 @@ function validRequest() {
 		rulesetVersion: 'combat-rules-v1',
 		contentBindings: [
 			{ kind: 'ruleset' as const, contentId: 'combat-rules', version: 'v1', contentHash: hash },
-			{ kind: 'enemy' as const, contentId: 'sewer-rat', version: 'v1', contentHash: alternateHash }
+			{ kind: 'enemy' as const, contentId: 'sewer-rat', version: 'v1', contentHash: alternateHash },
+			{ kind: 'claim-policy' as const, contentId: 'rat-xp', version: 'v1', contentHash: hash }
 		],
 		seed: 'exploration-rat-seed',
 		entropyCursor: 12,
@@ -204,8 +207,33 @@ function validVictoryReceipt() {
 				publicSummary: 'The encounter began.'
 			},
 			{
-				eventId: ids.end,
+				eventId: ids.action,
 				sequence: 1,
+				simulationTick: 24,
+				kind: 'action-resolved' as const,
+				actorId: 'hero-a',
+				targetIds: ['enemy-rat'],
+				actionId: 'hero-strike',
+				healthDeltas: [{ unitId: 'enemy-rat', amount: -10 }],
+				manaDeltas: [],
+				claimSourceRefs: ['hero-strike'],
+				publicSummary: 'Asha struck the Tunnel Rat.'
+			},
+			{
+				eventId: ids.defeat,
+				sequence: 2,
+				simulationTick: 42,
+				kind: 'unit-defeated' as const,
+				actorId: 'hero-a',
+				targetIds: ['enemy-rat'],
+				healthDeltas: [{ unitId: 'enemy-rat', amount: -20 }],
+				manaDeltas: [],
+				claimSourceRefs: ['enemy-rat'],
+				publicSummary: 'The Tunnel Rat was defeated.'
+			},
+			{
+				eventId: ids.end,
+				sequence: 3,
 				simulationTick: 60,
 				kind: 'encounter-ended' as const,
 				actorId: 'hero-a',
@@ -224,6 +252,24 @@ function validVictoryReceipt() {
 				quantity: 10,
 				sourceEventIds: [ids.end],
 				heroId: 'hero-a'
+			},
+			{
+				claimId: 'bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb',
+				kind: 'skill-practice' as const,
+				definitionRef: { definitionId: 'rat-xp', version: 'v1', contentHash: hash },
+				quantity: 1,
+				sourceEventIds: [ids.action],
+				heroId: 'hero-a',
+				actionDefinitionId: 'hero-strike'
+			},
+			{
+				claimId: 'cccccccc-cccc-4ccc-8ccc-cccccccccccc',
+				kind: 'material' as const,
+				definitionRef: { definitionId: 'rat-xp', version: 'v1', contentHash: hash },
+				quantity: 1,
+				sourceEventIds: [ids.defeat],
+				sourceEnemyInstanceId: 'enemy-rat',
+				materialDefinitionId: 'rat-tail'
 			}
 		],
 		inputStateHash: hash,
@@ -265,9 +311,9 @@ describe('exploration combat contracts', () => {
 	it.each(['explorationPosition', 'fog', 'tileInteractions', 'lootCache', 'rewardBalance'])(
 		'rejects the foreign ownership field %s',
 		(field) => {
-			expect(parse('ExplorationEncounterRequestSchema', { ...validRequest(), [field]: {} })?.success).toBe(
-				false
-			);
+			expect(
+				parse('ExplorationEncounterRequestSchema', { ...validRequest(), [field]: {} })?.success
+			).toBe(false);
 		}
 	);
 
@@ -382,6 +428,94 @@ describe('exploration combat contracts', () => {
 		).toBe(false);
 	});
 
+	it('rejects unbound claims and claims whose sources do not prove their declared semantics', () => {
+		const receipt = validVictoryReceipt();
+		const [progressionClaim, practiceClaim, materialClaim] = receipt.claims;
+
+		const invalidReceipts = [
+			{
+				...receipt,
+				claims: [
+					{
+						...progressionClaim,
+						definitionRef: { definitionId: 'unbound-claim', version: 'v1', contentHash: hash }
+					},
+					practiceClaim,
+					materialClaim
+				]
+			},
+			{
+				...receipt,
+				claims: [
+					progressionClaim,
+					{ ...practiceClaim, sourceEventIds: [ids.defeat] },
+					materialClaim
+				]
+			},
+			{
+				...receipt,
+				events: receipt.events.map((event) =>
+					event.eventId === ids.action ? { ...event, actorId: 'hero-b' } : event
+				)
+			},
+			{
+				...receipt,
+				events: receipt.events.map((event) =>
+					event.eventId === ids.action ? { ...event, actionId: 'other-action' } : event
+				)
+			},
+			{
+				...receipt,
+				claims: [
+					progressionClaim,
+					practiceClaim,
+					{ ...materialClaim, sourceEventIds: [ids.action] }
+				]
+			},
+			{
+				...receipt,
+				events: receipt.events.map((event) =>
+					event.eventId === ids.defeat ? { ...event, targetIds: ['other-enemy'] } : event
+				)
+			},
+			{
+				...receipt,
+				finalEnemies: [
+					...receipt.finalEnemies,
+					{
+						enemyInstanceId: 'other-enemy',
+						health: 10,
+						maximumHealth: 10,
+						mana: 0,
+						maximumMana: 0,
+						combatState: 'combat-capable' as const,
+						requiredForVictory: false
+					}
+				],
+				events: receipt.events.map((event) =>
+					event.eventId === ids.defeat ? { ...event, targetIds: ['other-enemy'] } : event
+				),
+				claims: [
+					progressionClaim,
+					practiceClaim,
+					{ ...materialClaim, sourceEnemyInstanceId: 'other-enemy' }
+				]
+			},
+			{
+				...receipt,
+				claims: [
+					{ ...progressionClaim, sourceEventIds: [ids.action] },
+					practiceClaim,
+					materialClaim
+				]
+			}
+		];
+
+		for (const invalidReceipt of invalidReceipts) {
+			expect(parse('ExplorationCombatReceiptSchema', invalidReceipt)?.success).toBe(false);
+		}
+	});
+
 	it('rejects non-contiguous traces, non-terminal last events, duplicate IDs, and defeated-enemy disagreement', () => {
 		const receipt = validVictoryReceipt();
 
@@ -395,7 +529,7 @@ describe('exploration combat contracts', () => {
 			parse('ExplorationCombatReceiptSchema', {
 				...receipt,
 				events: receipt.events.map((event, index) =>
-					index === 1 ? { ...event, kind: 'unit-defeated' as const } : event
+					index === receipt.events.length - 1 ? { ...event, kind: 'unit-defeated' as const } : event
 				)
 			})?.success
 		).toBe(false);

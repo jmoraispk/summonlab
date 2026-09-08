@@ -9,7 +9,11 @@ import {
 	type CombatSessionSubscription,
 	type CombatUnavailableListener
 } from './combat-session';
-import { RAT_ENCOUNTER_CLAIM_POLICY, RAT_ENCOUNTER_REQUEST } from './rat-encounter-fixture';
+import {
+	RAT_ENCOUNTER_CLAIM_POLICY,
+	RAT_ENCOUNTER_CLAIM_POLICY_BINDING,
+	RAT_ENCOUNTER_REQUEST
+} from './rat-encounter-fixture';
 import {
 	advanceStageSession,
 	bindStageSessionNotifications,
@@ -100,6 +104,75 @@ describe('stage asset lifecycle', () => {
 		expect(unloaded).toEqual([]);
 		await replacement.release();
 		expect(unloaded).toEqual(['/runtime/racing.png']);
+	});
+
+	it('restarts a released pending load when an in-flight reclaim sees its first load reject', async () => {
+		const firstLoad = deferred<{ source: string }>();
+		const replacementLoad = deferred<{ source: string }>();
+		const unloaded: string[] = [];
+		let loadAttempts = 0;
+		const owner = createStageAssetOwner({
+			load: () => {
+				loadAttempts += 1;
+				return loadAttempts === 1 ? firstLoad.promise : replacementLoad.promise;
+			},
+			unload: async (source) => {
+				unloaded.push(source);
+			}
+		});
+
+		const first = owner.claim(['/runtime/rejected-racing.png']);
+		const firstReady = first.ready;
+		const firstRelease = first.release();
+		const replacement = owner.claim(['/runtime/rejected-racing.png']);
+		firstLoad.reject(new Error('network rejected first load'));
+
+		await expect(firstReady).rejects.toThrow('network rejected first load');
+		await Promise.resolve();
+		expect(loadAttempts).toBe(2);
+		replacementLoad.resolve({ source: '/runtime/rejected-racing.png' });
+		await expect(replacement.ready).resolves.toEqual([{ source: '/runtime/rejected-racing.png' }]);
+		await expect(firstRelease).resolves.toBeUndefined();
+		expect(unloaded).toEqual([]);
+
+		await replacement.release();
+		expect(unloaded).toEqual(['/runtime/rejected-racing.png']);
+	});
+
+	it('reacquires a fresh asset after a released pending load has already rejected', async () => {
+		const firstLoad = deferred<{ source: string }>();
+		const replacementLoad = deferred<{ source: string }>();
+		const unloaded: string[] = [];
+		let loadAttempts = 0;
+		const owner = createStageAssetOwner({
+			load: () => {
+				loadAttempts += 1;
+				return loadAttempts === 1 ? firstLoad.promise : replacementLoad.promise;
+			},
+			unload: async (source) => {
+				unloaded.push(source);
+			}
+		});
+
+		const first = owner.claim(['/runtime/post-release-retry.png']);
+		const firstReady = first.ready;
+		const released = first.release();
+		firstLoad.reject(new Error('network rejected released load'));
+		await expect(firstReady).rejects.toThrow('network rejected released load');
+		await expect(released).resolves.toBeUndefined();
+
+		const replacement = owner.claim(['/runtime/post-release-retry.png']);
+		await Promise.resolve();
+		expect(loadAttempts).toBe(2);
+		replacementLoad.resolve({ source: '/runtime/post-release-retry.png' });
+		await expect(replacement.ready).resolves.toEqual([
+			{ source: '/runtime/post-release-retry.png' }
+		]);
+		await replacement.release();
+		expect(unloaded).toEqual([
+			'/runtime/post-release-retry.png',
+			'/runtime/post-release-retry.png'
+		]);
 	});
 
 	it('reloads a source reclaimed while its final unload is in flight', async () => {
@@ -269,7 +342,11 @@ describe('stage session dependencies', () => {
 	it('admits only the canonical fixture hash into a loading fixture session', () => {
 		const accepted = enterCombatSession(
 			RAT_ENCOUNTER_REQUEST,
-			stageSessionDependencies(RAT_ENCOUNTER_CLAIM_POLICY, RAT_ENCOUNTER_REQUEST.requestHash),
+			stageSessionDependencies(
+				RAT_ENCOUNTER_CLAIM_POLICY,
+				RAT_ENCOUNTER_CLAIM_POLICY_BINDING,
+				RAT_ENCOUNTER_REQUEST.requestHash
+			),
 			new CombatSessionRegistry()
 		);
 		expect(accepted.kind).toBe('session');
@@ -278,7 +355,11 @@ describe('stage session dependencies', () => {
 		for (const fixtureRequestHash of [undefined, 'incorrect-fixture-hash']) {
 			const rejected = enterCombatSession(
 				RAT_ENCOUNTER_REQUEST,
-				stageSessionDependencies(RAT_ENCOUNTER_CLAIM_POLICY, fixtureRequestHash),
+				stageSessionDependencies(
+					RAT_ENCOUNTER_CLAIM_POLICY,
+					RAT_ENCOUNTER_CLAIM_POLICY_BINDING,
+					fixtureRequestHash
+				),
 				new CombatSessionRegistry()
 			);
 			expect(rejected.kind).toBe('rejected');

@@ -7,8 +7,14 @@ import {
 	type ExplorationCombatRejection,
 	type ExplorationEncounterRequest
 } from '@summonlab/contracts';
+import { z } from 'zod';
 
 import { combatDeterministicId, combatRequestHash, combatValueHash } from './combat-hash';
+import {
+	createCombatContentCatalog,
+	resolveTrustedProductionContent,
+	type CombatContentCatalog
+} from './combat-content-catalog';
 import {
 	createRealtimeCombat,
 	stepRealtimeCombat,
@@ -27,13 +33,7 @@ const CANONICAL_ACTION_BINDINGS = new Map(
 );
 
 export type CombatSessionStatus =
-	| 'loading'
-	| 'ready'
-	| 'running'
-	| 'victory'
-	| 'defeat'
-	| 'rejected'
-	| 'unavailable';
+	'loading' | 'ready' | 'running' | 'victory' | 'defeat' | 'rejected' | 'unavailable';
 
 export type CombatReplayVerification =
 	| Readonly<{ kind: 'pending' }>
@@ -47,26 +47,47 @@ export type CombatReplayVerification =
 				| 'receiptId'
 				| 'rulesetVersion'
 				| 'presentationBindings';
-		}>;
+	  }>;
 
 export type CombatUnavailableState = Readonly<{
 	code: 'asset-load-failed' | 'renderer-initialization-failed';
 	message: string;
 }>;
 
-export type CombatClaimPolicy = Readonly<{
-	readonly contentId: string;
-	readonly version: string;
-	readonly contentHash: string;
-	readonly xpPerDefeatedEnemy: number;
-	readonly practicePerAction: number;
-	readonly materialByEnemyDefinitionId: Readonly<
-		Record<string, Readonly<{ materialDefinitionId: string; quantity: number }>>
-	>;
-}>;
+const CombatClaimPolicySchema = z
+	.object({
+		contentId: z.string().regex(/^[a-z][a-z0-9-]{2,119}$/u),
+		version: z.string().min(1).max(80),
+		contentHash: z.string().regex(/^[a-f0-9]{64}$/u),
+		xpPerDefeatedEnemy: z.number().int().nonnegative().max(100_000),
+		practicePerAction: z.number().int().nonnegative().max(100_000),
+		materialByEnemyDefinitionId: z.record(
+			z.string().regex(/^[a-z][a-z0-9-]{2,119}$/u),
+			z
+				.object({
+					materialDefinitionId: z.string().regex(/^[a-z][a-z0-9-]{2,119}$/u),
+					quantity: z.number().int().positive().max(100_000)
+				})
+				.strict()
+		)
+	})
+	.strict();
+
+const CombatClaimPolicyBindingSchema = z
+	.object({
+		contentId: z.string().regex(/^[a-z][a-z0-9-]{2,119}$/u),
+		version: z.string().min(1).max(80),
+		contentHash: z.string().regex(/^[a-f0-9]{64}$/u)
+	})
+	.passthrough();
+
+export type CombatClaimPolicy = Readonly<z.infer<typeof CombatClaimPolicySchema>>;
+export type CombatClaimPolicyBinding = Readonly<z.infer<typeof CombatClaimPolicyBindingSchema>>;
 
 export type CombatSessionDependencies = Readonly<{
-	claimPolicy: CombatClaimPolicy;
+	claimPolicy: unknown;
+	claimPolicyBinding: CombatClaimPolicyBinding;
+	contentCatalog?: CombatContentCatalog;
 	fixtureRequestHash?: string;
 }>;
 
@@ -103,8 +124,18 @@ export interface CombatSession {
 	subscribeUnavailable(listener: CombatUnavailableListener): () => void;
 }
 
+type ValidatedCombatSessionDependencies = Readonly<{
+	claimPolicy: CombatClaimPolicy;
+	claimPolicyBinding: CombatClaimPolicyBinding;
+	contentCatalog?: CombatContentCatalog;
+	fixtureRequestHash?: string;
+}>;
+
 type ValidationResult =
-	| Readonly<{ request: ExplorationEncounterRequest }>
+	| Readonly<{
+			request: ExplorationEncounterRequest;
+			dependencies: ValidatedCombatSessionDependencies;
+	  }>
 	| Readonly<{ rejection: ExplorationCombatRejection }>;
 
 function deepFreeze<T>(value: T): T {
@@ -177,6 +208,79 @@ function createRejection(
 	};
 }
 
+function claimPolicyValueHash(policy: CombatClaimPolicy): string {
+	const { contentId, version, contentHash, ...valueBody } = policy;
+	void contentId;
+	void version;
+	void contentHash;
+	return combatValueHash(valueBody);
+}
+
+function validateSessionDependencies(
+	input: CombatSessionDependencies,
+	requestId: string | undefined
+):
+	| Readonly<{ dependencies: ValidatedCombatSessionDependencies }>
+	| Readonly<{
+			rejection: ExplorationCombatRejection;
+	  }> {
+	const policy = CombatClaimPolicySchema.safeParse(input.claimPolicy);
+	const binding = CombatClaimPolicyBindingSchema.safeParse(input.claimPolicyBinding);
+	if (!policy.success || !binding.success) {
+		return {
+			rejection: createRejection(
+				requestId,
+				'stale-content-binding',
+				'The supplied claim policy or its trusted binding is invalid.',
+				['claimPolicy']
+			)
+		};
+	}
+	if (
+		claimPolicyValueHash(policy.data) !== policy.data.contentHash ||
+		binding.data.contentId !== policy.data.contentId ||
+		binding.data.version !== policy.data.version ||
+		binding.data.contentHash !== policy.data.contentHash
+	) {
+		return {
+			rejection: createRejection(
+				requestId,
+				'stale-content-binding',
+				'The supplied claim policy does not match its trusted content binding.',
+				['claimPolicy', 'contentBindings']
+			)
+		};
+	}
+	const trustedBinding: CombatClaimPolicyBinding = {
+		contentId: binding.data.contentId,
+		version: binding.data.version,
+		contentHash: binding.data.contentHash
+	};
+	let contentCatalog: CombatContentCatalog | undefined;
+	if (input.contentCatalog !== undefined) {
+		try {
+			contentCatalog = createCombatContentCatalog(input.contentCatalog);
+		} catch {
+			return {
+				rejection: createRejection(
+					requestId,
+					'stale-content-binding',
+					'The trusted production content catalog is invalid.',
+					['contentCatalog']
+				)
+			};
+		}
+	}
+	return {
+		dependencies: deepFreeze({
+			claimPolicy: immutableCopy(policy.data),
+			claimPolicyBinding: immutableCopy(trustedBinding),
+			...(contentCatalog ? { contentCatalog } : {}),
+			...(input.fixtureRequestHash ? { fixtureRequestHash: input.fixtureRequestHash } : {})
+		})
+	};
+}
+
 function fixtureOnlyArt(request: ExplorationEncounterRequest): boolean {
 	const participantBindings = [...request.party, ...request.enemies].flatMap((participant) => [
 		participant.presentation.combatAssetBinding,
@@ -193,7 +297,7 @@ function fixtureOnlyArt(request: ExplorationEncounterRequest): boolean {
 
 function validateBindings(
 	request: ExplorationEncounterRequest,
-	claimPolicy: CombatClaimPolicy
+	trustedClaimPolicyBinding: CombatClaimPolicyBinding
 ): ExplorationCombatRejection | undefined {
 	if (request.rulesetVersion !== SUPPORTED_RULESET_VERSION) {
 		return createRejection(
@@ -222,13 +326,13 @@ function validateBindings(
 	const claimPolicyBindings = request.contentBindings.filter(
 		(binding) => binding.kind === 'claim-policy'
 	);
-	const claimPolicyBinding = claimPolicyBindings[0];
+	const requestClaimPolicyBinding = claimPolicyBindings[0];
 	if (
 		claimPolicyBindings.length !== 1 ||
-		!claimPolicyBinding ||
-		claimPolicyBinding.contentId !== claimPolicy.contentId ||
-		claimPolicyBinding.version !== claimPolicy.version ||
-		claimPolicyBinding.contentHash !== claimPolicy.contentHash
+		!requestClaimPolicyBinding ||
+		requestClaimPolicyBinding.contentId !== trustedClaimPolicyBinding.contentId ||
+		requestClaimPolicyBinding.version !== trustedClaimPolicyBinding.version ||
+		requestClaimPolicyBinding.contentHash !== trustedClaimPolicyBinding.contentHash
 	) {
 		return createRejection(
 			request.requestId,
@@ -245,20 +349,18 @@ function validateBindings(
 	const actionBindings = request.contentBindings.filter((binding) => binding.kind === 'action');
 	if (
 		actionBindings.length !== expectedActions.size ||
-		[...expectedActions].some(
-			(actionId) => {
-				const expected = CANONICAL_ACTION_BINDINGS.get(actionId);
-				const bindings = actionBindings.filter((binding) => binding.contentId === actionId);
-				const binding = bindings[0];
-				return (
-					!expected ||
-					bindings.length !== 1 ||
-					!binding ||
-					binding.version !== expected.version ||
-					binding.contentHash !== expected.contentHash
-				);
-			}
-		)
+		[...expectedActions].some((actionId) => {
+			const expected = CANONICAL_ACTION_BINDINGS.get(actionId);
+			const bindings = actionBindings.filter((binding) => binding.contentId === actionId);
+			const binding = bindings[0];
+			return (
+				!expected ||
+				bindings.length !== 1 ||
+				!binding ||
+				binding.version !== expected.version ||
+				binding.contentHash !== expected.contentHash
+			);
+		})
 	) {
 		return createRejection(
 			request.requestId,
@@ -302,11 +404,7 @@ function validateBindings(
 		);
 	}
 	for (const binding of request.contentBindings) {
-		if (
-			binding.kind === 'ruleset' ||
-			binding.kind === 'claim-policy' ||
-			binding.kind === 'action'
-		)
+		if (binding.kind === 'ruleset' || binding.kind === 'claim-policy' || binding.kind === 'action')
 			continue;
 		if (
 			binding.kind === 'enemy' &&
@@ -335,11 +433,7 @@ function validateRequest(
 	input: unknown,
 	dependencies: CombatSessionDependencies
 ): ValidationResult {
-	if (
-		isRecord(input) &&
-		input.visualStatus === 'production' &&
-		safelyHasFixtureOnlyArt(input)
-	) {
+	if (isRecord(input) && input.visualStatus === 'production' && safelyHasFixtureOnlyArt(input)) {
 		return {
 			rejection: createRejection(
 				undefined,
@@ -371,9 +465,27 @@ function validateRequest(
 			)
 		};
 	}
-	const bindingRejection = validateBindings(request, dependencies.claimPolicy);
+	const validatedDependencies = validateSessionDependencies(dependencies, request.requestId);
+	if ('rejection' in validatedDependencies) return validatedDependencies;
+	const trustedDependencies = validatedDependencies.dependencies;
+	const bindingRejection = validateBindings(request, trustedDependencies.claimPolicyBinding);
 	if (bindingRejection) return { rejection: bindingRejection };
-	if (fixtureOnlyArt(request) && dependencies.fixtureRequestHash !== request.requestHash) {
+	if (request.visualStatus === 'fixture') {
+		if (
+			trustedDependencies.fixtureRequestHash !== RAT_ENCOUNTER_REQUEST.requestHash ||
+			request.requestHash !== RAT_ENCOUNTER_REQUEST.requestHash
+		) {
+			return {
+				rejection: createRejection(
+					request.requestId,
+					'unapproved-character-art',
+					'Fixture encounters are permitted only for the canonical rat fixture request.',
+					['requestHash']
+				)
+			};
+		}
+	}
+	if (fixtureOnlyArt(request) && trustedDependencies.fixtureRequestHash !== request.requestHash) {
 		return {
 			rejection: createRejection(
 				request.requestId,
@@ -383,7 +495,20 @@ function validateRequest(
 			)
 		};
 	}
-	return { request };
+	if (request.visualStatus === 'production') {
+		const resolution = resolveTrustedProductionContent(request, trustedDependencies.contentCatalog);
+		if (resolution.kind === 'untrusted') {
+			return {
+				rejection: createRejection(
+					request.requestId,
+					'unapproved-character-art',
+					'Production encounter content does not match the trusted combat catalog.',
+					[...resolution.fieldPaths]
+				)
+			};
+		}
+	}
+	return { request, dependencies: trustedDependencies };
 }
 
 function eventId(
@@ -411,7 +536,14 @@ function toContractEvent(
 	sequence: number
 ): ExplorationCombatEvent {
 	return {
-		eventId: eventId(requestHash, sequence, simulationTick, event.kind, event.actorId, event.targetIds),
+		eventId: eventId(
+			requestHash,
+			sequence,
+			simulationTick,
+			event.kind,
+			event.actorId,
+			event.targetIds
+		),
 		sequence,
 		simulationTick,
 		kind: event.kind,
@@ -431,7 +563,11 @@ function toContractEvent(
 }
 
 function policyDefinitionRef(policy: CombatClaimPolicy) {
-	return { definitionId: policy.contentId, version: policy.version, contentHash: policy.contentHash };
+	return {
+		definitionId: policy.contentId,
+		version: policy.version,
+		contentHash: policy.contentHash
+	};
 }
 
 function buildClaims(
@@ -512,6 +648,7 @@ function buildClaims(
 
 class CombatSessionImpl implements CombatSession {
 	readonly request: ExplorationEncounterRequest;
+	private readonly dependencies: ValidatedCombatSessionDependencies | undefined;
 	private currentStatus: CombatSessionStatus;
 	private currentCombat: RealtimeCombatState;
 	private readonly trace: ExplorationCombatEvent[] = [];
@@ -523,14 +660,14 @@ class CombatSessionImpl implements CombatSession {
 	private unavailableListeners: CombatUnavailableListener[] = [];
 
 	constructor(
-		input: unknown,
-		private readonly dependencies: CombatSessionDependencies,
 		validation: ValidationResult,
 		private readonly publishCompletion = true
 	) {
-		this.request = 'request' in validation ? deepFreeze(validation.request) : REJECTED_REQUEST;
+		this.dependencies = 'request' in validation ? validation.dependencies : undefined;
+		this.request = 'request' in validation ? immutableCopy(validation.request) : REJECTED_REQUEST;
 		this.currentStatus = 'rejection' in validation ? 'rejected' : 'loading';
-		this.currentCombat = 'request' in validation ? createRealtimeCombat(validation.request) : emptyCombat();
+		this.currentCombat =
+			'request' in validation ? createRealtimeCombat(this.request) : emptyCombat();
 		this.finalRejection = 'rejection' in validation ? deepFreeze(validation.rejection) : undefined;
 		if ('request' in validation) this.trace.push(this.startedEvent());
 	}
@@ -696,15 +833,17 @@ class CombatSessionImpl implements CombatSession {
 			.map((enemy) => enemy.enemyInstanceId);
 		const claims = buildClaims(
 			this.request,
-			this.dependencies.claimPolicy,
+			this.dependencies!.claimPolicy,
 			this.trace,
 			defeatedEnemyIds,
 			terminalEvent.eventId
 		);
 		const inputStateHash = encounterInputStateHash(this.request);
 		const traceHash = combatValueHash(this.trace);
+		const decisiveCause = { code: cause, summary, supportingEventIds: [terminalEvent.eventId] };
 		const outputStateHash = combatValueHash({
 			outcome,
+			decisiveCause,
 			finalHeroes,
 			finalEnemies,
 			defeatedEnemyIds,
@@ -730,7 +869,7 @@ class CombatSessionImpl implements CombatSession {
 				startedAtTick: 0,
 				endedAtTick: this.simulationTick,
 				outcome,
-				decisiveCause: { code: cause, summary, supportingEventIds: [terminalEvent.eventId] },
+				decisiveCause,
 				finalHeroes,
 				finalEnemies,
 				defeatedEnemyIds,
@@ -784,7 +923,7 @@ export function createCombatSession(
 	input: unknown,
 	dependencies: CombatSessionDependencies
 ): CombatSession {
-	return new CombatSessionImpl(input, dependencies, validateRequest(input, dependencies));
+	return new CombatSessionImpl(validateRequest(input, dependencies));
 }
 
 export type CombatSessionEntry =
@@ -883,19 +1022,26 @@ export function enterCombatSession(
 		const rejection =
 			'rejection' in validation
 				? validation.rejection
-				: createRejection(undefined, 'invalid-request', 'Encounter request failed contract validation.', []);
+				: createRejection(
+						undefined,
+						'invalid-request',
+						'Encounter request failed contract validation.',
+						[]
+					);
 		return { kind: 'rejected', rejection: deepFreeze(rejection) };
 	}
 	const request = parsed.data;
 	const requestHash = registryRequestHash(request);
-	const existing = registry.get(request.idempotencyKey) ?? registry.getByRequestId(request.requestId);
+	const existing =
+		registry.get(request.idempotencyKey) ?? registry.getByRequestId(request.requestId);
 	if (existing && existing.requestHash !== requestHash) {
 		return { kind: 'rejected', rejection: idempotencyConflict(request) };
 	}
 	const validation = validateRequest(input, dependencies);
 	if (requestHash !== request.requestHash) {
 		if ('rejection' in validation) {
-			if (existing?.status === 'rejected') return { kind: 'rejected', rejection: existing.rejection };
+			if (existing?.status === 'rejected')
+				return { kind: 'rejected', rejection: existing.rejection };
 			if (!existing) registry.setRejected(request, validation.rejection);
 			return { kind: 'rejected', rejection: deepFreeze(validation.rejection) };
 		}
@@ -1053,7 +1199,11 @@ class ReplayCombatSession implements CombatSession {
 		const previousStatus = this.currentStatus;
 		this.candidate.markUnavailable(state);
 		this.syncCandidate();
-		if (previousStatus !== 'unavailable' && this.currentStatus === 'unavailable' && this.unavailableState) {
+		if (
+			previousStatus !== 'unavailable' &&
+			this.currentStatus === 'unavailable' &&
+			this.unavailableState
+		) {
 			for (const listener of [...this.unavailableListeners]) listener(this.unavailableState);
 		}
 	}
@@ -1120,14 +1270,31 @@ function replayMismatchForInvalidReceipt(
 	issues: readonly Readonly<{ path: readonly PropertyKey[] }>[]
 ): CombatReplayVerification {
 	const paths = issues.map((issue) => issue.path.join('.'));
-	if (paths.some((path) => path.includes('traceHash') || path.includes('events') || path.includes('endedAtTick'))) {
+	if (
+		paths.some(
+			(path) =>
+				path.includes('traceHash') || path.includes('events') || path.includes('endedAtTick')
+		)
+	) {
 		return replayMismatch('traceHash');
 	}
-	if (paths.some((path) => path.includes('outputStateHash') || path.includes('final') || path.includes('claims'))) {
+	if (
+		paths.some(
+			(path) =>
+				path.includes('outputStateHash') || path.includes('final') || path.includes('claims')
+		)
+	) {
 		return replayMismatch('outputStateHash');
 	}
-	if (paths.some((path) => path.includes('rulesetVersion'))) return replayMismatch('rulesetVersion');
-	if (paths.some((path) => path.includes('battlefieldBindingHash') || path.includes('participantPresentationBindingsHash'))) {
+	if (paths.some((path) => path.includes('rulesetVersion')))
+		return replayMismatch('rulesetVersion');
+	if (
+		paths.some(
+			(path) =>
+				path.includes('battlefieldBindingHash') ||
+				path.includes('participantPresentationBindingsHash')
+		)
+	) {
 		return replayMismatch('presentationBindings');
 	}
 	return replayMismatch('receiptId');
@@ -1158,7 +1325,7 @@ export function createReplayCombatSession(
 			replayMismatch('requestHash')
 		);
 	}
-	const candidate = new CombatSessionImpl(validation.request, dependencies, validation, false);
+	const candidate = new CombatSessionImpl(validation, false);
 	return new ReplayCombatSession(
 		validation.request,
 		candidate,

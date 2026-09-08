@@ -12,8 +12,9 @@ describe('RealtimeCombatStage session boundary', () => {
 	it('owns a request-bound live or replay session instead of a local fixture simulation', () => {
 		expect(stageSource).toContain('request: ExplorationEncounterRequest;');
 		expect(stageSource).toContain('fixtureRequestHash?: string;');
+		expect(stageSource).toContain('claimPolicyBinding: CombatClaimPolicyBinding;');
 		expect(stageSource).toContain(
-			'stageSessionDependencies(\n\t\tclaimPolicyForSession,\n\t\tfixtureRequestHashForSession\n\t)'
+			'stageSessionDependencies(\n\t\tclaimPolicyForSession,\n\t\tclaimPolicyBindingForSession,\n\t\tfixtureRequestHashForSession\n\t)'
 		);
 		expect(stageSource).toContain(
 			'enterCombatSession(requestForSession, dependencies, registryForSession)'
@@ -25,15 +26,20 @@ describe('RealtimeCombatStage session boundary', () => {
 		expect(stageSource).not.toContain('restartKey');
 	});
 
-	it('loads and unloads the request-declared raster and motion sources', () => {
+	it('verifies request-declared raster, motion JSON, and atlas bytes before Pixi decodes them', () => {
 		expect(stageSource).toContain(
-			'const rasterBindings = combatRasterBindings(requestForSession);'
+			'const rasterBindings = combatRasterBindings(presentationRequest);'
 		);
 		expect(stageSource).toContain(
-			'const motionBindings = combatMotionBindings(requestForSession);'
+			'const motionBindings = combatMotionBindings(presentationRequest);'
 		);
-		expect(stageSource).toContain('stageAssetOwner({');
-		expect(stageSource).toContain('}).claim(sources);');
+		expect(stageSource).toContain('const sources = requestAssetBindings(presentationRequest);');
+		expect(stageSource).toContain(
+			'stageAssetOwner(createVerifiedStageAssetLoader()).claim(sources);'
+		);
+		expect(stageSource).toContain("parser: 'texture'");
+		expect(stageSource).toContain('new Spritesheet({');
+		expect(stageSource).not.toContain('Assets.load(source)');
 	});
 
 	it('advances only the session fixed step and keeps replay completion separate', () => {

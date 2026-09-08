@@ -58,6 +58,12 @@ export const RAT_ENCOUNTER_CLAIM_POLICY = {
 	...RAT_CLAIM_VALUES
 } as const;
 
+export const RAT_ENCOUNTER_CLAIM_POLICY_BINDING = Object.freeze({
+	contentId: RAT_ENCOUNTER_CLAIM_POLICY.contentId,
+	version: RAT_ENCOUNTER_CLAIM_POLICY.version,
+	contentHash: RAT_ENCOUNTER_CLAIM_POLICY.contentHash
+});
+
 function fixtureRaster(assetKey: string, source: string, contentHash: string) {
 	return {
 		assetKey,
@@ -93,7 +99,12 @@ function fixturePresentation(
 	rasterHash: string,
 	motionPackId: keyof typeof FIXTURE_MOTION_HASHES,
 	version: number,
-	visualTuning: { bodyOffsetY: number; shadowRadiusX: number; shadowRadiusY: number; displaySize: number }
+	visualTuning: {
+		bodyOffsetY: number;
+		shadowRadiusX: number;
+		shadowRadiusY: number;
+		displaySize: number;
+	}
 ) {
 	const motion = FIXTURE_MOTION_HASHES[motionPackId];
 	return {
@@ -283,14 +294,19 @@ const RAT_CONTENT_BINDINGS = [
 		version: 'realtime-rat-combat-v1',
 		contentHash: combatValueHash({ ruleset: 'realtime-rat-combat-v1' })
 	},
-	...['saffron-strike-v1', 'saffron-arc-v1', 'guardian-strike-v1', 'moss-arrow-v1', 'rat-brute-strike-v1', 'plague-rat-bite-v1'].map(
-		(contentId) => ({
-			kind: 'action' as const,
-			contentId,
-			version: `${contentId}-content-v1`,
-			contentHash: combatValueHash({ action: contentId })
-		})
-	),
+	...[
+		'saffron-strike-v1',
+		'saffron-arc-v1',
+		'guardian-strike-v1',
+		'moss-arrow-v1',
+		'rat-brute-strike-v1',
+		'plague-rat-bite-v1'
+	].map((contentId) => ({
+		kind: 'action' as const,
+		contentId,
+		version: `${contentId}-content-v1`,
+		contentHash: combatValueHash({ action: contentId })
+	})),
 	{
 		kind: 'enemy' as const,
 		contentId: 'rat-brute',
@@ -305,9 +321,7 @@ const RAT_CONTENT_BINDINGS = [
 	},
 	{
 		kind: 'claim-policy' as const,
-		contentId: RAT_ENCOUNTER_CLAIM_POLICY.contentId,
-		version: RAT_ENCOUNTER_CLAIM_POLICY.version,
-		contentHash: RAT_ENCOUNTER_CLAIM_POLICY.contentHash
+		...RAT_ENCOUNTER_CLAIM_POLICY_BINDING
 	},
 	{
 		kind: 'battlefield' as const,
@@ -389,7 +403,7 @@ export function combatFixtureAssetBindings(
 			source: binding.source,
 			contentHash: binding.contentHash
 		})),
-		...([...request.party, ...request.enemies].flatMap((participant) => [
+		...[...request.party, ...request.enemies].flatMap((participant) => [
 			{
 				source: participant.presentation.combatAssetBinding.source,
 				contentHash: participant.presentation.combatAssetBinding.contentHash
@@ -402,10 +416,12 @@ export function combatFixtureAssetBindings(
 				source: participant.presentation.motionPackBinding.atlasImageSource,
 				contentHash: participant.presentation.motionPackBinding.atlasImageHash
 			}
-		]))
+		])
 	];
-	return [...new Map(sources.map((binding) => [binding.source, binding])).values()].map((binding) => ({
-		...binding,
-		status: request.visualStatus
-	}));
+	return [...new Map(sources.map((binding) => [binding.source, binding])).values()].map(
+		(binding) => ({
+			...binding,
+			status: request.visualStatus
+		})
+	);
 }

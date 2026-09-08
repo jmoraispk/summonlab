@@ -13,9 +13,9 @@ session. Pixi stage ownership and route behavior remain untouched.
   idempotency keys or request IDs, and frozen registry lookup views.
 - Registers completion storage before external subscriptions execute, so a re-entrant entry observes
   the completed receipt; unavailable sessions remove only their active entry and can retry.
-- Added `createReplayCombatSession()` and `CombatReplayVerification`. Replay advances stored contract
-  trace events at their captured simulation ticks, never runs current mechanics to generate the
-  authoritative trace, never builds/publishes claims, and never calls completion subscribers.
+- Added `createReplayCombatSession()` and `CombatReplayVerification`. Replay reruns fresh unified
+  mechanics at the captured fixed-step boundary, independently regenerates the candidate trace and
+  receipt, never publishes claims, and never calls completion subscribers.
 - Replay verifies the request, input-state, trace, output-state, receipt, ruleset, and presentation
   binding hashes before reporting `verified`; any mismatch reports the typed closed failure.
 - Preserved Task 3 request validation, fixture-only artwork exception, and exact content-binding

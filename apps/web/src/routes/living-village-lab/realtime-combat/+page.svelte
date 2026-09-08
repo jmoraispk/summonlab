@@ -14,6 +14,7 @@
 	} from '$lib/components/living-village/realtime-combat/realtime-combat';
 	import {
 		RAT_ENCOUNTER_CLAIM_POLICY,
+		RAT_ENCOUNTER_CLAIM_POLICY_BINDING,
 		RAT_ENCOUNTER_REQUEST
 	} from '$lib/components/living-village/realtime-combat/rat-encounter-fixture';
 	import { CombatSessionRegistry } from '$lib/components/living-village/realtime-combat/combat-session';
@@ -31,6 +32,7 @@
 	const registry = new CombatSessionRegistry();
 	const dependencies = {
 		claimPolicy: RAT_ENCOUNTER_CLAIM_POLICY,
+		claimPolicyBinding: RAT_ENCOUNTER_CLAIM_POLICY_BINDING,
 		fixtureRequestHash: RAT_ENCOUNTER_REQUEST.requestHash
 	};
 	let stageKey = $state(0);
@@ -143,6 +145,7 @@
 				<RealtimeCombatStage
 					request={RAT_ENCOUNTER_REQUEST}
 					claimPolicy={dependencies.claimPolicy}
+					claimPolicyBinding={dependencies.claimPolicyBinding}
 					fixtureRequestHash={dependencies.fixtureRequestHash}
 					{registry}
 					{replayOf}

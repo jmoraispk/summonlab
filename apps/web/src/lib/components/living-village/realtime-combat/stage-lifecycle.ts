@@ -3,12 +3,20 @@ import type {
 	CombatReplayVerification,
 	CombatSession,
 	CombatSessionDependencies,
+	CombatClaimPolicyBinding,
 	CombatUnavailableState
 } from './combat-session';
 
+export type StageAssetBinding = Readonly<{
+	source: string;
+	contentHash: string;
+}>;
+
+type StageAssetSource = string | StageAssetBinding;
+
 export type StageAssetLoader = Readonly<{
-	load: (source: string) => Promise<unknown>;
-	unload: (source: string) => Promise<void> | void;
+	load: (source: string, binding?: StageAssetBinding) => Promise<unknown>;
+	unload: (source: string, binding?: StageAssetBinding) => Promise<void> | void;
 }>;
 
 export type StageAssetClaim = Readonly<{
@@ -17,44 +25,67 @@ export type StageAssetClaim = Readonly<{
 }>;
 
 type AssetEntry = {
+	source: string;
+	binding?: StageAssetBinding;
 	claimCount: number;
 	ready: Promise<unknown>;
 	releasePromise?: Promise<void>;
 };
 
-function uniqueSources(sources: readonly string[]): readonly string[] {
-	return [...new Set(sources)];
+type ClaimedSource = Readonly<{
+	key: string;
+	source: string;
+	binding?: StageAssetBinding;
+}>;
+
+function uniqueSources(sources: readonly StageAssetSource[]): readonly ClaimedSource[] {
+	const claimed = new Map<string, ClaimedSource>();
+	for (const source of sources) {
+		if (typeof source === 'string') {
+			claimed.set(source, { key: source, source });
+			continue;
+		}
+		const binding = source;
+		const key = `${binding.source}\u0000${binding.contentHash}`;
+		claimed.set(key, { key, source: binding.source, binding });
+	}
+	return [...claimed.values()];
 }
 
 export function createStageAssetOwner(loader: StageAssetLoader) {
 	const entries = new Map<string, AssetEntry>();
 
-	const releaseEntry = (source: string, entry: AssetEntry): Promise<void> => {
+	const releaseEntry = (key: string, entry: AssetEntry): Promise<void> => {
 		if (entry.claimCount === 0) return entry.releasePromise ?? Promise.resolve();
 		entry.claimCount -= 1;
 		if (entry.claimCount > 0) return Promise.resolve();
 		if (entry.releasePromise) return entry.releasePromise;
 
 		const reload = () => {
-			const reloaded = Promise.resolve().then(() => loader.load(source));
+			const reloaded = Promise.resolve().then(() => loader.load(entry.source, entry.binding));
 			entry.ready = reloaded;
 			return reloaded;
 		};
 		const readyBeforeRelease = entry.ready;
-		const settledReady = readyBeforeRelease
-			.catch(() => undefined)
-			.then(async (loadedAsset) => {
-				if (entry.claimCount !== 0) return loadedAsset;
-				try {
-					await loader.unload(source);
-				} catch (error) {
-					if (entry.claimCount !== 0) return reload();
-					if (entries.get(source) === entry) entries.delete(source);
-					throw error;
-				}
+		const settleAfterReady = async (loadedAsset: unknown) => {
+			if (entry.claimCount !== 0) return loadedAsset;
+			try {
+				await loader.unload(entry.source, entry.binding);
+			} catch (error) {
 				if (entry.claimCount !== 0) return reload();
-				if (entries.get(source) === entry) entries.delete(source);
-			});
+				if (entries.get(key) === entry) entries.delete(key);
+				throw error;
+			}
+			if (entry.claimCount !== 0) return reload();
+			if (entries.get(key) === entry) entries.delete(key);
+		};
+		const settledReady = readyBeforeRelease.then(
+			(loadedAsset) => settleAfterReady(loadedAsset),
+			async () => {
+				if (entry.claimCount !== 0) return reload();
+				return settleAfterReady(undefined);
+			}
+		);
 		entry.ready = settledReady;
 		void settledReady.catch(() => undefined);
 		const releasePromise = settledReady.then(() => undefined);
@@ -71,27 +102,29 @@ export function createStageAssetOwner(loader: StageAssetLoader) {
 	};
 
 	return {
-		claim(sources: readonly string[]): StageAssetClaim {
+		claim(sources: readonly StageAssetSource[]): StageAssetClaim {
 			const claimedSources = uniqueSources(sources);
-			const claimedEntries = claimedSources.map((source) => {
-				const existing = entries.get(source);
+			const claimedEntries = claimedSources.map(({ key, source, binding }) => {
+				const existing = entries.get(key);
 				if (existing) {
 					existing.claimCount += 1;
-					return [source, existing] as const;
+					return [key, existing] as const;
 				}
 				const entry: AssetEntry = {
+					source,
+					binding,
 					claimCount: 1,
-					ready: Promise.resolve().then(() => loader.load(source))
+					ready: Promise.resolve().then(() => loader.load(source, binding))
 				};
-				entries.set(source, entry);
-				return [source, entry] as const;
+				entries.set(key, entry);
+				return [key, entry] as const;
 			});
 
 			let releasePromise: Promise<void> | undefined;
 			const release = () => {
 				if (!releasePromise) {
 					releasePromise = Promise.all(
-						claimedEntries.map(([source, entry]) => releaseEntry(source, entry))
+						claimedEntries.map(([key, entry]) => releaseEntry(key, entry))
 					).then(() => undefined);
 				}
 				return releasePromise;
@@ -115,9 +148,12 @@ export function stageAssetOwner(loader: StageAssetLoader) {
 
 export function stageSessionDependencies(
 	claimPolicy: CombatClaimPolicy,
+	claimPolicyBinding: CombatClaimPolicyBinding,
 	fixtureRequestHash?: string
 ): CombatSessionDependencies {
-	return fixtureRequestHash === undefined ? { claimPolicy } : { claimPolicy, fixtureRequestHash };
+	return fixtureRequestHash === undefined
+		? { claimPolicy, claimPolicyBinding }
+		: { claimPolicy, claimPolicyBinding, fixtureRequestHash };
 }
 
 export type StageStepSession<TCombat> = Readonly<{

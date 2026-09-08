@@ -112,6 +112,20 @@ test('reports an unavailable presentation without a defeat receipt', async ({ pa
 	await expect(page.getByText('Party overwhelmed')).toHaveCount(0);
 });
 
+test('fails locally unavailable when fetched motion bytes do not match their request-bound hash', async ({
+	page
+}) => {
+	await page.route('**/rat-brute-motion-v1.json', (route) =>
+		route.fulfill({ status: 200, contentType: 'application/json', body: '{"tampered":true}' })
+	);
+	await page.goto(combatUrl);
+	await expect(page.getByTestId('combat-unavailable')).toContainText('could not be loaded');
+	await expect(page.getByTestId('combat-receipt')).toHaveCount(0);
+	await expect(page.getByTestId('realtime-combat-pixi-host')).not.toHaveAttribute(
+		'data-animated-actor-count'
+	);
+});
+
 test('retries replay presentation without replacing the original receipt', async ({ page }) => {
 	test.setTimeout(90_000);
 	let abortReplayMotion = false;

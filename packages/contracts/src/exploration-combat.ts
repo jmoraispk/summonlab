@@ -167,8 +167,15 @@ export const CombatContentBindingSchema = z
 const CombatContentBindingsSchema = z
 	.array(CombatContentBindingSchema)
 	.superRefine((contentBindings, context) => {
-		const tuples = contentBindings.map(({ kind, contentId, version }) => `${kind}:${contentId}:${version}`);
-		validateUniqueStrings(tuples, context, 'Content binding kind, content ID, and version must be unique', []);
+		const tuples = contentBindings.map(
+			({ kind, contentId, version }) => `${kind}:${contentId}:${version}`
+		);
+		validateUniqueStrings(
+			tuples,
+			context,
+			'Content binding kind, content ID, and version must be unique',
+			[]
+		);
 	});
 
 export const BattlefieldBindingSchema = z
@@ -236,11 +243,14 @@ function validateEncounterRequest(
 		addIssue(context, 'At least one enemy is required for victory', ['enemies']);
 	}
 	if (request.bounds.maximumCombatants !== allUnitIds.length) {
-		addIssue(context, 'maximumCombatants must equal declared participants', ['bounds', 'maximumCombatants']);
+		addIssue(context, 'maximumCombatants must equal declared participants', [
+			'bounds',
+			'maximumCombatants'
+		]);
 	}
 	if (request.visualStatus === 'production') {
-		const participantHasFixtureBinding = [...request.party, ...request.enemies].some((participant) =>
-			hasFixtureBinding(participant.presentation)
+		const participantHasFixtureBinding = [...request.party, ...request.enemies].some(
+			(participant) => hasFixtureBinding(participant.presentation)
 		);
 		const battlefieldHasFixtureBinding =
 			request.battlefieldBinding.environmentAssetBinding.approvalStatus === 'fixture-only' ||
@@ -257,9 +267,8 @@ function validateEncounterRequest(
 	}
 }
 
-export const ExplorationEncounterRequestSchema = ExplorationEncounterRequestBaseSchema.superRefine(
-	validateEncounterRequest
-);
+export const ExplorationEncounterRequestSchema =
+	ExplorationEncounterRequestBaseSchema.superRefine(validateEncounterRequest);
 
 export const ExplorationCombatEventKindSchema = z.enum([
 	'encounter-started',
@@ -288,18 +297,20 @@ export const ExplorationCombatEventSchema = z
 	})
 	.strict();
 
-export const ExplorationCombatClaimBaseSchema = z.object({
-	claimId: z.string().uuid(),
-	definitionRef: z
-		.object({
-			definitionId: SlugSchema,
-			version: ContentVersionSchema,
-			contentHash: StateHashSchema
-		})
-		.strict(),
-	quantity: z.number().int().positive(),
-	sourceEventIds: z.array(z.string().uuid()).min(1)
-}).strict();
+export const ExplorationCombatClaimBaseSchema = z
+	.object({
+		claimId: z.string().uuid(),
+		definitionRef: z
+			.object({
+				definitionId: SlugSchema,
+				version: ContentVersionSchema,
+				contentHash: StateHashSchema
+			})
+			.strict(),
+		quantity: z.number().int().positive(),
+		sourceEventIds: z.array(z.string().uuid()).min(1)
+	})
+	.strict();
 
 export const ProgressionXpClaimSchema = ExplorationCombatClaimBaseSchema.extend({
 	kind: z.literal('progression-xp'),
@@ -435,7 +446,11 @@ function validateTerminalReceipt(
 
 	for (const [index, event] of receipt.events.entries()) {
 		if (event.sequence !== index) {
-			addIssue(context, 'Event sequences must be contiguous and start at zero', ['events', index, 'sequence']);
+			addIssue(context, 'Event sequences must be contiguous and start at zero', [
+				'events',
+				index,
+				'sequence'
+			]);
 		}
 	}
 	validateUniqueStrings(
@@ -449,6 +464,8 @@ function validateTerminalReceipt(
 	}
 
 	const eventIds = new Set(receipt.events.map((event) => event.eventId));
+	const eventsById = new Map(receipt.events.map((event) => [event.eventId, event]));
+	const terminalEvent = receipt.events.at(-1);
 	for (const supportingEventId of receipt.decisiveCause.supportingEventIds) {
 		if (!eventIds.has(supportingEventId)) {
 			addIssue(context, 'Decisive cause references an absent supporting event', ['decisiveCause']);
@@ -461,9 +478,84 @@ function validateTerminalReceipt(
 		['claims']
 	);
 	for (const [claimIndex, claim] of receipt.claims.entries()) {
+		const matchingClaimPolicyBinding = receipt.contentBindings.some(
+			(binding) =>
+				binding.kind === 'claim-policy' &&
+				binding.contentId === claim.definitionRef.definitionId &&
+				binding.version === claim.definitionRef.version &&
+				binding.contentHash === claim.definitionRef.contentHash
+		);
+		if (!matchingClaimPolicyBinding) {
+			addIssue(context, 'Claim definitions must match a declared claim-policy content binding', [
+				'claims',
+				claimIndex,
+				'definitionRef'
+			]);
+		}
+		validateUniqueStrings(claim.sourceEventIds, context, 'Claim source event IDs must be unique', [
+			'claims',
+			claimIndex,
+			'sourceEventIds'
+		]);
 		for (const sourceEventId of claim.sourceEventIds) {
-			if (!eventIds.has(sourceEventId)) {
-				addIssue(context, 'Claims must reference a source event', ['claims', claimIndex, 'sourceEventIds']);
+			const sourceEvent = eventsById.get(sourceEventId);
+			if (!sourceEvent) {
+				addIssue(context, 'Claims must reference a source event', [
+					'claims',
+					claimIndex,
+					'sourceEventIds'
+				]);
+				continue;
+			}
+			if (claim.kind === 'skill-practice') {
+				if (sourceEvent.kind !== 'action-resolved') {
+					addIssue(context, 'Skill-practice claims require action-resolved source events', [
+						'claims',
+						claimIndex,
+						'sourceEventIds'
+					]);
+				}
+				if (sourceEvent.actorId !== claim.heroId) {
+					addIssue(context, 'Skill-practice claim sources must be acted by the claimed hero', [
+						'claims',
+						claimIndex,
+						'heroId'
+					]);
+				}
+				if (sourceEvent.actionId !== claim.actionDefinitionId) {
+					addIssue(
+						context,
+						'Skill-practice claim sources must match the claimed action definition',
+						['claims', claimIndex, 'actionDefinitionId']
+					);
+				}
+			}
+			if (claim.kind === 'material') {
+				if (sourceEvent.kind !== 'unit-defeated') {
+					addIssue(context, 'Material claims require unit-defeated source events', [
+						'claims',
+						claimIndex,
+						'sourceEventIds'
+					]);
+				}
+				if (!sourceEvent.targetIds.includes(claim.sourceEnemyInstanceId)) {
+					addIssue(context, 'Material claim sources must target the claimed defeated enemy', [
+						'claims',
+						claimIndex,
+						'sourceEnemyInstanceId'
+					]);
+				}
+			}
+			if (
+				claim.kind === 'progression-xp' &&
+				(sourceEvent.eventId !== terminalEvent?.eventId ||
+					terminalEvent?.kind !== 'encounter-ended')
+			) {
+				addIssue(
+					context,
+					'Progression claims require the terminal encounter-ended event as evidence',
+					['claims', claimIndex, 'sourceEventIds']
+				);
 			}
 		}
 	}
@@ -488,12 +580,9 @@ function validateTerminalReceipt(
 	const defeatedEnemyIds = receipt.finalEnemies
 		.filter((enemy) => enemy.combatState === 'defeated')
 		.map((enemy) => enemy.enemyInstanceId);
-	validateUniqueStrings(
-		receipt.defeatedEnemyIds,
-		context,
-		'Defeated enemy IDs must be unique',
-		['defeatedEnemyIds']
-	);
+	validateUniqueStrings(receipt.defeatedEnemyIds, context, 'Defeated enemy IDs must be unique', [
+		'defeatedEnemyIds'
+	]);
 	if (
 		defeatedEnemyIds.length !== receipt.defeatedEnemyIds.length ||
 		defeatedEnemyIds.some((enemyId) => !receipt.defeatedEnemyIds.includes(enemyId))
@@ -508,7 +597,10 @@ function validateTerminalReceipt(
 	const allHeroesDefeated = receipt.finalHeroes.every((hero) => hero.combatState === 'defeated');
 	if (receipt.outcome === 'victory') {
 		if (receipt.decisiveCause.code !== 'enemies-defeated') {
-			addIssue(context, 'Victory receipts require an enemies-defeated decisive cause', ['decisiveCause', 'code']);
+			addIssue(context, 'Victory receipts require an enemies-defeated decisive cause', [
+				'decisiveCause',
+				'code'
+			]);
 		}
 		if (!hasRequiredEnemy) {
 			addIssue(context, 'Victory requires at least one required enemy', ['finalEnemies']);
@@ -519,15 +611,21 @@ function validateTerminalReceipt(
 	}
 	if (receipt.outcome === 'defeat') {
 		if (receipt.decisiveCause.code === 'enemies-defeated') {
-			addIssue(context, 'Defeat receipts cannot use an enemies-defeated decisive cause', ['decisiveCause', 'code']);
+			addIssue(context, 'Defeat receipts cannot use an enemies-defeated decisive cause', [
+				'decisiveCause',
+				'code'
+			]);
 		}
 		if (receipt.decisiveCause.code === 'heroes-defeated' && !allHeroesDefeated) {
-			addIssue(context, 'A heroes-defeated defeat requires every hero to be defeated', ['finalHeroes']);
+			addIssue(context, 'A heroes-defeated defeat requires every hero to be defeated', [
+				'finalHeroes'
+			]);
 		}
 	}
 
 	const finalHeroIds = new Set(heroIds);
 	const finalEnemyIds = new Set(enemyIds);
+	const finalDefeatedEnemyIds = new Set(defeatedEnemyIds);
 	for (const [claimIndex, claim] of receipt.claims.entries()) {
 		if ('heroId' in claim && !finalHeroIds.has(claim.heroId)) {
 			addIssue(context, 'Hero claims must reference a final hero', ['claims', claimIndex]);
@@ -535,28 +633,46 @@ function validateTerminalReceipt(
 		if ('sourceEnemyInstanceId' in claim && !finalEnemyIds.has(claim.sourceEnemyInstanceId)) {
 			addIssue(context, 'Material claims must reference a final enemy', ['claims', claimIndex]);
 		}
+		if (claim.kind === 'material' && !finalDefeatedEnemyIds.has(claim.sourceEnemyInstanceId)) {
+			addIssue(context, 'Material claims must reference a terminally defeated enemy', [
+				'claims',
+				claimIndex,
+				'sourceEnemyInstanceId'
+			]);
+		}
 	}
 
 	if (receipt.replayRef.requestId !== receipt.requestId) {
-		addIssue(context, 'Replay request ID must match the receipt request ID', ['replayRef', 'requestId']);
+		addIssue(context, 'Replay request ID must match the receipt request ID', [
+			'replayRef',
+			'requestId'
+		]);
 	}
 	if (receipt.replayRef.requestHash !== receipt.requestHash) {
-		addIssue(context, 'Replay request hash must match the receipt request hash', ['replayRef', 'requestHash']);
+		addIssue(context, 'Replay request hash must match the receipt request hash', [
+			'replayRef',
+			'requestHash'
+		]);
 	}
 	if (receipt.replayRef.receiptId !== receipt.receiptId) {
 		addIssue(context, 'Replay receipt ID must match the receipt ID', ['replayRef', 'receiptId']);
 	}
 	if (receipt.replayRef.traceHash !== receipt.traceHash) {
-		addIssue(context, 'Replay trace hash must match the receipt trace hash', ['replayRef', 'traceHash']);
+		addIssue(context, 'Replay trace hash must match the receipt trace hash', [
+			'replayRef',
+			'traceHash'
+		]);
 	}
 	if (receipt.replayRef.rulesetVersion !== receipt.rulesetVersion) {
-		addIssue(context, 'Replay ruleset version must match the receipt ruleset version', ['replayRef', 'rulesetVersion']);
+		addIssue(context, 'Replay ruleset version must match the receipt ruleset version', [
+			'replayRef',
+			'rulesetVersion'
+		]);
 	}
 }
 
-export const ExplorationCombatReceiptSchema = ExplorationCombatReceiptBaseSchema.superRefine(
-	validateTerminalReceipt
-);
+export const ExplorationCombatReceiptSchema =
+	ExplorationCombatReceiptBaseSchema.superRefine(validateTerminalReceipt);
 
 export const ExplorationCombatRejectionSchema = z
 	.object({

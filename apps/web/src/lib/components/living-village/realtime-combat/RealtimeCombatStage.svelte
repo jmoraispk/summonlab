@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { onMount, untrack } from 'svelte';
+	import { SvelteMap } from 'svelte/reactivity';
 	import type {
 		ExplorationCombatReceipt,
 		ExplorationCombatRejection,
@@ -33,6 +34,11 @@
 	import { motionPackVersionDiagnostic } from './motion-pack-config';
 	import { type RealtimeActor, type RealtimeCombatState } from './realtime-combat';
 	import {
+		createVerifiedStageAssetLoader,
+		requestAssetBindings,
+		type VerifiedStageAsset
+	} from './stage-asset-integrity';
+	import {
 		advanceStageSession,
 		bindStageSessionNotifications,
 		stageSessionDependencies,
@@ -44,6 +50,7 @@
 		createReplayCombatSession,
 		enterCombatSession,
 		type CombatClaimPolicy,
+		type CombatClaimPolicyBinding,
 		type CombatSession,
 		type CombatReplayVerification,
 		type CombatUnavailableState
@@ -52,6 +59,7 @@
 	let {
 		request,
 		claimPolicy,
+		claimPolicyBinding,
 		fixtureRequestHash,
 		registry,
 		replayOf,
@@ -66,6 +74,7 @@
 	}: {
 		request: ExplorationEncounterRequest;
 		claimPolicy: CombatClaimPolicy;
+		claimPolicyBinding: CombatClaimPolicyBinding;
 		fixtureRequestHash?: string;
 		registry: CombatSessionRegistry;
 		replayOf?: ExplorationCombatReceipt;
@@ -109,22 +118,15 @@
 
 	const requestForSession = untrack(() => request);
 	const claimPolicyForSession = untrack(() => claimPolicy);
+	const claimPolicyBindingForSession = untrack(() => claimPolicyBinding);
 	const fixtureRequestHashForSession = untrack(() => fixtureRequestHash);
 	const registryForSession = untrack(() => registry);
 	const replayForSession = untrack(() => replayOf);
 	const onCompleteForSession = untrack(() => onComplete);
 	const onRejectedForSession = untrack(() => onRejected);
-	const rasterBindings = combatRasterBindings(requestForSession);
-	const motionBindings = combatMotionBindings(requestForSession);
-	const sources = [
-		...new Set([
-			...rasterBindings.map((binding) => binding.source),
-			...motionBindings.map((binding) => binding.source)
-		])
-	];
-	const motionPackVersions = motionPackVersionDiagnostic(motionBindings);
 	const dependencies = stageSessionDependencies(
 		claimPolicyForSession,
+		claimPolicyBindingForSession,
 		fixtureRequestHashForSession
 	);
 	const entry = replayForSession
@@ -133,6 +135,11 @@
 				session: createReplayCombatSession(requestForSession, replayForSession, dependencies)
 			}
 		: enterCombatSession(requestForSession, dependencies, registryForSession);
+	const presentationRequest = entry.kind === 'session' ? entry.session.request : requestForSession;
+	const rasterBindings = combatRasterBindings(presentationRequest);
+	const motionBindings = combatMotionBindings(presentationRequest);
+	const sources = requestAssetBindings(presentationRequest);
+	const motionPackVersions = motionPackVersionDiagnostic(motionBindings);
 	let session: CombatSession | undefined;
 	if (entry.kind === 'completed') onCompleteForSession(entry.receipt);
 	else if (entry.kind === 'rejected') onRejectedForSession(entry.rejection);
@@ -158,6 +165,7 @@
 		let resizeObserver: ResizeObserver | undefined;
 		let detachTicker = () => {};
 		let assetClaim: StageAssetClaim | undefined;
+		let releaseDecodedAssets = async () => {};
 		const activeSession = session;
 		const unsubscribe = bindStageSessionNotifications(activeSession, Boolean(replayForSession), {
 			onComplete,
@@ -168,7 +176,7 @@
 			try {
 				await assetClaim?.release();
 			} catch {
-				// The next stage can reacquire a source even if Pixi's cache eviction fails.
+				// A later stage can retry a rejected raw-byte claim through the shared owner.
 			}
 		};
 		const detachPresentation = () => {
@@ -191,23 +199,81 @@
 					Container,
 					Graphics,
 					Sprite,
+					Spritesheet,
 					Texture
 				} = pixi;
-				assetClaim = stageAssetOwner({
-					load: (source) => Assets.load(source),
-					unload: (source) => Assets.unload(source)
-				}).claim(sources);
-				const textures = await assetClaim.ready;
+				assetClaim = stageAssetOwner(createVerifiedStageAssetLoader()).claim(sources);
+				const verifiedAssets = (await assetClaim.ready) as readonly VerifiedStageAsset[];
 				if (disposed) {
 					await releaseAssets();
 					return;
 				}
 
-				const assetBySource = new Map<string, (typeof textures)[number]>(
-					sources.map((source, index) => [source, textures[index]!])
+				const assetBySource = new Map(verifiedAssets.map((asset) => [asset.source, asset]));
+				const objectUrls: string[] = [];
+				const decodedTextures = new SvelteMap<string, Texture>();
+				const decodedSheets = new SvelteMap<string, Spritesheet>();
+				let decodedAssetsReleased = false;
+				releaseDecodedAssets = async () => {
+					if (decodedAssetsReleased) return;
+					decodedAssetsReleased = true;
+					for (const sheet of decodedSheets.values()) {
+						try {
+							sheet.destroy(false);
+						} catch {
+							// Cleanup must not leave a rejected promise after a local asset failure.
+						}
+					}
+					await Promise.allSettled(objectUrls.map((objectUrl) => Assets.unload(objectUrl)));
+					for (const objectUrl of objectUrls) URL.revokeObjectURL(objectUrl);
+				};
+				const assetFor = (source: string): VerifiedStageAsset => {
+					const asset = assetBySource.get(source);
+					if (!asset) throw new Error(`Missing verified bytes for ${source}`);
+					return asset;
+				};
+				const textureForSource = async (source: string): Promise<Texture> => {
+					const cached = decodedTextures.get(source);
+					if (cached) return cached;
+					const asset = assetFor(source);
+					const objectUrl = URL.createObjectURL(
+						new Blob([asset.bytes], {
+							type: source.endsWith('.webp') ? 'image/webp' : 'image/png'
+						})
+					);
+					objectUrls.push(objectUrl);
+					const texture = (await Assets.load({ src: objectUrl, parser: 'texture' })) as Texture;
+					decodedTextures.set(source, texture);
+					return texture;
+				};
+				await Promise.all(rasterBindings.map((binding) => textureForSource(binding.source)));
+				await Promise.all(
+					motionBindings.map(async (binding) => {
+						const sheet = new Spritesheet({
+							texture: await textureForSource(binding.atlasImageSource),
+							data: JSON.parse(new TextDecoder().decode(assetFor(binding.source).bytes)),
+							cachePrefix: `${binding.motionPackId}-v${binding.version}-`
+						});
+						decodedSheets.set(binding.source, sheet);
+						await sheet.parse();
+					})
 				);
-				const textureFor = (source: string): Texture => assetBySource.get(source) as Texture;
-				const sheetFor = (source: string): Spritesheet => assetBySource.get(source) as Spritesheet;
+				if (disposed) {
+					await releaseDecodedAssets();
+					await releaseAssets();
+					return;
+				}
+
+				const textureFor = (source: string): Texture => {
+					const texture = decodedTextures.get(source);
+					if (!texture) throw new Error(`Missing decoded texture for ${source}`);
+					return texture;
+				};
+				const sheetFor = (source: string): Spritesheet => {
+					const sheet = decodedSheets.get(source);
+					if (!sheet) throw new Error(`Missing decoded spritesheet for ${source}`);
+					return sheet;
+				};
 				app = new PixiApplication();
 				failedDuringInit = true;
 				await app.init({
@@ -243,13 +309,16 @@
 				scene.mask = sceneMask;
 
 				const backdrop = new Sprite({
-					texture: textureFor(requestForSession.battlefieldBinding.environmentAssetBinding.source),
+					texture: textureFor(
+						activeSession.request.battlefieldBinding.environmentAssetBinding.source
+					),
 					label: 'ruined-threshold-environment'
 				});
 				backdrop.width = logicalWidth;
 				backdrop.height = logicalHeight;
 				backdropLayer.addChild(backdrop);
-				const wellOccluderBinding = requestForSession.battlefieldBinding.occluderAssetBindings[0];
+				const wellOccluderBinding =
+					activeSession.request.battlefieldBinding.occluderAssetBindings[0];
 				const wellOccluder = new Sprite({
 					texture: wellOccluderBinding ? textureFor(wellOccluderBinding.source) : Texture.EMPTY,
 					label: 'well-foreground-occluder'
@@ -568,8 +637,11 @@
 				onSnapshot(simulation);
 				activeSession.markAssetsReady();
 			} catch {
-				void releaseAssets();
-				if (disposed) return;
+				if (disposed) {
+					await releaseDecodedAssets();
+					await releaseAssets();
+					return;
+				}
 				const unavailable = {
 					code: failedDuringInit ? 'renderer-initialization-failed' : 'asset-load-failed',
 					message: 'Combat presentation could not be loaded.'
@@ -577,8 +649,13 @@
 				activeSession.markUnavailable(unavailable);
 				unsubscribe();
 				detachPresentation();
+				void releaseDecodedAssets();
+				void releaseAssets();
 			} finally {
-				if (disposed) await releaseAssets();
+				if (disposed) {
+					await releaseDecodedAssets();
+					await releaseAssets();
+				}
 			}
 		})();
 
@@ -586,6 +663,7 @@
 			disposed = true;
 			unsubscribe();
 			detachPresentation();
+			void releaseDecodedAssets();
 			void releaseAssets();
 		};
 	});
