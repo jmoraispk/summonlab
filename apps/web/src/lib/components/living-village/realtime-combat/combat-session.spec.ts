@@ -304,13 +304,31 @@ describe('combat session', () => {
 				}
 			]
 		});
+		const changedActionHash = withRehashedRequest({
+			...productionRequest,
+			contentBindings: productionRequest.contentBindings.map((binding) =>
+				binding.kind === 'action' && binding.contentId === 'moss-arrow-v1'
+					? { ...binding, contentHash: '6'.repeat(64) }
+					: binding
+			)
+		});
+		const changedActionVersion = withRehashedRequest({
+			...productionRequest,
+			contentBindings: productionRequest.contentBindings.map((binding) =>
+				binding.kind === 'action' && binding.contentId === 'moss-arrow-v1'
+					? { ...binding, version: 'moss-arrow-v1-alternate-v1' }
+					: binding
+			)
+		});
 
 		for (const request of [
 			changedRulesetId,
 			changedRulesetHash,
 			surplusRuleset,
 			surplusPolicy,
-			surplusAction
+			surplusAction,
+			changedActionHash,
+			changedActionVersion
 		]) {
 			expect(createCombatSession(request, dependencies)).toMatchObject({
 				status: 'rejected',
@@ -383,6 +401,7 @@ describe('combat session', () => {
 
 		expect(Object.isFrozen(combat)).toBe(true);
 		expect(Object.isFrozen(combat.actors)).toBe(true);
+		expect(Object.isFrozen(snapshot)).toBe(true);
 		expect(Object.isFrozen(snapshot.combat)).toBe(true);
 		expect(Object.isFrozen(snapshot.events)).toBe(true);
 		expect(() => {
@@ -391,9 +410,13 @@ describe('combat session', () => {
 		expect(() => {
 			(snapshot.events as unknown as ExplorationEncounterRequest[]).shift();
 		}).toThrow();
+		expect(() => {
+			(snapshot as unknown as { simulationTick: number }).simulationTick = 99_999;
+		}).toThrow();
 		expect(session.combat.actors[0]?.health).toBe(RAT_ENCOUNTER_REQUEST.party[0]?.resources.health);
 		expect(session.advanceFixedStep().events[0]?.kind).toBe('encounter-started');
 		expect(runToTerminal(session)).toEqual(expectedReceipt);
+		expect(Object.isFrozen(session.advanceFixedStep())).toBe(true);
 	});
 
 	it('notifies each active completion subscription exactly once with a frozen receipt', () => {

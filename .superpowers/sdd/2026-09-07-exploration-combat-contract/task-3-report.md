@@ -150,3 +150,44 @@ Tests  195 passed (195)
   `advanceFixedStep`, preserving atomic capacity checks and deterministic receipt hashes.
 - Confirmed policy/ruleset duplicates are rejected by cardinality rather than by whichever entry
   `.find()` happened to return, and action references cannot be satisfied by a broad kind/ID subset.
+
+## Fix round 2/5
+
+### Changes
+
+- Deep-freeze the complete `CombatSessionSnapshot` wrapper after creating its detached combat and trace
+  views, so callers cannot replace scalar fields or optional terminal fields on the snapshot object.
+- Derive the authoritative action-binding map from the canonical rat request and require every action
+  reference to match that trusted binding's ID, version, and hash exactly.
+
+### RED
+
+```sh
+PATH=/tmp/summonlab-node-24.14.1/bin:$PATH pnpm --filter @summonlab/web test:unit -- src/lib/components/living-village/realtime-combat/combat-session.spec.ts
+```
+
+The new regression run failed as intended:
+
+```text
+Test Files  1 failed | 33 passed (34)
+Tests  2 failed | 193 passed (195)
+```
+
+An altered existing action binding was accepted into `loading`, and `Object.isFrozen(snapshot)` was
+false.
+
+### GREEN
+
+The same focused suite after the changes reported:
+
+```text
+Test Files  34 passed (34)
+Tests  195 passed (195)
+```
+
+### Self-review
+
+- The trusted action map is constructed from the fixture module, not from request-supplied values; an
+  approved visual fixture variation remains acceptable when its canonical action bindings are intact.
+- Snapshot creation still provides detached frozen combat and event views, while the added wrapper freeze
+  prevents mutation of `status`, `simulationTick`, and optional terminal references.

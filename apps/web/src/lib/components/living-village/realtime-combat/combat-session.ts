@@ -15,8 +15,16 @@ import {
 	type RealtimeCombatState,
 	type RealtimeMechanicsEvent
 } from './realtime-combat';
+import { RAT_ENCOUNTER_REQUEST } from './rat-encounter-fixture';
 
 const SUPPORTED_RULESET_VERSION = 'realtime-rat-combat-v1';
+const CANONICAL_ACTION_BINDINGS = new Map(
+	RAT_ENCOUNTER_REQUEST.contentBindings.flatMap((binding) =>
+		binding.kind === 'action'
+			? [[binding.contentId, { version: binding.version, contentHash: binding.contentHash }]]
+			: []
+	)
+);
 
 export type CombatSessionStatus =
 	| 'loading'
@@ -216,7 +224,18 @@ function validateBindings(
 	if (
 		actionBindings.length !== expectedActions.size ||
 		[...expectedActions].some(
-			(actionId) => actionBindings.filter((binding) => binding.contentId === actionId).length !== 1
+			(actionId) => {
+				const expected = CANONICAL_ACTION_BINDINGS.get(actionId);
+				const bindings = actionBindings.filter((binding) => binding.contentId === actionId);
+				const binding = bindings[0];
+				return (
+					!expected ||
+					bindings.length !== 1 ||
+					!binding ||
+					binding.version !== expected.version ||
+					binding.contentHash !== expected.contentHash
+				);
+			}
 		)
 	) {
 		return createRejection(
@@ -712,7 +731,7 @@ class CombatSessionImpl implements CombatSession {
 	}
 
 	private snapshot(): CombatSessionSnapshot {
-		return {
+		return deepFreeze({
 			status: this.currentStatus,
 			combat: immutableCopy(this.currentCombat),
 			simulationTick: this.simulationTick,
@@ -720,7 +739,7 @@ class CombatSessionImpl implements CombatSession {
 			...(this.finalReceipt ? { receipt: this.finalReceipt } : {}),
 			...(this.finalRejection ? { rejection: this.finalRejection } : {}),
 			...(this.unavailableState ? { unavailable: this.unavailableState } : {})
-		};
+		});
 	}
 }
 
