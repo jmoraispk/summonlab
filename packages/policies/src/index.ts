@@ -1,7 +1,5 @@
 import {
 	type ActorDecisionView,
-	CombatActionIntentSchema,
-	type CombatActionIntent,
 	type CombatLegalAction,
 	HERO_DECISION_PREVIEW_VERSION,
 	HeroDecisionPreviewSchema,
@@ -17,6 +15,11 @@ import {
 	type PolicyScoreContribution
 } from '@summonlab/contracts';
 import { sha256Hex } from '@summonlab/engine';
+
+export {
+	buildDeterministicCombatFallbackIntent,
+	type DeterministicCombatFallbackBinding
+} from '@summonlab/engine';
 
 import {
 	createHeroPolicyResult,
@@ -58,43 +61,6 @@ function combatResponse(
 		target: primaryTarget(action),
 		fallbackId: action.fallbackOptions[0]?.fallbackId ?? null,
 		publicIntent: bounded(publicIntent, 240)
-	});
-}
-
-export type DeterministicCombatFallbackBinding = Readonly<
-	Pick<CombatActionIntent, 'attemptId' | 'tick' | 'snapshotHash'>
->;
-
-export function buildDeterministicCombatFallbackIntent(
-	input: ActorDecisionView,
-	binding: DeterministicCombatFallbackBinding
-): CombatActionIntent {
-	const view = validateCombatPolicyView(input);
-	if (binding.snapshotHash !== view.snapshotHash) {
-		throw new Error('Deterministic combat fallback snapshot binding does not match the actor view');
-	}
-	const action = view.legalActions[0];
-	if (!action) throw new Error('Deterministic combat fallback found no supplied legal action');
-	const response = combatResponse(
-		view,
-		action,
-		`Follow the deterministic fallback: ${action.publicLabel}.`
-	);
-	return CombatActionIntentSchema.parse({
-		windowId: view.windowId,
-		attemptId: binding.attemptId,
-		tick: binding.tick,
-		actorId: view.actorId,
-		snapshotHash: response.snapshotHash,
-		actorViewHash: response.actorViewHash,
-		legalActionSetHash: response.legalActionSetHash,
-		actionId: action.actionId,
-		actionInstanceId: action.actionInstanceId,
-		actionKind: action.actionKind,
-		skillId: action.skillId,
-		target: response.target,
-		fallbackId: response.fallbackId,
-		publicIntent: response.publicIntent
 	});
 }
 

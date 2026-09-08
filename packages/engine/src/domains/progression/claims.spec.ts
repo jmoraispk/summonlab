@@ -3,7 +3,12 @@ import type {
 	CombatResult,
 	ReadinessCombatStateV1
 } from '@summonlab/contracts';
-import { COMBAT_RULES_V1 } from '@summonlab/content';
+import {
+	AGENT_READINESS_CONTENT_BINDING_V2,
+	AGENT_READINESS_RULES_V2_VERSION,
+	COMBAT_CONTENT_BINDING,
+	COMBAT_RULES_V1
+} from '@summonlab/content';
 import { describe, expect, it } from 'vitest';
 
 import { deterministicUuid, hashCanonical } from '../../hash.js';
@@ -28,6 +33,13 @@ const ID = {
 	action: '62000000-0000-4000-8000-000000000005',
 	event: '62000000-0000-4000-8000-000000000006'
 } as const;
+
+const READINESS_BINDING = {
+	modeId: 'agent-readiness-v1' as const,
+	rulesVersion: AGENT_READINESS_RULES_V2_VERSION,
+	contentHash: AGENT_READINESS_CONTENT_BINDING_V2.contentHash,
+	boundAt: '2000-01-01T00:00:00.000Z'
+};
 
 function combatant(
 	combatantId: string,
@@ -100,8 +112,7 @@ function result(
 	const downed = options.downed ?? false;
 	return emitCombatOutcome({
 		attemptId: ID.attempt,
-		modeId: 'agent-readiness-v1',
-		rulesVersion: COMBAT_RULES_V1.rulesVersion,
+		combatModeBinding: READINESS_BINDING,
 		endedAtTick: 3,
 		termination: { kind: outcome },
 		partyHeroIds: [ID.hero],
@@ -121,8 +132,11 @@ function result(
 function authorityFor(combatResult: CombatResult): EmitCombatOutcomeInput {
 	return {
 		attemptId: combatResult.attemptId,
-		modeId: combatResult.modeId,
-		rulesVersion: combatResult.rulesVersion,
+		combatModeBinding: {
+			modeId: combatResult.modeId,
+			rulesVersion: combatResult.rulesVersion,
+			contentHash: combatResult.contentHash
+		},
 		endedAtTick: combatResult.endedAtTick,
 		termination:
 			combatResult.outcome === 'safety-stop'
@@ -144,7 +158,12 @@ function applyResultClaims(
 	combatResult: CombatResult,
 	authoritativeResult: CombatResult = combatResult
 ) {
-	return transitionCombatResultClaims(input, combatResult, authorityFor(authoritativeResult));
+	return transitionCombatResultClaims(
+		input,
+		combatResult,
+		authorityFor(authoritativeResult),
+		READINESS_BINDING
+	);
 }
 
 describe('combat claim process managers', () => {
@@ -170,7 +189,38 @@ describe('combat claim process managers', () => {
 			progression: createCombatProgressionClaimProjection()
 		};
 
-		expect(() => transitionCombatResultClaims(input, forged, authority)).toThrow(/authority/iu);
+		expect(() => transitionCombatResultClaims(input, forged, authority, READINESS_BINDING)).toThrow(
+			/authority/iu
+		);
+	});
+
+	it('rejects a self-consistent result whose authority drifts from the persisted attempt binding', () => {
+		const trusted = result('retreat');
+		const authority = authorityFor(trusted);
+		const wrongAttemptBinding = {
+			modeId: 'legacy-auto-v1' as const,
+			rulesVersion: 'legacy-auto-rules-v1',
+			contentHash: COMBAT_CONTENT_BINDING.contentHash,
+			boundAt: READINESS_BINDING.boundAt
+		};
+		const input = {
+			mission: createCombatMissionClaimProjection({
+				[ID.hero]: {
+					health: 100,
+					mana: 20,
+					maximumHealth: 100,
+					maximumMana: 20,
+					downed: false,
+					lost: false,
+					injuryIds: []
+				}
+			}),
+			progression: createCombatProgressionClaimProjection()
+		};
+
+		expect(() =>
+			transitionCombatResultClaims(input, trusted, authority, wrongAttemptBinding)
+		).toThrow(/attempt binding/iu);
 	});
 	it('projects the exact canonical pre-combat resources without fabricating full recovery', () => {
 		const projection = createCombatMissionClaimProjection({
@@ -600,8 +650,7 @@ describe('combat claim process managers', () => {
 		});
 		const safetyResult = emitCombatOutcome({
 			attemptId: ID.attempt,
-			modeId: 'agent-readiness-v1',
-			rulesVersion: COMBAT_RULES_V1.rulesVersion,
+			combatModeBinding: READINESS_BINDING,
 			endedAtTick: 3,
 			termination: {
 				kind: 'safety-stop',

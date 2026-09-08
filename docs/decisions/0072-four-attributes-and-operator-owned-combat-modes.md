@@ -14,15 +14,15 @@ also created a second durability bar without a clear need.
 
 Combat development has a second transition. The intended tactical mode lets each hero independently
 select one engine-supplied legal intent from a frozen readiness window, while deterministic engine
-code resolves collisions and consequences. That mode needs more implementation and evidence. The
-current automatic round resolver remains valuable for a beta, but it must not become a player
-preference or silently mutate as the new mode is developed.
+code resolves collisions and consequences. That mode is now implemented and mechanically qualified
+for operator evaluation. The automatic round resolver remains valuable for a beta, but it must not
+become a player preference or silently mutate as the new mode is developed.
 
 ## Decision
 
 ### Four combat-first attributes
 
-New `character-v2` and `engine-v25` state uses four visible intrinsic attributes on a `1..100`
+New `character-v2` state uses four visible intrinsic attributes on a `1..100`
 scale:
 
 | Attribute | Owns | Explicit exclusions |
@@ -40,7 +40,8 @@ condition remain separate human layers.
 Persistent growth and situational effects are distinct. Generated capability plus typed permanent
 receipts forms the intrinsic value. Equipment, effects, and conditions may change only the effective
 attribute scopes they explicitly name. The initial new-growth rule grants one freely allocated point
-for each level gained.
+for each level gained. `engine-v26` derives mission attributes from the complete growth-receipt chain
+and persists combat proficiency tags plus per-skill mastery separately from those attributes.
 
 Health and Mana remain the only universal resource bars. General mitigation comes from armour after
 penetration and is capped at 7,499 basis points by `combat-rules-v1`. Authored Cut, Pierce, Impact,
@@ -56,20 +57,39 @@ and player-facing projections omit them.
 ### Operator-owned versioned modes
 
 The operator selects the release combat mode through configuration. Players have no selector and
-cannot submit a mode, actor action, target, choice batch, or policy to v25 combat. Every prepared
+cannot submit a mode, actor action, target, choice batch, or policy to current combat. Every prepared
 attempt stores an immutable binding containing mode ID, mode-rules version, combat-content hash, and
 binding timestamp. Changing the release default affects only future attempts.
 
 `legacy-auto-v1` remains the beta release default. The player may press **Continue battle**, after
 which a seeded automatic policy chooses
 legal party actions and the deterministic engine resolves them. No hero model or independent model
-referee participates.
+referee participates. Its exact immutable tuple is `legacy-auto-v1` / `legacy-auto-rules-v1` /
+`1abef40c18eb97d4c1694c674f9b4917f286053e6d810d5b4282760f2ab4c2a7`.
 
 `agent-readiness-v1` is implemented and may be selected by the operator for internal evaluation. It
 uses one-tick readiness cohorts, one canonical frozen snapshot per cohort, filtered per-actor views,
 concurrent intent collection, and deterministic ordered arbitration. It is not player-selectable,
 and technical qualification does not change the release default. Promotion still requires a
 separate deliberate operator configuration change.
+
+Current evaluation attempts use `agent-readiness-rules-v2` with aggregate content hash
+`e78ed494f1ac78f6b0efca0574248425a1bb1148d54fd39161db600964e8919e`. This immutable aggregate adds
+V2 hostile actions to the combat skill and equipment-profile catalogs. Monsters receive an
+executable deterministic damaging strike against an eligible party target plus an authored Hold
+choice; their provider selects among those frozen legal actions. Historical readiness V1 attempts
+remain loadable only under their exact V1 rules/content binding.
+
+Every readiness cohort persists one complete combat-window record and exactly one
+`decision-job-v3` per ready actor. Window, job, result, and batch authority includes attempt ID,
+tick, snapshot, actor-view, and legal-action hashes. Workers may finish out of order, but a batch is
+assembled only for the complete cohort. Exhausted provider work uses the exact engine-precomputed
+first legal action, canonical target, and supplied fallback.
+
+Mutations lock the authoritative run before the window and actor jobs. A moved run version/cursor
+atomically terminalizes the in-progress attempt ledger and durably marks the window and all jobs
+stale before the late completion is rejected. Exact batch application is compare-and-swap guarded
+and idempotent.
 
 Readiness combat evaluates natural Health and Mana recovery on one calibrated 100-tick pulse
 cadence. Health also retains its post-damage delay and never revives a downed actor. Qualification
@@ -115,6 +135,10 @@ old aptitudes in new canonical mechanics.
 - Legacy automatic combat retains sequential entropy and its 48-round safety boundary.
 - New attempts record the automatic policy and packet/legal-action/result hashes together with the
   attempt's immutable mode/rules/content binding.
+- Both mode runners emit `combat-result-v1` with all final party/hostile combatants, exact
+  mode/rules/content identity, typed consequences and claims, and an explicit `death` outcome.
+- V26 legacy terminal events atomically carry that common result plus the complete idempotent
+  cross-owner claim checkpoint; a partial receipt set cannot replay.
 - A mode or behavior change requires a new version. Missing, disabled, or mismatched bindings fail
   explicitly instead of falling through to current code.
 - Task 7 combat-skill and combat-equipment-profile catalogs retain separate immutable hashes and an
@@ -122,21 +146,29 @@ old aptitudes in new canonical mechanics.
 - Passing balance evidence does not promote every harness formula. Relative-Agility accuracy,
   attack cadence/variance, affinity application, production armour magnitudes, and a magical active
   remain hash-bound benchmark candidates until their owning runtime/content work lands.
-- `agent-readiness-v1.json` records 10,000 distinct deterministic trials, 20,000 modeled provider
+- The current checked `agent-readiness-v1.json` records 10,000 distinct deterministic trials for
+  the current V2 operator-evaluation binding, 20,000 modeled provider
   failures resolved by exact production deterministic fallback intents, 40,000 applied fallback
   selections across the primary and deterministic repeat resolver passes, and 400 complete minimal
-  authored level-archetype encounters. Recovery occurs in 180 encounters, with 4,363 applied Health
-  damage exceeding 363 passive Health recovery. Deterministic replay, classified collision fallback,
-  encounter budgets, zero safety/no-progress stops, and 100% legal fallback
-  selection pass. Policy-authored monsters currently hold
-  rather than attack, so this qualifies the technical mode for operator evaluation without claiming
-  finished hostile-AI balance.
-- The qualification preserves the historical `combat-rules-v1` hash
+  authored level-archetype encounters through 3,707 encounter resolver calls. Recovery occurs in
+  172 encounters; 5,117 applied Health damage exceeds 471 passive Health recovery, while party
+  members receive 844 incoming damage. Deterministic replay, classified collision fallback,
+  encounter budgets, zero safety/no-progress/regeneration-stalemate stops, zero unclassified
+  cancellations, and 100% legal fallback selection pass for that exact binding.
+- The qualification preserves the underlying `combat-rules-v1` hash
   `13b2b27b683e4b0023a2a2c2ee4926127437db3bbf1ace91776def69ef286eff`, separately binds
-  `agent-readiness-rules-v1` hash
-  `eb7296798dbc911526603b1fb908cd3a7ea3661caf7d69793fc1fc0ab09cc5ba`, and binds combat-content
-  hash `1abef40c18eb97d4c1694c674f9b4917f286053e6d810d5b4282760f2ab4c2a7`. Encounter p95 tick/event
-  counts are `1090/35`, `715/23`, `398/14`, and `288/11` at levels 10, 40, 70, and 99.
+  `agent-readiness-rules-v2` hash
+  `21d1dbf74dff606fda8b727566787579c9584234ea9aeee0a26ecbae80a8a80e`, and binds combat-content
+  hash `e78ed494f1ac78f6b0efca0574248425a1bb1148d54fd39161db600964e8919e`. Its profile hash is
+  `4a3a2858d1d5d9575e2aeb38a9cc5437e8e22b3795b32b2babacc9087bf8bac1`, replay-result hash is
+  `dc599786a23e8fc9a8a8b73e9af6a0619f443dd93be201d704cbc22a379526b5`, and artifact SHA-256 is
+  `6cf931fb87e8e986a18c7572b9d3399be0632cf5b11dc2d861978d95ca72a452`. Encounter p95 tick/event
+  counts are `991/31`, `635/21`, `398/14`, and `229/8` at levels 10, 40, 70, and 99.
+- This qualification covers executable damaging hostile actions and supports continued operator
+  evaluation. It does not prove full hostile policy variety or product balance, authorize release
+  promotion, or change the legacy beta default. The independent legacy balance artifact remains
+  unchanged at SHA-256
+  `d0b2814acfdca17dcede952f7015a46399e5902b2834cf4607e87e37978eabac`.
 
 ## Supersession
 
@@ -159,3 +191,4 @@ The following pages carry the operative replacement:
 - [Four-attribute legacy combat foundation](../superpowers/plans/2026-09-06-four-attribute-legacy-combat.md)
 - [Agent-readiness combat implementation plan](../superpowers/plans/2026-09-06-agent-readiness-combat.md)
 - [Accepted design](../superpowers/specs/2026-09-06-attributes-and-combat-modes-design.md)
+- [Final integration report](../superpowers/reports/2026-09-07-attribute-combat-modes-integration.md)

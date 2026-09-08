@@ -20,6 +20,7 @@ import {
 import {
 	advanceUntilDecision,
 	applyCommand,
+	buildDeterministicCombatFallbackIntent,
 	createBootstrapEngine,
 	createCombatModeBinding,
 	deterministicUuid,
@@ -240,6 +241,19 @@ async function createRunFixture(runId: string) {
 		contentVersion: 'engine-v26',
 		version: 3,
 		eventCursor: 4,
+		heroes: Object.fromEntries(
+			Object.entries(deployed.heroes).map(([heroId, hero]) => [
+				heroId,
+				{
+					...hero,
+					combatTraining: {
+						schemaVersion: 'hero-combat-training-v1',
+						proficiencyTags: [],
+						learnedSkills: []
+					}
+				}
+			])
+		),
 		mission: {
 			...deployed.mission,
 			attempt: {
@@ -278,21 +292,12 @@ async function createRunFixture(runId: string) {
 	} finally {
 		await sql.end({ timeout: 5 });
 	}
-	const fallback = (view: ActorDecisionView): CombatActionIntent => ({
-		windowId: decision.snapshot.windowId,
-		attemptId: attempt.attemptId,
-		tick: decision.snapshot.tick,
-		actorId: view.actorId,
-		snapshotHash: view.snapshotHash,
-		actorViewHash: view.actorViewHash,
-		legalActionSetHash: view.legalActionSetHash,
-		actionId: view.legalActions[0]!.actionId,
-		actionInstanceId: view.legalActions[0]!.actionInstanceId,
-		actionKind: view.legalActions[0]!.actionKind,
-		skillId: view.legalActions[0]!.skillId,
-		target: { kind: 'self' },
-		fallbackId: 'brace'
-	});
+	const fallback = (view: ActorDecisionView): CombatActionIntent =>
+		buildDeterministicCombatFallbackIntent(view, {
+			attemptId: attempt.attemptId,
+			tick: decision.snapshot.tick,
+			snapshotHash: decision.snapshot.snapshotHash
+		});
 	return { state, snapshot: decision.snapshot, views: decision.views, fallback };
 }
 
@@ -328,6 +333,37 @@ describe.sequential('combat decision worker', () => {
 		} finally {
 			await sql.end({ timeout: 5 });
 		}
+	});
+
+	run('authenticates parent attempt and tick before materializing a policy response', async () => {
+		if (!databaseUrl) throw new Error('TEST_DATABASE_URL is required');
+		const fixture = await createRunFixture(runId);
+		const created = await createCombatDecisionWindow(databaseUrl, {
+			runId,
+			expectedRunVersion: 3,
+			expectedEventCursor: 4,
+			snapshot: fixture.snapshot,
+			actors: fixture.views.map((view) => ({
+				view,
+				requestedPolicy: 'scripted' as const,
+				deterministicFallback: fixture.fallback(view)
+			}))
+		});
+		const job = created.jobs[0]!;
+		const response = await new ScriptedCombatPolicy().decide(job.view);
+
+		for (const wrongWindow of [
+			{ ...created, attemptId: randomUUID() },
+			{ ...created, tick: created.tick + 1 }
+		]) {
+			expect(() => materializeCombatActionIntent(wrongWindow, job, response)).toThrow(
+				/durable window/u
+			);
+		}
+		expect(materializeCombatActionIntent(created, job, response)).toMatchObject({
+			attemptId: job.attemptId,
+			tick: job.tick
+		});
 	});
 
 	run('executes mixed providers concurrently and applies in canonical actor order', async () => {

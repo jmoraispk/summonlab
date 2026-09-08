@@ -20,17 +20,20 @@ the wiki and may continue through independent design or concept-art work.
 | Tower species hunts | `on` | Sequential Floors 1–10 expose known species hunts with a remaining-Health return threshold and material haul |
 | Material inventory | `partial` | Engine-v24 persists bounded seeded material lots and exposes their Forging uses; full Gathering acquisition is not implemented |
 | Forging and Gathering loop | `partial` | Standard Forging consumes one seeded rank-bearing lot; Gathering remains the enabled source family but has no complete node/harvest economy yet |
-| Combat | `on` | Shipped operator-owned `legacy-auto-v1` is the beta default; **Continue battle** advances its automatic seeded policy, while `agent-readiness-v1` remains planned and unavailable |
+| Combat | `on` | Shipped operator-owned `legacy-auto-v1` is the beta default; **Continue battle** advances its automatic seeded policy. `agent-readiness-v1` V2 is implemented for operator evaluation but is neither player-selectable nor promoted |
 | Rewards and engagement | `placeholder` | First-clear, training, repeat-hunt, material, and daily-return claims use a small versioned reward table |
 | Save/reload/replay | `on` | Canonical state and deterministic receipts survive reload |
 | Core visuals | `on` | The fixed six heroes, three runtime monster races, initial skill effects/icons, 140 lazy Equipment card/detail pairs, one Hearth, one tower backdrop |
 
 Combat mode is release configuration, not a player preference. Each prepared attempt stores its
 mode/rules/content binding; a later operator-default change cannot switch an active attempt. The
-player cannot submit a mode, actor action, target, policy, or choice batch. Per-hero intent calls,
-readiness windows, collision arbitration, and purpose-keyed hit/critical resolution belong to the
-[agent-readiness combat plan](../../superpowers/plans/2026-09-06-agent-readiness-combat.md), not this
-shipped legacy slice.
+player cannot submit a mode, actor action, target, policy, or choice batch. The implemented
+[agent-readiness combat plan](../../superpowers/plans/2026-09-06-agent-readiness-combat.md) supplies
+durable per-hero intent calls, one-tick readiness windows, collision arbitration, purpose-keyed
+hit/critical resolution, and real hostile attacks for internal evaluation. It does not change this
+matrix's legacy beta default. The current V2 binding passes its checked mechanical qualification
+gates, but broader hostile tactics, full product balance, and explicit owner promotion remain
+outstanding.
 
 ## Fixed hero roster
 

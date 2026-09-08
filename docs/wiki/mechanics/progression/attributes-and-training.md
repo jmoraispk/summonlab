@@ -2,8 +2,8 @@
 
 Wiki ID: `mechanics.progression.attributes-training`
 
-Design status: **four-attribute foundation implemented; idle schedules and broader training loops
-remain separate design work**.
+Design status: **four-attribute growth and readiness-combat practice are implemented in
+`engine-v26`; idle schedules and broader training loops remain separate design work**.
 
 ## Four combat-first attributes
 
@@ -28,7 +28,7 @@ generated capability + validated permanent receipts = intrinsic attribute
 intrinsic attribute + valid action-scoped modifiers = effective attribute
 ```
 
-Every permanent change is append-only evidence. New `engine-v25` heroes begin at level 1 with zero
+Every permanent change is append-only evidence. New `engine-v26` heroes begin at level 1 with zero
 unspent points. A transition from level `L` to `L+n` grants exactly `n` points. Allocation spends one
 point on one named attribute and records the hero, before/after intrinsic values, source level,
 command, rules version, and game time. It never rewrites the generated character profile.
@@ -68,8 +68,10 @@ Combat Mana recovery is half the safe-rest value. It is also zero while Downed o
 injury repair. Equipment, stances, passives, and skill effects remain the stronger specialization
 levers.
 
-The committed balance evidence compares recovery and peer damage on a common candidate timeline.
-That harness is a promotion gate, not a claim that its attack cadence is already production combat.
+In readiness combat, both natural recovery calculations are applied only on the versioned
+100-tick pulse. The checked V2 qualification artifact measured this recovery-to-damage boundary
+with executable deterministic hostile attacks. That mechanical qualification supports operator
+evaluation; it does not by itself promote the mode or establish final balance.
 
 ## Damage, defence, and accuracy
 
@@ -79,9 +81,9 @@ That harness is a promotion gate, not a claim that its attack cadence is already
   `combat-rules-v1` caps it at 7,499 basis points, so armour alone never reaches 75% reduction.
 - Authored `cut`, `pierce`, `impact`, `burn`, `frost`, `shock`, and `arcane` resistance receipts
   stack additively up to the 7,500-basis-point global cap.
-- Skill mastery owns authored accuracy and reliability steps. Agility's future relative-speed term
-  is bounded and secondary; the current harness formula remains a benchmark candidate until the
-  readiness combat plan ships it.
+- Skill mastery owns authored accuracy and reliability steps. Readiness currently consumes mastery
+  accuracy; reliability remains reserved. Agility's production relative-speed term is bounded and
+  secondary.
 - Critical chance is never derived from a base attribute.
 
 There is no universal poise. A boss, shield, stance, or skill may explicitly own a visible Break
@@ -107,11 +109,16 @@ redact the invertible cognitive factor.
 
 ## Practice and idle progression
 
-The capability contract permits permanent-training receipts, but this foundation does not decide
-how heroes schedule their days, how much they are willing to practise, or what they accomplish while
-the player is away. Those “human” idle-gain rules require their own design: time, motivation,
-relationships, needs, facilities, teaching, variety, fatigue, and personal choice should matter
-without turning one hidden number into destiny.
+`engine-v26` persists a separate combat-training record containing proficiency tags and each learned
+combat skill's mastery. Authenticated readiness results turn resolved skill use into idempotent
+practice claims. Applying those claims advances the matching per-skill mastery, capped at 100, and a
+later mission derives its legal action and authored accuracy step from the updated mastery. This is
+combat-earned practice, not an idle schedule.
+
+The capability contract still does not decide how heroes schedule their days, how much they are
+willing to practise, or what they accomplish while the player is away. Those “human” idle-gain
+rules require their own design: time, motivation, relationships, needs, facilities, teaching,
+variety, fatigue, and personal choice should matter without turning one hidden number into destiny.
 
 Until that design lands, do not treat a theoretical twelve-hour training assignment, passive slot,
 or repetition-yield curve as canonical runtime behavior.

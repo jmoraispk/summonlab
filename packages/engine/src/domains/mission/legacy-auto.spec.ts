@@ -1,13 +1,16 @@
 import { generateSummonableCharacterDraft } from '@summonlab/characters';
 import {
 	CombatModeBindingSchema,
+	CombatResultSchema,
 	EngineGameStateV25Schema,
+	EngineGameStateV26Schema,
 	MissionHarmRecordSchema,
 	MissionHarmRecordV3Schema,
 	MissionLifecycleRequestSchema,
-	type EngineGameStateV25
+	type EngineGameStateV25,
+	type EngineGameStateV26
 } from '@summonlab/contracts';
-import { COMBAT_CONTENT_BINDING } from '@summonlab/content';
+import { AGENT_READINESS_CONTENT_BINDING_V2, COMBAT_CONTENT_BINDING } from '@summonlab/content';
 import { describe, expect, expectTypeOf, it } from 'vitest';
 
 import {
@@ -38,7 +41,7 @@ function manualSource() {
 	};
 }
 
-function commandBase(state: EngineGameStateV25, key: string) {
+function commandBase(state: EngineGameStateV25 | EngineGameStateV26, key: string) {
 	const commandId = deterministicUuid(`${state.runId}:${key}:${state.version}`);
 	return {
 		commandId,
@@ -48,6 +51,24 @@ function commandBase(state: EngineGameStateV25, key: string) {
 		correlationId: commandId,
 		source: manualSource()
 	};
+}
+
+async function currentLegacyState(): Promise<EngineGameStateV26> {
+	const draft = await generateSummonableCharacterDraft(
+		{
+			seed: 'current-legacy-auto-capability-seed',
+			generationVersion: 'human-v6',
+			cursors: { identity: 0, body: 0, features: 0, styling: 0, mind: 0, rarity: 0 }
+		},
+		{ capabilityEntropy: '5'.repeat(64) }
+	);
+	const bootstrap = createBootstrapEngine({
+		runId: deterministicUuid('current-legacy-auto-run'),
+		seed: 'current-legacy-auto-engine-seed',
+		draft,
+		combatMode: 'legacy-auto-v1'
+	});
+	return EngineGameStateV26Schema.parse(bootstrap.snapshot.state);
 }
 
 async function capabilityState(): Promise<EngineGameStateV25> {
@@ -119,6 +140,12 @@ describe('legacy automatic combat', () => {
 			message: 'Combat mode legacy-auto-v1 rules binding is unavailable'
 		});
 		const agentBinding = createCombatModeBinding('agent-readiness-v1', BOUND_AT);
+		expect(agentBinding).toStrictEqual({
+			modeId: 'agent-readiness-v1',
+			rulesVersion: 'agent-readiness-rules-v2',
+			contentHash: AGENT_READINESS_CONTENT_BINDING_V2.contentHash,
+			boundAt: BOUND_AT
+		});
 		expect(combatModeAvailability(agentBinding)).toStrictEqual({
 			status: 'not-yet-live',
 			modeId: 'agent-readiness-v1',
@@ -129,6 +156,16 @@ describe('legacy automatic combat', () => {
 			modeId: 'agent-readiness-v1',
 			message: null
 		});
+		expect(
+			combatModeAvailability(
+				{
+					...agentBinding,
+					rulesVersion: 'agent-readiness-rules-v1',
+					contentHash: COMBAT_CONTENT_BINDING.contentHash
+				},
+				26
+			)
+		).toStrictEqual({ status: 'available', modeId: 'agent-readiness-v1', message: null });
 	});
 
 	it('keeps the player request mode-neutral and rejects supplied choices or policies', () => {
@@ -398,5 +435,104 @@ describe('legacy automatic combat', () => {
 			outcome: 'failure',
 			turnState: { roundNumber: 48 }
 		});
+	});
+
+	it('authenticates only terminal V26 legacy rounds with a common result and atomic checkpoint', async () => {
+		const initial = await currentLegacyState();
+		const heroId = Object.keys(initial.heroes)[0]!;
+		const prepared = applyCommand(initial, {
+			...commandBase(initial, 'v26-result-prepare'),
+			commandType: 'mission.prepare',
+			heroIds: [heroId],
+			combatModeBinding: createCombatModeBinding('legacy-auto-v1', initial.simulatedAt)
+		});
+		if (prepared.state.schemaVersion !== 26) throw new Error('Expected v26 state');
+		const deployed = applyCommand(prepared.state, {
+			...commandBase(prepared.state, 'v26-result-deploy'),
+			commandType: 'mission.deploy'
+		});
+		if (deployed.state.schemaVersion !== 26) throw new Error('Expected v26 state');
+		const first = applyCommand(deployed.state, {
+			...commandBase(deployed.state, 'v26-result-first'),
+			commandType: 'mission.advance.automatic'
+		});
+		if (first.state.schemaVersion !== 26 || !first.state.mission.attempt) {
+			throw new Error('Expected active v26 legacy attempt');
+		}
+		expect(first.events[0]?.payload).toMatchObject({
+			terminalResult: null,
+			claimCheckpoint: null
+		});
+
+		const combatState = first.state.mission.attempt.combatState;
+		if (combatState.modeId !== 'legacy-auto-v1') throw new Error('Expected legacy combat state');
+		const firstRound = combatState.turnState.rounds[0]!;
+		const nearLimit = EngineGameStateV26Schema.parse({
+			...first.state,
+			mission: {
+				...first.state.mission,
+				attempt: {
+					...first.state.mission.attempt,
+					status: 'resolving',
+					completedObjectiveIds: [],
+					extractionOpenedAt: null,
+					endedAt: null,
+					outcome: null,
+					combatState: {
+						modeId: 'legacy-auto-v1',
+						turnState: {
+							...combatState.turnState,
+							roundNumber: 47,
+							objective: {
+								...combatState.turnState.objective,
+								status: 'available',
+								carrierId: null,
+								recoveredOnRound: null,
+								deliveredOnRound: null
+							},
+							rounds: Array.from({ length: 47 }, (_, index) => ({
+								...firstRound,
+								roundNumber: index + 1
+							}))
+						}
+					}
+				}
+			}
+		});
+		const terminal = applyCommand(nearLimit, {
+			...commandBase(nearLimit, 'v26-result-terminal'),
+			commandType: 'mission.advance.automatic'
+		});
+		const event = terminal.events[0]!;
+		expect(event.payload.terminalResult).toMatchObject({
+			modeId: 'legacy-auto-v1',
+			rulesVersion: 'legacy-auto-rules-v1',
+			contentHash: COMBAT_CONTENT_BINDING.contentHash,
+			outcome: 'deadline'
+		});
+		const terminalResult = CombatResultSchema.parse(event.payload.terminalResult);
+		expect(Object.keys(terminalResult.finalCombatants).sort()).toStrictEqual(
+			[
+				...nearLimit.mission.attempt!.party.memberIds,
+				...Object.keys(combatState.turnState.monsters)
+			].sort()
+		);
+		expect(event.payload.claimCheckpoint).toMatchObject({
+			attemptId: nearLimit.mission.attempt!.attemptId
+		});
+		expect(terminal.state.heroes[heroId]?.health).toBe(
+			(event.payload.mission as EngineGameStateV26['mission']).attempt === null
+				? terminal.state.heroes[heroId]?.health
+				: terminal.state.heroes[heroId]?.health
+		);
+		expect(reduceEvent(nearLimit, event)).toStrictEqual(terminal.state);
+
+		const forgedResult = structuredClone(event);
+		(forgedResult.payload.terminalResult as { traceHash: string }).traceHash = 'f'.repeat(64);
+		expect(() => reduceEvent(nearLimit, forgedResult)).toThrow();
+		const forgedCheckpoint = structuredClone(event);
+		(forgedCheckpoint.payload.claimCheckpoint as { authorityHash: string }).authorityHash =
+			'f'.repeat(64);
+		expect(() => reduceEvent(nearLimit, forgedCheckpoint)).toThrow();
 	});
 });

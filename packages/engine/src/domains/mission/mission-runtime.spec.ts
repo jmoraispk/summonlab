@@ -250,6 +250,26 @@ function readinessV26Fixture(deployed: EngineGameStateV25): {
 		...deployed,
 		schemaVersion: 26,
 		contentVersion: 'engine-v26',
+		heroes: Object.fromEntries(
+			Object.entries(deployed.heroes).map(([id, hero]) => [
+				id,
+				{
+					...hero,
+					combatTraining: {
+						schemaVersion: 'hero-combat-training-v1',
+						proficiencyTags: [],
+						learnedSkills: [
+							{
+								schemaVersion: 'learned-combat-skill-v1',
+								skillId: 'combat-skill-basic-sword-strike',
+								mastery: 0,
+								trainedDeliveryTags: ['one-handed-blade']
+							}
+						]
+					}
+				}
+			])
+		),
 		mission: {
 			...deployed.mission,
 			attempt: {
@@ -444,10 +464,14 @@ describe('mission runtime ownership', () => {
 						)
 					);
 				expect(monsterActions).toHaveLength(3);
-				expect(monsterActions.every((actions) => actions.length === 1)).toBe(true);
+				expect(monsterActions.every((actions) => actions.length === 2)).toBe(true);
 				expect(monsterActions.flat()).not.toContain('combat-skill-basic-sword-strike');
 				expect(
-					monsterActions.flat().every((actionId) => actionId.startsWith('monster-hold-'))
+					monsterActions.every(
+						(actions) =>
+							actions[0]?.startsWith('monster-attack-') === true &&
+							actions[1]?.startsWith('monster-hold-') === true
+					)
 				).toBe(true);
 			}
 		}
@@ -477,7 +501,6 @@ describe('mission runtime ownership', () => {
 			'master.fallback.changed',
 			'master.safety.stopped',
 			'master.decision.opened',
-			'mission.round.resolved',
 			'mission.extraction.opened'
 		]);
 		expect(missionEventReducer).toMatchObject({
@@ -491,6 +514,7 @@ describe('mission runtime ownership', () => {
 			'mission.deployed',
 			'mission.extracted',
 			'mission.retreated',
+			'mission.round.resolved',
 			'mission.combat.choice-batch.applied',
 			'mission.combat.readiness.terminal.committed'
 		]);
@@ -514,7 +538,6 @@ describe('mission runtime ownership', () => {
 				'master.fallback.changed',
 				'master.safety.stopped',
 				'master.decision.opened',
-				'mission.round.resolved',
 				'mission.extraction.opened',
 				'mission.preparation.started',
 				'mission.party.revised',
@@ -522,6 +545,7 @@ describe('mission runtime ownership', () => {
 				'mission.deployed',
 				'mission.extracted',
 				'mission.retreated',
+				'mission.round.resolved',
 				'mission.combat.choice-batch.applied',
 				'mission.combat.readiness.terminal.committed'
 			]
@@ -650,6 +674,7 @@ describe('mission runtime ownership', () => {
 		if (deployed.schemaVersion !== 25) throw new Error('Expected deployed v25 state');
 		const fixture = readinessV26Fixture(deployed);
 		const terminalInput = structuredClone(fixture.state);
+		terminalInput.heroes[heroId]!.combatTraining.learnedSkills[0]!.mastery = 49;
 		const combatState = terminalInput.mission.attempt!.combatState;
 		if (combatState.modeId !== 'agent-readiness-v1') throw new Error('Expected readiness state');
 		const enemy = Object.values(combatState.readinessState.combatants).find(
@@ -658,6 +683,37 @@ describe('mission runtime ownership', () => {
 		enemy.resources.health.current = 0;
 		enemy.downed = true;
 		enemy.active = false;
+		const choice = fixture.batch.choices[0]!;
+		const practiceEventId = deterministicUuid(`${choice.actionInstanceId}:practice`);
+		const practiceIntent = {
+			...choice,
+			actionId: 'combat-skill-basic-sword-strike',
+			actionKind: 'attack' as const,
+			skillId: 'combat-skill-basic-sword-strike' as const,
+			target: { kind: 'entity' as const, combatantId: enemy.combatantId },
+			fallbackId: null
+		};
+		combatState.readinessState.outcomeEvidence.resolvedEvents.push({
+			eventVersion: 'combat-resolved-event-v1',
+			eventId: practiceEventId,
+			attemptId: choice.attemptId,
+			windowId: choice.windowId,
+			tick: choice.tick,
+			actorId: choice.actorId,
+			actionId: practiceIntent.actionId,
+			snapshotHash: choice.snapshotHash,
+			actorViewHash: choice.actorViewHash,
+			legalActionSetHash: choice.legalActionSetHash,
+			originalIntent: practiceIntent,
+			conflictingEventId: null,
+			fallbackApplied: null,
+			refundApplied: null,
+			finalOutcome: 'applied',
+			effects: []
+		});
+		combatState.readinessState.outcomeEvidence.emittedEventIds.push(practiceEventId);
+		combatState.readinessState.outcomeEvidence.eventsEmitted = 1;
+		combatState.readinessState.safety.eventsEmitted = 1;
 		const terminal = EngineGameStateV26Schema.parse(terminalInput);
 		const command = readinessTerminalCommand(terminal, 'commit');
 		const applied = applyCommand(terminal, command);
@@ -669,11 +725,58 @@ describe('mission runtime ownership', () => {
 			attemptId: terminal.mission.attempt!.attemptId
 		});
 		if (applied.state.schemaVersion !== 26) throw new Error('Expected v26 applied state');
+		const appliedAttempt = applied.state.mission.attempt!;
 		expect(applied.state.mission.attempt).toMatchObject({ status: 'extraction', outcome: null });
 		expect(applied.state.mission.attempt!.combatState).toMatchObject({
 			modeId: 'agent-readiness-v1',
 			readinessState: { status: 'complete', result: event.payload.result }
 		});
+		expect(
+			applied.state.heroes[heroId]?.combatTraining.learnedSkills.find(
+				(skill) => skill.skillId === 'combat-skill-basic-sword-strike'
+			)?.mastery
+		).toBe(50);
+		const extractionReady = EngineGameStateV26Schema.parse({
+			...applied.state,
+			mission: {
+				...applied.state.mission,
+				attempt: {
+					...appliedAttempt,
+					completedObjectiveIds: ['recover-first-ember'],
+					positions: Object.fromEntries(
+						appliedAttempt.party.memberIds.map((memberId) => [
+							memberId,
+							appliedAttempt.extractionNodeId
+						])
+					)
+				}
+			}
+		});
+		const extracted = applyCommand(extractionReady, {
+			...missionTestCommand(extractionReady, 'readiness-practice-extract', {
+				commandType: 'mission.extract'
+			})
+		}).state;
+		const nextPrepared = applyCommand(extracted, {
+			...missionTestCommand(extracted, 'readiness-practice-next-prepare', {
+				commandType: 'mission.prepare',
+				heroIds: [heroId],
+				combatModeBinding: createCombatModeBinding('agent-readiness-v1', extracted.simulatedAt)
+			})
+		}).state;
+		const nextDeployed = applyCommand(nextPrepared, {
+			...missionTestCommand(nextPrepared, 'readiness-practice-next-deploy', {
+				commandType: 'mission.deploy'
+			})
+		}).state;
+		if (nextDeployed.schemaVersion !== 26) throw new Error('Expected v26 state');
+		const nextCombat = nextDeployed.mission.attempt!.combatState;
+		if (nextCombat.modeId !== 'agent-readiness-v1') throw new Error('Expected readiness state');
+		expect(
+			nextCombat.readinessState.actorContexts[heroId]?.legalActionTemplates.find(
+				(action) => action.skillId === 'combat-skill-basic-sword-strike'
+			)?.resolutionProfile
+		).toMatchObject({ masteryStepMinimum: 50, skillAccuracyBasisPoints: 8_000 });
 		expect(reduceEvent(terminal, event)).toStrictEqual(applied.state);
 
 		expect(() =>
@@ -740,7 +843,8 @@ describe('mission runtime ownership', () => {
 			const finalized = finalizeReadinessMission(
 				deployed,
 				terminal.state,
-				deterministicUuid(`readiness-${disposition}-event`)
+				deterministicUuid(`readiness-${disposition}-event`),
+				terminal.authority
 			).state;
 
 			expect(finalized.mission.attempt).toMatchObject({ status, outcome });
@@ -1131,12 +1235,12 @@ describe('mission runtime ownership', () => {
 			{
 				commandType: 'mission.apply.combat-choice-batch',
 				eventType: 'mission.combat.choice-batch.applied',
-				eventHash: 'd9d15f01586df5f2c3984162f5e860207d4869c415819696e729e8caa1c2a9d1'
+				eventHash: '43322fba75a137833cb140ae5f40ada4e9ba07578a1b21ab7e8834bf24b47bf2'
 			},
 			{
 				commandType: 'mission.commit.readiness-terminal',
 				eventType: 'mission.combat.readiness.terminal.committed',
-				eventHash: 'b355bad82973cb5bf9f872f142499e9210dce706fa7fab9f2ae5898d4b56f3e1'
+				eventHash: 'ed7acb68bc3f5aff97d9770aed50c4a84e8d6ee5c0e76770871b4fb341fe2827'
 			},
 			{
 				commandType: 'mission.open.extraction',

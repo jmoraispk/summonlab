@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest';
 import {
 	MONSTER_POLICY_CATALOG,
 	MONSTER_READINESS_DUTY_ACTIONS_V1,
+	MONSTER_READINESS_DUTY_ACTIONS_V2,
 	calculateMonsterPolicyContentHash,
 	loadMonsterPolicyCatalog,
 	monsterPolicy
@@ -34,13 +35,18 @@ describe('monster policy catalog', () => {
 		).toBe(false);
 	});
 
-	it('authors one zero-Mana readiness duty fallback for every monster policy', () => {
+	it('authors one deterministic damaging readiness preference and hold fallback per policy', () => {
 		expect(Object.keys(MONSTER_READINESS_DUTY_ACTIONS_V1).sort()).toStrictEqual(
 			MONSTER_POLICY_CATALOG.policies.map((policy) => policy.policyId).sort()
 		);
-		for (const action of Object.values(MONSTER_READINESS_DUTY_ACTIONS_V1)) {
-			expect(action.actionId).toMatch(/^monster-hold-/u);
-			expect(action.fallbackId).toBe('hold-duty');
+		for (const actions of Object.values(MONSTER_READINESS_DUTY_ACTIONS_V2)) {
+			expect(actions.preferredActionId).toBe(actions.attack.actionId);
+			expect(actions.attack.actionId).toMatch(/^monster-attack-/u);
+			expect(actions.attack.conflictPolicy.invalidTarget).toBe('selected-fallback');
+			expect(actions.attack.resolutionProfile.damage.baseMagnitude).toBeGreaterThan(0);
+			expect(actions.hold.actionId).toMatch(/^monster-hold-/u);
+			expect(actions.hold.fallbackId).toBe('hold-duty');
+			expect(Object.isFrozen(actions.attack.resolutionProfile.damage)).toBe(true);
 		}
 	});
 });

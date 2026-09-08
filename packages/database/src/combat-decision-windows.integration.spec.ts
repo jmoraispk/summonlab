@@ -12,6 +12,7 @@ import { COMBAT_CONTENT_BINDING, COMBAT_RULES_V1 } from '@summonlab/content';
 import {
 	advanceUntilDecision,
 	applyCommand,
+	buildDeterministicCombatFallbackIntent,
 	createBootstrapEngine,
 	createCombatModeBinding,
 	deterministicUuid,
@@ -215,6 +216,19 @@ function buildFixture(deployed: EngineGameStateV25) {
 		contentVersion: 'engine-v26',
 		version: 3,
 		eventCursor: 4,
+		heroes: Object.fromEntries(
+			Object.entries(deployed.heroes).map(([heroId, hero]) => [
+				heroId,
+				{
+					...hero,
+					combatTraining: {
+						schemaVersion: 'hero-combat-training-v1',
+						proficiencyTags: [],
+						learnedSkills: []
+					}
+				}
+			])
+		),
 		mission: {
 			...deployed.mission,
 			attempt: {
@@ -232,21 +246,12 @@ function buildFixture(deployed: EngineGameStateV25) {
 	if (decision.kind !== 'decision-window') throw new Error('Expected database readiness window');
 	const snapshot: CombatWindowSnapshot = decision.snapshot;
 	const views: ActorDecisionView[] = [...decision.views];
-	const result = (view: ActorDecisionView): CombatActionIntent => ({
-		windowId: snapshot.windowId,
-		attemptId,
-		tick: snapshot.tick,
-		actorId: view.actorId,
-		snapshotHash: snapshot.snapshotHash,
-		actorViewHash: view.actorViewHash,
-		legalActionSetHash: view.legalActionSetHash,
-		actionId: view.legalActions[0]!.actionId,
-		actionInstanceId: view.legalActions[0]!.actionInstanceId,
-		actionKind: 'guard',
-		skillId: null,
-		target: { kind: 'self' },
-		fallbackId: 'brace'
-	});
+	const result = (view: ActorDecisionView): CombatActionIntent =>
+		buildDeterministicCombatFallbackIntent(view, {
+			attemptId,
+			tick: snapshot.tick,
+			snapshotHash: snapshot.snapshotHash
+		});
 	return { runId: deployed.runId, state, snapshot, views, result };
 }
 
@@ -491,6 +496,295 @@ describe.sequential('durable combat decision cohorts', () => {
 			await sql`delete from summonlab_proof_runs where run_id = ${runId}`;
 		} finally {
 			await sql.end({ timeout: 5 });
+		}
+	});
+
+	run('exposes the parent attempt and tick on every durable job and fallback', async () => {
+		if (!databaseUrl) throw new Error('TEST_DATABASE_URL is required');
+		const f = fixture(runId);
+		const created = await createCombatDecisionWindow(databaseUrl, {
+			runId,
+			expectedRunVersion: 3,
+			expectedEventCursor: 4,
+			snapshot: f.snapshot,
+			actors: f.views.map((view) => ({
+				view,
+				requestedPolicy: 'scripted' as const,
+				deterministicFallback: f.result(view)
+			}))
+		});
+
+		expect(
+			created.jobs.every(
+				(job) =>
+					job.attemptId === f.snapshot.attemptId &&
+					job.tick === f.snapshot.tick &&
+					job.deterministicFallback.attemptId === f.snapshot.attemptId &&
+					job.deterministicFallback.tick === f.snapshot.tick
+			)
+		).toBe(true);
+		const firstJob = created.jobs[0]!;
+		await queueCombatDecisionJob(databaseUrl, firstJob.decisionJobId);
+		const claim = await claimCombatDecisionJob(databaseUrl, firstJob.decisionJobId);
+		expect(claim?.deterministicFallback).toEqual(firstJob.deterministicFallback);
+		expect(claim?.deterministicFallback).toMatchObject({
+			attemptId: f.snapshot.attemptId,
+			tick: f.snapshot.tick,
+			actionId: 'guard-self',
+			target: { kind: 'self' },
+			fallbackId: 'brace'
+		});
+	});
+
+	run('rejects a legal but noncanonical deterministic fallback', async () => {
+		if (!databaseUrl) throw new Error('TEST_DATABASE_URL is required');
+		const f = fixture(runId);
+		const view = f.views[0]!;
+		const secondAction = view.legalActions[1]!;
+		if (secondAction.targetContract.kind !== 'entity') {
+			throw new Error('Second-legal fallback fixture requires an entity action');
+		}
+		const secondLegalFallback: CombatActionIntent = {
+			...f.result(view),
+			actionId: secondAction.actionId,
+			actionInstanceId: secondAction.actionInstanceId,
+			actionKind: secondAction.actionKind,
+			skillId: secondAction.skillId,
+			target: {
+				kind: 'entity',
+				combatantId: secondAction.targetContract.allowedCombatantIds[0]!
+			},
+			fallbackId: secondAction.fallbackOptions[0]!.fallbackId
+		};
+
+		await expect(
+			createCombatDecisionWindow(databaseUrl, {
+				runId,
+				expectedRunVersion: 3,
+				expectedEventCursor: 4,
+				snapshot: f.snapshot,
+				actors: f.views.map((candidate) => ({
+					view: candidate,
+					requestedPolicy: 'scripted' as const,
+					deterministicFallback:
+						candidate.actorId === view.actorId ? secondLegalFallback : f.result(candidate)
+				}))
+			})
+		).rejects.toThrow(/exact deterministic fallback/u);
+	});
+
+	run('rejects malformed attempt and tick coordinates without wedging the live claim', async () => {
+		if (!databaseUrl) throw new Error('TEST_DATABASE_URL is required');
+		const f = fixture(runId);
+		const created = await createCombatDecisionWindow(databaseUrl, {
+			runId,
+			expectedRunVersion: 3,
+			expectedEventCursor: 4,
+			snapshot: f.snapshot,
+			actors: f.views.map((view) => ({
+				view,
+				requestedPolicy: 'scripted' as const,
+				deterministicFallback: f.result(view)
+			}))
+		});
+		const job = created.jobs[0]!;
+		await queueCombatDecisionJob(databaseUrl, job.decisionJobId);
+		const claim = await claimCombatDecisionJob(databaseUrl, job.decisionJobId);
+		if (!claim) throw new Error('Expected coordinate-validation claim');
+		const valid = f.result(job.view);
+		for (const invalid of [
+			{ ...valid, attemptId: randomUUID() },
+			{ ...valid, tick: valid.tick + 1 },
+			{ ...valid, target: { kind: 'entity' as const, combatantId: randomUUID() } }
+		]) {
+			await expect(
+				completeCombatDecisionJobAttempt(
+					databaseUrl,
+					job.decisionJobId,
+					claim.attemptNumber,
+					invalid,
+					0
+				)
+			).rejects.toThrow();
+			const stillLive = await getCombatDecisionWindow(databaseUrl, f.snapshot.windowId);
+			expect(stillLive?.jobs[0]).toMatchObject({
+				status: 'in_progress',
+				attemptCount: claim.attemptNumber
+			});
+		}
+		await expect(
+			completeCombatDecisionJobAttempt(
+				databaseUrl,
+				job.decisionJobId,
+				claim.attemptNumber,
+				valid,
+				0
+			)
+		).resolves.toMatchObject({ status: 'completed' });
+		expect((await refreshCombatDecisionWindow(databaseUrl, f.snapshot.windowId)).status).toBe(
+			'collecting'
+		);
+	});
+
+	run('commits a stale completion transition before rejecting without deadlock', async () => {
+		if (!databaseUrl) throw new Error('TEST_DATABASE_URL is required');
+		const f = fixture(runId);
+		const created = await createCombatDecisionWindow(databaseUrl, {
+			runId,
+			expectedRunVersion: 3,
+			expectedEventCursor: 4,
+			snapshot: f.snapshot,
+			actors: f.views.map((view) => ({
+				view,
+				requestedPolicy: 'scripted' as const,
+				deterministicFallback: f.result(view)
+			}))
+		});
+		const [completionJob, failureJob] = created.jobs;
+		if (!completionJob || !failureJob) throw new Error('Expected two stale-race jobs');
+		await queueCombatDecisionJob(databaseUrl, completionJob.decisionJobId);
+		await queueCombatDecisionJob(databaseUrl, failureJob.decisionJobId);
+		const completionClaim = await claimCombatDecisionJob(databaseUrl, completionJob.decisionJobId);
+		const failureClaim = await claimCombatDecisionJob(databaseUrl, failureJob.decisionJobId);
+		if (!completionClaim || !failureClaim) throw new Error('Expected stale-race claims');
+		const sql = postgres(databaseUrl, { max: 1 });
+		try {
+			await sql`update summonlab_engine_runs set version = 4, event_cursor = 5
+				where run_id = ${runId}`;
+		} finally {
+			await sql.end({ timeout: 5 });
+		}
+
+		const settled = await within(
+			Promise.allSettled([
+				completeCombatDecisionJobAttempt(
+					databaseUrl,
+					completionJob.decisionJobId,
+					completionClaim.attemptNumber,
+					f.result(completionJob.view),
+					0
+				),
+				failCombatDecisionJobAttempt(
+					databaseUrl,
+					failureJob.decisionJobId,
+					failureClaim.attemptNumber,
+					{ code: 'provider-stale', message: 'stale race', retryable: true },
+					0
+				),
+				refreshCombatDecisionWindow(databaseUrl, f.snapshot.windowId)
+			])
+		);
+		expect(settled[0]).toMatchObject({
+			status: 'rejected',
+			reason: expect.objectContaining({ message: expect.stringMatching(/stale/u) })
+		});
+		expect(settled[1]).toMatchObject({
+			status: 'rejected',
+			reason: expect.objectContaining({ message: expect.stringMatching(/stale/u) })
+		});
+		expect(settled[2]).toMatchObject({
+			status: 'fulfilled',
+			value: expect.objectContaining({ status: 'stale' })
+		});
+		const stale = await getCombatDecisionWindow(databaseUrl, f.snapshot.windowId);
+		expect(stale?.status).toBe('stale');
+		expect(stale?.jobs.every((candidate) => candidate.status === 'stale')).toBe(true);
+		expect(
+			stale?.jobs.every(
+				(candidate) =>
+					candidate.failure?.code === 'stale-window-binding' &&
+					candidate.failure.retryable === false
+			)
+		).toBe(true);
+		const attemptSql = postgres(databaseUrl, { max: 1 });
+		try {
+			const attempts = await attemptSql<
+				{
+					decision_job_id: string;
+					status: string;
+					completed_at: Date | null;
+					latency_ms: number | null;
+					failure: { code: string; retryable: boolean; occurredAt: string } | null;
+				}[]
+			>`
+				select decision_job_id, status, completed_at, latency_ms, failure
+				from summonlab_decision_job_attempts
+				where decision_job_id in (${completionJob.decisionJobId}, ${failureJob.decisionJobId})
+				order by decision_job_id
+			`;
+			expect(attempts).toHaveLength(2);
+			expect(
+				attempts.every(
+					(attempt) =>
+						attempt.status === 'failed' &&
+						attempt.completed_at instanceof Date &&
+						attempt.latency_ms === 0 &&
+						attempt.failure?.code === 'stale-window-binding' &&
+						attempt.failure.retryable === false &&
+						Number.isFinite(Date.parse(attempt.failure.occurredAt))
+				)
+			).toBe(true);
+		} finally {
+			await attemptSql.end({ timeout: 5 });
+		}
+	});
+
+	run('terminalizes the live attempt when lease recovery discovers a stale window', async () => {
+		if (!databaseUrl) throw new Error('TEST_DATABASE_URL is required');
+		const f = fixture(runId);
+		const created = await createCombatDecisionWindow(databaseUrl, {
+			runId,
+			expectedRunVersion: 3,
+			expectedEventCursor: 4,
+			snapshot: f.snapshot,
+			actors: f.views.map((view) => ({
+				view,
+				requestedPolicy: 'scripted' as const,
+				deterministicFallback: f.result(view)
+			}))
+		});
+		const job = created.jobs[0]!;
+		await queueCombatDecisionJob(databaseUrl, job.decisionJobId);
+		const claim = await claimCombatDecisionJob(databaseUrl, job.decisionJobId, 10);
+		if (!claim) throw new Error('Expected stale recovery claim');
+		const sql = postgres(databaseUrl, { max: 1 });
+		try {
+			await sql`update summonlab_decision_jobs set lease_expires_at = now() - interval '1 second'
+				where decision_job_id = ${job.decisionJobId}`;
+			await sql`update summonlab_engine_runs set version = 4, event_cursor = 5
+				where run_id = ${runId}`;
+		} finally {
+			await sql.end({ timeout: 5 });
+		}
+
+		expect(await recoverExpiredCombatDecisionJobs(databaseUrl)).toBe(0);
+		const stale = await getCombatDecisionWindow(databaseUrl, f.snapshot.windowId);
+		expect(stale?.status).toBe('stale');
+		expect(stale?.jobs[0]?.failure).toMatchObject({
+			code: 'stale-window-binding',
+			retryable: false
+		});
+		const verify = postgres(databaseUrl, { max: 1 });
+		try {
+			const attempts = await verify<
+				{
+					status: string;
+					completed_at: Date | null;
+					latency_ms: number | null;
+					failure: { code: string; retryable: boolean } | null;
+				}[]
+			>`select status, completed_at, latency_ms, failure
+				from summonlab_decision_job_attempts
+				where decision_job_id = ${job.decisionJobId} and attempt_number = ${claim.attemptNumber}`;
+			expect(attempts).toHaveLength(1);
+			expect(attempts[0]).toMatchObject({
+				status: 'failed',
+				completed_at: expect.any(Date),
+				latency_ms: 0,
+				failure: { code: 'stale-window-binding', retryable: false }
+			});
+		} finally {
+			await verify.end({ timeout: 5 });
 		}
 	});
 

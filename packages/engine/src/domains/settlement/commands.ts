@@ -423,7 +423,7 @@ function assertSettlementCommandLegal(
 		}
 	}
 	if (command.commandType === 'hero.equip.item') {
-		if (state.schemaVersion === 24 || state.schemaVersion === 25) {
+		if (state.schemaVersion === 24 || state.schemaVersion === 25 || state.schemaVersion === 26) {
 			try {
 				equipEquipmentItem(state, {
 					heroId: command.actorId,
@@ -439,7 +439,7 @@ function assertSettlementCommandLegal(
 	}
 	if (command.commandType === 'hero.allocate.attribute') {
 		if (
-			state.schemaVersion !== 25 ||
+			(state.schemaVersion !== 25 && state.schemaVersion !== 26) ||
 			state.heroes[command.actorId]?.lifeState !== 'active' ||
 			state.heroes[command.actorId]!.progression.unspentAttributePoints < 1 ||
 			intrinsicAttributes(
@@ -1124,13 +1124,14 @@ function buildModernSettlementEvent(
 		const nextItem = state.items[command.itemId];
 		const base = eventBase(state, command, 'hero.item.equipped');
 		const targetSlot =
-			(state.schemaVersion === 24 || state.schemaVersion === 25) &&
+			(state.schemaVersion === 24 || state.schemaVersion === 25 || state.schemaVersion === 26) &&
 			nextItem &&
 			'definitionId' in nextItem
 				? (command.targetSlot ?? verifiedEquipmentDefinition(nextItem.definitionId).slot)
 				: undefined;
 		const previousItemId =
-			(state.schemaVersion === 24 || state.schemaVersion === 25) && targetSlot
+			(state.schemaVersion === 24 || state.schemaVersion === 25 || state.schemaVersion === 26) &&
+			targetSlot
 				? state.heroes[command.actorId]!.equipment[
 						targetSlot === 'main-hand'
 							? 'mainHand'
@@ -1166,7 +1167,9 @@ function buildModernSettlementEvent(
 		});
 	}
 	if (command.commandType === 'hero.allocate.attribute') {
-		if (state.schemaVersion !== 25) throw new IllegalActionError(command.commandType);
+		if (state.schemaVersion !== 25 && state.schemaVersion !== 26) {
+			throw new IllegalActionError(command.commandType);
+		}
 		const hero = state.heroes[command.actorId];
 		if (!hero) throw new IllegalActionError(command.commandType);
 		const base = eventBase(state, command, 'hero.attribute.allocated');

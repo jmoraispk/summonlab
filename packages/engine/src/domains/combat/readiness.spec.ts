@@ -4,7 +4,11 @@ import type {
 	CombatRulesV1,
 	ReadinessCombatStateV1
 } from '@summonlab/contracts';
-import { COMBAT_CONTENT_BINDING, COMBAT_RULES_V1 } from '@summonlab/content';
+import {
+	AGENT_READINESS_CONTENT_BINDING_V2,
+	COMBAT_CONTENT_BINDING,
+	COMBAT_RULES_V1
+} from '@summonlab/content';
 import { describe, expect, it } from 'vitest';
 
 import { hashCanonical } from '../../hash.js';
@@ -802,7 +806,12 @@ describe('agent-readiness one-tick cohorts', () => {
 
 		const payment = applyReadinessActionCost(terminal.state, ID.hero, ACTION, COMBAT_RULES_V1);
 
-		expect(payment).toStrictEqual(terminal);
+		expect(payment).toStrictEqual({
+			kind: 'combat-result',
+			state: terminal.state,
+			result: terminal.result,
+			authority: null
+		});
 		expect(hashCanonical(terminal.state)).toBe(beforeState);
 		expect(hashCanonical(terminal.result)).toBe(beforeResult);
 	});
@@ -817,7 +826,8 @@ describe('agent-readiness one-tick cohorts', () => {
 			resultId: ID.effect,
 			attemptId: ID.attempt,
 			modeId: 'agent-readiness-v1' as const,
-			rulesVersion: 'combat-rules-v1' as const,
+			rulesVersion: 'agent-readiness-rules-v2' as const,
+			contentHash: AGENT_READINESS_CONTENT_BINDING_V2.contentHash,
 			outcome: 'victory' as const,
 			endedAtTick: 12,
 			finalCombatants,
@@ -853,7 +863,12 @@ describe('agent-readiness one-tick cohorts', () => {
 
 		const payment = applyReadinessActionCost(completed, ID.hero, ACTION, COMBAT_RULES_V1);
 
-		expect(payment).toStrictEqual({ kind: 'combat-result', state: completed, result });
+		expect(payment).toStrictEqual({
+			kind: 'combat-result',
+			state: completed,
+			result,
+			authority: null
+		});
 		expect(hashCanonical(completed)).toBe(beforeState);
 		expect(hashCanonical(result)).toBe(beforeResult);
 	});

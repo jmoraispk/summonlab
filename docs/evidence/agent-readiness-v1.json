@@ -7,12 +7,12 @@
 			"rulesHash": "13b2b27b683e4b0023a2a2c2ee4926127437db3bbf1ace91776def69ef286eff"
 		},
 		"readinessRules": {
-			"rulesVersion": "agent-readiness-rules-v1",
-			"rulesHash": "eb7296798dbc911526603b1fb908cd3a7ea3661caf7d69793fc1fc0ab09cc5ba"
+			"rulesVersion": "agent-readiness-rules-v2",
+			"rulesHash": "21d1dbf74dff606fda8b727566787579c9584234ea9aeee0a26ecbae80a8a80e"
 		},
 		"combatContent": {
-			"bindingVersion": "combat-content-binding-v1",
-			"contentHash": "1abef40c18eb97d4c1694c674f9b4917f286053e6d810d5b4282760f2ab4c2a7",
+			"bindingVersion": "agent-readiness-content-binding-v2",
+			"contentHash": "e78ed494f1ac78f6b0efca0574248425a1bb1148d54fd39161db600964e8919e",
 			"components": [
 				{
 					"contentVersion": "combat-equipment-profiles-v1",
@@ -21,6 +21,10 @@
 				{
 					"contentVersion": "combat-skills-v1",
 					"contentHash": "2e0767343ddb1d80969612c7c8485cda6345a086f3dfb1b9cf474fce450e62d5"
+				},
+				{
+					"contentVersion": "monster-readiness-actions-v2",
+					"contentHash": "f6a555a787a11b8b401e6c67264537eac4f6d71b2f95c2137adbe8e02217a17b"
 				}
 			]
 		}
@@ -43,7 +47,7 @@
 			"actorPolicy": {
 				"hero": "first-legal-attack-against-first-active-authored-target",
 				"master": "first-legal-guard",
-				"monster": "first-legal-guard"
+				"monster": "first-legal-attack-against-first-active-authored-target"
 			},
 			"levelFixture": {
 				"attributes": "all-four-at-level-except-minimum-equipped-starter-load",
@@ -67,7 +71,7 @@
 				"maximumEvents": 100000
 			}
 		},
-		"profileHash": "b933bbb7a372ecd94b6046a9da606389ae9eab3705d6d73a870ed28fbea1a454",
+		"profileHash": "4a3a2858d1d5d9575e2aeb38a9cc5437e8e22b3795b32b2babacc9087bf8bac1",
 		"trialsPerBenchmark": 10000,
 		"encountersPerArchetype": 100,
 		"percentileMethod": "nearest-rank",
@@ -10082,8 +10086,8 @@
 			"productionFallbackIntentBuilds": 20000,
 			"productionFallbackSelectionsApplied": 40000,
 			"completeEncounters": 400,
-			"encounterAdvanceCalls": 3433,
-			"encounterResolverCalls": 3033
+			"encounterAdvanceCalls": 4107,
+			"encounterResolverCalls": 3707
 		}
 	},
 	"fixtures": {
@@ -10126,9 +10130,9 @@
 			"db93c5e2239b74f7748f4a969bf3e3437970e47c6c036fc30364e4730b43ef3c",
 			"aea86d6d7655ba822e9e9b461436bd0d05930983071e4f3500016ef742b07c1a",
 			"630e91f912fd73d9e65f1d0ebb6764b1c92964ab2288d609ee616f2842cb4059",
-			"19f83f27966a5fae55e6824e0065769dd97eda66d6e1ad53fda52b752279dbc7"
+			"efc402559133427a246a4c8efd2ca87997343fae974f8f25621bf7a368e67ebb"
 		],
-		"resultHash": "c9a4b1ed0ea81d556f9478bc93ce5f3d3dc77414db5a173c5257c6512bb2a64e"
+		"resultHash": "dc599786a23e8fc9a8a8b73e9af6a0619f443dd93be201d704cbc22a379526b5"
 	},
 	"benchmarks": {
 		"actionCadence": {
@@ -10181,18 +10185,19 @@
 			"trials": 100,
 			"completed": 100,
 			"ticks": {
-				"p50": 591,
-				"p95": 1090
+				"p50": 491,
+				"p95": 991
 			},
 			"events": {
-				"p50": 18,
-				"p95": 35
+				"p50": 15,
+				"p95": 31
 			},
 			"safetyStops": 0,
 			"noProgressStops": 0,
-			"damageApplied": 1195,
-			"passiveHealthRecovered": 195,
-			"recoveryObservedEncounters": 78,
+			"damageApplied": 1524,
+			"partyDamageReceived": 395,
+			"passiveHealthRecovered": 256,
+			"recoveryObservedEncounters": 77,
 			"regenerationStalemates": 0
 		},
 		{
@@ -10202,17 +10207,18 @@
 			"completed": 100,
 			"ticks": {
 				"p50": 313,
-				"p95": 715
+				"p95": 635
 			},
 			"events": {
 				"p50": 10,
-				"p95": 23
+				"p95": 21
 			},
 			"safetyStops": 0,
 			"noProgressStops": 0,
-			"damageApplied": 1130,
-			"passiveHealthRecovered": 130,
-			"recoveryObservedEncounters": 71,
+			"damageApplied": 1355,
+			"partyDamageReceived": 245,
+			"passiveHealthRecovered": 163,
+			"recoveryObservedEncounters": 70,
 			"regenerationStalemates": 0
 		},
 		{
@@ -10221,18 +10227,19 @@
 			"trials": 100,
 			"completed": 100,
 			"ticks": {
-				"p50": 195,
+				"p50": 127,
 				"p95": 398
 			},
 			"events": {
-				"p50": 7,
+				"p50": 4,
 				"p95": 14
 			},
 			"safetyStops": 0,
 			"noProgressStops": 0,
-			"damageApplied": 1022,
-			"passiveHealthRecovered": 22,
-			"recoveryObservedEncounters": 17,
+			"damageApplied": 1154,
+			"partyDamageReceived": 130,
+			"passiveHealthRecovered": 40,
+			"recoveryObservedEncounters": 15,
 			"regenerationStalemates": 0
 		},
 		{
@@ -10242,17 +10249,18 @@
 			"completed": 100,
 			"ticks": {
 				"p50": 110,
-				"p95": 288
+				"p95": 229
 			},
 			"events": {
 				"p50": 4,
-				"p95": 11
+				"p95": 8
 			},
 			"safetyStops": 0,
 			"noProgressStops": 0,
-			"damageApplied": 1016,
-			"passiveHealthRecovered": 16,
-			"recoveryObservedEncounters": 14,
+			"damageApplied": 1084,
+			"partyDamageReceived": 74,
+			"passiveHealthRecovered": 12,
+			"recoveryObservedEncounters": 10,
 			"regenerationStalemates": 0
 		}
 	],
@@ -10270,9 +10278,9 @@
 			"count": 0,
 			"safetyStops": 0,
 			"noProgressStops": 0,
-			"aggregateDamageApplied": 4363,
-			"aggregatePassiveHealthRecovered": 363,
-			"recoveryObservedEncounters": 180
+			"aggregateDamageApplied": 5117,
+			"aggregatePassiveHealthRecovered": 471,
+			"recoveryObservedEncounters": 172
 		},
 		"safetyStops": {
 			"status": "passed",

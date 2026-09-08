@@ -89,7 +89,7 @@ function deepFreeze<T>(value: T): T {
 
 export const MONSTER_POLICY_CATALOG = deepFreeze(MissionMonsterPolicyCatalogSchema.parse(source));
 
-/** Explicit zero-Mana duty fallbacks for readiness combat; policies do not imply player skills. */
+/** Historical zero-Mana duty fallbacks retained for immutable readiness-v1 replays. */
 export const MONSTER_READINESS_DUTY_ACTIONS_V1 = deepFreeze(
 	Object.fromEntries(
 		MONSTER_POLICY_CATALOG.policies.map((policy) => [
@@ -102,19 +102,70 @@ export const MONSTER_READINESS_DUTY_ACTIONS_V1 = deepFreeze(
 				recoveryTicks: 8
 			}
 		])
-	) as Readonly<
-		Record<
-			string,
-			Readonly<{
-				actionId: string;
-				publicLabel: string;
-				fallbackId: string;
-				fallbackLabel: string;
-				recoveryTicks: number;
-			}>
-		>
-	>
+	)
 );
+
+/** Damaging readiness actions owned by immutable V2 monster policy content. */
+export const MONSTER_READINESS_DUTY_ACTIONS_V2 = deepFreeze(
+	Object.fromEntries(
+		MONSTER_POLICY_CATALOG.policies.map((policy) => [
+			policy.policyId,
+			{
+				preferredActionId: `monster-attack-${policy.policyId}`,
+				attack: {
+					actionId: `monster-attack-${policy.policyId}`,
+					skillId: `combat-skill-monster-${policy.policyId}`,
+					publicLabel: `${policy.entityLabel} strike`,
+					reactionPriority: 0,
+					recoveryTicks: 10,
+					manaCost: 0,
+					conflictPolicy: {
+						invalidTarget: 'selected-fallback' as const,
+						occupiedDestination: 'cancel' as const,
+						cancellationRefund: { mana: 'full' as const, readiness: 'full' as const }
+					},
+					resolutionProfile: {
+						profileKind: 'attack' as const,
+						rulesVersion: 'combat-rules-v1' as const,
+						deliveryTag: 'unarmed' as const,
+						masteryStepMinimum: 0,
+						skillAccuracyBasisPoints: 6_750,
+						damage: {
+							channel: 'physical' as const,
+							tags: ['physical' as const, 'impact' as const],
+							baseMagnitude: policy.strikePower,
+							coefficientBasisPoints: 5_000,
+							affinityContributionBasisPoints: 0,
+							criticalChanceBasisPoints: 500,
+							criticalMultiplierBasisPoints: 15_000,
+							penetration: 0,
+							status: null
+						}
+					}
+				},
+				hold: {
+					actionId: `monster-hold-${policy.policyId}`,
+					publicLabel: policy.label,
+					fallbackId: 'hold-duty',
+					fallbackLabel: 'Hold duty',
+					recoveryTicks: 8
+				}
+			}
+		])
+	)
+);
+
+export const MONSTER_READINESS_ACTIONS_V2_CONTENT_VERSION = 'monster-readiness-actions-v2' as const;
+export const MONSTER_READINESS_ACTIONS_V2_CONTENT_HASH =
+	'f6a555a787a11b8b401e6c67264537eac4f6d71b2f95c2137adbe8e02217a17b' as const;
+
+export async function calculateMonsterReadinessActionsV2ContentHash(): Promise<string> {
+	const digest = await globalThis.crypto.subtle.digest(
+		'SHA-256',
+		new TextEncoder().encode(canonicalJson(MONSTER_READINESS_DUTY_ACTIONS_V2))
+	);
+	return [...new Uint8Array(digest)].map((byte) => byte.toString(16).padStart(2, '0')).join('');
+}
 
 export function monsterPolicy(policyId: string): MissionMonsterPolicyDefinition {
 	const policy = MONSTER_POLICY_CATALOG.policies.find(

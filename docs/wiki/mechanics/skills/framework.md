@@ -2,8 +2,9 @@
 
 Wiki ID: `skills.framework`
 
-Design status: **versioned combat-skill foundation implemented; the larger rarity, training, and
-skill-ladder catalog remains staged design**.
+Design status: **versioned combat-skill delivery, legality, and mastery progression are integrated
+with `engine-v26` readiness combat; the larger rarity and skill-ladder catalog remains staged
+design**.
 
 Skills are learned competence. Attributes supply broad physical or magical capability; skills own
 the technique, legal delivery method, authored accuracy and reliability, cost, effects, and
@@ -29,8 +30,10 @@ monotonic authored steps containing:
 
 Mastery does not automatically improve damage, critical chance, Mana efficiency, resistance, and
 action cadence together. A skill gains only the fields its definition authors. The first catalog
-ships Basic Sword Strike and Basic Bow Shot with novice, trained, and mastered calibration steps;
-the committed balance harness validates their accuracy bands as candidates for broader combat.
+ships Basic Sword Strike and Basic Bow Shot with novice, trained, and mastered calibration steps.
+Readiness missions currently consume the selected step's authored accuracy; reliability remains a
+versioned catalog field but does not yet affect readiness resolution. Authenticated skill-practice
+claims can advance persisted mastery and therefore the accuracy step used by later attempts.
 
 ## Delivery and equipment training
 
@@ -50,15 +53,15 @@ The versioned vocabulary is `unarmed`, `one-handed-blade`, `two-handed-blade`, `
 Moving a technique to a related family requires authored familiarization or mastery rules; a new
 sword of the same family does not erase training.
 
-When a caller uses the shipped pure loadout evaluator, an ineligible loadout exposes no active
-skill action. Production mission integration is still pending; `legacy-auto-v1` continues through
-its frozen compatibility runner. The current content profiles bind Sword and Dagger to
+`engine-v26` readiness-state assembly uses the shipped loadout evaluator, so an overloaded,
+unproficient, or delivery-incompatible loadout exposes no active skill action. `legacy-auto-v1`
+continues through its frozen compatibility runner. The current content profiles bind Sword and Dagger to
 `one-handed-blade`, Bow to `bow`, Staff to `staff-focus`, and Shield to `shield`. Other family
 bindings remain content work rather than inferred compatibility.
 
 ## Accuracy, evasion, and criticals
 
-Skill mastery is the primary source of learned accuracy and reliability. The target hit contest is:
+Skill mastery is the primary source of learned accuracy. The target hit contest is:
 
 ```text
 authored skill accuracy versus defender evasion
@@ -66,12 +69,11 @@ authored skill accuracy versus defender evasion
 + explicit positional or condition modifiers
 ```
 
-The relative-Agility formula, flank/surround terms, and final clamps are benchmark candidates until
-the [agent-readiness combat plan](../../../superpowers/plans/2026-09-06-agent-readiness-combat.md)
-ships them. The current balance gate requires the candidate relative-Agility term to move peer hit
-chance by no more than ten percentage points.
+The readiness resolver applies a clamped relative-Agility term plus explicit positional or condition
+modifiers. Mastery remains the primary accuracy source; the balance gate limits the relative-Agility
+effect in peer comparisons.
 
-In planned `agent-readiness-v1`, hit/miss and critical rolls use stable purpose-keyed engine
+In `agent-readiness-v1`, hit/miss and critical rolls use stable purpose-keyed engine
 randomness. Shipped `legacy-auto-v1` retains its frozen sequential entropy. Critical opportunity
 belongs to the skill, target state, positioning, and explicit practice bonuses—not to a base
 attribute.
@@ -103,6 +105,10 @@ player-facing projections.
 Focused practice, guidance, pressure, repetition decay, and variety remain useful authoring concepts,
 but exact schedules and yields are not yet the idle-gain system. A hero should not automatically
 train for every available hour merely because it is optimal.
+
+Resolved readiness skill uses produce bounded, idempotent practice evidence for that exact skill.
+The common combat-result claim path commits it with the attempt's other consequences, so retries
+cannot grant it twice and retreat does not erase practice that actually occurred.
 
 ## Resistances and Break mechanics
 

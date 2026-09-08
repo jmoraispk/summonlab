@@ -2,13 +2,14 @@
 
 Wiki ID: `mechanics.equipment.rarity-weight`
 
-Design status: **runtime-v1 craftsmanship foundation; engine-v25 load profiles and pure eligibility
-evaluator implemented; production mission integration pending**.
+Design status: **runtime-v1 craftsmanship foundation; engine-v26 load profiles and readiness
+eligibility integration implemented**.
 
 Runtime-v1 implements only the Standard row: one normalized material lot creates a `+0` item whose
 final rank equals its material rank. Fine/Masterwork thresholds, benefits, quality visuals, weight
 penalties, and the property table below remain explicit design work rather than active mechanics.
-Engine-v25 separately implements integer item load, Might tolerance, and explicit requirements.
+Engine-v26 implements integer item load, Might tolerance, and explicit requirements for readiness
+combat.
 
 ## Material rank plus craftsmanship
 
@@ -75,8 +76,8 @@ The combat profile uses explicit per-item load rather than deriving load from th
 Current heavy-weight profiles require intrinsic Might 35; Heavy Armour requires intrinsic Might 45
 and `armour-training`. No production profile uses a Vitality requirement. The pure evaluator marks
 an over-tolerance loadout ineligible rather than calculating the movement, evasion, or readiness
-penalties described by earlier drafts. Production gameplay has not yet integrated this check, so
-the current `legacy-auto-v1` runner does not reject a loadout on this basis.
+penalties described by earlier drafts. Readiness-state assembly enforces this check; the frozen
+`legacy-auto-v1` runner does not reject a loadout on this basis.
 
 **Weightless Craft** (Forging, Rare) lowers an item one weight class at the same protection level,
 which is one of the main reasons a roster wants a good armoursmith.

@@ -1,13 +1,14 @@
 import type { CombatModeId, CombatResult } from '@summonlab/contracts';
-import { COMBAT_RULES_V1 } from '@summonlab/content';
+import { AGENT_READINESS_RULES_V2_VERSION, COMBAT_RULES_V1 } from '@summonlab/content';
 
 export interface CombatAftermathRules {
 	readonly policyVersion: 'combat-aftermath-rules-v1';
 	readonly modeId: CombatModeId;
-	readonly rulesVersion: 'legacy-auto-rules-v1' | 'combat-rules-v1';
+	readonly rulesVersion:
+		'legacy-auto-rules-v1' | 'agent-readiness-rules-v1' | 'agent-readiness-rules-v2';
 	readonly minimumSafeHealth: number;
-	readonly recoverableOutcomes: readonly ['victory', 'extraction'];
-	readonly permanentLossOutcomes: readonly ['retreat', 'party-downed', 'deadline'];
+	readonly recoverableOutcomes: readonly CombatResult['outcome'][];
+	readonly permanentLossOutcomes: readonly CombatResult['outcome'][];
 	readonly safetyStopMayCausePermanentLoss: false;
 }
 
@@ -26,16 +27,25 @@ const RULES_BY_PAIR = deepFreeze({
 		rulesVersion: 'legacy-auto-rules-v1',
 		minimumSafeHealth: 1,
 		recoverableOutcomes: ['victory', 'extraction'],
-		permanentLossOutcomes: ['retreat', 'party-downed', 'deadline'],
+		permanentLossOutcomes: ['retreat', 'party-downed', 'death', 'deadline'],
 		safetyStopMayCausePermanentLoss: false
 	},
-	'agent-readiness-v1:combat-rules-v1': {
+	'agent-readiness-v1:agent-readiness-rules-v1': {
 		policyVersion: 'combat-aftermath-rules-v1',
 		modeId: 'agent-readiness-v1',
-		rulesVersion: 'combat-rules-v1',
+		rulesVersion: 'agent-readiness-rules-v1',
 		minimumSafeHealth: COMBAT_RULES_V1.health.minimumSafeHealth,
 		recoverableOutcomes: ['victory', 'extraction'],
-		permanentLossOutcomes: ['retreat', 'party-downed', 'deadline'],
+		permanentLossOutcomes: ['retreat', 'party-downed', 'death', 'deadline'],
+		safetyStopMayCausePermanentLoss: false
+	},
+	'agent-readiness-v1:agent-readiness-rules-v2': {
+		policyVersion: 'combat-aftermath-rules-v1',
+		modeId: 'agent-readiness-v1',
+		rulesVersion: AGENT_READINESS_RULES_V2_VERSION,
+		minimumSafeHealth: COMBAT_RULES_V1.health.minimumSafeHealth,
+		recoverableOutcomes: ['victory', 'extraction'],
+		permanentLossOutcomes: ['retreat', 'party-downed', 'death', 'deadline'],
 		safetyStopMayCausePermanentLoss: false
 	}
 } as const satisfies Readonly<Record<string, CombatAftermathRules>>);

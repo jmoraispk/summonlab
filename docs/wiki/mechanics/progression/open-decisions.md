@@ -45,8 +45,8 @@ later supersedes the imported attribute and combat-mode rows identified below.
 ## Source-parked questions
 
 - Attribute numerics still open beyond the shipped `1..100` intrinsic band, `1..200` effective band,
-  resource formulas, and physical/magical scaling: carrying capacity and future readiness/hit curves
-  need their owning versions.
+  resource formulas, and physical/magical scaling. Readiness accumulation and the bounded hit contest
+  now have a versioned production owner; carrying-capacity tuning remains open.
 - Durability and repair: whether gear degrades and whether repair belongs to Forging or its own focus.
 - Dedicated passes for materials, equipment-tier specifics, and food/upkeep.
 - Synthesis: the old concept considered transferring hero experience or potential skills and also
@@ -103,8 +103,8 @@ universal resource bars. The remaining decisions are:
 4. Choose XP sources and a simple, legible level curve through the milestone’s tower floors.
 5. Confirm the proposed 8–12 initial skills, their progress thresholds, and passive application;
    complete ladders and stances are outside the first runtime.
-6. Define the minimal equipment slots, production integration for the shipped pure load evaluator,
-   and monster-drop table.
+6. Define the final Living Village equipment-slot subset and monster-drop table; readiness combat
+   already integrates the shipped load evaluator.
 7. Define one static training facility, assignment flow, time cost, practice yield, and return report.
 8. Bind every progression mutation to a typed grant/event and show exact before/after deltas.
 

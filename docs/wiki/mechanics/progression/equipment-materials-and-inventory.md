@@ -25,19 +25,22 @@ rather than parallel item catalogs. The canonical Equipment forms live in the
 
 ## Weight
 
-Every equipment piece has weight, linking gear to attributes. The source drives weight tolerance
-with Might, supported by Vitality.
+Every equipment piece has weight, linking gear to attributes. The imported source drove weight
+tolerance with Might supported by Vitality and used an undefined Initiative penalty. ADR 0072
+supersedes both points: Might alone owns load tolerance, Vitality grants no equipment eligibility,
+and readiness combat has no independent Initiative stat.
 
 | Load | Proposed effect |
 | --- | --- |
 | Within tolerance | No penalty |
 | Slightly over | Lower movement speed and evasion |
-| Substantially over | Also lower attack speed and initiative |
+| Substantially over | Historical proposal only; no current Initiative field |
 | Far over | Severe penalties across all Agility-derived stats |
 
-This makes heavy armor costly and gives Might value to nonphysical builds. A Spirit caster in plate
-is slow while one in robes is not. High Armorsmithing is proposed to reduce weight for equal
-protection, giving a settlement a reason to cultivate smiths.
+The implemented readiness evaluator instead marks an over-tolerance loadout ineligible. A later
+rules version may replace that boundary with explicit movement, evasion, or readiness penalties.
+High Armorsmithing may still reduce weight for equal protection, giving a settlement a reason to
+cultivate smiths.
 
 ## Equipment properties
 

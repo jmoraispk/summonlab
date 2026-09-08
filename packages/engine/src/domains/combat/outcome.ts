@@ -3,6 +3,7 @@ import {
 	CombatResultSchema,
 	ReadinessCombatStateV1Schema,
 	type CombatClaim,
+	type CombatModeBinding,
 	type CombatModeId,
 	type CombatResolvedEvent,
 	type CombatResult,
@@ -10,7 +11,10 @@ import {
 	type ReadinessCombatOutcomeEvidenceV1,
 	type ReadinessCombatStateV1
 } from '@summonlab/contracts';
-import { COMBAT_RULES_V1 } from '@summonlab/content';
+import {
+	AGENT_READINESS_CONTENT_BINDING_V2,
+	AGENT_READINESS_RULES_V2_VERSION
+} from '@summonlab/content';
 
 import { deterministicUuid, hashCanonical } from '../../hash.js';
 import { combatAftermathRulesForBinding } from '../../core/combat-aftermath-rules.js';
@@ -46,8 +50,11 @@ export interface CombatObjectiveState {
 
 export interface EmitCombatOutcomeInput {
 	readonly attemptId: string;
-	readonly modeId: CombatModeId;
-	readonly rulesVersion: string;
+	readonly combatModeBinding: Readonly<{
+		modeId: CombatModeId;
+		rulesVersion: string;
+		contentHash: string;
+	}>;
 	readonly endedAtTick: number;
 	readonly termination: CombatTermination;
 	readonly partyHeroIds: readonly string[];
@@ -65,6 +72,7 @@ export interface EmitCombatOutcomeInput {
 export interface FinalizeReadinessCombatInput {
 	readonly state: ReadinessCombatStateV1;
 	readonly safetyStop?: CombatSafetyStop;
+	readonly combatModeBinding?: EmitCombatOutcomeInput['combatModeBinding'] | undefined;
 }
 
 export type ReadinessTerminalDirective = NonNullable<
@@ -284,7 +292,8 @@ function practiceClaims(input: EmitCombatOutcomeInput): CombatClaim[] {
  * remains combat-local here: permanent state changes happen only when owning reducers apply claims.
  */
 export function emitCombatOutcome(input: EmitCombatOutcomeInput): CombatResult {
-	const aftermathRules = combatAftermathRulesForBinding(input.modeId, input.rulesVersion);
+	const binding = input.combatModeBinding;
+	const aftermathRules = combatAftermathRulesForBinding(binding.modeId, binding.rulesVersion);
 	assertUnique(input.partyHeroIds, 'Party hero IDs');
 	assertUnique(input.engineRecoveredCombatantIds, 'Recovered combatant IDs');
 	assertUnique(input.decisiveEventIds, 'Decisive event IDs');
@@ -395,11 +404,12 @@ export function emitCombatOutcome(input: EmitCombatOutcomeInput): CombatResult {
 	const resultWithoutHash = {
 		resultVersion: 'combat-result-v1' as const,
 		resultId: deterministicUuid(
-			`${input.attemptId}:combat-result:${input.modeId}:${input.endedAtTick}:${input.termination.kind}`
+			`${input.attemptId}:combat-result:${binding.modeId}:${binding.rulesVersion}:${binding.contentHash}:${input.endedAtTick}:${input.termination.kind}`
 		),
 		attemptId: input.attemptId,
-		modeId: input.modeId,
-		rulesVersion: input.rulesVersion,
+		modeId: binding.modeId,
+		rulesVersion: binding.rulesVersion,
+		contentHash: binding.contentHash,
 		outcome: input.termination.kind,
 		endedAtTick: input.endedAtTick,
 		finalCombatants: structuredClone(input.finalCombatants),
@@ -425,9 +435,25 @@ export function emitCombatOutcome(input: EmitCombatOutcomeInput): CombatResult {
 /** Re-derives the complete canonical result and claim manifest from terminal engine evidence. */
 export function authenticateCombatResult(
 	resultInput: CombatResult,
-	authorityInput: EmitCombatOutcomeInput
+	authorityInput: EmitCombatOutcomeInput,
+	trustedAttemptBinding: CombatModeBinding
 ): CombatResult {
 	const result = CombatResultSchema.parse(resultInput);
+	const trustedIdentity = {
+		modeId: trustedAttemptBinding.modeId,
+		rulesVersion: trustedAttemptBinding.rulesVersion,
+		contentHash: trustedAttemptBinding.contentHash
+	};
+	if (
+		authorityInput.combatModeBinding.modeId !== trustedIdentity.modeId ||
+		authorityInput.combatModeBinding.rulesVersion !== trustedIdentity.rulesVersion ||
+		authorityInput.combatModeBinding.contentHash !== trustedIdentity.contentHash ||
+		result.modeId !== trustedIdentity.modeId ||
+		result.rulesVersion !== trustedIdentity.rulesVersion ||
+		result.contentHash !== trustedIdentity.contentHash
+	) {
+		throw new Error('Combat result and authority must match the persisted attempt binding');
+	}
 	const expected = emitCombatOutcome(authorityInput);
 	if (hashCanonical(expected) !== hashCanonical(result)) {
 		throw new Error('Combat result claim manifest diverged from trusted terminal authority');
@@ -437,6 +463,12 @@ export function authenticateCombatResult(
 
 /** The sole readiness-kernel terminal transition for ordinary and safety outcomes. */
 function readinessOrdinaryTermination(state: ReadinessCombatStateV1): CombatTermination | null {
+	const master = Object.values(state.combatants).find(
+		(combatant) => combatant.teamId === 'party' && combatant.combatantKind === 'master'
+	);
+	if (master?.downed === true || master?.active === false) {
+		return { kind: 'death' };
+	}
 	const partyHeroIds = Object.keys(state.outcomeEvidence.partyHeroes);
 	if (partyHeroIds.every((heroId) => state.combatants[heroId]?.downed === true)) {
 		return { kind: 'party-downed' };
@@ -463,16 +495,18 @@ function readinessOrdinaryTermination(state: ReadinessCombatStateV1): CombatTerm
 }
 
 export function finalizeReadinessCombatIfTerminal(
-	stateInput: ReadinessCombatStateV1
+	stateInput: ReadinessCombatStateV1,
+	combatModeBinding?: EmitCombatOutcomeInput['combatModeBinding']
 ): ReturnType<typeof finalizeReadinessCombatOutcome> | null {
 	const state = ReadinessCombatStateV1Schema.parse(stateInput);
 	if (state.status !== 'active' || readinessOrdinaryTermination(state) === null) return null;
-	return finalizeReadinessCombatOutcome({ state });
+	return finalizeReadinessCombatOutcome({ state, combatModeBinding });
 }
 
 export function finalizeReadinessCombatOutcome(input: FinalizeReadinessCombatInput): Readonly<{
 	state: ReadinessCombatStateV1;
 	result: CombatResult;
+	authority: EmitCombatOutcomeInput;
 }> {
 	const state = input.safetyStop
 		? structuredClone(input.state)
@@ -506,10 +540,13 @@ export function finalizeReadinessCombatOutcome(input: FinalizeReadinessCombatInp
 				event.tick === state.tick && event.effects.some((effect) => effect.kind === 'downed')
 		)
 		.map((event) => event.eventId);
-	const result = emitCombatOutcome({
+	const authority: EmitCombatOutcomeInput = {
 		attemptId: state.attemptId,
-		modeId: 'agent-readiness-v1',
-		rulesVersion: COMBAT_RULES_V1.rulesVersion,
+		combatModeBinding: input.combatModeBinding ?? {
+			modeId: 'agent-readiness-v1',
+			rulesVersion: AGENT_READINESS_RULES_V2_VERSION,
+			contentHash: AGENT_READINESS_CONTENT_BINDING_V2.contentHash
+		},
 		endedAtTick: state.tick,
 		termination,
 		partyHeroIds,
@@ -520,11 +557,12 @@ export function finalizeReadinessCombatOutcome(input: FinalizeReadinessCombatInp
 		securedLoot: state.outcomeEvidence.securedLoot,
 		objectiveStates: state.outcomeEvidence.objectiveStates,
 		decisiveEventIds
-	});
+	};
+	const result = emitCombatOutcome(authority);
 	const completed = ReadinessCombatStateV1Schema.parse({
 		...state,
 		status: 'complete',
 		result
 	});
-	return deepFreeze({ state: completed, result });
+	return deepFreeze({ state: completed, result, authority });
 }

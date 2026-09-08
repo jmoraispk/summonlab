@@ -29,6 +29,7 @@ import {
 	EngineHeroStateV5Schema,
 	EngineHeroStateV24Schema,
 	EngineHeroStateV25Schema,
+	EngineHeroStateV26Schema,
 	EngineSettlementStateSchema,
 	EngineSettlementStateV3Schema,
 	EngineSettlementStateV4Schema,
@@ -849,6 +850,7 @@ const EngineGameStateV26BaseSchema = z
 	.object({
 		...EngineGameStateV25BaseSchema.shape,
 		schemaVersion: z.literal(26),
+		heroes: z.record(EntityIdSchema, EngineHeroStateV26Schema),
 		mission: MissionRunStateV10Schema
 	})
 	.strict();

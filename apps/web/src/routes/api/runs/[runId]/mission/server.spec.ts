@@ -170,7 +170,7 @@ describe('operator-bound mission combat', () => {
 		expect(heroActor?.deterministicFallback).toMatchObject({
 			actionId: 'combat-skill-basic-sword-strike',
 			target: { kind: 'entity' },
-			fallbackId: 'guard-instead'
+			fallbackId: null
 		});
 		expect(body).toMatchObject({ status: 'collecting', readyActors: 0 });
 		expect(body).not.toHaveProperty('snapshot');

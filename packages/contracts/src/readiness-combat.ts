@@ -17,6 +17,11 @@ export const CombatWindowVersionSchema = z.literal('combat-window-v1');
 export const CombatChoiceBatchVersionSchema = z.literal('combat-choice-batch-v1');
 export const CombatResultVersionSchema = z.literal('combat-result-v1');
 
+const LEGACY_AND_READINESS_V1_CONTENT_HASH =
+	'1abef40c18eb97d4c1694c674f9b4917f286053e6d810d5b4282760f2ab4c2a7';
+const READINESS_V2_CONTENT_HASH =
+	'e78ed494f1ac78f6b0efca0574248425a1bb1148d54fd39161db600964e8919e';
+
 const TickSchema = z.number().int().nonnegative().max(Number.MAX_SAFE_INTEGER);
 const BoundedTextSchema = z.string().trim().min(1).max(300);
 const TeamIdSchema = z.string().regex(/^[a-z][a-z0-9-]{0,63}$/u);
@@ -313,7 +318,7 @@ export const CombatLegalActionTemplateSchema = z
 		recoveryTicks: z.number().int().positive().max(100_000),
 		manaCost: z.number().int().nonnegative().max(1_000_000),
 		conflictPolicy: CombatActionConflictPolicySchema,
-		fallbackOptions: z.array(CombatFallbackOptionSchema).min(1).max(16),
+		fallbackOptions: z.array(CombatFallbackOptionSchema).max(16),
 		resolutionProfile: CombatActionResolutionProfileSchema
 	})
 	.strict()
@@ -326,6 +331,16 @@ export const CombatLegalActionTemplateSchema = z
 				code: 'custom',
 				path: ['fallbackOptions'],
 				message: 'Fallback options must be unique'
+			});
+		}
+		if (
+			action.conflictPolicy.invalidTarget === 'selected-fallback' &&
+			action.fallbackOptions.length === 0
+		) {
+			context.addIssue({
+				code: 'custom',
+				path: ['fallbackOptions'],
+				message: 'Selected-fallback actions require at least one authored fallback'
 			});
 		}
 		const canDamage = action.actionKind === 'attack' || action.actionKind === 'skill';
@@ -768,7 +783,15 @@ export const CombatClaimSchema = z.discriminatedUnion('claimType', [
 	}).strict(),
 	CombatClaimBaseSchema.extend({
 		claimType: z.literal('attempt-outcome'),
-		outcome: z.enum(['victory', 'extraction', 'retreat', 'party-downed', 'deadline', 'safety-stop'])
+		outcome: z.enum([
+			'victory',
+			'extraction',
+			'retreat',
+			'party-downed',
+			'death',
+			'deadline',
+			'safety-stop'
+		])
 	}).strict()
 ]);
 
@@ -813,11 +836,13 @@ export const CombatResultSchema = z
 		attemptId: EntityIdSchema,
 		modeId: z.enum(['legacy-auto-v1', 'agent-readiness-v1']),
 		rulesVersion: ContentVersionSchema,
+		contentHash: StateHashSchema,
 		outcome: z.enum([
 			'victory',
 			'extraction',
 			'retreat',
 			'party-downed',
+			'death',
 			'deadline',
 			'safety-stop'
 		]),
@@ -831,13 +856,19 @@ export const CombatResultSchema = z
 	})
 	.strict()
 	.superRefine((result, context) => {
-		const expectedRulesVersion =
-			result.modeId === 'legacy-auto-v1' ? 'legacy-auto-rules-v1' : 'combat-rules-v1';
-		if (result.rulesVersion !== expectedRulesVersion) {
+		const validBinding =
+			result.modeId === 'legacy-auto-v1'
+				? result.rulesVersion === 'legacy-auto-rules-v1' &&
+					result.contentHash === LEGACY_AND_READINESS_V1_CONTENT_HASH
+				: (result.rulesVersion === 'agent-readiness-rules-v1' &&
+						result.contentHash === LEGACY_AND_READINESS_V1_CONTENT_HASH) ||
+					(result.rulesVersion === 'agent-readiness-rules-v2' &&
+						result.contentHash === READINESS_V2_CONTENT_HASH);
+		if (!validBinding) {
 			context.addIssue({
 				code: 'custom',
-				path: ['rulesVersion'],
-				message: 'Combat result rules must match its immutable mode binding'
+				path: ['contentHash'],
+				message: 'Combat result rules and content must match an immutable mode binding'
 			});
 		}
 		if ((result.outcome === 'safety-stop') !== (result.safetyStop !== null)) {

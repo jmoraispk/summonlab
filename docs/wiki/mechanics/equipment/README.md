@@ -2,8 +2,8 @@
 
 Wiki ID: `mechanics.equipment`
 
-Design status: **runtime-v1 catalog plus versioned `engine-v25` combat profiles and pure evaluator
-implemented; production mission integration pending**. The canonical item classes and material
+Design status: **runtime-v1 catalog plus versioned `engine-v26` readiness integration for combat
+profiles and eligibility**. The canonical item classes and material
 relationships are intentionally smaller than the imported compendium. The implementation ships 140
 Weapon, Armour-piece, Shield, and Staff definitions and a separately hash-bound combat profile for
 each. General armour magnitudes, durability behavior, magical active skills, Tool, Accessory, and
@@ -29,7 +29,7 @@ supplies base rank, while craftsmanship may add zero, one, or two ranks, capped 
 - [Sets, enchantment, and bound equipment](sets.md)
 
 These owner-revised pages supersede the imported item's breadth while preserving unresolved rules
-honestly. Sections labeled runtime-v1 or engine-v25 describe implemented behavior; remaining
+honestly. Sections labeled runtime-v1 or engine-v26 describe implemented behavior; remaining
 numerical and future class rules are still design material.
 
 ## Craft output streams
@@ -81,17 +81,17 @@ forge or receive an authored-drop item
 - one bounded authored drop using the same definition catalog and item factory as Forging;
 - lazy card/detail visuals resolved from the separate Equipment runtime manifest.
 
-### Engine-v25 combat profiles
+### Engine-v26 readiness combat profiles
 
 Combat mechanics live in `combat-equipment-profiles-v1`, separate from the frozen
 `equipment-content-v1` definition/visual catalog. This preserves all existing IDs and the historical
 equipment hash while making load, requirements, delivery families, and named resistances auditable.
-The shipped pure profile/evaluator boundary can calculate eligibility and enumerate active skill
-actions without mutating a mission. Production gameplay has not yet integrated that evaluation;
-`legacy-auto-v1` remains isolated behind its frozen compatibility projection. The aggregate
-combat-content binding includes both the combat-skill and combat-equipment-profile catalog hashes;
-a mission attempt stores that aggregate and does not consult a later operator default while it
-runs.
+`engine-v26` readiness-state assembly consumes the profile/evaluator result to enumerate legal skill
+actions and project named resistances from the exact equipped instances. `legacy-auto-v1` remains
+isolated behind its frozen compatibility projection. The aggregate combat-content binding includes
+the combat-skill and combat-equipment-profile catalog hashes; current readiness V2 additionally
+binds its hostile-action catalog. A mission attempt stores the resulting exact aggregate and never
+consults a later operator default while it runs.
 
 - each equipped item contributes an integer load;
 - Might supplies effective equipment-load tolerance;
@@ -267,9 +267,9 @@ remain preserved rather than silently normalized:
   requires one free hand, and Dual Wield permits only one-handed Swords and Daggers. Exact combat
   tradeoffs remain open.
 - General armour magnitude, detailed weapon damage, magical active skills, penetration content,
-  statuses, readiness/evasion formulas, Mana effects, affinity application, and granted-skill
-  effects remain later combat/content work. Named resistance receipts, family delivery tags, load,
-  Might requirements, and Armour Training are implemented.
+  statuses, Mana effects, affinity application, and granted-skill effects remain later
+  combat/content work. Readiness/evasion, named resistance receipts, family delivery tags, load,
+  Might requirements, and Armour Training are implemented for the readiness slice.
 - Monster materials taken from sapient peoples require source, consent, death, personhood, and
   social-consequence rules; a species label must never itself imply a harvestable enemy resource.
 - The source does not define acquisition: summon loadouts, tower drops, settlement stock, crafting,

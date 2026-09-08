@@ -2,8 +2,8 @@
 
 Wiki ID: `mechanics.attributes`
 
-Design status: **implemented for new `character-v2` / `engine-v25` characters; historical schemas
-remain replayable**.
+Design status: **implemented for new `character-v2` characters; `engine-v26` consumes their
+intrinsic growth and combat training while historical schemas remain replayable**.
 
 Attributes are visible, combat-first capabilities used by heroes and mechanically comparable
 creatures. They do not determine intelligence, morality, obedience, social worth, personality, or
@@ -36,7 +36,7 @@ generated base + append-only permanent growth receipts = intrinsic attribute
 intrinsic attribute + modifiers valid for this check = effective attribute
 ```
 
-Level allocation and permanent training change intrinsic values through typed receipts. Equipment,
+Level allocation changes intrinsic values through typed receipts. Equipment,
 enchantments, food, conditions, statuses, skills, and physiology may provide effective modifiers.
 Each modifier names one scope—such as physical damage, magical damage, Health regeneration,
 equipment load, movement, or evasion—plus its source, stacking rule, cap, duration, and rules
@@ -51,13 +51,14 @@ intrinsic values remain `1..100`.
 - Might scales physical magnitude; Spirit scales magical magnitude.
 - Vitality sets maximum Health and contributes modestly to natural recovery.
 - Spirit sets maximum Mana and contributes modestly, with saturation, to Mana recovery.
-- Agility is available to readiness, movement, and evasion scopes. The production formula for the
-  future readiness hit contest lands with `agent-readiness-v1`, not this foundation.
+- Agility drives readiness accumulation and contributes a bounded relative-speed term to the
+  production `agent-readiness-v1` hit contest.
 - General mitigation comes from armour after explicit penetration and is capped below 75% by
   `combat-rules-v1`.
 - `cut`, `pierce`, `impact`, `burn`, `frost`, `shock`, and `arcane` resistances come from authored
   equipment, passive skills, or physiology. They are additive typed receipts capped at 75%.
-- Accuracy and reliability belong to each skill's authored mastery progression. Critical
+- Accuracy and reliability belong to each skill's authored mastery progression; the current
+  readiness resolver consumes the accuracy step, while reliability remains reserved. Critical
   opportunity belongs to skills, target state, positioning, and explicit bonuses.
 
 Health and Mana are the only universal resource bars. There is no stamina or universal poise bar;
@@ -87,9 +88,10 @@ it does not invent an automatic level-up grant. See [Affinities](progression/aff
 ## Compatibility
 
 New `character-v2` records persist the capability profile separately from personality and history.
-`engine-v25` consumes it directly. When a new character enters `legacy-auto-v1`, that mode alone
-projects the four attributes onto the old aptitude shape. Old events, state hashes, and replays are
-never rewritten.
+`engine-v26` derives current intrinsic attributes from that generated profile plus its verified
+growth-receipt chain; it never treats the generated numbers as if later allocations had not
+happened. When a new character enters `legacy-auto-v1`, that mode alone projects the four
+attributes onto the old aptitude shape. Old events, state hashes, and replays are never rewritten.
 
 ## References
 

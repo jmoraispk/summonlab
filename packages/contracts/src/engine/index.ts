@@ -44,6 +44,7 @@ export {
 	EngineHeroStateV5Schema,
 	EngineHeroStateV24Schema,
 	EngineHeroStateV25Schema,
+	EngineHeroStateV26Schema,
 	EngineSettlementStateSchema,
 	EngineSettlementStateV3Schema,
 	EngineSettlementStateV4Schema,
@@ -59,6 +60,7 @@ export {
 	FirstEmberStateSchema,
 	HabitStateSchema,
 	HeroBuildingAssignmentSchema,
+	HeroCombatTrainingV1Schema,
 	RoutineCandidateScoreSchema,
 	RoutineKindSchema,
 	RoutineResolutionSchema,
@@ -70,8 +72,10 @@ export {
 	type FirstEmberState,
 	type EngineHeroStateV24,
 	type EngineHeroStateV25,
+	type EngineHeroStateV26,
 	type EngineSettlementStateV24,
 	type EquipmentMaterialLotsV24,
+	type HeroCombatTrainingV1,
 	type RoutineKind
 } from './settlement-state.js';
 export {

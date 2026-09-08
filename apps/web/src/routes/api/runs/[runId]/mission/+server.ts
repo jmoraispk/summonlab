@@ -255,7 +255,8 @@ export const POST: RequestHandler = async ({ params, request }) => {
 				}
 				const advance = advanceUntilDecision(
 					readinessAttempt.combatState.readinessState,
-					COMBAT_RULES_V1
+					COMBAT_RULES_V1,
+					readinessAttempt.combatModeBinding
 				);
 				if (advance.kind === 'combat-result') {
 					const terminalCommandId = deterministicUuid(

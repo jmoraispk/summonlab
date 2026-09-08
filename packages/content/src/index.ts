@@ -2,6 +2,7 @@ export * from './hearth-01-scene.js';
 export * from './hearth-01.js';
 export * from './affinity-workflow.js';
 export * from './agent-readiness-rules.js';
+export * from './agent-readiness-content-binding.js';
 export * from './combat-rules.js';
 export * from './combat-skills.js';
 export * from './combat-content-binding.js';

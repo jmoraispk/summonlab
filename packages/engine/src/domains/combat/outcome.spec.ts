@@ -5,7 +5,12 @@ import type {
 	ReadinessCombatStateV1
 } from '@summonlab/contracts';
 import { CombatResultSchema } from '@summonlab/contracts';
-import { COMBAT_CONTENT_BINDING, COMBAT_RULES_V1 } from '@summonlab/content';
+import {
+	AGENT_READINESS_CONTENT_BINDING_V2,
+	AGENT_READINESS_RULES_V2_VERSION,
+	COMBAT_CONTENT_BINDING,
+	COMBAT_RULES_V1
+} from '@summonlab/content';
 import { describe, expect, it } from 'vitest';
 
 import { deterministicUuid, hashCanonical } from '../../hash.js';
@@ -109,9 +114,15 @@ function termination(outcome: CombatTermination['kind']): CombatTermination {
 function emit(modeId: CombatModeId, outcome: CombatTermination['kind'], downed = false) {
 	return emitCombatOutcome({
 		attemptId: ID.attempt,
-		modeId,
-		rulesVersion:
-			modeId === 'legacy-auto-v1' ? 'legacy-auto-rules-v1' : COMBAT_RULES_V1.rulesVersion,
+		combatModeBinding: {
+			modeId,
+			rulesVersion:
+				modeId === 'legacy-auto-v1' ? 'legacy-auto-rules-v1' : AGENT_READINESS_RULES_V2_VERSION,
+			contentHash:
+				modeId === 'legacy-auto-v1'
+					? COMBAT_CONTENT_BINDING.contentHash
+					: AGENT_READINESS_CONTENT_BINDING_V2.contentHash
+		},
 		endedAtTick: 8,
 		termination: termination(outcome),
 		partyHeroIds: [ID.hero],
@@ -181,6 +192,7 @@ describe('common combat outcomes', () => {
 			'attemptId',
 			'claimEvidence',
 			'claims',
+			'contentHash',
 			'decisiveEventIds',
 			'endedAtTick',
 			'finalCombatants',
@@ -263,6 +275,14 @@ describe('common combat outcomes', () => {
 			'legacy-auto-v1',
 			'agent-readiness-v1'
 		]);
+		expect(results.map((result) => result.rulesVersion)).toStrictEqual([
+			'legacy-auto-rules-v1',
+			'agent-readiness-rules-v2'
+		]);
+		expect(results.map((result) => result.contentHash)).toStrictEqual([
+			COMBAT_CONTENT_BINDING.contentHash,
+			AGENT_READINESS_CONTENT_BINDING_V2.contentHash
+		]);
 	});
 
 	it('adapts a bound legacy terminal only at the V26 orchestration boundary', () => {
@@ -292,6 +312,7 @@ describe('common combat outcomes', () => {
 		expect(result).toMatchObject({
 			modeId: 'legacy-auto-v1',
 			rulesVersion: 'legacy-auto-rules-v1',
+			contentHash: COMBAT_CONTENT_BINDING.contentHash,
 			outcome: 'retreat'
 		});
 		expect(result.claims).not.toHaveLength(0);
@@ -307,28 +328,66 @@ describe('common combat outcomes', () => {
 		expect(finalized.result.outcome).toBe(outcome);
 		expect(finalized.result.claims.map((claim) => claim.claimType)).toContain('attempt-outcome');
 	});
-	it.each(['victory', 'extraction', 'retreat', 'party-downed', 'deadline', 'safety-stop'] as const)(
-		'emits a strict common result for %s in both combat modes',
-		(outcome) => {
-			const legacy = emit('legacy-auto-v1', outcome, outcome === 'party-downed');
-			const readiness = emit('agent-readiness-v1', outcome, outcome === 'party-downed');
 
-			expect(CombatResultSchema.parse(legacy)).toStrictEqual(legacy);
-			expect(CombatResultSchema.parse(readiness)).toStrictEqual(readiness);
-			expect(legacy.outcome).toBe(outcome);
-			expect(readiness.outcome).toBe(outcome);
-			expect(legacy.claims.map((claim) => claim.claimType)).toStrictEqual(
-				readiness.claims.map((claim) => claim.claimType)
-			);
-			expect(legacy.safetyStop).toStrictEqual(outcome === 'safety-stop' ? safetyStop : null);
-			expect(
-				CombatResultSchema.safeParse({ ...legacy, rulesVersion: 'combat-rules-v1' }).success
-			).toBe(false);
-			expect(
-				CombatResultSchema.safeParse({ ...readiness, rulesVersion: 'legacy-auto-rules-v1' }).success
-			).toBe(false);
-		}
-	);
+	it('treats a downed Master as canonical death before a later enemy defeat can report victory', () => {
+		const state = activeState(false);
+		const masterId = deterministicUuid(`${SAME_SEEDED_ATTEMPT}:master`);
+		state.combatants[masterId] = {
+			...combatant(masterId, 'party', 0, true),
+			combatantKind: 'master'
+		};
+
+		const finalized = finalizeReadinessCombatOutcome({ state });
+
+		expect(finalized.result.outcome).toBe('death');
+		expect(finalized.result.claims).toContainEqual(
+			expect.objectContaining({ claimType: 'attempt-outcome', outcome: 'death' })
+		);
+	});
+
+	it('emits a historical readiness-v1 result from the persisted attempt binding', () => {
+		const finalized = finalizeReadinessCombatOutcome({
+			state: activeState(false),
+			combatModeBinding: {
+				modeId: 'agent-readiness-v1',
+				rulesVersion: 'agent-readiness-rules-v1',
+				contentHash: COMBAT_CONTENT_BINDING.contentHash
+			}
+		});
+
+		expect(finalized.result).toMatchObject({
+			modeId: 'agent-readiness-v1',
+			rulesVersion: 'agent-readiness-rules-v1',
+			contentHash: COMBAT_CONTENT_BINDING.contentHash
+		});
+	});
+	it.each([
+		'victory',
+		'extraction',
+		'retreat',
+		'party-downed',
+		'death',
+		'deadline',
+		'safety-stop'
+	] as const)('emits a strict common result for %s in both combat modes', (outcome) => {
+		const legacy = emit('legacy-auto-v1', outcome, outcome === 'party-downed');
+		const readiness = emit('agent-readiness-v1', outcome, outcome === 'party-downed');
+
+		expect(CombatResultSchema.parse(legacy)).toStrictEqual(legacy);
+		expect(CombatResultSchema.parse(readiness)).toStrictEqual(readiness);
+		expect(legacy.outcome).toBe(outcome);
+		expect(readiness.outcome).toBe(outcome);
+		expect(legacy.claims.map((claim) => claim.claimType)).toStrictEqual(
+			readiness.claims.map((claim) => claim.claimType)
+		);
+		expect(legacy.safetyStop).toStrictEqual(outcome === 'safety-stop' ? safetyStop : null);
+		expect(
+			CombatResultSchema.safeParse({ ...legacy, rulesVersion: 'combat-rules-v1' }).success
+		).toBe(false);
+		expect(
+			CombatResultSchema.safeParse({ ...readiness, rulesVersion: 'legacy-auto-rules-v1' }).success
+		).toBe(false);
+	});
 
 	it('emits every owner claim deterministically and preserves practice on retreat', () => {
 		const first = emit('agent-readiness-v1', 'retreat');
@@ -373,8 +432,11 @@ describe('common combat outcomes', () => {
 
 			const withoutEngineEvidence = emitCombatOutcome({
 				attemptId: ID.attempt,
-				modeId: 'agent-readiness-v1',
-				rulesVersion: COMBAT_RULES_V1.rulesVersion,
+				combatModeBinding: {
+					modeId: 'agent-readiness-v1',
+					rulesVersion: AGENT_READINESS_RULES_V2_VERSION,
+					contentHash: AGENT_READINESS_CONTENT_BINDING_V2.contentHash
+				},
 				endedAtTick: 8,
 				termination: { kind: outcome },
 				partyHeroIds: [ID.hero],

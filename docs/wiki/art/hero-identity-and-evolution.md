@@ -347,6 +347,7 @@ This page authorizes hero visual planning, candidate production, and maintenance
 hero catalog and its derived lazy runtime visuals. Player summon selection may consume the approved
 catalog through the character package, but combat rules, policies, replay formats, affinity tables,
 and unrelated shared catalogs remain outside this visual-production decision. The `character-v2`
-and `engine-v25` capability profile already supplies typed four-attribute and hidden-learning data.
+and `engine-v25`/`engine-v26` capability profiles already supply typed four-attribute and
+hidden-learning data.
 Adoption of those fields by paired visual manifests remains future, versioned integration; until
 then, art records must not invent missing capability data.

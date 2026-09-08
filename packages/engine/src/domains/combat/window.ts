@@ -18,7 +18,7 @@ import { COMBAT_CONTENT_BINDING } from '@summonlab/content';
 import { deterministicUuid, hashCanonical } from '../../hash.js';
 import { resolveEntityRelativePosition } from './geometry.js';
 import { authorCombatLegalActions, canonicalCombatLegalActionTemplates } from './legal-actions.js';
-import { finalizeReadinessCombatOutcome } from './outcome.js';
+import { finalizeReadinessCombatOutcome, type EmitCombatOutcomeInput } from './outcome.js';
 import { advanceUntilReadyCohort } from './readiness.js';
 
 type CombatTerrain = CombatWindowSnapshot['terrain'];
@@ -333,7 +333,10 @@ function currentLegalActionTemplates(
 		const fallbackOptions = action.fallbackOptions.filter((fallback) =>
 			targetIsCurrent(fallback.target, action.actionKind)
 		);
-		if (targetContract && fallbackOptions.length > 0) {
+		const requiresFallback =
+			action.conflictPolicy.invalidTarget === 'selected-fallback' ||
+			action.conflictPolicy.occupiedDestination === 'selected-fallback';
+		if (targetContract && (!requiresFallback || fallbackOptions.length > 0)) {
 			current.push({ ...action, targetContract, fallbackOptions });
 		}
 	}
@@ -503,7 +506,10 @@ export function assembleCombatDecisionWindow(
 	return deepFreeze(advance);
 }
 
-function invalidDecisionContextResult(state: ReadinessCombatStateV1): CombatAdvance {
+function invalidDecisionContextResult(
+	state: ReadinessCombatStateV1,
+	combatModeBinding?: EmitCombatOutcomeInput['combatModeBinding']
+): CombatAdvance {
 	const safetyStop = {
 		safetyStopVersion: 'combat-safety-stop-v1' as const,
 		reason: 'invalid-state' as const,
@@ -512,17 +518,19 @@ function invalidDecisionContextResult(state: ReadinessCombatStateV1): CombatAdva
 	};
 	const { result } = finalizeReadinessCombatOutcome({
 		state,
-		safetyStop
+		safetyStop,
+		combatModeBinding
 	});
 	return deepFreeze(CombatAdvanceSchema.parse({ kind: 'combat-result', result }));
 }
 
 export function advanceUntilDecision(
 	stateInput: ReadinessCombatStateV1,
-	rulesInput: CombatRulesV1
+	rulesInput: CombatRulesV1,
+	combatModeBinding?: EmitCombatOutcomeInput['combatModeBinding']
 ): CombatAdvance {
 	const rules = CombatRulesV1Schema.parse(rulesInput);
-	const advanced = advanceUntilReadyCohort(stateInput, rules);
+	const advanced = advanceUntilReadyCohort(stateInput, rules, combatModeBinding);
 	if (advanced.kind === 'combat-result') {
 		return deepFreeze(
 			CombatAdvanceSchema.parse({ kind: 'combat-result', result: advanced.result })
@@ -539,7 +547,7 @@ export function advanceUntilDecision(
 			);
 		})
 	) {
-		return invalidDecisionContextResult(advanced.state);
+		return invalidDecisionContextResult(advanced.state, combatModeBinding);
 	}
 	return assembleCombatDecisionWindow({
 		state: advanced.state,

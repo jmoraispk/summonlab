@@ -156,10 +156,14 @@ location, witness, health, equipment, and permanence evidence must remain inspec
 
 Tower missions advance the campaign. Portal missions gather materials and expose optional worlds with different hazards, resources, cultures, and temporary rules.
 
-The current `engine-v25` release mode is operator-owned `legacy-auto-v1`: the player advances its
+The current `engine-v26` beta default is operator-owned `legacy-auto-v1`: the player advances its
 automatic combat only with **Continue battle** and cannot submit actions, targets, policies, or a
-mode selection. Per-hero tactical choice, readiness windows, and collision arbitration below are
-targets for the unshipped `agent-readiness-v1` plan.
+mode selection. `agent-readiness-v1` V2 is implemented for operator evaluation with per-hero tactical
+choice, one-tick frozen cohorts, deterministic collision arbitration, and executable damaging
+hostile actions.
+It is not player-selectable or promoted as the release default. Its checked V2 qualification
+artifact passes the mechanical operator-evaluation gates; broader hostile tactics, full product
+balance, and owner promotion remain outstanding.
 
 ### Master loop
 

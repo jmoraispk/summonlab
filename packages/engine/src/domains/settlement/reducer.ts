@@ -1013,7 +1013,7 @@ function reduceSettlementEvent(
 	}
 	if (event.eventType === 'hero.item.equipped') {
 		const payload = ItemEquippedPayloadSchema.parse(event.payload);
-		if (state.schemaVersion === 24 || state.schemaVersion === 25) {
+		if (state.schemaVersion === 24 || state.schemaVersion === 25 || state.schemaVersion === 26) {
 			const equipped = equipEquipmentItem(state, {
 				heroId: payload.heroId,
 				itemId: payload.itemId,
@@ -1049,8 +1049,11 @@ function reduceSettlementEvent(
 		});
 	}
 	if (event.eventType === 'hero.attribute.allocated') {
-		if (state.schemaVersion !== 25) {
-			throw new ReplayIntegrityError('Attribute allocation requires engine-v25', event.sequence);
+		if (state.schemaVersion !== 25 && state.schemaVersion !== 26) {
+			throw new ReplayIntegrityError(
+				'Attribute allocation requires engine-v25 or engine-v26',
+				event.sequence
+			);
 		}
 		const payload = AttributeAllocatedPayloadSchema.parse(event.payload);
 		const hero = state.heroes[payload.heroId];
@@ -1375,7 +1378,10 @@ function reduceSettlementEvent(
 			});
 		}
 		if (state.schemaVersion === 26) {
-			throw new ReplayIntegrityError('Engine v26 simulation reducer is not yet supported', event.sequence);
+			throw new ReplayIntegrityError(
+				'Engine v26 simulation reducer is not yet supported',
+				event.sequence
+			);
 		}
 		const payload = SimulationAdvancedPayloadSchema.parse(event.payload);
 		const heroes = { ...state.heroes };

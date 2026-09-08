@@ -2,7 +2,8 @@ import { beforeAll, describe, expect, it } from 'vitest';
 
 import {
 	BASIC_SWORD_STRIKE,
-	AGENT_READINESS_RULES_V1,
+	AGENT_READINESS_CONTENT_BINDING_V2,
+	AGENT_READINESS_RULES_V2,
 	COMBAT_CONTENT_BINDING,
 	COMBAT_EQUIPMENT_PROFILES_BY_ID,
 	COMBAT_RULES_V1
@@ -580,7 +581,7 @@ describe('agent-readiness production fallback qualification', () => {
 		const sample = await createAgentReadinessEvidence({
 			trialsPerBenchmark: 1,
 			encountersPerArchetype: 1,
-			workerCount: 1
+			workerCount: 4
 		});
 		const aggregateDamage = sample.encounters.reduce(
 			(total, encounter) => total + encounter.damageApplied,
@@ -598,6 +599,9 @@ describe('agent-readiness production fallback qualification', () => {
 			true
 		);
 		expect(aggregateDamage).toBeGreaterThan(aggregateRecovery);
+		expect(
+			sample.encounters.reduce((total, encounter) => total + encounter.partyDamageReceived, 0)
+		).toBeGreaterThan(0);
 		expect(sample.gates.passiveRegenerationStalemates).toMatchObject({
 			status: 'passed',
 			count: 0,
@@ -605,7 +609,7 @@ describe('agent-readiness production fallback qualification', () => {
 			aggregatePassiveHealthRecovered: aggregateRecovery,
 			recoveryObservedEncounters: expect.any(Number)
 		});
-	});
+	}, 180_000);
 
 	it('rejects recovery-observed no-progress and overpowering recovery evidence', () => {
 		expect(
@@ -682,13 +686,13 @@ describe('agent-readiness qualification evidence', () => {
 			'13b2b27b683e4b0023a2a2c2ee4926127437db3bbf1ace91776def69ef286eff'
 		);
 		expect(evidence.bindings.readinessRules).toStrictEqual({
-			rulesVersion: 'agent-readiness-rules-v1',
-			rulesHash: hashCanonical(AGENT_READINESS_RULES_V1)
+			rulesVersion: 'agent-readiness-rules-v2',
+			rulesHash: hashCanonical(AGENT_READINESS_RULES_V2)
 		});
 		expect(evidence.bindings.combatContent).toStrictEqual({
-			bindingVersion: COMBAT_CONTENT_BINDING.bindingVersion,
-			contentHash: COMBAT_CONTENT_BINDING.contentHash,
-			components: COMBAT_CONTENT_BINDING.components
+			bindingVersion: AGENT_READINESS_CONTENT_BINDING_V2.bindingVersion,
+			contentHash: AGENT_READINESS_CONTENT_BINDING_V2.contentHash,
+			components: AGENT_READINESS_CONTENT_BINDING_V2.components
 		});
 		expect(evidence.benchmarks.actionCadence.intervalTicks).toMatchObject({
 			p50: expect.any(Number),

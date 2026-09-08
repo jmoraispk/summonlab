@@ -53,6 +53,7 @@ export const ENGINE_PUBLIC_RUNTIME_EXPORTS = [
 	'assembleHeroDecisionPacket',
 	'attributeScaledMagnitude',
 	'authorizeReadinessTerminalDirective',
+	'buildDeterministicCombatFallbackIntent',
 	'canceledScheduledEventIdsFromEvent',
 	'canonicalJson',
 	'capabilityProfileFromLegacyMind',

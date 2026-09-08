@@ -6,10 +6,11 @@ import { isMainThread, parentPort, Worker, workerData } from 'node:worker_thread
 
 import {
 	BASIC_SWORD_STRIKE,
-	AGENT_READINESS_RULES_V1,
+	AGENT_READINESS_RULES_V2,
 	COMBAT_CONTENT_BINDING,
 	COMBAT_EQUIPMENT_PROFILES_BY_ID,
 	COMBAT_RULES_V1,
+	loadAgentReadinessContentBindingV2,
 	loadCombatContentBinding
 } from '../packages/content/src/index.js';
 import {
@@ -1562,7 +1563,7 @@ const READINESS_SIMULATION_PROFILE_V1 = deepFreeze({
 	actorPolicy: {
 		hero: 'first-legal-attack-against-first-active-authored-target',
 		master: 'first-legal-guard',
-		monster: 'first-legal-guard'
+		monster: 'first-legal-attack-against-first-active-authored-target'
 	},
 	levelFixture: {
 		attributes: 'all-four-at-level-except-minimum-equipped-starter-load',
@@ -1640,7 +1641,7 @@ function readinessBatch(
 	if (advanced.kind !== 'decision-window') throw new Error('Readiness benchmark expected a window');
 	const choices = advanced.views.map((view): CombatActionIntent => {
 		const preferredKind =
-			policy === 'encounter' && view.self.combatantKind === 'hero' ? 'attack' : 'guard';
+			policy === 'encounter' && view.self.combatantKind !== 'master' ? 'attack' : 'guard';
 		const action =
 			view.legalActions.find((candidate) => candidate.actionKind === preferredKind) ??
 			view.legalActions[0]!;
@@ -1775,6 +1776,7 @@ function missionState(
 function runEncounter(initial: ReadinessCombatStateV1, key: string) {
 	let state = initial;
 	let damageApplied = 0;
+	let partyDamageReceived = 0;
 	let passiveHealthRecovered = 0;
 	let recoveryObserved = false;
 	for (let windowOrdinal = 0; ; windowOrdinal += 1) {
@@ -1799,7 +1801,7 @@ function runEncounter(initial: ReadinessCombatStateV1, key: string) {
 		if (advanced.kind === 'combat-result') {
 			const noProgressStop = advanced.result.safetyStop?.reason === 'no-progress-cycles';
 			const safetyStop = advanced.result.safetyStop !== null;
-			const completed = advanced.result.outcome === 'victory';
+			const completed = !safetyStop;
 			return {
 				completed,
 				ticks: advanced.result.endedAtTick,
@@ -1808,6 +1810,7 @@ function runEncounter(initial: ReadinessCombatStateV1, key: string) {
 				safetyStop,
 				noProgressStop,
 				damageApplied,
+				partyDamageReceived,
 				passiveHealthRecovered,
 				recoveryObserved,
 				regenerationStalemate: recoveryObserved && (!completed || safetyStop || noProgressStop)
@@ -1818,7 +1821,7 @@ function runEncounter(initial: ReadinessCombatStateV1, key: string) {
 			readinessBatch(state, `${key}:${windowOrdinal}`, 'encounter', advanced),
 			COMBAT_RULES_V1
 		);
-		damageApplied += resolution.events.reduce(
+		const windowDamage = resolution.events.reduce(
 			(total, event) =>
 				total +
 				event.effects.reduce(
@@ -1828,6 +1831,20 @@ function runEncounter(initial: ReadinessCombatStateV1, key: string) {
 							: effectTotal,
 					0
 				),
+			0
+		);
+		damageApplied += windowDamage;
+		partyDamageReceived += resolution.events.reduce(
+			(total, event) =>
+				total +
+				event.effects.reduce((effectTotal, effect) => {
+					if (effect.kind !== 'resource' || effect.resource !== 'health' || effect.delta >= 0) {
+						return effectTotal;
+					}
+					return state.combatants[effect.combatantId]?.teamId === 'party'
+						? effectTotal - effect.delta
+						: effectTotal;
+				}, 0),
 			0
 		);
 		state = resolution.state;
@@ -2149,7 +2166,7 @@ async function buildAgentReadinessEvidence(options: ReadinessEvidenceOptions = {
 	) {
 		throw new Error('Readiness evidence counts require positive trials and one to eight workers');
 	}
-	const verifiedCombatContent = await loadCombatContentBinding();
+	const verifiedCombatContent = await loadAgentReadinessContentBindingV2();
 	const replayOne = replayAgentReadinessVectorV26();
 	const replayTwo = replayAgentReadinessVectorV26();
 	diagnostic('replays');
@@ -2218,6 +2235,10 @@ async function buildAgentReadinessEvidence(options: ReadinessEvidenceOptions = {
 			safetyStops: outcomes.filter((outcome) => outcome.safetyStop).length,
 			noProgressStops: outcomes.filter((outcome) => outcome.noProgressStop).length,
 			damageApplied: outcomes.reduce((total, outcome) => total + outcome.damageApplied, 0),
+			partyDamageReceived: outcomes.reduce(
+				(total, outcome) => total + outcome.partyDamageReceived,
+				0
+			),
 			passiveHealthRecovered: outcomes.reduce(
 				(total, outcome) => total + outcome.passiveHealthRecovered,
 				0
@@ -2266,8 +2287,8 @@ async function buildAgentReadinessEvidence(options: ReadinessEvidenceOptions = {
 				rulesHash: hashCanonical(COMBAT_RULES_V1)
 			},
 			readinessRules: {
-				rulesVersion: AGENT_READINESS_RULES_V1.rulesVersion,
-				rulesHash: hashCanonical(AGENT_READINESS_RULES_V1)
+				rulesVersion: AGENT_READINESS_RULES_V2.rulesVersion,
+				rulesHash: hashCanonical(AGENT_READINESS_RULES_V2)
 			},
 			combatContent: {
 				bindingVersion: verifiedCombatContent.bindingVersion,

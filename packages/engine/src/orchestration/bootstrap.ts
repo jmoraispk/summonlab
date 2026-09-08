@@ -29,7 +29,12 @@ import {
 	type LearningDomain,
 	type RewardDelta
 } from '@summonlab/contracts';
-import { COMBAT_RULES_V1, IRON_MOON_PACKAGE, TOWER_FLOOR_01_PACKAGE } from '@summonlab/content';
+import {
+	BASIC_SWORD_STRIKE,
+	COMBAT_RULES_V1,
+	IRON_MOON_PACKAGE,
+	TOWER_FLOOR_01_PACKAGE
+} from '@summonlab/content';
 
 import { verifiedMissionBinding, verifiedSettlementContent } from '../core/content-bindings.js';
 import { emptyMetadata, systemSource } from '../core/event-metadata.js';
@@ -454,6 +459,22 @@ export function createBootstrapEngine(input: BootstrapEngineInput): BootstrapEng
 								: {}),
 							skills: { swordFighting: { rank: 0, experience: 0 } }
 						},
+						...(currentCombatEngineState
+							? {
+									combatTraining: {
+										schemaVersion: 'hero-combat-training-v1',
+										proficiencyTags: [],
+										learnedSkills: [
+											{
+												schemaVersion: 'learned-combat-skill-v1',
+												skillId: BASIC_SWORD_STRIKE.skillId,
+												mastery: 0,
+												trainedDeliveryTags: ['one-handed-blade']
+											}
+										]
+									}
+								}
+							: {}),
 						equipment: equipmentState
 							? {
 									mainHand: hero.bladeId,

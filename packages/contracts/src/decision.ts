@@ -550,7 +550,9 @@ export const DecisionJobStatusSchema = z.enum([
 export const DecisionJobWindowBindingSchema = z
 	.object({
 		windowId: EntityIdSchema,
-		actorViewHash: StateHashSchema
+		actorViewHash: StateHashSchema,
+		attemptId: EntityIdSchema,
+		tick: z.number().int().nonnegative()
 	})
 	.strict();
 
@@ -559,6 +561,8 @@ export const CombatDecisionJobResultBindingSchema = z
 		heroId: EntityIdSchema,
 		windowId: EntityIdSchema,
 		actorViewHash: StateHashSchema,
+		attemptId: EntityIdSchema,
+		tick: z.number().int().nonnegative(),
 		snapshotHash: StateHashSchema,
 		legalActionHash: StateHashSchema,
 		result: CombatActionIntentSchema
@@ -569,6 +573,8 @@ export const CombatDecisionJobResultBindingSchema = z
 			binding.result.actorId !== binding.heroId ||
 			binding.result.windowId !== binding.windowId ||
 			binding.result.actorViewHash !== binding.actorViewHash ||
+			binding.result.attemptId !== binding.attemptId ||
+			binding.result.tick !== binding.tick ||
 			binding.result.snapshotHash !== binding.snapshotHash ||
 			binding.result.legalActionSetHash !== binding.legalActionHash
 		) {
@@ -762,6 +768,8 @@ export const CombatDecisionJobRecordV3Schema = z
 		decisionKind: z.literal('combat-action'),
 		windowId: EntityIdSchema,
 		actorViewHash: StateHashSchema,
+		attemptId: EntityIdSchema,
+		tick: z.number().int().nonnegative(),
 		expectedRunVersion: z.number().int().nonnegative(),
 		expectedEventCursor: z.number().int().positive(),
 		snapshotHash: StateHashSchema,
@@ -799,6 +807,8 @@ export const CombatDecisionJobRecordV3Schema = z
 				heroId: job.heroId,
 				windowId: job.windowId,
 				actorViewHash: job.actorViewHash,
+				attemptId: job.attemptId,
+				tick: job.tick,
 				snapshotHash: job.snapshotHash,
 				legalActionHash: job.legalActionHash,
 				result

@@ -30,6 +30,7 @@ import {
 	type EngineGameStateV1,
 	type FirstEmberFacility
 } from '@summonlab/contracts';
+import { COMBAT_CONTENT_BINDING } from '@summonlab/content';
 import { describe, expect, expectTypeOf, it } from 'vitest';
 
 import {
@@ -4068,8 +4069,11 @@ describe('deterministic engine', () => {
 		const attemptId = '63000000-0000-4000-8000-000000000001';
 		const authority = {
 			attemptId,
-			modeId: 'legacy-auto-v1' as const,
-			rulesVersion: 'legacy-auto-rules-v1',
+			combatModeBinding: {
+				modeId: 'legacy-auto-v1' as const,
+				rulesVersion: 'legacy-auto-rules-v1',
+				contentHash: COMBAT_CONTENT_BINDING.contentHash
+			},
 			endedAtTick: 4,
 			termination: { kind: 'retreat' as const },
 			partyHeroIds: [],
@@ -4088,7 +4092,11 @@ describe('deterministic engine', () => {
 				progression: createCombatProgressionClaimProjection()
 			},
 			result,
-			authority
+			authority,
+			{
+				...authority.combatModeBinding,
+				boundAt: '2000-01-01T00:00:00.000Z'
+			}
 		);
 
 		expect(applied.mission.attempts[attemptId]).toMatchObject({

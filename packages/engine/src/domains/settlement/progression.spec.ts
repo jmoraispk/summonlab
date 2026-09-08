@@ -5,9 +5,11 @@ import {
 	EngineCommandSchema,
 	EngineGameStateV24Schema,
 	EngineGameStateV25Schema,
+	EngineGameStateV26Schema,
 	type ActionSource,
 	type EngineCommand,
-	type EngineGameStateV25
+	type EngineGameStateV25,
+	type EngineGameStateV26
 } from '@summonlab/contracts';
 import { COMBAT_RULES_V1 } from '@summonlab/content';
 import { describe, expect, it } from 'vitest';
@@ -19,6 +21,7 @@ import { applyCommand } from '../../orchestration/apply-command.js';
 import { createBootstrapEngine } from '../../orchestration/bootstrap.js';
 import { legalActions } from '../../orchestration/legal-actions.js';
 import { attributePointsForLevelTransition } from './routines.js';
+import { createEquipmentItem } from './equipment.js';
 
 function manualSource(): ActionSource {
 	return {
@@ -35,7 +38,7 @@ function systemSource(): ActionSource {
 }
 
 function command(
-	state: EngineGameStateV25,
+	state: EngineGameStateV25 | EngineGameStateV26,
 	actorId: string,
 	key: string,
 	body: object,
@@ -92,6 +95,57 @@ async function capabilityState(key: string): Promise<{
 						...hero.capabilityProfile,
 						attributes: { might: 20, vitality: 30, agility: 40, spirit: 50 }
 					}
+				}
+			}
+		})
+	};
+}
+
+async function readinessFixtureForEquipmentCommand(): Promise<{
+	state: EngineGameStateV26;
+	heroId: string;
+	torso: ReturnType<typeof createEquipmentItem>;
+}> {
+	const legacyDraft = listSummonableHeroDrafts()[0];
+	if (!legacyDraft) throw new Error('Expected an approved summonable draft');
+	const draft = await generateSummonableCharacterDraft(legacyDraft.recipe, {
+		capabilityEntropy: '5'.repeat(64)
+	});
+	const initial = createBootstrapEngine({
+		runId: deterministicUuid('v26-equipment-command:run'),
+		seed: 'v26-equipment-command:seed',
+		draft,
+		combatMode: 'agent-readiness-v1'
+	}).snapshot.state;
+	if (initial.schemaVersion !== 26) throw new Error('Expected engine-v26 state');
+	const heroId = draft.manifest.characterId;
+	const torso = createEquipmentItem({
+		itemId: deterministicUuid('v26-equipment-command:torso'),
+		definitionId: 'equipment-iron-heavy-armour-torso',
+		ownerId: heroId,
+		equippedById: null,
+		craftsmanship: { label: 'standard', bonus: 0 },
+		origin: {
+			kind: 'dropped',
+			missionId: 'tower-floor-01',
+			rewardId: 'v26-equipment-command-torso',
+			sourceId: 'v26-equipment-command'
+		}
+	});
+	return {
+		heroId,
+		torso,
+		state: EngineGameStateV26Schema.parse({
+			...initial,
+			items: { ...initial.items, [torso.itemId]: torso },
+			heroes: {
+				...initial.heroes,
+				[heroId]: {
+					...initial.heroes[heroId]!,
+					location: 'training-ground',
+					locationNodeId: 'training-ring',
+					firstArrivalCompleted: true,
+					destination: 'training-ground'
 				}
 			}
 		})
@@ -386,6 +440,172 @@ describe('engine-v25 intrinsic attribute progression', () => {
 				attribute: 'dexterity'
 			}).success
 		).toBe(false);
+	});
+});
+
+describe('engine-v26 intrinsic attribute progression', () => {
+	it('preserves the V25 attribute-growth receipt chain validation in both versions', async () => {
+		const v25 = await capabilityState('bad-receipt-chain-v25');
+		const v25Hero = v25.state.heroes[v25.heroId]!;
+		const badReceipt = {
+			receiptId: deterministicUuid('bad-receipt-chain:receipt'),
+			heroId: v25.heroId,
+			attribute: 'might' as const,
+			beforeIntrinsicValue: v25Hero.capabilityProfile.attributes.might + 1,
+			afterIntrinsicValue: v25Hero.capabilityProfile.attributes.might + 2,
+			spentPoints: 1,
+			sourceLevel: 2,
+			rulesVersion: 'combat-rules-v1' as const,
+			commandId: deterministicUuid('bad-receipt-chain:command'),
+			gameTime: v25.state.simulatedAt
+		};
+		expect(
+			EngineGameStateV25Schema.safeParse({
+				...v25.state,
+				heroes: {
+					...v25.state.heroes,
+					[v25.heroId]: {
+						...v25Hero,
+						progression: { ...v25Hero.progression, attributeGrowthReceipts: [badReceipt] }
+					}
+				}
+			}).success
+		).toBe(false);
+
+		const legacyDraft = listSummonableHeroDrafts()[0];
+		if (!legacyDraft) throw new Error('Expected an approved summonable draft');
+		const draft = await generateSummonableCharacterDraft(legacyDraft.recipe, {
+			capabilityEntropy: '4'.repeat(64)
+		});
+		const v26 = createBootstrapEngine({
+			runId: deterministicUuid('bad-receipt-chain:v26-run'),
+			seed: 'bad-receipt-chain:v26-seed',
+			draft,
+			combatMode: 'agent-readiness-v1'
+		}).snapshot.state;
+		if (v26.schemaVersion !== 26) throw new Error('Expected engine-v26 state');
+		const v26Hero = v26.heroes[draft.manifest.characterId]!;
+		expect(
+			EngineGameStateV26Schema.safeParse({
+				...v26,
+				heroes: {
+					...v26.heroes,
+					[v26Hero.heroId]: {
+						...v26Hero,
+						progression: {
+							...v26Hero.progression,
+							attributeGrowthReceipts: [
+								{ ...badReceipt, heroId: v26Hero.heroId, gameTime: v26.simulatedAt }
+							]
+						}
+					}
+				}
+			}).success
+		).toBe(false);
+	});
+
+	it('persists explicit combat training and allocates one enumerated attribute point', async () => {
+		const legacyDraft = listSummonableHeroDrafts()[0];
+		if (!legacyDraft) throw new Error('Expected an approved summonable draft');
+		const draft = await generateSummonableCharacterDraft(legacyDraft.recipe, {
+			capabilityEntropy: '7'.repeat(64)
+		});
+		const initial = createBootstrapEngine({
+			runId: deterministicUuid('progression:v26-allocation:run'),
+			seed: 'progression:v26-allocation:seed',
+			draft,
+			combatMode: 'agent-readiness-v1'
+		}).snapshot.state;
+		if (initial.schemaVersion !== 26) throw new Error('Expected engine-v26 state');
+		const heroId = draft.manifest.characterId;
+		const bootstrappedHero = initial.heroes[heroId]!;
+		expect(bootstrappedHero.combatTraining).toStrictEqual({
+			schemaVersion: 'hero-combat-training-v1',
+			proficiencyTags: [],
+			learnedSkills: [
+				{
+					schemaVersion: 'learned-combat-skill-v1',
+					skillId: 'combat-skill-basic-sword-strike',
+					mastery: 0,
+					trainedDeliveryTags: ['one-handed-blade']
+				}
+			]
+		});
+
+		const ready = EngineGameStateV26Schema.parse({
+			...initial,
+			heroes: {
+				...initial.heroes,
+				[heroId]: {
+					...bootstrappedHero,
+					progression: {
+						...bootstrappedHero.progression,
+						level: 2,
+						experience: 10,
+						unspentAttributePoints: 1
+					}
+				}
+			}
+		});
+		expect(legalActions(ready, heroId).map((action) => action.actionId)).toContain(
+			'hero.allocate.attribute.agility'
+		);
+
+		const allocated = applyCommand(
+			ready,
+			command(ready, heroId, 'v26-allocate-agility', {
+				commandType: 'hero.allocate.attribute',
+				attribute: 'agility'
+			})
+		);
+		if (allocated.state.schemaVersion !== 26) throw new Error('Expected engine-v26 state');
+		expect(allocated.state.heroes[heroId]!.progression).toMatchObject({
+			unspentAttributePoints: 0,
+			attributeGrowthReceipts: [
+				expect.objectContaining({
+					attribute: 'agility',
+					beforeIntrinsicValue: bootstrappedHero.capabilityProfile.attributes.agility,
+					afterIntrinsicValue: bootstrappedHero.capabilityProfile.attributes.agility + 1
+				})
+			]
+		});
+	});
+
+	it('enumerates and applies a V26 equipment command to its authored non-main-hand slot', async () => {
+		const fixture = await readinessFixtureForEquipmentCommand();
+		const hero = fixture.state.heroes[fixture.heroId]!;
+		const trained = EngineGameStateV26Schema.parse({
+			...fixture.state,
+			heroes: {
+				...fixture.state.heroes,
+				[fixture.heroId]: {
+					...hero,
+					capabilityProfile: {
+						...hero.capabilityProfile,
+						attributes: { ...hero.capabilityProfile.attributes, might: 45 }
+					},
+					combatTraining: {
+						...hero.combatTraining,
+						proficiencyTags: ['armour-training']
+					}
+				}
+			}
+		});
+		const actions = legalActions(trained, fixture.heroId);
+		expect(actions.map((candidate) => candidate.actionId)).toContain(
+			`hero.equip.${fixture.torso.itemId}`
+		);
+
+		const applied = applyCommand(
+			trained,
+			command(trained, fixture.heroId, 'v26-equip-torso', {
+				commandType: 'hero.equip.item',
+				itemId: fixture.torso.itemId
+			})
+		);
+		if (applied.state.schemaVersion !== 26) throw new Error('Expected engine-v26 state');
+		expect(applied.state.heroes[fixture.heroId]!.equipment.torso).toBe(fixture.torso.itemId);
+		expect(applied.state.items[fixture.torso.itemId]!.equippedById).toBe(fixture.heroId);
 	});
 });
 

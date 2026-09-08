@@ -41,10 +41,7 @@ export interface CombatClaimTransition extends Omit<CombatClaimTransitionInput, 
 	readonly checkpoint: CombatClaimTransitionCheckpoint;
 }
 
-export type V26LegacyCombatOutcomeInput = Omit<
-	EmitCombatOutcomeInput,
-	'modeId' | 'rulesVersion'
-> & {
+export type V26LegacyCombatOutcomeInput = Omit<EmitCombatOutcomeInput, 'combatModeBinding'> & {
 	readonly combatModeBinding: CombatModeBinding;
 };
 
@@ -60,8 +57,11 @@ export function adaptV26LegacyCombatOutcome(input: V26LegacyCombatOutcomeInput):
 	}
 	return emitCombatOutcome({
 		attemptId: input.attemptId,
-		modeId: binding.modeId,
-		rulesVersion: binding.rulesVersion,
+		combatModeBinding: {
+			modeId: binding.modeId,
+			rulesVersion: binding.rulesVersion,
+			contentHash: binding.contentHash
+		},
 		endedAtTick: input.endedAtTick,
 		termination: input.termination,
 		partyHeroIds: input.partyHeroIds,
@@ -82,13 +82,18 @@ export function adaptV26LegacyCombatOutcome(input: V26LegacyCombatOutcomeInput):
 export function transitionCombatResultClaims(
 	input: CombatClaimTransitionInput,
 	resultInput: CombatResult,
-	authorityInput: EmitCombatOutcomeInput
+	authorityInput: EmitCombatOutcomeInput,
+	trustedAttemptBinding: CombatModeBinding
 ): CombatClaimTransition {
 	const parsedInput = {
 		mission: parseCombatMissionClaimProjection(input.mission),
 		progression: parseCombatProgressionClaimProjection(input.progression)
 	};
-	const result = authenticateCombatResult(CombatResultSchema.parse(resultInput), authorityInput);
+	const result = authenticateCombatResult(
+		CombatResultSchema.parse(resultInput),
+		authorityInput,
+		trustedAttemptBinding
+	);
 	const missionClaims = result.claims.filter((claim) => claim.claimType !== 'skill-practice');
 	const progressionClaims = result.claims.filter((claim) => claim.claimType === 'skill-practice');
 	const beforeMissionHash = hashCanonical(parsedInput.mission);

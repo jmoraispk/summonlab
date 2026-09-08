@@ -117,7 +117,7 @@ These are reviewable content budgets, not permanent catalog limits.
 | Materials | typed drops from the three runtime species; shared Village inventory; at least one visible use or fixed exchange before shipping | full gathering, recipes, crafting quality, and economy remain deferred |
 | Monsters | three distinct races in one approved low-tier visual form each; floor-scaled combat variants; one separately approved boss treatment | all 30 visual-progression race seeds available for art production |
 | Tower | Floors 1–10; known species hunts; about three encounter patterns with monotonically scaled definitions | story envelopes, randomized geography, secrets, and full 100-floor campaign deferred |
-| Combat | shipped operator-owned `legacy-auto-v1` automatic resolution with an understandable action/result trace | `agent-readiness-v1` timing, hit, and collision formulas remain next-plan work |
+| Combat | shipped operator-owned `legacy-auto-v1` automatic resolution with an understandable action/result trace | `agent-readiness-v1` V2 is implemented and mechanically qualified for internal operator evaluation; broader hostile tactics, full product balance, and owner promotion remain |
 | Rewards | visible hunt, material, training, progression, and daily-return benefits; exact cadence remains a fixture decision | full engagement model, Advanced/Special access, milestone cadence, pity, and economy tuning documented separately |
 
 The recommended monster option is **three distinct low-tier races**, because it tests silhouette,
@@ -220,7 +220,7 @@ known species and bounded encounter sequence, then submits frozen party snapshot
 The initial resolver may be mathematical, but it must return a seeded trace containing enough
 detail to visualize and explain:
 
-- initiative and action order;
+- readiness/action order (or legacy initiative where that historical mode uses it);
 - skill and basic-action use;
 - Health and Mana changes where applicable;
 - attribute, skill, affinity, and equipment contributions;
@@ -235,9 +235,11 @@ and Mana so the milestone does not accidentally acquire a recovery subsystem.
 [ADR 0072](../../decisions/0072-four-attributes-and-operator-owned-combat-modes.md) resolves the
 attribute/resource vocabulary and release-mode authority. Remaining Living Village decisions are
 XP attribution, whether affinity participates in its resolver, typed first-clear and repeat-hunt
-rewards, material drop fields, and the safety estimator used before another encounter. Planned
-readiness timing, hit/miss, critical, and collision rules belong to the linked next plan rather than
-blocking the shipped legacy automatic mode.
+rewards, material drop fields, and the safety estimator used before another encounter. Implemented
+readiness timing, hit/miss, critical, collision rules, durable cohorts, and hostile strikes remain an
+operator-evaluation path. They do not block or replace the shipped legacy automatic default; the
+current V2 tuple passes its mechanical qualification gates, while broader hostile tactics, full
+product balance, and explicit owner promotion remain outstanding.
 
 ## Minimum contracts
 
@@ -372,7 +374,7 @@ fixtures before runtime math is final.
 | Equipment visuals | icons plus hero-compatible presentation bindings | equipment and hero manifests | choose slots and overlay strategy |
 | Tower/content | Floors 1–10 and encounter fixtures | monster/combat/reward contracts | set encounter and reward curve |
 | UI flow | three surfaces and focused states | projections and visual assets | approve navigation model |
-| Combat | versioned resolver behind fixed request/receipt | shipped legacy mode plus next-plan readiness work | tune legacy behavior without presenting readiness as live |
+| Combat | versioned resolver behind fixed request/receipt | shipped legacy default plus implemented readiness evaluation path | qualify readiness V2 without exposing a player mode selector or implying promotion |
 | Validation | catalog, link, fixture, replay, visual and accessibility gates | all manifests/contracts | declare pass/fail evidence |
 
 Three simultaneous visual agents—monster, skill-effect, and equipment—are a practical starting

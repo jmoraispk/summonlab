@@ -7,7 +7,7 @@ import {
 	type CombatRulesV1,
 	type ReadinessCombatStateV1
 } from '@summonlab/contracts';
-import { AGENT_READINESS_RULES_V1 } from '@summonlab/content';
+import { AGENT_READINESS_RULES_V2 } from '@summonlab/content';
 import type { ZodError } from 'zod';
 
 import { healthRegeneration, manaRegeneration } from './capability.js';
@@ -18,6 +18,7 @@ import {
 	recordReadinessOutcomeDamage,
 	synchronizeReadinessOutcomeEvidence
 } from './outcome.js';
+import type { EmitCombatOutcomeInput } from './outcome.js';
 
 export type ReadyCohortAdvance =
 	| Readonly<{
@@ -29,6 +30,7 @@ export type ReadyCohortAdvance =
 			kind: 'combat-result';
 			state: ReadinessCombatStateV1;
 			result: CombatResult;
+			authority: EmitCombatOutcomeInput | null;
 	  }>;
 
 export type ReadinessActionCostResult =
@@ -80,7 +82,8 @@ function readyActorIds(state: ReadinessCombatStateV1, rules: CombatRulesV1): str
 
 function safetyResult(
 	state: ReadinessCombatStateV1,
-	reason: ReadinessSafetyReason
+	reason: ReadinessSafetyReason,
+	combatModeBinding?: EmitCombatOutcomeInput['combatModeBinding']
 ): Extract<ReadyCohortAdvance, { kind: 'combat-result' }> {
 	const safetyStop = {
 		safetyStopVersion: 'combat-safety-stop-v1' as const,
@@ -90,21 +93,24 @@ function safetyResult(
 	};
 	const finalized = finalizeReadinessCombatOutcome({
 		state,
-		safetyStop
+		safetyStop,
+		combatModeBinding
 	});
 	return { kind: 'combat-result', ...finalized };
 }
 
 function ordinaryTerminalResult(
-	state: ReadinessCombatStateV1
+	state: ReadinessCombatStateV1,
+	combatModeBinding?: EmitCombatOutcomeInput['combatModeBinding']
 ): Extract<ReadyCohortAdvance, { kind: 'combat-result' }> | null {
-	const finalized = finalizeReadinessCombatIfTerminal(state);
+	const finalized = finalizeReadinessCombatIfTerminal(state, combatModeBinding);
 	return finalized ? { kind: 'combat-result', ...finalized } : null;
 }
 
 function actorContextFailureResult(
 	state: ReadinessCombatStateV1,
-	validationError: ZodError<ReadinessCombatStateV1>
+	validationError: ZodError<ReadinessCombatStateV1>,
+	combatModeBinding?: EmitCombatOutcomeInput['combatModeBinding']
 ): Extract<ReadyCohortAdvance, { kind: 'combat-result' }> {
 	const isActorContextOnlyFailure =
 		validationError.issues.length > 0 &&
@@ -113,7 +119,7 @@ function actorContextFailureResult(
 
 	// Completing the state exempts it from live actor-context requirements. Parsing inside
 	// safetyResult then proves every remaining canonical field before returning the typed stop.
-	return safetyResult({ ...state, actorContexts: {} }, 'invalid-state');
+	return safetyResult({ ...state, actorContexts: {} }, 'invalid-state', combatModeBinding);
 }
 
 function applyScheduledEffect(
@@ -231,7 +237,7 @@ function resolveDueScheduledEffects(
 }
 
 function regenerateAndAccumulate(state: ReadinessCombatStateV1, rules: CombatRulesV1): boolean {
-	const regenerationPulse = state.tick % AGENT_READINESS_RULES_V1.regenerationPulseTicks === 0;
+	const regenerationPulse = state.tick % AGENT_READINESS_RULES_V2.regenerationPulseTicks === 0;
 	for (const combatant of Object.values(state.combatants)) {
 		combatant.conditions = combatant.conditions.filter(
 			(condition) => condition.expiresAtTick === null || condition.expiresAtTick > state.tick
@@ -308,27 +314,29 @@ function regenerateAndAccumulate(state: ReadinessCombatStateV1, rules: CombatRul
  */
 export function advanceUntilReadyCohort(
 	stateInput: ReadinessCombatStateV1,
-	rulesInput: CombatRulesV1
+	rulesInput: CombatRulesV1,
+	combatModeBinding?: EmitCombatOutcomeInput['combatModeBinding']
 ): ReadyCohortAdvance {
 	const rules = CombatRulesV1Schema.parse(rulesInput);
 	const parsedInput = ReadinessCombatStateV1Schema.safeParse(stateInput);
-	if (!parsedInput.success) return actorContextFailureResult(stateInput, parsedInput.error);
+	if (!parsedInput.success)
+		return actorContextFailureResult(stateInput, parsedInput.error, combatModeBinding);
 	let state = parsedInput.data;
 	if (state.status === 'complete') {
 		if (!state.result) throw new Error('Complete readiness combat state is missing its result');
-		return { kind: 'combat-result', state, result: state.result };
+		return { kind: 'combat-result', state, result: state.result, authority: null };
 	}
 	if (!hasConsistentReadinessProjection(state, rules)) {
-		return safetyResult(state, 'invalid-state');
+		return safetyResult(state, 'invalid-state', combatModeBinding);
 	}
 
 	for (;;) {
 		const currentTickEffects = resolveDueScheduledEffects(state, rules);
 		if (currentTickEffects.kind === 'safety-stop') {
-			return safetyResult(state, currentTickEffects.reason);
+			return safetyResult(state, currentTickEffects.reason, combatModeBinding);
 		}
 		state = currentTickEffects.state;
-		const currentTerminal = ordinaryTerminalResult(state);
+		const currentTerminal = ordinaryTerminalResult(state, combatModeBinding);
 		if (currentTerminal) return currentTerminal;
 		const ready = readyActorIds(state, rules);
 		if (ready.length > 0) return { kind: 'decision-window', state, readyActorIds: ready };
@@ -338,24 +346,25 @@ export function advanceUntilReadyCohort(
 			state.scheduledEffects.length > 0;
 		if (!canProgress) {
 			if (state.safety.noProgressCycles >= rules.readiness.safety.maximumNoProgressCycles) {
-				return safetyResult(state, 'no-progress-cycles');
+				return safetyResult(state, 'no-progress-cycles', combatModeBinding);
 			}
 			const noProgressCycles = safeAdd(state.safety.noProgressCycles, 1);
-			if (noProgressCycles === null) return safetyResult(state, 'arithmetic-overflow');
+			if (noProgressCycles === null)
+				return safetyResult(state, 'arithmetic-overflow', combatModeBinding);
 			state.safety.noProgressCycles = noProgressCycles;
 			if (state.safety.noProgressCycles >= rules.readiness.safety.maximumNoProgressCycles) {
-				return safetyResult(state, 'no-progress-cycles');
+				return safetyResult(state, 'no-progress-cycles', combatModeBinding);
 			}
 			continue;
 		}
 
 		if (state.safety.ticksAdvanced >= rules.readiness.safety.maximumTicksAdvanced) {
-			return safetyResult(state, 'total-ticks');
+			return safetyResult(state, 'total-ticks', combatModeBinding);
 		}
 		const nextTick = safeAdd(state.tick, 1);
 		const nextTicksAdvanced = safeAdd(state.safety.ticksAdvanced, 1);
 		if (nextTick === null || nextTicksAdvanced === null) {
-			return safetyResult(state, 'arithmetic-overflow');
+			return safetyResult(state, 'arithmetic-overflow', combatModeBinding);
 		}
 		const beforeTick = state;
 		let candidate = ReadinessCombatStateV1Schema.parse(state);
@@ -365,17 +374,17 @@ export function advanceUntilReadyCohort(
 
 		const scheduled = resolveDueScheduledEffects(candidate, rules);
 		if (scheduled.kind === 'safety-stop') {
-			return safetyResult(beforeTick, scheduled.reason);
+			return safetyResult(beforeTick, scheduled.reason, combatModeBinding);
 		}
 		candidate = scheduled.state;
-		const advancedTerminal = ordinaryTerminalResult(candidate);
+		const advancedTerminal = ordinaryTerminalResult(candidate, combatModeBinding);
 		if (advancedTerminal) return advancedTerminal;
 		if (!regenerateAndAccumulate(candidate, rules)) {
-			return safetyResult(beforeTick, 'arithmetic-overflow');
+			return safetyResult(beforeTick, 'arithmetic-overflow', combatModeBinding);
 		}
 		const parsedCandidate = ReadinessCombatStateV1Schema.safeParse(candidate);
 		if (!parsedCandidate.success || !hasConsistentReadinessProjection(candidate, rules)) {
-			return safetyResult(beforeTick, 'invalid-state');
+			return safetyResult(beforeTick, 'invalid-state', combatModeBinding);
 		}
 		state = parsedCandidate.data;
 	}
@@ -391,7 +400,7 @@ export function applyReadinessActionCost(
 	const state = ReadinessCombatStateV1Schema.parse(stateInput);
 	const terminalResult = state.result;
 	if (state.status === 'complete' && terminalResult !== null) {
-		return { kind: 'combat-result', state, result: terminalResult };
+		return { kind: 'combat-result', state, result: terminalResult, authority: null };
 	}
 	const rules = CombatRulesV1Schema.parse(rulesInput);
 	const action = CombatLegalActionSchema.parse(actionInput);

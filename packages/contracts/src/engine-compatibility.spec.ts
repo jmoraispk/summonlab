@@ -265,6 +265,29 @@ function v25StateFromV24Fixture() {
 	};
 }
 
+function v26HeroesFromV25Fixture(heroes: ReturnType<typeof v25StateFromV24Fixture>['heroes']) {
+	return Object.fromEntries(
+		Object.entries(heroes as Record<string, Record<string, unknown>>).map(([heroId, hero]) => [
+			heroId,
+			{
+				...hero,
+				combatTraining: {
+					schemaVersion: 'hero-combat-training-v1',
+					proficiencyTags: [],
+					learnedSkills: [
+						{
+							schemaVersion: 'learned-combat-skill-v1',
+							skillId: 'combat-skill-basic-sword-strike',
+							mastery: 0,
+							trainedDeliveryTags: ['one-handed-blade']
+						}
+					]
+				}
+			}
+		])
+	);
+}
+
 function v26ReadinessStateFromV24Fixture() {
 	const v25 = v25StateFromV24Fixture();
 	const attempt = v25.mission.attempt;
@@ -355,6 +378,7 @@ function v26ReadinessStateFromV24Fixture() {
 		...v25,
 		schemaVersion: 26,
 		contentVersion: 'engine-v26',
+		heroes: v26HeroesFromV25Fixture(v25.heroes),
 		mission: {
 			...v25.mission,
 			attempt: {
@@ -419,6 +443,8 @@ describe('engine contracts compatibility', () => {
 	it('adds v25 public schema coverage without changing the frozen v24 boundary', () => {
 		expect(ENGINE_CONTRACT_RUNTIME_EXPORTS).toContain('EngineGameStateV24Schema');
 		expect(ENGINE_CONTRACT_RUNTIME_EXPORTS).toContain('EngineGameStateV25Schema');
+		expect(ENGINE_CONTRACT_RUNTIME_EXPORTS).toContain('EngineHeroStateV26Schema');
+		expect(ENGINE_CONTRACT_RUNTIME_EXPORTS).toContain('HeroCombatTrainingV1Schema');
 		expect(
 			EngineGameStateSchema.parse(ENGINE_COMPATIBILITY_STATE_FIXTURES.at(-1)!).schemaVersion
 		).toBe(24);
@@ -501,6 +527,7 @@ describe('engine contracts compatibility', () => {
 			...v25,
 			schemaVersion: 26,
 			contentVersion: 'engine-v26',
+			heroes: v26HeroesFromV25Fixture(v25.heroes),
 			mission: {
 				...v25.mission,
 				attempt: legacyAttempt

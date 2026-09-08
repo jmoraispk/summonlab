@@ -454,7 +454,7 @@ function masterSettlementActions(
 function heroSettlementActions(state: EngineGameStateModern, actorId: string): LegalAction[] {
 	const hero = state.heroes[actorId];
 	let allocationActions: LegalAction[] = [];
-	if (state.schemaVersion === 25) {
+	if (state.schemaVersion === 25 || state.schemaVersion === 26) {
 		const capabilityHero = state.heroes[actorId];
 		if (
 			capabilityHero?.lifeState === 'active' &&

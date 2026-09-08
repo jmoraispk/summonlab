@@ -1,95 +1,38 @@
 import {
-	AttributeModifierSchema,
 	CharacterCapabilityProfileV1Schema,
 	LearningContextSchema,
 	LearningEvidenceSchema,
 	LearningGainReceiptSchema,
 	RegenerationContextSchema,
-	ResistanceGrantReceiptSchema,
-	type AttributeModifier,
-	type AttributeModifierScope,
 	type CharacterCapabilityProfileV1,
 	type CombatAttributes,
 	type CombatRulesV1,
 	type DamageChannel,
-	type DamageTag,
 	type LearningContext,
 	type LearningEvidence,
 	type LearningGainReceipt,
-	type RegenerationContext,
-	type ResistanceGrantReceipt
+	type RegenerationContext
 } from '@summonlab/contracts';
 
-export { intrinsicAttributes, maximumHealth, maximumMana } from '../../core/capability.js';
+import { divideHalfUp, scaleByBasisPoints } from '../../core/capability.js';
+
+export {
+	effectiveAttribute,
+	intrinsicAttributes,
+	maximumHealth,
+	maximumMana,
+	namedResistanceReduction
+} from '../../core/capability.js';
 
 const BASIS_POINTS = 10_000;
-
-const SCOPE_ATTRIBUTE = {
-	'physical-damage': 'might',
-	'magical-damage': 'spirit',
-	'maximum-health': 'vitality',
-	'health-regeneration': 'vitality',
-	'maximum-mana': 'spirit',
-	'mana-regeneration': 'spirit',
-	'equipment-load': 'might',
-	readiness: 'agility',
-	movement: 'agility',
-	evasion: 'agility'
-} as const satisfies Readonly<Record<AttributeModifierScope, keyof CombatAttributes>>;
 
 function assertNonnegativeInteger(value: number, label: string): void {
 	if (!Number.isInteger(value) || value < 0)
 		throw new Error(`${label} must be a nonnegative integer`);
 }
 
-function clamp(value: number, minimum: number, maximum: number): number {
-	return Math.min(maximum, Math.max(minimum, value));
-}
-
-function divideHalfUp(numerator: bigint, denominator: bigint): number {
-	return Number((numerator + denominator / 2n) / denominator);
-}
-
-function scaleByBasisPoints(value: number, basisPoints: number): number {
-	assertNonnegativeInteger(value, 'Basis-point value');
-	assertNonnegativeInteger(basisPoints, 'Basis-point factor');
-	return divideHalfUp(BigInt(value) * BigInt(basisPoints), BigInt(BASIS_POINTS));
-}
-
 function interpolateFactor(score: number, minimum: number, maximum: number): number {
 	return minimum + divideHalfUp(BigInt(score) * BigInt(maximum - minimum), 100n);
-}
-
-export function effectiveAttribute(
-	intrinsic: number,
-	modifierInputs: readonly AttributeModifier[],
-	scope: AttributeModifierScope,
-	rules: CombatRulesV1
-): number {
-	assertNonnegativeInteger(intrinsic, 'Intrinsic attribute');
-	const attribute = SCOPE_ATTRIBUTE[scope];
-	const modifiers = modifierInputs
-		.map((modifier) => AttributeModifierSchema.parse(modifier))
-		.filter((modifier) => modifier.scope === scope && modifier.attribute === attribute);
-	const flat = modifiers
-		.filter((modifier) => modifier.stackingRule === 'additive-flat')
-		.reduce((total, modifier) => total + modifier.value, 0);
-	const basisPoints = modifiers
-		.filter((modifier) => modifier.stackingRule === 'additive-basis-points')
-		.reduce((total, modifier) => total + modifier.value, 0);
-	let effective = intrinsic;
-	for (const stackingRule of rules.attributes.modifierStackingOrder) {
-		effective =
-			stackingRule === 'additive-flat'
-				? effective + flat
-				: scaleByBasisPoints(effective, Math.max(0, BASIS_POINTS + basisPoints));
-		effective = clamp(
-			effective,
-			rules.attributes.effectiveMinimum,
-			rules.attributes.effectiveMaximum
-		);
-	}
-	return effective;
 }
 
 export function attributeScaledMagnitude(
@@ -159,19 +102,6 @@ export function armourReduction(armour: number, penetration: number, rules: Comb
 			BigInt(effectiveArmour + rules.armour.curveConstant)
 		)
 	);
-}
-
-export function namedResistanceReduction(
-	tags: readonly DamageTag[],
-	grantInputs: readonly ResistanceGrantReceipt[],
-	rules: CombatRulesV1
-): number {
-	const namedTags = new Set(tags.filter((tag) => tag !== 'physical' && tag !== 'magical'));
-	const total = grantInputs
-		.map((grant) => ResistanceGrantReceiptSchema.parse(grant))
-		.filter((grant) => namedTags.has(grant.tag))
-		.reduce((sum, grant) => sum + grant.basisPoints, 0);
-	return Math.min(total, rules.resistance.capBasisPoints);
 }
 
 export function learningGain(

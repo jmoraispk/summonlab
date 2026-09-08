@@ -1,4 +1,5 @@
 export * from './catch-up.js';
+export * from './core/combat-fallback.js';
 export * from './domains/combat/capability.js';
 export {
 	authorizeReadinessTerminalDirective,

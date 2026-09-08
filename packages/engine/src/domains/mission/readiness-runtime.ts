@@ -1,6 +1,8 @@
 import {
 	MissionRunStateV10Schema,
 	ReadinessCombatStateV1Schema,
+	type CombatAttributes,
+	type CombatEquipmentProfile,
 	type CombatLegalActionTemplate,
 	type EngineGameStateV25,
 	type EngineGameStateV26,
@@ -9,9 +11,10 @@ import {
 	type ReadinessCombatStateV1
 } from '@summonlab/contracts';
 import {
-	BASIC_SWORD_STRIKE,
+	AGENT_READINESS_RULES_V2,
 	COMBAT_CONTENT_BINDING,
 	COMBAT_EQUIPMENT_PROFILES_BY_ID,
+	COMBAT_RULES_V1,
 	COMBAT_SKILL_CATALOG,
 	COMBAT_SKILL_CONFLICT_POLICIES_V1,
 	COMBAT_SKILLS_BY_ID,
@@ -22,6 +25,14 @@ import {
 import { IllegalActionError } from '../../errors.js';
 import { deterministicUuid, hashCanonical } from '../../hash.js';
 import { verifiedMissionContent } from '../../core/content-bindings.js';
+import {
+	effectiveAttribute,
+	intrinsicAttributes,
+	maximumHealth,
+	maximumMana,
+	namedResistanceReduction
+} from '../../core/capability.js';
+import { resistanceGrantReceiptsFromAuthoredSources } from '../../core/resistance-grants.js';
 import {
 	canonicalCombatLegalActionTemplates,
 	legalCombatSkillActions,
@@ -117,6 +128,12 @@ export function projectCurrentStateForLegacyResolver(
 		...state,
 		schemaVersion: 25,
 		contentVersion: 'engine-v25',
+		heroes: Object.fromEntries(
+			Object.entries(state.heroes).map(([heroId, hero]) => [
+				heroId,
+				Object.fromEntries(Object.entries(hero).filter(([key]) => key !== 'combatTraining'))
+			])
+		),
 		mission: {
 			...state.mission,
 			attempt: prior
@@ -178,7 +195,8 @@ const GUARD_TEMPLATE = {
 
 function combatSkillTemplate(
 	action: LegalCombatSkillAction,
-	enemyIds: readonly string[]
+	enemyIds: readonly string[],
+	baseMagnitude = 5
 ): CombatLegalActionTemplate {
 	const skill = COMBAT_SKILLS_BY_ID[action.skillId];
 	const conflictPolicy =
@@ -191,6 +209,8 @@ function combatSkillTemplate(
 	const mastery = skill.masteryProgression.findLast(
 		(step) => step.accuracyBasisPoints === action.accuracyBasisPoints
 	)!;
+	const fallbackTargets =
+		enemyIds.length > 1 ? [...enemyIds.slice(1), enemyIds[0]!] : [...enemyIds];
 	return {
 		actionId: action.skillId,
 		actionKind: 'attack',
@@ -201,9 +221,14 @@ function combatSkillTemplate(
 		recoveryTicks: 10,
 		manaCost: 0,
 		conflictPolicy,
-		fallbackOptions: [
-			{ fallbackId: 'guard-instead', publicLabel: 'Guard instead', target: { kind: 'self' } }
-		],
+		fallbackOptions:
+			conflictPolicy.invalidTarget === 'selected-fallback'
+				? fallbackTargets.map((combatantId, index) => ({
+						fallbackId: `retarget-${String(index + 1).padStart(3, '0')}`,
+						publicLabel: `Retarget ${combatantId.slice(0, 8)}`,
+						target: { kind: 'entity' as const, combatantId }
+					}))
+				: [],
 		resolutionProfile: {
 			profileKind: 'attack',
 			rulesVersion: 'combat-rules-v1',
@@ -214,7 +239,7 @@ function combatSkillTemplate(
 			damage: {
 				channel: 'physical',
 				tags: skill.damageTags,
-				baseMagnitude: 5,
+				baseMagnitude,
 				coefficientBasisPoints: 5_000,
 				affinityContributionBasisPoints: 0,
 				criticalChanceBasisPoints: 500,
@@ -226,34 +251,92 @@ function combatSkillTemplate(
 	};
 }
 
+type HeroReadinessProjection = Readonly<{
+	intrinsic: CombatAttributes;
+	attributes: CombatAttributes;
+	effectiveLoadMight: number;
+	maximumHealth: number;
+	maximumMana: number;
+	equipment: readonly Readonly<{
+		sourceInstanceId: string;
+		profile: CombatEquipmentProfile;
+	}>[];
+	resistances: Readonly<Record<string, number>>;
+}>;
+
+function equippedCombatProfiles(
+	state: EngineGameStateV26,
+	heroId: string
+): HeroReadinessProjection['equipment'] {
+	const hero = state.heroes[heroId]!;
+	return Object.values(hero.equipment)
+		.filter((itemId): itemId is string => itemId !== null)
+		.map((itemId) => {
+			const item = state.items[itemId];
+			if (!item || item.equippedById !== heroId) {
+				throw new Error(`Readiness loadout item ${itemId} is not equipped by ${heroId}`);
+			}
+			const profile = COMBAT_EQUIPMENT_PROFILES_BY_ID[item.definitionId];
+			if (!profile) throw new Error(`No combat equipment profile for ${item.definitionId}`);
+			return { sourceInstanceId: itemId, profile };
+		});
+}
+
+function heroReadinessProjection(
+	state: EngineGameStateV26,
+	heroId: string
+): HeroReadinessProjection {
+	const hero = state.heroes[heroId]!;
+	const intrinsic = intrinsicAttributes(
+		hero.capabilityProfile,
+		hero.progression.attributeGrowthReceipts,
+		COMBAT_RULES_V1
+	);
+	const attributes = {
+		might: effectiveAttribute(intrinsic.might, [], 'physical-damage', COMBAT_RULES_V1),
+		vitality: effectiveAttribute(intrinsic.vitality, [], 'maximum-health', COMBAT_RULES_V1),
+		agility: effectiveAttribute(intrinsic.agility, [], 'readiness', COMBAT_RULES_V1),
+		spirit: effectiveAttribute(intrinsic.spirit, [], 'magical-damage', COMBAT_RULES_V1)
+	};
+	const equipment = equippedCombatProfiles(state, heroId);
+	const resistanceReceipts = resistanceGrantReceiptsFromAuthoredSources(
+		{ equipment, passiveSkills: [], physiology: [] },
+		COMBAT_RULES_V1
+	);
+	const resistanceTags = [...new Set(resistanceReceipts.map((receipt) => receipt.tag))].sort();
+	return {
+		intrinsic,
+		attributes,
+		effectiveLoadMight: effectiveAttribute(intrinsic.might, [], 'equipment-load', COMBAT_RULES_V1),
+		maximumHealth: maximumHealth(attributes.vitality, COMBAT_RULES_V1),
+		maximumMana: maximumMana(
+			effectiveAttribute(intrinsic.spirit, [], 'maximum-mana', COMBAT_RULES_V1),
+			COMBAT_RULES_V1
+		),
+		equipment,
+		resistances: Object.fromEntries(
+			resistanceTags.map((tag) => [
+				tag,
+				namedResistanceReduction([tag], resistanceReceipts, COMBAT_RULES_V1)
+			])
+		)
+	};
+}
+
 function heroActionCatalog(
 	state: EngineGameStateV26,
 	heroId: string,
 	enemyIds: readonly string[]
 ): readonly CombatLegalActionTemplate[] {
 	const hero = state.heroes[heroId]!;
-	const equipment = Object.values(state.items)
-		.filter((item) => item.equippedById === heroId)
-		.map((item) => {
-			const profile = COMBAT_EQUIPMENT_PROFILES_BY_ID[item.definitionId];
-			if (!profile) throw new Error(`No combat equipment profile for ${item.definitionId}`);
-			return profile;
-		});
-	const swordProgress = hero.progression.skills.swordFighting;
+	const projection = heroReadinessProjection(state, heroId);
 	const skills = legalCombatSkillActions({
-		intrinsicMight: hero.capabilityProfile.attributes.might,
-		effectiveLoadMight: hero.capabilityProfile.attributes.might,
-		proficiencyTags: [],
-		equipment,
+		intrinsicMight: projection.intrinsic.might,
+		effectiveLoadMight: projection.effectiveLoadMight,
+		proficiencyTags: hero.combatTraining.proficiencyTags,
+		equipment: projection.equipment.map(({ profile }) => profile),
 		skills: COMBAT_SKILL_CATALOG.skills,
-		learnedSkills: [
-			{
-				schemaVersion: 'learned-combat-skill-v1',
-				skillId: BASIC_SWORD_STRIKE.skillId,
-				mastery: swordProgress.rank * 5,
-				trainedDeliveryTags: ['one-handed-blade']
-			}
-		]
+		learnedSkills: hero.combatTraining.learnedSkills
 	});
 	return canonicalCombatLegalActionTemplates([
 		...skills.map((action) => combatSkillTemplate(action, enemyIds)),
@@ -261,31 +344,80 @@ function heroActionCatalog(
 	]);
 }
 
-function monsterActionCatalog(policyId: string): readonly CombatLegalActionTemplate[] {
-	const authored = MONSTER_READINESS_DUTY_ACTIONS_V1[policyId];
+function monsterActionCatalog(
+	policyId: string,
+	enemyIds: readonly string[],
+	rulesVersion: string
+): readonly CombatLegalActionTemplate[] {
+	if (rulesVersion === 'agent-readiness-rules-v1') {
+		const authored = MONSTER_READINESS_DUTY_ACTIONS_V1[policyId];
+		if (!authored) throw new Error(`No readiness duty action for monster policy ${policyId}`);
+		return canonicalCombatLegalActionTemplates([
+			{
+				...GUARD_TEMPLATE,
+				actionId: authored.actionId,
+				publicLabel: authored.publicLabel,
+				recoveryTicks: authored.recoveryTicks,
+				fallbackOptions: [
+					{
+						fallbackId: authored.fallbackId,
+						publicLabel: authored.fallbackLabel,
+						target: { kind: 'self' }
+					}
+				]
+			}
+		]);
+	}
+	const authored = AGENT_READINESS_RULES_V2.monsterActions[policyId];
 	if (!authored) throw new Error(`No readiness duty action for monster policy ${policyId}`);
-	return canonicalCombatLegalActionTemplates([
+	const fallbackTargets = enemyIds.length > 1 ? [...enemyIds.slice(1), enemyIds[0]!] : [];
+	const conflictPolicy =
+		fallbackTargets.length > 0
+			? authored.attack.conflictPolicy
+			: { ...authored.attack.conflictPolicy, invalidTarget: 'cancel' as const };
+	const attack: CombatLegalActionTemplate = {
+		...authored.attack,
+		actionKind: 'attack',
+		targetContract: { kind: 'entity', allowedCombatantIds: [...enemyIds] },
+		conflictPolicy,
+		fallbackOptions: fallbackTargets.map((combatantId, index) => ({
+			fallbackId: `retarget-${String(index + 1).padStart(3, '0')}`,
+			publicLabel: `Retarget ${combatantId.slice(0, 8)}`,
+			target: { kind: 'entity' as const, combatantId }
+		})),
+		resolutionProfile: {
+			...authored.attack.resolutionProfile,
+			contentHash: COMBAT_CONTENT_BINDING.contentHash
+		}
+	};
+	const actions = canonicalCombatLegalActionTemplates([
+		attack,
 		{
 			...GUARD_TEMPLATE,
-			actionId: authored.actionId,
-			publicLabel: authored.publicLabel,
-			recoveryTicks: authored.recoveryTicks,
+			actionId: authored.hold.actionId,
+			publicLabel: authored.hold.publicLabel,
+			recoveryTicks: authored.hold.recoveryTicks,
 			fallbackOptions: [
 				{
-					fallbackId: authored.fallbackId,
-					publicLabel: authored.fallbackLabel,
+					fallbackId: authored.hold.fallbackId,
+					publicLabel: authored.hold.fallbackLabel,
 					target: { kind: 'self' }
 				}
 			]
 		}
 	]);
+	if (actions[0]?.actionId !== authored.preferredActionId) {
+		throw new Error(`Monster readiness preference is not canonical for ${policyId}`);
+	}
+	return actions;
 }
 
 export function createMissionReadinessState(
 	state: EngineGameStateV26,
 	attemptId: string,
 	heroIds: readonly string[],
-	missionId: string
+	missionId: string,
+	rulesVersion: string = AGENT_READINESS_RULES_V2.rulesVersion
 ) {
 	const mission = verifiedMissionContent(missionId);
 	const partyIds = [state.master.masterId, ...heroIds];
@@ -305,8 +437,10 @@ export function createMissionReadinessState(
 			partyIds.map((actorId, index) => {
 				const hero = state.heroes[actorId];
 				const isMaster = actorId === state.master.masterId;
+				const projection = isMaster ? null : heroReadinessProjection(state, actorId);
 				const health = isMaster ? state.master.health : hero!.health;
-				const maximumHealth = isMaster ? state.master.maxHealth : hero!.maxHealth;
+				const healthMaximum = isMaster ? state.master.maxHealth : projection!.maximumHealth;
+				const manaMaximum = isMaster ? 1 : projection!.maximumMana;
 				return [
 					actorId,
 					{
@@ -316,18 +450,18 @@ export function createMissionReadinessState(
 						position: { x: index + 1, y: 0 },
 						facing: 'south' as const,
 						resources: {
-							health: { current: health, maximum: maximumHealth },
+							health: { current: Math.min(health, healthMaximum), maximum: healthMaximum },
 							mana: {
-								current: isMaster ? 1 : hero!.mana,
-								maximum: isMaster ? 1 : hero!.maxMana
+								current: isMaster ? 1 : Math.min(hero!.mana, manaMaximum),
+								maximum: manaMaximum
 							}
 						},
 						lastDamagedAtTick: null,
 						attributes: isMaster
 							? { might: 20, vitality: 20, agility: 20, spirit: 20 }
-							: hero!.capabilityProfile.attributes,
+							: projection!.attributes,
 						armour: 0,
-						resistances: {},
+						resistances: projection?.resistances ?? {},
 						readiness: { value: 0, exactNumerator: 0, recoveryUntilTick: 0 },
 						conditions: [],
 						cooldowns: {},
@@ -397,7 +531,11 @@ export function createMissionReadinessState(
 							? canonicalCombatLegalActionTemplates([GUARD_TEMPLATE])
 							: combatant.combatantKind === 'hero'
 								? heroActionCatalog(state, combatant.combatantId, enemies)
-								: monsterActionCatalog(monsterPolicyById.get(combatant.combatantId)!)
+								: monsterActionCatalog(
+										monsterPolicyById.get(combatant.combatantId)!,
+										enemies,
+										rulesVersion
+									)
 				}
 			];
 		})

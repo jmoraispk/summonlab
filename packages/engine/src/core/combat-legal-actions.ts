@@ -76,7 +76,10 @@ export function canonicalCombatLegalActions(
 		throw new Error('Combat legal action instance IDs must be unique');
 	}
 	for (const action of actions) {
-		if (action.fallbackOptions.length === 0) {
+		if (
+			action.conflictPolicy.invalidTarget === 'selected-fallback' &&
+			action.fallbackOptions.length === 0
+		) {
 			throw new Error(`Combat legal action ${action.actionId} requires an authored fallback`);
 		}
 	}

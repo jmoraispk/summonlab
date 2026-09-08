@@ -40,7 +40,11 @@ import {
 	type MissionRunStateV9,
 	type MissionRunStateV10
 } from '@summonlab/contracts';
-import { IRON_MOON_PACKAGE, MONSTER_POLICY_CATALOG } from '@summonlab/content';
+import {
+	COMBAT_CONTENT_BINDING,
+	IRON_MOON_PACKAGE,
+	MONSTER_POLICY_CATALOG
+} from '@summonlab/content';
 import { z } from 'zod';
 
 import { createEntropyCursor } from '../../entropy.js';
@@ -283,7 +287,8 @@ function prepareV26MissionAttempt(
 		{
 			...combatModeBinding,
 			modeId: 'legacy-auto-v1',
-			rulesVersion: 'legacy-auto-rules-v1'
+			rulesVersion: 'legacy-auto-rules-v1',
+			contentHash: COMBAT_CONTENT_BINDING.contentHash
 		}
 	);
 	const attempt = structural.attempt as NonNullable<EngineGameStateV25['mission']['attempt']>;
@@ -304,7 +309,8 @@ function prepareV26MissionAttempt(
 								state,
 								attempt.attemptId,
 								heroIds,
-								missionId
+								missionId,
+								combatModeBinding.rulesVersion
 							)
 						}
 		}
@@ -582,7 +588,8 @@ export function reviseMissionParty(
 							state,
 							currentAttempt.attemptId,
 							normalized,
-							state.mission.binding.missionId
+							state.mission.binding.missionId,
+							currentAttempt.combatModeBinding.rulesVersion
 						)
 					}
 				}
@@ -938,6 +945,7 @@ export const CombatMissionClaimProjectionSchema = z
 						'extraction',
 						'retreat',
 						'party-downed',
+						'death',
 						'deadline',
 						'safety-stop'
 					]),
@@ -1014,6 +1022,6 @@ export function missionAttemptTransitionForCombatResult(
 		status: 'failure',
 		outcome: 'failure',
 		cause: result.outcome,
-		authoredFailure: result.outcome === 'deadline' || result.outcome === 'party-downed'
+		authoredFailure: ['deadline', 'party-downed', 'death'].includes(result.outcome)
 	};
 }

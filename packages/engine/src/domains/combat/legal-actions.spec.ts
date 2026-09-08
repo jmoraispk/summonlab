@@ -212,7 +212,7 @@ describe('combat legal actions', () => {
 		expect(Object.isFrozen(actions[0]?.fallbackOptions)).toBe(true);
 	});
 
-	it('rejects duplicate action IDs and actions without an authored fallback', () => {
+	it('rejects duplicate action IDs and selected-fallback actions without a fallback', () => {
 		const actorId = deterministicUuid('duplicate-action-actor');
 		const windowId = deterministicUuid('duplicate-action-window');
 		const base: CombatLegalActionTemplate = {
@@ -261,7 +261,13 @@ describe('combat legal actions', () => {
 				actorId,
 				windowId,
 				availableMana: 10,
-				actions: [{ ...base, fallbackOptions: [] }]
+				actions: [
+					{
+						...base,
+						conflictPolicy: { ...base.conflictPolicy, invalidTarget: 'selected-fallback' },
+						fallbackOptions: []
+					}
+				]
 			})
 		).toThrow('fallback');
 	});

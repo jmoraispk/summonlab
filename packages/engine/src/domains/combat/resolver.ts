@@ -14,6 +14,7 @@ import {
 	type ReadinessCombatStateV1
 } from '@summonlab/contracts';
 import {
+	AGENT_READINESS_RULES_V2,
 	COMBAT_CONTENT_BINDING,
 	COMBAT_RULES_V1,
 	COMBAT_SKILLS_BY_ID,
@@ -233,6 +234,28 @@ function validateResolutionProfile(
 		throw new Error('Combat attack resolution requires a catalog skill');
 	}
 	const skill = COMBAT_SKILLS_BY_ID[legalAction.skillId];
+	const readinessMonsterAttack = Object.values(AGENT_READINESS_RULES_V2.monsterActions)
+		.map((actions) => actions.attack)
+		.find((attack) => attack.skillId === legalAction.skillId);
+	if (!skill && readinessMonsterAttack) {
+		const expectedProfile = {
+			...readinessMonsterAttack.resolutionProfile,
+			contentHash: COMBAT_CONTENT_BINDING.contentHash
+		};
+		const authoredConflict = hashCanonical(readinessMonsterAttack.conflictPolicy);
+		const singleTargetCancelConflict = hashCanonical({
+			...readinessMonsterAttack.conflictPolicy,
+			invalidTarget: 'cancel'
+		});
+		const actualConflict = hashCanonical(legalAction.conflictPolicy);
+		if (
+			hashCanonical(profile) !== hashCanonical(expectedProfile) ||
+			(actualConflict !== authoredConflict && actualConflict !== singleTargetCancelConflict)
+		) {
+			throw new Error('Combat resolution profile does not match readiness monster content');
+		}
+		return;
+	}
 	const masteryStep = skill?.masteryProgression.find(
 		(step) => step.minimumMastery === profile.masteryStepMinimum
 	);

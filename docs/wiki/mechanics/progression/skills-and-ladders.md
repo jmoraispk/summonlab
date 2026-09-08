@@ -7,8 +7,9 @@ preserves the complete framework imported from `progression_system.md`.
 
 Supersession note: the implemented foundation is defined by the
 [Skill Framework](../skills/framework.md) and [ADR 0072](../../../decisions/0072-four-attributes-and-operator-owned-combat-modes.md).
-Per-skill mastery currently changes only authored accuracy, reliability, and refinements; the
-promotion bundles and permanent grants below remain unshipped design. The imported five-category
+Per-skill mastery currently changes the authored accuracy step; reliability and refinements remain
+versioned fields reserved for later resolver/content integration. The promotion bundles and
+permanent grants below remain unshipped design. The imported five-category
 aptitude model, aptitude-gated access, combat-attribute learning gates, and star-scaled aptitude
 packages are also superseded rather than pending current mechanics.
 

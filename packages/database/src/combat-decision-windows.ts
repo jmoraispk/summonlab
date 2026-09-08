@@ -21,7 +21,11 @@ import {
 	type DecisionJobFailure,
 	type PolicyMode
 } from '@summonlab/contracts';
-import { deterministicUuid, hashCanonical } from '@summonlab/engine';
+import {
+	buildDeterministicCombatFallbackIntent,
+	deterministicUuid,
+	hashCanonical
+} from '@summonlab/engine';
 import postgres from 'postgres';
 
 import { commitEngineCommandInTransaction } from './engine.js';
@@ -134,6 +138,8 @@ export interface CombatDecisionJob {
 	readonly decisionKind: 'combat-action';
 	readonly windowId: string;
 	readonly actorViewHash: string;
+	readonly attemptId: string;
+	readonly tick: number;
 	readonly expectedRunVersion: number;
 	readonly expectedEventCursor: number;
 	readonly snapshotHash: string;
@@ -259,25 +265,98 @@ function targetAllowed(view: ActorDecisionView, intent: CombatActionIntent): boo
 	return false;
 }
 
-function parseBoundIntent(row: JobRow, input: unknown): CombatActionIntent {
+type WindowBindingRow = Readonly<
+	Pick<
+		WindowRow,
+		| 'window_id'
+		| 'run_id'
+		| 'attempt_id'
+		| 'tick'
+		| 'snapshot_hash'
+		| 'expected_run_version'
+		| 'expected_event_cursor'
+		| 'snapshot'
+	>
+>;
+
+function parseWindowSnapshot(row: WindowBindingRow): CombatWindowSnapshot {
+	const snapshot = CombatWindowSnapshotSchema.parse(row.snapshot);
+	if (
+		snapshot.windowId !== row.window_id ||
+		snapshot.attemptId !== row.attempt_id ||
+		snapshot.tick !== row.tick ||
+		snapshot.snapshotHash !== row.snapshot_hash ||
+		unsignedHash(snapshot, 'snapshotHash') !== snapshot.snapshotHash
+	) {
+		throw new Error('Combat decision window binding is inconsistent');
+	}
+	return snapshot;
+}
+
+function parseJobWindowView(row: JobRow, windowBinding: WindowBindingRow): ActorDecisionView {
+	parseWindowSnapshot(windowBinding);
+	const view = ActorDecisionViewSchema.parse(row.packet);
+	if (
+		row.window_id !== windowBinding.window_id ||
+		row.run_id !== windowBinding.run_id ||
+		row.expected_run_version !== windowBinding.expected_run_version ||
+		row.expected_event_cursor !== windowBinding.expected_event_cursor ||
+		row.packet_hash !== row.actor_view_hash ||
+		row.state_hash !== windowBinding.snapshot_hash ||
+		view.actorId !== row.hero_id ||
+		view.windowId !== windowBinding.window_id ||
+		view.actorViewHash !== row.actor_view_hash ||
+		view.snapshotHash !== windowBinding.snapshot_hash ||
+		view.legalActionSetHash !== row.legal_action_hash ||
+		unsignedHash(view, 'actorViewHash') !== view.actorViewHash ||
+		hashCanonical(view.legalActions) !== view.legalActionSetHash
+	) {
+		throw new Error('Combat decision job is not bound to its parent window');
+	}
+	return view;
+}
+
+function parseBoundIntent(
+	row: JobRow,
+	windowBinding: WindowBindingRow,
+	input: unknown
+): CombatActionIntent {
+	const view = parseJobWindowView(row, windowBinding);
 	const result = CombatActionIntentSchema.parse(input);
 	CombatDecisionJobResultBindingSchema.parse({
 		heroId: row.hero_id,
-		windowId: row.window_id,
+		windowId: windowBinding.window_id,
 		actorViewHash: row.actor_view_hash,
-		snapshotHash: row.state_hash,
+		attemptId: windowBinding.attempt_id,
+		tick: windowBinding.tick,
+		snapshotHash: windowBinding.snapshot_hash,
 		legalActionHash: row.legal_action_hash,
 		result
 	});
-	const view = ActorDecisionViewSchema.parse(row.packet);
 	if (!targetAllowed(view, result))
 		throw new Error('Combat result is not one supplied legal action');
 	return result;
 }
 
-function parseJob(row: JobRow): CombatDecisionJob {
+function parseExactFallback(row: JobRow, windowBinding: WindowBindingRow, input: unknown) {
+	const fallback = parseBoundIntent(row, windowBinding, input);
+	const expected = buildDeterministicCombatFallbackIntent(
+		ActorDecisionViewSchema.parse(row.packet),
+		{
+			attemptId: windowBinding.attempt_id,
+			tick: windowBinding.tick,
+			snapshotHash: windowBinding.snapshot_hash
+		}
+	);
+	if (hashCanonical(fallback) !== hashCanonical(expected)) {
+		throw new Error('Combat job requires the exact deterministic fallback');
+	}
+	return fallback;
+}
+
+function parseJob(row: JobRow, windowBinding: WindowBindingRow): CombatDecisionJob {
 	const view = ActorDecisionViewSchema.parse(row.packet);
-	const fallback = parseBoundIntent(row, row.deterministic_fallback);
+	const fallback = parseExactFallback(row, windowBinding, row.deterministic_fallback);
 	const record: CombatDecisionJob = {
 		schemaVersion: COMBAT_DECISION_JOB_VERSION,
 		decisionJobId: row.decision_job_id,
@@ -286,6 +365,8 @@ function parseJob(row: JobRow): CombatDecisionJob {
 		decisionKind: 'combat-action',
 		windowId: row.window_id,
 		actorViewHash: row.actor_view_hash,
+		attemptId: windowBinding.attempt_id,
+		tick: windowBinding.tick,
 		expectedRunVersion: row.expected_run_version,
 		expectedEventCursor: row.expected_event_cursor,
 		snapshotHash: row.state_hash,
@@ -296,7 +377,7 @@ function parseJob(row: JobRow): CombatDecisionJob {
 		activePolicy: row.active_policy,
 		resolution: row.resolution,
 		view,
-		result: row.result === null ? null : parseBoundIntent(row, row.result),
+		result: row.result === null ? null : parseBoundIntent(row, windowBinding, row.result),
 		deterministicFallback: fallback,
 		failure: row.failure === null ? null : DecisionJobFailureSchema.parse(row.failure),
 		attemptCount: row.attempt_count,
@@ -375,6 +456,7 @@ async function lockRunThenWindowForJob(
 }
 
 async function readWindow(sql: Queryable, row: WindowRow): Promise<CombatDecisionWindow> {
+	const snapshot = parseWindowSnapshot(row);
 	const jobs = await jobsFor(sql, row.window_id);
 	return {
 		windowId: row.window_id,
@@ -385,7 +467,7 @@ async function readWindow(sql: Queryable, row: WindowRow): Promise<CombatDecisio
 		expectedRunVersion: row.expected_run_version,
 		expectedEventCursor: row.expected_event_cursor,
 		status: row.status,
-		snapshot: CombatWindowSnapshotSchema.parse(row.snapshot),
+		snapshot,
 		batch: row.choice_batch === null ? null : CombatChoiceBatchV1Schema.parse(row.choice_batch),
 		batchHash: row.batch_hash,
 		appliedEventCursor: row.applied_event_cursor,
@@ -393,7 +475,7 @@ async function readWindow(sql: Queryable, row: WindowRow): Promise<CombatDecisio
 		appliedAt: nullableIso(row.applied_at),
 		createdAt: iso(row.created_at),
 		updatedAt: iso(row.updated_at),
-		jobs: jobs.map(parseJob)
+		jobs: jobs.map((job) => parseJob(job, row))
 	};
 }
 
@@ -563,12 +645,32 @@ async function verifiedAppliedReceipt(
 	};
 }
 
-async function markWindowStale(sql: Queryable, row: WindowRow): Promise<WindowRow> {
+async function markWindowStale(sql: postgres.TransactionSql, row: WindowRow): Promise<WindowRow> {
+	const failure = DecisionJobFailureSchema.parse({
+		code: 'stale-window-binding',
+		message: 'The combat decision window is stale because its engine run binding advanced.',
+		retryable: false,
+		occurredAt: new Date().toISOString()
+	});
 	const jobs = await jobsFor(sql, row.window_id, true);
 	for (const job of jobs) {
 		if (job.status === 'stale' || job.status === 'failed') continue;
+		if (job.status === 'in_progress') {
+			const attempts = await sql<{ attempt_number: number }[]>`
+				update summonlab_decision_job_attempts
+				set status = 'failed', completed_at = now(), latency_ms = 0,
+					failure = ${sql.json(failure as never)}
+				where decision_job_id = ${job.decision_job_id}
+					and attempt_number = ${job.attempt_count} and status = 'in_progress'
+				returning attempt_number
+			`;
+			if (attempts.length !== 1) {
+				throw new Error('Stale combat decision window lost its live attempt ledger');
+			}
+		}
 		await sql`
-			update summonlab_decision_jobs set status = 'stale', lease_expires_at = null,
+			update summonlab_decision_jobs set status = 'stale',
+				failure = ${sql.json(failure as never)}, lease_expires_at = null,
 				updated_at = now() where decision_job_id = ${job.decision_job_id}
 		`;
 		await appendTransition(sql, job.decision_job_id, job.status, 'stale', 'stale-window-binding');
@@ -588,6 +690,16 @@ function validateCreateInput(input: CreateCombatDecisionWindowInput) {
 	if (input.actors.length !== snapshot.readyActorIds.length) {
 		throw new Error('Combat window requires exactly one job per ready actor');
 	}
+	const windowBinding: WindowBindingRow = {
+		window_id: snapshot.windowId,
+		run_id: input.runId,
+		attempt_id: snapshot.attemptId,
+		tick: snapshot.tick,
+		snapshot_hash: snapshot.snapshotHash,
+		expected_run_version: input.expectedRunVersion,
+		expected_event_cursor: input.expectedEventCursor,
+		snapshot
+	};
 	const actors = input.actors.map((candidate) => {
 		const view = ActorDecisionViewSchema.parse(candidate.view);
 		if (
@@ -610,14 +722,18 @@ function validateCreateInput(input: CreateCombatDecisionWindowInput) {
 		}
 		const fallback = CombatActionIntentSchema.parse(candidate.deterministicFallback);
 		const syntheticRow = {
+			run_id: input.runId,
 			hero_id: view.actorId,
 			window_id: view.windowId,
 			actor_view_hash: view.actorViewHash,
+			packet_hash: view.actorViewHash,
 			state_hash: view.snapshotHash,
 			legal_action_hash: view.legalActionSetHash,
+			expected_run_version: input.expectedRunVersion,
+			expected_event_cursor: input.expectedEventCursor,
 			packet: view
 		} as JobRow;
-		parseBoundIntent(syntheticRow, fallback);
+		parseExactFallback(syntheticRow, windowBinding, fallback);
 		return { view, requestedPolicy, maxProviderAttempts, fallback };
 	});
 	if (new Set(actors.map((actor) => actor.view.actorId)).size !== actors.length) {
@@ -661,12 +777,15 @@ export async function createCombatDecisionWindow(
 			if (
 				!existing ||
 				existing.run_id !== input.runId ||
+				existing.attempt_id !== parsed.snapshot.attemptId ||
+				existing.tick !== parsed.snapshot.tick ||
 				existing.snapshot_hash !== parsed.snapshot.snapshotHash ||
 				existing.expected_run_version !== input.expectedRunVersion ||
 				existing.expected_event_cursor !== input.expectedEventCursor
 			) {
 				throw new Error('Combat window id was already bound to different state');
 			}
+			parseWindowSnapshot(existing);
 			for (const actor of parsed.actors) {
 				const jobId = randomUUID();
 				const rows = await transaction<{ decision_job_id: string }[]>`
@@ -708,7 +827,8 @@ export async function createCombatDecisionWindow(
 						expected.view.actorViewHash !== job.actor_view_hash ||
 						expected.requestedPolicy !== job.requested_policy ||
 						expected.maxProviderAttempts !== job.max_provider_attempts ||
-						hashCanonical(expected.fallback) !== hashCanonical(job.deterministic_fallback)
+						hashCanonical(expected.fallback) !== hashCanonical(job.deterministic_fallback) ||
+						parseJob(job, existing).attemptId !== parsed.snapshot.attemptId
 					);
 				})
 			) {
@@ -881,7 +1001,7 @@ export async function claimCombatDecisionJob(
 				await transaction<JobRow[]>`select * from summonlab_decision_jobs
 				where decision_job_id = ${jobId}`
 			)[0]!;
-			const job = parseJob(updated);
+			const job = parseJob(updated, window);
 			return {
 				job,
 				attemptNumber,
@@ -920,25 +1040,40 @@ export async function completeCombatDecisionJobAttempt(
 	}
 	const sql = postgres(databaseUrl, { max: 1 });
 	try {
-		return await sql.begin(async (transaction) => {
+		const outcome = await sql.begin(async (transaction) => {
+			const locked = await lockRunThenWindowForJob(transaction, jobId);
+			if (!locked) throw new Error(`Combat decision job was not found: ${jobId}`);
+			const { run, window } = locked;
 			const row = (
-				await transaction<JobRow[]>`select * from summonlab_decision_jobs
+				await transaction<(JobRow & { lease_live: boolean })[]>`select *,
+					(lease_expires_at > now()) as lease_live from summonlab_decision_jobs
 					where decision_job_id = ${jobId} and schema_version = ${COMBAT_DECISION_JOB_VERSION} for update`
 			)[0];
 			if (!row) throw new Error(`Combat decision job was not found: ${jobId}`);
-			const result = parseBoundIntent(row, resultInput);
+			const result = parseBoundIntent(row, window, resultInput);
 			if (row.status === 'completed' && row.attempt_count === attemptNumber) {
 				if (
 					row.result !== null &&
-					hashCanonical(parseBoundIntent(row, row.result)) === hashCanonical(result)
+					hashCanonical(parseBoundIntent(row, window, row.result)) === hashCanonical(result)
 				) {
-					return parseJob(row);
+					return { kind: 'completed' as const, job: parseJob(row, window) };
 				}
 				throw new Error('Combat decision attempt was already completed with a different result');
 			}
+			if (window.status !== 'collecting') {
+				throw new Error(`Combat decision completion window is ${window.status}`);
+			}
+			if (staleWindowBinding(window, run)) {
+				await markWindowStale(transaction, window);
+				return { kind: 'stale' as const };
+			}
+			if (row.status !== 'in_progress' || row.attempt_count !== attemptNumber || !row.lease_live) {
+				throw new Error('Combat decision completion no longer owns the exact live claim lease');
+			}
 			if (
 				row.next_attempt_kind === 'fallback' &&
-				hashCanonical(result) !== hashCanonical(row.deterministic_fallback)
+				hashCanonical(result) !==
+					hashCanonical(parseExactFallback(row, window, row.deterministic_fallback))
 			) {
 				throw new Error('Fallback attempt must use the precomputed deterministic fallback');
 			}
@@ -972,8 +1107,12 @@ export async function completeCombatDecisionJobAttempt(
 				'completed',
 				'policy-result-completed'
 			);
-			return parseJob(updated[0]);
+			return { kind: 'completed' as const, job: parseJob(updated[0], window) };
 		});
+		if (outcome.kind === 'stale') {
+			throw new Error('Combat decision completion was rejected because its window is stale');
+		}
+		return outcome.job;
 	} finally {
 		await sql.end({ timeout: 5 });
 	}
@@ -995,12 +1134,27 @@ export async function failCombatDecisionJobAttempt(
 	});
 	const sql = postgres(databaseUrl, { max: 1 });
 	try {
-		return await sql.begin(async (transaction) => {
+		const outcome = await sql.begin(async (transaction) => {
+			const locked = await lockRunThenWindowForJob(transaction, jobId);
+			if (!locked) throw new Error(`Combat decision job was not found: ${jobId}`);
+			const { run, window } = locked;
 			const row = (
-				await transaction<JobRow[]>`select * from summonlab_decision_jobs
+				await transaction<(JobRow & { lease_live: boolean })[]>`select *,
+					(lease_expires_at > now()) as lease_live from summonlab_decision_jobs
 				where decision_job_id = ${jobId} and schema_version = ${COMBAT_DECISION_JOB_VERSION} for update`
 			)[0];
 			if (!row) throw new Error(`Combat decision job was not found: ${jobId}`);
+			parseJobWindowView(row, window);
+			if (window.status !== 'collecting') {
+				throw new Error(`Combat decision failure window is ${window.status}`);
+			}
+			if (staleWindowBinding(window, run)) {
+				await markWindowStale(transaction, window);
+				return { kind: 'stale' as const };
+			}
+			if (row.status !== 'in_progress' || row.attempt_count !== attemptNumber || !row.lease_live) {
+				throw new Error('Combat decision failure no longer owns the exact live claim lease');
+			}
 			const next = failureDestination(row, failure.retryable);
 			const updated = await transaction<
 				JobRow[]
@@ -1035,8 +1189,12 @@ export async function failCombatDecisionJobAttempt(
 						? 'retry-scheduled'
 						: 'attempts-exhausted'
 			);
-			return parseJob(updated[0]);
+			return { kind: 'completed' as const, job: parseJob(updated[0], window) };
 		});
+		if (outcome.kind === 'stale') {
+			throw new Error('Combat decision failure was rejected because its window is stale');
+		}
+		return outcome.job;
 	} finally {
 		await sql.end({ timeout: 5 });
 	}
@@ -1157,7 +1315,7 @@ export async function refreshCombatDecisionWindow(
 			if (!jobs.every((job) => job.status === 'completed' && job.result !== null)) {
 				return await readWindow(transaction, row);
 			}
-			const choices = jobs.map((job) => parseBoundIntent(job, job.result));
+			const choices = jobs.map((job) => parseBoundIntent(job, row, job.result));
 			const unsignedBatch = {
 				batchVersion: 'combat-choice-batch-v1' as const,
 				batchId: deterministicUuid(`combat-choice-batch:${windowId}`),

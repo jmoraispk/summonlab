@@ -17,7 +17,7 @@ import {
 } from './readiness-runtime.js';
 
 type MissionModeState = EngineGameStateV25 | EngineGameStateV26;
-type CurrentLegacyAutoV1CombatResolution = Omit<LegacyAutoV1CombatResolution, 'mission'> & {
+export type CurrentLegacyAutoV1CombatResolution = Omit<LegacyAutoV1CombatResolution, 'mission'> & {
 	readonly mission: MissionRunStateV10;
 };
 
@@ -55,7 +55,14 @@ export function resolveMissionModeTurn(
 			);
 			return {
 				...resolved,
-				mission: restoreCurrentLegacyMission(state, resolved.mission as MissionRunStateV9)
+				mission: restoreCurrentLegacyMission(state, resolved.mission as MissionRunStateV9),
+				heroes: Object.fromEntries(
+					Object.entries(resolved.heroes).map(([heroId, hero]) => {
+						const current = state.heroes[heroId];
+						if (!current) throw new Error(`Legacy resolver returned unknown hero ${heroId}`);
+						return [heroId, { ...hero, combatTraining: current.combatTraining }];
+					})
+				)
 			};
 		}
 	}

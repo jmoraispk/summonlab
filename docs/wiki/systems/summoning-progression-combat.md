@@ -93,14 +93,19 @@ future attempts only; the stored binding cannot change while an attempt is activ
 configuration, not a player-facing switch. Player request and route schemas accept neither a mode
 nor low-level combat choices, and the mode stored on an active attempt cannot change.
 
+The current exact tuples are `legacy-auto-v1` / `legacy-auto-rules-v1` /
+`1abef40c18eb97d4c1694c674f9b4917f286053e6d810d5b4282760f2ab4c2a7` and
+`agent-readiness-v1` / `agent-readiness-rules-v2` /
+`e78ed494f1ac78f6b0efca0574248425a1bb1148d54fd39161db600964e8919e`.
+
 | Mode | Release status | Choice source | Time and randomness |
 | --- | --- | --- | --- |
 | `legacy-auto-v1` | beta-safe operator default | seeded automatic policy; no hero-model calls | frozen legacy rounds, sequential entropy, 48-round safety boundary |
-| `agent-readiness-v1` | implemented; operator-controlled; not the release default | one validated intent per ready actor, with deterministic provider fallback | one-tick readiness cohorts and purpose-keyed randomness |
+| `agent-readiness-v1` | V2 implemented for operator evaluation; not the release default | one validated intent per ready actor, with deterministic provider fallback | one-tick readiness cohorts and purpose-keyed randomness |
 
 ### Legacy automatic combat
 
-For a new v25 attempt the player can press **Continue battle**. That command advances automatic
+For a new v26 attempt the player can press **Continue battle**. That command advances automatic
 combat; the request cannot contain a combat mode, actor action, target, choices, or policy. A seeded
 policy selects one legal action for every party actor, and the engine records the policy ID plus
 packet, legal-action-set, and result hashes.
@@ -151,6 +156,33 @@ unresolved choice. Resolution orders collisions by exact readiness time, authore
 then a stable purpose-keyed tie-break; each later choice is revalidated and follows its authored
 fallback if an earlier move, flank, downing, or object claim invalidated it. No agent is re-queried
 during arbitration, and API latency never changes simulation time.
+
+The current evaluation binding is exactly `agent-readiness-rules-v2` with aggregate content hash
+`e78ed494f1ac78f6b0efca0574248425a1bb1148d54fd39161db600964e8919e`. That aggregate adds the
+immutable V2 hostile-action catalog to the combat skill and equipment-profile catalogs. Historical
+V1 readiness attempts remain loadable only with their exact V1 rules/content pair; the runtime never
+silently upgrades an active or replayed attempt.
+
+### Durable readiness decisions
+
+One durable combat window is stored for the complete ready cohort, together with its attempt ID,
+tick, snapshot hash, expected run version, and expected event cursor. Exactly one `decision-job-v3`
+record is stored per ready actor. Each result must match the window, attempt, tick, actor view,
+snapshot, legal-action set, action instance, target contract, and optional supplied fallback before
+it can join the batch.
+
+Workers may claim different actors concurrently and finish in any order. The window becomes ready
+only after every cohort member has a validated result. Provider timeout, malformed output,
+unavailability, and exhausted retries use the exact engine-precomputed first legal action, canonical
+target, and first allowed fallback; neither the worker nor another model invents a replacement.
+
+Window creation, job creation, lease transitions, full-cohort assembly, and one-event batch
+application are database-backed and retry-safe. Mutating paths lock the authoritative run before the
+window and jobs. If the run version or cursor has moved, the transaction atomically terminalizes the
+in-progress attempt ledger and records the whole window and its jobs as stale, then rejects the late
+completion; a retry observes that durable stale state instead of resurrecting old intent. Batch
+application uses a compare-and-swap boundary and returns the already-authenticated receipt on an
+exact idempotent retry.
 
 ### Power integrity and human realism
 
@@ -221,10 +253,18 @@ Changing one choice may change affected outcomes without reshuffling unrelated c
 
 ### Common result and consequences
 
-Both mode runners emit a common outer combat result with final combat-local resources,
-harm/recovery evidence, skill-practice evidence, loot/extraction claims, decisive events, bindings,
-and replay hashes. Owning progression, inventory, expedition, and aftermath processes validate and
-commit those idempotent claims; combat does not directly grant durable rewards.
+Both mode runners emit `combat-result-v1` with final party and hostile combatants, final combat-local
+resources, harm/recovery evidence, skill-practice evidence, loot/extraction claims, decisive events,
+and replay hashes. Every result repeats the attempt's exact mode ID, rules version, and content hash.
+The schema rejects an unregistered tuple; result authentication and the claim transition reject a
+registered tuple that differs from the persisted attempt. Its outcome vocabulary includes victory,
+extraction, retreat, party downing, Master/hero death, authored deadline, and engine safety stop.
+
+Owning progression, inventory, expedition, and aftermath processes validate and commit the
+idempotent claims; combat does not directly grant durable rewards. The production V26 legacy path
+adapts its frozen terminal round into the same outer result, authenticates it against the persisted
+legacy binding, and records the result plus a complete cross-owner claim checkpoint atomically with
+that terminal event. A partial receipt set or replay without its checkpoint is rejected.
 
 Readiness combat makes Downed the zero-Health state. Safe victory or extraction removes Downed from a
 recovered hero and restores only the minimum safe Health needed to leave the state. A failed
@@ -244,25 +284,31 @@ affinity matchup application, general armour-point fixture values, and magical-a
 explicitly hash-bound **benchmark candidates**. They prove that a coherent tuning set can pass the
 promotion gates; they do not become runtime mechanics merely because the evidence passes.
 
-The separate [agent-readiness qualification evidence](../../evidence/agent-readiness-v1.json) binds
-the exact production rules and combat-content hashes. It records 10,000 distinct deterministic
-readiness trials, models 20,000 provider failures by building the exact production deterministic
-fallback intents, exercises 40,000 applied fallback selections across the primary and deterministic
-repeat resolver passes, and runs 100 complete encounters for each level-10/40/70/99 archetype. All
-400 minimal authored encounters completed with zero safety or no-progress stops. Recovery occurred
-in 180 encounters; 4,363 applied Health damage exceeded 363 passive Health recovery. Deterministic
-replay, classified collision fallback, encounter-budget, and 100% legal fallback-selection gates passed. The current
-policy-authored monster holds position rather than attacking, so this is technical qualification of
-timing, resolution, and safety—not a claim that hostile AI balance is finished and not automatic
-promotion to the release default.
+The checked [agent-readiness qualification evidence](../../evidence/agent-readiness-v1.json) binds
+the current operator-evaluation tuple: `agent-readiness-rules-v2` hash
+`21d1dbf74dff606fda8b727566787579c9584234ea9aeee0a26ecbae80a8a80e` and aggregate content hash
+`e78ed494f1ac78f6b0efca0574248425a1bb1148d54fd39161db600964e8919e`. Its qualification-profile
+hash is `4a3a2858d1d5d9575e2aeb38a9cc5437e8e22b3795b32b2babacc9087bf8bac1`; its replay result hash is
+`dc599786a23e8fc9a8a8b73e9af6a0619f443dd93be201d704cbc22a379526b5`; and the artifact SHA-256 is
+`6cf931fb87e8e986a18c7572b9d3399be0632cf5b11dc2d861978d95ca72a452`.
 
-The evidence preserves historical `combat-rules-v1` hash
-`13b2b27b683e4b0023a2a2c2ee4926127437db3bbf1ace91776def69ef286eff`, separately binds
-`agent-readiness-rules-v1` hash
-`eb7296798dbc911526603b1fb908cd3a7ea3661caf7d69793fc1fc0ab09cc5ba`, and binds combat-content
-hash `1abef40c18eb97d4c1694c674f9b4917f286053e6d810d5b4282760f2ab4c2a7`. Encounter p95 tick/event
-counts are level 10 `1090/35`, level 40 `715/23`, level 70 `398/14`, and level 99 `288/11`, all far
-inside the configured million-tick/100,000-event safety budgets.
+The artifact records 10,000 distinct deterministic trials, 20,000 modeled provider failures, and
+40,000 applied fallback selections across the primary and deterministic repeat resolver passes. All
+400 minimal authored encounters completed through 3,707 encounter resolver calls, with zero safety
+stops, no-progress stops, regeneration stalemates, nondeterministic replays, or unclassified
+cancellations. Aggregate applied damage was 5,117, incoming party damage was 844, passive Health
+recovery was 471, and recovery occurred in 172 encounters. Encounter p95 tick/event counts are level
+10 `991/31`, level 40 `635/21`, level 70 `398/14`, and level 99 `229/8`, all inside the configured
+million-tick/100,000-event safety budgets.
+
+The evidence also preserves the underlying `combat-rules-v1` hash
+`13b2b27b683e4b0023a2a2c2ee4926127437db3bbf1ace91776def69ef286eff`. V2 monsters receive an
+executable deterministic damaging strike against an eligible party target plus an authored Hold
+choice; their provider selects among those frozen legal actions. These mechanical gates qualify
+that exact V2 tuple for continued operator evaluation; they do not
+establish full hostile policy variety or product balance, authorize owner promotion, or change the
+legacy beta default. The independent legacy balance artifact remains unchanged at SHA-256
+`d0b2814acfdca17dcede952f7015a46399e5902b2834cf4607e87e37978eabac`.
 
 Qualification exposed one real defect: per-tick integer recovery erased low-level peer damage.
 Natural Health and Mana recovery in readiness combat now evaluates only on calibrated 100-tick
@@ -274,7 +320,7 @@ inert. This is a measured current constant; changing it requires a new rules ver
 The event log is a product surface, replay input, future narration input, and the player's account
 of why the party won or lost. A useful trace exposes:
 
-- initiative and action order;
+- readiness/action order (or legacy initiative where that historical mode uses it);
 - the chosen skill or basic action and target;
 - important Health and Mana deltas;
 - skill base, attribute scale, equipment term, affinity relationship, critical result, mitigation,
@@ -302,7 +348,7 @@ progressively. Expanded history restores uniform readable contrast, and event or
 without depending on opacity alone.
 
 Character-voice messages use a concise colored name prefix rather than a portrait thumbnail. This
-keeps the feed visually light, avoids repeating the initiative portraits, and leaves mechanical event
+keeps the feed visually light, avoids repeating the action-order portraits, and leaves mechanical event
 lines easy to scan.
 
 The supplied damage expression currently defines shape, not accepted constants:
@@ -322,8 +368,9 @@ kill-sensitive drops, gathering, and permanent consequences. The accepted family
 keeps form tier, numerical level, and affinity rank as separate axes; any restriction on low-tier
 affinity use must be authored explicitly. Engine-v26 implements both the four-attribute legacy mode
 and operator-controlled readiness timing, intent, deterministic arbitration, and common result
-contracts. Production armour magnitudes, magical active skills, attacking hostile policy, permanent
-injury/death, free-roaming gathering, and model narration remain unshipped.
+contracts. Readiness V2 also includes executable deterministic damaging hostile strikes. Production armour
+magnitudes, magical active skills, broad hostile policy variety and balance, permanent injury/death
+promotion, free-roaming gathering, and model narration remain unshipped.
 
 ### Accepted combat presentation direction
 

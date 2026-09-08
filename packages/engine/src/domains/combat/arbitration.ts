@@ -23,6 +23,7 @@ import {
 	finalizeReadinessCombatIfTerminal,
 	synchronizeReadinessOutcomeEvidence
 } from './outcome.js';
+import type { EmitCombatOutcomeInput } from './outcome.js';
 import { purposeKeyedInteger } from './randomness.js';
 import { advanceUntilReadyCohort } from './readiness.js';
 import {
@@ -39,6 +40,7 @@ type ResolvedEffect = CombatResolvedEvent['effects'][number];
 export type CombatChoiceBatchResolution = Readonly<{
 	state: ReadinessCombatStateV1;
 	events: readonly CombatResolvedEvent[];
+	terminalAuthority: EmitCombatOutcomeInput | null;
 }>;
 
 type PreflightChoice = Readonly<{
@@ -101,18 +103,19 @@ function selectedTargetIsLegal(intent: CombatActionIntent, action: CombatLegalAc
 function preflight(
 	state: ReadinessCombatStateV1,
 	batchInput: CombatChoiceBatchV1,
-	rules: CombatRulesV1
+	rules: CombatRulesV1,
+	combatModeBinding?: EmitCombatOutcomeInput['combatModeBinding']
 ): Readonly<{ stateAtWindow: ReadinessCombatStateV1; choices: readonly PreflightChoice[] }> {
 	const batch = CombatChoiceBatchV1Schema.parse(batchInput);
 	if (combatChoiceBatchHash(unsignedBatch(batch)) !== batch.batchHash) {
 		throw new Error('Combat choice batch hash does not match its canonical payload');
 	}
-	const readinessAdvance = advanceUntilReadyCohort(state, rules);
+	const readinessAdvance = advanceUntilReadyCohort(state, rules, combatModeBinding);
 	if (readinessAdvance.kind !== 'decision-window') {
 		throw new Error('Combat choice batch requires an active decision window');
 	}
 	const stateAtWindow = readinessAdvance.state;
-	const advance = advanceUntilDecision(stateAtWindow, rules);
+	const advance = advanceUntilDecision(stateAtWindow, rules, combatModeBinding);
 	if (advance.kind !== 'decision-window') {
 		throw new Error('Combat choice batch requires an active decision window');
 	}
@@ -448,12 +451,13 @@ function resolvedEvent(input: {
 export function applyCombatChoiceBatch(
 	stateInput: ReadinessCombatStateV1,
 	batchInput: CombatChoiceBatchV1,
-	rulesInput: CombatRulesV1
+	rulesInput: CombatRulesV1,
+	combatModeBinding?: EmitCombatOutcomeInput['combatModeBinding']
 ): CombatChoiceBatchResolution {
 	const rules = immutableRules(rulesInput);
 	const state = ReadinessCombatStateV1Schema.parse(stateInput);
 	const batch = CombatChoiceBatchV1Schema.parse(batchInput);
-	const preflightResult = preflight(state, batch, rules);
+	const preflightResult = preflight(state, batch, rules, combatModeBinding);
 	const choices = [...preflightResult.choices].sort(
 		(left, right) =>
 			right.exactReadiness - left.exactReadiness ||
@@ -474,9 +478,14 @@ export function applyCombatChoiceBatch(
 		};
 		const terminal = finalizeReadinessCombatOutcome({
 			state: preflightResult.stateAtWindow,
-			safetyStop
+			safetyStop,
+			combatModeBinding
 		});
-		return deepFreeze({ state: terminal.state, events: [] });
+		return deepFreeze({
+			state: terminal.state,
+			events: [],
+			terminalAuthority: terminal.authority
+		});
 	}
 
 	let progressive = ReadinessCombatStateV1Schema.parse(preflightResult.stateAtWindow);
@@ -567,10 +576,11 @@ export function applyCombatChoiceBatch(
 	progressive.safety.eventsEmitted = nextEventsEmitted;
 	synchronizeReadinessOutcomeEvidence(progressive);
 	appendReadinessResolvedEvents(progressive, events);
-	const terminal = finalizeReadinessCombatIfTerminal(progressive);
+	const terminal = finalizeReadinessCombatIfTerminal(progressive, combatModeBinding);
 	if (terminal) progressive = terminal.state;
 	return deepFreeze({
 		state: ReadinessCombatStateV1Schema.parse(progressive),
-		events: events.map((event) => CombatResolvedEventSchema.parse(event))
+		events: events.map((event) => CombatResolvedEventSchema.parse(event)),
+		terminalAuthority: terminal?.authority ?? null
 	});
 }

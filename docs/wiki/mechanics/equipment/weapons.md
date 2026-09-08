@@ -2,15 +2,16 @@
 
 Wiki ID: `mechanics.equipment.weapons`
 
-Design status: **runtime-v1 visuals/definitions and initial engine-v25 combat delivery profiles
+Design status: **runtime-v1 visuals/definitions and initial engine-v26 combat delivery profiles
 integrated**.
 Equipment uses six canonical weapon classes. Named, monster-derived, or visually unusual weapons
 still bind to one of these classes rather than creating another handling family.
 
 Runtime-v1 implements one definition and lazy card/detail visual for every legal rank-bearing
-material/class pairing; current Forging produces Standard instances only. Engine-v25 adds stable
-load plus the initial Sword, Dagger, Bow, Staff, and Shield family tags. Detailed weapon damage,
-handling tradeoffs, and the remaining skill-family mappings remain later combat work.
+material/class pairing; current Forging produces Standard instances only. Engine-v26 adds stable
+load plus the initial Sword, Dagger, Bow, Staff, and Shield family tags and consumes them during
+readiness legal-action assembly. Detailed weapon damage, handling tradeoffs, and the remaining
+skill-family mappings remain later combat work.
 
 ## Canonical classes
 

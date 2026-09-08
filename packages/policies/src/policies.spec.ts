@@ -15,6 +15,7 @@ import {
 import {
 	applyCommand,
 	assembleHeroDecisionPacket,
+	buildDeterministicCombatFallbackIntent as buildEngineDeterministicCombatFallbackIntent,
 	createBootstrapEngine,
 	deterministicUuid,
 	hashCanonical,
@@ -416,6 +417,12 @@ describe('packet-bound hero policies', () => {
 });
 
 describe('frozen-view combat policies', () => {
+	it('re-exports the engine-owned deterministic fallback builder', () => {
+		expect(buildDeterministicCombatFallbackIntent).toBe(
+			buildEngineDeterministicCombatFallbackIntent
+		);
+	});
+
 	it('builds the production deterministic fallback from the first supplied legal action', async () => {
 		const view = combatViewFixture();
 		const leastCostResponse = await new ScriptedCombatPolicy().decide(view);

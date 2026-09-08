@@ -15,35 +15,19 @@ import {
 } from '../domains/mission/lifecycle.js';
 import { createCombatProgressionClaimProjection } from '../domains/progression/claims.js';
 import { transitionCombatResultClaims } from './combat-claims.js';
+import type { EmitCombatOutcomeInput } from '../domains/combat/outcome.js';
 
 const BASIC_SWORD_SKILL_ID = 'combat-skill-basic-sword-strike';
 
 export function advanceReadinessToTerminal(state: EngineGameStateV26) {
 	const attempt = state.mission.attempt;
 	if (!attempt || attempt.combatState.modeId !== 'agent-readiness-v1') return null;
-	const advanced = advanceUntilReadyCohort(attempt.combatState.readinessState, COMBAT_RULES_V1);
+	const advanced = advanceUntilReadyCohort(
+		attempt.combatState.readinessState,
+		COMBAT_RULES_V1,
+		attempt.combatModeBinding
+	);
 	return advanced.kind === 'combat-result' ? advanced : null;
-}
-
-function authorityFor(result: CombatResult) {
-	return {
-		attemptId: result.attemptId,
-		modeId: result.modeId,
-		rulesVersion: result.rulesVersion,
-		endedAtTick: result.endedAtTick,
-		termination:
-			result.outcome === 'safety-stop'
-				? ({ kind: 'safety-stop', safetyStop: result.safetyStop! } as const)
-				: ({ kind: result.outcome } as const),
-		partyHeroIds: result.claimEvidence.partyHeroIds,
-		engineDamageTakenByHeroId: result.claimEvidence.engineDamageTakenByHeroId,
-		finalCombatants: result.finalCombatants,
-		resolvedEvents: result.claimEvidence.resolvedEvents,
-		engineRecoveredCombatantIds: result.claimEvidence.engineRecoveredCombatantIds,
-		securedLoot: result.claimEvidence.securedLoot,
-		objectiveStates: result.claimEvidence.objectiveStates,
-		decisiveEventIds: result.decisiveEventIds
-	};
 }
 
 function terminalAttemptPatch(
@@ -86,7 +70,8 @@ function terminalAttemptPatch(
 export function finalizeReadinessMission(
 	state: EngineGameStateV26,
 	terminalState: ReadinessCombatStateV1,
-	eventId: string
+	eventId: string,
+	authority: EmitCombatOutcomeInput
 ): {
 	readonly state: EngineGameStateV26;
 	readonly claimCheckpoint: ReturnType<typeof transitionCombatResultClaims>['checkpoint'];
@@ -123,23 +108,36 @@ export function finalizeReadinessMission(
 				practiceEvidence: Object.fromEntries(
 					result.claimEvidence.partyHeroIds.map((heroId) => [
 						heroId,
-						{
-							[BASIC_SWORD_SKILL_ID]:
-								state.heroes[heroId]!.progression.skills.swordFighting.experience
-						}
+						Object.fromEntries(
+							state.heroes[heroId]!.combatTraining.learnedSkills.map((skill) => [
+								skill.skillId,
+								skill.mastery
+							])
+						)
 					])
 				)
 			}
 		},
 		result,
-		authorityFor(result)
+		authority,
+		attempt.combatModeBinding
 	);
 
 	const heroes = { ...state.heroes };
 	for (const heroId of result.claimEvidence.partyHeroIds) {
 		const hero = heroes[heroId]!;
 		const projected = claimTransition.mission.combatants[heroId]!;
-		const practice = claimTransition.progression.practiceEvidence[heroId]?.[BASIC_SWORD_SKILL_ID];
+		const practiceBySkill = claimTransition.progression.practiceEvidence[heroId] ?? {};
+		const basicSwordPractice = result.claims.find(
+			(claim) =>
+				claim.claimType === 'skill-practice' &&
+				claim.heroId === heroId &&
+				claim.skillId === BASIC_SWORD_SKILL_ID
+		);
+		const basicSwordPracticeAmount =
+			basicSwordPractice?.claimType === 'skill-practice'
+				? basicSwordPractice.practiceEvidence
+				: null;
 		heroes[heroId] = {
 			...hero,
 			lifeState: projected.lost ? 'dead' : 'active',
@@ -150,8 +148,15 @@ export function finalizeReadinessMission(
 			currentRoutine: projected.lost ? null : hero.currentRoutine,
 			currentForging: projected.lost ? null : hero.currentForging,
 			assignment: projected.lost ? null : hero.assignment,
+			combatTraining: {
+				...hero.combatTraining,
+				learnedSkills: hero.combatTraining.learnedSkills.map((skill) => ({
+					...skill,
+					mastery: Math.min(100, practiceBySkill[skill.skillId] ?? skill.mastery)
+				}))
+			},
 			progression:
-				practice === undefined
+				basicSwordPracticeAmount === null
 					? hero.progression
 					: {
 							...hero.progression,
@@ -159,7 +164,8 @@ export function finalizeReadinessMission(
 								...hero.progression.skills,
 								swordFighting: {
 									...hero.progression.skills.swordFighting,
-									experience: practice
+									experience:
+										hero.progression.skills.swordFighting.experience + basicSwordPracticeAmount
 								}
 							}
 						}

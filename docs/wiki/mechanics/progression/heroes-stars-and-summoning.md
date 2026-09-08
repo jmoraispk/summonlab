@@ -40,7 +40,7 @@ The supplied caps are `10, 20, 30, 40, 50, 70, 99`. The source deliberately leav
 
 The level cap remains the ascension wall. The imported base-point bands, star-count aptitude
 bundles, and star-scaled packages of three through nine attribute points per level are superseded.
-For new `engine-v25` progression, every gained level grants exactly one freely allocated intrinsic
+For new `engine-v26` progression, every gained level grants exactly one freely allocated intrinsic
 point in Might, Vitality, Agility, or Spirit, regardless of star rank.
 
 The source proposes no native 6★ or 7★ heroes and calls 5★ the maximum summon. This overrides the
@@ -49,7 +49,7 @@ earlier promotion-only-5★ assumption: Advanced summoning may produce an extrao
 
 ## Combat attributes and hidden learning
 
-New `character-v2` and `engine-v25` heroes carry two independent capability layers:
+New `character-v2` / `engine-v26` heroes carry two independent capability layers:
 
 - four visible intrinsic combat attributes—Might, Vitality, Agility, and Spirit—generated on the
   versioned `1..100` scale without a star-based point budget; and

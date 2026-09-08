@@ -2175,7 +2175,6 @@ export const MISSION_EVENT_TYPES = [
 	'master.fallback.changed',
 	'master.safety.stopped',
 	'master.decision.opened',
-	'mission.round.resolved',
 	'mission.extraction.opened'
 ] as const;
 

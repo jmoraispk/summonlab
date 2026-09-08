@@ -3,9 +3,13 @@ import {
 	type CombatModeBinding,
 	type CombatModeId
 } from '@summonlab/contracts';
-import { AGENT_READINESS_RULES_VERSION, COMBAT_CONTENT_BINDING } from '@summonlab/content';
+import {
+	AGENT_READINESS_CONTENT_BINDING_V2,
+	AGENT_READINESS_RULES_V2_VERSION,
+	COMBAT_CONTENT_BINDING
+} from '@summonlab/content';
 
-export { AGENT_READINESS_RULES_VERSION } from '@summonlab/content';
+export const AGENT_READINESS_RULES_VERSION = AGENT_READINESS_RULES_V2_VERSION;
 
 export const LEGACY_AUTO_RULES_VERSION = 'legacy-auto-rules-v1' as const;
 
@@ -19,7 +23,10 @@ export function createCombatModeBinding(modeId: CombatModeId, boundAt: string): 
 		modeId,
 		rulesVersion:
 			modeId === 'legacy-auto-v1' ? LEGACY_AUTO_RULES_VERSION : AGENT_READINESS_RULES_VERSION,
-		contentHash: COMBAT_CONTENT_BINDING.contentHash,
+		contentHash:
+			modeId === 'legacy-auto-v1'
+				? COMBAT_CONTENT_BINDING.contentHash
+				: AGENT_READINESS_CONTENT_BINDING_V2.contentHash,
 		boundAt
 	});
 }
@@ -39,10 +46,12 @@ export function combatModeAvailability(
 ): CombatModeAvailability {
 	const parsed = CombatModeBindingSchema.parse(binding);
 	if (parsed.modeId === 'agent-readiness-v1') {
-		if (
-			parsed.rulesVersion !== AGENT_READINESS_RULES_VERSION ||
-			parsed.contentHash !== COMBAT_CONTENT_BINDING.contentHash
-		) {
+		const supportedBinding =
+			(parsed.rulesVersion === 'agent-readiness-rules-v1' &&
+				parsed.contentHash === COMBAT_CONTENT_BINDING.contentHash) ||
+			(parsed.rulesVersion === AGENT_READINESS_RULES_VERSION &&
+				parsed.contentHash === AGENT_READINESS_CONTENT_BINDING_V2.contentHash);
+		if (!supportedBinding) {
 			return {
 				status: 'unavailable',
 				modeId: parsed.modeId,

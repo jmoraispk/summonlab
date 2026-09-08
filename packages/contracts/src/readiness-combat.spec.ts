@@ -35,7 +35,7 @@ const HASH = {
 	view: '3'.repeat(64),
 	legal: '4'.repeat(64),
 	batch: '5'.repeat(64),
-	content: '6'.repeat(64),
+	content: '1abef40c18eb97d4c1694c674f9b4917f286053e6d810d5b4282760f2ab4c2a7',
 	trace: '7'.repeat(64)
 } as const;
 
@@ -340,7 +340,8 @@ const terminalResult = {
 	resultId: ID.event,
 	attemptId: ID.attempt,
 	modeId: 'agent-readiness-v1',
-	rulesVersion: 'combat-rules-v1',
+	rulesVersion: 'agent-readiness-rules-v1',
+	contentHash: HASH.content,
 	outcome: 'victory',
 	endedAtTick: state.tick,
 	finalCombatants: state.combatants,
@@ -823,7 +824,8 @@ describe('readiness combat contracts', () => {
 			resultId: ID.event,
 			attemptId: ID.attempt,
 			modeId: 'agent-readiness-v1',
-			rulesVersion: 'combat-rules-v1',
+			rulesVersion: 'agent-readiness-rules-v2',
+			contentHash: 'e78ed494f1ac78f6b0efca0574248425a1bb1148d54fd39161db600964e8919e',
 			outcome: 'victory',
 			endedAtTick: 20,
 			finalCombatants: {
@@ -847,7 +849,8 @@ describe('readiness combat contracts', () => {
 		const legacy = {
 			...result,
 			modeId: 'legacy-auto-v1' as const,
-			rulesVersion: 'legacy-auto-rules-v1'
+			rulesVersion: 'legacy-auto-rules-v1',
+			contentHash: HASH.content
 		};
 		expect(CombatResultSchema.parse(legacy)).toStrictEqual(legacy);
 		expect(
@@ -855,6 +858,31 @@ describe('readiness combat contracts', () => {
 		).toBe(false);
 		expect(
 			CombatResultSchema.safeParse({ ...result, rulesVersion: 'legacy-auto-rules-v1' }).success
+		).toBe(false);
+	});
+
+	it('binds each common result to its immutable mode rules and combat content', () => {
+		const readiness = {
+			...terminalResult,
+			rulesVersion: 'agent-readiness-rules-v1',
+			contentHash: HASH.content
+		};
+		const legacyDeath = {
+			...terminalResult,
+			modeId: 'legacy-auto-v1',
+			rulesVersion: 'legacy-auto-rules-v1',
+			contentHash: HASH.content,
+			outcome: 'death',
+			claims: [{ ...attemptOutcomeClaim, outcome: 'death' }]
+		};
+
+		expect(CombatResultSchema.parse(readiness)).toStrictEqual(readiness);
+		expect(CombatResultSchema.parse(legacyDeath)).toStrictEqual(legacyDeath);
+		expect(
+			CombatResultSchema.safeParse({ ...readiness, contentHash: 'e'.repeat(64) }).success
+		).toBe(false);
+		expect(
+			CombatResultSchema.safeParse({ ...readiness, rulesVersion: 'combat-rules-v1' }).success
 		).toBe(false);
 	});
 

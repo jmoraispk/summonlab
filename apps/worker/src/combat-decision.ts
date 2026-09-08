@@ -102,18 +102,30 @@ export function createCombatDecisionPolicyFactory(config: AppConfig): CombatDeci
 	};
 }
 
+function assertCombatDecisionJobWindowBinding(
+	window: CombatDecisionWindow,
+	job: CombatDecisionJob
+): void {
+	if (
+		window.runId !== job.runId ||
+		window.windowId !== job.windowId ||
+		window.attemptId !== job.attemptId ||
+		window.tick !== job.tick ||
+		window.snapshotHash !== job.snapshotHash ||
+		window.expectedRunVersion !== job.expectedRunVersion ||
+		window.expectedEventCursor !== job.expectedEventCursor ||
+		!window.snapshot.readyActorIds.includes(job.heroId)
+	) {
+		throw new Error('Combat decision job is bound to another durable window');
+	}
+}
+
 export function materializeCombatActionIntent(
 	window: CombatDecisionWindow,
 	job: CombatDecisionJob,
 	responseInput: unknown
 ): CombatActionIntent {
-	if (
-		window.windowId !== job.windowId ||
-		window.snapshotHash !== job.snapshotHash ||
-		!window.snapshot.readyActorIds.includes(job.heroId)
-	) {
-		throw new Error('Combat decision job is bound to another durable window');
-	}
+	assertCombatDecisionJobWindowBinding(window, job);
 	const response = validateCombatPolicyResponse(job.view, responseInput);
 	const action = job.view.legalActions.find(
 		(candidate) => candidate.actionId === response.actionId
@@ -121,8 +133,8 @@ export function materializeCombatActionIntent(
 	if (!action) throw new Error('Combat response action disappeared from its frozen view');
 	return CombatActionIntentSchema.parse({
 		windowId: job.windowId,
-		attemptId: window.attemptId,
-		tick: window.tick,
+		attemptId: job.attemptId,
+		tick: job.tick,
 		actorId: job.heroId,
 		snapshotHash: job.snapshotHash,
 		actorViewHash: job.actorViewHash,
@@ -165,6 +177,7 @@ async function processCombatDecisionJob(
 	if (!claim) return 'deferred';
 	const window = await getCombatDecisionWindow(config.databaseUrl, claim.job.windowId);
 	if (!window || window.status === 'stale' || window.status === 'failed') return 'deferred';
+	assertCombatDecisionJobWindowBinding(window, claim.job);
 	const startedAt = performance.now();
 	let intent: CombatActionIntent;
 	try {
