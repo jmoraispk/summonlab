@@ -35,6 +35,20 @@ export type CombatSessionStatus =
 	| 'rejected'
 	| 'unavailable';
 
+export type CombatReplayVerification =
+	| Readonly<{ kind: 'pending' }>
+	| Readonly<{ kind: 'verified'; receiptId: string }>
+	| Readonly<{
+			kind: 'mismatch';
+			field:
+				| 'requestHash'
+				| 'traceHash'
+				| 'outputStateHash'
+				| 'receiptId'
+				| 'rulesetVersion'
+				| 'presentationBindings';
+		}>;
+
 export type CombatUnavailableState = Readonly<{
 	code: 'asset-load-failed' | 'renderer-initialization-failed';
 	message: string;
@@ -67,6 +81,12 @@ export type CombatSessionSnapshot = Readonly<{
 }>;
 
 export type CombatSessionListener = (receipt: ExplorationCombatReceipt) => void;
+export type CombatUnavailableListener = (state: CombatUnavailableState) => void;
+
+export type CombatSessionSubscription = Readonly<{
+	onComplete?: CombatSessionListener;
+	onReplayVerification?: (verification: CombatReplayVerification) => void;
+}>;
 
 export interface CombatSession {
 	readonly request: ExplorationEncounterRequest;
@@ -75,10 +95,12 @@ export interface CombatSession {
 	readonly receipt?: ExplorationCombatReceipt;
 	readonly rejection?: ExplorationCombatRejection;
 	readonly unavailable?: CombatUnavailableState;
+	readonly replayVerification?: CombatReplayVerification;
 	markAssetsReady(): void;
 	markUnavailable(state: CombatUnavailableState): void;
 	advanceFixedStep(): CombatSessionSnapshot;
-	subscribe(listener: CombatSessionListener): () => void;
+	subscribe(listener: CombatSessionListener | CombatSessionSubscription): () => void;
+	subscribeUnavailable(listener: CombatUnavailableListener): () => void;
 }
 
 type ValidationResult =
@@ -498,6 +520,7 @@ class CombatSessionImpl implements CombatSession {
 	private finalRejection: ExplorationCombatRejection | undefined;
 	private unavailableState: CombatUnavailableState | undefined;
 	private listeners: CombatSessionListener[] = [];
+	private unavailableListeners: CombatUnavailableListener[] = [];
 
 	constructor(
 		input: unknown,
@@ -541,6 +564,7 @@ class CombatSessionImpl implements CombatSession {
 		if (this.currentStatus !== 'loading' && this.currentStatus !== 'ready') return;
 		this.unavailableState = deepFreeze({ ...state });
 		this.currentStatus = 'unavailable';
+		for (const listener of [...this.unavailableListeners]) listener(this.unavailableState);
 	}
 
 	advanceFixedStep(): CombatSessionSnapshot {
@@ -568,14 +592,27 @@ class CombatSessionImpl implements CombatSession {
 		return this.snapshot();
 	}
 
-	subscribe(listener: CombatSessionListener): () => void {
-		this.listeners.push(listener);
+	subscribe(listener: CombatSessionListener | CombatSessionSubscription): () => void {
+		const onComplete = typeof listener === 'function' ? listener : listener.onComplete;
+		if (!onComplete) return () => {};
+		this.listeners.push(onComplete);
 		let active = true;
 		return () => {
 			if (!active) return;
 			active = false;
-			const index = this.listeners.indexOf(listener);
+			const index = this.listeners.indexOf(onComplete);
 			if (index >= 0) this.listeners.splice(index, 1);
+		};
+	}
+
+	subscribeUnavailable(listener: CombatUnavailableListener): () => void {
+		this.unavailableListeners.push(listener);
+		let active = true;
+		return () => {
+			if (!active) return;
+			active = false;
+			const index = this.unavailableListeners.indexOf(listener);
+			if (index >= 0) this.unavailableListeners.splice(index, 1);
 		};
 	}
 
@@ -663,10 +700,7 @@ class CombatSessionImpl implements CombatSession {
 			defeatedEnemyIds,
 			terminalEvent.eventId
 		);
-		const { expectedExplorationStateHash, requestHash, ...inputState } = this.request;
-		void expectedExplorationStateHash;
-		void requestHash;
-		const inputStateHash = combatValueHash(inputState);
+		const inputStateHash = encounterInputStateHash(this.request);
 		const traceHash = combatValueHash(this.trace);
 		const outputStateHash = combatValueHash({
 			outcome,
@@ -748,4 +782,361 @@ export function createCombatSession(
 	dependencies: CombatSessionDependencies
 ): CombatSession {
 	return new CombatSessionImpl(input, dependencies, validateRequest(input, dependencies));
+}
+
+export type CombatSessionEntry =
+	| Readonly<{ kind: 'session'; session: CombatSession }>
+	| Readonly<{ kind: 'completed'; receipt: ExplorationCombatReceipt }>
+	| Readonly<{ kind: 'rejected'; rejection: ExplorationCombatRejection }>;
+
+type RegistryEntry =
+	| Readonly<{ status: 'active'; requestHash: string; session: CombatSession }>
+	| Readonly<{ status: 'completed'; requestHash: string; receipt: ExplorationCombatReceipt }>
+	| Readonly<{ status: 'rejected'; requestHash: string; rejection: ExplorationCombatRejection }>;
+
+function registryRequestHash(request: ExplorationEncounterRequest): string {
+	return combatRequestHash(request);
+}
+
+function registryView(entry: RegistryEntry | undefined): RegistryEntry | undefined {
+	return entry ? Object.freeze({ ...entry }) : undefined;
+}
+
+export class CombatSessionRegistry {
+	readonly #entries = new Map<string, RegistryEntry>();
+	readonly #entryKeysByRequestId = new Map<string, string>();
+
+	get(idempotencyKey: string): RegistryEntry | undefined {
+		return registryView(this.#entries.get(idempotencyKey));
+	}
+
+	getByRequestId(requestId: string): RegistryEntry | undefined {
+		const idempotencyKey = this.#entryKeysByRequestId.get(requestId);
+		return idempotencyKey ? this.get(idempotencyKey) : undefined;
+	}
+
+	setActive(request: ExplorationEncounterRequest, session: CombatSession): void {
+		this.#entries.set(
+			request.idempotencyKey,
+			Object.freeze({ status: 'active', requestHash: registryRequestHash(request), session })
+		);
+		this.#entryKeysByRequestId.set(request.requestId, request.idempotencyKey);
+	}
+
+	setCompleted(request: ExplorationEncounterRequest, receipt: ExplorationCombatReceipt): void {
+		this.#entries.set(
+			request.idempotencyKey,
+			Object.freeze({
+				status: 'completed',
+				requestHash: registryRequestHash(request),
+				receipt: deepFreeze(receipt)
+			})
+		);
+		this.#entryKeysByRequestId.set(request.requestId, request.idempotencyKey);
+	}
+
+	setRejected(request: ExplorationEncounterRequest, rejection: ExplorationCombatRejection): void {
+		this.#entries.set(
+			request.idempotencyKey,
+			Object.freeze({
+				status: 'rejected',
+				requestHash: registryRequestHash(request),
+				rejection: deepFreeze(rejection)
+			})
+		);
+		this.#entryKeysByRequestId.set(request.requestId, request.idempotencyKey);
+	}
+
+	removeUnavailable(request: ExplorationEncounterRequest, session: CombatSession): void {
+		const entry = this.#entries.get(request.idempotencyKey);
+		if (entry?.status === 'active' && entry.session === session) {
+			this.#entries.delete(request.idempotencyKey);
+			if (this.#entryKeysByRequestId.get(request.requestId) === request.idempotencyKey) {
+				this.#entryKeysByRequestId.delete(request.requestId);
+			}
+		}
+	}
+}
+
+function idempotencyConflict(request: ExplorationEncounterRequest): ExplorationCombatRejection {
+	return deepFreeze(
+		createRejection(
+			request.requestId,
+			'idempotency-conflict',
+			'An encounter with this idempotency key has a different canonical request hash.',
+			['idempotencyKey', 'requestHash']
+		)
+	);
+}
+
+export function enterCombatSession(
+	input: unknown,
+	dependencies: CombatSessionDependencies,
+	registry: CombatSessionRegistry
+): CombatSessionEntry {
+	const parsed = ExplorationEncounterRequestSchema.safeParse(input);
+	if (!parsed.success) {
+		const validation = validateRequest(input, dependencies);
+		const rejection =
+			'rejection' in validation
+				? validation.rejection
+				: createRejection(undefined, 'invalid-request', 'Encounter request failed contract validation.', []);
+		return { kind: 'rejected', rejection: deepFreeze(rejection) };
+	}
+	const request = parsed.data;
+	const requestHash = registryRequestHash(request);
+	const existing = registry.get(request.idempotencyKey) ?? registry.getByRequestId(request.requestId);
+	if (existing && existing.requestHash !== requestHash) {
+		return { kind: 'rejected', rejection: idempotencyConflict(request) };
+	}
+	const validation = validateRequest(input, dependencies);
+	if (requestHash !== request.requestHash) {
+		if ('rejection' in validation) {
+			if (existing?.status === 'rejected') return { kind: 'rejected', rejection: existing.rejection };
+			if (!existing) registry.setRejected(request, validation.rejection);
+			return { kind: 'rejected', rejection: deepFreeze(validation.rejection) };
+		}
+		throw new Error('Request hash validation did not reject a mismatched canonical hash.');
+	}
+	if (existing?.status === 'active') return { kind: 'session', session: existing.session };
+	if (existing?.status === 'completed') return { kind: 'completed', receipt: existing.receipt };
+	if (existing?.status === 'rejected') return { kind: 'rejected', rejection: existing.rejection };
+	if ('rejection' in validation) {
+		registry.setRejected(request, validation.rejection);
+		const stored = registry.get(request.idempotencyKey);
+		if (stored?.status !== 'rejected') throw new Error('Registry rejected entry was not stored.');
+		return { kind: 'rejected', rejection: stored.rejection };
+	}
+	const session = createCombatSession(request, dependencies);
+	registry.setActive(request, session);
+	session.subscribe((receipt) => registry.setCompleted(request, receipt));
+	session.subscribeUnavailable(() => registry.removeUnavailable(request, session));
+	return { kind: 'session', session };
+}
+
+function replayOutputStateHash(receipt: ExplorationCombatReceipt): string {
+	return combatValueHash({
+		outcome: receipt.outcome,
+		finalHeroes: receipt.finalHeroes,
+		finalEnemies: receipt.finalEnemies,
+		defeatedEnemyIds: receipt.defeatedEnemyIds,
+		claims: receipt.claims
+	});
+}
+
+function encounterInputStateHash(request: ExplorationEncounterRequest): string {
+	const { expectedExplorationStateHash, requestHash, ...inputState } = request;
+	void expectedExplorationStateHash;
+	void requestHash;
+	return combatValueHash(inputState);
+}
+
+function replayVerificationFor(
+	request: ExplorationEncounterRequest,
+	receipt: ExplorationCombatReceipt
+): CombatReplayVerification {
+	if (
+		request.requestHash !== receipt.requestHash ||
+		combatRequestHash(request) !== request.requestHash ||
+		receipt.inputStateHash !== encounterInputStateHash(request) ||
+		receipt.replayRef.requestHash !== receipt.requestHash ||
+		receipt.replayRef.requestId !== request.requestId ||
+		combatValueHash(receipt.contentBindings) !== combatValueHash(request.contentBindings)
+	) {
+		return deepFreeze({ kind: 'mismatch', field: 'requestHash' });
+	}
+	if (
+		receipt.rulesetVersion !== request.rulesetVersion ||
+		receipt.replayRef.rulesetVersion !== receipt.rulesetVersion
+	) {
+		return deepFreeze({ kind: 'mismatch', field: 'rulesetVersion' });
+	}
+	if (
+		receipt.replayRef.battlefieldBindingHash !== combatValueHash(request.battlefieldBinding) ||
+		receipt.replayRef.participantPresentationBindingsHash !==
+			combatValueHash([...request.party, ...request.enemies].map((entry) => entry.presentation))
+	) {
+		return deepFreeze({ kind: 'mismatch', field: 'presentationBindings' });
+	}
+	const traceHash = combatValueHash(receipt.events);
+	if (receipt.traceHash !== traceHash || receipt.replayRef.traceHash !== receipt.traceHash) {
+		return deepFreeze({ kind: 'mismatch', field: 'traceHash' });
+	}
+	if (receipt.outputStateHash !== replayOutputStateHash(receipt)) {
+		return deepFreeze({ kind: 'mismatch', field: 'outputStateHash' });
+	}
+	const receiptId = combatDeterministicId('exploration-combat-receipt-v1', {
+		requestHash: request.requestHash,
+		traceHash
+	});
+	if (receipt.receiptId !== receiptId || receipt.replayRef.receiptId !== receipt.receiptId) {
+		return deepFreeze({ kind: 'mismatch', field: 'receiptId' });
+	}
+	return deepFreeze({ kind: 'verified', receiptId: receipt.receiptId });
+}
+
+function replayTerminalCombat(
+	combat: RealtimeCombatState,
+	receipt: ExplorationCombatReceipt
+): RealtimeCombatState {
+	type FinalResource = Readonly<{
+		health: number;
+		maximumHealth: number;
+		mana: number;
+		maximumMana: number;
+		combatState: 'defeated' | 'combat-capable';
+	}>;
+	const finalResources = new Map<string, FinalResource>();
+	for (const hero of receipt.finalHeroes) finalResources.set(hero.heroId, hero);
+	for (const enemy of receipt.finalEnemies) finalResources.set(enemy.enemyInstanceId, enemy);
+	return {
+		...combat,
+		phase: receipt.outcome,
+		defeatedEnemies: receipt.defeatedEnemyIds.length,
+		lastEvent: receipt.decisiveCause.summary,
+		actors: combat.actors.map((actor) => {
+			const final = finalResources.get(actor.id);
+			return final
+				? {
+						...actor,
+						health: final.health,
+						maximumHealth: final.maximumHealth,
+						mana: final.mana,
+						maximumMana: final.maximumMana,
+						intent: final.combatState === 'defeated' ? 'down' : actor.intent
+					}
+				: actor;
+		})
+	};
+}
+
+class ReplayCombatSession implements CombatSession {
+	readonly request: ExplorationEncounterRequest;
+	private currentStatus: CombatSessionStatus = 'loading';
+	private currentCombat: RealtimeCombatState;
+	private readonly capturedEvents: readonly ExplorationCombatEvent[];
+	private readonly trace: ExplorationCombatEvent[];
+	private simulationTick = 0;
+	private unavailableState: CombatUnavailableState | undefined;
+	private currentVerification: CombatReplayVerification = deepFreeze({ kind: 'pending' });
+	private readonly unavailableListeners: CombatUnavailableListener[] = [];
+	private readonly verificationListeners: ((verification: CombatReplayVerification) => void)[] = [];
+	private readonly terminalTick: number;
+
+	constructor(request: ExplorationEncounterRequest, private readonly expectedReceipt: ExplorationCombatReceipt) {
+		this.request = deepFreeze(request);
+		this.currentCombat = createRealtimeCombat(this.request);
+		this.capturedEvents = immutableCopy(expectedReceipt.events);
+		this.trace = this.capturedEvents.filter((event) => event.simulationTick === 0);
+		this.terminalTick = Number.isSafeInteger(expectedReceipt.endedAtTick)
+			? Math.max(0, expectedReceipt.endedAtTick)
+			: 0;
+	}
+
+	get status() {
+		return this.currentStatus;
+	}
+
+	get combat() {
+		return immutableCopy(this.currentCombat);
+	}
+
+	get receipt() {
+		return undefined;
+	}
+
+	get rejection() {
+		return undefined;
+	}
+
+	get unavailable() {
+		return this.unavailableState;
+	}
+
+	get replayVerification() {
+		return this.currentVerification;
+	}
+
+	markAssetsReady(): void {
+		if (this.currentStatus !== 'loading') return;
+		this.currentStatus = 'ready';
+		this.currentStatus = 'running';
+	}
+
+	markUnavailable(state: CombatUnavailableState): void {
+		if (this.currentStatus !== 'loading' && this.currentStatus !== 'ready') return;
+		this.unavailableState = deepFreeze({ ...state });
+		this.currentStatus = 'unavailable';
+		for (const listener of [...this.unavailableListeners]) listener(this.unavailableState);
+	}
+
+	advanceFixedStep(): CombatSessionSnapshot {
+		if (this.currentStatus !== 'running') return this.snapshot();
+		this.simulationTick += 1;
+		const capturedAtTick = this.capturedEvents.filter(
+			(event) => event.simulationTick === this.simulationTick
+		);
+		this.trace.push(...capturedAtTick);
+		if (capturedAtTick.length > 0) {
+			this.currentCombat = {
+				...this.currentCombat,
+				elapsedSeconds: this.simulationTick / 60,
+				lastEvent: capturedAtTick.at(-1)!.publicSummary
+			};
+		}
+		if (this.simulationTick >= this.terminalTick) this.finishReplay();
+		return this.snapshot();
+	}
+
+	subscribe(listener: CombatSessionListener | CombatSessionSubscription): () => void {
+		if (typeof listener === 'function' || !listener.onReplayVerification) return () => {};
+		this.verificationListeners.push(listener.onReplayVerification);
+		let active = true;
+		return () => {
+			if (!active) return;
+			active = false;
+			const index = this.verificationListeners.indexOf(listener.onReplayVerification!);
+			if (index >= 0) this.verificationListeners.splice(index, 1);
+		};
+	}
+
+	subscribeUnavailable(listener: CombatUnavailableListener): () => void {
+		this.unavailableListeners.push(listener);
+		let active = true;
+		return () => {
+			if (!active) return;
+			active = false;
+			const index = this.unavailableListeners.indexOf(listener);
+			if (index >= 0) this.unavailableListeners.splice(index, 1);
+		};
+	}
+
+	private finishReplay(): void {
+		if (this.currentStatus !== 'running') return;
+		this.currentCombat = replayTerminalCombat(this.currentCombat, this.expectedReceipt);
+		this.currentStatus = this.expectedReceipt.outcome;
+		this.currentVerification = replayVerificationFor(this.request, this.expectedReceipt);
+		for (const listener of [...this.verificationListeners]) listener(this.currentVerification);
+	}
+
+	private snapshot(): CombatSessionSnapshot {
+		return deepFreeze({
+			status: this.currentStatus,
+			combat: immutableCopy(this.currentCombat),
+			simulationTick: this.simulationTick,
+			events: immutableCopy(this.trace),
+			...(this.unavailableState ? { unavailable: this.unavailableState } : {})
+		});
+	}
+}
+
+export function createReplayCombatSession(
+	request: ExplorationEncounterRequest,
+	expectedReceipt: ExplorationCombatReceipt,
+	dependencies: CombatSessionDependencies
+): CombatSession {
+	const validation = validateRequest(request, dependencies);
+	return 'request' in validation
+		? new ReplayCombatSession(validation.request, immutableCopy(expectedReceipt))
+		: new CombatSessionImpl(request, dependencies, validation);
 }

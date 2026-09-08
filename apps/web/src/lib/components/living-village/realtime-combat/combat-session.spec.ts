@@ -6,7 +6,13 @@ import {
 import { describe, expect, it, vi } from 'vitest';
 
 import { combatRequestHash } from './combat-hash';
-import { createCombatSession, type CombatSession } from './combat-session';
+import {
+	CombatSessionRegistry,
+	createCombatSession,
+	createReplayCombatSession,
+	enterCombatSession,
+	type CombatSession
+} from './combat-session';
 import { RAT_ENCOUNTER_CLAIM_POLICY, RAT_ENCOUNTER_REQUEST } from './rat-encounter-fixture';
 
 const dependencies = {
@@ -76,6 +82,12 @@ function runToTerminal(session: CombatSession) {
 	return session.receipt;
 }
 
+function runReplayToTerminal(session: CombatSession) {
+	session.markAssetsReady();
+	while (session.status === 'running') session.advanceFixedStep();
+	return (session as CombatSession & { replayVerification?: unknown }).replayVerification;
+}
+
 function runWithFrames(frameSeconds: readonly number[]) {
 	const session = createCombatSession(RAT_ENCOUNTER_REQUEST, dependencies);
 	session.markAssetsReady();
@@ -91,6 +103,141 @@ function runWithFrames(frameSeconds: readonly number[]) {
 }
 
 describe('combat session', () => {
+	it('exposes the idempotent entry contract', async () => {
+		const module = (await import('./combat-session')) as typeof import('./combat-session') & {
+			CombatSessionRegistry?: unknown;
+			enterCombatSession?: unknown;
+		};
+
+		expect(module.CombatSessionRegistry).toEqual(expect.any(Function));
+		expect(module.enterCombatSession).toEqual(expect.any(Function));
+	});
+
+	it('exposes the replay session contract', async () => {
+		const module = (await import('./combat-session')) as typeof import('./combat-session') & {
+			createReplayCombatSession?: unknown;
+		};
+
+		expect(module.createReplayCombatSession).toEqual(expect.any(Function));
+	});
+
+	it('shares an active session and stores one frozen completed receipt', () => {
+		const registry = new CombatSessionRegistry();
+		const first = enterCombatSession(RAT_ENCOUNTER_REQUEST, dependencies, registry);
+		const duplicate = enterCombatSession(structuredClone(RAT_ENCOUNTER_REQUEST), dependencies, registry);
+
+		expect(first.kind).toBe('session');
+		expect(duplicate.kind).toBe('session');
+		if (first.kind !== 'session' || duplicate.kind !== 'session') throw new Error('expected session');
+		expect(duplicate.session).toBe(first.session);
+
+		const receipt = runToTerminal(first.session);
+		const completed = enterCombatSession(RAT_ENCOUNTER_REQUEST, dependencies, registry);
+		expect(completed).toEqual({ kind: 'completed', receipt });
+		if (completed.kind !== 'completed') throw new Error('expected completed receipt');
+		expect(completed.receipt).toBe(receipt);
+		expect(Object.isFrozen(completed.receipt)).toBe(true);
+		const record = registry.get(RAT_ENCOUNTER_REQUEST.idempotencyKey);
+		expect(record).toMatchObject({ status: 'completed', requestHash: RAT_ENCOUNTER_REQUEST.requestHash });
+		expect(Object.isFrozen(record)).toBe(true);
+	});
+
+	it('rejects one idempotency key with a different request hash', () => {
+		const registry = new CombatSessionRegistry();
+		enterCombatSession(RAT_ENCOUNTER_REQUEST, dependencies, registry);
+		const collision = withRehashedRequest({ seed: 'different-seed' });
+
+		expect(enterCombatSession(collision, dependencies, registry)).toMatchObject({
+			kind: 'rejected',
+			rejection: { code: 'idempotency-conflict' }
+		});
+	});
+
+	it('rejects one request ID reused with a different canonical hash', () => {
+		const registry = new CombatSessionRegistry();
+		enterCombatSession(RAT_ENCOUNTER_REQUEST, dependencies, registry);
+		const collision = withRehashedRequest({
+			idempotencyKey: 'rat-study-field-test-retry',
+			seed: 'different-seed'
+		});
+
+		expect(enterCombatSession(collision, dependencies, registry)).toMatchObject({
+			kind: 'rejected',
+			rejection: { code: 'idempotency-conflict' }
+		});
+	});
+
+	it('completes the registry entry before re-entrant completion listeners run', () => {
+		const registry = new CombatSessionRegistry();
+		const entry = enterCombatSession(RAT_ENCOUNTER_REQUEST, dependencies, registry);
+		if (entry.kind !== 'session') throw new Error('expected session');
+		let reentrant: ReturnType<typeof enterCombatSession> | undefined;
+		entry.session.subscribe(() => {
+			reentrant = enterCombatSession(RAT_ENCOUNTER_REQUEST, dependencies, registry);
+		});
+
+		const receipt = runToTerminal(entry.session);
+		expect(reentrant).toEqual({ kind: 'completed', receipt });
+	});
+
+	it('removes unavailable active sessions so their request can retry', () => {
+		const registry = new CombatSessionRegistry();
+		const first = enterCombatSession(RAT_ENCOUNTER_REQUEST, dependencies, registry);
+		if (first.kind !== 'session') throw new Error('expected session');
+		first.session.markUnavailable({ code: 'asset-load-failed', message: 'atlas missing' });
+
+		const retry = enterCombatSession(RAT_ENCOUNTER_REQUEST, dependencies, registry);
+		expect(retry.kind).toBe('session');
+		if (retry.kind !== 'session') throw new Error('expected retry session');
+		expect(retry.session).not.toBe(first.session);
+	});
+
+	it('stores a deterministic post-parse request rejection', () => {
+		const registry = new CombatSessionRegistry();
+		const invalidHash = { ...RAT_ENCOUNTER_REQUEST, requestHash: '0'.repeat(64) };
+		const first = enterCombatSession(invalidHash, dependencies, registry);
+
+		expect(first).toMatchObject({ kind: 'rejected', rejection: { code: 'request-hash-mismatch' } });
+		expect(registry.get(RAT_ENCOUNTER_REQUEST.idempotencyKey)).toMatchObject({ status: 'rejected' });
+		expect(enterCombatSession(invalidHash, dependencies, registry)).toEqual(first);
+	});
+
+	it('replays captured authoritative events without completion publication', () => {
+		const receipt = runToTerminal(createCombatSession(RAT_ENCOUNTER_REQUEST, dependencies));
+		if (!receipt) throw new Error('expected receipt');
+		const replay = createReplayCombatSession(RAT_ENCOUNTER_REQUEST, receipt, dependencies);
+		const onComplete = vi.fn();
+		replay.subscribe({ onComplete });
+
+		expect(runReplayToTerminal(replay)).toEqual({ kind: 'verified', receiptId: receipt.receiptId });
+		expect(onComplete).not.toHaveBeenCalled();
+	});
+
+	it.each(['traceHash', 'outputStateHash'] as const)(
+		'fails replay verification closed when %s is changed',
+		(field) => {
+			const receipt = runToTerminal(createCombatSession(RAT_ENCOUNTER_REQUEST, dependencies));
+			if (!receipt) throw new Error('expected receipt');
+			const tampered = { ...receipt, [field]: 'f'.repeat(64) };
+
+			expect(runReplayToTerminal(createReplayCombatSession(RAT_ENCOUNTER_REQUEST, tampered, dependencies))).toMatchObject({
+				kind: 'mismatch',
+				field
+			});
+		}
+	);
+
+	it('fails replay verification closed when the stored input-state hash is changed', () => {
+		const receipt = runToTerminal(createCombatSession(RAT_ENCOUNTER_REQUEST, dependencies));
+		if (!receipt) throw new Error('expected receipt');
+		const tampered = { ...receipt, inputStateHash: 'f'.repeat(64) };
+
+		expect(runReplayToTerminal(createReplayCombatSession(RAT_ENCOUNTER_REQUEST, tampered, dependencies))).toMatchObject({
+			kind: 'mismatch',
+			field: 'requestHash'
+		});
+	});
+
 	it('preserves a deeply frozen request while it runs', () => {
 		const before = structuredClone(RAT_ENCOUNTER_REQUEST);
 
