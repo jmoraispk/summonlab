@@ -9,6 +9,7 @@ import {
 } from './family-affinity-production-lib.js';
 import {
 	resealFamilyAffinitySourceLineageDocuments,
+	resealFamilyAffinitySourceLineagesDocuments,
 	selectFamilyAffinitySourceLineagePaths
 } from './reseal-family-affinity-source-lineage.js';
 
@@ -56,6 +57,77 @@ describe('family-affinity source lineage resealing', () => {
 				{ path: 'target.json', contents }
 			])
 		).toEqual([]);
+	});
+
+	it('reseals canonical lineage for a non-elementals family packet', async () => {
+		const goblinsPacketPath =
+			'assets/enemies/experiments/family-affinity-v1/families/01-goblins.json';
+		const sourceContents = await readFile(path.resolve(goblinsPacketPath), 'utf8');
+		const sourceDigest = familyAffinitySha256(JSON.parse(sourceContents));
+		const staleDigest = 'e'.repeat(64);
+		const document = {
+			path: 'assets/enemies/experiments/family-affinity-v1/targets/goblins/fixture/normal/target-v1.json',
+			contents: `${JSON.stringify({
+				sources: {
+					familyPacketPath: goblinsPacketPath,
+					familyPacketSha256: staleDigest
+				}
+			})}\n`
+		};
+		const unrelatedSource = {
+			path: 'assets/enemies/experiments/family-affinity-v1/review/unrelated-source.json',
+			contents: '{"value":"unchanged"}\n'
+		};
+		const unrelatedReference = {
+			path: 'assets/enemies/experiments/family-affinity-v1/review/unrelated-reference.json',
+			contents: `${JSON.stringify({
+				sourcePath: unrelatedSource.path,
+				sourceSha256: 'b'.repeat(64)
+			})}\n`
+		};
+
+		expect(
+			resealFamilyAffinitySourceLineageDocuments(
+				{ path: goblinsPacketPath, contents: sourceContents },
+				[document, unrelatedSource, unrelatedReference]
+			)
+		).toEqual([
+			{
+				...document,
+				contents: document.contents.replace(staleDigest, sourceDigest)
+			}
+		]);
+	});
+
+	it('reseals multiple changed packet lineages in one deterministic pass', async () => {
+		const packetPaths = [
+			'assets/enemies/experiments/family-affinity-v1/families/01-goblins.json',
+			'assets/enemies/experiments/family-affinity-v1/families/02-orcs.json'
+		];
+		const sources = await Promise.all(
+			packetPaths.map(async (packetPath) => ({
+				path: packetPath,
+				contents: await readFile(path.resolve(packetPath), 'utf8')
+			}))
+		);
+		const staleDigests = ['c'.repeat(64), 'd'.repeat(64)];
+		const documents = sources.map((source, index) => ({
+			path: `assets/enemies/experiments/family-affinity-v1/targets/fixture-${index}/normal/target-v1.json`,
+			contents: `${JSON.stringify({
+				sources: {
+					familyPacketPath: source.path,
+					familyPacketSha256: staleDigests[index]
+				}
+			})}\n`
+		}));
+
+		const changed = resealFamilyAffinitySourceLineagesDocuments(sources, documents);
+		expect(changed).toHaveLength(2);
+		for (const [index, document] of changed.entries()) {
+			expect(JSON.parse(document.contents).sources.familyPacketSha256).toBe(
+				familyAffinitySha256(JSON.parse(sources[index]!.contents))
+			);
+		}
 	});
 
 	it('reseals target and prompt lineage after the family packet digest changes', async () => {
@@ -111,7 +183,7 @@ describe('family-affinity source lineage resealing', () => {
 		expect(updatedReceipt.sourceSha256).toBe(updatedResult.sourceSha256);
 	});
 
-	it('selects only tracked elementals JSON lineage', () => {
+	it('selects every active tracked family-affinity JSON lineage', () => {
 		expect(
 			selectFamilyAffinitySourceLineagePaths([
 				'assets/enemies/experiments/family-affinity-v1/manifest.json',
@@ -123,6 +195,7 @@ describe('family-affinity source lineage resealing', () => {
 		).toEqual([
 			'assets/enemies/experiments/family-affinity-v1/manifest.json',
 			'assets/enemies/experiments/family-affinity-v1/results/elementals/wisp/normal-v1.json',
+			'assets/enemies/experiments/family-affinity-v1/targets/dragons/drake/normal/target-v1.json',
 			'assets/enemies/experiments/family-affinity-v1/targets/elementals/wisp/normal/target-v1.json'
 		]);
 	});

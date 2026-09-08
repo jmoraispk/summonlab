@@ -3,6 +3,7 @@ import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 
 import {
+	BridgeIdentityPacketSchema,
 	FamilyPacketSchema,
 	familyAffinityPromptSha256,
 	familyAffinityRawSha256,
@@ -11,7 +12,18 @@ import {
 } from './family-affinity-production-lib.js';
 
 const FAMILY_AFFINITY_ROOT = 'assets/enemies/experiments/family-affinity-v1';
-const ELEMENTALS_PACKET_PATH = `${FAMILY_AFFINITY_ROOT}/family-replacements/21-elementals.json`;
+const FAMILY_PACKET_PATH_PATTERN = new RegExp(
+	`^${FAMILY_AFFINITY_ROOT}/(?:families|family-replacements|bridge/identities)/[^/]+\\.json$`,
+	'u'
+);
+
+function sourcePacketDigest(source: FamilyAffinitySourceLineageDocument): string {
+	const parsed = JSON.parse(source.contents) as unknown;
+	const packet = source.path.includes('/bridge/identities/')
+		? BridgeIdentityPacketSchema.parse(parsed)
+		: FamilyPacketSchema.parse(parsed);
+	return familyAffinitySha256(packet);
+}
 
 export interface FamilyAffinitySourceLineageDocument {
 	readonly path: string;
@@ -25,10 +37,9 @@ export function selectFamilyAffinitySourceLineagePaths(
 	return paths
 		.filter(
 			(repositoryPath) =>
-				repositoryPath === `${FAMILY_AFFINITY_ROOT}/manifest.json` ||
-				(repositoryPath.startsWith(prefix) &&
-					repositoryPath.includes('/elementals/') &&
-					repositoryPath.endsWith('.json'))
+				repositoryPath.startsWith(prefix) &&
+				repositoryPath.endsWith('.json') &&
+				!repositoryPath.startsWith(`${FAMILY_AFFINITY_ROOT}/migrations/`)
 		)
 		.sort((left, right) => (left < right ? -1 : left > right ? 1 : 0));
 }
@@ -37,14 +48,10 @@ export function resealFamilyAffinitySourceLineageDocuments(
 	source: FamilyAffinitySourceLineageDocument,
 	documents: readonly FamilyAffinitySourceLineageDocument[]
 ): readonly FamilyAffinitySourceLineageDocument[] {
-	if (source.path !== ELEMENTALS_PACKET_PATH) {
+	if (!FAMILY_PACKET_PATH_PATTERN.test(source.path)) {
 		throw new Error('Unexpected family-affinity source packet path');
 	}
-	const packet = FamilyPacketSchema.parse(JSON.parse(source.contents));
-	if (packet.familyId !== 'elementals') {
-		throw new Error('Family-affinity source packet identity is not elementals');
-	}
-	const currentDigest = familyAffinitySha256(packet);
+	const currentDigest = sourcePacketDigest(source);
 	const staleDigests = new Set<string>();
 	for (const document of documents) {
 		const value = JSON.parse(document.contents) as unknown;
@@ -63,19 +70,29 @@ export function resealFamilyAffinitySourceLineageDocuments(
 			staleDigests.add(binding.familyPacketSha256);
 		}
 	}
+	if (staleDigests.size === 0) return [];
 	const materialized = documents.map((document) => {
 		let contents = document.contents;
 		for (const staleDigest of staleDigests) {
 			contents = contents.replaceAll(staleDigest, currentDigest);
 		}
-		return { ...document, contents, value: JSON.parse(contents) as unknown, dirty: false };
+		return {
+			...document,
+			contents,
+			value: JSON.parse(contents) as unknown,
+			dirty: contents !== document.contents
+		};
 	});
 	const byPath = new Map(materialized.map((document) => [document.path, document]));
-	byPath.set(source.path, { ...source, value: packet, dirty: false });
+	byPath.set(source.path, {
+		...source,
+		value: JSON.parse(source.contents) as unknown,
+		dirty: true
+	});
 
 	const digestForReference = (repositoryPath: string, shaKey: string): string | undefined => {
 		const document = byPath.get(repositoryPath);
-		if (!document) return undefined;
+		if (!document?.dirty) return undefined;
 		if (/(?:result|review|receipt|manifest)sha256$/iu.test(shaKey)) {
 			return familyAffinityRawSha256(
 				document.dirty ? `${JSON.stringify(document.value)}\n` : document.contents
@@ -115,29 +132,41 @@ export function resealFamilyAffinitySourceLineageDocuments(
 		}
 		const targets = new Map(
 			materialized
-				.map((document) => document.value)
+				.map((document) => ({ document, value: document.value }))
 				.filter(
-					(value): value is Record<string, unknown> =>
-						value !== null &&
-						typeof value === 'object' &&
-						!Array.isArray(value) &&
-						(value as Record<string, unknown>).schemaVersion === 'family-affinity-target-v1' &&
-						typeof (value as Record<string, unknown>).targetId === 'string'
+					(
+						entry
+					): entry is {
+						document: (typeof materialized)[number];
+						value: Record<string, unknown>;
+					} =>
+						entry.value !== null &&
+						typeof entry.value === 'object' &&
+						!Array.isArray(entry.value) &&
+						(entry.value as Record<string, unknown>).schemaVersion ===
+							'family-affinity-target-v1' &&
+						typeof (entry.value as Record<string, unknown>).targetId === 'string'
 				)
-				.map((value) => [value.targetId as string, value])
+				.map((entry) => [entry.value.targetId as string, entry])
 		);
 		const assignments = new Map(
 			materialized
-				.map((document) => document.value)
+				.map((document) => ({ document, value: document.value }))
 				.filter(
-					(value): value is Record<string, unknown> =>
-						value !== null &&
-						typeof value === 'object' &&
-						!Array.isArray(value) &&
-						(value as Record<string, unknown>).schemaVersion === 'family-affinity-assignment-v1' &&
-						typeof (value as Record<string, unknown>).targetId === 'string'
+					(
+						entry
+					): entry is {
+						document: (typeof materialized)[number];
+						value: Record<string, unknown>;
+					} =>
+						entry.value !== null &&
+						typeof entry.value === 'object' &&
+						!Array.isArray(entry.value) &&
+						(entry.value as Record<string, unknown>).schemaVersion ===
+							'family-affinity-assignment-v1' &&
+						typeof (entry.value as Record<string, unknown>).targetId === 'string'
 				)
-				.map((value) => [value.targetId as string, value])
+				.map((entry) => [entry.value.targetId as string, entry])
 		);
 		const updateTargetBindings = (value: unknown): boolean => {
 			if (value === null || typeof value !== 'object') return false;
@@ -149,7 +178,7 @@ export function resealFamilyAffinitySourceLineageDocuments(
 			const record = value as Record<string, unknown>;
 			if (typeof record.targetId === 'string' && typeof record.targetSha256 === 'string') {
 				const target = targets.get(record.targetId);
-				const digest = target ? familyAffinitySha256(target) : undefined;
+				const digest = target?.document.dirty ? familyAffinitySha256(target.value) : undefined;
 				if (digest !== undefined && record.targetSha256 !== digest) {
 					record.targetSha256 = digest;
 					bindingChanged = true;
@@ -167,7 +196,10 @@ export function resealFamilyAffinitySourceLineageDocuments(
 			}
 		}
 		if (changed) continue;
-		const results = new Map<string, Record<string, unknown>>();
+		const results = new Map<
+			string,
+			{ document: (typeof materialized)[number]; value: Record<string, unknown> }
+		>();
 		for (const document of materialized) {
 			const value = document.value;
 			if (
@@ -183,13 +215,16 @@ export function resealFamilyAffinitySourceLineageDocuments(
 			const target = targets.get(targetId);
 			const assignment = assignments.get(targetId);
 			if (!target || !assignment) continue;
-			const promptSha256 = familyAffinityPromptSha256(target, assignment);
-			if (result.promptSha256 !== promptSha256) {
+			const promptSha256 = familyAffinityPromptSha256(target.value, assignment.value);
+			if (
+				(target.document.dirty || assignment.document.dirty) &&
+				result.promptSha256 !== promptSha256
+			) {
 				result.promptSha256 = promptSha256;
 				document.dirty = true;
 				changed = true;
 			}
-			results.set(targetId, result);
+			results.set(targetId, { document, value: result });
 		}
 		const updateResultBindings = (value: unknown): boolean => {
 			if (value === null || typeof value !== 'object') return false;
@@ -200,10 +235,10 @@ export function resealFamilyAffinitySourceLineageDocuments(
 			}
 			const record = value as Record<string, unknown>;
 			const result = typeof record.targetId === 'string' ? results.get(record.targetId) : undefined;
-			if (result) {
+			if (result?.document.dirty) {
 				for (const key of ['promptSha256', 'sourceSha256'] as const) {
-					if (typeof record[key] === 'string' && record[key] !== result[key]) {
-						record[key] = result[key];
+					if (typeof record[key] === 'string' && record[key] !== result.value[key]) {
+						record[key] = result.value[key];
 						bindingChanged = true;
 					}
 				}
@@ -236,17 +271,20 @@ export function resealFamilyAffinitySourceLineageDocuments(
 			const resultDocument =
 				typeof review.resultPath === 'string' ? byPath.get(review.resultPath) : undefined;
 			if (!target || !assignment || !result || !resultDocument) continue;
+			if (!target.document.dirty && !assignment.document.dirty && !result.document.dirty) {
+				continue;
+			}
 			const issuerAttestationSha256 = familyAffinityReviewIssuerAttestationSha256({
 				issuerId: review.issuerId as string,
 				reviewerId: review.reviewerId as string,
 				kind: review.reviewKind as 'ordinary' | 'blind',
 				manifestPath: review.manifestPath as string,
 				manifestSha256: review.manifestSha256 as string,
-				target,
+				target: target.value,
 				targetPath: review.targetPath as string,
-				productionAssignment: assignment,
+				productionAssignment: assignment.value,
 				productionAssignmentPath: review.productionAssignmentPath as string,
-				result: result as never,
+				result: result.value as never,
 				resultSha256: familyAffinityRawSha256(
 					resultDocument.dirty
 						? `${JSON.stringify(resultDocument.value)}\n`
@@ -276,6 +314,72 @@ export function resealFamilyAffinitySourceLineageDocuments(
 	});
 }
 
+export function resealFamilyAffinitySourceLineagesDocuments(
+	sources: readonly FamilyAffinitySourceLineageDocument[],
+	documents: readonly FamilyAffinitySourceLineageDocument[]
+): readonly FamilyAffinitySourceLineageDocument[] {
+	const sourceByPath = new Map<string, FamilyAffinitySourceLineageDocument>();
+	for (const source of sources) {
+		if (sourceByPath.has(source.path)) {
+			throw new Error(`Duplicate family-affinity source packet: ${source.path}`);
+		}
+		sourceByPath.set(source.path, source);
+	}
+	const successorDigestByStaleDigest = new Map<string, string>();
+	for (const document of documents) {
+		const value = JSON.parse(document.contents) as unknown;
+		if (value === null || typeof value !== 'object' || Array.isArray(value)) continue;
+		const sourcesValue = (value as Record<string, unknown>).sources;
+		if (sourcesValue === null || typeof sourcesValue !== 'object' || Array.isArray(sourcesValue)) {
+			continue;
+		}
+		const binding = sourcesValue as Record<string, unknown>;
+		if (
+			typeof binding.familyPacketPath !== 'string' ||
+			typeof binding.familyPacketSha256 !== 'string'
+		) {
+			continue;
+		}
+		const source = sourceByPath.get(binding.familyPacketPath);
+		if (!source) continue;
+		const successorDigest = sourcePacketDigest(source);
+		if (binding.familyPacketSha256 === successorDigest) continue;
+		const existing = successorDigestByStaleDigest.get(binding.familyPacketSha256);
+		if (existing !== undefined && existing !== successorDigest) {
+			throw new Error('Ambiguous family-affinity source digest successor');
+		}
+		successorDigestByStaleDigest.set(binding.familyPacketSha256, successorDigest);
+	}
+
+	const originalByPath = new Map(documents.map((document) => [document.path, document.contents]));
+	const currentByPath = new Map(documents.map((document) => [document.path, document]));
+	for (const source of [...sourceByPath.values()].sort((left, right) =>
+		left.path < right.path ? -1 : left.path > right.path ? 1 : 0
+	)) {
+		for (const changed of resealFamilyAffinitySourceLineageDocuments(source, [
+			...currentByPath.values()
+		])) {
+			currentByPath.set(changed.path, changed);
+		}
+	}
+	return documents.flatMap((document) => {
+		const current = currentByPath.get(document.path)!;
+		return current.contents === originalByPath.get(document.path) ? [] : [current];
+	});
+}
+
+function collectFamilyPacketPaths(value: unknown, output: Set<string>): void {
+	if (value === null || typeof value !== 'object') return;
+	if (Array.isArray(value)) {
+		for (const child of value) collectFamilyPacketPaths(child, output);
+		return;
+	}
+	for (const [key, child] of Object.entries(value as Record<string, unknown>)) {
+		if (key === 'familyPacketPath' && typeof child === 'string') output.add(child);
+		else collectFamilyPacketPaths(child, output);
+	}
+}
+
 async function listJsonFiles(directory: string, repositoryRoot: string): Promise<string[]> {
 	const entries = await readdir(directory, { withFileTypes: true });
 	const paths = await Promise.all(
@@ -299,14 +403,17 @@ async function main(): Promise<void> {
 			contents: await readFile(path.join(repositoryRoot, ...repositoryPath.split('/')), 'utf8')
 		}))
 	);
-	const source = {
-		path: ELEMENTALS_PACKET_PATH,
-		contents: await readFile(
-			path.join(repositoryRoot, ...ELEMENTALS_PACKET_PATH.split('/')),
-			'utf8'
-		)
-	};
-	const changed = resealFamilyAffinitySourceLineageDocuments(source, documents);
+	const packetPaths = new Set<string>();
+	for (const document of documents) {
+		collectFamilyPacketPaths(JSON.parse(document.contents) as unknown, packetPaths);
+	}
+	const documentByPath = new Map(documents.map((document) => [document.path, document]));
+	const sources = [...packetPaths].sort().map((packetPath) => {
+		const source = documentByPath.get(packetPath);
+		if (!source) throw new Error(`Missing family-affinity source packet: ${packetPath}`);
+		return source;
+	});
+	const changed = resealFamilyAffinitySourceLineagesDocuments(sources, documents);
 	await Promise.all(
 		changed.map((document) =>
 			writeFile(path.join(repositoryRoot, ...document.path.split('/')), document.contents, 'utf8')
