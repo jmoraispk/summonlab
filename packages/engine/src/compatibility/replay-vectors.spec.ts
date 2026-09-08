@@ -2,9 +2,11 @@ import { describe, expect, it } from 'vitest';
 
 import { hashCanonical, hashGameState, replayEventsStrict } from '../index.js';
 import {
+	AGENT_READINESS_REPLAY_VECTOR_V26,
 	ENGINE_REPLAY_VECTOR_CASES,
 	REPLAY_VECTOR_EMPTY_STATE_HASH,
-	actualMasterLegalActionIds
+	actualMasterLegalActionIds,
+	replayAgentReadinessVectorV26
 } from './replay-vectors.js';
 
 describe('versioned replay vectors', () => {
@@ -173,5 +175,77 @@ describe('versioned replay vectors', () => {
 			expect(() => replayEventsStrict(tampered), vector.id).toThrow();
 			expect(tampered).toEqual(inputBeforeReplay);
 		}
+	});
+
+	it('replays the v26 readiness fixture from recorded batches without provider calls', () => {
+		const replay = replayAgentReadinessVectorV26();
+
+		expect(AGENT_READINESS_REPLAY_VECTOR_V26).toMatchObject({
+			id: 'v26-agent-readiness-recorded-batches',
+			schemaVersion: 26,
+			providerCalls: 0
+		});
+		expect(replay.cohortSizes.filter((size) => size >= 2)).toHaveLength(2);
+		expect(
+			replay.events.some(
+				(event) =>
+					event.finalOutcome === 'superseded' &&
+					event.effects.some((effect) => effect.kind === 'position')
+			)
+		).toBe(true);
+		expect(
+			replay.events.some(
+				(event) => event.finalOutcome === 'canceled' && event.refundApplied !== null
+			)
+		).toBe(true);
+		expect(
+			replay.events.some(
+				(event) =>
+					event.actionId === 'replay-miss' &&
+					!event.effects.some(
+						(effect) => effect.kind === 'resource' && effect.resource === 'health'
+					)
+			)
+		).toBe(true);
+		expect(
+			replay.events.some(
+				(event) =>
+					event.actionId === 'replay-critical' &&
+					event.effects.some(
+						(effect) =>
+							effect.kind === 'resource' && effect.resource === 'health' && effect.delta === -15
+					)
+			)
+		).toBe(true);
+		expect(
+			replay.events.some((event) => event.effects.some((effect) => effect.kind === 'downed'))
+		).toBe(true);
+		expect(replay.result).toMatchObject({
+			resultVersion: 'combat-result-v1',
+			modeId: 'agent-readiness-v1',
+			outcome: 'extraction'
+		});
+		expect(replay.result.claims.some((claim) => claim.claimType === 'recovery')).toBe(true);
+		expect(replay.windowHashes).toStrictEqual([
+			'0d709e7da677a272c4368ded3bccb7cd45255c52a12f28aca2d7aace95efc2de',
+			'13f053589cd3bc05c6a858ae3d9005f1e3c2848305b793d6075f607c943028f4'
+		]);
+		expect(replay.batchHashes).toStrictEqual([
+			'c342f867f447eaa33cea8d374c2081909c72971b557b75ebc82a78d80574b16e',
+			'585bf0882d6eb7a1d6c04292ba07808740cb1b128ee500beee7a01d07131c0bf'
+		]);
+		expect(replay.resolvedEventHashes).toStrictEqual([
+			'9e8360c05d30b85bfcee30e127e6a01cf164d64c3c1feedba7a70cb1f81e9137',
+			'261ec3b91b6e8b409a43f54c9f91f77d8798c804be0f1648ba7e11caa162924e'
+		]);
+		expect(replay.stateHashes).toStrictEqual([
+			'db93c5e2239b74f7748f4a969bf3e3437970e47c6c036fc30364e4730b43ef3c',
+			'aea86d6d7655ba822e9e9b461436bd0d05930983071e4f3500016ef742b07c1a',
+			'630e91f912fd73d9e65f1d0ebb6764b1c92964ab2288d609ee616f2842cb4059',
+			'19f83f27966a5fae55e6824e0065769dd97eda66d6e1ad53fda52b752279dbc7'
+		]);
+		expect(hashCanonical(replay.result)).toBe(
+			'c9a4b1ed0ea81d556f9478bc93ce5f3d3dc77414db5a173c5257c6512bb2a64e'
+		);
 	});
 });

@@ -303,7 +303,7 @@ describe('agent-readiness one-tick cohorts', () => {
 		expect(result.state.safety.eventsEmitted).toBe(1);
 		expect(result.state.combatants[ID.hero]?.resources).toStrictEqual({
 			health: { current: 40, maximum: 100 },
-			mana: { current: 14, maximum: 100 }
+			mana: { current: 10, maximum: 100 }
 		});
 		expect(result.state.combatants[ID.hero]?.lastDamagedAtTick).toBe(1);
 		expect(result.state.outcomeEvidence.partyHeroes[ID.hero]).toMatchObject({
@@ -485,7 +485,7 @@ describe('agent-readiness one-tick cohorts', () => {
 		if (second.kind !== 'decision-window') return;
 		expect(second.state.tick).toBe(104);
 		expect(second.state.combatants[ID.hero]?.lastDamagedAtTick).toBe(1);
-		expect(second.state.combatants[ID.hero]?.resources.health.current).toBe(94);
+		expect(second.state.combatants[ID.hero]?.resources.health.current).toBe(41);
 
 		const manaOnly = advanceUntilReadyCohort(
 			state(
@@ -522,14 +522,17 @@ describe('agent-readiness one-tick cohorts', () => {
 
 	it('clamps regeneration to resource caps', () => {
 		const result = advanceUntilReadyCohort(
-			state({
-				[ID.hero]: combatant(ID.hero, {
-					readiness: 9_798,
-					agility: 1,
-					health: 99,
-					mana: 99
-				})
-			}),
+			state(
+				{
+					[ID.hero]: combatant(ID.hero, {
+						readiness: 9_798,
+						agility: 1,
+						health: 99,
+						mana: 99
+					})
+				},
+				{ tick: 98 }
+			),
 			COMBAT_RULES_V1
 		);
 		expect(result.kind).toBe('decision-window');
@@ -537,6 +540,53 @@ describe('agent-readiness one-tick cohorts', () => {
 		expect(result.state.combatants[ID.hero]?.resources).toStrictEqual({
 			health: { current: 100, maximum: 100 },
 			mana: { current: 100, maximum: 100 }
+		});
+	});
+
+	it('pulses natural recovery once per canonical interval instead of every tick', () => {
+		const beforePulse = advanceUntilReadyCohort(
+			state(
+				{
+					[ID.hero]: combatant(ID.hero, {
+						readiness: 9_898,
+						agility: 1,
+						health: 50,
+						mana: 10,
+						lastDamagedAtTick: 50
+					})
+				},
+				{ tick: 98 }
+			),
+			COMBAT_RULES_V1
+		);
+		expect(beforePulse.kind).toBe('decision-window');
+		if (beforePulse.kind !== 'decision-window') return;
+		expect(beforePulse.state.tick).toBe(100);
+		expect(beforePulse.state.combatants[ID.hero]?.resources).toStrictEqual({
+			health: { current: 51, maximum: 100 },
+			mana: { current: 12, maximum: 100 }
+		});
+
+		const afterPulse = advanceUntilReadyCohort(
+			state(
+				{
+					[ID.hero]: combatant(ID.hero, {
+						readiness: 9_898,
+						agility: 1,
+						health: 50,
+						mana: 10,
+						lastDamagedAtTick: 75
+					})
+				},
+				{ tick: 98 }
+			),
+			COMBAT_RULES_V1
+		);
+		expect(afterPulse.kind).toBe('decision-window');
+		if (afterPulse.kind !== 'decision-window') return;
+		expect(afterPulse.state.combatants[ID.hero]?.resources).toStrictEqual({
+			health: { current: 50, maximum: 100 },
+			mana: { current: 12, maximum: 100 }
 		});
 	});
 

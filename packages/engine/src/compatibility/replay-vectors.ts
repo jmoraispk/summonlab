@@ -13,23 +13,39 @@ import {
 	EngineGameStateV22Schema,
 	EngineGameStateV23Schema,
 	EngineGameStateV24Schema,
+	ReadinessCombatStateV1Schema,
 	StoryPatchCandidateSchema,
 	type ActionSource,
 	type AuthoritativeEvent,
+	type CombatActionIntent,
+	type CombatChoiceBatchV1,
+	type CombatLegalActionTemplate,
+	type CombatResolvedEvent,
+	type CombatResult,
 	type EngineCommand,
 	type EngineGameState,
-	type MissionTurnChoice
+	type MissionTurnChoice,
+	type ReadinessCombatStateV1
 } from '@summonlab/contracts';
-import { TOWER_BAND_01_STORY_ENVELOPE } from '@summonlab/content';
+import {
+	COMBAT_CONTENT_BINDING,
+	COMBAT_RULES_V1,
+	TOWER_BAND_01_STORY_ENVELOPE
+} from '@summonlab/content';
 
 import {
 	applyCommand,
+	applyCombatChoiceBatch,
+	advanceUntilDecision,
+	authorizeReadinessTerminalDirective,
+	combatChoiceBatchHash,
 	createBootstrapEngine,
 	deterministicUuid,
 	hashCanonical,
 	hashGameState,
 	legalActions,
 	masterFallbackSafetySource,
+	readinessTerminalDirective,
 	sha256Hex,
 	storyPatchCastForState,
 	type EngineApplyResult
@@ -1719,4 +1735,502 @@ export function actualMasterLegalActionIds(replayCase: EngineReplayVectorCase): 
 	return legalActions(replayCase.finalState, replayCase.finalState.master.masterId).map(
 		(action) => action.actionId
 	);
+}
+
+const READINESS_REPLAY_IDS = {
+	attempt: '76000000-0000-4000-8000-000000000001',
+	batchOne: '76000000-0000-4000-8000-000000000002',
+	batchTwo: '76000000-0000-4000-8000-000000000003',
+	heroA: '76000000-0000-4000-8000-000000000004',
+	heroB: '76000000-0000-4000-8000-000000000005',
+	heroC: '76000000-0000-4000-8000-000000000006',
+	monster: '76000000-0000-4000-8000-000000000007',
+	monsterReserve: '76000000-0000-4000-8000-000000000008'
+} as const;
+
+const READINESS_REPLAY_FULL_REFUND = {
+	invalidTarget: 'selected-fallback',
+	occupiedDestination: 'selected-fallback',
+	cancellationRefund: { mana: 'full', readiness: 'full' }
+} as const;
+
+const READINESS_REPLAY_CANCEL = {
+	invalidTarget: 'cancel',
+	occupiedDestination: 'cancel',
+	cancellationRefund: { mana: 'none', readiness: 'none' }
+} as const;
+
+function readinessReplayNonDamagingProfile() {
+	return {
+		profileKind: 'non-damaging' as const,
+		rulesVersion: 'combat-rules-v1' as const,
+		contentHash: COMBAT_CONTENT_BINDING.contentHash
+	};
+}
+
+function readinessReplayAttack(
+	actionId: string,
+	targetId: string,
+	input: {
+		readonly priority: number;
+		readonly accuracy: number;
+		readonly criticalChance: number;
+		readonly baseMagnitude: number;
+		readonly conflictPolicy?: typeof READINESS_REPLAY_CANCEL | typeof READINESS_REPLAY_FULL_REFUND;
+	}
+): CombatLegalActionTemplate {
+	return {
+		actionId,
+		actionKind: 'attack',
+		skillId: 'combat-skill-basic-sword-strike',
+		publicLabel: actionId,
+		targetContract: { kind: 'entity', allowedCombatantIds: [targetId] },
+		reactionPriority: input.priority,
+		recoveryTicks: 1,
+		manaCost: 0,
+		conflictPolicy: input.conflictPolicy ?? READINESS_REPLAY_CANCEL,
+		fallbackOptions: [
+			{ fallbackId: 'cancel-if-invalid', publicLabel: 'Cancel', target: { kind: 'self' } }
+		],
+		resolutionProfile: {
+			profileKind: 'attack',
+			rulesVersion: 'combat-rules-v1',
+			contentHash: COMBAT_CONTENT_BINDING.contentHash,
+			deliveryTag: 'one-handed-blade',
+			masteryStepMinimum: input.accuracy === 9_250 ? 100 : input.accuracy === 8_000 ? 50 : 0,
+			skillAccuracyBasisPoints: input.accuracy,
+			damage: {
+				channel: 'physical',
+				tags: ['physical', 'cut'],
+				baseMagnitude: input.baseMagnitude,
+				coefficientBasisPoints: 10_000,
+				affinityContributionBasisPoints: 0,
+				criticalChanceBasisPoints: input.criticalChance,
+				criticalMultiplierBasisPoints: 15_000,
+				penetration: 1_000_000,
+				status: null
+			}
+		}
+	};
+}
+
+function readinessReplayMove(
+	actionId: string,
+	priority: number,
+	fallback: { readonly x: number; readonly y: number }
+): CombatLegalActionTemplate {
+	return {
+		actionId,
+		actionKind: 'move',
+		skillId: null,
+		publicLabel: actionId,
+		targetContract: { kind: 'tile', allowedPositions: [{ x: 2, y: 1 }] },
+		reactionPriority: priority,
+		recoveryTicks: 1,
+		manaCost: 0,
+		conflictPolicy: READINESS_REPLAY_FULL_REFUND,
+		fallbackOptions: [
+			{
+				fallbackId: 'alternate-tile',
+				publicLabel: 'Alternate tile',
+				target: { kind: 'tile', position: fallback }
+			}
+		],
+		resolutionProfile: readinessReplayNonDamagingProfile()
+	};
+}
+
+function readinessReplayGuard(): CombatLegalActionTemplate {
+	return {
+		actionId: 'replay-guard',
+		actionKind: 'guard',
+		skillId: null,
+		publicLabel: 'Guard',
+		targetContract: { kind: 'self' },
+		reactionPriority: 0,
+		recoveryTicks: 1,
+		manaCost: 0,
+		conflictPolicy: READINESS_REPLAY_FULL_REFUND,
+		fallbackOptions: [{ fallbackId: 'brace', publicLabel: 'Brace', target: { kind: 'self' } }],
+		resolutionProfile: readinessReplayNonDamagingProfile()
+	};
+}
+
+function readinessReplayCombatant(
+	combatantId: string,
+	teamId: 'party' | 'enemy',
+	position: { readonly x: number; readonly y: number },
+	attributes: {
+		readonly might: number;
+		readonly vitality: number;
+		readonly agility: number;
+		readonly spirit: number;
+	}
+) {
+	return {
+		combatantId,
+		combatantKind: teamId === 'party' ? ('hero' as const) : ('monster' as const),
+		teamId,
+		position,
+		facing: teamId === 'party' ? ('east' as const) : ('west' as const),
+		resources: { health: { current: 100, maximum: 100 }, mana: { current: 20, maximum: 20 } },
+		lastDamagedAtTick: null,
+		attributes,
+		armour: 0,
+		resistances: {},
+		readiness: { value: 10_000, exactNumerator: 10_000, recoveryUntilTick: 0 },
+		conditions: [],
+		cooldowns: {},
+		downed: false,
+		active: true
+	};
+}
+
+function readinessReplayInitialState(): ReadinessCombatStateV1 {
+	const ids = READINESS_REPLAY_IDS;
+	const combatants = {
+		[ids.heroA]: readinessReplayCombatant(
+			ids.heroA,
+			'party',
+			{ x: 0, y: 1 },
+			{ might: 1, vitality: 20, agility: 100, spirit: 20 }
+		),
+		[ids.heroB]: readinessReplayCombatant(
+			ids.heroB,
+			'party',
+			{ x: 4, y: 1 },
+			{ might: 100, vitality: 20, agility: 100, spirit: 20 }
+		),
+		[ids.heroC]: readinessReplayCombatant(
+			ids.heroC,
+			'party',
+			{ x: 0, y: 2 },
+			{ might: 20, vitality: 20, agility: 100, spirit: 20 }
+		),
+		[ids.monster]: {
+			...readinessReplayCombatant(
+				ids.monster,
+				'enemy',
+				{ x: 4, y: 2 },
+				{ might: 100, vitality: 20, agility: 100, spirit: 20 }
+			),
+			conditions: [
+				{
+					conditionId: 'unaware',
+					stacks: 1,
+					appliedAtTick: 0,
+					expiresAtTick: null,
+					sourceCombatantId: null
+				}
+			]
+		},
+		[ids.monsterReserve]: readinessReplayCombatant(
+			ids.monsterReserve,
+			'enemy',
+			{ x: 4, y: 0 },
+			{ might: 20, vitality: 20, agility: 100, spirit: 20 }
+		)
+	};
+	const actionTemplates: Readonly<Record<string, readonly CombatLegalActionTemplate[]>> = {
+		[ids.heroA]: [
+			readinessReplayMove('replay-move-a', 3, { x: 2, y: 0 }),
+			readinessReplayAttack('replay-critical', ids.monster, {
+				priority: 3,
+				accuracy: 9_250,
+				criticalChance: 10_000,
+				baseMagnitude: 10
+			}),
+			readinessReplayGuard()
+		],
+		[ids.heroB]: [
+			readinessReplayMove('replay-move-b', 2, { x: 2, y: 2 }),
+			readinessReplayAttack('replay-lethal', ids.monster, {
+				priority: 1,
+				accuracy: 9_250,
+				criticalChance: 0,
+				baseMagnitude: 1_000
+			}),
+			readinessReplayGuard()
+		],
+		[ids.heroC]: [
+			readinessReplayGuard(),
+			readinessReplayAttack('replay-cancel', ids.monster, {
+				priority: 0,
+				accuracy: 9_250,
+				criticalChance: 0,
+				baseMagnitude: 10
+			})
+		],
+		[ids.monster]: [
+			readinessReplayAttack('replay-miss', ids.heroA, {
+				priority: 0,
+				accuracy: 6_750,
+				criticalChance: 0,
+				baseMagnitude: 1
+			}),
+			readinessReplayAttack('replay-down-hero', ids.heroA, {
+				priority: 2,
+				accuracy: 9_250,
+				criticalChance: 0,
+				baseMagnitude: 1_000
+			}),
+			readinessReplayGuard()
+		],
+		[ids.monsterReserve]: [
+			{
+				...readinessReplayGuard(),
+				actionId: 'replay-reserve-guard',
+				publicLabel: 'Reserve guard'
+			}
+		]
+	};
+	const visibleIds = Object.keys(combatants).sort();
+	const targetablePositions = Array.from({ length: 15 }, (_unused, index) => ({
+		x: index % 5,
+		y: Math.floor(index / 5)
+	}));
+	const partyHeroes = Object.fromEntries(
+		[ids.heroA, ids.heroB, ids.heroC].map((heroId) => [
+			heroId,
+			{
+				startingHealth: 100,
+				startingMana: 20,
+				currentHealth: 100,
+				currentMana: 20,
+				damageTaken: 0,
+				downed: false
+			}
+		])
+	);
+	return ReadinessCombatStateV1Schema.parse({
+		stateVersion: 'readiness-combat-state-v1',
+		seed: sha256Hex('v26-agent-readiness-recorded-batches-seed-5'),
+		attemptId: ids.attempt,
+		tick: 0,
+		combatants,
+		actorContexts: Object.fromEntries(
+			visibleIds.map((actorId) => [
+				actorId,
+				{
+					actorId,
+					visibleCombatantIds: visibleIds.filter((id) => id !== actorId),
+					visibleTelegraphIds: [],
+					observableReadinessActorIds: [],
+					targetablePositions,
+					visibleTerrainFeatureIds: [],
+					rememberedContext: [],
+					doctrine: [],
+					relationships: [],
+					masterDirections: [],
+					legalActionTemplates: actionTemplates[actorId]
+				}
+			])
+		),
+		terrain: { width: 5, height: 3, blockedTiles: [], features: [] },
+		visibleTelegraphs: [],
+		scheduledEffects: [],
+		safety: { ticksAdvanced: 0, eventsEmitted: 0, noProgressCycles: 0 },
+		outcomeEvidence: {
+			evidenceVersion: 'readiness-outcome-evidence-v1',
+			attemptId: ids.attempt,
+			partyHeroes,
+			resolvedEvents: [],
+			emittedEventIds: [],
+			eventsEmitted: 0,
+			engineRecoveredCombatantIds: [],
+			securedLoot: [],
+			objectiveStates: [],
+			terminalDirective: null,
+			authoredDeadline: null
+		},
+		status: 'active',
+		result: null
+	});
+}
+
+function readinessReplayBatch(
+	state: ReadinessCombatStateV1,
+	batchId: string,
+	selections: Readonly<
+		Record<
+			string,
+			Readonly<{
+				actionId: string;
+				target: CombatActionIntent['target'];
+				fallbackId: string | null;
+			}>
+		>
+	>
+): CombatChoiceBatchV1 {
+	const advanced = advanceUntilDecision(state, COMBAT_RULES_V1);
+	if (advanced.kind !== 'decision-window') throw new Error('Readiness replay expected a window');
+	const choices = advanced.views.map((view): CombatActionIntent => {
+		const selection = selections[view.actorId];
+		if (!selection) throw new Error(`Readiness replay lacks a selection for ${view.actorId}`);
+		const action = view.legalActions.find((candidate) => candidate.actionId === selection.actionId);
+		if (!action) throw new Error(`Readiness replay action ${selection.actionId} is not legal`);
+		return {
+			windowId: advanced.snapshot.windowId,
+			attemptId: advanced.snapshot.attemptId,
+			tick: advanced.snapshot.tick,
+			actorId: view.actorId,
+			snapshotHash: advanced.snapshot.snapshotHash,
+			actorViewHash: view.actorViewHash,
+			legalActionSetHash: view.legalActionSetHash,
+			actionId: action.actionId,
+			actionInstanceId: action.actionInstanceId,
+			actionKind: action.actionKind,
+			skillId: action.skillId,
+			target: selection.target,
+			fallbackId: selection.fallbackId
+		};
+	});
+	const unsigned = {
+		batchVersion: 'combat-choice-batch-v1' as const,
+		batchId,
+		windowId: advanced.snapshot.windowId,
+		attemptId: advanced.snapshot.attemptId,
+		tick: advanced.snapshot.tick,
+		snapshotHash: advanced.snapshot.snapshotHash,
+		choices
+	};
+	return { ...unsigned, batchHash: combatChoiceBatchHash(unsigned) };
+}
+
+function buildAgentReadinessReplayVectorV26() {
+	const ids = READINESS_REPLAY_IDS;
+	const initialState = readinessReplayInitialState();
+	const batchOne = readinessReplayBatch(initialState, ids.batchOne, {
+		[ids.heroA]: {
+			actionId: 'replay-move-a',
+			target: { kind: 'tile', position: { x: 2, y: 1 } },
+			fallbackId: 'alternate-tile'
+		},
+		[ids.heroB]: {
+			actionId: 'replay-move-b',
+			target: { kind: 'tile', position: { x: 2, y: 1 } },
+			fallbackId: 'alternate-tile'
+		},
+		[ids.heroC]: { actionId: 'replay-guard', target: { kind: 'self' }, fallbackId: 'brace' },
+		[ids.monster]: {
+			actionId: 'replay-miss',
+			target: { kind: 'entity', combatantId: ids.heroA },
+			fallbackId: 'cancel-if-invalid'
+		},
+		[ids.monsterReserve]: {
+			actionId: 'replay-reserve-guard',
+			target: { kind: 'self' },
+			fallbackId: 'brace'
+		}
+	});
+	const afterOne = applyCombatChoiceBatch(initialState, batchOne, COMBAT_RULES_V1).state;
+	const batchTwo = readinessReplayBatch(afterOne, ids.batchTwo, {
+		[ids.heroA]: {
+			actionId: 'replay-critical',
+			target: { kind: 'entity', combatantId: ids.monster },
+			fallbackId: 'cancel-if-invalid'
+		},
+		[ids.heroB]: {
+			actionId: 'replay-lethal',
+			target: { kind: 'entity', combatantId: ids.monster },
+			fallbackId: 'cancel-if-invalid'
+		},
+		[ids.heroC]: {
+			actionId: 'replay-cancel',
+			target: { kind: 'entity', combatantId: ids.monster },
+			fallbackId: 'cancel-if-invalid'
+		},
+		[ids.monster]: {
+			actionId: 'replay-down-hero',
+			target: { kind: 'entity', combatantId: ids.heroA },
+			fallbackId: 'cancel-if-invalid'
+		},
+		[ids.monsterReserve]: {
+			actionId: 'replay-reserve-guard',
+			target: { kind: 'self' },
+			fallbackId: 'brace'
+		}
+	});
+	const afterTwo = applyCombatChoiceBatch(afterOne, batchTwo, COMBAT_RULES_V1).state;
+	const terminalDirective = readinessTerminalDirective({
+		state: afterTwo,
+		kind: 'extraction',
+		engineRecoveredCombatantIds: [ids.heroA]
+	});
+	return {
+		id: 'v26-agent-readiness-recorded-batches' as const,
+		schemaVersion: 26 as const,
+		providerCalls: 0 as const,
+		initialState,
+		recordedBatches: [batchOne, batchTwo] as const,
+		terminalDirective
+	};
+}
+
+export const AGENT_READINESS_REPLAY_VECTOR_V26 = buildAgentReadinessReplayVectorV26();
+
+export function replayAgentReadinessVectorV26(): Readonly<{
+	cohortSizes: readonly number[];
+	windowTicks: readonly number[];
+	windowHashes: readonly string[];
+	batchHashes: readonly string[];
+	resolvedEventHashes: readonly string[];
+	stateHashes: readonly string[];
+	events: readonly CombatResolvedEvent[];
+	result: CombatResult;
+}> {
+	let state = ReadinessCombatStateV1Schema.parse(
+		structuredClone(AGENT_READINESS_REPLAY_VECTOR_V26.initialState)
+	);
+	const stateHashes = [hashCanonical(state)];
+	const cohortSizes: number[] = [];
+	const windowTicks: number[] = [];
+	const windowHashes: string[] = [];
+	const batchHashes: string[] = [];
+	const resolvedEventHashes: string[] = [];
+	const events: CombatResolvedEvent[] = [];
+	for (const batch of AGENT_READINESS_REPLAY_VECTOR_V26.recordedBatches) {
+		const window = advanceUntilDecision(state, COMBAT_RULES_V1);
+		if (window.kind !== 'decision-window')
+			throw new Error('Readiness replay ended before its batch');
+		cohortSizes.push(window.views.length);
+		windowTicks.push(window.snapshot.tick);
+		windowHashes.push(window.snapshot.snapshotHash);
+		if (window.snapshot.snapshotHash !== batch.snapshotHash) {
+			throw new Error('Recorded readiness batch no longer binds its replay window');
+		}
+		const resolution = applyCombatChoiceBatch(state, batch, COMBAT_RULES_V1);
+		state = resolution.state;
+		batchHashes.push(batch.batchHash);
+		resolvedEventHashes.push(hashCanonical(resolution.events));
+		events.push(...resolution.events);
+		stateHashes.push(hashCanonical(state));
+	}
+	state = authorizeReadinessTerminalDirective({
+		state,
+		directive: AGENT_READINESS_REPLAY_VECTOR_V26.terminalDirective
+	});
+	const terminal = advanceUntilDecision(state, COMBAT_RULES_V1);
+	if (terminal.kind !== 'combat-result') {
+		throw new Error('Readiness replay terminal directive did not produce a result');
+	}
+	state = ReadinessCombatStateV1Schema.parse({
+		...state,
+		status: 'complete',
+		result: terminal.result
+	});
+	stateHashes.push(hashCanonical(state));
+	if (state.status !== 'complete' || state.result === null) {
+		throw new Error('Readiness replay did not produce its terminal common result');
+	}
+	return {
+		cohortSizes,
+		windowTicks,
+		windowHashes,
+		batchHashes,
+		resolvedEventHashes,
+		stateHashes,
+		events,
+		result: state.result
+	};
 }

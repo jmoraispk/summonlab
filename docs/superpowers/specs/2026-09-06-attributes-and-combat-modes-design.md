@@ -1,6 +1,6 @@
 # Four-Attribute and Versioned Combat Modes Design
 
-Status: **accepted; implementation planned**
+Status: **accepted and implemented; both modes are operator-controlled and legacy remains the release default**
 
 Date: 2026-09-06
 
@@ -9,11 +9,12 @@ Implementation plans:
 - [Four-attribute legacy combat foundation](../plans/2026-09-06-four-attribute-legacy-combat.md)
 - [Agent-readiness combat](../plans/2026-09-06-agent-readiness-combat.md)
 
-Implementation sequencing: the first plan owns the `engine-v25` four-attribute foundation and the
-operator-controlled `legacy-auto-v1` beta default. The second plan alone owns the unshipped
+Implementation sequencing: the first plan delivered the `engine-v25` four-attribute foundation and
+the operator-controlled `legacy-auto-v1` beta default. The second delivered the `engine-v26`
 `agent-readiness-v1` stepped resolver, provider orchestration, collision arbitration, and common
-combat-result expansion. Balance-harness formulas outside the first plan's versioned runtime rules
-and catalogs remain benchmark candidates until their owning production task promotes them.
+combat-result expansion. Qualification evidence permits operator-controlled evaluation; it does
+not promote readiness to the release default. Balance-harness formulas outside versioned runtime
+rules and catalogs remain benchmark candidates until their owning production task promotes them.
 
 ## Purpose
 
@@ -21,8 +22,8 @@ Replace the six-attribute proposal with a smaller combat-first capability model,
 combat architecture around deterministic agent-selected intents, and preserve the current automatic
 round-based combat as an operator-controlled legacy mode while the agentic readiness mode matures.
 
-This design records the agreed mechanical boundaries before the wiki, contracts, engine, content,
-and presentation are changed. It does not yet select final balance constants.
+This design records the agreed mechanical boundaries and implemented ownership. Calibrated
+constants remain versioned tuning rather than final timeless balance claims.
 
 ## Player promise
 
@@ -114,6 +115,12 @@ recovery is meaningfully faster than combat recovery. Natural combat regeneratio
 - cannot revive a downed hero;
 - cannot repair injuries;
 - remains weaker than dedicated healing skills, consumables, and safe rest.
+
+In `agent-readiness-v1`, natural Health and Mana recovery evaluates on calibrated canonical
+100-tick (10-second) pulses rather than every integer simulation tick. Health recovery still waits
+for the post-damage delay. Qualification found that per-tick integer recovery erased low-level peer
+damage; the pulse lets sustained valid attacks make progress. Changing it requires a new rules
+binding and qualification evidence.
 
 The balance harness must reject any curve where passive regeneration can outpace sustained peer
 damage or create indefinite combat without an explicit defensive engine.
@@ -297,9 +304,10 @@ Changing the release default affects only future attempts. An active attempt can
 Internal development and test tools may explicitly override the configured default; player routes
 and APIs may not.
 
-This allows a beta release to default to automatic combat while agent-readiness remains under
-internal evaluation. Promotion of agent-readiness to the release default requires recorded replay,
-performance, behavior, and balance evidence.
+This allows the beta release to keep automatic combat as its default while implemented
+agent-readiness remains under internal evaluation. Its replay, performance, behavior, and balance
+qualification now passes; promotion to the release default still requires explicit owner review and
+an operator configuration change.
 
 ### `legacy-auto-v1`
 
@@ -323,7 +331,7 @@ creates a new legacy mode/rules version rather than mutating historical resoluti
 
 ### `agent-readiness-v1`
 
-The target tactical mode uses one-tick readiness cohorts, actor-specific decision views, concurrent
+The implemented tactical mode uses one-tick readiness cohorts, actor-specific decision views, concurrent
 intent requests, and deterministic ordered resolution. It consumes the canonical four attributes
 directly.
 
@@ -538,6 +546,12 @@ The implementation plan must include tests and fixtures for:
 - benchmark builds and encounter simulations at levels 10, 40, 70, and 99;
 - target hit-rate, regeneration, action-cadence, affinity-nudge, and cross-mode balance evidence.
 
-Agent-readiness may become the release default only when these gates pass and owner review accepts
-its behavior. Until then, the operator-controlled configuration may continue selecting legacy
-automatic combat for beta releases.
+The recorded `agent-readiness-v1.json` evidence passes these mechanical gates with 10,000 distinct
+trials, 20,000 production scripted fallback selections, and 400 complete minimal authored
+level-archetype encounters. It preserves the historical `combat-rules-v1` binding and records the
+separate readiness-owned rules binding: respectively
+`13b2b27b683e4b0023a2a2c2ee4926127437db3bbf1ace91776def69ef286eff` and
+`eb7296798dbc911526603b1fb908cd3a7ea3661caf7d69793fc1fc0ab09cc5ba`. The current monster policy
+holds rather than attacks, so hostile-AI balance remains unfinished, and owner promotion has not
+occurred. The operator-controlled beta configuration therefore continues selecting legacy automatic
+combat by default.

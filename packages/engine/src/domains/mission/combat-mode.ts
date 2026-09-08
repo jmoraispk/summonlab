@@ -3,10 +3,11 @@ import {
 	type CombatModeBinding,
 	type CombatModeId
 } from '@summonlab/contracts';
-import { COMBAT_CONTENT_BINDING } from '@summonlab/content';
+import { AGENT_READINESS_RULES_VERSION, COMBAT_CONTENT_BINDING } from '@summonlab/content';
+
+export { AGENT_READINESS_RULES_VERSION } from '@summonlab/content';
 
 export const LEGACY_AUTO_RULES_VERSION = 'legacy-auto-rules-v1' as const;
-export const AGENT_READINESS_RULES_VERSION = 'agent-readiness-rules-v1' as const;
 
 export type CombatModeAvailability =
 	| { readonly status: 'available'; readonly modeId: CombatModeId; readonly message: null }

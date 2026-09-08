@@ -1,15 +1,42 @@
 import { readFile, writeFile } from 'node:fs/promises';
+import { availableParallelism } from 'node:os';
 import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { isMainThread, parentPort, Worker, workerData } from 'node:worker_threads';
 
 import {
 	BASIC_SWORD_STRIKE,
+	AGENT_READINESS_RULES_V1,
 	COMBAT_CONTENT_BINDING,
 	COMBAT_EQUIPMENT_PROFILES_BY_ID,
 	COMBAT_RULES_V1,
 	loadCombatContentBinding
 } from '../packages/content/src/index.js';
-import type { CombatAttributes, DamageChannel } from '../packages/contracts/src/index.js';
+import {
+	generateSummonableCharacterDraft,
+	recipeFromSeed
+} from '../packages/characters/src/index.js';
+import { ReadinessCombatStateV1Schema } from '../packages/contracts/src/index.js';
+import type {
+	ActorDecisionView,
+	CombatActionIntent,
+	CombatAdvance,
+	CombatChoiceBatchV1,
+	CombatLegalAction,
+	EngineGameStateV26,
+	ReadinessCombatStateV1
+} from '../packages/contracts/src/index.js';
+import {
+	AGENT_READINESS_REPLAY_VECTOR_V26,
+	replayAgentReadinessVectorV26
+} from '../packages/engine/src/compatibility/replay-vectors.js';
+import {
+	applyCombatChoiceBatch,
+	advanceUntilDecision,
+	combatChoiceBatchHash,
+	createBootstrapEngine,
+	deterministicUuid
+} from '../packages/engine/src/index.js';
 import {
 	armourReduction,
 	attributeScaledMagnitude,
@@ -17,12 +44,19 @@ import {
 	maximumHealth,
 	namedResistanceReduction
 } from '../packages/engine/src/domains/combat/capability.js';
+import { createMissionReadinessState } from '../packages/engine/src/domains/mission/readiness-runtime.js';
 import { resistanceGrantReceiptsFromAuthoredSources } from '../packages/engine/src/domains/combat/resistance-grants.js';
 import { hashCanonical } from '../packages/engine/src/hash.js';
+import {
+	ScriptedCombatPolicy,
+	validateCombatPolicyResponse
+} from '../packages/policies/src/index.js';
 
 export const BALANCE_LEVELS = [10, 40, 70, 99] as const;
 export const BALANCE_SPREADS = ['low', 'mid', 'high'] as const;
 export const BALANCE_TRIALS_PER_MATCHUP = 10_000 as const;
+export const READINESS_TRIALS_PER_BENCHMARK = 10_000 as const;
+export const READINESS_ENCOUNTERS_PER_ARCHETYPE = 100 as const;
 
 const SEED_SET = [
 	'0x243f6a88',
@@ -1503,13 +1537,784 @@ export async function createCombatBalanceEvidence(): Promise<CombatBalanceEviden
 	});
 }
 
+type ReadinessEvidenceOptions = Readonly<{
+	trialsPerBenchmark?: number;
+	encountersPerArchetype?: number;
+	workerCount?: number;
+}>;
+
+const READINESS_ARCHETYPES = BALANCE_LEVELS.map((level) => ({
+	archetypeId: `peer-level-${level}`,
+	level
+}));
+
+const READINESS_SIMULATION_PROFILE_V1 = deepFreeze({
+	profileVersion: 'agent-readiness-qualification-profile-v1',
+	percentileMethod: 'nearest-rank',
+	seedDerivation: {
+		namespace: 'agent-readiness-benchmark-v1',
+		encoding: 'namespace:zero-padded-trial-ordinal',
+		ordinalWidth: 5
+	},
+	benchmarkWindowFixture: {
+		previousDecisionTick: 50,
+		pulseDecisionTick: 100,
+		damagedAtTick: 50
+	},
+	missionId: 'tower-floor-01',
+	actorPolicy: {
+		hero: 'first-legal-attack-against-first-active-authored-target',
+		master: 'first-legal-guard',
+		monster: 'first-legal-guard'
+	},
+	levelFixture: {
+		attributes: 'all-four-at-level-except-minimum-equipped-starter-load',
+		minimumStarterSwordMight: COMBAT_EQUIPMENT_PROFILES_BY_ID['equipment-bronze-sword']!.load
+	},
+	encounterFixture: {
+		scope: 'smallest-authored-complete-encounter',
+		party: 'authored-master-and-one-levelled-hero',
+		opponent: 'lowest-health-policy-authored-tower-floor-01-enemy',
+		pruning: 'remove-other-authored-enemies-before-the-first-readiness-window'
+	},
+	providerFailurePolicy: 'first-legal-guard-without-provider-retry',
+	productionPrimitives: [
+		'createMissionReadinessState',
+		'advanceUntilDecision',
+		'combatChoiceBatchHash',
+		'applyCombatChoiceBatch'
+	],
+	encounterBudgets: {
+		maximumTicks: COMBAT_RULES_V1.readiness.safety.maximumTicksAdvanced,
+		maximumEvents: COMBAT_RULES_V1.readiness.safety.maximumEventsEmitted
+	}
+});
+
+function readinessNearestRank(values: readonly number[], percentile: number): number {
+	if (values.length === 0) throw new Error('A readiness percentile requires at least one value');
+	const sorted = [...values].sort((left, right) => left - right);
+	return sorted[Math.max(0, Math.ceil(percentile * sorted.length) - 1)]!;
+}
+
+function readinessDistribution(values: readonly number[]) {
+	return {
+		p50: readinessNearestRank(values, 0.5),
+		p95: readinessNearestRank(values, 0.95)
+	};
+}
+
+function basisPointRate(count: number, trials: number): number {
+	return Math.round((count * BASIS_POINTS) / trials);
+}
+
+function selectionTarget(
+	view: ActorDecisionView,
+	action: CombatLegalAction,
+	preferActiveEnemy: boolean
+): CombatActionIntent['target'] {
+	const contract = action.targetContract;
+	if (contract.kind === 'self') return { kind: 'self' };
+	if (contract.kind === 'tile') return { kind: 'tile', position: contract.allowedPositions[0]! };
+	if (contract.kind === 'entity-relative-position') {
+		return {
+			kind: 'entity-relative-position',
+			combatantId: contract.allowedCombatantIds[0]!,
+			relation: contract.allowedRelations[0]!
+		};
+	}
+	const activeTarget = preferActiveEnemy
+		? contract.allowedCombatantIds.find((combatantId) => {
+				const candidate = view.visibleCombatants.find(
+					(combatant) => combatant.combatantId === combatantId
+				);
+				return candidate?.active === true && candidate.downed === false;
+			})
+		: undefined;
+	return { kind: 'entity', combatantId: activeTarget ?? contract.allowedCombatantIds[0]! };
+}
+
+function readinessBatch(
+	state: ReadinessCombatStateV1,
+	key: string,
+	policy: 'encounter' | 'guard',
+	decisionWindow?: Extract<CombatAdvance, { kind: 'decision-window' }>
+): CombatChoiceBatchV1 {
+	const advanced = decisionWindow ?? advanceUntilDecision(state, COMBAT_RULES_V1);
+	if (advanced.kind !== 'decision-window') throw new Error('Readiness benchmark expected a window');
+	const choices = advanced.views.map((view): CombatActionIntent => {
+		const preferredKind =
+			policy === 'encounter' && view.self.combatantKind === 'hero' ? 'attack' : 'guard';
+		const action =
+			view.legalActions.find((candidate) => candidate.actionKind === preferredKind) ??
+			view.legalActions[0]!;
+		return {
+			windowId: advanced.snapshot.windowId,
+			attemptId: advanced.snapshot.attemptId,
+			tick: advanced.snapshot.tick,
+			actorId: view.actorId,
+			snapshotHash: advanced.snapshot.snapshotHash,
+			actorViewHash: view.actorViewHash,
+			legalActionSetHash: view.legalActionSetHash,
+			actionId: action.actionId,
+			actionInstanceId: action.actionInstanceId,
+			actionKind: action.actionKind,
+			skillId: action.skillId,
+			target: selectionTarget(view, action, preferredKind === 'attack'),
+			fallbackId: action.fallbackOptions[0]?.fallbackId ?? null
+		};
+	});
+	const unsigned = {
+		batchVersion: 'combat-choice-batch-v1' as const,
+		batchId: deterministicUuid(`${advanced.snapshot.windowId}:${key}:batch`),
+		windowId: advanced.snapshot.windowId,
+		attemptId: advanced.snapshot.attemptId,
+		tick: advanced.snapshot.tick,
+		snapshotHash: advanced.snapshot.snapshotHash,
+		choices
+	};
+	return { ...unsigned, batchHash: combatChoiceBatchHash(unsigned) };
+}
+
+async function readinessEngineAtLevel(level: BalanceLevel): Promise<
+	Readonly<{
+		state: EngineGameStateV26;
+		heroId: string;
+	}>
+> {
+	const draft = await generateSummonableCharacterDraft(
+		recipeFromSeed(`agent-readiness-evidence-level-${level}`),
+		{ capabilityEntropy: hashCanonical({ purpose: 'agent-readiness-evidence', level }) }
+	);
+	const bootstrap = createBootstrapEngine({
+		runId: deterministicUuid(`agent-readiness-evidence-level-${level}:run`),
+		seed: `agent-readiness-evidence-level-${level}:engine`,
+		draft,
+		combatMode: 'agent-readiness-v1'
+	}).snapshot.state;
+	if (bootstrap.schemaVersion !== 26) throw new Error('Readiness evidence requires engine-v26');
+	const heroId = draft.manifest.characterId;
+	const hero = bootstrap.heroes[heroId]!;
+	const maxHealth = maximumHealth(level, COMBAT_RULES_V1);
+	const attributes = {
+		might: Math.max(level, READINESS_SIMULATION_PROFILE_V1.levelFixture.minimumStarterSwordMight),
+		vitality: level,
+		agility: level,
+		spirit: level
+	};
+	return {
+		heroId,
+		state: {
+			...bootstrap,
+			heroes: {
+				...bootstrap.heroes,
+				[heroId]: {
+					...hero,
+					health: maxHealth,
+					maxHealth,
+					capabilityProfile: { ...hero.capabilityProfile, attributes },
+					progression: { ...hero.progression, level }
+				}
+			}
+		}
+	};
+}
+
+function missionState(
+	fixture: Readonly<{ state: EngineGameStateV26; heroId: string }>,
+	attemptKey: string
+): ReadinessCombatStateV1 {
+	const authored = createMissionReadinessState(
+		fixture.state,
+		deterministicUuid(`${attemptKey}:attempt`),
+		[fixture.heroId],
+		READINESS_SIMULATION_PROFILE_V1.missionId
+	);
+	const selectedEnemy = Object.values(authored.combatants)
+		.filter((combatant) => combatant.teamId === 'enemy')
+		.sort(
+			(left, right) =>
+				left.resources.health.maximum - right.resources.health.maximum ||
+				left.combatantId.localeCompare(right.combatantId)
+		)[0]!;
+	const retainedIds = new Set([
+		fixture.state.master.masterId,
+		fixture.heroId,
+		selectedEnemy.combatantId
+	]);
+	return {
+		...authored,
+		combatants: Object.fromEntries(
+			Object.entries(authored.combatants).filter(([combatantId]) => retainedIds.has(combatantId))
+		),
+		actorContexts: Object.fromEntries(
+			Object.entries(authored.actorContexts)
+				.filter(([combatantId]) => retainedIds.has(combatantId))
+				.map(([combatantId, context]) => [
+					combatantId,
+					{
+						...context,
+						visibleCombatantIds: context.visibleCombatantIds.filter((visibleId) =>
+							retainedIds.has(visibleId)
+						),
+						legalActionTemplates: context.legalActionTemplates.map((action) =>
+							action.targetContract.kind === 'entity'
+								? {
+										...action,
+										targetContract: {
+											...action.targetContract,
+											allowedCombatantIds: action.targetContract.allowedCombatantIds.filter(
+												(targetId) => retainedIds.has(targetId)
+											)
+										}
+									}
+								: action
+						)
+					}
+				])
+		)
+	};
+}
+
+function runEncounter(initial: ReadinessCombatStateV1, key: string) {
+	let state = initial;
+	for (let windowOrdinal = 0; ; windowOrdinal += 1) {
+		const advanced = advanceUntilDecision(state, COMBAT_RULES_V1);
+		if (advanced.kind === 'combat-result') {
+			return {
+				completed: advanced.result.outcome === 'victory',
+				ticks: advanced.result.endedAtTick,
+				events: advanced.result.claimEvidence.resolvedEvents.length,
+				windows: windowOrdinal,
+				safetyStop: advanced.result.safetyStop !== null
+			};
+		}
+		const resolution = applyCombatChoiceBatch(
+			state,
+			readinessBatch(state, `${key}:${windowOrdinal}`, 'encounter', advanced),
+			COMBAT_RULES_V1
+		);
+		state = resolution.state;
+	}
+}
+
+function declaredReadinessSeed(ordinal: number): string {
+	return `${READINESS_SIMULATION_PROFILE_V1.seedDerivation.namespace}:${ordinal
+		.toString()
+		.padStart(READINESS_SIMULATION_PROFILE_V1.seedDerivation.ordinalWidth, '0')}`;
+}
+
+function readinessBenchmarkState(seed: string): ReadinessCombatStateV1 {
+	const initial = structuredClone(AGENT_READINESS_REPLAY_VECTOR_V26.initialState);
+	const referenceChoices = AGENT_READINESS_REPLAY_VECTOR_V26.recordedBatches[0].choices;
+	const movers = referenceChoices.filter((choice) => choice.actionKind === 'move');
+	const reserve = referenceChoices.find((choice) => choice.actionId === 'replay-reserve-guard');
+	if (movers.length !== 2 || !reserve) throw new Error('Readiness benchmark fixture drifted');
+	const retainedIds = new Set([...movers.map((choice) => choice.actorId), reserve.actorId]);
+	initial.seed = hashCanonical({ seed, purpose: 'agent-readiness-benchmark-state' });
+	initial.tick = 99;
+	initial.safety = { ticksAdvanced: 99, eventsEmitted: 0, noProgressCycles: 0 };
+	initial.combatants = Object.fromEntries(
+		Object.entries(initial.combatants)
+			.filter(([combatantId]) => retainedIds.has(combatantId))
+			.map(([combatantId, combatant]) => [
+				combatantId,
+				combatant.teamId === 'party'
+					? {
+							...combatant,
+							resources: {
+								...combatant.resources,
+								health: {
+									...combatant.resources.health,
+									current: combatant.resources.health.maximum - 1
+								}
+							},
+							lastDamagedAtTick: 50,
+							readiness: { value: 9_900, exactNumerator: 9_900, recoveryUntilTick: 0 }
+						}
+					: {
+							...combatant,
+							readiness: { value: 0, exactNumerator: 0, recoveryUntilTick: 1_000 }
+						}
+			])
+	);
+	initial.actorContexts = Object.fromEntries(
+		Object.entries(initial.actorContexts)
+			.filter(([combatantId]) => retainedIds.has(combatantId))
+			.map(([combatantId, context]) => [
+				combatantId,
+				{
+					...context,
+					visibleCombatantIds: context.visibleCombatantIds.filter((visibleId) =>
+						retainedIds.has(visibleId)
+					),
+					legalActionTemplates: context.legalActionTemplates
+						.map((action) => {
+							if (action.targetContract.kind === 'entity') {
+								return {
+									...action,
+									targetContract: {
+										...action.targetContract,
+										allowedCombatantIds: action.targetContract.allowedCombatantIds.filter(
+											(targetId) => retainedIds.has(targetId)
+										)
+									}
+								};
+							}
+							return action;
+						})
+						.filter(
+							(action) =>
+								action.targetContract.kind !== 'entity' ||
+								action.targetContract.allowedCombatantIds.length > 0
+						)
+				}
+			])
+	);
+	initial.outcomeEvidence.partyHeroes = Object.fromEntries(
+		Object.entries(initial.outcomeEvidence.partyHeroes)
+			.filter(([combatantId]) => retainedIds.has(combatantId))
+			.map(([combatantId, evidence]) => [
+				combatantId,
+				{
+					...evidence,
+					startingHealth: initial.combatants[combatantId]!.resources.health.current,
+					currentHealth: initial.combatants[combatantId]!.resources.health.current
+				}
+			])
+	);
+	return ReadinessCombatStateV1Schema.parse(initial);
+}
+
+function readinessRecordedCollisionBatch(
+	window: Extract<CombatAdvance, { kind: 'decision-window' }>,
+	seed: string
+): CombatChoiceBatchV1 {
+	const referenceChoices = new Map(
+		AGENT_READINESS_REPLAY_VECTOR_V26.recordedBatches[0].choices.map((choice) => [
+			choice.actorId,
+			choice
+		])
+	);
+	const choices = window.views.map((view): CombatActionIntent => {
+		const reference = referenceChoices.get(view.actorId);
+		if (!reference) throw new Error(`No recorded fallback selection for ${view.actorId}`);
+		const action = view.legalActions.find((candidate) => candidate.actionId === reference.actionId);
+		if (!action) throw new Error(`Recorded action ${reference.actionId} is no longer legal`);
+		return {
+			windowId: window.snapshot.windowId,
+			attemptId: window.snapshot.attemptId,
+			tick: window.snapshot.tick,
+			actorId: view.actorId,
+			snapshotHash: window.snapshot.snapshotHash,
+			actorViewHash: view.actorViewHash,
+			legalActionSetHash: view.legalActionSetHash,
+			actionId: action.actionId,
+			actionInstanceId: action.actionInstanceId,
+			actionKind: action.actionKind,
+			skillId: action.skillId,
+			target: reference.target,
+			fallbackId: reference.fallbackId
+		};
+	});
+	const unsigned = {
+		batchVersion: 'combat-choice-batch-v1' as const,
+		batchId: deterministicUuid(`${seed}:recorded-collision-batch`),
+		windowId: window.snapshot.windowId,
+		attemptId: window.snapshot.attemptId,
+		tick: window.snapshot.tick,
+		snapshotHash: window.snapshot.snapshotHash,
+		choices
+	};
+	return { ...unsigned, batchHash: combatChoiceBatchHash(unsigned) };
+}
+
+async function runReadinessBenchmarkTrial(seed: string) {
+	const initial = readinessBenchmarkState(seed);
+	const window = advanceUntilDecision(initial, COMBAT_RULES_V1);
+	if (window.kind !== 'decision-window') {
+		throw new Error(
+			`Benchmark trial lacked its pulse window: ${window.result.outcome}/${window.result.safetyStop?.reason ?? 'ordinary'}`
+		);
+	}
+	const fallbackResponses = await Promise.all(
+		window.views.map((view) => new ScriptedCombatPolicy().decide(view))
+	);
+	const legalFallbackEvaluations = fallbackResponses.filter((response, index) => {
+		const view = window.views[index];
+		if (!view) return false;
+		try {
+			validateCombatPolicyResponse(view, response);
+			return true;
+		} catch {
+			return false;
+		}
+	}).length;
+	const batch = readinessRecordedCollisionBatch(window, seed);
+	const first = applyCombatChoiceBatch(initial, batch, COMBAT_RULES_V1);
+	const repeated = applyCombatChoiceBatch(initial, batch, COMBAT_RULES_V1);
+	const partyCombatants = Object.values(first.state.combatants).filter(
+		(combatant) => combatant.teamId === 'party'
+	);
+	return {
+		intervalTicks:
+			window.snapshot.tick -
+			READINESS_SIMULATION_PROFILE_V1.benchmarkWindowFixture.previousDecisionTick,
+		sameWindow: window.views.length > 1,
+		collision: first.events.some(
+			(event) => event.finalOutcome === 'superseded' && event.conflictingEventId !== null
+		),
+		noProgress: first.state.safety.noProgressCycles > initial.safety.noProgressCycles,
+		regenerationDurationTicks:
+			window.snapshot.tick - READINESS_SIMULATION_PROFILE_V1.benchmarkWindowFixture.damagedAtTick,
+		regenerationStalemate: partyCombatants.some(
+			(combatant) => combatant.resources.health.current < combatant.resources.health.maximum
+		),
+		fallbackSelectorEvaluations: fallbackResponses.length,
+		legalFallbackEvaluations,
+		fallbackTrialResolvedLegally: legalFallbackEvaluations === fallbackResponses.length,
+		deterministic:
+			hashCanonical(first.state) === hashCanonical(repeated.state) &&
+			hashCanonical(first.events) === hashCanonical(repeated.events)
+	};
+}
+
+type ReadinessBenchmarkJob = Readonly<{ index: number; seed: string }>;
+type ReadinessEncounterJob = Readonly<{
+	index: number;
+	archetypeIndex: number;
+	archetypeId: string;
+	level: BalanceLevel;
+	attempt: number;
+}>;
+type ReadinessWorkerRequest =
+	| Readonly<{
+			workerVersion: 'agent-readiness-evidence-worker-v1';
+			kind: 'benchmark';
+			jobs: readonly ReadinessBenchmarkJob[];
+	  }>
+	| Readonly<{
+			workerVersion: 'agent-readiness-evidence-worker-v1';
+			kind: 'encounter';
+			jobs: readonly ReadinessEncounterJob[];
+	  }>;
+
+async function executeReadinessWorkerRequest(request: ReadinessWorkerRequest) {
+	if (request.kind === 'benchmark') {
+		return Promise.all(
+			request.jobs.map(async (job) => ({
+				index: job.index,
+				value: await runReadinessBenchmarkTrial(job.seed)
+			}))
+		);
+	}
+	const fixtures = new Map<BalanceLevel, Awaited<ReturnType<typeof readinessEngineAtLevel>>>();
+	for (const level of [...new Set(request.jobs.map((job) => job.level))]) {
+		fixtures.set(level, await readinessEngineAtLevel(level));
+	}
+	return request.jobs.map((job) => ({
+		index: job.index,
+		value: runEncounter(
+			missionState(
+				fixtures.get(job.level)!,
+				`readiness-encounter:${job.archetypeId}:${job.attempt}`
+			),
+			`${job.archetypeId}:${job.attempt}`
+		)
+	}));
+}
+
+function partitionStable<T>(values: readonly T[], count: number): T[][] {
+	const partitions = Array.from({ length: count }, () => [] as T[]);
+	values.forEach((value, index) => partitions[index % count]!.push(value));
+	return partitions.filter((partition) => partition.length > 0);
+}
+
+async function executeReadinessJobs(
+	requestKind: ReadinessWorkerRequest['kind'],
+	jobs: readonly (ReadinessBenchmarkJob | ReadinessEncounterJob)[],
+	workerCount: number
+): Promise<
+	readonly Readonly<{
+		index: number;
+		value: Awaited<ReturnType<typeof runReadinessBenchmarkTrial>> | ReturnType<typeof runEncounter>;
+	}>[]
+> {
+	if (workerCount === 1) {
+		return executeReadinessWorkerRequest({
+			workerVersion: 'agent-readiness-evidence-worker-v1',
+			kind: requestKind,
+			jobs
+		} as ReadinessWorkerRequest);
+	}
+	const partitions = partitionStable(jobs, Math.min(workerCount, jobs.length));
+	const responses = await Promise.all(
+		partitions.map(
+			(partition) =>
+				new Promise<Awaited<ReturnType<typeof executeReadinessWorkerRequest>>>(
+					(fulfill, reject) => {
+						const worker = new Worker(new URL(import.meta.url), {
+							execArgv: ['--import', 'tsx'],
+							workerData: {
+								workerVersion: 'agent-readiness-evidence-worker-v1',
+								kind: requestKind,
+								jobs: partition
+							} satisfies ReadinessWorkerRequest
+						});
+						worker.once('message', fulfill);
+						worker.once('error', reject);
+						worker.once('exit', (code) => {
+							if (code !== 0) reject(new Error(`Readiness evidence worker exited with ${code}`));
+						});
+					}
+				)
+		)
+	);
+	return responses.flat().sort((left, right) => left.index - right.index);
+}
+
+async function buildAgentReadinessEvidence(options: ReadinessEvidenceOptions = {}) {
+	const diagnosticStart = performance.now();
+	const diagnostic = (stage: string) => {
+		if (process.env.SUMMONLAB_READINESS_DIAGNOSTIC === '1') {
+			process.stderr.write(`${stage}: ${Math.round(performance.now() - diagnosticStart)}ms\n`);
+		}
+	};
+	const trials = options.trialsPerBenchmark ?? READINESS_TRIALS_PER_BENCHMARK;
+	const encounterTrials = options.encountersPerArchetype ?? READINESS_ENCOUNTERS_PER_ARCHETYPE;
+	const workerCount = options.workerCount ?? Math.max(1, Math.min(8, availableParallelism()));
+	if (
+		!Number.isInteger(trials) ||
+		trials < 1 ||
+		!Number.isInteger(encounterTrials) ||
+		encounterTrials < 1 ||
+		!Number.isInteger(workerCount) ||
+		workerCount < 1 ||
+		workerCount > 8
+	) {
+		throw new Error('Readiness evidence counts require positive trials and one to eight workers');
+	}
+	const verifiedCombatContent = await loadCombatContentBinding();
+	const replayOne = replayAgentReadinessVectorV26();
+	const replayTwo = replayAgentReadinessVectorV26();
+	diagnostic('replays');
+	const replayDeterministic = hashCanonical(replayOne) === hashCanonical(replayTwo);
+	const cancellationEvents = replayOne.events.filter((event) => event.finalOutcome === 'canceled');
+	const unclassifiedCancellations = cancellationEvents.filter(
+		(event) => event.conflictingEventId === null
+	).length;
+
+	const benchmarkSeeds = Array.from({ length: trials }, (_, trial) => declaredReadinessSeed(trial));
+	const benchmarkResults = (await executeReadinessJobs(
+		'benchmark',
+		benchmarkSeeds.map((seed, index) => ({ index, seed })),
+		workerCount
+	)) as readonly Readonly<{
+		index: number;
+		value: Awaited<ReturnType<typeof runReadinessBenchmarkTrial>>;
+	}>[];
+	const trialSamples = benchmarkResults.map((result) => result.value);
+	diagnostic('benchmark-trials');
+	const cadenceValues = trialSamples.map((sample) => sample.intervalTicks);
+	const regenerationDurations = trialSamples.map((sample) => sample.regenerationDurationTicks);
+	const sameWindowTrials = trialSamples.filter((sample) => sample.sameWindow).length;
+	const collisionTrials = trialSamples.filter((sample) => sample.collision).length;
+	const noProgressTrials = trialSamples.filter((sample) => sample.noProgress).length;
+	const regenerationStalemates = trialSamples.filter(
+		(sample) => sample.regenerationStalemate
+	).length;
+	const fallbackSelectorEvaluations = trialSamples.reduce(
+		(total, sample) => total + sample.fallbackSelectorEvaluations,
+		0
+	);
+	const legalFallbacks = trialSamples.reduce(
+		(total, sample) => total + sample.legalFallbackEvaluations,
+		0
+	);
+	const fallbackTrialsResolvedLegally = trialSamples.filter(
+		(sample) => sample.fallbackTrialResolvedLegally
+	).length;
+	const determinismMismatches = trialSamples.filter((sample) => !sample.deterministic).length;
+
+	const encounterResults = (await executeReadinessJobs(
+		'encounter',
+		READINESS_ARCHETYPES.flatMap((archetype, archetypeIndex) =>
+			Array.from({ length: encounterTrials }, (_, attempt) => ({
+				index: archetypeIndex * encounterTrials + attempt,
+				archetypeIndex,
+				archetypeId: archetype.archetypeId,
+				level: archetype.level,
+				attempt
+			}))
+		),
+		workerCount
+	)) as readonly Readonly<{ index: number; value: ReturnType<typeof runEncounter> }>[];
+	const encounters = READINESS_ARCHETYPES.map((archetype, archetypeIndex) => {
+		const outcomes = encounterResults
+			.filter((result) => Math.floor(result.index / encounterTrials) === archetypeIndex)
+			.map((result) => result.value);
+		return {
+			...archetype,
+			trials: encounterTrials,
+			completed: outcomes.filter((outcome) => outcome.completed).length,
+			ticks: readinessDistribution(outcomes.map((outcome) => outcome.ticks)),
+			events: readinessDistribution(outcomes.map((outcome) => outcome.events)),
+			safetyStops: outcomes.filter((outcome) => outcome.safetyStop).length
+		};
+	});
+	diagnostic('encounters');
+	const safetyStops = encounters.reduce((total, encounter) => total + encounter.safetyStops, 0);
+	const encounterBudgetsPassed = encounters.every(
+		(encounter) =>
+			encounter.completed === encounter.trials &&
+			encounter.ticks.p95 < READINESS_SIMULATION_PROFILE_V1.encounterBudgets.maximumTicks &&
+			encounter.events.p95 < READINESS_SIMULATION_PROFILE_V1.encounterBudgets.maximumEvents
+	);
+	const providerRate = basisPointRate(fallbackTrialsResolvedLegally, trials);
+	const gates = {
+		deterministicReplay: {
+			status: status(replayDeterministic && determinismMismatches === 0),
+			count: determinismMismatches
+		},
+		unclassifiedCancellations: {
+			status: status(unclassifiedCancellations === 0),
+			count: unclassifiedCancellations
+		},
+		passiveRegenerationStalemates: {
+			status: status(regenerationStalemates === 0),
+			count: regenerationStalemates
+		},
+		safetyStops: { status: status(safetyStops === 0), count: safetyStops },
+		encounterBudgets: {
+			status: status(encounterBudgetsPassed),
+			...READINESS_SIMULATION_PROFILE_V1.encounterBudgets
+		},
+		providerFallback: {
+			status: status(providerRate === BASIS_POINTS),
+			resolutionRateBasisPoints: providerRate
+		}
+	};
+	const allPassed = Object.values(gates).every((gate) => gate.status === 'passed');
+	return deepFreeze({
+		schemaVersion: 'agent-readiness-evidence-v1',
+		status: allPassed ? 'passed' : 'failed',
+		bindings: {
+			rules: {
+				rulesVersion: COMBAT_RULES_V1.rulesVersion,
+				rulesHash: hashCanonical(COMBAT_RULES_V1)
+			},
+			readinessRules: {
+				rulesVersion: AGENT_READINESS_RULES_V1.rulesVersion,
+				rulesHash: hashCanonical(AGENT_READINESS_RULES_V1)
+			},
+			combatContent: {
+				bindingVersion: verifiedCombatContent.bindingVersion,
+				contentHash: verifiedCombatContent.contentHash,
+				components: verifiedCombatContent.components
+			}
+		},
+		simulation: {
+			profile: READINESS_SIMULATION_PROFILE_V1,
+			profileHash: hashCanonical(READINESS_SIMULATION_PROFILE_V1),
+			trialsPerBenchmark: trials,
+			encountersPerArchetype: encounterTrials,
+			percentileMethod: READINESS_SIMULATION_PROFILE_V1.percentileMethod,
+			seedSet: benchmarkSeeds,
+			seedSetHash: hashCanonical(benchmarkSeeds),
+			evaluations: {
+				benchmarkTrials: trials,
+				distinctBenchmarkSeeds: new Set(benchmarkSeeds).size,
+				benchmarkAdvanceCalls: trials,
+				benchmarkResolverCalls: trials * 2,
+				providerFallbackEvaluations: fallbackSelectorEvaluations,
+				completeEncounters: encounterResults.length,
+				encounterAdvanceCalls: encounterResults.reduce(
+					(total, result) => total + result.value.windows + 1,
+					0
+				),
+				encounterResolverCalls: encounterResults.reduce(
+					(total, result) => total + result.value.windows,
+					0
+				)
+			}
+		},
+		fixtures: { archetypes: READINESS_ARCHETYPES },
+		replay: {
+			vectorId: AGENT_READINESS_REPLAY_VECTOR_V26.id,
+			providerCalls: AGENT_READINESS_REPLAY_VECTOR_V26.providerCalls,
+			nondeterministicReplays: replayDeterministic ? 0 : 1,
+			windowHashes: replayOne.windowHashes,
+			batchHashes: replayOne.batchHashes,
+			resolvedEventHashes: replayOne.resolvedEventHashes,
+			stateHashes: replayOne.stateHashes,
+			resultHash: hashCanonical(replayOne.result)
+		},
+		benchmarks: {
+			actionCadence: { trials, intervalTicks: readinessDistribution(cadenceValues) },
+			sameWindow: {
+				trials,
+				sameWindowTrials,
+				frequencyBasisPoints: basisPointRate(sameWindowTrials, trials)
+			},
+			collisions: {
+				trials,
+				collisionTrials,
+				rateBasisPoints: basisPointRate(collisionTrials, trials)
+			},
+			noProgress: {
+				trials,
+				noProgressTrials,
+				rateBasisPoints: basisPointRate(noProgressTrials, trials)
+			},
+			passiveRegeneration: {
+				trials,
+				stalemates: regenerationStalemates,
+				durationTicks: readinessDistribution(regenerationDurations)
+			},
+			providerFallback: {
+				trials,
+				providerFailures: fallbackSelectorEvaluations,
+				fallbackTrialsResolvedLegally,
+				legalFallbackSelections: legalFallbacks,
+				fallbackSelectorEvaluations,
+				resolutionRateBasisPoints: providerRate
+			},
+			determinism: { trials, mismatches: determinismMismatches }
+		},
+		encounters,
+		gates
+	});
+}
+
+let defaultAgentReadinessEvidence:
+	Promise<Awaited<ReturnType<typeof buildAgentReadinessEvidence>>> | undefined;
+
+export function createAgentReadinessEvidence(options: ReadinessEvidenceOptions = {}) {
+	const defaultsRequested =
+		options.trialsPerBenchmark === undefined &&
+		options.encountersPerArchetype === undefined &&
+		options.workerCount === undefined;
+	if (!defaultsRequested) return buildAgentReadinessEvidence(options);
+	defaultAgentReadinessEvidence ??= buildAgentReadinessEvidence(options);
+	return defaultAgentReadinessEvidence;
+}
+
+export function serializeAgentReadinessEvidence(
+	evidence: Awaited<ReturnType<typeof createAgentReadinessEvidence>>
+): string {
+	return `${JSON.stringify(evidence, null, '\t')}\n`;
+}
+
 export function serializeCombatBalanceEvidence(evidence: CombatBalanceEvidence): string {
 	return `${JSON.stringify(evidence, null, '\t')}\n`;
 }
 
-const evidencePath = resolve(
+const balanceEvidencePath = resolve(
 	fileURLToPath(new URL('..', import.meta.url)),
 	'docs/evidence/combat-balance-v1.json'
+);
+const readinessEvidencePath = resolve(
+	fileURLToPath(new URL('..', import.meta.url)),
+	'docs/evidence/agent-readiness-v1.json'
 );
 
 async function runCli(): Promise<void> {
@@ -1518,24 +2323,45 @@ async function runCli(): Promise<void> {
 	if (write === check) {
 		throw new Error('Use exactly one combat balance mode: --write or --check');
 	}
-	const evidence = await createCombatBalanceEvidence();
-	if (evidence.status !== 'passed') {
+	const [balanceEvidence, readinessEvidence] = await Promise.all([
+		createCombatBalanceEvidence(),
+		createAgentReadinessEvidence()
+	]);
+	if (balanceEvidence.status !== 'passed' || readinessEvidence.status !== 'passed') {
 		throw new Error('Combat balance promotion gates failed; refusing to publish evidence');
 	}
-	const expected = serializeCombatBalanceEvidence(evidence);
+	const expectedBalance = serializeCombatBalanceEvidence(balanceEvidence);
+	const expectedReadiness = serializeAgentReadinessEvidence(readinessEvidence);
 	if (write) {
-		await writeFile(evidencePath, expected, 'utf8');
+		await Promise.all([
+			writeFile(balanceEvidencePath, expectedBalance, 'utf8'),
+			writeFile(readinessEvidencePath, expectedReadiness, 'utf8')
+		]);
 	} else {
-		const current = await readFile(evidencePath, 'utf8').catch(() => '');
-		if (current !== expected) {
+		const [currentBalance, currentReadiness] = await Promise.all([
+			readFile(balanceEvidencePath, 'utf8').catch(() => ''),
+			readFile(readinessEvidencePath, 'utf8').catch(() => '')
+		]);
+		if (currentBalance !== expectedBalance || currentReadiness !== expectedReadiness) {
 			throw new Error('Combat balance evidence is stale; run pnpm export:combat-balance');
 		}
 	}
 	process.stdout.write(
-		`combat-balance-v1 ${evidence.status}: ${BALANCE_SIMULATION_PROFILE_V1.trialsPerMatchup} trials per matchup; ${evidence.bindings.rules.rulesHash}\n`
+		`combat-balance-v1 ${balanceEvidence.status}: ${BALANCE_SIMULATION_PROFILE_V1.trialsPerMatchup} trials per matchup; ${balanceEvidence.bindings.rules.rulesHash}\n` +
+			`agent-readiness-v1 ${readinessEvidence.status}: ${readinessEvidence.simulation.trialsPerBenchmark} distinct trials; ${readinessEvidence.simulation.evaluations.completeEncounters} encounters\n`
 	);
 }
 
-if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+const readinessWorkerRequest = workerData as ReadinessWorkerRequest | undefined;
+if (
+	!isMainThread &&
+	readinessWorkerRequest?.workerVersion === 'agent-readiness-evidence-worker-v1'
+) {
+	parentPort!.postMessage(await executeReadinessWorkerRequest(readinessWorkerRequest));
+} else if (
+	isMainThread &&
+	process.argv[1] &&
+	resolve(process.argv[1]) === fileURLToPath(import.meta.url)
+) {
 	await runCli();
 }

@@ -81,23 +81,22 @@ receipt handoff until shared contracts promote the broader design.
 
 ## Versioned combat resolution
 
-Foundation status: **`legacy-auto-v1` implemented in `engine-v25`; `agent-readiness-v1` reserved but
-not live**.
+Foundation status: **both `legacy-auto-v1` and `agent-readiness-v1` are implemented in
+`engine-v26`; release selection remains operator-only and legacy remains the beta default**.
 
 Combat mode is release configuration owned by the operator. It is not a player preference and no
 player API accepts it. Preparation stores a binding containing mode ID, mode-rules version,
 aggregate combat-content hash, and timestamp on the attempt. Changing the configured default affects
 future attempts only; the stored binding cannot change while an attempt is active.
 
-`COMBAT_MODE` currently defaults to and accepts only `legacy-auto-v1`. The cross-phase contract also
-recognizes `agent-readiness-v1`, but a stored readiness binding returns an explicit not-yet-live
-result. The implementation work required to enable it is tracked in the
-[agent-readiness combat plan](../../superpowers/plans/2026-09-06-agent-readiness-combat.md).
+`COMBAT_MODE` accepts either versioned mode and defaults to `legacy-auto-v1`. This is deployment
+configuration, not a player-facing switch. Player request and route schemas accept neither a mode
+nor low-level combat choices, and the mode stored on an active attempt cannot change.
 
 | Mode | Release status | Choice source | Time and randomness |
 | --- | --- | --- | --- |
 | `legacy-auto-v1` | beta-safe operator default | seeded automatic policy; no hero-model calls | frozen legacy rounds, sequential entropy, 48-round safety boundary |
-| `agent-readiness-v1` | next plan; unavailable to releases and players | one intent provider call per ready hero | planned one-tick readiness cohorts and purpose-keyed randomness |
+| `agent-readiness-v1` | implemented; operator-controlled; not the release default | one validated intent per ready actor, with deterministic provider fallback | one-tick readiness cohorts and purpose-keyed randomness |
 
 ### Legacy automatic combat
 
@@ -131,13 +130,13 @@ Combat separates three responsibilities that must not silently collapse into one
 | Narration | present already-resolved events | none |
 
 The governing boundary is: **an intent provider is never the referee**. The legacy provider is a
-seeded automatic policy; the future readiness provider may be a hero agent. Neither can construct an
+seeded automatic policy; the readiness provider may be a hero agent. Neither can construct an
 effect, inspect hidden rolls, compute an outcome, or write state. Resolution alone emits the factual
 event trace and proposed claims.
 
-### Planned readiness stepping
+### Readiness stepping
 
-The readiness mode is unshipped. Its accepted contract will advance a deterministic simulation to
+The readiness mode advances a deterministic simulation to
 the next tick on which one or more actors are ready, freeze one canonical snapshot for that cohort,
 derive a filtered view and legal-action set for each actor, collect their choices concurrently, and
 then apply one validated batch:
@@ -193,13 +192,13 @@ Fairness requirements follow from this boundary:
 
 Human realism changes **how power is expressed**, not whether power exists.
 
-The future readiness production shape keeps provider calls outside the resolver. An external
+The readiness production shape keeps provider calls outside the resolver. An external
 coordinator receives a `DecisionWindow` from `advanceUntilDecision`, calls each ready actor's
 provider concurrently, validates and records the responses, and passes one choice batch to
 `applyChoiceBatch`. Replay bypasses providers and supplies the recorded batches directly.
 
-The master seed is an input. In the unshipped `agent-readiness-v1`, individual rolls—including
-hit/miss and critical resolution—will derive from the complete stable purpose-key identity rather
+The master seed is an input. In `agent-readiness-v1`, individual rolls—including hit/miss and
+critical resolution—derive from the complete stable purpose-key identity rather
 than the position-dependent stream retained by historical legacy combat:
 
 ```text
@@ -220,17 +219,17 @@ Given the same frozen spec, seed, and choices, replay must produce the same rece
 Changing one choice may change affected outcomes without reshuffling unrelated call sites. Shipped
 `legacy-auto-v1` does not use these purpose keys; it retains its frozen sequential entropy.
 
-### Planned common result and consequences
+### Common result and consequences
 
-The readiness plan introduces a common outer combat result with final combat-local resources,
+Both mode runners emit a common outer combat result with final combat-local resources,
 harm/recovery evidence, skill-practice evidence, loot/extraction claims, decisive events, bindings,
 and replay hashes. Owning progression, inventory, expedition, and aftermath processes validate and
 commit those idempotent claims; combat does not directly grant durable rewards.
 
-That plan also makes Downed the zero-Health state. Safe victory or extraction removes Downed from a
+Readiness combat makes Downed the zero-Health state. Safe victory or extraction removes Downed from a
 recovered hero and restores only the minimum safe Health needed to leave the state. A failed
 extraction may make an unrecovered hero permanently lost only through an explicit, traceable engine
-rule. These readiness/common-result consequences are accepted design, not shipped v25 legacy
+rule. These consequences are implemented for readiness combat without rewriting frozen legacy
 behavior.
 
 ### Balance evidence boundary
@@ -244,6 +243,29 @@ The harness's peer hit/evasion equation, relative-Agility conversion, attack cad
 affinity matchup application, general armour-point fixture values, and magical-active substitute are
 explicitly hash-bound **benchmark candidates**. They prove that a coherent tuning set can pass the
 promotion gates; they do not become runtime mechanics merely because the evidence passes.
+
+The separate [agent-readiness qualification evidence](../../evidence/agent-readiness-v1.json) binds
+the exact production rules and combat-content hashes. It records 10,000 distinct deterministic
+readiness/fallback trials, 20,000 production scripted fallback selections, and 100 complete
+encounters for each level-10/40/70/99 archetype. All 400 minimal authored encounters completed with
+zero safety stops; deterministic replay, classified collision fallback, passive-regeneration
+progress, encounter-budget, and 100% legal fallback-selection gates passed. The current
+policy-authored monster holds position rather than attacking, so this is technical qualification of
+timing, resolution, and safety—not a claim that hostile AI balance is finished and not automatic
+promotion to the release default.
+
+The evidence preserves historical `combat-rules-v1` hash
+`13b2b27b683e4b0023a2a2c2ee4926127437db3bbf1ace91776def69ef286eff`, separately binds
+`agent-readiness-rules-v1` hash
+`eb7296798dbc911526603b1fb908cd3a7ea3661caf7d69793fc1fc0ab09cc5ba`, and binds combat-content
+hash `1abef40c18eb97d4c1694c674f9b4917f286053e6d810d5b4282760f2ab4c2a7`. Encounter p95 tick/event
+counts are level 10 `1090/35`, level 40 `715/23`, level 70 `398/14`, and level 99 `288/11`, all far
+inside the configured million-tick/100,000-event safety budgets.
+
+Qualification exposed one real defect: per-tick integer recovery erased low-level peer damage.
+Natural Health and Mana recovery in readiness combat now evaluates only on calibrated 100-tick
+(10-second) canonical pulses. Health still observes its post-damage delay, and downed actors remain
+inert. This is a measured current constant; changing it requires a new rules version and evidence.
 
 ### Explanatory trace
 

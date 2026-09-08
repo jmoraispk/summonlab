@@ -60,15 +60,21 @@ cannot submit a mode, actor action, target, choice batch, or policy to v25 comba
 attempt stores an immutable binding containing mode ID, mode-rules version, combat-content hash, and
 binding timestamp. Changing the release default affects only future attempts.
 
-`legacy-auto-v1` is the only selectable and deployable mode in this foundation and is the beta
-default. The player may press **Continue battle**, after which a seeded automatic policy chooses
+`legacy-auto-v1` remains the beta release default. The player may press **Continue battle**, after
+which a seeded automatic policy chooses
 legal party actions and the deterministic engine resolves them. No hero model or independent model
 referee participates.
 
-`agent-readiness-v1` is reserved in cross-phase contracts but is explicitly not live. Its accepted
-design uses one-tick readiness cohorts, one canonical frozen snapshot per cohort, filtered per-actor
-views, concurrent intent collection, and deterministic ordered arbitration. It is implemented only
-by the separate readiness plan after its replay, collision, provider, safety, and balance gates pass.
+`agent-readiness-v1` is implemented and may be selected by the operator for internal evaluation. It
+uses one-tick readiness cohorts, one canonical frozen snapshot per cohort, filtered per-actor views,
+concurrent intent collection, and deterministic ordered arbitration. It is not player-selectable,
+and technical qualification does not change the release default. Promotion still requires a
+separate deliberate operator configuration change.
+
+Readiness combat evaluates natural Health and Mana recovery on one calibrated 100-tick pulse
+cadence. Health also retains its post-damage delay and never revives a downed actor. Qualification
+found that per-tick integer recovery erased low-level peer damage; the pulse prevents that indefinite
+combat. It remains versioned tuning rather than a timeless balance claim.
 
 ### Mission-assembly return requests
 
@@ -116,6 +122,18 @@ old aptitudes in new canonical mechanics.
 - Passing balance evidence does not promote every harness formula. Relative-Agility accuracy,
   attack cadence/variance, affinity application, production armour magnitudes, and a magical active
   remain hash-bound benchmark candidates until their owning runtime/content work lands.
+- `agent-readiness-v1.json` records 10,000 distinct deterministic trials, 20,000 production scripted
+  fallback selections, and 400 complete minimal authored level-archetype encounters. Deterministic
+  replay, classified collision fallback, passive-regeneration progress, encounter budgets, zero
+  safety stops, and 100% legal fallback selection pass. Policy-authored monsters currently hold
+  rather than attack, so this qualifies the technical mode for operator evaluation without claiming
+  finished hostile-AI balance.
+- The qualification preserves the historical `combat-rules-v1` hash
+  `13b2b27b683e4b0023a2a2c2ee4926127437db3bbf1ace91776def69ef286eff`, separately binds
+  `agent-readiness-rules-v1` hash
+  `eb7296798dbc911526603b1fb908cd3a7ea3661caf7d69793fc1fc0ab09cc5ba`, and binds combat-content
+  hash `1abef40c18eb97d4c1694c674f9b4917f286053e6d810d5b4282760f2ab4c2a7`. Encounter p95 tick/event
+  counts are `1090/35`, `715/23`, `398/14`, and `288/11` at levels 10, 40, 70, and 99.
 
 ## Supersession
 

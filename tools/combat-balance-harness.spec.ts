@@ -2,6 +2,7 @@ import { beforeAll, describe, expect, it } from 'vitest';
 
 import {
 	BASIC_SWORD_STRIKE,
+	AGENT_READINESS_RULES_V1,
 	COMBAT_CONTENT_BINDING,
 	COMBAT_EQUIPMENT_PROFILES_BY_ID,
 	COMBAT_RULES_V1
@@ -12,8 +13,12 @@ import {
 	BALANCE_LEVELS,
 	BALANCE_SPREADS,
 	BALANCE_TRIALS_PER_MATCHUP,
+	READINESS_ENCOUNTERS_PER_ARCHETYPE,
+	READINESS_TRIALS_PER_BENCHMARK,
+	createAgentReadinessEvidence,
 	createCombatBalanceEvidence,
 	evaluateAffinityCompletionPair,
+	serializeAgentReadinessEvidence,
 	serializeCombatBalanceEvidence
 } from './combat-balance-harness.js';
 
@@ -542,5 +547,92 @@ describe('four-attribute combat balance evidence', () => {
 			expect(hashCanonical(mutation)).not.toBe(first.simulation.profileHash);
 		}
 		expect(serializeCombatBalanceEvidence(second)).toBe(serializeCombatBalanceEvidence(first));
+	});
+});
+
+describe('agent-readiness qualification evidence', () => {
+	let evidence: Awaited<ReturnType<typeof createAgentReadinessEvidence>>;
+
+	beforeAll(async () => {
+		evidence = await createAgentReadinessEvidence();
+	}, 300_000);
+
+	it('runs every readiness benchmark at 10,000 trials and 100 complete encounters per level archetype', () => {
+		expect(READINESS_TRIALS_PER_BENCHMARK).toBe(10_000);
+		expect(READINESS_ENCOUNTERS_PER_ARCHETYPE).toBe(100);
+		expect(evidence.simulation.trialsPerBenchmark).toBe(10_000);
+		expect(evidence.simulation.encountersPerArchetype).toBe(100);
+		expect(evidence.fixtures.archetypes.map((archetype) => archetype.level)).toStrictEqual([
+			10, 40, 70, 99
+		]);
+		for (const benchmark of Object.values(evidence.benchmarks)) {
+			expect(benchmark.trials).toBe(10_000);
+		}
+		for (const encounter of evidence.encounters) {
+			expect(encounter.trials).toBe(100);
+			expect(encounter.completed).toBe(100);
+			expect(encounter.ticks).toMatchObject({ p50: expect.any(Number), p95: expect.any(Number) });
+			expect(encounter.events).toMatchObject({ p50: expect.any(Number), p95: expect.any(Number) });
+		}
+	});
+
+	it('uses exact production bindings and exposes the required readiness distributions', () => {
+		expect(evidence.bindings.rules).toStrictEqual({
+			rulesVersion: 'combat-rules-v1',
+			rulesHash: hashCanonical(COMBAT_RULES_V1)
+		});
+		expect(evidence.bindings.rules.rulesHash).toBe(
+			'13b2b27b683e4b0023a2a2c2ee4926127437db3bbf1ace91776def69ef286eff'
+		);
+		expect(evidence.bindings.readinessRules).toStrictEqual({
+			rulesVersion: 'agent-readiness-rules-v1',
+			rulesHash: hashCanonical(AGENT_READINESS_RULES_V1)
+		});
+		expect(evidence.bindings.combatContent).toStrictEqual({
+			bindingVersion: COMBAT_CONTENT_BINDING.bindingVersion,
+			contentHash: COMBAT_CONTENT_BINDING.contentHash,
+			components: COMBAT_CONTENT_BINDING.components
+		});
+		expect(evidence.benchmarks.actionCadence.intervalTicks).toMatchObject({
+			p50: expect.any(Number),
+			p95: expect.any(Number)
+		});
+		expect(evidence.benchmarks.sameWindow).toMatchObject({
+			sameWindowTrials: expect.any(Number),
+			frequencyBasisPoints: expect.any(Number)
+		});
+		expect(evidence.benchmarks.collisions).toMatchObject({
+			collisionTrials: expect.any(Number),
+			rateBasisPoints: expect.any(Number)
+		});
+		expect(evidence.benchmarks.noProgress).toMatchObject({
+			noProgressTrials: expect.any(Number),
+			rateBasisPoints: expect.any(Number)
+		});
+		expect(evidence.benchmarks.passiveRegeneration).toMatchObject({
+			stalemates: 0,
+			durationTicks: { p50: expect.any(Number), p95: expect.any(Number) }
+		});
+		expect(evidence.benchmarks.providerFallback).toMatchObject({
+			providerFailures: 20_000,
+			fallbackTrialsResolvedLegally: 10_000,
+			legalFallbackSelections: 20_000,
+			fallbackSelectorEvaluations: 20_000,
+			resolutionRateBasisPoints: 10_000
+		});
+		expect(evidence.simulation.evaluations.providerFallbackEvaluations).toBe(20_000);
+		expect(evidence.benchmarks.determinism).toMatchObject({ mismatches: 0 });
+		expect(evidence.replay).toMatchObject({ providerCalls: 0, nondeterministicReplays: 0 });
+	});
+
+	it('passes every promotion gate and serializes byte-deterministically', async () => {
+		const second = await createAgentReadinessEvidence();
+		expect(evidence.status).toBe('passed');
+		expect(Object.values(evidence.gates).every((gate) => gate.status === 'passed')).toBe(true);
+		expect(evidence.gates.unclassifiedCancellations.count).toBe(0);
+		expect(evidence.gates.passiveRegenerationStalemates.count).toBe(0);
+		expect(evidence.gates.safetyStops.count).toBe(0);
+		expect(evidence.gates.providerFallback.resolutionRateBasisPoints).toBe(10_000);
+		expect(serializeAgentReadinessEvidence(second)).toBe(serializeAgentReadinessEvidence(evidence));
 	});
 });

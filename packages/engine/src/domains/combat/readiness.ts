@@ -7,6 +7,7 @@ import {
 	type CombatRulesV1,
 	type ReadinessCombatStateV1
 } from '@summonlab/contracts';
+import { AGENT_READINESS_RULES_V1 } from '@summonlab/content';
 import type { ZodError } from 'zod';
 
 import { healthRegeneration, manaRegeneration } from './capability.js';
@@ -230,6 +231,7 @@ function resolveDueScheduledEffects(
 }
 
 function regenerateAndAccumulate(state: ReadinessCombatStateV1, rules: CombatRulesV1): boolean {
+	const regenerationPulse = state.tick % AGENT_READINESS_RULES_V1.regenerationPulseTicks === 0;
 	for (const combatant of Object.values(state.combatants)) {
 		combatant.conditions = combatant.conditions.filter(
 			(condition) => condition.expiresAtTick === null || condition.expiresAtTick > state.tick
@@ -262,7 +264,7 @@ function regenerateAndAccumulate(state: ReadinessCombatStateV1, rules: CombatRul
 
 		const ticksSinceDamage =
 			combatant.lastDamagedAtTick === null ? null : state.tick - combatant.lastDamagedAtTick;
-		if (combatant.resources.health.current > 0) {
+		if (regenerationPulse && combatant.resources.health.current > 0) {
 			const recovery = healthRegeneration(
 				combatant.attributes.vitality,
 				{ mode: 'combat', downed: false, ticksSinceDamage, injuryRepair: false },
@@ -272,14 +274,16 @@ function regenerateAndAccumulate(state: ReadinessCombatStateV1, rules: CombatRul
 			if (health === null) return false;
 			combatant.resources.health.current = Math.min(combatant.resources.health.maximum, health);
 		}
-		const manaRecovery = manaRegeneration(
-			combatant.attributes.spirit,
-			{ mode: 'combat', downed: false, ticksSinceDamage, injuryRepair: false },
-			rules
-		);
-		const mana = safeAdd(combatant.resources.mana.current, manaRecovery);
-		if (mana === null) return false;
-		combatant.resources.mana.current = Math.min(combatant.resources.mana.maximum, mana);
+		if (regenerationPulse) {
+			const manaRecovery = manaRegeneration(
+				combatant.attributes.spirit,
+				{ mode: 'combat', downed: false, ticksSinceDamage, injuryRepair: false },
+				rules
+			);
+			const mana = safeAdd(combatant.resources.mana.current, manaRecovery);
+			if (mana === null) return false;
+			combatant.resources.mana.current = Math.min(combatant.resources.mana.maximum, mana);
+		}
 
 		if (state.tick < combatant.readiness.recoveryUntilTick) continue;
 		const agilityGain = safeMultiply(
