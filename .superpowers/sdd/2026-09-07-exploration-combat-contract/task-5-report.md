@@ -71,3 +71,65 @@ its pre-existing Vite `node:crypto` externalization and adapter `sharp` optional
 The compile-only lab route passes no-op terminal callbacks. Task 6 must own presentation of live
 completion, rejection, unavailable, replay verification, and a new keyed request instance for the
 existing replay control.
+
+## Fix round 1/5 — Pixi asset lifecycle ownership
+
+### Scope
+
+- Added a shared per-source Pixi asset owner for request-derived raster and motion sources.
+- Made stage initialization failure and unmount release their claim immediately and idempotently,
+  while detaching callbacks, the ticker, the resize observer, and the Pixi application.
+- Added behavior-level lifecycle coverage; the retained source-text checks are supplementary only.
+- Deliberately left the `Run it again` route behavior unchanged: Task 6 owns the keyed request
+  instance and terminal/replay UI boundary.
+
+### Exact RED/GREEN evidence
+
+#### RED
+
+```sh
+PATH=/tmp/summonlab-node-24.14.1/bin:$PATH pnpm --filter @summonlab/web test:unit -- src/lib/components/living-village/realtime-combat/stage-lifecycle.spec.ts
+```
+
+The new unload-in-flight replacement test failed: it expected the source to load twice (once after
+the global Pixi unload) but received one load. That demonstrated the old owner could evict a texture
+after a replacement stage had claimed it. Earlier RED evidence also showed the helper module absent,
+then `stageAssetOwner is not a function` before shared ownership was added.
+
+#### GREEN
+
+The owner now serializes an unload/reclaim transition: a claimant that arrives during the final
+unload receives a reloaded texture before its `ready` promise settles. The complete web unit suite
+passes with 36 files and 231 tests.
+
+### Behavioral coverage
+
+`stage-lifecycle.spec.ts` verifies request-source de-duplication, shared-source overlap, final-only
+unload, pending-load unmount, partial load failure cleanup, duplicate/idempotent release, reclaim
+before release settles, reclaim during an in-flight unload, paused fixed-step stability, 60 Hz
+advancement, and one-shot live completion/unavailable versus replay verification.
+
+### Verification
+
+Passed with `PATH=/tmp/summonlab-node-24.14.1/bin:$PATH`:
+
+```sh
+pnpm --filter @summonlab/web test:unit
+pnpm --filter @summonlab/web typecheck
+pnpm --filter @summonlab/web exec eslint src/lib/components/living-village/realtime-combat/RealtimeCombatStage.svelte src/lib/components/living-village/realtime-combat/RealtimeCombatStage.spec.ts src/lib/components/living-village/realtime-combat/stage-lifecycle.ts src/lib/components/living-village/realtime-combat/stage-lifecycle.spec.ts
+pnpm --filter @summonlab/web build
+git diff --check
+```
+
+All commands passed. The production build retains its existing `node:crypto` browser-externalization
+and optional-platform `sharp` warnings.
+
+### Fix-round self-review
+
+- The source list remains request-derived; no actor visual fallback or procedural character was
+  added. Actor bodies remain declared raster/motion `AnimatedSprite`s.
+- Each stage claim releases at most once. Shared sources unload only after their final claimant;
+  a claimant arriving while Pixi is unloading reloads before it can render.
+- Asset errors and unmounts release claims promptly. Failure teardown is idempotent and removes
+  active callbacks, ticker, observer, render functions, and the Pixi application before a stale
+  stage can publish or complete.

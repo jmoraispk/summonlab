@@ -33,12 +33,18 @@
 	import { motionPackVersionDiagnostic } from './motion-pack-config';
 	import { type RealtimeActor, type RealtimeCombatState } from './realtime-combat';
 	import {
+		advanceStageSession,
+		bindStageSessionNotifications,
+		stageAssetOwner,
+		type StageAssetClaim
+	} from './stage-lifecycle';
+	import {
 		CombatSessionRegistry,
 		createReplayCombatSession,
 		enterCombatSession,
 		type CombatClaimPolicy,
-		type CombatReplayVerification,
 		type CombatSession,
+		type CombatReplayVerification,
 		type CombatUnavailableState
 	} from './combat-session';
 
@@ -143,37 +149,29 @@
 		let disposed = false;
 		let app: Application | undefined;
 		let resizeObserver: ResizeObserver | undefined;
-		let unsubscribe = () => {};
-		let unsubscribeUnavailable = () => {};
 		let detachTicker = () => {};
-		let assetsUnloaded = false;
-		let unavailableForwarded = false;
-		let replayVerificationForwarded = false;
+		let assetClaim: StageAssetClaim | undefined;
 		const activeSession = session;
-		const forwardUnavailable = (unavailable: CombatUnavailableState) => {
-			if (unavailableForwarded) return;
-			unavailableForwarded = true;
-			onUnavailable(unavailable);
+		const unsubscribe = bindStageSessionNotifications(activeSession, Boolean(replayForSession), {
+			onComplete,
+			onUnavailable,
+			onReplayVerified
+		});
+		const releaseAssets = async () => {
+			try {
+				await assetClaim?.release();
+			} catch {
+				// The next stage can reacquire a source even if Pixi's cache eviction fails.
+			}
 		};
-		const forwardReplayVerification = (verification: CombatReplayVerification) => {
-			if (replayVerificationForwarded || verification.kind === 'pending') return;
-			replayVerificationForwarded = true;
-			onReplayVerified(verification);
+		const detachPresentation = () => {
+			resizeObserver?.disconnect();
+			detachTicker();
+			renderSimulation = undefined;
+			applyPresentation = undefined;
+			app?.destroy({ removeView: false, releaseGlobalResources: true }, { children: true });
+			app = undefined;
 		};
-		const unloadSources = () => {
-			if (assetsUnloaded) return;
-			assetsUnloaded = true;
-			void import('pixi.js').then(({ Assets }) => Assets.unload(sources));
-		};
-
-		unsubscribeUnavailable = activeSession.subscribeUnavailable(forwardUnavailable);
-		if (replayForSession) {
-			unsubscribe = activeSession.subscribe({ onReplayVerification: forwardReplayVerification });
-			if (activeSession.replayVerification)
-				forwardReplayVerification(activeSession.replayVerification);
-		} else {
-			unsubscribe = activeSession.subscribe(onComplete);
-		}
 
 		void (async () => {
 			let failedDuringInit = false;
@@ -188,9 +186,13 @@
 					Sprite,
 					Texture
 				} = pixi;
-				const textures = await Promise.all(sources.map((source) => Assets.load(source)));
+				assetClaim = stageAssetOwner({
+					load: (source) => Assets.load(source),
+					unload: (source) => Assets.unload(source)
+				}).claim(sources);
+				const textures = await assetClaim.ready;
 				if (disposed) {
-					unloadSources();
+					await releaseAssets();
 					return;
 				}
 
@@ -517,14 +519,9 @@
 				const tick = (ticker: import('pixi.js').Ticker) => {
 					if (activeMode !== mode) applyPresentation?.(mode);
 					const frameSeconds = Math.min(ticker.deltaMS / 1000, 0.1);
-					if (!paused && activeSession.status === 'running') {
-						accumulator += frameSeconds;
-						while (accumulator >= 1 / 60 && activeSession.status === 'running') {
-							activeSession.advanceFixedStep();
-							accumulator -= 1 / 60;
-						}
-					}
-					simulation = activeSession.combat;
+					const advanced = advanceStageSession(activeSession, paused, accumulator, frameSeconds);
+					accumulator = advanced.accumulator;
+					simulation = advanced.combat;
 					if (!paused) updateAnimations(simulation, frameSeconds);
 					renderSimulation?.(simulation);
 					if (!reducedMotion && activeMode !== '2d') {
@@ -564,32 +561,25 @@
 				onSnapshot(simulation);
 				activeSession.markAssetsReady();
 			} catch {
+				await releaseAssets();
 				if (disposed) return;
 				const unavailable = {
 					code: failedDuringInit ? 'renderer-initialization-failed' : 'asset-load-failed',
 					message: 'Combat presentation could not be loaded.'
 				} as const;
 				activeSession.markUnavailable(unavailable);
-				forwardUnavailable(unavailable);
-				detachTicker();
-				app?.destroy({ removeView: false, releaseGlobalResources: true }, { children: true });
-				app = undefined;
+				unsubscribe();
+				detachPresentation();
 			} finally {
-				if (disposed) unloadSources();
+				if (disposed) await releaseAssets();
 			}
 		})();
 
 		return () => {
 			disposed = true;
-			resizeObserver?.disconnect();
 			unsubscribe();
-			unsubscribeUnavailable();
-			detachTicker();
-			renderSimulation = undefined;
-			applyPresentation = undefined;
-			app?.destroy({ removeView: false, releaseGlobalResources: true }, { children: true });
-			app = undefined;
-			unloadSources();
+			detachPresentation();
+			void releaseAssets();
 		};
 	});
 </script>

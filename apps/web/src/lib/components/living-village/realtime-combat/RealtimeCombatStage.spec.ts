@@ -28,14 +28,16 @@ describe('RealtimeCombatStage session boundary', () => {
 		expect(stageSource).toContain(
 			'const motionBindings = combatMotionBindings(requestForSession);'
 		);
-		expect(stageSource).toContain('Assets.load(source)');
-		expect(stageSource).toContain('Assets.unload(sources)');
+		expect(stageSource).toContain('stageAssetOwner({');
+		expect(stageSource).toContain('}).claim(sources);');
 	});
 
 	it('advances only the session fixed step and keeps replay completion separate', () => {
-		expect(stageSource).toContain('activeSession.advanceFixedStep()');
+		expect(stageSource).toContain(
+			'advanceStageSession(activeSession, paused, accumulator, frameSeconds)'
+		);
 		expect(stageSource).toContain('activeSession.markAssetsReady()');
-		expect(stageSource).toContain('onReplayVerification');
-		expect(stageSource).toContain('onUnavailable(unavailable)');
+		expect(stageSource).toContain('bindStageSessionNotifications');
+		expect(stageSource).toContain('activeSession.markUnavailable(unavailable)');
 	});
 });

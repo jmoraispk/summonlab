@@ -1,0 +1,268 @@
+import { describe, expect, it } from 'vitest';
+
+import type {
+	CombatReplayVerification,
+	CombatSession,
+	CombatSessionListener,
+	CombatSessionSubscription,
+	CombatUnavailableListener
+} from './combat-session';
+import {
+	advanceStageSession,
+	bindStageSessionNotifications,
+	createStageAssetOwner,
+	stageAssetOwner
+} from './stage-lifecycle';
+
+function deferred<T>() {
+	let resolve: (value: T) => void;
+	let reject: (reason?: unknown) => void;
+	const promise = new Promise<T>((resolvePromise, rejectPromise) => {
+		resolve = resolvePromise;
+		reject = rejectPromise;
+	});
+	return { promise, resolve: resolve!, reject: reject! };
+}
+
+describe('stage asset lifecycle', () => {
+	it('shares one owner across stage imports', () => {
+		const loader = {
+			load: async (source: string) => ({ source }),
+			unload: async () => {}
+		};
+
+		expect(stageAssetOwner(loader)).toBe(stageAssetOwner(loader));
+	});
+
+	it('keeps shared sources loaded until the final overlapping claimant releases them', async () => {
+		const loaded: string[] = [];
+		const unloaded: string[] = [];
+		const owner = createStageAssetOwner({
+			load: async (source) => {
+				loaded.push(source);
+				return { source };
+			},
+			unload: async (source) => {
+				unloaded.push(source);
+			}
+		});
+
+		const first = owner.claim(['/runtime/hero.png', '/runtime/hero-motion.json']);
+		const second = owner.claim(['/runtime/hero.png']);
+		await Promise.all([first.ready, second.ready]);
+
+		expect(loaded).toEqual(['/runtime/hero.png', '/runtime/hero-motion.json']);
+		await first.release();
+		expect(unloaded).toEqual(['/runtime/hero-motion.json']);
+		await second.release();
+		expect(unloaded).toEqual(['/runtime/hero-motion.json', '/runtime/hero.png']);
+	});
+
+	it('releases a pending source once its load settles after unmount', async () => {
+		const pending = deferred<{ source: string }>();
+		const unloaded: string[] = [];
+		const owner = createStageAssetOwner({
+			load: () => pending.promise,
+			unload: async (source) => {
+				unloaded.push(source);
+			}
+		});
+
+		const claim = owner.claim(['/runtime/pending.png']);
+		const released = claim.release();
+		expect(unloaded).toEqual([]);
+		pending.resolve({ source: '/runtime/pending.png' });
+		await released;
+
+		expect(unloaded).toEqual(['/runtime/pending.png']);
+	});
+
+	it('does not unload a pending source reclaimed before its first release settles', async () => {
+		const pending = deferred<{ source: string }>();
+		const unloaded: string[] = [];
+		const owner = createStageAssetOwner({
+			load: () => pending.promise,
+			unload: async (source) => {
+				unloaded.push(source);
+			}
+		});
+
+		const first = owner.claim(['/runtime/racing.png']);
+		const firstRelease = first.release();
+		const replacement = owner.claim(['/runtime/racing.png']);
+		pending.resolve({ source: '/runtime/racing.png' });
+		await Promise.all([firstRelease, replacement.ready]);
+
+		expect(unloaded).toEqual([]);
+		await replacement.release();
+		expect(unloaded).toEqual(['/runtime/racing.png']);
+	});
+
+	it('reloads a source reclaimed while its final unload is in flight', async () => {
+		const unloadStarted = deferred<void>();
+		const finishUnload = deferred<void>();
+		const loaded: string[] = [];
+		const unloaded: string[] = [];
+		const owner = createStageAssetOwner({
+			load: async (source) => {
+				loaded.push(source);
+				return { source };
+			},
+			unload: async (source) => {
+				unloaded.push(source);
+				unloadStarted.resolve();
+				await finishUnload.promise;
+			}
+		});
+
+		const first = owner.claim(['/runtime/unloading.png']);
+		await first.ready;
+		const firstRelease = first.release();
+		await unloadStarted.promise;
+		const replacement = owner.claim(['/runtime/unloading.png']);
+		finishUnload.resolve();
+		await Promise.all([firstRelease, replacement.ready]);
+
+		expect(loaded).toEqual(['/runtime/unloading.png', '/runtime/unloading.png']);
+		await replacement.release();
+		expect(unloaded).toEqual(['/runtime/unloading.png', '/runtime/unloading.png']);
+	});
+
+	it('releases every claimed source after a partial load failure', async () => {
+		const unloaded: string[] = [];
+		const owner = createStageAssetOwner({
+			load: async (source) => {
+				if (source === '/runtime/missing.png') throw new Error('missing');
+				return { source };
+			},
+			unload: async (source) => {
+				unloaded.push(source);
+			}
+		});
+
+		const claim = owner.claim(['/runtime/ready.png', '/runtime/missing.png']);
+		await expect(claim.ready).rejects.toThrow('missing');
+
+		expect(unloaded).toEqual(['/runtime/ready.png', '/runtime/missing.png']);
+	});
+
+	it('makes duplicate sources and repeated release idempotent', async () => {
+		const loaded: string[] = [];
+		const unloaded: string[] = [];
+		const owner = createStageAssetOwner({
+			load: async (source) => {
+				loaded.push(source);
+				return { source };
+			},
+			unload: async (source) => {
+				unloaded.push(source);
+			}
+		});
+
+		const claim = owner.claim(['/runtime/duplicate.png', '/runtime/duplicate.png']);
+		await claim.ready;
+		await Promise.all([claim.release(), claim.release()]);
+
+		expect(loaded).toEqual(['/runtime/duplicate.png']);
+		expect(unloaded).toEqual(['/runtime/duplicate.png']);
+	});
+});
+
+describe('stage session lifecycle', () => {
+	it('does not advance fixed simulation steps while paused', () => {
+		let steps = 0;
+		const session = {
+			status: 'running' as const,
+			combat: { elapsedSeconds: 0 },
+			advanceFixedStep: () => {
+				steps += 1;
+			}
+		};
+
+		const result = advanceStageSession(session, true, 1 / 30, 0.1);
+
+		expect(steps).toBe(0);
+		expect(result.accumulator).toBe(1 / 30);
+	});
+
+	it('advances a running session in 60 Hz fixed steps', () => {
+		let steps = 0;
+		const session = {
+			status: 'running' as const,
+			combat: { elapsedSeconds: 0 },
+			advanceFixedStep: () => {
+				steps += 1;
+			}
+		};
+
+		const result = advanceStageSession(session, false, 0, 1 / 30);
+
+		expect(steps).toBe(2);
+		expect(result.accumulator).toBe(0);
+	});
+
+	it('reports only live completion or replay verification, each once', () => {
+		const live = createNotificationSession();
+		const completed: string[] = [];
+		const verified: string[] = [];
+		const unavailable: string[] = [];
+		const releaseLive = bindStageSessionNotifications(live.session, false, {
+			onComplete: (receipt) => completed.push(receipt.receiptId),
+			onReplayVerified: (verification) => verified.push(verification.kind),
+			onUnavailable: (state) => unavailable.push(state.code)
+		});
+		live.complete({ receiptId: 'live-receipt' });
+		live.complete({ receiptId: 'live-receipt' });
+		live.unavailable();
+		live.unavailable();
+		releaseLive();
+
+		const replay = createNotificationSession({ kind: 'pending' });
+		const releaseReplay = bindStageSessionNotifications(replay.session, true, {
+			onComplete: (receipt) => completed.push(receipt.receiptId),
+			onReplayVerified: (verification) => verified.push(verification.kind),
+			onUnavailable: () => {}
+		});
+		replay.verify({ kind: 'pending' });
+		replay.verify({ kind: 'verified', receiptId: 'replay-receipt' });
+		replay.verify({ kind: 'verified', receiptId: 'replay-receipt' });
+		releaseReplay();
+
+		expect(completed).toEqual(['live-receipt']);
+		expect(verified).toEqual(['verified']);
+		expect(unavailable).toEqual(['asset-load-failed']);
+	});
+});
+
+function createNotificationSession(initialVerification?: CombatReplayVerification) {
+	let completionListener: CombatSessionListener | undefined;
+	let replayListener: CombatSessionSubscription['onReplayVerification'];
+	let unavailableListener: CombatUnavailableListener | undefined;
+	const session: Pick<CombatSession, 'subscribe' | 'subscribeUnavailable' | 'replayVerification'> =
+		{
+			replayVerification: initialVerification,
+			subscribe: (listener) => {
+				if (typeof listener === 'function') completionListener = listener;
+				else replayListener = listener.onReplayVerification;
+				return () => {
+					completionListener = undefined;
+					replayListener = undefined;
+				};
+			},
+			subscribeUnavailable: (listener) => {
+				unavailableListener = listener;
+				return () => (unavailableListener = undefined);
+			}
+		};
+	return {
+		session,
+		complete: (receipt: { receiptId: string }) =>
+			completionListener?.(receipt as NonNullable<CombatSession['receipt']>),
+		verify: (verification: CombatReplayVerification) => replayListener?.(verification),
+		unavailable: () =>
+			unavailableListener?.({
+				code: 'asset-load-failed',
+				message: 'test unavailable'
+			})
+	};
+}
