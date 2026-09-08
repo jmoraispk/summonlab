@@ -11,9 +11,12 @@ import {
 	familyAffinitySha256
 } from './family-affinity-production-lib.js';
 
-const FAMILY_AFFINITY_ROOT = 'assets/enemies/experiments/family-affinity-v1';
+const FAMILY_AFFINITY_ROOTS = [
+	'assets/enemies/experiments/family-affinity-v1',
+	'assets/enemies/experiments/fauna-family-v1'
+] as const;
 const FAMILY_PACKET_PATH_PATTERN = new RegExp(
-	`^${FAMILY_AFFINITY_ROOT}/(?:families|family-replacements|bridge/identities)/[^/]+\\.json$`,
+	'^assets/enemies/experiments/(?:family-affinity-v1/(?:families|family-replacements|bridge/identities)|fauna-family-v1/families)/[^/]+\\.json$',
 	'u'
 );
 
@@ -33,13 +36,12 @@ export interface FamilyAffinitySourceLineageDocument {
 export function selectFamilyAffinitySourceLineagePaths(
 	paths: readonly string[]
 ): readonly string[] {
-	const prefix = `${FAMILY_AFFINITY_ROOT}/`;
 	return paths
 		.filter(
 			(repositoryPath) =>
-				repositoryPath.startsWith(prefix) &&
+				FAMILY_AFFINITY_ROOTS.some((root) => repositoryPath.startsWith(`${root}/`)) &&
 				repositoryPath.endsWith('.json') &&
-				!repositoryPath.startsWith(`${FAMILY_AFFINITY_ROOT}/migrations/`)
+				!FAMILY_AFFINITY_ROOTS.some((root) => repositoryPath.startsWith(`${root}/migrations/`))
 		)
 		.sort((left, right) => (left < right ? -1 : left > right ? 1 : 0));
 }
@@ -444,8 +446,15 @@ async function listJsonFiles(directory: string, repositoryRoot: string): Promise
 
 async function main(): Promise<void> {
 	const repositoryRoot = process.cwd();
-	const root = path.join(repositoryRoot, ...FAMILY_AFFINITY_ROOT.split('/'));
-	const paths = selectFamilyAffinitySourceLineagePaths(await listJsonFiles(root, repositoryRoot));
+	const paths = selectFamilyAffinitySourceLineagePaths(
+		(
+			await Promise.all(
+				FAMILY_AFFINITY_ROOTS.map((root) =>
+					listJsonFiles(path.join(repositoryRoot, ...root.split('/')), repositoryRoot)
+				)
+			)
+		).flat()
+	);
 	const documents = await Promise.all(
 		paths.map(async (repositoryPath) => ({
 			path: repositoryPath,

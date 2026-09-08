@@ -129,6 +129,34 @@ describe('family-affinity source lineage resealing', () => {
 		]);
 	});
 
+	it('reseals shared target lineage for a fauna family packet', async () => {
+		const faunaPacketPath = 'assets/enemies/experiments/fauna-family-v1/families/01-wolves.json';
+		const sourceContents = await readFile(path.resolve(faunaPacketPath), 'utf8');
+		const sourceDigest = familyAffinitySha256(JSON.parse(sourceContents));
+		const staleDigest = 'd'.repeat(64);
+		const document = {
+			path: 'assets/enemies/experiments/fauna-family-v1/targets/wolves/wolf-gray-wolf/normal/target-v1.json',
+			contents: `${JSON.stringify({
+				sources: {
+					familyPacketPath: faunaPacketPath,
+					familyPacketSha256: staleDigest
+				}
+			})}\n`
+		};
+
+		expect(
+			resealFamilyAffinitySourceLineageDocuments(
+				{ path: faunaPacketPath, contents: sourceContents },
+				[document]
+			)
+		).toEqual([
+			{
+				...document,
+				contents: document.contents.replace(staleDigest, sourceDigest)
+			}
+		]);
+	});
+
 	it('reseals multiple changed packet lineages in one deterministic pass', async () => {
 		const packetPaths = [
 			'assets/enemies/experiments/family-affinity-v1/families/01-goblins.json',
@@ -374,13 +402,18 @@ describe('family-affinity source lineage resealing', () => {
 				'assets/enemies/experiments/family-affinity-v1/targets/elementals/wisp/normal/target-v1.json',
 				'assets/enemies/experiments/family-affinity-v1/results/elementals/wisp/normal-v1.json',
 				'assets/enemies/experiments/family-affinity-v1/targets/dragons/drake/normal/target-v1.json',
-				'assets/enemies/experiments/family-affinity-v1/candidates/elementals/wisp/normal-v1.png'
+				'assets/enemies/experiments/family-affinity-v1/candidates/elementals/wisp/normal-v1.png',
+				'assets/enemies/experiments/fauna-family-v1/manifest.json',
+				'assets/enemies/experiments/fauna-family-v1/targets/wolves/wolf-gray-wolf/normal/target-v1.json',
+				'assets/enemies/experiments/fauna-family-v1/candidates/wolves/wolf-gray-wolf/normal-v1.png'
 			])
 		).toEqual([
 			'assets/enemies/experiments/family-affinity-v1/manifest.json',
 			'assets/enemies/experiments/family-affinity-v1/results/elementals/wisp/normal-v1.json',
 			'assets/enemies/experiments/family-affinity-v1/targets/dragons/drake/normal/target-v1.json',
-			'assets/enemies/experiments/family-affinity-v1/targets/elementals/wisp/normal/target-v1.json'
+			'assets/enemies/experiments/family-affinity-v1/targets/elementals/wisp/normal/target-v1.json',
+			'assets/enemies/experiments/fauna-family-v1/manifest.json',
+			'assets/enemies/experiments/fauna-family-v1/targets/wolves/wolf-gray-wolf/normal/target-v1.json'
 		]);
 	});
 });
