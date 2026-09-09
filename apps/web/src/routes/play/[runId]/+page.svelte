@@ -1,10 +1,12 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
 	import type {
+		AuthoritativeEvent,
 		FirstEmberFacility,
 		FirstEmberRationale,
 		PublicProofRunSnapshot,
 		PublicProofRunSnapshotV2,
+		SettlementPresentation,
 		SimulationClock
 	} from '@summonlab/contracts';
 	import { onMount, tick } from 'svelte';
@@ -19,9 +21,7 @@
 	import VillageModeNav from '$lib/components/village-shell/VillageModeNav.svelte';
 	import VillageResidentsPanel from '$lib/components/village-shell/VillageResidentsPanel.svelte';
 	import { focusDialog, handleModalKeydown } from '$lib/modal-focus';
-	import type { PublicEngineEvent } from '$lib/public-engine';
 	import type { EquipmentWorkshopProjection } from '$lib/server/equipment-runtime';
-	import type { PublicSettlementPresentation } from '$lib/server/public-world-presentation';
 
 	let { data } = $props();
 	type PublicProofSnapshot = PublicProofRunSnapshot | PublicProofRunSnapshotV2;
@@ -34,10 +34,10 @@
 	// svelte-ignore state_referenced_locally
 	let clock = $state<SimulationClock | null>(data.clock);
 	// svelte-ignore state_referenced_locally
-	let presentation = $state<PublicSettlementPresentation | null>(data.presentation);
+	let presentation = $state<SettlementPresentation | null>(data.presentation);
 	// svelte-ignore state_referenced_locally
 	let equipment = $state<EquipmentWorkshopProjection | null>(data.equipment);
-	let eventCue = $state<PublicEngineEvent | null>(null);
+	let eventCue = $state<AuthoritativeEvent | null>(null);
 	let emberPending = $state(false);
 	let selectedEmberFacility = $state<FirstEmberFacility | null>(null);
 	let selectedEmberRationale = $state<FirstEmberRationale>('prepare-tower');
@@ -153,7 +153,7 @@
 				: Promise.resolve(null)
 		]);
 		if (projectionResponse.ok)
-			presentation = (await projectionResponse.json()) as PublicSettlementPresentation;
+			presentation = (await projectionResponse.json()) as SettlementPresentation;
 		if (clockResponse.ok) clock = (await clockResponse.json()) as SimulationClock;
 		if (equipmentResponse?.ok) {
 			equipment = (await equipmentResponse.json()) as EquipmentWorkshopProjection;
@@ -208,7 +208,7 @@
 		}
 	}
 
-	function showEventCue(event: PublicEngineEvent) {
+	function showEventCue(event: AuthoritativeEvent) {
 		eventCue = event;
 		if (eventCueTimer) clearTimeout(eventCueTimer);
 		eventCueTimer = setTimeout(() => (eventCue = null), 4_600);

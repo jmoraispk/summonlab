@@ -1,14 +1,21 @@
 import {
 	PublicProofRunSnapshotSchema,
 	PublicProofRunSnapshotV2Schema,
-	type PublicProofRunSnapshot,
 	type CharacterManifest,
 	type ProofRunSnapshot,
 	type ProofRunSnapshotV2,
+	type PublicProofRunSnapshot,
 	type PublicProofRunSnapshotV2
 } from '@summonlab/contracts';
+import { hashCanonical } from '@summonlab/engine';
 
-import { hashPublicProjection } from './public-projection-hash';
+function publicProjectionHash(kind: 'proof-event' | 'proof-manifest', projection: unknown): string {
+	return hashCanonical({
+		publicProjectionHashVersion: 'public-projection-hash-v1',
+		kind,
+		projection
+	});
+}
 
 export function projectProofManifestForPublic(manifest: CharacterManifest) {
 	const projection = {
@@ -24,7 +31,7 @@ export function projectProofManifestForPublic(manifest: CharacterManifest) {
 	};
 	return {
 		manifest: projection,
-		publicManifestHash: hashPublicProjection('proof-manifest', projection)
+		publicManifestHash: publicProjectionHash('proof-manifest', projection)
 	};
 }
 
@@ -54,7 +61,7 @@ export function projectProofRunForPublic(
 			};
 			return {
 				...publicEvent,
-				publicEventHash: hashPublicProjection('proof-event', publicEvent)
+				publicEventHash: publicProjectionHash('proof-event', publicEvent)
 			};
 		}),
 		createdAt: snapshot.createdAt

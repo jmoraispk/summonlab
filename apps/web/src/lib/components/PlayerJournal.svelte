@@ -2,14 +2,14 @@
 	import type {
 		DecisionSource,
 		PlayerJournalEntry,
-		PlayerJournalFacet
+		PlayerJournalFacet,
+		PlayerJournalReport
 	} from '@summonlab/contracts';
-	import type { PublicPlayerJournalReport } from '$lib/public-engine';
 
 	let {
 		journal,
 		actorLabels = {}
-	}: { journal: PublicPlayerJournalReport; actorLabels?: Record<string, string> } = $props();
+	}: { journal: PlayerJournalReport; actorLabels?: Record<string, string> } = $props();
 
 	let facet = $state<'all' | PlayerJournalFacet>('all');
 	let day = $state('all');
@@ -90,7 +90,7 @@
 		</div>
 		<div class="binding">
 			<small>Event stream</small>
-			<code>{journal.publicJournalHash.slice(0, 12)}</code>
+			<code>{journal.eventStreamHash.slice(0, 12)}</code>
 			<strong>{journal.entryCount} transitions</strong>
 			<small>cursor #{journal.fromCursor}—#{journal.toCursor}</small>
 		</div>
@@ -288,9 +288,12 @@
 							{#each entry.facets as tag (tag)}<span class:failure={tag === 'failure'}>{tag}</span
 								>{/each}
 						</div>
-						<code>{entry.publicEntryHash.slice(0, 10)}</code>
+						<code>{entry.stateHash.slice(0, 10)}</code>
 						<small>
-							{entry.source.source}{entry.source.timing ? ` · ${entry.source.timing}` : ''}
+							{entry.source.source}{entry.source.timing ? ` · ${entry.source.timing}` : ''}{entry
+								.source.fallbackPolicy
+								? ` · ${entry.source.fallbackPolicy}`
+								: ''}
 						</small>
 					</aside>
 				</article>

@@ -37,7 +37,7 @@ export const CombatResourceValueSchema = z
 		message: 'Combat resource cannot exceed its maximum'
 	});
 
-export const CombatResourcesSchema = z
+export const ReadinessCombatResourcesSchema = z
 	.object({ health: CombatResourceValueSchema, mana: CombatResourceValueSchema })
 	.strict();
 
@@ -74,7 +74,7 @@ export const CombatantStateSchema = z
 		teamId: TeamIdSchema,
 		position: CombatPositionSchema,
 		facing: z.enum(['north', 'east', 'south', 'west']),
-		resources: CombatResourcesSchema,
+		resources: ReadinessCombatResourcesSchema,
 		lastDamagedAtTick: TickSchema.nullable(),
 		attributes: CombatAttributesSchema,
 		armour: z.number().int().nonnegative().max(1_000_000),
@@ -490,7 +490,7 @@ export const ActorSelfDecisionStateSchema = z
 		combatantKind: z.enum(['master', 'hero', 'monster']),
 		teamId: TeamIdSchema,
 		position: CombatPositionSchema,
-		resources: CombatResourcesSchema,
+		resources: ReadinessCombatResourcesSchema,
 		conditions: z.array(ObservableCombatConditionSchema).max(128),
 		readiness: z
 			.object({
@@ -509,7 +509,7 @@ export const VisibleCombatantDecisionStateSchema = z
 		combatantKind: z.enum(['master', 'hero', 'monster']),
 		teamId: TeamIdSchema,
 		position: CombatPositionSchema,
-		resources: CombatResourcesSchema,
+		resources: ReadinessCombatResourcesSchema,
 		conditions: z.array(ObservableCombatConditionSchema).max(128),
 		readinessStatus: z.enum(['ready', 'recovering', 'unknown']),
 		downed: z.boolean(),

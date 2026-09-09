@@ -2,8 +2,6 @@ import { getConfig } from '@summonlab/config';
 import { getEngineReplay } from '@summonlab/database';
 import { json } from '@sveltejs/kit';
 
-import { projectEngineReplayForPublic } from '$lib/server/public-engine-presentation';
-
 import type { RequestHandler } from './$types';
 
 export const GET: RequestHandler = async ({ params }) => {
@@ -11,9 +9,7 @@ export const GET: RequestHandler = async ({ params }) => {
 	try {
 		const report = await getEngineReplay(getConfig().databaseUrl, params.runId);
 		if (!report) return json({ message: 'Engine run not found.' }, { status: 404 });
-		return json(projectEngineReplayForPublic(report), {
-			headers: { 'cache-control': 'no-store' }
-		});
+		return json(report, { headers: { 'cache-control': 'no-store' } });
 	} catch (error) {
 		return json(
 			{ message: error instanceof Error ? error.message : 'The replay could not be rebuilt.' },

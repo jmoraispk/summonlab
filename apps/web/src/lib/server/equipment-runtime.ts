@@ -16,8 +16,6 @@ import { hashCanonical, legalActions, supportsEquipmentApi } from '@summonlab/en
 import approvedSourceManifest from '../../../../../assets/equipment/approved/material-equipment-v1/manifest.json';
 import runtimeVisualManifestSource from '../../../static/runtime/equipment-v1/manifest.json';
 
-import { hashPublicProjection } from './public-projection-hash';
-
 export interface EquipmentApprovedSourceRecord {
 	readonly assetKey: string;
 	readonly role: 'item' | 'armour-set-reference';
@@ -73,7 +71,7 @@ export interface EquipmentWorkshopProjection {
 	readonly heroId: string;
 	readonly version: number;
 	readonly eventCursor: number;
-	readonly publicProjectionHash: string;
+	readonly stateHash: string;
 	readonly catalog: {
 		readonly contentVersion: 'equipment-content-v1';
 		readonly runtimeManifestHash: string;
@@ -357,12 +355,13 @@ export function projectEquipmentWorkshop(
 			})
 		: null;
 	const workshop = state.settlement.buildings.workshop;
-	const publicFields = {
+	return {
 		schemaVersion: 'equipment-workshop-projection-v1',
 		runId: state.runId,
 		heroId,
 		version: state.version,
 		eventCursor: state.eventCursor,
+		stateHash: snapshot.stateHash,
 		catalog: {
 			contentVersion: 'equipment-content-v1',
 			runtimeManifestHash: runtime.manifestHash,
@@ -389,9 +388,5 @@ export function projectEquipmentWorkshop(
 						provenance: inspectedVisual.provenance
 					}
 				: null
-	} as const;
-	return {
-		...publicFields,
-		publicProjectionHash: hashPublicProjection('equipment-workshop', publicFields)
 	};
 }

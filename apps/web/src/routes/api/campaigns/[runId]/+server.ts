@@ -12,7 +12,9 @@ export const GET: RequestHandler = async ({ params }) => {
 			? json(view, { headers: { 'cache-control': 'no-store' } })
 			: json({ message: 'Campaign run not found.' }, { status: 404 });
 	} catch (error) {
-		console.error('Campaign view failed', error);
-		return json({ message: 'Campaign could not be loaded.' }, { status: 500 });
+		return json(
+			{ message: error instanceof Error ? error.message : 'Campaign could not be loaded.' },
+			{ status: 500 }
+		);
 	}
 };

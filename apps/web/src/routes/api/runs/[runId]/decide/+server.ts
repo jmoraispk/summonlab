@@ -49,7 +49,9 @@ export const POST: RequestHandler = async ({ params, request }) => {
 		if (!updated) return json({ message: 'Summon run not found.' }, { status: 404 });
 		return json(projectProofRunForPublic(updated));
 	} catch (error) {
-		console.error('Proof decision failed', error);
-		return json({ message: 'The pending decision failed.' }, { status: 500 });
+		return json(
+			{ message: error instanceof Error ? error.message : 'The pending decision failed.' },
+			{ status: 500 }
+		);
 	}
 };

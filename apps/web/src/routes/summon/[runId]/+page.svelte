@@ -2,6 +2,7 @@
 	import { resolve } from '$app/paths';
 	import type {
 		DecisionJobClientView,
+		HeroConversationPresentation,
 		HeroDecisionPreview,
 		HeroPolicyResult,
 		PublicProofRunSnapshot,
@@ -10,14 +11,13 @@
 	import { onDestroy } from 'svelte';
 	import EventJournal from '$lib/components/EventJournal.svelte';
 	import HeroArtPlaceholder from '$lib/components/HeroArtPlaceholder.svelte';
-	import type { PublicHeroConversationPresentation } from '$lib/server/public-world-presentation';
 
 	let { data } = $props();
 	type PublicProofSnapshot = PublicProofRunSnapshot | PublicProofRunSnapshotV2;
 	// svelte-ignore state_referenced_locally
 	let snapshot = $state<PublicProofSnapshot>(data.snapshot);
 	// svelte-ignore state_referenced_locally
-	let conversation = $state<PublicHeroConversationPresentation | null>(data.conversation);
+	let conversation = $state<HeroConversationPresentation | null>(data.conversation);
 	// svelte-ignore state_referenced_locally
 	let decisionPreview = $state<HeroDecisionPreview | null>(data.decisionPreview);
 	let decisionPacket = $derived(decisionPreview?.packet ?? null);
@@ -128,7 +128,7 @@
 					delivery: communicationDelivery
 				})
 			});
-			const result = (await response.json()) as PublicHeroConversationPresentation & {
+			const result = (await response.json()) as HeroConversationPresentation & {
 				message?: string;
 			};
 			if (!response.ok) throw new Error(result.message ?? 'Those words could not be recorded.');
@@ -184,7 +184,7 @@
 					orderIntent: conversationKind === 'order' ? conversationOrderIntent : null
 				})
 			});
-			const result = (await response.json()) as PublicHeroConversationPresentation & {
+			const result = (await response.json()) as HeroConversationPresentation & {
 				message?: string;
 			};
 			if (!response.ok) throw new Error(result.message ?? 'The hero could not answer.');
@@ -478,7 +478,7 @@
 			<div class="system-callout">
 				<span>01</span>
 				<p>Recipe accepted</p>
-				<code>public manifest / hidden capability draw</code>
+				<code>public identity / hidden capability draw</code>
 			</div>
 		{:else if stage === 2}
 			<div class="system-callout">
@@ -498,31 +498,13 @@
 					<span>{snapshot.manifest.heightCm} cm</span>
 					<span>personality private</span>
 					<span>learning profile private</span>
+					{#if 'characterSchemaVersion' in snapshot}
+						<span>Might {snapshot.capabilityProfile.attributes.might}</span>
+						<span>Vitality {snapshot.capabilityProfile.attributes.vitality}</span>
+						<span>Agility {snapshot.capabilityProfile.attributes.agility}</span>
+						<span>Spirit {snapshot.capabilityProfile.attributes.spirit}</span>
+					{/if}
 				</div>
-				{#if 'characterSchemaVersion' in snapshot}
-					<dl
-						class="combat-attributes"
-						data-testid="public-combat-attributes"
-						aria-label="Combat attributes"
-					>
-						<div data-testid="combat-attribute-might">
-							<dt>Might</dt>
-							<dd>{snapshot.capabilityProfile.attributes.might}</dd>
-						</div>
-						<div data-testid="combat-attribute-vitality">
-							<dt>Vitality</dt>
-							<dd>{snapshot.capabilityProfile.attributes.vitality}</dd>
-						</div>
-						<div data-testid="combat-attribute-agility">
-							<dt>Agility</dt>
-							<dd>{snapshot.capabilityProfile.attributes.agility}</dd>
-						</div>
-						<div data-testid="combat-attribute-spirit">
-							<dt>Spirit</dt>
-							<dd>{snapshot.capabilityProfile.attributes.spirit}</dd>
-						</div>
-					</dl>
-				{/if}
 				<blockquote>{snapshot.firstObservation}</blockquote>
 			</section>
 		{/if}
@@ -670,10 +652,18 @@
 										<div class="order-outcome">
 											<strong>{latestTurn.heroResponse.orderOutcome}</strong>
 											<span>{latestTurn.orderIntent?.replaceAll('-', ' ')}</span>
+											<em>+{latestTurn.heroResponse.preferenceWeight} preference</em>
 										</div>
 										<details>
 											<summary>Why this outcome?</summary>
 											<p>{latestTurn.heroResponse.publicReason}</p>
+											{#if latestTurn.heroResponse.orderScore}
+												<div class="score-grid">
+													{#each Object.entries(latestTurn.heroResponse.orderScore) as [key, value] (key)}
+														<span>{key}</span><strong>{value > 0 ? `+${value}` : value}</strong>
+													{/each}
+												</div>
+											{/if}
 										</details>
 									{/if}
 								</article>
@@ -1488,43 +1478,6 @@
 		text-transform: capitalize;
 	}
 
-	.combat-attributes {
-		display: grid;
-		grid-template-columns: repeat(4, minmax(0, 1fr));
-		margin: 0 0 1rem;
-		padding: 0.65rem 0;
-		border-top: 1px solid rgba(210, 160, 77, 0.28);
-		border-bottom: 1px solid rgba(210, 160, 77, 0.18);
-	}
-
-	.combat-attributes div {
-		min-width: 0;
-		padding: 0 0.5rem;
-		border-left: 1px solid rgba(255, 255, 255, 0.08);
-	}
-
-	.combat-attributes div:first-child {
-		padding-left: 0;
-		border-left: 0;
-	}
-
-	.combat-attributes dt {
-		overflow: hidden;
-		color: rgba(246, 241, 231, 0.48);
-		font-family: ui-monospace, monospace;
-		font-size: 0.5rem;
-		letter-spacing: 0.08em;
-		text-overflow: ellipsis;
-		text-transform: uppercase;
-	}
-
-	.combat-attributes dd {
-		margin: 0.18rem 0 0;
-		color: #f6f1e7;
-		font-family: Georgia, serif;
-		font-size: 1.05rem;
-	}
-
 	.identity-card blockquote {
 		margin: 0;
 		color: rgba(246, 241, 231, 0.55);
@@ -1795,10 +1748,27 @@
 		letter-spacing: 0.1em;
 	}
 
+	.order-outcome em {
+		margin-left: auto;
+		color: #d2a04d;
+		font-style: normal;
+	}
+
 	.hero-reply details {
 		margin-top: 0.55rem;
 		color: rgba(246, 241, 231, 0.5);
 		font-size: 0.55rem;
+	}
+
+	.score-grid {
+		display: grid;
+		grid-template-columns: 1fr auto;
+		gap: 0.2rem 1rem;
+		margin-top: 0.45rem;
+	}
+
+	.score-grid strong {
+		color: #f1cf8b;
 	}
 
 	.context-preview {

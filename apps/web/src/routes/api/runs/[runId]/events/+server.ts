@@ -9,8 +9,6 @@ import {
 } from '@summonlab/database';
 import { json } from '@sveltejs/kit';
 
-import { projectEngineEventForPublic } from '$lib/server/public-engine-presentation';
-
 import type { RequestHandler } from './$types';
 
 const HEARTBEAT_MS = 15_000;
@@ -105,9 +103,7 @@ export const GET: RequestHandler = async ({ params, request, url }) => {
 						return;
 					}
 					for (const event of page.events) {
-						controller.enqueue(
-							frame('engine-event', projectEngineEventForPublic(event), event.sequence)
-						);
+						controller.enqueue(frame('engine-event', event, event.sequence));
 						currentCursor = event.sequence;
 					}
 					if (!page.hasMore) break;

@@ -1,7 +1,14 @@
 <script lang="ts">
-	import type { PublicProofEvent } from '@summonlab/contracts';
+	import type { ProofEvent, PublicProofEvent } from '@summonlab/contracts';
 
-	let { events, compact = false }: { events: PublicProofEvent[]; compact?: boolean } = $props();
+	let {
+		events,
+		compact = false
+	}: { events: readonly (ProofEvent | PublicProofEvent)[]; compact?: boolean } = $props();
+
+	function evidenceHash(event: ProofEvent | PublicProofEvent): string {
+		return 'publicEventHash' in event ? event.publicEventHash : event.eventHash;
+	}
 </script>
 
 <section class:compact class="journal" aria-labelledby="journal-title">
@@ -22,9 +29,7 @@
 						<span>{event.decisionSource}</span>
 					</div>
 					<p>{event.summary}</p>
-					<small title={event.publicEventHash}
-						>public hash {event.publicEventHash.slice(0, 10)}</small
-					>
+					<small title={evidenceHash(event)}>hash {evidenceHash(event).slice(0, 10)}</small>
 				</div>
 			</li>
 		{/each}

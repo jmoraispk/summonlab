@@ -2,8 +2,6 @@ import { getConfig } from '@summonlab/config';
 import { catchUpRun, getEngineReplay, getSimulationClock } from '@summonlab/database';
 import { error } from '@sveltejs/kit';
 
-import { projectEngineReplayForPublic } from '$lib/server/public-engine-presentation';
-
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ params }) => {
@@ -17,5 +15,5 @@ export const load: PageServerLoad = async ({ params }) => {
 	}
 	const report = await getEngineReplay(config.databaseUrl, params.runId).catch(() => null);
 	if (!report) error(404, 'This engine run could not be rebuilt. Is the local database running?');
-	return { report: projectEngineReplayForPublic(report) };
+	return { report };
 };

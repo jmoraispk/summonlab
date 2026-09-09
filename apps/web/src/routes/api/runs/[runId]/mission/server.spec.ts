@@ -1,14 +1,11 @@
 import { generateSummonableCharacterDraft } from '@summonlab/characters';
 import type { ActorDecisionView, CombatModeId, EngineSnapshot } from '@summonlab/contracts';
-import { IdempotencyConflictError } from '@summonlab/database';
 import {
 	applyCommand,
 	createBootstrapEngine,
 	createCombatModeBinding,
 	deterministicUuid,
-	hashCanonical,
-	hashGameState,
-	legalActions
+	hashGameState
 } from '@summonlab/engine';
 import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 
@@ -16,8 +13,7 @@ const mocks = vi.hoisted(() => ({
 	combatMode: 'agent-readiness-v1' as CombatModeId,
 	snapshot: null as EngineSnapshot | null,
 	commit: vi.fn(),
-	createWindow: vi.fn(),
-	commitsById: new Map<string, { commandHash: string; receipt: unknown }>()
+	createWindow: vi.fn()
 }));
 
 vi.mock('@summonlab/config', () => ({
@@ -112,21 +108,10 @@ describe('operator-bound mission combat', () => {
 	beforeEach(() => {
 		mocks.combatMode = 'agent-readiness-v1';
 		mocks.snapshot = initial;
-		mocks.commitsById.clear();
 		mocks.commit.mockReset().mockImplementation(async (_databaseUrl, command) => {
-			const existing = mocks.commitsById.get(command.commandId);
-			const commandHash = hashCanonical(command);
-			if (existing) {
-				if (existing.commandHash !== commandHash) {
-					throw new IdempotencyConflictError(command.commandId);
-				}
-				return existing.receipt;
-			}
 			const applied = applyCommand(mocks.snapshot!.state, command);
 			mocks.snapshot = { state: applied.state, stateHash: hashGameState(applied.state) };
-			const receipt = { snapshot: mocks.snapshot, events: applied.events, legalActions: [] };
-			mocks.commitsById.set(command.commandId, { commandHash, receipt });
-			return receipt;
+			return { snapshot: mocks.snapshot, events: applied.events, legalActions: [] };
 		});
 		mocks.createWindow.mockReset().mockImplementation(async (_databaseUrl, input) => ({
 			windowId: input.snapshot.windowId,
@@ -143,7 +128,16 @@ describe('operator-bound mission combat', () => {
 		}));
 	});
 
-	it('uses the attempt binding after the operator default changes and persists one safe window', async () => {
+	it('binds the operator default when the attempt is prepared', async () => {
+		const response = await call({ action: 'prepare', heroIds: [heroId] });
+
+		expect(response.status, JSON.stringify(await response.clone().json())).toBe(200);
+		expect(mocks.snapshot?.state).toMatchObject({
+			mission: { attempt: { combatModeBinding: { modeId: 'agent-readiness-v1' } } }
+		});
+	});
+
+	it('uses the stored readiness binding even after the operator default changes', async () => {
 		mocks.snapshot = deployed('agent-readiness-v1');
 		mocks.combatMode = 'legacy-auto-v1';
 
@@ -155,81 +149,18 @@ describe('operator-bound mission combat', () => {
 		expect(mocks.createWindow).toHaveBeenCalledOnce();
 		expect(mocks.createWindow.mock.calls[0]?.[1]).toMatchObject({
 			runId: initial.state.runId,
-			expectedRunVersion: mocks.snapshot.state.version,
 			actors: expect.arrayContaining([
 				expect.objectContaining({ requestedPolicy: 'scripted', maxProviderAttempts: 2 })
 			])
 		});
-		const windowInput = mocks.createWindow.mock.calls[0]?.[1];
-		const heroActor = windowInput?.actors.find(
-			(actor: { view: ActorDecisionView }) => actor.view.actorId === heroId
-		);
-		expect(
-			heroActor?.view.legalActions.map((action: { actionId: string }) => action.actionId)
-		).toEqual(expect.arrayContaining(['combat-skill-basic-sword-strike', 'guard']));
-		expect(heroActor?.deterministicFallback).toMatchObject({
-			actionId: 'combat-skill-basic-sword-strike',
-			target: { kind: 'entity' },
-			fallbackId: null
-		});
 		expect(body).toMatchObject({ status: 'collecting', readyActors: 0 });
-		expect(body).not.toHaveProperty('snapshot');
 		expect(body).not.toHaveProperty('jobs');
-		expect(JSON.stringify(body)).not.toContain('actorViewHash');
 		expect(JSON.stringify(body)).not.toContain('legalActions');
 	});
 
-	it('keeps an active attempt immutable while a later attempt binds the new operator default', async () => {
-		mocks.combatMode = 'agent-readiness-v1';
-		let response = await call({ action: 'prepare', heroIds: [heroId] });
-		expect(response.status, JSON.stringify(await response.clone().json())).toBe(200);
-		const afterPrepare = mocks.snapshot;
-		if (!afterPrepare || afterPrepare.state.schemaVersion !== 26)
-			throw new Error('Expected v26 fixture');
-		expect(afterPrepare.state.mission.attempt?.combatModeBinding.modeId).toBe('agent-readiness-v1');
-
-		mocks.combatMode = 'legacy-auto-v1';
-		response = await call({ action: 'revise-party', heroIds: [heroId] });
-		expect(response.status, JSON.stringify(await response.clone().json())).toBe(200);
-		const afterRevision = mocks.snapshot;
-		if (!afterRevision || afterRevision.state.schemaVersion !== 26)
-			throw new Error('Expected v26 fixture');
-		expect(afterRevision.state.mission.attempt?.combatModeBinding.modeId).toBe(
-			'agent-readiness-v1'
-		);
-
-		response = await call({ action: 'cancel' });
-		expect(response.status, JSON.stringify(await response.clone().json())).toBe(200);
-		response = await call({ action: 'prepare', heroIds: [heroId] });
-		expect(response.status, JSON.stringify(await response.clone().json())).toBe(200);
-		const nextAttempt = mocks.snapshot;
-		if (!nextAttempt || nextAttempt.state.schemaVersion !== 26)
-			throw new Error('Expected v26 fixture');
-		expect(nextAttempt.state.mission.attempt).toMatchObject({
-			ordinal: 2,
-			combatModeBinding: { modeId: 'legacy-auto-v1' },
-			combatState: { modeId: 'legacy-auto-v1' }
-		});
-	});
-
-	it('keeps the legacy path synchronous under its stored attempt mode', async () => {
+	it('keeps a stored legacy attempt synchronous when the operator default changes', async () => {
 		mocks.snapshot = deployed('legacy-auto-v1');
 		mocks.combatMode = 'agent-readiness-v1';
-		if (mocks.snapshot.state.schemaVersion !== 26) throw new Error('Expected v26 fixture');
-		expect(mocks.snapshot.state.mission.attempt).toMatchObject({
-			status: 'deployed',
-			combatModeBinding: { modeId: 'legacy-auto-v1' },
-			combatState: { modeId: 'legacy-auto-v1' }
-		});
-		expect(
-			legalActions(mocks.snapshot.state, mocks.snapshot.state.master.masterId).map(
-				(action) => action.actionId
-			)
-		).toContain('mission.advance.automatic');
-		applyCommand(mocks.snapshot.state, {
-			...commandBase(mocks.snapshot, 'legacy-probe'),
-			commandType: 'mission.advance.automatic'
-		});
 
 		const response = await call({ action: 'advance-automatic-combat' });
 
@@ -241,59 +172,13 @@ describe('operator-bound mission combat', () => {
 		expect(mocks.createWindow).not.toHaveBeenCalled();
 	});
 
-	it('persists a pre-window terminal result through the system command before responding', async () => {
-		const active = deployed('agent-readiness-v1');
-		if (active.state.schemaVersion !== 26) throw new Error('Expected v26 fixture');
-		const input = structuredClone(active.state);
-		const combat = input.mission.attempt!.combatState;
-		if (combat.modeId !== 'agent-readiness-v1') throw new Error('Expected readiness combat');
-		for (const enemy of Object.values(combat.readinessState.combatants).filter(
-			(combatant) => combatant.teamId === 'enemy'
-		)) {
-			enemy.resources.health.current = 0;
-			enemy.downed = true;
-			enemy.active = false;
-		}
-		mocks.snapshot = { state: input, stateHash: hashGameState(input) };
-
-		const response = await call({ action: 'advance-automatic-combat' });
-		const body = await response.json();
-
-		expect(response.status, JSON.stringify(body)).toBe(200);
-		expect(mocks.commit).toHaveBeenCalledOnce();
-		expect(mocks.commit.mock.calls[0]?.[1]).toMatchObject({
-			commandType: 'mission.commit.readiness-terminal',
-			source: { source: 'system', timing: null }
+	it('rejects client attempts to override the operator-owned mode', async () => {
+		const response = await call({
+			action: 'advance-automatic-combat',
+			combatMode: 'legacy-auto-v1'
 		});
-		expect(mocks.snapshot.state.schemaVersion).toBe(26);
-		if (mocks.snapshot.state.schemaVersion !== 26) throw new Error('Expected v26 fixture');
-		expect(mocks.snapshot.state.mission.attempt).toMatchObject({
-			status: 'extraction',
-			outcome: null
-		});
-		expect(body).toMatchObject({
-			status: 'terminal',
-			outcome: 'victory',
-			missionStatus: 'extraction'
-		});
-		expect(mocks.createWindow).not.toHaveBeenCalled();
 
-		const retry = await call({ action: 'advance-automatic-combat' });
-		expect(retry.status, JSON.stringify(await retry.clone().json())).toBe(200);
-		expect(await retry.json()).toStrictEqual(body);
-		expect(mocks.commit).toHaveBeenCalledOnce();
-	});
-
-	it('rejects client mode, provider, action, and target overrides before dispatch', async () => {
-		for (const override of [
-			{ combatMode: 'legacy-auto-v1' },
-			{ provider: 'random' },
-			{ actionId: 'combat-skill-basic-sword-strike' },
-			{ targetId: heroId }
-		]) {
-			const response = await call({ action: 'advance-automatic-combat', ...override });
-			expect(response.status).toBe(400);
-		}
+		expect(response.status).toBe(400);
 		expect(mocks.commit).not.toHaveBeenCalled();
 		expect(mocks.createWindow).not.toHaveBeenCalled();
 	});

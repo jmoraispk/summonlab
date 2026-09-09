@@ -11,8 +11,6 @@ import { ProofRunCreateRequestSchema } from '@summonlab/contracts';
 import { createProofRun } from '@summonlab/database';
 import { json } from '@sveltejs/kit';
 
-import { projectProofManifestForPublic } from '$lib/server/proof-presentation';
-
 import type { RequestHandler } from './$types';
 
 export const POST: RequestHandler = async ({ request }) => {
@@ -37,25 +35,21 @@ export const POST: RequestHandler = async ({ request }) => {
 		const snapshot = await createProofRun(config.databaseUrl, {
 			runId: randomUUID(),
 			draft,
-			controlMode: parsed.data.controlMode,
 			capabilityEntropy,
+			controlMode: parsed.data.controlMode,
 			directive: parsed.data.directive,
 			firstObservation: FIRST_OBSERVATION,
 			choice,
 			clockSpeed: config.simulationSpeed,
 			combatMode: config.combatMode
 		});
+		return json({ runId: snapshot.runId, manifestHash: snapshot.manifestHash }, { status: 201 });
+	} catch (error) {
 		return json(
 			{
-				runId: snapshot.runId,
-				publicManifestHash: projectProofManifestForPublic(draft.manifest).publicManifestHash
+				message: 'The local gate could not persist this summon. Start PostgreSQL with pnpm dev.',
+				detail: error instanceof Error ? error.message : 'unknown persistence failure'
 			},
-			{ status: 201 }
-		);
-	} catch (error) {
-		console.error('Summon creation failed', error);
-		return json(
-			{ message: 'The local gate could not persist this summon. Start PostgreSQL with pnpm dev.' },
 			{ status: 503 }
 		);
 	}

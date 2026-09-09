@@ -49,12 +49,9 @@ export const load: PageServerLoad = async ({ params, url }) => {
 		engineSnapshot?.state.schemaVersion === 24
 			? projectEquipmentWorkshop(engineSnapshot, snapshot.manifest.characterId)
 			: null;
-	const campaignExperience = await campaignExperienceView(config.databaseUrl, params.runId).catch(
+	const campaignView = await campaignExperienceView(config.databaseUrl, params.runId).catch(
 		() => null
 	);
-	const campaignView = campaignExperience
-		? { objectives: campaignExperience.objectives }
-		: null;
 	const heroPortrait = runtimePortraitFor(
 		snapshot.manifestHash,
 		snapshot.manifest.artKey,

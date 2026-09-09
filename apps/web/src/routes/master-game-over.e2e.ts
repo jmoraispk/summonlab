@@ -24,7 +24,7 @@ test('lets the Master act, die, seal the run, and inspect the persisted replay',
 	const { runId } = (await response.json()) as { runId: string };
 	await page.goto(`/mission/${runId}`);
 	await expect(page.getByRole('heading', { name: /The Last Command/ })).toBeVisible();
-	await expect(page.getByTestId('master-roster-card')).toContainText('Health 100 / 100 · alive');
+	await expect(page.getByTestId('master-roster-card')).toContainText('100 / 100 vitality · alive');
 
 	await page.getByTestId('prepare-party').click();
 	await page.getByTestId('deploy-party').click();
@@ -43,7 +43,7 @@ test('lets the Master act, die, seal the run, and inspect the persisted replay',
 	await expect(page.getByTestId('mission-game-over')).toContainText(
 		'The Master is dead. The command ends here.'
 	);
-	await expect(page.getByTestId('master-roster-card')).toContainText('Health 0 / 100 · dead');
+	await expect(page.getByTestId('master-roster-card')).toContainText('0 / 100 vitality · dead');
 	await expect(page.getByTestId('master-turn-actions')).toHaveCount(0);
 	await expect(page.getByTestId('aftermath-console')).toContainText('run ended atomically');
 
@@ -55,7 +55,6 @@ test('lets the Master act, die, seal the run, and inspect the persisted replay',
 	await expect(page.getByTestId('mission-game-over')).toBeVisible();
 	await page.getByRole('link', { name: 'Open the sealed replay' }).click();
 	await expect(page).toHaveURL(new RegExp(`/replay/${runId}$`, 'u'));
-	await expect(page.getByTestId('replay-status')).toHaveText('Internal replay verified');
-	await expect(page.getByText(/game_over · .* · mission tower-floor-03/u)).toBeVisible();
-	await expect(page.getByText(/The Master died .* the run was atomically sealed\./u)).toBeVisible();
+	await expect(page.getByTestId('replay-status')).toContainText('Verified');
+	await expect(page.getByTestId('game-over')).toContainText('This history is sealed');
 });

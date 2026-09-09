@@ -32,7 +32,9 @@ export const POST: RequestHandler = async ({ params, request }) => {
 			headers: { 'cache-control': 'no-store' }
 		});
 	} catch (error) {
-		console.error('Catch-up failed', error);
-		return json({ message: 'Catch-up could not be completed.' }, { status: 500 });
+		return json(
+			{ message: error instanceof Error ? error.message : 'Catch-up could not be completed.' },
+			{ status: 500 }
+		);
 	}
 };

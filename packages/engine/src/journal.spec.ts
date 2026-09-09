@@ -220,6 +220,18 @@ function fixtureEvents(): AuthoritativeEvent[] {
 }
 
 describe('player journal projection', () => {
+	it('accepts the canonical readiness choice-batch event discriminator', () => {
+		const report = projectPlayerJournal([
+			...fixtureEvents(),
+			event(7, 'mission.combat.choice-batch.applied', {
+				mission: mission('resolving', 2),
+				resolvedEvents: []
+			})
+		]);
+
+		expect(report.entries.at(-1)?.eventType).toBe('mission.combat.choice-batch.applied');
+	});
+
 	it('projects authoritative deltas, actions, direction, story, and party progress', () => {
 		const report = projectPlayerJournal(fixtureEvents());
 

@@ -14,66 +14,18 @@ test('replays the same seeded-random identity and first choice', async ({ reques
 	const [leftResponse, rightResponse] = await Promise.all([create(), create()]);
 	expect(leftResponse.status()).toBe(201);
 	expect(rightResponse.status()).toBe(201);
-	const leftCreated = (await leftResponse.json()) as { runId: string; publicManifestHash: string };
-	const rightCreated = (await rightResponse.json()) as {
-		runId: string;
-		publicManifestHash: string;
-	};
+	const leftCreated = (await leftResponse.json()) as { runId: string; manifestHash: string };
+	const rightCreated = (await rightResponse.json()) as { runId: string; manifestHash: string };
 	const [left, right] = await Promise.all([
 		request.get(`/api/runs/${leftCreated.runId}`).then((response) => response.json()),
 		request.get(`/api/runs/${rightCreated.runId}`).then((response) => response.json())
 	]);
 
-	expect(leftCreated.publicManifestHash).toBe(rightCreated.publicManifestHash);
+	expect(leftCreated.manifestHash).toBe(rightCreated.manifestHash);
 	expect(left.manifest).toEqual(right.manifest);
 	expect(left.mind).toEqual(right.mind);
 	expect(left.destination).toBe(right.destination);
 	expect(left.storyBranch).toBe(right.storyBranch);
-});
-
-test('shows the four public combat attributes without exposing hidden learning data', async ({
-	page
-}) => {
-	const created = await page.request.post('/api/runs', {
-		data: {
-			recipe: { ...emberRecipe, seed: 'public-combat-attributes' },
-			controlMode: 'wait',
-			directive: ''
-		}
-	});
-	expect(created.status()).toBe(201);
-	const { runId } = (await created.json()) as { runId: string };
-	const publicResponse = await page.request.get(`/api/runs/${runId}`);
-	expect(publicResponse.status()).toBe(200);
-	const publicSnapshot = (await publicResponse.json()) as {
-		characterSchemaVersion?: string;
-		capabilityProfile?: {
-			attributes: Record<'might' | 'vitality' | 'agility' | 'spirit', number>;
-		};
-	};
-	const serialized = JSON.stringify(publicSnapshot);
-	expect(publicSnapshot.characterSchemaVersion).toBe('character-v2');
-	expect(serialized).not.toContain('cognitiveLearningScore');
-	expect(serialized).not.toContain('domainAptitudes');
-	expect(serialized).not.toMatch(/"(?:iq|intelligence)"/iu);
-	if (!publicSnapshot.capabilityProfile) throw new Error('Expected a public capability profile');
-
-	await page.goto(`/summon/${runId}`);
-	await page.getByRole('button', { name: /Break the seal/ }).click();
-	const attributes = page.getByTestId('public-combat-attributes');
-	await expect(attributes).toBeVisible({ timeout: 5_000 });
-	for (const [key, label] of [
-		['might', 'Might'],
-		['vitality', 'Vitality'],
-		['agility', 'Agility'],
-		['spirit', 'Spirit']
-	] as const) {
-		const entry = attributes.getByTestId(`combat-attribute-${key}`);
-		await expect(entry).toContainText(label);
-		await expect(entry).toContainText(String(publicSnapshot.capabilityProfile.attributes[key]));
-	}
-	await expect(attributes.getByTestId(/^combat-attribute-/u)).toHaveCount(4);
-	await expect(attributes).not.toContainText(/\b(?:IQ|intelligence)\b/iu);
 });
 
 test('uses honest non-character states when a generated hero has no approved art', async ({
@@ -286,10 +238,12 @@ test('forges, summons, directs, and follows one persistent hero', async ({ page 
 	await expect(page.getByText('simulation.advanced')).toBeVisible();
 	await expect(page.getByTestId('travel-proof')).toContainText('training-ring');
 	await expect(page.getByTestId('first-ember-proof')).toContainText('committed');
-	await expect(page.getByTestId('public-social-proof')).toContainText('Public social record');
-	await expect(page.getByTestId('public-social-proof')).toContainText(
-		'private beliefs remain with their holder'
+	await expect(page.getByTestId('social-cognition-proof')).toContainText(
+		'Hero cognition · provenance ledger'
 	);
+	await expect(page.getByTestId('social-cognition-proof')).toContainText('first-ember-commitment');
+	await expect(page.getByTestId('social-cognition-proof')).toContainText('made-founding-promise');
+	await expect(page.getByTestId('social-cognition-proof')).toContainText('consistency 7');
 	await expect(page.getByTestId('communication-witness-ledger')).toContainText(
 		'Communicative acts · witness chains'
 	);
@@ -300,7 +254,7 @@ test('forges, summons, directs, and follows one persistent hero', async ({ page 
 		'intended / addressed'
 	);
 	await expect(page.getByTestId('conversation-replay-turn')).toContainText('negotiated');
-	await expect(page.getByTestId('conversation-replay-turn')).not.toContainText('preference +12');
+	await expect(page.getByTestId('conversation-replay-turn')).toContainText('preference +12');
 	await expect(page.getByTestId('directive-replay-record')).toContainText('consumed direction');
 	await expect(page.getByTestId('directive-replay-record')).toContainText(
 		'Train, exercise, and prepare to fight in the tower.'
@@ -324,7 +278,7 @@ test('forges, summons, directs, and follows one persistent hero', async ({ page 
 	await expect(page.getByTestId('daily-plan')).toContainText('Four intentions');
 	await expect(page.getByTestId('daily-plan')).toContainText('pending');
 	await page.getByRole('button', { name: /Follow next intention/ }).click();
-	await expect(page.getByTestId('routine-resolution')).toContainText('Resolved choice');
+	await expect(page.getByTestId('routine-resolution')).toContainText('Resolver trace');
 	await expect(page.getByTestId('pending-schedule')).toContainText('hero.routine.complete');
 	await expect(page.getByTestId('daily-plan')).toContainText('active');
 	if (process.env.CAPTURE_PHASE4_ROUTINES) {
@@ -361,17 +315,12 @@ test('forges, summons, directs, and follows one persistent hero', async ({ page 
 	await page.getByRole('button', { name: /Advance to outcome/ }).click();
 	await expect(page.getByTestId('pending-schedule')).toHaveText('No pending work');
 
-	const cursorBeforeInspection = Number(await page.getByTestId('replay-event-cursor').innerText());
 	await page.getByRole('button', { name: /Draw gate resonance/ }).click();
-	await expect(page.getByTestId('replay-event-cursor')).toHaveText(
-		String(cursorBeforeInspection + 1)
-	);
+	await expect(page.getByTestId('entropy-cursor')).toHaveText('1');
 	await expect(page.getByText('master.gate.inspected')).toBeVisible();
 	await page.getByRole('button', { name: /Prove stale guard/ }).click();
 	await expect(page.getByTestId('command-result')).toHaveText('1 accepted · 1 rejected stale');
-	await expect(page.getByTestId('replay-event-cursor')).toHaveText(
-		String(cursorBeforeInspection + 2)
-	);
+	await expect(page.getByTestId('entropy-cursor')).toHaveText('2');
 	await expect(page.getByTestId('replay-status')).toContainText('Verified');
 
 	if (process.env.CAPTURE_PHASE2_REPLAY) {

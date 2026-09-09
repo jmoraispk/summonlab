@@ -8,14 +8,11 @@
 		MissionLifecycleRequest
 	} from '@summonlab/contracts';
 	import { onMount } from 'svelte';
-	import CharacterArtMissing from '$lib/components/CharacterArtMissing.svelte';
-	import MissionHeroRosterArt from '$lib/components/MissionHeroRosterArt.svelte';
+	import HeroArtPlaceholder from '$lib/components/HeroArtPlaceholder.svelte';
 	import PlayerJournal from '$lib/components/PlayerJournal.svelte';
-	import type { PublicReadinessResolvedEvent } from '$lib/public-engine';
 
 	let { data } = $props();
 	let busy = $state(false);
-	let returningForMission = $state(false);
 	let selectedHeroIds = $state<string[]>([]);
 	let selectionInitialized = $state(false);
 	let resultMessage = $state('');
@@ -52,10 +49,6 @@
 	const isPortal = $derived(engineState.schemaVersion === 15);
 	const isCapabilityMission = $derived(
 		engineState.schemaVersion === 25 || engineState.schemaVersion === 26
-	);
-	const isModeBoundCombat = $derived(data.combatMode !== null);
-	const isLegacyAutomatic = $derived(
-		data.combatMode?.status === 'available' && data.combatMode.modeId === 'legacy-auto-v1'
 	);
 	const isReadinessCombat = $derived(
 		data.combatMode?.status === 'available' && data.combatMode.modeId === 'agent-readiness-v1'
@@ -102,17 +95,21 @@
 			: null
 	);
 	const attempt = $derived(mission?.attempt ?? null);
-	const turnState = $derived(attempt?.turnState ?? null);
-	const readinessState = $derived(attempt?.readiness ?? null);
-	const readinessEvents = $derived(readinessState?.resolvedEvents ?? []);
-	const lastResolvedReadinessTick = $derived(readinessEvents.at(-1)?.tick ?? null);
-	const lastReadinessTickEvents = $derived(
-		readinessEvents.filter((event) => event.tick === lastResolvedReadinessTick)
+	const turnState = $derived(
+		attempt && 'combatState' in attempt
+			? attempt.combatState.modeId === 'legacy-auto-v1'
+				? attempt.combatState.turnState
+				: null
+			: (attempt?.turnState ?? null)
+	);
+	const readinessState = $derived(
+		attempt && 'combatState' in attempt && attempt.combatState.modeId === 'agent-readiness-v1'
+			? attempt.combatState.readinessState
+			: null
 	);
 	const portalTurnState = $derived(
 		engineState.schemaVersion === 15 ? (engineState.mission.attempt?.turnState ?? null) : null
 	);
-	const portalRuntime = $derived(portalTurnState?.portal ?? null);
 	const combatTurnState = $derived(
 		engineState.schemaVersion === 13 ||
 			engineState.schemaVersion === 16 ||
@@ -122,7 +119,7 @@
 			engineState.schemaVersion === 20 ||
 			engineState.schemaVersion === 25 ||
 			engineState.schemaVersion === 26
-			? (engineState.mission.attempt?.turnState ?? null)
+			? turnState
 			: null
 	);
 	const aftermath = $derived(
@@ -149,10 +146,6 @@
 			((turnState?.roundNumber ?? 0) + 1) % 2 === 0
 	);
 	const hero = $derived(Object.values(engineState.heroes)[0]);
-	const heroReadiness = $derived(data.missionReadiness?.hero ?? null);
-	const heroCanSelect = $derived(
-		heroReadiness ? heroReadiness.canSelect : hero?.lifeState === 'active'
-	);
 	const heroSelected = $derived(hero ? selectedHeroIds.includes(hero.heroId) : false);
 	const terminal = $derived(
 		attempt
@@ -170,7 +163,7 @@
 		)
 	});
 	const masterTurnActions = $derived(
-		data.report.playerActions.filter(
+		(data.report.legalActionsByActor[engineState.master.masterId] ?? []).filter(
 			(action) =>
 				action.actionId.startsWith('mission.move.') ||
 				action.actionId.startsWith('mission.inspect.') ||
@@ -181,7 +174,9 @@
 		)
 	);
 	const retreatAvailable = $derived(
-		data.report.playerActions.some((action) => action.actionId === 'mission.retreat')
+		(data.report.legalActionsByActor[engineState.master.masterId] ?? []).some(
+			(action) => action.actionId === 'mission.retreat'
+		)
 	);
 
 	$effect(() => {
@@ -203,7 +198,7 @@
 		selectedHeroIds =
 			attempt?.status === 'preparing'
 				? [...attempt.party.heroIds]
-				: heroCanSelect
+				: hero.lifeState === 'active'
 					? [hero.heroId]
 					: [];
 		selectionInitialized = true;
@@ -256,7 +251,7 @@
 	});
 
 	$effect(() => {
-		if (!heroCanSelect && selectedHeroIds.includes(hero?.heroId ?? '')) {
+		if (hero?.lifeState !== 'active' && selectedHeroIds.includes(hero?.heroId ?? '')) {
 			selectedHeroIds = selectedHeroIds.filter((heroId) => heroId !== hero?.heroId);
 		}
 	});
@@ -271,31 +266,8 @@
 	});
 
 	function toggleHero() {
-		if (!hero || !heroCanSelect) return;
+		if (!hero) return;
 		selectedHeroIds = heroSelected ? [] : [hero.heroId];
-	}
-
-	async function requestReadinessReturn() {
-		if (!hero || !heroReadiness?.canRequestReturn) return;
-		returningForMission = true;
-		resultMessage = '';
-		errorMessage = '';
-		try {
-			const response = await fetch(`/api/runs/${engineState.runId}/mission-readiness`, {
-				method: 'POST',
-				headers: { 'content-type': 'application/json' },
-				body: '{}'
-			});
-			const body = (await response.json()) as { message?: string };
-			if (!response.ok) throw new Error(body.message ?? 'The hero could not return.');
-			resultMessage = 'The hero followed the verified route back to the Tower Threshold.';
-			await invalidateAll();
-			selectedHeroIds = [hero.heroId];
-		} catch (error) {
-			errorMessage = error instanceof Error ? error.message : 'The hero could not return.';
-		} finally {
-			returningForMission = false;
-		}
 	}
 
 	async function act(payload: MissionLifecycleRequest, success: string) {
@@ -446,16 +418,17 @@
 		try {
 			const response = await fetch(`/api/runs/${engineState.runId}/combat-windows/${windowId}`);
 			const body = (await response.json()) as CombatWindowStatus & { message?: string };
-			if (!response.ok)
+			if (!response.ok) {
 				throw new Error(body.message ?? 'The combat status could not be refreshed.');
+			}
 			combatWindow = body;
 			if (['applied', 'stale', 'failed'].includes(body.status)) {
 				resultMessage =
 					body.status === 'applied'
-						? 'The heroes resolved the readiness window.'
+						? 'The heroes resolved the action window.'
 						: body.status === 'stale'
-							? 'That combat window was superseded. The current battle state has been restored.'
-							: 'The heroes could not resolve that window.';
+							? 'That action window was superseded by the current battle state.'
+							: 'The heroes could not resolve that action window.';
 				await invalidateAll();
 			}
 		} catch (error) {
@@ -485,7 +458,7 @@
 				combatWindow = body;
 				resultMessage = 'The heroes are choosing their next actions.';
 			} else {
-				resultMessage = 'The battle reached a resolved state.';
+				resultMessage = 'The automatic battle advanced.';
 				await invalidateAll();
 			}
 		} catch (error) {
@@ -503,32 +476,6 @@
 			: actorId === hero?.heroId
 				? data.proof.manifest.displayName
 				: 'Unknown hero';
-	}
-
-	function readinessActorName(event: PublicReadinessResolvedEvent) {
-		if (event.actorKind === 'master') return 'The Master';
-		if (event.actorKind === 'hero' && event.actorId === hero?.heroId) {
-			return data.proof.manifest.displayName;
-		}
-		return event.actorKind === 'monster' ? 'Tower defender' : 'Company hero';
-	}
-
-	function readinessEffectSummary(event: PublicReadinessResolvedEvent) {
-		if (event.effects.length === 0) return `Action ${event.outcome}.`;
-		return event.effects
-			.map((effect) => {
-				if (effect.kind === 'resource') {
-					return `${effect.resource} ${effect.before} → ${effect.after}`;
-				}
-				if (effect.kind === 'position') {
-					return `moved (${effect.before.x}, ${effect.before.y}) → (${effect.after.x}, ${effect.after.y})`;
-				}
-				if (effect.kind === 'condition') {
-					return `${effect.conditionId.replaceAll('-', ' ')} ${effect.operation}`;
-				}
-				return 'combatant downed';
-			})
-			.join(' · ');
 	}
 
 	function guardFor(actorId: string) {
@@ -580,7 +527,7 @@
 				{isPortal
 					? 'Portal World / extraction clock'
 					: isCapabilityMission
-						? 'Tower Floor 01 / operator-bound combat'
+						? 'Tower Floor 01 / automatic combat trial'
 						: isMasterFallback
 							? 'Tower Floor 01 / autonomous doctrine'
 							: isMasterTiming
@@ -647,15 +594,7 @@
 	<section class="threshold-shell" data-testid="mission-threshold">
 		<div class="threshold-scene" class:opened={phase !== 'available' && phase !== 'preparing'}>
 			<div class="tower-number">
-				{isPortal
-					? '08'
-					: isCapabilityMission
-						? '01'
-						: isMasterTiming
-							? '01'
-							: isAftermath
-								? '03'
-								: '01'}
+				{isPortal ? '08' : isMasterTiming ? '01' : isAftermath ? '03' : '01'}
 			</div>
 			{#if attempt && ['deployed', 'resolving', 'extraction', 'success', 'failure', 'retreat', 'death'].includes(attempt.status)}
 				<div class="tactical-board" data-testid="mission-board">
@@ -680,76 +619,27 @@
 					{/each}
 					{#each attempt.party.memberIds as actorId, index (actorId)}
 						{@const position = nodePosition(attempt.positions[actorId] ?? attempt.entryNodeId)}
-						{#if isCapabilityMission}
-							{#if actorId === engineState.master.masterId}
-								<div
-									class="tactical-art-missing master"
-									style={`left:calc(${(position.x / data.arena.width) * 100}% + ${(index % 3) * 18 - 18}px);top:calc(${(position.y / data.arena.height) * 100}% - ${index * 7 + 34}px)`}
-									title="The Master · approved combat art unavailable"
-								>
-									<CharacterArtMissing
-										label="The Master"
-										compact
-										testId="master-combat-art-missing"
-									/>
-								</div>
-							{:else if data.heroCombatChibi}
-								<img
-									class="hero-combat-art"
-									style={`left:calc(${(position.x / data.arena.width) * 100}% + ${(index % 3) * 18 - 18}px);top:calc(${(position.y / data.arena.height) * 100}% - ${index * 7 + 34}px)`}
-									src={data.heroCombatChibi.publicPath}
-									width={data.heroCombatChibi.width}
-									height={data.heroCombatChibi.height}
-									alt={`${data.proof.manifest.displayName} combat chibi`}
-									data-character-art-status="approved"
-									data-testid="hero-combat-art"
-								/>
-							{:else}
-								<div
-									class="tactical-art-missing"
-									style={`left:calc(${(position.x / data.arena.width) * 100}% + ${(index % 3) * 18 - 18}px);top:calc(${(position.y / data.arena.height) * 100}% - ${index * 7 + 34}px)`}
-								>
-									<CharacterArtMissing label={data.proof.manifest.displayName} compact />
-								</div>
-							{/if}
-						{:else}
-							<div
-								class="actor-token"
-								class:master={actorId === engineState.master.masterId}
-								style={`left:calc(${(position.x / data.arena.width) * 100}% + ${(index % 3) * 18 - 18}px);top:calc(${(position.y / data.arena.height) * 100}% - ${index * 7 + 34}px)`}
-								title={actorName(actorId)}
-							>
-								{actorId === engineState.master.masterId
-									? 'M'
-									: data.proof.manifest.displayName.slice(0, 1)}
-							</div>
-						{/if}
+						<div
+							class="actor-token"
+							class:master={actorId === engineState.master.masterId}
+							style={`left:calc(${(position.x / data.arena.width) * 100}% + ${(index % 3) * 18 - 18}px);top:calc(${(position.y / data.arena.height) * 100}% - ${index * 7 + 34}px)`}
+							title={actorName(actorId)}
+						>
+							{actorId === engineState.master.masterId
+								? 'M'
+								: data.proof.manifest.displayName.slice(0, 1)}
+						</div>
 					{/each}
 					{#each Object.values(turnState?.monsters ?? {}).filter((monster) => monster.status === 'active') as monster (monster.monsterId)}
 						{@const position = nodePosition(monster.nodeId)}
-						{#if isCapabilityMission}
-							<div
-								class="tactical-art-missing enemy"
-								style={`left:${(position.x / data.arena.width) * 100}%;top:${(position.y / data.arena.height) * 100}%`}
-								title={`${monster.label} · ${monster.vitality}/${monster.maximumVitality} health · approved combat art unavailable`}
-							>
-								<CharacterArtMissing
-									label={monster.label}
-									compact
-									testId="enemy-combat-art-missing"
-								/>
-								<small class="tactical-health">Health {monster.vitality}</small>
-							</div>
-						{:else}
-							<div
-								class="monster-token"
-								style={`left:${(position.x / data.arena.width) * 100}%;top:${(position.y / data.arena.height) * 100}%`}
-								title={`${monster.label} · ${monster.vitality}/${monster.maximumVitality} health`}
-								data-testid="monster-token"
-							>
-								<span>G</span><small>{monster.vitality}</small>
-							</div>
-						{/if}
+						<div
+							class="monster-token"
+							style={`left:${(position.x / data.arena.width) * 100}%;top:${(position.y / data.arena.height) * 100}%`}
+							title={`${monster.label} · ${monster.vitality}/${monster.maximumVitality} vitality`}
+							data-testid="monster-token"
+						>
+							<span>G</span><small>{monster.vitality}</small>
+						</div>
 					{/each}
 					{#if !isPortal && combatTurnState?.objective.status === 'carried'}
 						<div class="objective-banner">
@@ -761,10 +651,10 @@
 						<div class="objective-banner delivered">
 							{data.missionDefinition.objectiveTitle} returned to threshold
 						</div>
-					{:else if portalTurnState && portalRuntime}
+					{:else if portalTurnState}
 						<div class="objective-banner" data-testid="portal-board-status">
 							{portalTurnState.objective.minedAmount}/{portalTurnState.objective.quota} ore secured ·
-							{portalRuntime.roundsRemaining} rounds remain
+							{portalTurnState.portal.roundsRemaining} rounds remain
 						</div>
 					{/if}
 				</div>
@@ -787,16 +677,16 @@
 		</div>
 
 		<div class="operations">
-			{#if portalTurnState && portalRuntime}
-				<div class="portal-clock {portalRuntime.pressureStage}" data-testid="portal-clock">
+			{#if portalTurnState}
+				<div class="portal-clock {portalTurnState.portal.pressureStage}" data-testid="portal-clock">
 					<div>
 						<span>Scar integrity</span>
-						<strong>{portalRuntime.roundsRemaining}</strong>
+						<strong>{portalTurnState.portal.roundsRemaining}</strong>
 						<small>rounds remaining</small>
 					</div>
 					<div>
 						<span>Pressure</span>
-						<strong>{portalRuntime.pressureStage}</strong>
+						<strong>{portalTurnState.portal.pressureStage}</strong>
 						<small>collapse at zero</small>
 					</div>
 					<div>
@@ -927,9 +817,10 @@
 							{#if fallbackMasterControl?.lastResolution?.fallbackSelection}
 								{@const selection = fallbackMasterControl.lastResolution.fallbackSelection}
 								<div class="fallback-evidence" data-testid="fallback-evidence">
-									<span>{selection.policy} · {selection.classification}</span>
+									<span>{selection.policyId} · {selection.classification}</span>
 									<strong>{selection.selectedActionId}</strong>
 									<p>{selection.explanation}</p>
+									<code>{selection.policyResultHash.slice(0, 12)}</code>
 								</div>
 							{/if}
 						</div>
@@ -975,7 +866,7 @@
 								? 'The Master died permanently. Every unfinished activity was canceled; the chronicle and replay remain available.'
 								: attempt?.status === 'success'
 									? isPortal
-										? `Iron Moon extraction credited ${portalRuntime?.extractedAmount ?? 0} ore.`
+										? `Iron Moon extraction credited ${portalTurnState?.portal.extractedAmount ?? 0} ore.`
 										: 'Floor 01 is complete. This run cannot farm the First Ember twice.'
 									: attempt?.status === 'death'
 										? 'A summoned hero died permanently. The wound, damaged gear, witnesses, and social reaction remain in this run.'
@@ -991,18 +882,12 @@
 					class:fatal={isGameOver}
 					data-testid="master-roster-card"
 				>
-					<div class="portrait" class:master-portrait={!isCapabilityMission}>
-						{#if isCapabilityMission}
-							<CharacterArtMissing label="The Master" testId="master-roster-art-missing" />
-						{:else}
-							<span></span>
-						{/if}
-					</div>
+					<div class="portrait master-portrait"><span></span></div>
 					<div>
 						<span>Required · leader</span>
 						<strong>The Master</strong>
 						<small
-							>Health {engineState.master.health} / {engineState.master.maxHealth} · {engineState
+							>{engineState.master.health} / {engineState.master.maxHealth} vitality · {engineState
 								.master.lifeState}{guardFor(engineState.master.masterId)
 								? ` · guard ${guardFor(engineState.master.masterId)!.guard}/${guardFor(engineState.master.masterId)!.maximumGuard}`
 								: ''}</small
@@ -1018,23 +903,28 @@
 							? attempt.party.heroIds.includes(hero.heroId)
 							: heroSelected}
 						disabled={busy ||
-							!heroCanSelect ||
+							hero.lifeState !== 'active' ||
 							(attempt !== null && attempt.status !== 'preparing' && !terminal)}
 						onclick={toggleHero}
 						data-testid="hero-roster-card"
 					>
 						<div class="portrait hero-portrait">
-							<MissionHeroRosterArt
-								{isCapabilityMission}
-								name={data.proof.manifest.displayName}
-								portrait={data.heroPortrait}
-							/>
+							{#if data.heroPortrait}
+								<img
+									src={data.heroPortrait.publicPath}
+									width={data.heroPortrait.width}
+									height={data.heroPortrait.height}
+									alt={`${data.proof.manifest.displayName} roster portrait`}
+								/>
+							{:else}
+								<HeroArtPlaceholder name={data.proof.manifest.displayName} compact />
+							{/if}
 						</div>
 						<div>
 							<span>{'✦'.repeat(data.proof.manifest.rarityStars)} · summoned hero</span>
 							<strong>{data.proof.manifest.displayName}</strong>
 							<small
-								>Lv. {hero.progression.level} · Health {hero.health} / {hero.maxHealth} · {hero.lifeState}{guardFor(
+								>Lv. {hero.progression.level} · {hero.health} / {hero.maxHealth} vitality · {hero.lifeState}{guardFor(
 									hero.heroId
 								)
 									? ` · guard ${guardFor(hero.heroId)!.guard}/${guardFor(hero.heroId)!.maximumGuard}`
@@ -1042,41 +932,19 @@
 									? ` · gear ${itemForHero(hero.heroId)!.durability}/${itemForHero(hero.heroId)!.maxDurability}`
 									: ''}</small
 							>
-							{#if heroReadiness}<small class="readiness-reason">{heroReadiness.reason}</small>{/if}
 						</div>
 						<b
 							>{isGameOver
 								? 'SEALED'
-								: heroReadiness?.status === 'unavailable'
-									? 'UNAVAILABLE'
-									: hero.lifeState === 'active'
-										? heroSelected
-											? 'READY'
-											: 'STAY'
-										: 'DEAD'}</b
+								: hero.lifeState === 'active'
+									? heroSelected
+										? 'READY'
+										: 'STAY'
+									: 'DEAD'}</b
 						>
 					</button>
 				{/if}
 			</div>
-			{#if isCapabilityMission && heroReadiness?.canRequestReturn && (phase === 'available' || terminal)}
-				<div class="readiness-recovery" data-testid="readiness-recovery">
-					<div>
-						<span>Mission assembly</span>
-						<strong>Request a return to the threshold</strong>
-						<p>
-							This records the Master’s direction, follows the legal settlement route, and advances
-							through arrival. It does not choose a combat action.
-						</p>
-					</div>
-					<button
-						type="button"
-						disabled={busy || returningForMission}
-						onclick={requestReadinessReturn}
-						data-testid="request-readiness-return"
-						>{returningForMission ? 'Returning…' : 'Request return'}</button
-					>
-				</div>
-			{/if}
 
 			<div class="action-deck">
 				{#if isGameOver}
@@ -1091,14 +959,7 @@
 						>
 					</div>
 				{:else if phase === 'available' || (terminal && attempt?.status !== 'success')}
-					<button
-						class="primary"
-						disabled={busy ||
-							(isCapabilityMission &&
-								(!data.missionReadiness?.canPrepare || selectedHeroIds.length === 0))}
-						onclick={prepare}
-						data-testid="prepare-party"
-					>
+					<button class="primary" disabled={busy} onclick={prepare} data-testid="prepare-party">
 						<span>Lock threshold roster</span><small
 							>creates attempt {mission ? mission.attemptCount + 1 : 1}</small
 						>
@@ -1112,11 +973,9 @@
 						><span
 							>{isPortal
 								? 'Cross the silver scar'
-								: isCapabilityMission
-									? 'Enter Floor 01'
-									: isAftermath
-										? 'Enter Floor 03'
-										: 'Enter Floor 01'}</span
+								: isAftermath
+									? 'Enter Floor 03'
+									: 'Enter Floor 01'}</span
 						><small>commit all selected members</small></button
 					>
 					<button
@@ -1132,69 +991,103 @@
 						>stand down</button
 					>
 				{:else if phase === 'deployed' || phase === 'resolving'}
-					<div class="turn-objective">
-						<span
-							>{readinessState
-								? `Battle tick ${readinessState.tick}`
-								: `Round ${(turnState?.roundNumber ?? 0) + 1}`}</span
-						>
-						<strong
-							>{turnState?.objective.status ?? 'available'} · {data.missionDefinition
-								.objectiveTitle}</strong
-						>
-						<small
-							>{isModeBoundCombat
-								? 'The heroes choose from legal actions when you continue.'
-								: 'Choose only the Master. Every summoned hero chooses independently.'}</small
-						>
-					</div>
-					{#if turnState && (turnState.currentThreatIntents.length > 0 || redSlagImminent)}
-						<div class="threat-ledger" data-testid="threat-intents">
-							<div><span>Declared threats</span><small>visible before you commit</small></div>
-							{#if redSlagImminent}
-								<article class="hazard-warning" data-testid="red-slag-warning">
-									<strong>RED SLAG VENTS</strong>
-									<p>The Red Gallery will strip 1 guard from every actor beneath its vents.</p>
-									<small>environment · resolves after initiative</small>
-								</article>
-							{/if}
-							{#each turnState.currentThreatIntents as intent (intent.monsterId)}
-								<article>
-									<strong>{actorName(intent.monsterId)}</strong>
-									<p>{intent.telegraph}</p>
-									<small>{intent.kind.replaceAll('-', ' ')} · {intent.anticipatedEffect}</small>
-								</article>
-							{/each}
+					{#if isCapabilityMission}
+						<div class="turn-objective" data-testid="automatic-combat-status">
+							<span
+								>{readinessState ? `Battle tick ${readinessState.tick}` : 'Automatic battle'}</span
+							>
+							<strong>{data.missionDefinition.objectiveTitle}</strong>
+							<small>
+								The combat rules resolve outcomes. Each hero chooses only from the legal actions
+								available in the shared action window.
+							</small>
 						</div>
-					{/if}
-					{#if isModeBoundCombat}
-						{#if isLegacyAutomatic || isReadinessCombat}
-							{#if isReadinessCombat && combatWindow && ['collecting', 'ready'].includes(combatWindow.status)}
-								<div class="turn-objective" aria-live="polite" data-testid="combat-window-status">
-									<span>Heroes choosing</span>
-									<strong>{combatWindow.readyActors}/{combatWindow.totalActors} ready</strong>
-									<small>Battle tick {combatWindow.tick}. This updates automatically.</small>
+						{#if readinessState}
+							<div class="threat-ledger" data-testid="readiness-combatants">
+								<div>
+									<span>Shared combat state</span><small
+										>{combatWindow
+											? `${combatWindow.readyActors}/${combatWindow.totalActors} choices ready`
+											: 'ready for the next action window'}</small
+									>
 								</div>
-							{/if}
+								{#each Object.values(readinessState.combatants) as combatant (combatant.combatantId)}
+									<article>
+										<strong
+											>{combatant.combatantKind === 'master'
+												? 'The Master'
+												: combatant.combatantKind === 'hero'
+													? data.proof.manifest.displayName
+													: 'Tower defender'}</strong
+										>
+										<p>
+											Health {combatant.resources.health.current}/{combatant.resources.health
+												.maximum}
+											· Mana {combatant.resources.mana.current}/{combatant.resources.mana.maximum}
+										</p>
+										<small>{combatant.downed ? 'downed' : combatant.teamId}</small>
+									</article>
+								{/each}
+							</div>
+						{/if}
+						{#if data.combatMode?.status === 'unavailable'}
+							<p class="error" role="alert">{data.combatMode.message}</p>
+						{:else}
 							<button
 								class="primary resolve"
 								disabled={busy ||
-									pollingCombat ||
-									Boolean(combatWindow && ['collecting', 'ready'].includes(combatWindow.status))}
-								aria-busy={busy || pollingCombat}
+									(combatWindow !== null && ['collecting', 'ready'].includes(combatWindow.status))}
 								onclick={advanceAutomaticCombat}
-								data-testid="continue-battle"
-								><span>{busy || pollingCombat ? 'Continuing…' : 'Continue battle'}</span><small
-									>heroes choose → engine resolves</small
-								></button
+								data-testid="advance-automatic-combat"
 							>
-						{:else}
-							<div class="empty-state" data-testid="combat-mode-unavailable">
-								<strong>Combat mode unavailable</strong>
-								<p>{data.combatMode?.message ?? 'This bound combat mode cannot advance yet.'}</p>
-							</div>
+								<span
+									>{isReadinessCombat
+										? 'Open next action window'
+										: 'Advance automatic battle'}</span
+								>
+								<small
+									>{isReadinessCombat
+										? 'heroes choose → engine resolves'
+										: 'legacy automatic resolution'}</small
+								>
+							</button>
+						{/if}
+						{#if retreatAvailable}
+							<button
+								class="quiet"
+								disabled={busy}
+								onclick={() => act({ action: 'retreat' }, 'The party retreated alive.')}
+								data-testid="retreat-party">retreat at threshold</button
+							>
 						{/if}
 					{:else}
+						<div class="turn-objective">
+							<span>Round {(turnState?.roundNumber ?? 0) + 1}</span>
+							<strong
+								>{turnState?.objective.status ?? 'available'} · {data.missionDefinition
+									.objectiveTitle}</strong
+							>
+							<small>Choose only the Master. Every summoned hero chooses independently.</small>
+						</div>
+						{#if turnState && (turnState.currentThreatIntents.length > 0 || redSlagImminent)}
+							<div class="threat-ledger" data-testid="threat-intents">
+								<div><span>Declared threats</span><small>visible before you commit</small></div>
+								{#if redSlagImminent}
+									<article class="hazard-warning" data-testid="red-slag-warning">
+										<strong>RED SLAG VENTS</strong>
+										<p>The Red Gallery will strip 1 guard from every actor beneath its vents.</p>
+										<small>environment · resolves after initiative</small>
+									</article>
+								{/if}
+								{#each turnState.currentThreatIntents as intent (intent.monsterId)}
+									<article>
+										<strong>{actorName(intent.monsterId)}</strong>
+										<p>{intent.telegraph}</p>
+										<small>{intent.kind.replaceAll('-', ' ')} · {intent.anticipatedEffect}</small>
+									</article>
+								{/each}
+							</div>
+						{/if}
 						<div class="turn-choices" data-testid="master-turn-actions">
 							{#each masterTurnActions as choice (choice.actionId)}
 								<button
@@ -1218,14 +1111,14 @@
 							><span>Commit round</span><small>hero policy → seeded initiative → engine</small
 							></button
 						>
-					{/if}
-					{#if retreatAvailable}
-						<button
-							class="quiet"
-							disabled={busy}
-							onclick={() => act({ action: 'retreat' }, 'The party retreated alive.')}
-							data-testid="retreat-party">retreat at threshold</button
-						>
+						{#if retreatAvailable}
+							<button
+								class="quiet"
+								disabled={busy}
+								onclick={() => act({ action: 'retreat' }, 'The party retreated alive.')}
+								data-testid="retreat-party">retreat at threshold</button
+							>
+						{/if}
 					{/if}
 				{:else if phase === 'extraction'}
 					<button
@@ -1261,7 +1154,7 @@
 		</div>
 	</section>
 
-	{#if portalTurnState && portalRuntime}
+	{#if portalTurnState}
 		<section class="ore-console" data-testid="ore-console">
 			<div class="ore-heading">
 				<div>
@@ -1273,7 +1166,7 @@
 			<div class="ore-grid">
 				<div>
 					<h3>Finite deposits</h3>
-					{#each Object.values(portalRuntime.deposits) as deposit (deposit.depositId)}
+					{#each Object.values(portalTurnState.portal.deposits) as deposit (deposit.depositId)}
 						<article>
 							<span>{deposit.nodeId.replaceAll('-', ' ')}</span>
 							<strong>{deposit.remainingAmount}/{deposit.initialAmount}</strong>
@@ -1283,7 +1176,7 @@
 				</div>
 				<div>
 					<h3>Carried ore</h3>
-					{#each Object.values(portalRuntime.cargo) as cargo (cargo.actorId)}
+					{#each Object.values(portalTurnState.portal.cargo) as cargo (cargo.actorId)}
 						<article>
 							<span>{actorName(cargo.actorId)}</span>
 							<strong>{cargo.amount}/{cargo.capacity}</strong>
@@ -1293,10 +1186,10 @@
 				</div>
 				<div class="ore-events">
 					<h3>Ore ledger</h3>
-					{#if portalRuntime.oreLedger.length === 0}
+					{#if portalTurnState.portal.oreLedger.length === 0}
 						<p>No ore has changed hands.</p>
 					{:else}
-						{#each portalRuntime.oreLedger.slice().reverse() as entry (entry.entryId)}
+						{#each portalTurnState.portal.oreLedger.slice().reverse() as entry (entry.entryId)}
 							<article>
 								<span>#{entry.sequence} · {entry.kind}</span>
 								<strong>{entry.amount} iron ore</strong>
@@ -1398,36 +1291,14 @@
 						<div>
 							<span
 								>{partyAction
-									? partyAction.actorKind
+									? `${partyAction.actorKind} · ${partyAction.choiceSource}`
 									: `monster · ${monsterAction!.kind.replaceAll('-', ' ')}`}</span
 							>
 							<strong>{actorName(actorId)}</strong>
 							<p>{resolved.summary}</p>
 							{#if partyAction?.actorKind === 'hero'}<small>{partyAction.publicIntent}</small>{/if}
 						</div>
-					</article>
-				{/each}
-			</div>
-		</section>
-	{:else if lastReadinessTickEvents.length > 0}
-		<section class="initiative-report" data-testid="combat-resolution-trace" aria-live="polite">
-			<div class="round-header">
-				<div>
-					<span>Resolved actions</span>
-					<h2>Battle tick {lastResolvedReadinessTick}</h2>
-				</div>
-				<strong>FIELD FACTS</strong>
-			</div>
-			<div class="initiative-actions">
-				{#each lastReadinessTickEvents as event, index (event.eventId)}
-					<article class:superseded={event.outcome !== 'applied'}>
-						<div class="initiative-rank">{String(index + 1).padStart(2, '0')}</div>
-						<div>
-							<span>{event.actorKind} · {event.outcome}</span>
-							<strong>{readinessActorName(event)}</strong>
-							<p>{event.actionLabel} · {readinessEffectSummary(event)}</p>
-							{#if event.publicIntent}<small>{event.publicIntent}</small>{/if}
-						</div>
+						<code>{resolved.initiative}</code>
 					</article>
 				{/each}
 			</div>
@@ -1452,32 +1323,28 @@
 		<span
 			>{isPortal
 				? 'MIS-007 · authoritative portal extraction'
-				: isCapabilityMission
-					? 'MIS-025 · operator-bound automatic combat'
-					: isMasterFallback
-						? 'MIS-014 · authoritative player journal'
-						: isMasterTiming
-							? 'MIS-012 · authoritative Master timing'
-							: isMasterRisk
-								? 'MIS-009 · controllable Master + atomic game over'
-								: isAftermath
-									? 'MIS-008 · persistent mission aftermath'
-									: 'MIS-004 · autonomous monster duties'}</span
+				: isMasterFallback
+					? 'MIS-014 · authoritative player journal'
+					: isMasterTiming
+						? 'MIS-012 · authoritative Master timing'
+						: isMasterRisk
+							? 'MIS-009 · controllable Master + atomic game over'
+							: isAftermath
+								? 'MIS-008 · persistent mission aftermath'
+								: 'MIS-004 · autonomous monster duties'}</span
 		>
 		<p>
 			{isPortal
 				? 'Next: injuries, death, equipment durability, and social aftermath.'
-				: isCapabilityMission
-					? 'Next: replay, collision, provider, safety, and balance calibration.'
-					: isMasterFallback
-						? 'Next: queued agent decisions through provider-neutral model jobs.'
-						: isMasterTiming
-							? 'Next: directed and random fallback selection, safety ceilings, and player direction.'
-							: isMasterRisk
-								? 'Next: selectable control modes and per-turn fallback timing.'
-								: isAftermath
-									? 'Next: controllable Master actions and atomic game-over inside missions.'
-									: 'Next: Floor 02–05 threats and the Foundry Warden confrontation.'}
+				: isMasterFallback
+					? 'Next: queued agent decisions through provider-neutral model jobs.'
+					: isMasterTiming
+						? 'Next: directed and random fallback selection, safety ceilings, and player direction.'
+						: isMasterRisk
+							? 'Next: selectable control modes and per-turn fallback timing.'
+							: isAftermath
+								? 'Next: controllable Master actions and atomic game-over inside missions.'
+								: 'Next: Floor 02–05 threats and the Foundry Warden confrontation.'}
 		</p>
 	</footer>
 </main>
@@ -1809,38 +1676,6 @@
 		background: #62431e;
 		color: #fff0cf;
 	}
-	.hero-combat-art {
-		position: absolute;
-		z-index: 5;
-		width: 4rem;
-		height: 6rem;
-		object-fit: contain;
-		object-position: 50% 100%;
-		filter: drop-shadow(0 0.35rem 0.2rem rgba(3, 5, 6, 0.85));
-		transform: translate(-50%, -72%);
-	}
-	.tactical-art-missing {
-		position: absolute;
-		z-index: 5;
-		width: 5.4rem;
-		height: 3.2rem;
-		transform: translate(-50%, -50%);
-	}
-	.tactical-art-missing.master {
-		border-top: 1px solid #8f713f;
-	}
-	.tactical-art-missing.enemy {
-		border-top: 1px solid #77483f;
-	}
-	.tactical-health {
-		display: block;
-		margin-top: 0.2rem;
-		color: #d59078;
-		font-size: 0.46rem;
-		letter-spacing: 0.06em;
-		text-align: center;
-		text-transform: uppercase;
-	}
 	.monster-token {
 		position: absolute;
 		z-index: 5;
@@ -2151,6 +1986,10 @@
 		font-size: 0.58rem;
 		line-height: 1.4;
 	}
+	.fallback-evidence code {
+		color: #d7a956;
+		font-size: 0.52rem;
+	}
 	.control-status {
 		display: grid;
 		grid-template-columns: auto 1fr auto;
@@ -2231,6 +2070,13 @@
 		background: #080a0b;
 		position: relative;
 	}
+	.party-card .portrait img {
+		display: block;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		object-position: 50% 15%;
+	}
 	.master-portrait:before {
 		content: '';
 		position: absolute;
@@ -2276,58 +2122,6 @@
 	}
 	.party-card.selected b {
 		color: #58cac6;
-	}
-	.party-card .readiness-reason {
-		color: #b9a77e;
-		line-height: 1.35;
-	}
-	.readiness-recovery {
-		margin: -0.35rem 0 1.25rem;
-		padding: 0.9rem 1rem;
-		border: 1px solid #3d4647;
-		border-left: 2px solid #bf8d3e;
-		background: #0d1214;
-		display: grid;
-		grid-template-columns: 1fr auto;
-		align-items: center;
-		gap: 1rem;
-	}
-	.readiness-recovery > div {
-		display: grid;
-		gap: 0.28rem;
-	}
-	.readiness-recovery span {
-		color: #d5a34e;
-		font-size: 0.54rem;
-		letter-spacing: 0.14em;
-		text-transform: uppercase;
-	}
-	.readiness-recovery strong {
-		font:
-			0.95rem Georgia,
-			serif;
-	}
-	.readiness-recovery p {
-		margin: 0;
-		max-width: 34rem;
-		color: #7f8988;
-		font-size: 0.65rem;
-		line-height: 1.45;
-	}
-	.readiness-recovery button {
-		min-height: 2.8rem;
-		border: 1px solid #8f713f;
-		background: #211a10;
-		color: #e8c784;
-		padding: 0.65rem 0.85rem;
-		font-size: 0.58rem;
-		letter-spacing: 0.1em;
-		text-transform: uppercase;
-		cursor: pointer;
-	}
-	.readiness-recovery button:disabled {
-		opacity: 0.5;
-		cursor: wait;
 	}
 	.action-deck {
 		margin-top: auto;
@@ -2609,6 +2403,10 @@
 		margin: 0.2rem 0;
 		color: #a6aeab;
 		font-size: 0.72rem;
+	}
+	.initiative-actions code {
+		color: #d9ab5e;
+		font-size: 1rem;
 	}
 	.state-rail div {
 		padding: 1rem;

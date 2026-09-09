@@ -377,7 +377,7 @@ export const PlayerJournalStoryChangeSchema = z
 
 export const PlayerJournalEntrySchema = JournalEntrySchema.safeExtend({
 	entryVersion: z.literal('player-journal-entry-v1'),
-	eventType: z.string().regex(/^[a-z][a-z0-9.]{2,99}$/u),
+	eventType: z.string().regex(/^[a-z][a-z0-9.-]{2,99}$/u),
 	stateHash: StateHashSchema,
 	dayNumber: z.number().int().positive(),
 	facets: z.array(PlayerJournalFacetSchema).min(1).max(9),

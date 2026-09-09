@@ -43,12 +43,12 @@ async function prepareArrivedCampaign(request: APIRequestContext): Promise<strin
 	const viewResponse = await request.get(`/api/campaigns/${campaign.runId}`);
 	expect(viewResponse.ok()).toBe(true);
 	const view = (await viewResponse.json()) as {
-		heroes: ReadonlyArray<{ manifest: { characterId: string } }>;
+		heroes: ReadonlyArray<{ draft: { manifest: { characterId: string } } }>;
 	};
 	for (const hero of view.heroes) {
 		const response = await request.post(`/api/runs/${campaign.runId}/conversations`, {
 			data: {
-				targetHeroId: hero.manifest.characterId,
+				targetHeroId: hero.draft.manifest.characterId,
 				kind: 'ask',
 				exactText: 'What do you need before we enter the tower?',
 				tone: 'reassuring',

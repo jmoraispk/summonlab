@@ -35,7 +35,6 @@ import { COMBAT_RULES_V1 } from '@summonlab/content';
 import { ScriptedPolicy, buildDeterministicCombatFallbackIntent } from '@summonlab/policies';
 import { json } from '@sveltejs/kit';
 
-import { projectEngineCommitReceipt } from '$lib/server/public-engine-presentation';
 import { projectCombatWindowStatus } from '$lib/server/combat-window-presentation';
 
 import type { RequestHandler } from './$types';
@@ -386,21 +385,48 @@ export const POST: RequestHandler = async ({ params, request }) => {
 		) {
 			throw new Error('Mission commit changed the engine schema.');
 		}
-		return json(projectEngineCommitReceipt(committed));
+		if (
+			committed.snapshot.state.schemaVersion === 23 ||
+			committed.snapshot.state.schemaVersion === 24 ||
+			committed.snapshot.state.schemaVersion === 25 ||
+			committed.snapshot.state.schemaVersion === 26
+		) {
+			return json({
+				runId: committed.snapshot.state.runId,
+				version: committed.snapshot.state.version,
+				eventCursor: committed.snapshot.state.eventCursor,
+				stateHash: committed.snapshot.stateHash,
+				eventType: committed.events[0]?.eventType ?? null
+			});
+		}
+		return json({
+			runId: committed.snapshot.state.runId,
+			version: committed.snapshot.state.version,
+			eventCursor: committed.snapshot.state.eventCursor,
+			stateHash: committed.snapshot.stateHash,
+			mission: committed.snapshot.state.mission,
+			masterControl:
+				committed.snapshot.state.schemaVersion === 19 ||
+				committed.snapshot.state.schemaVersion === 20
+					? committed.snapshot.state.masterControl
+					: null,
+			round: committed.snapshot.state.mission.attempt?.turnState.rounds.at(-1) ?? null,
+			eventType: committed.events[0]?.eventType ?? null,
+			legalActions: committed.legalActions
+		});
 	} catch (error) {
 		if (error instanceof StaleRunVersionError || error instanceof IdempotencyConflictError) {
-			return json(
-				{ code: error.code, message: 'The run changed before the mission update.' },
-				{ status: 409 }
-			);
+			return json({ code: error.code, message: error.message }, { status: 409 });
 		}
 		if (error instanceof IllegalActionError) {
 			return json(
-				{ code: error.code, message: 'That mission action is not currently available.' },
+				{ code: error.code, message: error.message, legalActionIds: error.legalActionIds },
 				{ status: 409 }
 			);
 		}
-		console.error('Mission transition failed', error);
-		return json({ message: 'The mission transition failed.' }, { status: 500 });
+		return json(
+			{ message: error instanceof Error ? error.message : 'The mission transition failed.' },
+			{ status: 500 }
+		);
 	}
 };

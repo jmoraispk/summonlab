@@ -14,9 +14,7 @@
 		"format": "prettier --write .",
 		"test:unit": "vitest run",
 		"test": "vitest run",
-		"test:e2e": "node scripts/run-playwright.js",
-		"test:e2e:legacy": "COMBAT_MODE=legacy-auto-v1 node scripts/run-playwright.js -- src/routes/mission-legacy-auto.e2e.ts",
-		"test:e2e:readiness": "COMBAT_MODE=agent-readiness-v1 node scripts/run-playwright.js -- src/routes/mission-readiness.e2e.ts"
+		"test:e2e": "node scripts/run-playwright.js"
 	},
 	"dependencies": {
 		"@summonlab/characters": "workspace:*",

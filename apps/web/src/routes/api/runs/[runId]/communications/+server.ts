@@ -15,8 +15,6 @@ import {
 } from '@summonlab/engine';
 import { json } from '@sveltejs/kit';
 
-import { projectHeroConversationForPublic } from '$lib/server/public-world-presentation';
-
 import type { RequestHandler } from './$types';
 
 export const GET: RequestHandler = async ({ params, url }) => {
@@ -25,15 +23,14 @@ export const GET: RequestHandler = async ({ params, url }) => {
 	const snapshot = await getEngineSnapshot(getConfig().databaseUrl, params.runId).catch(() => null);
 	if (!snapshot) return json({ message: 'Engine run not found.' }, { status: 404 });
 	try {
-		return json(
-			projectHeroConversationForPublic(projectHeroConversationPresentation(snapshot, heroId)),
-			{
-				headers: { 'cache-control': 'no-store' }
-			}
-		);
+		return json(projectHeroConversationPresentation(snapshot, heroId), {
+			headers: { 'cache-control': 'no-store' }
+		});
 	} catch (error) {
-		console.error('Communication projection failed', error);
-		return json({ message: 'Conversation could not be loaded.' }, { status: 400 });
+		return json(
+			{ message: error instanceof Error ? error.message : 'Conversation could not be loaded.' },
+			{ status: 400 }
+		);
 	}
 };
 
@@ -76,31 +73,23 @@ export const POST: RequestHandler = async ({ params, request }) => {
 			...parsed.data
 		};
 		const committed = await commitEngineCommand(config.databaseUrl, command);
-		return json(
-			projectHeroConversationForPublic(
-				projectHeroConversationPresentation(committed.snapshot, parsed.data.targetHeroId)
-			)
-		);
+		return json(projectHeroConversationPresentation(committed.snapshot, parsed.data.targetHeroId));
 	} catch (error) {
 		if (error instanceof StaleRunVersionError) {
-			return json(
-				{ code: error.code, message: 'The run changed before the words were recorded.' },
-				{ status: 409 }
-			);
+			return json({ code: error.code, message: error.message }, { status: 409 });
 		}
 		if (error instanceof IllegalActionError) {
 			return json(
-				{ code: error.code, message: 'That communication is not currently available.' },
+				{ code: error.code, message: error.message, legalActionIds: error.legalActionIds },
 				{ status: 409 }
 			);
 		}
 		if (error instanceof IdempotencyConflictError) {
-			return json(
-				{ code: error.code, message: 'That communication was already submitted differently.' },
-				{ status: 409 }
-			);
+			return json({ code: error.code, message: error.message }, { status: 409 });
 		}
-		console.error('Communication commit failed', error);
-		return json({ message: 'The words could not be recorded.' }, { status: 500 });
+		return json(
+			{ message: error instanceof Error ? error.message : 'The words could not be recorded.' },
+			{ status: 500 }
+		);
 	}
 };

@@ -1493,7 +1493,10 @@ export const MissionRunStateV10Schema = z
 			}
 		}
 		if ((mission.attempt?.attemptId ?? null) !== mission.aftermath.activeAttemptId) {
-			context.addIssue({ code: 'custom', message: 'Mission aftermath must identify active attempt' });
+			context.addIssue({
+				code: 'custom',
+				message: 'Mission aftermath must identify active attempt'
+			});
 		}
 		for (const consequence of mission.aftermath.consequences) {
 			if (!mission.attempt || consequence.sourceAttemptId !== mission.attempt.attemptId) {
@@ -1502,7 +1505,10 @@ export const MissionRunStateV10Schema = z
 				mission.attempt.combatState.modeId === 'legacy-auto-v1' &&
 				consequence.roundNumber > mission.attempt.combatState.turnState.roundNumber
 			) {
-				context.addIssue({ code: 'custom', message: 'Mission consequence exceeds active legacy turn' });
+				context.addIssue({
+					code: 'custom',
+					message: 'Mission consequence exceeds active legacy turn'
+				});
 			}
 		}
 	});

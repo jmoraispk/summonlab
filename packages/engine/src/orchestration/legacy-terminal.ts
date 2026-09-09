@@ -74,7 +74,8 @@ function finalCombatants(
 							health: { current: monster.vitality, maximum: monster.maximumVitality },
 							mana: { current: 1, maximum: 1 }
 						},
-						lastDamagedAtTick: monster.vitality < monster.maximumVitality ? resolution.round.roundNumber : null,
+						lastDamagedAtTick:
+							monster.vitality < monster.maximumVitality ? resolution.round.roundNumber : null,
 						attributes: { might: 20, vitality: 20, agility: 20, spirit: 20 },
 						armour: 0,
 						resistances: {},
@@ -126,8 +127,7 @@ export function finalizeV26LegacyRound(
 			heroId,
 			resolution.consequences
 				.filter(
-					(consequence) =>
-						'targetHeroId' in consequence && consequence.targetHeroId === heroId
+					(consequence) => 'targetHeroId' in consequence && consequence.targetHeroId === heroId
 				)
 				.reduce((total, consequence) => total + consequence.damage, 0)
 		])
@@ -147,7 +147,9 @@ export function finalizeV26LegacyRound(
 		resolvedEvents: [],
 		engineRecoveredCombatantIds: [],
 		securedLoot: [],
-		objectiveStates: (resolution.mission.attempt?.completedObjectiveIds ?? attempt.completedObjectiveIds).map((objectiveId) => ({
+		objectiveStates: (
+			resolution.mission.attempt?.completedObjectiveIds ?? attempt.completedObjectiveIds
+		).map((objectiveId) => ({
 			objectiveId,
 			completed: true
 		})),

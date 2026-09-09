@@ -101,8 +101,13 @@ export const GET: RequestHandler = async ({ params, url }) => {
 			{ headers: { 'cache-control': 'no-store' } }
 		);
 	} catch (error) {
-		console.error('Equipment workshop load failed', error);
-		return json({ message: 'The Equipment workshop could not be read.' }, { status: 500 });
+		return json(
+			{
+				message:
+					error instanceof Error ? error.message : 'The Equipment workshop could not be read.'
+			},
+			{ status: 500 }
+		);
 	}
 };
 
@@ -215,12 +220,18 @@ export const POST: RequestHandler = async ({ params, request }) => {
 			return json(
 				{
 					code: error.code,
-					message: 'That Equipment action is not currently available.'
+					message: error.message,
+					...('legalActionIds' in error ? { legalActionIds: error.legalActionIds } : {})
 				},
 				{ status: 409 }
 			);
 		}
-		console.error('Equipment action failed', error);
-		return json({ message: 'The Equipment action could not be recorded.' }, { status: 500 });
+		return json(
+			{
+				message:
+					error instanceof Error ? error.message : 'The Equipment action could not be recorded.'
+			},
+			{ status: 500 }
+		);
 	}
 };

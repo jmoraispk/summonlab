@@ -11,8 +11,6 @@ import {
 import { IllegalActionError, supportsDirectivesApi } from '@summonlab/engine';
 import { json } from '@sveltejs/kit';
 
-import { projectEngineCommitReceipt } from '$lib/server/public-engine-presentation';
-
 import type { RequestHandler } from './$types';
 
 export const GET: RequestHandler = async ({ params }) => {
@@ -25,37 +23,16 @@ export const GET: RequestHandler = async ({ params }) => {
 		runId: snapshot.state.runId,
 		version: snapshot.state.version,
 		eventCursor: snapshot.state.eventCursor,
-		directives: Object.values(snapshot.state.society.directives)
-			.sort(
-				(left, right) =>
-					left.createdAt.localeCompare(right.createdAt) ||
-					left.directiveId.localeCompare(right.directiveId)
-			)
-			.map((directive) => ({
-				directiveId: directive.directiveId,
-				text: directive.text,
-				scope: directive.scope,
-				recipientIds: [...directive.recipientIds],
-				priorities: [...directive.priorities],
-				delivery: directive.delivery,
-				status: directive.status,
-				createdAt: directive.createdAt,
-				expiresAt: directive.expiresAt,
-				revokedAt: directive.revokedAt
-			})),
-		influences: Object.values(snapshot.state.society.directiveInfluences)
-			.sort(
-				(left, right) =>
-					left.evaluatedAt.localeCompare(right.evaluatedAt) ||
-					left.influenceId.localeCompare(right.influenceId)
-			)
-			.map((influence) => ({
-				directiveId: influence.directiveId,
-				heroId: influence.heroId,
-				actionId: influence.actionId,
-				outcome: influence.outcome,
-				evaluatedAt: influence.evaluatedAt
-			}))
+		directives: Object.values(snapshot.state.society.directives).sort(
+			(left, right) =>
+				left.createdAt.localeCompare(right.createdAt) ||
+				left.directiveId.localeCompare(right.directiveId)
+		),
+		influences: Object.values(snapshot.state.society.directiveInfluences).sort(
+			(left, right) =>
+				left.evaluatedAt.localeCompare(right.evaluatedAt) ||
+				left.influenceId.localeCompare(right.influenceId)
+		)
 	});
 };
 
@@ -130,21 +107,26 @@ export const POST: RequestHandler = async ({ params, request }) => {
 		) {
 			throw new Error('Directive commit changed the engine schema.');
 		}
-		return json(projectEngineCommitReceipt(committed));
+		return json({
+			runId: committed.snapshot.state.runId,
+			version: committed.snapshot.state.version,
+			eventCursor: committed.snapshot.state.eventCursor,
+			directives: Object.values(committed.snapshot.state.society.directives),
+			influences: Object.values(committed.snapshot.state.society.directiveInfluences)
+		});
 	} catch (error) {
 		if (error instanceof StaleRunVersionError || error instanceof IdempotencyConflictError) {
-			return json(
-				{ code: error.code, message: 'The run changed before the direction was recorded.' },
-				{ status: 409 }
-			);
+			return json({ code: error.code, message: error.message }, { status: 409 });
 		}
 		if (error instanceof IllegalActionError) {
 			return json(
-				{ code: error.code, message: 'That direction is not currently available.' },
+				{ code: error.code, message: error.message, legalActionIds: error.legalActionIds },
 				{ status: 409 }
 			);
 		}
-		console.error('Direction commit failed', error);
-		return json({ message: 'The direction could not be recorded.' }, { status: 500 });
+		return json(
+			{ message: error instanceof Error ? error.message : 'The direction could not be recorded.' },
+			{ status: 500 }
+		);
 	}
 };

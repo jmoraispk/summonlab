@@ -3,11 +3,7 @@ import { CampaignRestartRequestSchema } from '@summonlab/contracts';
 import { getCampaignRun } from '@summonlab/database';
 import { json } from '@sveltejs/kit';
 
-import {
-	campaignResumePath,
-	createPlayerCampaign,
-	projectCampaignRunForPublic
-} from '$lib/server/campaign';
+import { campaignResumePath, createPlayerCampaign } from '$lib/server/campaign';
 
 import type { RequestHandler } from './$types';
 
@@ -28,15 +24,13 @@ export const POST: RequestHandler = async ({ params, request }) => {
 			restartedFromRunId: previous.runId
 		});
 		return json(
-			{
-				campaign: projectCampaignRunForPublic(campaign),
-				resumePath: campaignResumePath(campaign),
-				preservedReplayRunId: previous.runId
-			},
+			{ campaign, resumePath: campaignResumePath(campaign), preservedReplayRunId: previous.runId },
 			{ status: 201 }
 		);
 	} catch (error) {
-		console.error('Campaign restart failed', error);
-		return json({ message: 'Campaign restart failed.' }, { status: 409 });
+		return json(
+			{ message: error instanceof Error ? error.message : 'Campaign restart failed.' },
+			{ status: 409 }
+		);
 	}
 };

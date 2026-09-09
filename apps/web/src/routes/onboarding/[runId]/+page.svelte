@@ -15,13 +15,12 @@
 	let errorMessage = $state('');
 	const selected = $derived(view.heroes.find((hero) => hero.ordinal === selectedOrdinal)!);
 	const selectedPortrait = $derived(
-		data.heroPortraits.find(
-			(portrait) => portrait.publicManifestHash === selected.publicManifestHash
-		)
+		data.heroPortraits.find((portrait) => portrait.manifestHash === selected.draft.manifestHash)
 	);
 	const replyCount = $derived(view.heroes.filter((hero) => hero.firstReply !== null).length);
 	const allAnswered = $derived(replyCount === view.heroes.length);
 	const stars = (count: number) => '✦'.repeat(count);
+	const words = (value: string) => value.replaceAll('-', ' ');
 
 	function selectHero(ordinal: number) {
 		selectedOrdinal = ordinal;
@@ -89,7 +88,7 @@
 				method: 'POST',
 				headers: { 'content-type': 'application/json' },
 				body: JSON.stringify({
-					targetHeroId: selected.manifest.characterId,
+					targetHeroId: selected.draft.manifest.characterId,
 					kind: 'ask',
 					exactText: question.trim(),
 					tone: 'reassuring',
@@ -176,7 +175,7 @@
 	<header>
 		<a href={resolve('/')}>SUMMON<span>LAB</span></a>
 		<div data-testid="onboarding-step">PROLOGUE · {view.campaign.onboardingStep + 1}/4</div>
-		<p>Hearth 01 / Company record</p>
+		<p>Seed / {view.campaign.campaignSeed}</p>
 	</header>
 
 	{#if view.campaign.onboardingStep === 0}
@@ -235,9 +234,9 @@
 			</div>
 
 			<div class="hero-tabs" role="tablist" aria-label="Summoned heroes">
-				{#each view.heroes as hero (hero.manifest.characterId)}
+				{#each view.heroes as hero (hero.draft.manifest.characterId)}
 					{@const portrait = data.heroPortraits.find(
-						(entry) => entry.publicManifestHash === hero.publicManifestHash
+						(entry) => entry.manifestHash === hero.draft.manifestHash
 					)}
 					<button
 						class:selected={selectedOrdinal === hero.ordinal}
@@ -255,7 +254,7 @@
 						aria-controls={`hero-panel-${hero.ordinal}`}
 						tabindex={selectedOrdinal === hero.ordinal ? 0 : -1}
 						data-testid="campaign-hero"
-						title={`Inspect ${hero.manifest.displayName}`}
+						title={`Inspect ${hero.draft.manifest.displayName}`}
 					>
 						{#if portrait?.roster}
 							<img
@@ -268,15 +267,15 @@
 							<div
 								class="tab-art-pending"
 								role="img"
-								aria-label={`${hero.manifest.displayName} portrait pending`}
+								aria-label={`${hero.draft.manifest.displayName} portrait pending`}
 							>
 								<span aria-hidden="true">✦</span>
 							</div>
 						{/if}
 						<span>0{hero.ordinal}</span>
 						<div>
-							<strong>{hero.manifest.displayName}</strong><small
-								>{stars(hero.manifest.rarityStars)}
+							<strong>{hero.draft.manifest.displayName}</strong><small
+								>{stars(hero.draft.manifest.rarityStars)}
 								{hero.firstReply ? '· answered' : '· waiting'}</small
 							>
 						</div>
@@ -286,18 +285,18 @@
 
 			<div class="hero-focus">
 				<div class="portrait">
-					{#key selected.publicManifestHash}
+					{#key selected.draft.manifestHash}
 						<div class="gate-glow"></div>
 						{#if selectedPortrait?.summon}
 							<img
 								src={selectedPortrait.summon.publicPath}
 								width={selectedPortrait.summon.width}
 								height={selectedPortrait.summon.height}
-								alt={`${selected.manifest.displayName}, newly summoned at the gate`}
+								alt={`${selected.draft.manifest.displayName}, newly summoned at the gate`}
 								data-testid="summoned-hero-portrait"
 							/>
 						{:else}
-							<HeroArtPlaceholder name={selected.manifest.displayName} />
+							<HeroArtPlaceholder name={selected.draft.manifest.displayName} />
 						{/if}
 					{/key}
 				</div>
@@ -310,34 +309,43 @@
 					<div class="identity">
 						<div>
 							<span>Summon 0{selected.ordinal}</span>
-							<h2>{selected.manifest.displayName}</h2>
+							<h2>{selected.draft.manifest.displayName}</h2>
 						</div>
-						<b>{stars(selected.manifest.rarityStars)}</b>
+						<b>{stars(selected.draft.manifest.rarityStars)}</b>
 					</div>
 					<dl>
 						<div>
 							<dt>Age</dt>
-							<dd>{selected.manifest.adultAge}</dd>
+							<dd>{selected.draft.manifest.adultAge}</dd>
 						</div>
 						<div>
 							<dt>Height</dt>
-							<dd>{selected.manifest.heightCm} cm</dd>
+							<dd>{selected.draft.manifest.heightCm} cm</dd>
 						</div>
 						<div>
 							<dt>Build</dt>
-							<dd>{selected.manifest.bodyBuild}</dd>
+							<dd>{selected.draft.manifest.bodyBuild}</dd>
 						</div>
 						<div>
 							<dt>Voice</dt>
-							<dd>{selected.manifest.voiceCadence}</dd>
+							<dd>{selected.draft.manifest.voice.cadence}</dd>
 						</div>
 					</dl>
-					<section class="mind" aria-label="Observable demeanor">
-						<p class="eyebrow">Observable demeanor · no hidden scores</p>
-						<div><span>Demeanor</span><strong>{selected.demeanor.summary}</strong></div>
-						<div><span>Drive</span><strong>{selected.demeanor.drive}</strong></div>
-						<div><span>Daily rhythm</span><strong>{selected.demeanor.dailyRhythm}</strong></div>
-						<div><span>Under pressure</span><strong>{selected.demeanor.underPressure}</strong></div>
+					<section class="mind" aria-label="Observable personality">
+						<p class="eyebrow">Observable mind · no hidden reasoning</p>
+						<div><span>Values</span><strong>{words(selected.draft.mind.primaryValue)}</strong></div>
+						<div>
+							<span>Driven to</span><strong>{words(selected.draft.mind.primaryDrive)}</strong>
+						</div>
+						<div>
+							<span>Social style</span><strong>{words(selected.draft.mind.socialStyle)}</strong>
+						</div>
+						<div>
+							<span>Daily habit</span><strong>{words(selected.draft.mind.dailyHabit)}</strong>
+						</div>
+						<div>
+							<span>Under stress</span><strong>{words(selected.draft.mind.stressResponse)}</strong>
+						</div>
 					</section>
 
 					{#if selected.firstReply}
@@ -356,7 +364,7 @@
 							data-testid="ask-first-question"
 							data-sound-cue="voice"
 						>
-							{pending ? 'Listening…' : `Ask ${selected.manifest.displayName}`}
+							{pending ? 'Listening…' : `Ask ${selected.draft.manifest.displayName}`}
 						</button>
 					{/if}
 				</div>

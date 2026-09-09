@@ -6,9 +6,7 @@ import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 
 export const GET: RequestHandler = async ({ params, url }) => {
-	const config = getConfig();
-	if (!config.devRoutesEnabled) return json({ message: 'Not found.' }, { status: 404 });
-	const databaseUrl = config.databaseUrl;
+	const databaseUrl = getConfig().databaseUrl;
 	const [proof, snapshot] = await Promise.all([
 		getProofRun(databaseUrl, params.runId).catch(() => null),
 		getEngineSnapshot(databaseUrl, params.runId).catch(() => null)
