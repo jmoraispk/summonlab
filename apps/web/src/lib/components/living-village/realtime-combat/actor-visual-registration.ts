@@ -5,25 +5,21 @@ export type ActorVisualRegistration = Readonly<{
 	bodyOffsetY: number;
 	shadowRadiusX: number;
 	shadowRadiusY: number;
+	displaySize: number;
 }>;
 
-function bodyOffsetY(actorId: string, clip: CombatClip): number {
-	if (clip === 'down') return 0;
-	if (actorId === 'moss-archer') return -4;
-	if (actorId === 'iron-guardian') return -3;
-	return 0;
-}
-
 export function actorVisualRegistration(
-	actorId: string,
-	role: RealtimeActor['role'],
-	clip: CombatClip
+	input: Pick<RealtimeActor, 'role'> & {
+		clip: CombatClip;
+		visualTuning: RealtimeActor['presentation']['visualTuning'];
+	}
 ): ActorVisualRegistration {
-	const defaultShadowRadiusX = role === 'brute' ? 72 : role === 'swarm' ? 29 : 45;
+	const { clip, visualTuning } = input;
 
 	return {
-		bodyOffsetY: bodyOffsetY(actorId, clip),
-		shadowRadiusX: actorId === 'iron-guardian' ? 39 : defaultShadowRadiusX,
-		shadowRadiusY: actorId === 'iron-guardian' ? 13 : 14
+		bodyOffsetY: clip === 'down' ? 0 : visualTuning.bodyOffsetY,
+		shadowRadiusX: visualTuning.shadowRadiusX,
+		shadowRadiusY: visualTuning.shadowRadiusY,
+		displaySize: visualTuning.displaySize
 	};
 }

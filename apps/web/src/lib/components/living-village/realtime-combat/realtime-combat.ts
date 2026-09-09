@@ -1,3 +1,5 @@
+import type { ExplorationEncounterRequest } from '@summonlab/contracts';
+
 import {
 	actorCollisionPadding,
 	clampToArena,
@@ -10,21 +12,29 @@ import {
 export type CombatTeam = 'heroes' | 'rats';
 export type CombatPhase = 'running' | 'victory' | 'defeat';
 export type CombatIntent = 'advance' | 'attack' | 'down';
+type CombatPresentation = ExplorationEncounterRequest['party'][number]['presentation'];
 
 export type RealtimeActor = {
 	id: string;
 	label: string;
+	sourceKind: 'hero' | 'enemy';
 	team: CombatTeam;
 	role: 'brawler' | 'guardian' | 'archer' | 'brute' | 'swarm';
 	x: number;
 	y: number;
 	health: number;
 	maximumHealth: number;
+	mana: number;
+	maximumMana: number;
 	speed: number;
 	range: number;
 	damage: number;
 	attackInterval: number;
+	attackIntervalTicks: number;
 	attackTimer: number;
+	actionDefinitionRefs: readonly string[];
+	requiredForVictory: boolean;
+	presentation: CombatPresentation;
 	targetId?: string;
 	intent: CombatIntent;
 	attackPulse: number;
@@ -43,14 +53,34 @@ export type RealtimeCombatState = {
 	elapsedSeconds: number;
 	phase: CombatPhase;
 	actors: RealtimeActor[];
-	defeatedRats: number;
+	defeatedEnemies: number;
 	lastEvent: string;
 };
+
+export type RealtimeMechanicsEvent = Readonly<{
+	kind:
+		| 'intent-selected'
+		| 'movement-committed'
+		| 'action-started'
+		| 'action-resolved'
+		| 'resource-changed'
+		| 'unit-defeated';
+	actorId: string;
+	targetIds: readonly string[];
+	actionId?: string;
+	healthDeltas: readonly { unitId: string; amount: number }[];
+	manaDeltas: readonly { unitId: string; amount: number }[];
+	publicSummary: string;
+}>;
+
+type RealtimeCombatStep = Readonly<{
+	state: RealtimeCombatState;
+	events: RealtimeMechanicsEvent[];
+}>;
 
 const actor = (
 	input: Omit<
 		RealtimeActor,
-		| 'maximumHealth'
 		| 'attackTimer'
 		| 'intent'
 		| 'attackPulse'
@@ -66,7 +96,6 @@ const actor = (
 	>
 ): RealtimeActor => ({
 	...input,
-	maximumHealth: input.health,
 	attackTimer: input.id.length * 0.07,
 	intent: 'advance',
 	attackPulse: 0,
@@ -81,86 +110,61 @@ const actor = (
 	facingY: input.team === 'heroes' ? -1 : 1
 });
 
-export function createRealtimeCombat(): RealtimeCombatState {
+function actorFromHero(hero: ExplorationEncounterRequest['party'][number]): RealtimeActor {
+	return actor({
+		id: hero.heroRef.heroId,
+		label: hero.displayName,
+		sourceKind: 'hero',
+		team: 'heroes',
+		role: hero.capability.combatRole,
+		x: hero.deployment.x,
+		y: hero.deployment.y,
+		health: hero.resources.health,
+		maximumHealth: hero.resources.maximumHealth,
+		mana: hero.resources.mana,
+		maximumMana: hero.resources.maximumMana,
+		speed: hero.combatProfile.movementUnitsPerSecond,
+		range: hero.combatProfile.attackRange,
+		damage: hero.combatProfile.attackPower,
+		attackInterval: hero.combatProfile.attackIntervalTicks / 60,
+		attackIntervalTicks: hero.combatProfile.attackIntervalTicks,
+		actionDefinitionRefs: hero.capability.actionDefinitionRefs,
+		requiredForVictory: false,
+		presentation: hero.presentation
+	});
+}
+
+function actorFromEnemy(enemy: ExplorationEncounterRequest['enemies'][number]): RealtimeActor {
+	return actor({
+		id: enemy.enemyInstanceId,
+		label: enemy.displayName,
+		sourceKind: 'enemy',
+		team: 'rats',
+		role: enemy.combatRole,
+		x: enemy.deployment.x,
+		y: enemy.deployment.y,
+		health: enemy.resources.health,
+		maximumHealth: enemy.resources.maximumHealth,
+		mana: enemy.resources.mana,
+		maximumMana: enemy.resources.maximumMana,
+		speed: enemy.combatProfile.movementUnitsPerSecond,
+		range: enemy.combatProfile.attackRange,
+		damage: enemy.combatProfile.attackPower,
+		attackInterval: enemy.combatProfile.attackIntervalTicks / 60,
+		attackIntervalTicks: enemy.combatProfile.attackIntervalTicks,
+		actionDefinitionRefs: enemy.actionDefinitionRefs,
+		requiredForVictory: enemy.requiredForVictory,
+		presentation: enemy.presentation
+	});
+}
+
+export function createRealtimeCombat(request: ExplorationEncounterRequest): RealtimeCombatState {
 	return {
 		elapsedSeconds: 0,
 		phase: 'running',
-		defeatedRats: 0,
+		defeatedEnemies: 0,
 		lastEvent: 'The rat pack breaks from the ruined gate.',
-		actors: [
-			actor({
-				id: 'saffron-braid',
-				label: 'Asha',
-				team: 'heroes',
-				role: 'brawler',
-				x: 0.46,
-				y: 0.8,
-				health: 168,
-				speed: 0.082,
-				range: 0.075,
-				damage: 19,
-				attackInterval: 0.78
-			}),
-			actor({
-				id: 'iron-guardian',
-				label: 'Toma',
-				team: 'heroes',
-				role: 'guardian',
-				x: 0.31,
-				y: 0.86,
-				health: 238,
-				speed: 0.063,
-				range: 0.08,
-				damage: 14,
-				attackInterval: 0.95
-			}),
-			actor({
-				id: 'moss-archer',
-				label: 'Nessa',
-				team: 'heroes',
-				role: 'archer',
-				x: 0.66,
-				y: 0.88,
-				health: 126,
-				speed: 0.071,
-				range: 0.25,
-				damage: 17,
-				attackInterval: 1.08
-			}),
-			actor({
-				id: 'rat-brute',
-				label: 'Rat Brute',
-				team: 'rats',
-				role: 'brute',
-				x: 0.52,
-				y: 0.2,
-				health: 242,
-				speed: 0.052,
-				range: 0.09,
-				damage: 18,
-				attackInterval: 1.2
-			}),
-			...[
-				[0.22, 0.3],
-				[0.38, 0.34],
-				[0.61, 0.24],
-				[0.79, 0.29]
-			].map(([x, y], index) =>
-				actor({
-					id: `plague-rat-${index + 1}`,
-					label: `Plague Rat ${index + 1}`,
-					team: 'rats',
-					role: 'swarm',
-					x: x!,
-					y: y!,
-					health: 58,
-					speed: 0.092,
-					range: 0.062,
-					damage: 9,
-					attackInterval: 0.92 + index * 0.04
-				})
-			)
-		]
+		actors: [...request.party.map(actorFromHero), ...request.enemies.map(actorFromEnemy)]
 	};
 }
 
@@ -180,46 +184,102 @@ function chooseTarget(actor: RealtimeActor, actors: RealtimeActor[]): RealtimeAc
 	return nearest;
 }
 
+function mechanicsEvent(
+	kind: RealtimeMechanicsEvent['kind'],
+	actorId: string,
+	targetIds: readonly string[],
+	publicSummary: string,
+	overrides: Pick<Partial<RealtimeMechanicsEvent>, 'actionId' | 'healthDeltas' | 'manaDeltas'> = {}
+): RealtimeMechanicsEvent {
+	return {
+		kind,
+		actorId,
+		targetIds,
+		publicSummary,
+		healthDeltas: [],
+		manaDeltas: [],
+		...overrides
+	};
+}
+
+function applyDamage(
+	source: RealtimeActor,
+	target: RealtimeActor,
+	damage: number,
+	events: RealtimeMechanicsEvent[]
+): { unitId: string; amount: number } {
+	const wasAlive = target.health > 0;
+	const applied = Math.min(target.health, damage);
+	target.health = Math.max(0, target.health - damage);
+	target.hitPulse = 1;
+	target.hitRevision += 1;
+	if (wasAlive && target.health === 0) {
+		target.defeatRevision += 1;
+		events.push(
+			mechanicsEvent('unit-defeated', source.id, [target.id], `${target.label} is defeated.`, {
+				healthDeltas: [{ unitId: target.id, amount: -applied }]
+			})
+		);
+	}
+	return { unitId: target.id, amount: -applied };
+}
+
 function damageTarget(
 	state: RealtimeCombatState,
 	source: RealtimeActor,
-	target: RealtimeActor
+	target: RealtimeActor,
+	events: RealtimeMechanicsEvent[]
 ): void {
-	const wasAlive = target.health > 0;
-	target.health = Math.max(0, target.health - source.damage);
-	target.hitPulse = 1;
-	target.hitRevision += 1;
 	source.attackPulse = 1;
 	source.attacksLanded += 1;
 	source.actionRevision += 1;
 	source.attackTimer = source.attackInterval;
-	state.lastEvent = `${source.label} strikes ${target.label}.`;
-	if (wasAlive && target.health <= 0) target.defeatRevision += 1;
+	const isSaffronArc =
+		source.actionDefinitionRefs.includes('saffron-arc-v1') && source.attacksLanded % 3 === 0;
+	const actionId = isSaffronArc ? 'saffron-arc-v1' : source.actionDefinitionRefs[0];
+	events.push(
+		mechanicsEvent('action-started', source.id, [target.id], `${source.label} starts an action.`, {
+			actionId
+		})
+	);
 
-	if (source.id === 'saffron-braid' && source.attacksLanded % 3 === 0) {
+	const healthDeltas = [applyDamage(source, target, source.damage, events)];
+	const targetIds = [target.id];
+	if (isSaffronArc) {
 		for (const enemy of state.actors) {
-			if (enemy.team === source.team || enemy.health <= 0 || distance(source, enemy) > 0.2)
+			if (enemy.team === source.team || enemy.health <= 0 || enemy.id === target.id || distance(source, enemy) > 0.2)
 				continue;
-			const wasEnemyAlive = enemy.health > 0;
-			enemy.health = Math.max(0, enemy.health - 11);
-			enemy.hitPulse = 1;
-			enemy.hitRevision += 1;
-			if (wasEnemyAlive && enemy.health <= 0) enemy.defeatRevision += 1;
+			targetIds.push(enemy.id);
+			healthDeltas.push(applyDamage(source, enemy, 11, events));
 		}
 		state.lastEvent = 'Asha releases Saffron Arc through the clustered pack.';
+	} else {
+		state.lastEvent = `${source.label} strikes ${target.label}.`;
 	}
+	events.push(
+		mechanicsEvent('action-resolved', source.id, targetIds, state.lastEvent, {
+			actionId,
+			healthDeltas
+		})
+	);
+	events.push(
+		mechanicsEvent('resource-changed', source.id, targetIds, `${target.label} loses health.`, {
+			healthDeltas
+		})
+	);
 }
 
 export function stepRealtimeCombat(
 	previous: RealtimeCombatState,
 	deltaSeconds: number
-): RealtimeCombatState {
-	if (previous.phase !== 'running' || deltaSeconds <= 0) return previous;
+): RealtimeCombatStep {
+	if (previous.phase !== 'running' || deltaSeconds <= 0) return { state: previous, events: [] };
 	const state: RealtimeCombatState = {
 		...previous,
 		elapsedSeconds: previous.elapsedSeconds + deltaSeconds,
 		actors: previous.actors.map((entry) => ({ ...entry }))
 	};
+	const events: RealtimeMechanicsEvent[] = [];
 
 	for (const entry of state.actors) {
 		entry.velocityX = 0;
@@ -234,8 +294,15 @@ export function stepRealtimeCombat(
 
 		const target = chooseTarget(entry, state.actors);
 		const wasEngagedWithTarget = entry.intent === 'attack' && entry.targetId === target?.id;
+		const wasAdvancing = entry.intent === 'advance';
+		const previousTargetId = entry.targetId;
 		entry.targetId = target?.id;
 		if (!target) continue;
+		if (entry.targetId !== previousTargetId) {
+			events.push(
+				mechanicsEvent('intent-selected', entry.id, [target.id], `${entry.label} selects ${target.label}.`)
+			);
+		}
 		const facingLength = Math.hypot(target.x - entry.x, target.y - entry.y) || 1;
 		entry.facingX = (target.x - entry.x) / facingLength;
 		entry.facingY = (target.y - entry.y) / facingLength;
@@ -254,9 +321,14 @@ export function stepRealtimeCombat(
 			entry.velocityY = (dy / length) * entry.speed;
 			entry.x += (dx / length) * amount;
 			entry.y += (dy / length) * amount;
+			if (!wasAdvancing || entry.targetId !== previousTargetId) {
+				events.push(
+					mechanicsEvent('movement-committed', entry.id, [target.id], `${entry.label} advances.`)
+				);
+			}
 		} else {
 			entry.intent = 'attack';
-			if (entry.attackTimer <= 0) damageTarget(state, entry, target);
+			if (entry.attackTimer <= 0) damageTarget(state, entry, target, events);
 		}
 		const safePosition = pushOutsideObstacle(entry, actorCollisionPadding(entry));
 		const boundedPosition = clampToArena(entry, safePosition);
@@ -264,25 +336,31 @@ export function stepRealtimeCombat(
 		entry.y = boundedPosition.y;
 	}
 
-	const livingHeroes = state.actors.filter((entry) => entry.team === 'heroes' && entry.health > 0);
-	const livingRats = state.actors.filter((entry) => entry.team === 'rats' && entry.health > 0);
-	state.defeatedRats = state.actors.filter(
-		(entry) => entry.team === 'rats' && entry.health <= 0
+	const livingHeroes = state.actors.filter((entry) => entry.sourceKind === 'hero' && entry.health > 0);
+	const livingRequiredEnemies = state.actors.filter(
+		(entry) => entry.sourceKind === 'enemy' && entry.requiredForVictory && entry.health > 0
+	);
+	state.defeatedEnemies = state.actors.filter(
+		(entry) => entry.sourceKind === 'enemy' && entry.health <= 0
 	).length;
-	if (livingRats.length === 0) {
+	if (livingRequiredEnemies.length === 0) {
 		state.phase = 'victory';
 		state.lastEvent = 'The Rat Brute falls. The surviving vermin scatter into the fog.';
 	} else if (livingHeroes.length === 0) {
 		state.phase = 'defeat';
 		state.lastEvent = 'The threshold is lost to the plague pack.';
 	}
-	return state;
+	return { state, events };
 }
 
-export function runRealtimeCombat(seconds: number, step = 1 / 60): RealtimeCombatState {
-	let state = createRealtimeCombat();
+export function runRealtimeCombat(
+	request: ExplorationEncounterRequest,
+	seconds: number,
+	step = 1 / 60
+): RealtimeCombatState {
+	let state = createRealtimeCombat(request);
 	for (let elapsed = 0; elapsed < seconds && state.phase === 'running'; elapsed += step) {
-		state = stepRealtimeCombat(state, step);
+		state = stepRealtimeCombat(state, step).state;
 	}
 	return state;
 }
