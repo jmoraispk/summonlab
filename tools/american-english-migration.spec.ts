@@ -352,10 +352,7 @@ describe('rebased migration receipt refresh', () => {
 					])
 				}),
 				expect.objectContaining({
-					sourceBlobId: git(repository.root, [
-						'rev-parse',
-						`${newBaseline}:${rebasedOwnerPath}`
-					]),
+					sourceBlobId: git(repository.root, ['rev-parse', `${newBaseline}:${rebasedOwnerPath}`]),
 					successorPathHash: pathHash(rebasedOwnerPath),
 					successorBlobId: git(repository.root, [
 						'rev-parse',
