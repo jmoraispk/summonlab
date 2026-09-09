@@ -15,6 +15,18 @@ import {
 import { OWNER_DIGEST_POINTER_PATTERNS } from './american-english-integrity-pointers.js';
 import { selectFamilyAffinitySourceLineagePaths } from './reseal-family-affinity-source-lineage.js';
 
+const SKILL_ICON_LINEAGE_PATH =
+	/^assets\/wiki\/skills\/icon-production-v1\/(?:mass-production-v1\/results\/(?:families|skills)|quality-cleanup-v1\/(?:prompts\/revisions(?:-v[23])?|results\/(?:revisions|completion-audits)))\/[^/]+\.json$/u;
+
+export function selectVisualProductionIntentPaths(paths: readonly string[]): readonly string[] {
+	return [
+		...new Set([
+			...selectFamilyAffinitySourceLineagePaths(paths),
+			...paths.filter((repositoryPath) => SKILL_ICON_LINEAGE_PATH.test(repositoryPath))
+		])
+	].sort((left, right) => (left < right ? -1 : left > right ? 1 : 0));
+}
+
 const FAMILY_PRODUCTION_CONTRACT_PATH =
 	'skills/summonlab-image-production/references/contract-v3.json';
 const FAMILY_PRODUCTION_BUNDLE_PATH =
@@ -124,7 +136,7 @@ export const visualProductionIntegrityOwner: AmericanEnglishIntegrityOwner = {
 			'assets/wiki/skills/icon-production-v2/runs/reversal-cut-v4/owner-frame-feedback.json',
 			'assets/wiki/skills/icon-production-v2/runs/reversal-cut-v7/activation.json'
 		],
-		selectPaths: selectFamilyAffinitySourceLineagePaths
+		selectPaths: selectVisualProductionIntentPaths
 	},
 	regeneration: {
 		writeCommand:

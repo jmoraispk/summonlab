@@ -4,7 +4,7 @@
 	"identity": "magical:elemental:flame-jet",
 	"status": "candidate",
 	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/magical-elemental-flame-jet.json",
-	"promptHash": "f012496724e99c318b7eed2fb1f04b8c9abf6ea067b1fd6808628a3c227b8552",
+	"promptHash": "d00c3b2949c632043472b34a7419f64cddb75f704a1f8e20b6a8a04615ec5e9f",
 	"references": [
 		{
 			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",

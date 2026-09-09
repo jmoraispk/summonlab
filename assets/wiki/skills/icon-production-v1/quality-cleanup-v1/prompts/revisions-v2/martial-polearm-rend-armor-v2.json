@@ -16,17 +16,17 @@
 	"predecessor": {
 		"packet": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions/martial-polearm-rend-armor-v1.json",
-			"contentHash": "e4359976f4486602e397c7915b276445e611bfe79e729de12a8508858c97ed27"
+			"contentHash": "c07206a075140a0dd88a2a8bee6e3caff9d864d6357ddfed06a7e763ee0f805b"
 		},
 		"result": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/martial-polearm-rend-armor-v1.json",
-			"contentHash": "575b0e1cc5031a74242855167ec1cec5345ab46b44f9ddea682305434484498c"
+			"contentHash": "e8021a95ff4084d5c46a298e9945bc305c0581ea9a895a73cf0ea6dfda57c17b"
 		},
 		"providerSource": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/martial-polearm-rend-armor-v1.png",
 			"contentHash": "c1f8b530e64f3078530e1d8a96e614298be39e531bbdd2e5f2aee84004e671f1"
 		},
-		"transactionContentHash": "c52967c057cf1db0158975f9693f649acffa318b3250e2df36931c1697331b14",
+		"transactionContentHash": "d1aeb46fdd9e11dbf551c539b20826adb7894b145cc920a2401ff271c729e108",
 		"revisedInterior": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/revisions/martial-polearm-rend-armor-v1.png",
 			"contentHash": "67fc7ca4ef8353adb6098d76080b49c684c5eb3645ec80cb8e7664e4412c38ae"
@@ -57,7 +57,7 @@
 		"mask": "geometry-v2-protected-central-aperture"
 	},
 	"exactPrompt": "Use case: stylized-concept\nAsset type: isolated full-resolution Summonlab skill-icon artwork revision\nPrimary request: Revise only the painted artwork for Rend Armor in the Martial / Polearm taxonomy.\nDominant subject: a clearly visible halberd actively performing Rend Armor, with the acting tool never replaced by a free-floating effect\nSupporting cue: one restrained secondary cue communicating this effect: Stacking armor reduction on the target\nPalette: tempered steel, charcoal black, restrained warm sparks\nComposition: Centered painted emblem with one dominant silhouette, strong negative space, and a readable action direction. Keep all important detail clear of the frame rim and top rank crest.\nExisting exclusions: no skill name, mastery, level, caption, logo, watermark, or UI panel; no extra frame letter or rarity symbol beyond the required integrated crest; no narrative scenery or unrelated props; no effect-only abstraction replacing the concrete acting subject from F through A\nUnwanted detached explanatory UI glyph: Three stacked chevrons.\nPreserve the dominant subject, action, palette, lighting, and motif-family ancestry. Remove only the detached explanatory UI glyph named in this packet. Add no replacement badge, arrow, gauge, heart, cross, chevron, corner symbol, text, frame, crest, or rarity letter. Keep the complete subject, every visible limb, held tool, companion, and required equipment inside a generous central safe area with clear margin from the protected aperture; do not crop any identity-bearing form.\nOutput exactly one 1254×1254 RGB PNG provider source containing only the revised painted artwork. Do not crop, resize, mask, or preprocess the provider source; the authenticated cleanup pipeline retains its exact bytes, applies the packet-authorized deterministic resize and protected-aperture mask, and supplies the canonical backing and E-rank frame.",
-	"exactPromptHash": "dcd97864bf51808bce71d6f2a36f1faa6e17c050039769c3f96d1ae7446ae863",
+	"exactPromptHash": "38268cd5fdacc2cd54f4ad7adbfd095023dfc3d3ae45b7e15f8d7f20dddd21c1",
 	"references": [
 		{
 			"path": "assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png",

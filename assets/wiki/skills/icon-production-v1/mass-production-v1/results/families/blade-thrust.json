@@ -4,7 +4,7 @@
 	"identity": "blade.thrust",
 	"status": "candidate",
 	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/families/blade-thrust.json",
-	"promptHash": "ddaa5fd9359ea4c0f9d97ea6ae4f32841497ce075b5bb9840bba98fd74140e2e",
+	"promptHash": "7d0aa96f744c8c7ff2d236b23b0f306a914d22439f359c1d0fba1639b0b67641",
 	"references": [
 		{
 			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",

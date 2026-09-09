@@ -673,6 +673,18 @@ describe('integrity binding classification', () => {
 		expect(visualProductionIntegrityOwner.intentMaterialization?.paths).toContain(
 			'assets/wiki/skills/icon-production-v1/mass-production-v1/manifest.json'
 		);
+		expect(
+			visualProductionIntegrityOwner.intentMaterialization?.selectPaths?.([
+				'assets/wiki/skills/icon-production-v1/mass-production-v1/results/skills/martial-polearm-rend-armor.json',
+				'assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions-v3/craft-gathering-taming-v3.json',
+				'assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/completion-audits/craft-gathering-taming-v3.json',
+				'assets/wiki/skills/icon-production-v1/catalog.json'
+			])
+		).toEqual([
+			'assets/wiki/skills/icon-production-v1/mass-production-v1/results/skills/martial-polearm-rend-armor.json',
+			'assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions-v3/craft-gathering-taming-v3.json',
+			'assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/completion-audits/craft-gathering-taming-v3.json'
+		]);
 	});
 
 	it('materializes family production compatibility seals from the migrated skill surface', () => {

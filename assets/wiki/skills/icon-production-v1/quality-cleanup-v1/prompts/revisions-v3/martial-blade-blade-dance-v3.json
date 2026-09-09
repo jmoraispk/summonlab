@@ -16,17 +16,17 @@
 	"predecessor": {
 		"packet": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions-v2/martial-blade-blade-dance-v2.json",
-			"contentHash": "3b2154826c6e2f480ce8a85a0a6d1148fbb23fca4de57014e90dd098a8ce2616"
+			"contentHash": "86f23571cd9fffb00c1bd2d2477d36ddff455544abddc6b5974c0d9fef668f31"
 		},
 		"result": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/martial-blade-blade-dance-v2.json",
-			"contentHash": "5291bb58c0a4c7d262d5078b444e20449593d431f86ea095be810c30e1499f8e"
+			"contentHash": "5204e7112149b2722b290867b3f8b3bf8726521b3976cb689ebf25e963581703"
 		},
 		"providerSource": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/martial-blade-blade-dance-v2.png",
 			"contentHash": "e230fda2f598a627346427a7bb57fcf28f68f11f5dff4883406373bdb8ffda87"
 		},
-		"transactionContentHash": "8e98eb919d9685ff6e6f49ff6ed7cbd3e31f07750c0671bd3d71a18f590415e5",
+		"transactionContentHash": "e039f5136908c1784fc0274f014c158ecd3d1ec7ae282c991c6ea9830a9a6693",
 		"revisedInterior": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/revisions/martial-blade-blade-dance-v2.png",
 			"contentHash": "9a36dd6bb1e028b6abec92153035a32653fd9ad608e68a9bff12edee7275762a"

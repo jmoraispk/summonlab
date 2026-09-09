@@ -4,7 +4,7 @@
 	"identity": "craft:alchemy:simple-brewing",
 	"status": "candidate",
 	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/craft-alchemy-simple-brewing.json",
-	"promptHash": "4e3bd99992ae076db166b6561b091439adc20c00501d98424912f770da6f57c0",
+	"promptHash": "ebe4d00e2db9e45d8f4e2eab6b142a3e7b840ac65e302c3184795e0c0ec4b4b4",
 	"references": [
 		{
 			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",

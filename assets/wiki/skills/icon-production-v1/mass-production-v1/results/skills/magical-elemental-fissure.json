@@ -4,7 +4,7 @@
 	"identity": "magical:elemental:fissure",
 	"status": "candidate",
 	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/magical-elemental-fissure.json",
-	"promptHash": "01796ae89f78b35432eef7362e66eb841ce28dbfe4d118c495ad3ef81b2e4ccb",
+	"promptHash": "fa3f77883b022ee44773ce836e65730ba72c918e3f23b169918f7904907dc561",
 	"references": [
 		{
 			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",

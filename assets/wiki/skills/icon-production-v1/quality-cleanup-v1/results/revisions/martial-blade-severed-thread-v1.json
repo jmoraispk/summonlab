@@ -13,11 +13,11 @@
 	},
 	"revisionPacket": {
 		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions/martial-blade-severed-thread-v1.json",
-		"contentHash": "0b06545907689a100594ca8394c022bd956d23c9d3dfe5098922f387b952606f"
+		"contentHash": "79ad600eb6ab8ad28b43d4867221e3f6efc70b366f771e2a05cc8a7ef98feb40"
 	},
 	"cleanupManifest": {
 		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/manifest.json",
-		"contentHash": "8280a46b2eb358ab4b9f1bc1c0a3b84f79dd5b4fce3407da6f42a25ce67c8a73"
+		"contentHash": "b6a4fc968624464ac938fa9126d1df8e564c334f1a152077a38e93e97ac5873a"
 	},
 	"sourceCandidate": {
 		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-blade-severed-thread.png",
@@ -32246,7 +32246,7 @@
 	},
 	"attemptCount": 2,
 	"attemptCeiling": 2,
-	"transactionContentHash": "88fa96a23657dd60e466d670df4aa9869811b634e0bc3cb7f4b8be5def5ad3d6",
+	"transactionContentHash": "f978c05f05d02c32ac332886c75ed311e7b0d4a3e1d8400a9ecc872eaf3ab725",
 	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/martial-blade-severed-thread-v1.json",
 	"writtenOutputPaths": [
 		"assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/martial-blade-severed-thread-v1.png",

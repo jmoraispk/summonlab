@@ -4,7 +4,7 @@
 	"identity": "polearm.hammer-impact",
 	"status": "candidate",
 	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/families/polearm-hammer-impact.json",
-	"promptHash": "7f9f179f090e689b3575082aa4839c8cf9373d956f1aeccd2496959a16f1a84c",
+	"promptHash": "e4cced378de6cd8300b672ec0fa878ba8ebbcc7a09d34f5316c7fd30e268d5c8",
 	"references": [
 		{
 			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",

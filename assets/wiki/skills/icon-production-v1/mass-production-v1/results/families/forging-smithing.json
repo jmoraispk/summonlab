@@ -4,7 +4,7 @@
 	"identity": "forging.smithing",
 	"status": "candidate",
 	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/families/forging-smithing.json",
-	"promptHash": "632be242c03e98e23d5d1a67285853e999bdf0edecc9c855295e83419d7dea41",
+	"promptHash": "feec1845c562629b772cc8317869380bfb544ef20c56788490879c76268eacbe",
 	"references": [
 		{
 			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",

@@ -4,7 +4,7 @@
 	"identity": "magical:restoration:shared-vigor",
 	"status": "candidate",
 	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/magical-restoration-shared-vigor.json",
-	"promptHash": "37fcc8a98390f574539c0e688e268c9d118a4e8d2ce779b25d1d5b51f56c72d6",
+	"promptHash": "ee10f904332f42224269f09521923b1cfe271271ba0002e19111171d0fc23d5f",
 	"references": [
 		{
 			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",

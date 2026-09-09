@@ -199,7 +199,7 @@ describe('cleanup semantic-revision persistence', () => {
 				},
 				cleanupManifest: {
 					path: 'assets/wiki/skills/icon-production-v1/quality-cleanup-v1/manifest.json',
-					contentHash: 'f7f4690d71b0786283c867f46ac5e48c9f48cd19fac9d969396f94a5f986b12b'
+					contentHash: 'b6a4fc968624464ac938fa9126d1df8e564c334f1a152077a38e93e97ac5873a'
 				},
 				sourceCandidate: {
 					path: 'assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-blade-blade-dance.png',

@@ -4,7 +4,7 @@
 	"identity": "martial:blade:piercing-thrust",
 	"status": "candidate",
 	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/martial-blade-piercing-thrust.json",
-	"promptHash": "d35d402e4ad3b10aee2b54b03aad6f5bd821dd0f645ee898b4169ff577ad26aa",
+	"promptHash": "c098b65dd16fc4b0f4a626ca20f8eb1b549e33a48c7030b379236d51f857833b",
 	"references": [
 		{
 			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",

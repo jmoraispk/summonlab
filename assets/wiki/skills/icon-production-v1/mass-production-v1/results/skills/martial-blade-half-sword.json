@@ -4,7 +4,7 @@
 	"identity": "martial:blade:half-sword",
 	"status": "candidate",
 	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/martial-blade-half-sword.json",
-	"promptHash": "be9b9bd7cfaaa4437fdceb9e5fb70bd83c33630c9819dbabdc368b614abcdf49",
+	"promptHash": "86672b74a441e9f302378a4667cc103570e1b443bd1517222f205b286847753a",
 	"references": [
 		{
 			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",

@@ -13,11 +13,11 @@
 	},
 	"revisionPacket": {
 		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions/magical-restoration-soothe-v1.json",
-		"contentHash": "2d540cb49560621e269e71e783fc08077d3bf7cc40d495c2e09b6a531350ed04"
+		"contentHash": "908080b9885105a18f546ba2650acbeb25e1b7b946475d75d533d749102dac00"
 	},
 	"cleanupManifest": {
 		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/manifest.json",
-		"contentHash": "8280a46b2eb358ab4b9f1bc1c0a3b84f79dd5b4fce3407da6f42a25ce67c8a73"
+		"contentHash": "b6a4fc968624464ac938fa9126d1df8e564c334f1a152077a38e93e97ac5873a"
 	},
 	"sourceCandidate": {
 		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-restoration-soothe.png",
@@ -13396,7 +13396,7 @@
 	},
 	"attemptCount": 2,
 	"attemptCeiling": 2,
-	"transactionContentHash": "090cdeae25ea8954d9bf56eb53252003ea4b1fed344257be90caab1686d323b6",
+	"transactionContentHash": "19d33b77fea82f61d27f3bb42937e1bb6156d1d49158e0fe2f3169f9d72c55af",
 	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/magical-restoration-soothe-v1.json",
 	"writtenOutputPaths": [
 		"assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/magical-restoration-soothe-v1.png",

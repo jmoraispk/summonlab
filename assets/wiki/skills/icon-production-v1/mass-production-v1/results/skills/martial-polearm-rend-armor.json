@@ -4,7 +4,7 @@
 	"identity": "martial:polearm:rend-armor",
 	"status": "candidate",
 	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/martial-polearm-rend-armor.json",
-	"promptHash": "161c80b71cc02182b217d7d0ef9c097aeac5c5eecb904e67660a7cc898c1298c",
+	"promptHash": "96fc9f5d5d2f40151280c7342b4edb72ada2acc2b641c8cba3849df3df121720",
 	"references": [
 		{
 			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",

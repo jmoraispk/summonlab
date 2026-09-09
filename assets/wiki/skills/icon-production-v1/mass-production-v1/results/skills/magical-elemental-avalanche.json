@@ -4,7 +4,7 @@
 	"identity": "magical:elemental:avalanche",
 	"status": "candidate",
 	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/magical-elemental-avalanche.json",
-	"promptHash": "f60d135a7d989eb04ac8baaf65095bffafac4c650f8cb00462c099b943c53f70",
+	"promptHash": "84dfff3f9d3164669ffb0ec5b5a3492023ce5ffd38ee16ef80007c740056d052",
 	"references": [
 		{
 			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",

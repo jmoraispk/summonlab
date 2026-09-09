@@ -4,7 +4,7 @@
 	"identity": "body.grappling-control",
 	"status": "candidate",
 	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/families/body-grappling-control.json",
-	"promptHash": "e6b4bc3207318d1d23f3d86243348fe5b81cd94b5b2d9fd1050886e71e9f6c08",
+	"promptHash": "9387789e0566180a645be33e3999f8a2acc7be90d62e2bcb2d5460389a2e747b",
 	"references": [
 		{
 			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",

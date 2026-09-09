@@ -4,7 +4,7 @@
 	"identity": "martial:polearm:unmaking",
 	"status": "candidate",
 	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/martial-polearm-unmaking.json",
-	"promptHash": "fe172c90b18e712b2a46868f1b6c48056bd442cfd4d8708fb8b171c64ef80599",
+	"promptHash": "3694ae27fff175eb018bbc7c77ca35d5315b626ac534a0f5a3bb4e7bca6f6ec0",
 	"references": [
 		{
 			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",

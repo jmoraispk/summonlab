@@ -14,22 +14,22 @@
 	},
 	"revisionPacket": {
 		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions-v2/martial-blade-hewing-blow-v2.json",
-		"contentHash": "9ccc3bb5449bfac7bad0f1629bd3353c0ef565e3248996d34df40aa387e8723d"
+		"contentHash": "55486628c9c16f08942f7deb01297957b56a46ca979d3a425565ceeed687299a"
 	},
 	"predecessor": {
 		"packet": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions/martial-blade-hewing-blow-v1.json",
-			"contentHash": "9d1d5b2d7902bff25a95ed351a01bbd2e5ed633da11930e3a9d08764a2003e64"
+			"contentHash": "e0c0a51980f877e2a57f46b2eb4601f1e138372d23fdd25f9543e0a52b1360aa"
 		},
 		"result": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/martial-blade-hewing-blow-v1.json",
-			"contentHash": "95e9dc09b054a020ba54ae3350a27e0d017f622011dd76045110ecfbc8ed648d"
+			"contentHash": "7036c270af85e2d05d13c7c73a5fb2f5731c8c4c7cd66febe8e3801055114057"
 		},
 		"providerSource": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/martial-blade-hewing-blow-v1.png",
 			"contentHash": "ca9a81e9548e9a6ae6d5df05517b24ac872d50dd5c4a4c68348c70ebb13cfbdf"
 		},
-		"transactionContentHash": "870f61cde94386e118c9ffbf6754a28ce65cf81c1f8b95f262aa0b5c9ef48539",
+		"transactionContentHash": "c53bacc6c80e8b4336ab2dc568987393d116197c0887a63e54327c0ef11009fe",
 		"revisedInterior": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/revisions/martial-blade-hewing-blow-v1.png",
 			"contentHash": "5d636ca5bde217015d4cc33d6cfb731134ed2764a75a6ca1bc43b632d8d8fcce"
@@ -164,7 +164,7 @@
 			"vipsVersion": "8.18.3"
 		}
 	},
-	"transactionContentHash": "eff908316f41b20142090bd60130498fc34075f3105f73cacdfb5ff035db7213",
+	"transactionContentHash": "92617d95f5185179931021292dd8e0174be7026b8dbb796e5960928d38205e39",
 	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/martial-blade-hewing-blow-v2.json",
 	"writtenOutputPaths": [
 		"assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/martial-blade-hewing-blow-v2.png",

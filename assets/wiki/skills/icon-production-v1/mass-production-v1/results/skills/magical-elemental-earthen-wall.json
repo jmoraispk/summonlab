@@ -4,7 +4,7 @@
 	"identity": "magical:elemental:earthen-wall",
 	"status": "candidate",
 	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/magical-elemental-earthen-wall.json",
-	"promptHash": "aa330f865e675be28047b714f373149fe99620b034dd811672b12df6ab26f73d",
+	"promptHash": "7a233264a6029d37428348299fdde53d9b4e3f756d178a205a24d9d6194a32e2",
 	"references": [
 		{
 			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",

@@ -4,7 +4,7 @@
 	"identity": "martial:polearm:bloodletting",
 	"status": "candidate",
 	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/martial-polearm-bloodletting.json",
-	"promptHash": "94547b87b4cc15e5d1cc7b571f6faa41c51c4ab57a87d1e9f41b613733b20bff",
+	"promptHash": "987d616eb456ef8e8cc4323f4e0603b09d1d1e472868a6bc00ad556903cdf6e2",
 	"references": [
 		{
 			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",

@@ -16,17 +16,17 @@
 	"predecessor": {
 		"packet": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions/magical-elemental-ashfall-v1.json",
-			"contentHash": "4c0236674b54507e581cd45f2490a27b72978068288f167dac1bb8c144137c67"
+			"contentHash": "4cb7e9034ecce05df0ee8bfa97364f3cb79e78773f42fcf0dc9eaa1c8d04e2dc"
 		},
 		"result": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/magical-elemental-ashfall-v1.json",
-			"contentHash": "6e3c7fecd2736a80edde7040b5a48a84513cf9b893179e51a0515711d79a549e"
+			"contentHash": "dc097797c0fcacf68053edf46dffb761b132824872169d417d30ec519d047fe7"
 		},
 		"providerSource": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/magical-elemental-ashfall-v1.png",
 			"contentHash": "b8763ec722fc9782e7cf8912c32e03278c8488c9819324f5b9be3e6f5f421948"
 		},
-		"transactionContentHash": "691e82cdd39b7fd7f5c6527242429c3a06ca7a275936e51a6fc6abe6fd5dfe8e",
+		"transactionContentHash": "63fcbbb174d0cbaf0f7336c683c0c9531f3e3a08d9b87c13ca6d2688b0ac902f",
 		"revisedInterior": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/revisions/magical-elemental-ashfall-v1.png",
 			"contentHash": "5b9471c55cce3ed2d899e3dbb07f16e372660fd5d32b8b999312ffe1d7ea7f98"

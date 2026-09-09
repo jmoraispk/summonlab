@@ -4,7 +4,7 @@
 	"identity": "magical:elemental:crushing-weight",
 	"status": "candidate",
 	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/magical-elemental-crushing-weight.json",
-	"promptHash": "893a426f1f30839fec7baf27b82d2dcad3b5db3df810069e6e9b84b486a1ab79",
+	"promptHash": "89c3d2ccb35a015b82ba0d90098889f827e665ae1a5911b37c577afc2c4ce87a",
 	"references": [
 		{
 			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",

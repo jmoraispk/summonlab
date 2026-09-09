@@ -14,22 +14,22 @@
 	},
 	"revisionPacket": {
 		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions-v2/magical-elemental-still-depths-v2.json",
-		"contentHash": "16ef9638a5ad2b37bbcec5704e30137fe08f562802cdc678362239c37fb39d6a"
+		"contentHash": "feee3f83a0d5a33c3b359df3a3c60c9465fd057301f98f0695436c660634df0d"
 	},
 	"predecessor": {
 		"packet": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions/magical-elemental-still-depths-v1.json",
-			"contentHash": "8f1c99d2da678f6d1a2bdb7349491d63ef322c926cbcbedfa4c16e7ea40f06df"
+			"contentHash": "501ba2c5658c7bb3a9269aff31720ebabdbce0bf7f6e7960a86e0359185249e3"
 		},
 		"result": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/magical-elemental-still-depths-v1.json",
-			"contentHash": "04b2063bd54005f04681a04aff3f89ba52c15ed83846be42a3f53d5c42654c82"
+			"contentHash": "b22bb73b44ce3fe8484c4a3e1c782b9a85c6f2ebd1189f8c36e68a8fe4503886"
 		},
 		"providerSource": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/magical-elemental-still-depths-v1.png",
 			"contentHash": "b31b10027fd02ec4bb693806b30d5ca89eaef9bf48ddea9269aeb468d756b4a8"
 		},
-		"transactionContentHash": "fada73606e3e5d0bdd2c7ff90222696eabe32243003d2cc0d62a9933866f07e5",
+		"transactionContentHash": "01ac6c01281856b9d6f74526f5cf17974d61228f1bab2a1a2ca85d6d19804736",
 		"revisedInterior": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/revisions/magical-elemental-still-depths-v1.png",
 			"contentHash": "321081b4caefb4a901bf0d5d2d5fafd5bbbd2b5c1d87e78db947be67c120bcdd"
@@ -157,7 +157,7 @@
 			"vipsVersion": "8.18.3"
 		}
 	},
-	"transactionContentHash": "be933900532502d4b414df3534321a0a86387aa755973ac2e974fc96c9d08a6a",
+	"transactionContentHash": "d5373f8871bbabef6c79b5e0bbe5ec2d03ac856a1a3ee91c95ecbf017b7a97eb",
 	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/magical-elemental-still-depths-v2.json",
 	"writtenOutputPaths": [
 		"assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/magical-elemental-still-depths-v2.png",

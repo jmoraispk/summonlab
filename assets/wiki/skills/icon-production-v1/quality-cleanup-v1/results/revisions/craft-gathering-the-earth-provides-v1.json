@@ -13,11 +13,11 @@
 	},
 	"revisionPacket": {
 		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions/craft-gathering-the-earth-provides-v1.json",
-		"contentHash": "f8b77bb052a4f9cb6f77e83b2a8df1e2ab2db7500eb1809214901e61f9faab74"
+		"contentHash": "51c82b66280cf30ee9a6adbcaf05189d93e4e7514c1f4a8c3a94415f03834d67"
 	},
 	"cleanupManifest": {
 		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/manifest.json",
-		"contentHash": "8280a46b2eb358ab4b9f1bc1c0a3b84f79dd5b4fce3407da6f42a25ce67c8a73"
+		"contentHash": "b6a4fc968624464ac938fa9126d1df8e564c334f1a152077a38e93e97ac5873a"
 	},
 	"sourceCandidate": {
 		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/craft-gathering-the-earth-provides.png",
@@ -8826,7 +8826,7 @@
 	},
 	"attemptCount": 2,
 	"attemptCeiling": 2,
-	"transactionContentHash": "298c41e14ba4f819ce4425a1ac9f04a551baa99e846298d49b6816feaa07080e",
+	"transactionContentHash": "0219cd5a3469752f1b30f7940aeef6c6e53563b1c7e7cf85637459ac965f4538",
 	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/craft-gathering-the-earth-provides-v1.json",
 	"writtenOutputPaths": [
 		"assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/craft-gathering-the-earth-provides-v1.png",

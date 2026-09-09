@@ -4,7 +4,7 @@
 	"identity": "magical:elemental:tremor",
 	"status": "candidate",
 	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/magical-elemental-tremor.json",
-	"promptHash": "3c691f52aa5442d348b7f244cb5eb7f94075ef4c2ced8ebd7d02c4e8ebce9aa6",
+	"promptHash": "c082759efb600ef854d31b59abb4667ff9eb6f9034b12a749702bce0433fa605",
 	"references": [
 		{
 			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",

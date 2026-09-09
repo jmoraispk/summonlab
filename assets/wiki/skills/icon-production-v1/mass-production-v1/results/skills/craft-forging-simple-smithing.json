@@ -4,7 +4,7 @@
 	"identity": "craft:forging:simple-smithing",
 	"status": "candidate",
 	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/craft-forging-simple-smithing.json",
-	"promptHash": "9b64614b4382eccce0e994444edce0f2b93241b95d0ba36837ddfccb5e84e6f7",
+	"promptHash": "c24e2b7b6c3e5653fc68bcc75be89b77870c3a04d686b97836c99050ced2b7fe",
 	"references": [
 		{
 			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",

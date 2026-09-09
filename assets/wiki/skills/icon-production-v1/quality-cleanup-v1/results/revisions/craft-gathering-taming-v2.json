@@ -14,22 +14,22 @@
 	},
 	"revisionPacket": {
 		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions-v2/craft-gathering-taming-v2.json",
-		"contentHash": "6a1728366f6e3ee1f37539c1cef1c3562e2d733da35a44e027cd162c29741e58"
+		"contentHash": "ba1c09d5185c4fb935b80f71746a2cfc062a92fb79980a4ed880435d618ea477"
 	},
 	"predecessor": {
 		"packet": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions/craft-gathering-taming-v1.json",
-			"contentHash": "bb01826aade50d72618963cc28f765adb5bbed138620fe73767768b78da764cb"
+			"contentHash": "cd38a9b883c8e4ad44ad22cf366dd6b8650c9b52b8191d963c03c1a920169317"
 		},
 		"result": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/craft-gathering-taming-v1.json",
-			"contentHash": "ab40ae4954952231ad306441b6541f354492a39254f82049eb42e0d8753afe58"
+			"contentHash": "7125e0ca1f4b65c13ab7edb8050e75264d41f7ce2fe13b76d7e3365a84e79006"
 		},
 		"providerSource": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/craft-gathering-taming-v1.png",
 			"contentHash": "e1e4b269e595d68ed596fec59c45a28a28bead2079bac40b187af5f745f81538"
 		},
-		"transactionContentHash": "589086a90224cf9b3ec3f441e81f0f7115b2ca0395b98da5dc672dfc805d7bb7",
+		"transactionContentHash": "f487c22375430586b1747a9e466fa663f669aba65cbbc16356d638590e81dc47",
 		"revisedInterior": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/revisions/craft-gathering-taming-v1.png",
 			"contentHash": "71df8259410cf411051e0de15b7e16e0d72d54ee281f5782fc52891f0d3c2b76"
@@ -165,7 +165,7 @@
 			"vipsVersion": "8.18.3"
 		}
 	},
-	"transactionContentHash": "f72926e492e74de96cbc1d376750f087dff4be51c261e5d924a96cb8818d972f",
+	"transactionContentHash": "8e6216359dfba5f05289c27e51c8fe9b53720bf48907f2f1d9a355e9701a68b7",
 	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/craft-gathering-taming-v2.json",
 	"writtenOutputPaths": [
 		"assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/craft-gathering-taming-v2.png",

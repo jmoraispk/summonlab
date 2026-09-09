@@ -16,17 +16,17 @@
 	"predecessor": {
 		"packet": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions/craft-forging-fuel-craft-v1.json",
-			"contentHash": "2e701d73b140764aa8407861c89f09738df5100abc6d9fc2316fa0cc22acc64b"
+			"contentHash": "3f360b3bccc323181445f791483756bef69cdd433763db3090f764d2b7e843f4"
 		},
 		"result": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/craft-forging-fuel-craft-v1.json",
-			"contentHash": "1b2d03561cc8bd0e5f7babfd6cf2db794a7c6451c3cfbf6672f7ce54498cf6f5"
+			"contentHash": "11fc4fbbc87f944215ccf9d879f6402156a78579b5c0e6f0da1b459808cde681"
 		},
 		"providerSource": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/craft-forging-fuel-craft-v1.png",
 			"contentHash": "e9268cab018f0cc0c056ca939d208aeb65a62c55ecffecc7cf8d5b94a2b614ec"
 		},
-		"transactionContentHash": "6352415432142e1ebf8c5e09a55590fd91a9509b7865161a226ff2702c8b6e69",
+		"transactionContentHash": "f887ecd7c1691253643ff84e538f063d2305a83b462d2277806bb559647fe2ab",
 		"revisedInterior": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/revisions/craft-forging-fuel-craft-v1.png",
 			"contentHash": "b2166aa707c7d773b6b8dd064b6ec675285ad4017e15a05d5b66288a6724291b"

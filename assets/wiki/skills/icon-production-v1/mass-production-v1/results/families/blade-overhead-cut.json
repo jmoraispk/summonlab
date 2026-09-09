@@ -4,7 +4,7 @@
 	"identity": "blade.overhead-cut",
 	"status": "candidate",
 	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/families/blade-overhead-cut.json",
-	"promptHash": "096dbf88727f776b540a81bbff631c0e50ec7df3c24ae9d54303dee38e023e71",
+	"promptHash": "6e01e8c2fe51b93c1e4122408bb1c13256ea274a97619f253f8a0a9fc3cd40d5",
 	"references": [
 		{
 			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",

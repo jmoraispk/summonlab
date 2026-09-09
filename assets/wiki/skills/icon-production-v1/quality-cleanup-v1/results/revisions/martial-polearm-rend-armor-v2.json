@@ -14,22 +14,22 @@
 	},
 	"revisionPacket": {
 		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions-v2/martial-polearm-rend-armor-v2.json",
-		"contentHash": "0c7ebfc0aa53612fc367c8159e4ed6d8ba726a0da2160b33b920bdcb7f7d308e"
+		"contentHash": "229e5ef244257f43492e6da193073073c448010407c32fafd4c3adafa458550f"
 	},
 	"predecessor": {
 		"packet": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions/martial-polearm-rend-armor-v1.json",
-			"contentHash": "e4359976f4486602e397c7915b276445e611bfe79e729de12a8508858c97ed27"
+			"contentHash": "c07206a075140a0dd88a2a8bee6e3caff9d864d6357ddfed06a7e763ee0f805b"
 		},
 		"result": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/martial-polearm-rend-armor-v1.json",
-			"contentHash": "575b0e1cc5031a74242855167ec1cec5345ab46b44f9ddea682305434484498c"
+			"contentHash": "e8021a95ff4084d5c46a298e9945bc305c0581ea9a895a73cf0ea6dfda57c17b"
 		},
 		"providerSource": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/martial-polearm-rend-armor-v1.png",
 			"contentHash": "c1f8b530e64f3078530e1d8a96e614298be39e531bbdd2e5f2aee84004e671f1"
 		},
-		"transactionContentHash": "c52967c057cf1db0158975f9693f649acffa318b3250e2df36931c1697331b14",
+		"transactionContentHash": "d1aeb46fdd9e11dbf551c539b20826adb7894b145cc920a2401ff271c729e108",
 		"revisedInterior": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/revisions/martial-polearm-rend-armor-v1.png",
 			"contentHash": "67fc7ca4ef8353adb6098d76080b49c684c5eb3645ec80cb8e7664e4412c38ae"
@@ -165,7 +165,7 @@
 			"vipsVersion": "8.18.3"
 		}
 	},
-	"transactionContentHash": "1e9deed4a5cf479fa8e7d421c195c53f3884694a4dedbf685badd52fb31754bf",
+	"transactionContentHash": "9ce02e848a1ca7a293afd6f1e9807ea43b696ed81cade063ad6f3bc1c5077c27",
 	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/martial-polearm-rend-armor-v2.json",
 	"writtenOutputPaths": [
 		"assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/martial-polearm-rend-armor-v2.png",

@@ -4,7 +4,7 @@
 	"identity": "magical:elemental:stone-skin",
 	"status": "candidate",
 	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/magical-elemental-stone-skin.json",
-	"promptHash": "ee33564c12a148bc85109a38b52d1cb6265aa771338a91402d7bbe923011eee3",
+	"promptHash": "109da2c440aa913260cbe8f74d9cb01ed06465b72bd6b47e65fcf7a998b3bf21",
 	"references": [
 		{
 			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",

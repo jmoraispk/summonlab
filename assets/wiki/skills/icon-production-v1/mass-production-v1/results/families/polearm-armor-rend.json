@@ -4,7 +4,7 @@
 	"identity": "polearm.armor-rend",
 	"status": "candidate",
 	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/families/polearm-armor-rend.json",
-	"promptHash": "784817add214bf4d5893043d2f42c8858a94464bdba328fe239c3687d35a5fca",
+	"promptHash": "7bed35685ef42aabb2592113f7fe2d099af3bbd3236655579da527881a95909b",
 	"references": [
 		{
 			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",

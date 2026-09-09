@@ -14,22 +14,22 @@
 	},
 	"revisionPacket": {
 		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions-v2/craft-forging-ore-sense-v2.json",
-		"contentHash": "aded910e73262bd2bbe5780d2362e649b4c1a6cd6191f4fd8d431581d0b5bccd"
+		"contentHash": "0e55774e9ab769ccdaa5e17373fc55e237fdc9f1b2f58a09aa3ba22b15b45618"
 	},
 	"predecessor": {
 		"packet": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions/craft-forging-ore-sense-v1.json",
-			"contentHash": "15ba1e9660376a41ffeeda8654832e692a8479112e63e1393e00034683b381e4"
+			"contentHash": "6682d9115f5441162b7afefb8329a865e1cb1fabf17ba3f4eb1096cc51e4a078"
 		},
 		"result": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/craft-forging-ore-sense-v1.json",
-			"contentHash": "ca7d029be16af83217cae4e8906781a4204e940d9b101e1bc32b67e64549a2e2"
+			"contentHash": "f030c0840b1fe6453b92e56727e4f7243f80d93e7e38d19a4534345cb61af400"
 		},
 		"providerSource": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/craft-forging-ore-sense-v1.png",
 			"contentHash": "aab94c07eb98069a943546458299a657f64843ee0eb084a76b1b83374a4efa6f"
 		},
-		"transactionContentHash": "52f35cfc877f777040c6f65914dc6b81a78ba1a2044a7a97a7c9ab59fe4f107a",
+		"transactionContentHash": "c0585c541942966e5d5b9525d6697014eed12e61be8f65dd987300adc0252794",
 		"revisedInterior": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/revisions/craft-forging-ore-sense-v1.png",
 			"contentHash": "96f904d37cd14e9b99116b00fff05fce4a4b0c2fe8a8ee4072f2f20b45ae39b4"
@@ -165,7 +165,7 @@
 			"vipsVersion": "8.18.3"
 		}
 	},
-	"transactionContentHash": "afc09a6673c44078414674a33af192bb162a0b3e37abcaf337e59ab7285bbf84",
+	"transactionContentHash": "76eb570017dfdc3c0d01fb332c4669d18308a7023067154404cec14538f984c0",
 	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/craft-forging-ore-sense-v2.json",
 	"writtenOutputPaths": [
 		"assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/craft-forging-ore-sense-v2.png",

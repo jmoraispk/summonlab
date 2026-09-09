@@ -4,7 +4,7 @@
 	"identity": "craft:forging:weightless-craft",
 	"status": "candidate",
 	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/craft-forging-weightless-craft.json",
-	"promptHash": "d7a92f5a14a76cadc6f4969757070659eb6b26a23872cbf6d06ffb1863f4d149",
+	"promptHash": "f73d4b655484f7e113138613009ab0d654d43ac8f46b8ddd170c3c2760da03ba",
 	"references": [
 		{
 			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",

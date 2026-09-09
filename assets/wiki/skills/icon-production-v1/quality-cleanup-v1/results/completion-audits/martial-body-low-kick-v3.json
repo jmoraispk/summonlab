@@ -4,11 +4,11 @@
 	"targetId": "martial:body:low-kick",
 	"revisionPacket": {
 		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions-v3/martial-body-low-kick-v3.json",
-		"contentHash": "518053a52e0e01d66f6401d54546883dbb5bb1adb8a4e7b5385f0f57905ed246"
+		"contentHash": "7a78589f7916108ef5831eb4d2cc6f9a0b85dbe4c4cd29ccd28136d6f0f7a1d0"
 	},
 	"result": {
 		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/martial-body-low-kick-v3.json",
-		"contentHash": "8afdf8354c48f5c621eb64f1b44329add71870b74db71d1b0bcb694e97010e71"
+		"contentHash": "d588a0f1880e0612670ec3b506a1a6b998237f7abd46e7217069b7be39bedd82"
 	},
 	"status": "candidate",
 	"corePublication": {
@@ -30,7 +30,7 @@
 			},
 			"result": {
 				"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/martial-body-low-kick-v3.json",
-				"contentHash": "8afdf8354c48f5c621eb64f1b44329add71870b74db71d1b0bcb694e97010e71"
+				"contentHash": "d588a0f1880e0612670ec3b506a1a6b998237f7abd46e7217069b7be39bedd82"
 			}
 		}
 	}

@@ -4,7 +4,7 @@
 	"identity": "magical:elemental:living-mountain",
 	"status": "candidate",
 	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/magical-elemental-living-mountain.json",
-	"promptHash": "01e11d5c969321cdb7f2c4bcf457e0b59fdfa50f4749eb80b9c861c5eb9d935d",
+	"promptHash": "f7a54608f6f8bc6c6a39fc7c2b29d2af32efc340b9dcbdc5ba2784396fbfd8dc",
 	"references": [
 		{
 			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",

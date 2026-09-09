@@ -4,7 +4,7 @@
 	"identity": "magical:elemental:mountain-rise",
 	"status": "candidate",
 	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/magical-elemental-mountain-rise.json",
-	"promptHash": "64881916d4fa2dff4fb30f5ad199801bd41cfba71e2c910b580a0fca662755d9",
+	"promptHash": "dbfa64fbbbea79ad654499a6928dfe9bd0d53383de04bdabe7cd6a917ac2ca1c",
 	"references": [
 		{
 			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",

@@ -13,11 +13,11 @@
 	},
 	"revisionPacket": {
 		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions/martial-blade-blade-dance-v1.json",
-		"contentHash": "7f98673da2f66523e528a9cbb1e9e361c2bbb9b9c84873dd3f0877b4211b958d"
+		"contentHash": "05a10906951c6518234c8dd2e951363160e9ca5d3c6b9dafe042478420960791"
 	},
 	"cleanupManifest": {
 		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/manifest.json",
-		"contentHash": "8280a46b2eb358ab4b9f1bc1c0a3b84f79dd5b4fce3407da6f42a25ce67c8a73"
+		"contentHash": "b6a4fc968624464ac938fa9126d1df8e564c334f1a152077a38e93e97ac5873a"
 	},
 	"sourceCandidate": {
 		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-blade-blade-dance.png",
@@ -18486,7 +18486,7 @@
 	},
 	"attemptCount": 2,
 	"attemptCeiling": 2,
-	"transactionContentHash": "d34e2c7e179d9c3fb62977064f8e38b82beea7fab6e4c9a3896edf79e016765e",
+	"transactionContentHash": "bd518653056914f73227d6367a574ca48a0c0843778f72bb617d8c3148fddf91",
 	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/martial-blade-blade-dance-v1.json",
 	"writtenOutputPaths": [
 		"assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/martial-blade-blade-dance-v1.png",

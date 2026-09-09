@@ -4,7 +4,7 @@
 	"identity": "martial:body:focused-strike",
 	"status": "candidate",
 	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/martial-body-focused-strike.json",
-	"promptHash": "dd01e09a3d2895dac813264207babee6bf0d91dda41bdd682ddffa5430beade1",
+	"promptHash": "af6517a161f9d4455f68b842a357f1985a3aa26ecc8b57e508625f4416ff5bf7",
 	"references": [
 		{
 			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",

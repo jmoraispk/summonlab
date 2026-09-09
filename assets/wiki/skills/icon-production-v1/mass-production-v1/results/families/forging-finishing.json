@@ -4,7 +4,7 @@
 	"identity": "forging.finishing",
 	"status": "candidate",
 	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/families/forging-finishing.json",
-	"promptHash": "67855999def2d74043c943d900117aabf79658646141df13beb1f24704e22ec4",
+	"promptHash": "2cc51e289dfcefd05e9c47a1ea46e05041b0efa58ee24b9f815c5d4e1da0b5be",
 	"references": [
 		{
 			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",

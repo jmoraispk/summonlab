@@ -16,17 +16,17 @@
 	"predecessor": {
 		"packet": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions/martial-blade-hamstring-v1.json",
-			"contentHash": "bfdcbcb655817483dfe90b76ac65521a2ef654b9d123cc25745c5546a2f5755f"
+			"contentHash": "ce8064641a2fe9d08a2796c434f7d4a9fb15b1251f993c39e5b6bdabc1de9363"
 		},
 		"result": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/martial-blade-hamstring-v1.json",
-			"contentHash": "4630bd74cf1bd849f6fc9e2ba72e509dc82c71ef2824375e3b4c2b8f851e3fc0"
+			"contentHash": "441ea763268daab5b6adbb908feeada9150797f5f7cb2e0da5e7590ee644b8b4"
 		},
 		"providerSource": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/martial-blade-hamstring-v1.png",
 			"contentHash": "127dcf280a51e9567a8921164afaff221620e8a379c3d80543f51b002d984953"
 		},
-		"transactionContentHash": "131d9bdbec5616953deff37d343b897f100c9a89cd734eb351a943ea2f590271",
+		"transactionContentHash": "8089395257dc63645c766acaa3be416fa3930d11d7449227a2de707a0989d67a",
 		"revisedInterior": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/revisions/martial-blade-hamstring-v1.png",
 			"contentHash": "2a7c3f57fef445ef0958047efe0e806c5f6c5796b418c68bf4d1d8f8d97f7e09"

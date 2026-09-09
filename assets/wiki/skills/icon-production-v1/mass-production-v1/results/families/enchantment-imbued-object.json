@@ -4,7 +4,7 @@
 	"identity": "enchantment.imbued-object",
 	"status": "candidate",
 	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/families/enchantment-imbued-object.json",
-	"promptHash": "5471a7e729b5c211b88854c014ac68c997ed68ca29302a5d9e9aa9e54a21fe3f",
+	"promptHash": "209b60192eda1aba3afe3235640293f53bf9ebf7d63f5250c0934eb65e92b2b0",
 	"references": [
 		{
 			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",

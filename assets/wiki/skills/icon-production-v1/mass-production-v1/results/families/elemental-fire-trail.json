@@ -4,7 +4,7 @@
 	"identity": "elemental.fire-trail",
 	"status": "candidate",
 	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/families/elemental-fire-trail.json",
-	"promptHash": "10e0f679632ba4963e757dbacd1542cb37bbb7fb7dcab7ae101cfad6d5f16c2b",
+	"promptHash": "7426ade7eaca0a5b4c64cb69706c9d5ab8afcfdff11542d3a6c30e9002ee81d9",
 	"references": [
 		{
 			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",

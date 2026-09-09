@@ -14,22 +14,22 @@
 	},
 	"revisionPacket": {
 		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions-v2/magical-restoration-soothe-v2.json",
-		"contentHash": "900fe83a436c8c3334cd6f2f49c6824d8d97cf7fdfdc69bdcd2143a6f0468692"
+		"contentHash": "6cd3d7ea98964af37a876a533a809687b8db76c085f8d2dd74601221f689f593"
 	},
 	"predecessor": {
 		"packet": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions/magical-restoration-soothe-v1.json",
-			"contentHash": "2d540cb49560621e269e71e783fc08077d3bf7cc40d495c2e09b6a531350ed04"
+			"contentHash": "908080b9885105a18f546ba2650acbeb25e1b7b946475d75d533d749102dac00"
 		},
 		"result": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/magical-restoration-soothe-v1.json",
-			"contentHash": "631f4adc6acdde55f63119d4510697c2186bb40479368bd71460c46e835523aa"
+			"contentHash": "0234b5dcad8448a91e5289ae27ea52d4cae3a0525541630f4eb4da84aaa45708"
 		},
 		"providerSource": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/magical-restoration-soothe-v1.png",
 			"contentHash": "c32fc2d903089f4eaf69a0f58d40016f18cbe9b7820d4dd58acb51d94c73554a"
 		},
-		"transactionContentHash": "090cdeae25ea8954d9bf56eb53252003ea4b1fed344257be90caab1686d323b6",
+		"transactionContentHash": "19d33b77fea82f61d27f3bb42937e1bb6156d1d49158e0fe2f3169f9d72c55af",
 		"revisedInterior": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/revisions/magical-restoration-soothe-v1.png",
 			"contentHash": "d68c3ae68e9a391f87fd7f74677030bca3191c142a56439ec836177bdf9b7f7e"
@@ -164,7 +164,7 @@
 			"vipsVersion": "8.18.3"
 		}
 	},
-	"transactionContentHash": "f44fa1cc2e8c9a99304390625d7815245e01cf036af7357a17cf70803fcd96ad",
+	"transactionContentHash": "28bc4f3d8af559f3d24cad454c7b1ffd2e42f7cfad3ae52b7b03bdf95f137a46",
 	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/magical-restoration-soothe-v2.json",
 	"writtenOutputPaths": [
 		"assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/magical-restoration-soothe-v2.png",

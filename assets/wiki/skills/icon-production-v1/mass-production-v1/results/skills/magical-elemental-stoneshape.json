@@ -4,7 +4,7 @@
 	"identity": "magical:elemental:stoneshape",
 	"status": "candidate",
 	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/magical-elemental-stoneshape.json",
-	"promptHash": "4654096c866af9102748bed48a60fb689a6978de60f2d99d3b82cf3f0e7a12f8",
+	"promptHash": "20d00e8550e3bf11281338d73bd40371c79bfe3fcd8e12be3f03a14c75fe669e",
 	"references": [
 		{
 			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",

@@ -4,7 +4,7 @@
 	"identity": "martial:polearm:crush",
 	"status": "candidate",
 	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/martial-polearm-crush.json",
-	"promptHash": "b68de46d0c81786bbb79ed6f2e716c24caece5b5f2277987bccfa6fd97c9cd13",
+	"promptHash": "2c5275c0d3633d2934c80854502f9bca93ccc1dbd4b0a9e4c1c92eda7f372ac9",
 	"references": [
 		{
 			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",

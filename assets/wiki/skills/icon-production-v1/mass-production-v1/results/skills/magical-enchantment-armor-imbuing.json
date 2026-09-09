@@ -4,7 +4,7 @@
 	"identity": "magical:enchantment:armor-imbuing",
 	"status": "candidate",
 	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/magical-enchantment-armor-imbuing.json",
-	"promptHash": "884ba61a0b7948f5a22919aa1e013361ac456d4c9f250fe0d7a4efc971780ab9",
+	"promptHash": "be818431510bc4aea2d0c2a1c9fdbdb60b0fd376d122d0f8c08c64ec35b6c87d",
 	"references": [
 		{
 			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",

@@ -4,7 +4,7 @@
 	"identity": "martial:polearm:halberd-handling",
 	"status": "candidate",
 	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/martial-polearm-halberd-handling.json",
-	"promptHash": "2489bff29855d316723de2723ea6b4acf8c306178262a73ff1630a41ff05b7f7",
+	"promptHash": "f12c4c55c7e2d122ebcdfd69327fd5f316ca51a3791d7fbb1b714660c881ed6e",
 	"references": [
 		{
 			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",

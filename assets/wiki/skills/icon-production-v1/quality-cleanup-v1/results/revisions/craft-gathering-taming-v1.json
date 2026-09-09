@@ -13,11 +13,11 @@
 	},
 	"revisionPacket": {
 		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions/craft-gathering-taming-v1.json",
-		"contentHash": "bb01826aade50d72618963cc28f765adb5bbed138620fe73767768b78da764cb"
+		"contentHash": "cd38a9b883c8e4ad44ad22cf366dd6b8650c9b52b8191d963c03c1a920169317"
 	},
 	"cleanupManifest": {
 		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/manifest.json",
-		"contentHash": "8280a46b2eb358ab4b9f1bc1c0a3b84f79dd5b4fce3407da6f42a25ce67c8a73"
+		"contentHash": "b6a4fc968624464ac938fa9126d1df8e564c334f1a152077a38e93e97ac5873a"
 	},
 	"sourceCandidate": {
 		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/craft-gathering-taming.png",
@@ -7736,7 +7736,7 @@
 	},
 	"attemptCount": 2,
 	"attemptCeiling": 2,
-	"transactionContentHash": "589086a90224cf9b3ec3f441e81f0f7115b2ca0395b98da5dc672dfc805d7bb7",
+	"transactionContentHash": "f487c22375430586b1747a9e466fa663f669aba65cbbc16356d638590e81dc47",
 	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/craft-gathering-taming-v1.json",
 	"writtenOutputPaths": [
 		"assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/craft-gathering-taming-v1.png",

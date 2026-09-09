@@ -14,22 +14,22 @@
 	},
 	"revisionPacket": {
 		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions-v2/craft-forging-tempering-v2.json",
-		"contentHash": "0361219a11b07d3682c1691ec7d744fc3191474f394bed6de27a1ca0fe69dc6b"
+		"contentHash": "818b183b4b971beb8ea4b41eda31b5d1c11d89a046bda003785b9206b15e195d"
 	},
 	"predecessor": {
 		"packet": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions/craft-forging-tempering-v1.json",
-			"contentHash": "1f1f4899067681ba2a7dc862b71095648148cca24b41be8bd314b8206fb4d108"
+			"contentHash": "d820259722c11cf76e7033e2ba3b9c1d77536954ff94b825db995df7777cd24f"
 		},
 		"result": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/craft-forging-tempering-v1.json",
-			"contentHash": "19b82d675ddf614a5869b333af54e403266b91c976ae6cb35a1a2a8ffa7b765e"
+			"contentHash": "e7610ca05f2fa25e5f6e0a3b89a6578157c17ff03f4b49dab0d0da8cb7c0d771"
 		},
 		"providerSource": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/craft-forging-tempering-v1.png",
 			"contentHash": "a3dac1821102edca008e49ff98176867b57a38d864861b91cc4adb2da957edf7"
 		},
-		"transactionContentHash": "38d3d7779380a89d9dcd52d9b7f182ca2f074f4ae969de868388378875981d1b",
+		"transactionContentHash": "70439d0d90276970727b0953767f0ccaafacbc650e2997f5b63ecc14534afc13",
 		"revisedInterior": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/revisions/craft-forging-tempering-v1.png",
 			"contentHash": "3c7bdf68747f6406c6d46579d805af02adc6c38d10d0b553cf9ed2965b7ecbec"
@@ -164,7 +164,7 @@
 			"vipsVersion": "8.18.3"
 		}
 	},
-	"transactionContentHash": "c0685628a2181120870217e26dbf499b8525b6a6a6d258315bae7fa14a0a36a8",
+	"transactionContentHash": "c86ff32d067a4364dc7455481208881a82bb5e585037388bb570e7f7dda49595",
 	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/craft-forging-tempering-v2.json",
 	"writtenOutputPaths": [
 		"assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/craft-forging-tempering-v2.png",

@@ -4,7 +4,7 @@
 	"identity": "martial:body:grab",
 	"status": "candidate",
 	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/martial-body-grab.json",
-	"promptHash": "28db48e46d77b6f7eee79670b083ae227ce3a843cfead60708fac79fab709721",
+	"promptHash": "624852804ddfe48e516654e46ad321ba69254a728ab54cf91956e9b584d3f140",
 	"references": [
 		{
 			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",

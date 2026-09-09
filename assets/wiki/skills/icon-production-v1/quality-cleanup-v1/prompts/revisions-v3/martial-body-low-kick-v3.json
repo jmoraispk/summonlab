@@ -16,17 +16,17 @@
 	"predecessor": {
 		"packet": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions-v2/martial-body-low-kick-v2.json",
-			"contentHash": "37cd45c09a91ac4358fc59fc98e07b9cb13d63752a2321ec96fecfe3ee5dc0f4"
+			"contentHash": "7e13757c23089e0fbd3ab0b714a1b1409bb19de485670574f3798f81ba3d1c72"
 		},
 		"result": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/martial-body-low-kick-v2.json",
-			"contentHash": "c2b46bcb661026402cccff8ae5bc6b52fcd1144461e079969e7b9588c5138818"
+			"contentHash": "5e053f075e0158ba6fee65fd439eebc4e05e93e9a10bd0706600a8a2a738eff5"
 		},
 		"providerSource": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/martial-body-low-kick-v2.png",
 			"contentHash": "bec6b61c11e91d27192f0ef0e92f942ac1a26af68e38be3ac3833e07b25e7a55"
 		},
-		"transactionContentHash": "8b71deb670c5ddfe80bc4e5e948c68d13ecc2627f94c4650366d43d72942d968",
+		"transactionContentHash": "472040d7d861dc3e9d6f4bb8923e04f1b77e8d77fb7aa6a77b2090fbe15b2f34",
 		"revisedInterior": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/revisions/martial-body-low-kick-v2.png",
 			"contentHash": "bf193c0c65258bbf4db57d96614e109fd9b47325a85cdac19a27e43515fa69be"

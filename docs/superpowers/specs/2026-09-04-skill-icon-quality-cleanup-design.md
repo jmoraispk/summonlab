@@ -33,10 +33,10 @@ The cleanup run binds these exact starting authorities:
 
 | Authority | Path | SHA-256 |
 | --- | --- | --- |
-| Mass-production manifest | `assets/wiki/skills/icon-production-v1/mass-production-v1/manifest.json` | `7103c8d6c7ac006dcc4c332875ac4b44213d239079219363f9056b78bd3506bf` |
-| Canonical skill catalog | `assets/wiki/skills/icon-production-v1/catalog.json` | `71add63ae46e6e0b68d807bb5bca6060b101213682fc8e1c9037ad1fe3744aaf` |
-| Motif map | `assets/wiki/skills/icon-production-v1/motif-map.json` | `d9b82036326ebd35dc8689875c0bab3ae638ed31de64d4b4c8ded5a96428f1c7` |
-| Visual specifications | `assets/wiki/skills/icon-production-v1/visual-specs.json` | `08d2b4018644f9d3b5166c41cf71768207fb9ffe821b2d83fde05707037b0514` |
+| Mass-production manifest | `assets/wiki/skills/icon-production-v1/mass-production-v1/manifest.json` | `239cfb6cb1c31114717bb4e11868d6318466ce6a49371d8b3a267b6b8819e92e` |
+| Canonical skill catalog | `assets/wiki/skills/icon-production-v1/catalog.json` | `bdcaf53dc0f846cdab7b5b62c9c48e2661f69a2339892447fd5ec9cf1ec36a6a` |
+| Motif map | `assets/wiki/skills/icon-production-v1/motif-map.json` | `7efee70336d502625ca8129b47013011391687f3730d82362314a5a8ab9db308` |
+| Visual specifications | `assets/wiki/skills/icon-production-v1/visual-specs.json` | `1ec92e6597d2efa07a8df96293dd5365c0ba5583af8c66aff4b86c3d674f97e1` |
 | Selected seven-frame shape sheet | `assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png` | `4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266` |
 | Option C material authority | `assets/wiki/skills/rarity-frame-v1/sources/skill-rarity-option-c-v1.png` | `66af9144bc4cb5d8bb1420c5a07cfe9652c7ccbccf17519da938b21298b929ce` |
 | Geometry | `assets/wiki/skills/icon-production-v1/geometry-v2.json` | `6ffaaa99a2e19c7589bcb2f7975268117db199abd45752fd164567cb5042fcab` |

@@ -4,7 +4,7 @@
 	"identity": "magical:elemental:stone-sentinel",
 	"status": "candidate",
 	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/magical-elemental-stone-sentinel.json",
-	"promptHash": "03ef82f85c1f685de4a13ccc273c98d1bae6ef6c5c622dcf12c076566f1145a2",
+	"promptHash": "be4bea8b72a7e280437f1145dde9b987437bf184ab936a97cfa6c0c3531da019",
 	"references": [
 		{
 			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",

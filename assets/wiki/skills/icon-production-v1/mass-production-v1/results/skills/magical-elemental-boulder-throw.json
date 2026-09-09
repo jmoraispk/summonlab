@@ -4,7 +4,7 @@
 	"identity": "magical:elemental:boulder-throw",
 	"status": "candidate",
 	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/magical-elemental-boulder-throw.json",
-	"promptHash": "6765f8aa259026b5a0be478e6f0cea425feeb8107ef91520fe239c10ba20dc91",
+	"promptHash": "5ac74506f9e53c60be9e55b8a189347b273ee09bf74a65acf43348d6fd485bac",
 	"references": [
 		{
 			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",

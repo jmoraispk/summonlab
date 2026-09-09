@@ -4,7 +4,7 @@
 	"identity": "martial:ranged:fletching",
 	"status": "candidate",
 	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/martial-ranged-fletching.json",
-	"promptHash": "a7c8f51f13ad74e16b475e39c3f7fa61c803e37f6a1a129ba88d0a7e6c1133c7",
+	"promptHash": "05087fbeaae7f45f29d9f508ea1de5d711837aea156ddf01960dcef35d5bfea8",
 	"references": [
 		{
 			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",

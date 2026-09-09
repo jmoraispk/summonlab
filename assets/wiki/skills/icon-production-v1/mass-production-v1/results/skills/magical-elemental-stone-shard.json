@@ -4,7 +4,7 @@
 	"identity": "magical:elemental:stone-shard",
 	"status": "candidate",
 	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/magical-elemental-stone-shard.json",
-	"promptHash": "31d7ab9ee110792c9b018ecaf6b1d83b16e872f2dc03939137989323ec1a3ba0",
+	"promptHash": "da91ab6fbbbfd023fb15b373b8b424247d73b7801c9c26f05c3542dfe9e62064",
 	"references": [
 		{
 			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",

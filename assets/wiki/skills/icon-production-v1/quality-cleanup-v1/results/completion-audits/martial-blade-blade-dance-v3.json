@@ -4,11 +4,11 @@
 	"targetId": "martial:blade:blade-dance",
 	"revisionPacket": {
 		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions-v3/martial-blade-blade-dance-v3.json",
-		"contentHash": "64e92596a60343c347506e83b7b62ce86db64c275d641dcb561e7258a187a1ef"
+		"contentHash": "0f8ffd8f29af1c7e84f42b180aa4bffc8fe45e1f99df7b6bcf5bb7e97ab49758"
 	},
 	"result": {
 		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/martial-blade-blade-dance-v3.json",
-		"contentHash": "6c2cabf786b474acdafd2e4edc9bd5ac74497bb35dfaca2fc3a523997eb0ef1c"
+		"contentHash": "e8d9b9fe5a637d400266bf05a8885746c5257342c897d9fd06efe587fd6128d1"
 	},
 	"status": "candidate",
 	"corePublication": {
@@ -30,7 +30,7 @@
 			},
 			"result": {
 				"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/martial-blade-blade-dance-v3.json",
-				"contentHash": "6c2cabf786b474acdafd2e4edc9bd5ac74497bb35dfaca2fc3a523997eb0ef1c"
+				"contentHash": "e8d9b9fe5a637d400266bf05a8885746c5257342c897d9fd06efe587fd6128d1"
 			}
 		}
 	}

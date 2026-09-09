@@ -4,7 +4,7 @@
 	"identity": "martial:ranged:crossbow-handling",
 	"status": "candidate",
 	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/martial-ranged-crossbow-handling.json",
-	"promptHash": "2c0f9899bbebc92d3019b744a008551f485837e901d5341c4b8173c55c235385",
+	"promptHash": "d3a21189d2357d31a9584edaa534c6da39692a8b5c44b6475e4087204deee586",
 	"references": [
 		{
 			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",

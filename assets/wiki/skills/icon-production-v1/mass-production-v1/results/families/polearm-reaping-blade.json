@@ -4,7 +4,7 @@
 	"identity": "polearm.reaping-blade",
 	"status": "candidate",
 	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/families/polearm-reaping-blade.json",
-	"promptHash": "963cad9d3d0ee0d041431fbecec28818033055c81c85f66cb4342258a87fc7d6",
+	"promptHash": "3da3d2e975dcaf13b60e0bf336602b23f5edca83d7ad49dc8250bd7bccfa469b",
 	"references": [
 		{
 			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",

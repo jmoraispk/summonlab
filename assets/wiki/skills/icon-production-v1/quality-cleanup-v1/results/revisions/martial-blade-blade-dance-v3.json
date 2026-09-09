@@ -14,22 +14,22 @@
 	},
 	"revisionPacket": {
 		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions-v3/martial-blade-blade-dance-v3.json",
-		"contentHash": "64e92596a60343c347506e83b7b62ce86db64c275d641dcb561e7258a187a1ef"
+		"contentHash": "0f8ffd8f29af1c7e84f42b180aa4bffc8fe45e1f99df7b6bcf5bb7e97ab49758"
 	},
 	"predecessor": {
 		"packet": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions-v2/martial-blade-blade-dance-v2.json",
-			"contentHash": "3b2154826c6e2f480ce8a85a0a6d1148fbb23fca4de57014e90dd098a8ce2616"
+			"contentHash": "86f23571cd9fffb00c1bd2d2477d36ddff455544abddc6b5974c0d9fef668f31"
 		},
 		"result": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/martial-blade-blade-dance-v2.json",
-			"contentHash": "5291bb58c0a4c7d262d5078b444e20449593d431f86ea095be810c30e1499f8e"
+			"contentHash": "5204e7112149b2722b290867b3f8b3bf8726521b3976cb689ebf25e963581703"
 		},
 		"providerSource": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/martial-blade-blade-dance-v2.png",
 			"contentHash": "e230fda2f598a627346427a7bb57fcf28f68f11f5dff4883406373bdb8ffda87"
 		},
-		"transactionContentHash": "8e98eb919d9685ff6e6f49ff6ed7cbd3e31f07750c0671bd3d71a18f590415e5",
+		"transactionContentHash": "e039f5136908c1784fc0274f014c158ecd3d1ec7ae282c991c6ea9830a9a6693",
 		"revisedInterior": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/revisions/martial-blade-blade-dance-v2.png",
 			"contentHash": "9a36dd6bb1e028b6abec92153035a32653fd9ad608e68a9bff12edee7275762a"
@@ -159,7 +159,7 @@
 			"vipsVersion": "8.18.3"
 		}
 	},
-	"transactionContentHash": "202804120c536f8422db885731d31122d3f29948a8328eac2d5025c8ff81db56",
+	"transactionContentHash": "80841b976da63bf5d35e76b987604db66b89982e352a6c56f8d1aa48bf132f3d",
 	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/martial-blade-blade-dance-v3.json",
 	"writtenOutputPaths": [
 		"assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/martial-blade-blade-dance-v3.png",

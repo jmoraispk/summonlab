@@ -31,7 +31,7 @@
 	},
 	"cleanupManifest": {
 		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/manifest.json",
-		"contentHash": "8280a46b2eb358ab4b9f1bc1c0a3b84f79dd5b4fce3407da6f42a25ce67c8a73"
+		"contentHash": "b6a4fc968624464ac938fa9126d1df8e564c334f1a152077a38e93e97ac5873a"
 	},
 	"sourceCandidate": {
 		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-polearm-rend-armor.png",
@@ -115,7 +115,7 @@
 		}
 	],
 	"exactPrompt": "Use case: stylized-concept\nAsset type: isolated full-resolution Summonlab skill-icon artwork revision\nPrimary request: Revise only the painted artwork for Rend Armor in the Martial / Polearm taxonomy.\nDominant subject: a clearly visible halberd actively performing Rend Armor, with the acting tool never replaced by a free-floating effect\nSupporting cue: one restrained secondary cue communicating this effect: Stacking armor reduction on the target\nPalette: tempered steel, charcoal black, restrained warm sparks\nComposition: Centered painted emblem with one dominant silhouette, strong negative space, and a readable action direction. Keep all important detail clear of the frame rim and top rank crest.\nExisting exclusions: no skill name, mastery, level, caption, logo, watermark, or UI panel; no extra frame letter or rarity symbol beyond the required integrated crest; no narrative scenery or unrelated props; no effect-only abstraction replacing the concrete acting subject from F through A\nUnwanted detached explanatory UI glyph: Three stacked chevrons.\nPreserve the dominant subject, action, palette, lighting, and motif-family ancestry. Remove only the detached explanatory UI glyph named in this packet. Add no replacement badge, arrow, gauge, heart, cross, chevron, corner symbol, text, frame, crest, or rarity letter. Keep the complete subject inside the protected central aperture.\nOutput exactly one 1254×1254 RGB PNG provider source containing only the revised painted artwork. Do not crop, resize, mask, or preprocess the provider source; the authenticated cleanup pipeline retains its exact bytes, applies the packet-authorized deterministic resize and protected-aperture mask, and supplies the canonical backing and E-rank frame.",
-	"exactPromptHash": "a3b017587f0d0d6e27473d35a123947514b31f68a08225c1b0693eb77c7c4329",
+	"exactPromptHash": "64fa726aac3a5987961f232e87924d7800b5fcb8b6eeac146ee272933e48305b",
 	"attempts": {
 		"initial": 1,
 		"correctiveEdits": 1,

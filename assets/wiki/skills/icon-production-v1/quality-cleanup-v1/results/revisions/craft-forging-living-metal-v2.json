@@ -14,22 +14,22 @@
 	},
 	"revisionPacket": {
 		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions-v2/craft-forging-living-metal-v2.json",
-		"contentHash": "fde33f83938db9d2952f58c3ceab49f3b8a38f8fc5fc98365d6fa388a961cb28"
+		"contentHash": "6f1da013143e9a155a34e260a680d871afde6dc8402a6bb785abfced1fb04592"
 	},
 	"predecessor": {
 		"packet": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions/craft-forging-living-metal-v1.json",
-			"contentHash": "f462b1aed92c6a3a1ac58d759d5992b56ee90106a87710c9e0e32966f20bccd6"
+			"contentHash": "8b3a27269238e93043811251198a55b198866dd16fcf638c3ea5e1b7dcc15eed"
 		},
 		"result": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/craft-forging-living-metal-v1.json",
-			"contentHash": "98080482db1dc93a55c3f551b52e9d72d627191c0c3dc8a237f23fe933448545"
+			"contentHash": "8eb55fdfa21a2f71cbc3beb79c0ac5810bd1378d68b19dcecfc18ddda3127603"
 		},
 		"providerSource": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/craft-forging-living-metal-v1.png",
 			"contentHash": "3210e9e301386dff096402a582c2d298b86dfa446af4d75cb466bc1b725ff422"
 		},
-		"transactionContentHash": "56ddb0c92741e2ccd3f13f7bb8235f0f569754980a6a3c460a3053701771c22b",
+		"transactionContentHash": "cb8c74e92aac5048f7350e5e6e2cda076b61523570055bdd7fff2c0b415030a6",
 		"revisedInterior": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/revisions/craft-forging-living-metal-v1.png",
 			"contentHash": "40c8ac7e593ed71b82f6d4c4184378d366f2bb811dc16ec99e5fc4cd42cd789b"
@@ -165,7 +165,7 @@
 			"vipsVersion": "8.18.3"
 		}
 	},
-	"transactionContentHash": "0ff81322b944dbb09ad9e8358be374eed45f6706ad64aaa8540eb5afc52a53d9",
+	"transactionContentHash": "fbbf70b5135ab4f89822918fbb77396eadfcacf61c37a8d8ed83f09d6c3a347a",
 	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/craft-forging-living-metal-v2.json",
 	"writtenOutputPaths": [
 		"assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/craft-forging-living-metal-v2.png",

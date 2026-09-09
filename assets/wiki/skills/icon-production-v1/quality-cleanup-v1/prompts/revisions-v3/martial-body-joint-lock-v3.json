@@ -16,17 +16,17 @@
 	"predecessor": {
 		"packet": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions-v2/martial-body-joint-lock-v2.json",
-			"contentHash": "cd6ca1787dfa222cb4b1fe4e9b0d54bd3478049b8c0daf72400cf0d8000d4be8"
+			"contentHash": "b9902c82d1c02396a307e536ca22c4fac674ac3bdc8816019ed702a881656892"
 		},
 		"result": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/martial-body-joint-lock-v2.json",
-			"contentHash": "e7caf2665bb80a943b2d15d601a4a68bf669db0310c683cc0842ee4fd5a4b6ac"
+			"contentHash": "bd6e334729b962764cfa7570398d0680ec69f170e9ba26f5a4c28c8a542b7a32"
 		},
 		"providerSource": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/martial-body-joint-lock-v2.png",
 			"contentHash": "ccb115316c821435e6860f1b67cc78a386f9ee6fb9527cd18b62b786da4dc50b"
 		},
-		"transactionContentHash": "cbdd701b8c453fa8f0f857b9571f50be92f4616d36c2f2b8f0d2f2b35f75c260",
+		"transactionContentHash": "fef0445c10e028afed575cbff1ce63ab960d05a41c0ac3cf38ffb55b01ebfa8b",
 		"revisedInterior": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/revisions/martial-body-joint-lock-v2.png",
 			"contentHash": "46745153ed207c9e8b7be1cf22ccde25fcf32336fcedffb50ab74220e0618c9f"

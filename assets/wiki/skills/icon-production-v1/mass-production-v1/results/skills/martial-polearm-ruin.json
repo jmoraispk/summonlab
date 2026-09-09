@@ -4,7 +4,7 @@
 	"identity": "martial:polearm:ruin",
 	"status": "candidate",
 	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/martial-polearm-ruin.json",
-	"promptHash": "cae5f6338e01cd7dc04b17e9f086e8de1d50a60cd32e86e437fa8eba42a85d29",
+	"promptHash": "ce513384bbe76dfabc270c54b245445c5c9df711366c4dadf07fccbda921efa1",
 	"references": [
 		{
 			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",

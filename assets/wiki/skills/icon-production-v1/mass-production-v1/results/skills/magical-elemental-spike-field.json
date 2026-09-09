@@ -4,7 +4,7 @@
 	"identity": "magical:elemental:spike-field",
 	"status": "candidate",
 	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/magical-elemental-spike-field.json",
-	"promptHash": "49d0fff1979a1314baf36638c6d777da59442cedf51b14563cc8fe91f4be5340",
+	"promptHash": "c482293c47667f72c178600a06e0c502e5602d356b470d47ddfc7ab13abbeeb4",
 	"references": [
 		{
 			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",

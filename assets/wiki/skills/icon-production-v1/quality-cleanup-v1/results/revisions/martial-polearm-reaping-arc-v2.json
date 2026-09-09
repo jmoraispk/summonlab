@@ -14,22 +14,22 @@
 	},
 	"revisionPacket": {
 		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions-v2/martial-polearm-reaping-arc-v2.json",
-		"contentHash": "bc6f072f85eba84da3fdf62a6750f54bbfc05dea5f8fa080036f84ae903d20b7"
+		"contentHash": "1d45e38b589ffa246c6b983586cca4147c1d3379335ecd7efe9b53a471c5f694"
 	},
 	"predecessor": {
 		"packet": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions/martial-polearm-reaping-arc-v1.json",
-			"contentHash": "343c5ed85e5744b9fcd07035c2ec8b7a67e8cf418e1589c5a37e93008f42425f"
+			"contentHash": "ca3555a0a38f4866e66d89a29ec26e0a5992a7b722370286aa6d5e0b7ec039d8"
 		},
 		"result": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/martial-polearm-reaping-arc-v1.json",
-			"contentHash": "f0c21e073dfdcfb4e894757246475b6855727b5fa970ea07da7f773e357b0770"
+			"contentHash": "c58abab8dce1ddd75807d400c0f1c073c28e6ee7030d282c7071cc9f81ef0f2e"
 		},
 		"providerSource": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/martial-polearm-reaping-arc-v1.png",
 			"contentHash": "c60aca23d5b88a74fab37a256d07fdae3bfcbf6b66008bf77708ae8fff0158b0"
 		},
-		"transactionContentHash": "e8a66ec599533430c5b4996d11d821664f2d07d360036980053121176eefc898",
+		"transactionContentHash": "fa62ba839a8ff2dcef13efdabaf03804c5d6b3cbd55c28dd84aa1874faa4ba4b",
 		"revisedInterior": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/revisions/martial-polearm-reaping-arc-v1.png",
 			"contentHash": "5f5027eafe527efd89b70b50cc0715cd8a404a9a2e42d896f241d6bc661b3115"
@@ -164,7 +164,7 @@
 			"vipsVersion": "8.18.3"
 		}
 	},
-	"transactionContentHash": "ada9b52ffa663a2a120e622ae6a2a2cddf68fad877aaf88db70b3c83cea77163",
+	"transactionContentHash": "f6f77ca54f231f8a30e7bf507a00ce6666bf488bb94b6dce9567eee96087f47e",
 	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/martial-polearm-reaping-arc-v2.json",
 	"writtenOutputPaths": [
 		"assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/martial-polearm-reaping-arc-v2.png",

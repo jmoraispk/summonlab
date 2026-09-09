@@ -4,7 +4,7 @@
 	"identity": "martial:blade:scissor-cut",
 	"status": "candidate",
 	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/martial-blade-scissor-cut.json",
-	"promptHash": "d6c588c4a6fade75b40842c51f9e3674ce09b012fcbf2b604568c7f744b87017",
+	"promptHash": "d1becb10f5f8dc05e77c718cb8ffc9a8808495884164ae78dae7310739e6523a",
 	"references": [
 		{
 			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",

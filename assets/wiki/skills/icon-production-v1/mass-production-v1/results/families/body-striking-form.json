@@ -4,7 +4,7 @@
 	"identity": "body.striking-form",
 	"status": "candidate",
 	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/families/body-striking-form.json",
-	"promptHash": "a1e4b0b81b2e2120af4eea4482549b8e26068f7a1fefae445d3e29dac57eea68",
+	"promptHash": "a7119ce9ef1ac1fde857e37135573356742e2c463452fb889d8851bbccdbd168",
 	"references": [
 		{
 			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",

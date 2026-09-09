@@ -4,7 +4,7 @@
 	"identity": "ranged.arrow-craft",
 	"status": "candidate",
 	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/families/ranged-arrow-craft.json",
-	"promptHash": "05801c50636a95b8fad0adc06875ed429cde4e853f7b22b2fd3f68d8c24e6838",
+	"promptHash": "fb5972f74ce8f2946052224ba2b3f63b7e99c8e4e105807a19efa39aaeda71ee",
 	"references": [
 		{
 			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",

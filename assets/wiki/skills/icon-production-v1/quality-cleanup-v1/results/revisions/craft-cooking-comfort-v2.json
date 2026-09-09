@@ -14,22 +14,22 @@
 	},
 	"revisionPacket": {
 		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions-v2/craft-cooking-comfort-v2.json",
-		"contentHash": "6c9015edf2a993cfe46a0a70ab564aaa6cc9bb46c745859b5b3209115e13cf1b"
+		"contentHash": "d06365f996ceb546f664488d5ed1f84d7eb05788c13aedcdbf3d82b6d3e3a6fa"
 	},
 	"predecessor": {
 		"packet": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions/craft-cooking-comfort-v1.json",
-			"contentHash": "3b3ab2459b551771787f8a4e2be22a654723254885a4a59e9d67627e54adc2cc"
+			"contentHash": "ae4762404e4e0e8acf36ce5f0c1dd2238d3a185791c3a998dd5cb46ca8f55542"
 		},
 		"result": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/craft-cooking-comfort-v1.json",
-			"contentHash": "58fdcaf91b376b74cbd21d7770df43049992992babd71aa79da18fe5180896a1"
+			"contentHash": "4382e639e5e9613ac3a86a81604ee89e9d9cba7065d22d9fc898e61b0562630f"
 		},
 		"providerSource": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/craft-cooking-comfort-v1.png",
 			"contentHash": "1670b954317fd5d092e1d50eaa7ca463c3066e503b7e9dff608a2a51eb89cf79"
 		},
-		"transactionContentHash": "ad6c88b0cbe2efa76e8adafe2c3d1fd0917d5b87473a0088a82e3bb1f7f09efa",
+		"transactionContentHash": "1b619fbe29c4aaef9abf17b2ec5474a1517da50722da22f09365b234b33679a1",
 		"revisedInterior": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/revisions/craft-cooking-comfort-v1.png",
 			"contentHash": "ff4bd805c9fd78d82758f5fdeecb521ec2a6394325cb8185782a1ee196005773"
@@ -164,7 +164,7 @@
 			"vipsVersion": "8.18.3"
 		}
 	},
-	"transactionContentHash": "3326e40b4aa33d0ce67d8ff3f87c4681fcc9f259f3f665492a609b0cbcda39b6",
+	"transactionContentHash": "5216b7cc3f84d513668965a6af4e19eac43301dc9f44a3f531f502ca86b31a9f",
 	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/craft-cooking-comfort-v2.json",
 	"writtenOutputPaths": [
 		"assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/craft-cooking-comfort-v2.png",

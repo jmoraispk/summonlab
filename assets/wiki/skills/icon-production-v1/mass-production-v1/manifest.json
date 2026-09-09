@@ -9,11 +9,11 @@
 		},
 		"motifMap": {
 			"path": "assets/wiki/skills/icon-production-v1/motif-map.json",
-			"contentHash": "d9b82036326ebd35dc8689875c0bab3ae638ed31de64d4b4c8ded5a96428f1c7"
+			"contentHash": "7efee70336d502625ca8129b47013011391687f3730d82362314a5a8ab9db308"
 		},
 		"visualSpecs": {
 			"path": "assets/wiki/skills/icon-production-v1/visual-specs.json",
-			"contentHash": "08d2b4018644f9d3b5166c41cf71768207fb9ffe821b2d83fde05707037b0514"
+			"contentHash": "1ec92e6597d2efa07a8df96293dd5365c0ba5583af8c66aff4b86c3d674f97e1"
 		},
 		"frameSheet": {
 			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
@@ -77,7 +77,7 @@
 			"resultPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/results/families/blade-overhead-cut.json",
 			"status": "candidate",
 			"referenceSheetHash": "3aea4333bc7554f62cb9802fc5f7e005fcbc9ae8235ea9cc15c35ff3b57f2cd2",
-			"resultHash": "e12d6c1888f220fe17e2f5ac3cdbf5e2d26969cb01af55dbd005e0696810c80d"
+			"resultHash": "984940f5f4e83e0a9ba74c0447f598a02ce598eb0fe37f5089eeec3c28a34d1f"
 		},
 		{
 			"familyId": "blade.sweeping-cut",
@@ -145,7 +145,7 @@
 			"resultPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/results/families/blade-thrust.json",
 			"status": "candidate",
 			"referenceSheetHash": "35e279a11ba949f45d6008a96e31890ddc58d4f28ac1b687765ce9ee122cf8ec",
-			"resultHash": "11c0fc684d213365d06c3b7e8da6aff579f38f4f54cc697e4c4536b64feee971"
+			"resultHash": "64268cba3724605ee37b7da64ba5ba2eee3a7f2047f7fc420ac6baa7ea65a53f"
 		},
 		{
 			"familyId": "blade.feinting-cut",
@@ -429,7 +429,7 @@
 			"resultPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/results/families/blade-dual-offense.json",
 			"status": "candidate",
 			"referenceSheetHash": "d5c7eed25a51a482cac53dde01c890e20dd99ad9ee222a21ce7284f823a9f68e",
-			"resultHash": "400e788e744952dd2940e5fa6d6505a6ab8cf11b94f5f647d5b7e94481452fe8"
+			"resultHash": "9702b5381dfb555d25dc4ded2730d3a0c3e6235b8e7f293055c739fabf48663e"
 		},
 		{
 			"familyId": "blade.dual-guard",
@@ -565,7 +565,7 @@
 			"resultPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/results/families/polearm-reaping-blade.json",
 			"status": "candidate",
 			"referenceSheetHash": "cb5250ab6c16075ab0f659834c5cd4cd9f32863266dbb1b4fb85e4f7bfe78caa",
-			"resultHash": "e3adeda38f0e70c31a2b6de5b4ae2c7a9ac56598c5df6acec02ae91dbd574db3"
+			"resultHash": "5531ce0aa59c5a2e17019eeab4c2064d961f5d50f261a85a7f1e070a387bf712"
 		},
 		{
 			"familyId": "polearm.hook-grip",
@@ -601,7 +601,7 @@
 			"resultPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/results/families/polearm-armor-rend.json",
 			"status": "candidate",
 			"referenceSheetHash": "88b98f536c67d099baa7a3af72db24e751aea9455abdd9ddac1cf8eb4e906880",
-			"resultHash": "1c1db0083a168ec9118a31669d0a8133dceb59debdcee4ed8482c2c684d5421f"
+			"resultHash": "39b7736235d0be1e433ccbeecd57f97989ead9ad52309590ac1b4f7ce60f8dd0"
 		},
 		{
 			"familyId": "polearm.hammer-impact",
@@ -625,7 +625,7 @@
 			"resultPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/results/families/polearm-hammer-impact.json",
 			"status": "candidate",
 			"referenceSheetHash": "4b4b5f4f3be2b0ac74e04cc75964f21087600cb3328506a2524fa062c0771537",
-			"resultHash": "65b72059f5e44a955ececc9a3625b3bf0a9244fc06f75077ebdffda1ea47f282"
+			"resultHash": "be882fb4ffab3d743f34989edc083268ca60c83f54cd8a316fc9ab4e8aa9e571"
 		},
 		{
 			"familyId": "polearm.seismic-weight",
@@ -719,7 +719,7 @@
 			"resultPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/results/families/ranged-arrow-craft.json",
 			"status": "candidate",
 			"referenceSheetHash": "31c9fb4fc46dca5c1938c02896f04dc125692213822b8315a56b919cdad87d6c",
-			"resultHash": "c34e49b51ced3c977928af0bbf1e9e264463ddf0763e593e8f8534e551d80890"
+			"resultHash": "fb9f4ca1b14292409e4b97e475291c2881a7679f8f98f0c43ebc4ff227d1c824"
 		},
 		{
 			"familyId": "ranged.hunters-mark",
@@ -752,7 +752,7 @@
 			"resultPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/results/families/ranged-crossbow-cycle.json",
 			"status": "candidate",
 			"referenceSheetHash": "3c902de6ff2a7d957293bfd97c8119a1f1541cad18321376b370eae3516270d6",
-			"resultHash": "385252e3e1e3e608442fe270896aca863b487e566277fa45298c1dce4d2cc26a"
+			"resultHash": "90a59533b08b232d074cb6649b233a4e7a401ffeb92498f66b456be3497fdc37"
 		},
 		{
 			"familyId": "ranged.repeating-bolt",
@@ -1062,7 +1062,7 @@
 			"resultPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/results/families/body-striking-form.json",
 			"status": "candidate",
 			"referenceSheetHash": "089a5b208fe5f51a2673f1bb44b6ed55d2bfb755f393149aa17316679116eaed",
-			"resultHash": "6c8e70913788eafbbf58ca90747a232bf9b8a92b7fbabc14e449b0855838aea1"
+			"resultHash": "5f17520b45611b1b5d00cb37996ee5eb335ee0088093cf496aa0cd4954f7bfd0"
 		},
 		{
 			"familyId": "body.empty-defense",
@@ -1110,7 +1110,7 @@
 			"resultPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/results/families/body-grappling-control.json",
 			"status": "candidate",
 			"referenceSheetHash": "6ffc76e1895e900667fb63453acc1f5818336949c8ec851b961e03c6737bb586",
-			"resultHash": "fd5050ecb2da2a205e5152979cf37456a4d7db15855eb6e7b0e73e5e7c8eb6f4"
+			"resultHash": "f3e2c84b7fa9c015d66825eda932f55d2b8eff805afa1c5a272f1a015fc3d469"
 		},
 		{
 			"familyId": "body.ground-movement",
@@ -1256,7 +1256,7 @@
 			"resultPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/results/families/elemental-fire-trail.json",
 			"status": "candidate",
 			"referenceSheetHash": "d4e35790a78a071b1a42168c1944145bbb64ec916af53651127ebbb791ced231",
-			"resultHash": "4d660a406f54d3db766202185889c0243bfacb50bcce89fea786842da54b5235"
+			"resultHash": "fefa745cc61d33e55c6294ad376cbbc9a601683808081a535bd5184850e0fbaf"
 		},
 		{
 			"familyId": "elemental.fire-form",
@@ -1307,7 +1307,7 @@
 			"resultPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/results/families/elemental-water-projectile.json",
 			"status": "candidate",
 			"referenceSheetHash": "f349c6f13390f83e3dab9e46e08796130cf9b9a4e6cddb638c28ac7e5777d0ea",
-			"resultHash": "16046f36975e5cc08cb054a38ee1b097b03cebab4f9ae19d980581d67edafa4f"
+			"resultHash": "023138ac85abc596dacce536602c9c27ff2f1c21b03633387bd93d57a97c272a"
 		},
 		{
 			"familyId": "elemental.water-cold",
@@ -1578,7 +1578,7 @@
 			"resultPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/results/families/enchantment-imbued-object.json",
 			"status": "candidate",
 			"referenceSheetHash": "0e8d57a24473dacba9ec32f2162926b990601aa11c3ee94dad195c1813bcdfa8",
-			"resultHash": "0608bcab09425e7018307000731af3edc32f046365ff6ba34002b21341885f7e"
+			"resultHash": "456b29b5b331b90999179bd9d7e9a1e032b67be83ab311f619b19de8ac2e1ade"
 		},
 		{
 			"familyId": "enchantment.blessing",
@@ -1689,7 +1689,7 @@
 			"resultPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/results/families/restoration-vital-renewal.json",
 			"status": "candidate",
 			"referenceSheetHash": "f1380af2499df12ec6fe6193c013df7754ea15f345a5d9af54d2d49d1436c958",
-			"resultHash": "f344dac881c6597deac76fc18f29d45e89c3ff67d72a32331e57f8c25cd20f24"
+			"resultHash": "6330d771abaf4d03692e54c33b36e21ef3acf706da450b4a456de18790a7c8b0"
 		},
 		{
 			"familyId": "restoration.purification",
@@ -1858,7 +1858,7 @@
 			"resultPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/results/families/forging-smithing.json",
 			"status": "candidate",
 			"referenceSheetHash": "8fadd4e02ab0d0d6e31381ac175ab179c9882b98f66923871d4b2ef9cb4564fa",
-			"resultHash": "a33fb538318de04cf168f48d59be33b79d9b5b31b8e7fa05500665d29f5a4156"
+			"resultHash": "86a9ebc4a4e6eb02ad12789bd9d9ee84eec129543c1b6905df042f06580db447"
 		},
 		{
 			"familyId": "forging.finishing",
@@ -1876,7 +1876,7 @@
 			"resultPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/results/families/forging-finishing.json",
 			"status": "candidate",
 			"referenceSheetHash": "f43adfb787ad4cd166d08e275960eb5a42c909c9829fa53ad901a3eede0d0de7",
-			"resultHash": "9122a775b0a6724344b67a5eeebbde1dbd1f1c82acfb22ecbe86dbe7f4cde56b"
+			"resultHash": "a2ebe6d5364806203eefd91a89377d1a33e3637acd646f08f6d88e27dfa87b3c"
 		},
 		{
 			"familyId": "forging.metallurgy",
@@ -1947,7 +1947,7 @@
 			"resultPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/results/families/alchemy-brewing.json",
 			"status": "candidate",
 			"referenceSheetHash": "8bf890dc06453f4a3534226a9b616773766f549224bbeec55318aa92afd39b1c",
-			"resultHash": "d13f1f0d76c0cb6a59e692e8de36221c57e215e51fef9a96f7df6f8c67857a9b"
+			"resultHash": "5dbf8c9cceeed157cb3c234c734f316949356f1f7073d9dcdce968b10182aa75"
 		},
 		{
 			"familyId": "alchemy.refinement",
@@ -2386,7 +2386,7 @@
 			"status": "candidate",
 			"finalImageHash": "050f8589938feaea7433ef673a707ae9520ce56e8d50ec54e623a4bd91db8204",
 			"providerSourceHash": "6e6684c74bed3117b35257f9098a41459093d5834a2596ee93eac095e2ad32fc",
-			"resultHash": "69213643c40b83158a518cc8e4ae206a4eba6da01917fdeece59a18b2381eb71"
+			"resultHash": "bfda08ba6b01f797769d5b775f4313a9a2a2aab4c0b48b31835ea25e9634b227"
 		},
 		{
 			"targetId": "martial:blade:feinting-cut",
@@ -2454,7 +2454,7 @@
 			"status": "candidate",
 			"finalImageHash": "4bda447f814ad35ab023e873e693be0b476a6ad9ddee0e7a8e07e29afd09142b",
 			"providerSourceHash": "54eb79219f1669fb9babecd1d5244f855635952eb0853a94bdb29c28a6c50a81",
-			"resultHash": "463cb3f9655b86c5b91cf0ea77618efc3a887be6d36af543d6b28f3d8f107fe7"
+			"resultHash": "b02e68a970f7c580d02ee831eb005f9101f90299dccbfb0d5ee44ae80ec098f9"
 		},
 		{
 			"targetId": "martial:blade:binding-cut",
@@ -3559,7 +3559,7 @@
 			"status": "candidate",
 			"finalImageHash": "f92c78be40639d63748c6b17bed17a7d2ee6fcf0793e6e464573300cc9837fe7",
 			"providerSourceHash": "6eacd82a49b390e27eda8b2df976ff907d468e257d327a3ffa42d616e64b18b3",
-			"resultHash": "252ba722cf479b960868070887e5c674a5f9b424556f5958234fb89613a92352"
+			"resultHash": "d3c46a769a8cedf88014d22aa29947c6ab8e91e2ce85555fbc0363b44bca1741"
 		},
 		{
 			"targetId": "martial:blade:rolling-guard",
@@ -4086,7 +4086,7 @@
 			"status": "candidate",
 			"finalImageHash": "b34024913a36977b27ab30f682e19257815030330295ad7ebda18609c9936d3f",
 			"providerSourceHash": "1a737542e593be5a4fb1190f41e6b1e7bde804cda846cb7bd76149978f81d219",
-			"resultHash": "adf104f6e25394d2523dcd3091d0e6ac63b8185949e53fbe9681d7ac7d10c36a"
+			"resultHash": "7bfb47fb5643df6b0b1e7670d65c314108a3c90528e8084dc3c7bf48982f4ffe"
 		},
 		{
 			"targetId": "martial:polearm:chop",
@@ -4154,7 +4154,7 @@
 			"status": "candidate",
 			"finalImageHash": "83726d3a04d4dd291b093fbd1776d924fcc6532d866c1beb8fac385e1342db58",
 			"providerSourceHash": "f818b70e717e78723b2f6e4232fd8fa1f87a8d9572290f932a9a3c3c2e8bd07c",
-			"resultHash": "a7b55528b9425c6feab0087e54c8779b3f4807a499f5ebfd328c32b65477fbdf"
+			"resultHash": "7a67cb25514b03599621c60b095f18cb5f0b354cbac2712d8025340033e95372"
 		},
 		{
 			"targetId": "martial:polearm:berserk-swing",
@@ -4205,7 +4205,7 @@
 			"status": "candidate",
 			"finalImageHash": "65213056e0462b3b8821d1dd44160ba114913518b2b753485a349a0601c34088",
 			"providerSourceHash": "26df5f2f304a5d7711e901c0ffd95d2130ac585e5b0fc7669c1c5aacbb7a7bc5",
-			"resultHash": "ec7ab01323a24434a7a71fa1c5ea20491f9de70c0604c679b114e13284437cd2"
+			"resultHash": "55bf42522198d13814329097260032a32a047556f8a18d8c3e5e284bd2396b3f"
 		},
 		{
 			"targetId": "martial:polearm:executioner-s-grip",
@@ -4273,7 +4273,7 @@
 			"status": "candidate",
 			"finalImageHash": "9e08c98752245e909e29f3d475a5d8c0d0a6d7fcec89983b2ce25659d30f371d",
 			"providerSourceHash": "38109a505b6c5b43b1824964917a5d6947cac82b27037cb800d31b41584af712",
-			"resultHash": "ef87a34df5372b7be7b7eee6cc12eb248b26530196992b94cc7fa937154b8e44"
+			"resultHash": "ac977bdb6cde0549a3887856642c80474d068bb5deb8677a431bb5be1295b8dd"
 		},
 		{
 			"targetId": "martial:polearm:the-last-harvest",
@@ -4324,7 +4324,7 @@
 			"status": "candidate",
 			"finalImageHash": "5b18d449e73acdcb940debc6d312bf9f52da3e303b80543a7d8c850ba46475c6",
 			"providerSourceHash": "b99a477755cb1930039c37168c5ba1446aac4a267a02ca697c49415877a42c17",
-			"resultHash": "0056e040d6b47253d444a196cc52b5b5a6cc05106d3a50f116edf38c254f3e93"
+			"resultHash": "785cf2017a2683f6bbcde9e5eb9ba108ec544eab62ac5468d6d001ca77802ac0"
 		},
 		{
 			"targetId": "martial:polearm:knee-breaker",
@@ -4460,7 +4460,7 @@
 			"status": "candidate",
 			"finalImageHash": "133b5b8ab6afe00a4cffda535248614a4e8224b82a79ee738b5004b3c6532d3b",
 			"providerSourceHash": "6278b9ea3dcd3e5f2ddf5a1e54aa53ac4084c42c2fbf04ed0d6f02a59e46b327",
-			"resultHash": "d929d4d3df51ea3d2178507fcd2cd360939719fc337de504cfb490a6f2cc706b"
+			"resultHash": "197a4b079370b90c7826b408f600f7f26ab0a4d2be7bfb3dc305f300e728e241"
 		},
 		{
 			"targetId": "martial:polearm:tremor-field",
@@ -4613,7 +4613,7 @@
 			"status": "candidate",
 			"finalImageHash": "317f341b2118ac862b353a3dae0a6fa8a9d3256bbb40975609caf354fc82cd96",
 			"providerSourceHash": "6b8b2053b36305c71937e59fa47d6c61cb6894ff2614eb6c4006dd03a4d131a9",
-			"resultHash": "58786f161408822d74c30856e2937b2040d584dec2633ad470d79eed1d0b0b9a"
+			"resultHash": "4912d49a583e18e1252ab1ea441615fba5506e847faa17f137bc8e00a2049c54"
 		},
 		{
 			"targetId": "martial:ranged:power-draw",
@@ -4851,7 +4851,7 @@
 			"status": "candidate",
 			"finalImageHash": "3e9deb7494bb857dbb16da15e2a21c801f2f159e7c44ca1e821175c383b2b836",
 			"providerSourceHash": "223652c7da3dcbabef2e50ab3e40148af9b3e09aceeaf8470fb53defc236924a",
-			"resultHash": "880f2f3bb3bdaf12a733eb90d28db7ef109890db6b4364b9a9f4a5231ce7a44d"
+			"resultHash": "ade238b4ab73f1ac87a21add2bcb53dc648a93e2d532a019073ef9e64133f67e"
 		},
 		{
 			"targetId": "martial:ranged:bolt-shot",
@@ -5905,7 +5905,7 @@
 			"status": "candidate",
 			"finalImageHash": "ce35bae5fba2f0965a2d9a6838b123344e2f5f0cc2f69765cdb58d47ca67bd86",
 			"providerSourceHash": "64f19053a7c9da0c6f8eb384deebf9de92d7c2942976f2235083539039ecc00e",
-			"resultHash": "fe03a0857d5ea569e50cf9cf51ba70bed759d2555434d8a528d37cb13b9b60fc"
+			"resultHash": "1476fae52c93b874ac407a059cd1e2fb256af89fac9d3306184f8321283f63c6"
 		},
 		{
 			"targetId": "martial:body:hundred-hands",
@@ -6058,7 +6058,7 @@
 			"status": "candidate",
 			"finalImageHash": "c90815a72d510b4c53376d1441f13feb0c65c91dec66cbedc10fbe3cd047a2e2",
 			"providerSourceHash": "2e8f631149b96033c5521eacaf19c8a5ceae2f0a6cb51f2bc5e4b0c0761686c2",
-			"resultHash": "3b78137a8f6cb300d6cbf37888cc13602f7036fc2644cc61759f1007e38a54cb"
+			"resultHash": "a81f521cb8d45661497bef1010d0286c1b17eb697452962d180f15e939ce5ebd"
 		},
 		{
 			"targetId": "martial:body:shove",
@@ -6789,7 +6789,7 @@
 			"status": "candidate",
 			"finalImageHash": "9161b274d5a6a12015fa1644685e13abd05603d7837afbbde9292114b7c1e706",
 			"providerSourceHash": "bce2633b67ea13da6d0ca5af59a5fe6ea890c52e9428187efaad9cd1a0b95419",
-			"resultHash": "e2b4b2caa01d1c8c8742316a48b702e43d465325d5be795901bc3b38bffa9fd9"
+			"resultHash": "939db8240f07901e5d37e768275b34f41050bff05eb10334cf7c3c229f4a51ab"
 		},
 		{
 			"targetId": "magical:elemental:detonation",
@@ -7027,7 +7027,7 @@
 			"status": "candidate",
 			"finalImageHash": "c22776bcc20e3dc4e98a807f4300c0e00749bbbda5eb4a68dffbce6445a69e0c",
 			"providerSourceHash": "b30887073dfa9e0dea8a075253c9fcebb2a7a037685eb7357a4f0192cc11a230",
-			"resultHash": "8553f0950307ff57d16803f648bccd738e7de669cc20abbeacd6fbd96d4fc2ff"
+			"resultHash": "c54e91721bea3d3cab0f5b6c3486bb10116b8761bed0aae179d9b209d93871e0"
 		},
 		{
 			"targetId": "magical:elemental:mist",
@@ -7265,7 +7265,7 @@
 			"status": "candidate",
 			"finalImageHash": "8159cacd65d0dcc684e75061540de6c17de7b948a9739968e014523d0b6b84af",
 			"providerSourceHash": "87a2933844d7cd023d59d837e9aca837660c29775a8642200c25aa6ed5025341",
-			"resultHash": "0b46a5258ef114d63b1d46501200beb4415c580f5ec8c413e6355077314bbba1"
+			"resultHash": "c7940357455854a6c8437fedd60a4de9aef87b2d5a6ac2eb21a5b45fdbd28b27"
 		},
 		{
 			"targetId": "magical:elemental:stone-shard",
@@ -7282,7 +7282,7 @@
 			"status": "candidate",
 			"finalImageHash": "de1a833f72617ad00814be87d2105b38b7130c2900970c0bf06ab910d12ce468",
 			"providerSourceHash": "add38d3fc067d57d9d6b2e73a6901923ab5080ba084a92f8736dba78444c79b9",
-			"resultHash": "e170e7645aaa69eadb333af7a287744c64cf88a0f4e56cf3f770873a6a0ef235"
+			"resultHash": "6538b2447e89d1e1a80f3716bdad37d318b382a7977fe3bc811c758876b8bd14"
 		},
 		{
 			"targetId": "magical:elemental:harden",
@@ -7299,7 +7299,7 @@
 			"status": "candidate",
 			"finalImageHash": "87a3c7e70e71f92aae90d53d37b743ce2193355f49ea3eae87daa71394293670",
 			"providerSourceHash": "cd203da89c8978e435947e4ac23580ac0051c28cdf631fad63af5e9abfae2677",
-			"resultHash": "bf9af77335fe36e5182539250d8b62145ba8b3393750836f7bae71f8ad55191f"
+			"resultHash": "a3e62a3a2c2d2d973049a7fcb98ba6611b0370c427e4fa3c491acc492a8412ef"
 		},
 		{
 			"targetId": "magical:elemental:tremor",
@@ -7316,7 +7316,7 @@
 			"status": "candidate",
 			"finalImageHash": "1be333626ee08b8fec612f5fa07b95abaa728f2907c539c367c5e802c1da7666",
 			"providerSourceHash": "a7d3e5a1bde16c2e12904dd2040cf66eab251d9b6a0f2b3d8630cf978f315e54",
-			"resultHash": "db38e3c4815b3a6d8375806bc6bf352024fdd95289236ec776b4761d749d6314"
+			"resultHash": "93d41e6118a8c661585f5fd79ee6c151ae7ef67d91d4e80da67572119fa00545"
 		},
 		{
 			"targetId": "magical:elemental:stone-skin",
@@ -7333,7 +7333,7 @@
 			"status": "candidate",
 			"finalImageHash": "61d1d115335cb853a71e2b154c95d34b426b67ee4f37de77cadd7fd08d614949",
 			"providerSourceHash": "62e73f6f9560cd765c418b98b710d9c757761128b2949e8710dfeb60caff8f8c",
-			"resultHash": "093ae9b19429ec836836ddc2b23b8a5b58609a53fcfdb0af5c9920de63340ba0"
+			"resultHash": "5346e2896a7f4fb52765bdf99319222f30e175439898eb0adc8af193e19eb48f"
 		},
 		{
 			"targetId": "magical:elemental:spike-field",
@@ -7350,7 +7350,7 @@
 			"status": "candidate",
 			"finalImageHash": "9a52f9a590d72e20cad25a866fc183dc2d4c81134844a633c065586fa30a50a8",
 			"providerSourceHash": "8302bfc0abacf856346bc501a9e803cc0d462236f343fd7d372006f02fdedb85",
-			"resultHash": "1c8cdeb8ac78d0e80f303b34b3a70c91f9808091253d933cbfa016c516c0668a"
+			"resultHash": "a9130d26e663b7bd84a7d8bc1b472c6010d61e1931ffb92906e81afda7c3b503"
 		},
 		{
 			"targetId": "magical:elemental:earthen-wall",
@@ -7367,7 +7367,7 @@
 			"status": "candidate",
 			"finalImageHash": "9fd57e513ad7ca97889991775d07edc66b7510bbe6e4c46bc1be8bf302aeddb3",
 			"providerSourceHash": "6084255fefa1545dbbf023f6717abe215574c76784269b8f216eb012c767464e",
-			"resultHash": "07b84daf581a8183d6287c4874a83865c74ad943c3f9b742cbd26f2bc136b26b"
+			"resultHash": "3bb9e9a8d23c44a51382bc4b3029484b789456b955a7267ab4aad738c938e277"
 		},
 		{
 			"targetId": "magical:elemental:crushing-weight",
@@ -7384,7 +7384,7 @@
 			"status": "candidate",
 			"finalImageHash": "42a3fca058e498f97b70325c65b5fdac3815f200c23a031b52dad2d4b431cfb6",
 			"providerSourceHash": "c4d486508a2dfb52a4ecb518c50084ff55808f03f4633f374118e7e1f1f6b435",
-			"resultHash": "3d8aa526bd28e899793e819308241a7e7d9b667a1d416601a5b1690f4bd3043e"
+			"resultHash": "a732670418370cac222ffb00be4c9e53c83b059ace4b0ebedee39407777fee6c"
 		},
 		{
 			"targetId": "magical:elemental:boulder-throw",
@@ -7401,7 +7401,7 @@
 			"status": "candidate",
 			"finalImageHash": "862f5c883aa6a2d5fc92baf0fd86127722bd5a840f2ac8c13971d785840c77c7",
 			"providerSourceHash": "ad6520022e1e3ea0bf76aadf89f40d8e49368d6b57f49715cc8fff5cc6f4f123",
-			"resultHash": "d6e0f6cd62a000462b3084d4721a558ef178faf55775bfa7a5855684ab6ac95a"
+			"resultHash": "070064eb5c9773814eb597b7612c4f3cb6c872386aeb7a0293e773d4bf014591"
 		},
 		{
 			"targetId": "magical:elemental:fissure",
@@ -7418,7 +7418,7 @@
 			"status": "candidate",
 			"finalImageHash": "bee94b7da6cbbac2351affe071c2834294b54755b8a2c11d5dd85ddabe5c0004",
 			"providerSourceHash": "f7bad61a30cabf32c1bb5ea393454c33f0bfb09b33cd78054f15f710d27c8ae7",
-			"resultHash": "a4d35fecd951047418678e5626ec5f8b15ff0acb17aab40c54ff3a184e076998"
+			"resultHash": "1213afe10e7ca9539295b31332d639d6b6218f828256da6bac847d945328f3e4"
 		},
 		{
 			"targetId": "magical:elemental:unshakeable",
@@ -7435,7 +7435,7 @@
 			"status": "candidate",
 			"finalImageHash": "03c4a48cb0d443444f6b7759c2915f673ec68a2fc581249c8808d58f057e261d",
 			"providerSourceHash": "fae3cbae4fa15fc7f0bf5fe93a488e9705c54a6a439c3677bb435ff5a4d66cc9",
-			"resultHash": "f9bffa0f7272e988675d7b492ca922ce4053279c531803f80263b9626f97f3ee"
+			"resultHash": "495c9cbbeb0aaf649c77791a3670a2fe89d87b1c198761a412b1731afa9bfcb5"
 		},
 		{
 			"targetId": "magical:elemental:mountain-rise",
@@ -7452,7 +7452,7 @@
 			"status": "candidate",
 			"finalImageHash": "2ca2852da18f32204719687e5e4d9c40442db5dfc2f85c85ba968c95e7c84873",
 			"providerSourceHash": "96186847532adf22a22a28dc8e41d24be10b963c179936d1fc828ab2389d3ee2",
-			"resultHash": "b4551a1efc18f9fd745faf1ad6656dfce8906efa957ba126e3a18b65e94d274c"
+			"resultHash": "0e01e36a650d04dc68d30d5ae8b7dee20124a37551045e5c9157a48131283560"
 		},
 		{
 			"targetId": "magical:elemental:stone-sentinel",
@@ -7469,7 +7469,7 @@
 			"status": "candidate",
 			"finalImageHash": "1ccf8748b1ef2573a543d8a840cdb39be9d46102f3a25f9fc6fba08354b21ebc",
 			"providerSourceHash": "456fcd0df6e2c45a8a1b61451cb3c696054249cc599a3ef76d60cbbacc29ef84",
-			"resultHash": "c9244981ba1472fbcd342cef11aa0b38b230b739e958c8c323ae5d02d5d4ddb0"
+			"resultHash": "8a3e2ca64d40faeff017cd6e5ece1af4a336cf3a41a2308e2f7e6f8044e76df0"
 		},
 		{
 			"targetId": "magical:elemental:earthen-form",
@@ -7486,7 +7486,7 @@
 			"status": "candidate",
 			"finalImageHash": "779fd043ce3d02a6ec9fce2a0aa5e368d38ea399f74b5bb52a58172afb9d39e4",
 			"providerSourceHash": "d47d825c4d4af02285b57d36e60a7f1b38db88fe47a42bc81c19e2b177cb4a36",
-			"resultHash": "9dde369b65c69d76de82b3f6b8f4d4cf106ccde9402387040200018691d75f28"
+			"resultHash": "d2e567e82d72877ddd2d6b9b5506ae8bf2719b76aba0c39d2bac9a6099a30e7b"
 		},
 		{
 			"targetId": "magical:elemental:avalanche",
@@ -7503,7 +7503,7 @@
 			"status": "candidate",
 			"finalImageHash": "2abfe88aa926e71a5e1c8b72cf39115eb7a3cdf0bd913bcdd2bf60a5d461218d",
 			"providerSourceHash": "c5873073025c860cecf3fdbe24fe0947251ebc6d8c85e914f2ec0b97e55d4829",
-			"resultHash": "30bf06db62756ad9b6c330506bcc2ec7ace8ffdb50184c4ba235bb7276142e9f"
+			"resultHash": "3815e2bfe485241163c603c06e8ff39cf7ea7c89eafdd81ed78aa7e6551371bc"
 		},
 		{
 			"targetId": "magical:elemental:the-weight-of-ages",
@@ -7520,7 +7520,7 @@
 			"status": "candidate",
 			"finalImageHash": "e865781cdcd94db173770440509eb59e67b6bf2c28616f4ee5fb68f5034e198c",
 			"providerSourceHash": "b8016fa0032debcb73776c3c58fb7f65926eaee47233c69b2b09363df14615ed",
-			"resultHash": "f98916e388511d261bce7891e61daf54b7a832c16153dda1cce684525aa88c5b"
+			"resultHash": "3152b6b7195c9d8292306dcf10c15f0235e859d2234e3809ba043c9851b1314a"
 		},
 		{
 			"targetId": "magical:elemental:living-mountain",
@@ -7537,7 +7537,7 @@
 			"status": "candidate",
 			"finalImageHash": "bc0906be3134ec520c756e8ed43a065373b7b4ef8e954b2799f0a1578f8e5b67",
 			"providerSourceHash": "ecf9193482af4cd31dc1b5891286ce48cedc4fec689551de03d8842f886de499",
-			"resultHash": "f24577ac4d31a33af17dff566043648411388d6172d43f5d775e18953e851baa"
+			"resultHash": "15080e267469cb613b292db4bebb3bb6f637adbad75238174bd803716ac6bd2d"
 		},
 		{
 			"targetId": "magical:elemental:bury-the-world",
@@ -7554,7 +7554,7 @@
 			"status": "candidate",
 			"finalImageHash": "44e0655f379b1307fb5b8708014ab5290086996de13bbcbeb70601b63e88d527",
 			"providerSourceHash": "69dd4562b7beb0a231153408c3333c90af84ec50396209bca1950017aa9ddf1f",
-			"resultHash": "3b5bf5d1cbd2daab575c541881f117c34742c7a35674bd54452136682d3de16d"
+			"resultHash": "0eff6ca4c1dbfa7c07d05e1e92939bc15daca93522aee46f5b3e3012176815fb"
 		},
 		{
 			"targetId": "magical:ward:warding",
@@ -7979,7 +7979,7 @@
 			"status": "candidate",
 			"finalImageHash": "34ca516618b8eab44c3e4814242535cb3c7d7324539df5cdff8496d55ee1d041",
 			"providerSourceHash": "5da659175fd4242d44096b54bf41c6e08504c33af1894813e0a4d08230ea2164",
-			"resultHash": "f43c4c50110e318e2e00798f03051e00afa9b4ec60cf9c3a96b20a268be55d4a"
+			"resultHash": "b204c75cccb9f791e89a64f3f3e924f855ea6bbe3cd6e097c49548dce192240d"
 		},
 		{
 			"targetId": "magical:enchantment:component-craft",
@@ -8064,7 +8064,7 @@
 			"status": "candidate",
 			"finalImageHash": "35588f2351c0b94175a80aa559777ea70e61ab186d3571a37cd0af36abd78982",
 			"providerSourceHash": "5477b2edf96f2d32c98b14a171b08b7c8937a9a7143bf5b5095e0e40cb44b926",
-			"resultHash": "d3b63a9b1cdf6b5539a2f895e9c3ae9505a2ba515de276dac7dce64139df3739"
+			"resultHash": "4b33299ff285264bbca46ea01c79c57510e7f11e2a01327837d3eddf21a6056e"
 		},
 		{
 			"targetId": "magical:enchantment:greater-sigil",
@@ -8285,7 +8285,7 @@
 			"status": "candidate",
 			"finalImageHash": "32cfcf3670ed70ea5a639eb862b35007e75bd1a2689a99499623601f58bc44cf",
 			"providerSourceHash": "a6b9004a5f5ecd53ba1a324a767c226a46560c70331400f5e500ab22a4d7e19b",
-			"resultHash": "5ac759fa58445822326c9274c231b224b1db51ed22ee8297e49c909d6c5a3c3f"
+			"resultHash": "a0c971d6fb0e18a0e6ad9b3fb2b42b4594e4d4225c0426a5b1e9dd1c99dd59b7"
 		},
 		{
 			"targetId": "magical:restoration:mass-mending",
@@ -8778,7 +8778,7 @@
 			"status": "candidate",
 			"finalImageHash": "2fe15ebbac1174086c34350f63a0aaf8b84e17bf94966baac9ce789e793cd2bd",
 			"providerSourceHash": "325133edd58d4feefd5fc5dd6af578776e0b5912f53c779ccab0e88f6688131c",
-			"resultHash": "f34d54a9516a7e9100e9f97a89e2e8b080f9a0f694ba6f1a028aadc85827d7e7"
+			"resultHash": "6c53624ac8f80369de80f0cbdbbfd1855bd6d9c515204183dbed3bb9b7230536"
 		},
 		{
 			"targetId": "craft:forging:sharpening",
@@ -8846,7 +8846,7 @@
 			"status": "candidate",
 			"finalImageHash": "6e2bfcc345bc129ce1f5fdd6cfabd9fd479e2fede60ce76f06e84cb8b06cc939",
 			"providerSourceHash": "8fb48ea69812c3702eeedd70f694a8d334affc5bca1926706e765b93a3b2c544",
-			"resultHash": "b0886876fd6ec1ca15d976d6c9af26d8859c5d681339da5832fb56bc37a67439"
+			"resultHash": "bfe565a532d0801d93a8a6e3bfc859cce93e3186362764e9c14a77bdf4e1ab6d"
 		},
 		{
 			"targetId": "craft:forging:fuel-craft",
@@ -8914,7 +8914,7 @@
 			"status": "candidate",
 			"finalImageHash": "87b62f5c23ac496f3dbb305654942c479ee7b562b593ab510d9d45b2803336aa",
 			"providerSourceHash": "99ab846aa0e9441cf32356bf6d8e2f4f0303f094801551c2f2c506bee69a2c37",
-			"resultHash": "43f00d5dc01f132529db25cdac29ef428ed813fd9f329006ef9ade295f7b5e31"
+			"resultHash": "fbc668a33b7f3a81995fc54dc165bfafd522b52edbcd464f89666e5beee4ec66"
 		},
 		{
 			"targetId": "craft:forging:runic-foundation",
@@ -9016,7 +9016,7 @@
 			"status": "candidate",
 			"finalImageHash": "b84b7ca5d31e9b6e5672e8481fb9b7675e94185fe919b9121aefbf68e420f3ed",
 			"providerSourceHash": "6e3115e376581483129708f12fffddae9c54241e2b70085448f9db1c59e42c16",
-			"resultHash": "f68623a94a4acd0a9a3ac5a5bcf9fad7be2ff3b974e5220086f61addf25d4592"
+			"resultHash": "d2a219765282afbf34608a26641e88e41dd117ff3ace5933687918391c0aedc1"
 		},
 		{
 			"targetId": "craft:alchemy:reagent-sense",
@@ -9050,7 +9050,7 @@
 			"status": "candidate",
 			"finalImageHash": "e0849c15cfe64801f426ea658c7f4f25cf6ef31b9160ca37871c748e4420b88e",
 			"providerSourceHash": "1ca529ef6f1c02aef26b92a50c127ce104eb9e7b7d3cc4941ab71a03ce07f677",
-			"resultHash": "b2243f5ecd8f69e64538c0209723ce9f82317c175d30edf76a64f2e0b3e4709f"
+			"resultHash": "1d46c7ab64b1d281b4375967ebf65ca397c0beaf68909c2461e267e236ef5c07"
 		},
 		{
 			"targetId": "craft:alchemy:preservation",

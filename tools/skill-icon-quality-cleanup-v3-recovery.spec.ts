@@ -109,7 +109,7 @@ describe('cleanup semantic-revision v3 recovery', () => {
 				predecessor: {
 					completionAudit: {
 						path: 'assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/completion-audits/craft-gathering-taming-v2.json',
-						contentHash: 'c9565e502283ae95fbd98b3a6345a1f560c553be972dd4272d78c9081940a3d5'
+						contentHash: 'c45c6030cf8457362fa3986df1bccced9118d2124ebe0dec03a17deeb21ccf83'
 					}
 				}
 			}

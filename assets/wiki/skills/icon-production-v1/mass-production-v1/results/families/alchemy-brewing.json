@@ -4,7 +4,7 @@
 	"identity": "alchemy.brewing",
 	"status": "candidate",
 	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/families/alchemy-brewing.json",
-	"promptHash": "210e60417c547063829a9998c6457153e8231a11acaf2980a1e63889d36d8b22",
+	"promptHash": "47a63a3eb9204d53ba2db16fa4314b3b8c4310fab2b6e076c57ad871340ceda7",
 	"references": [
 		{
 			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",

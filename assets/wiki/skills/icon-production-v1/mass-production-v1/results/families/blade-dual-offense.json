@@ -4,7 +4,7 @@
 	"identity": "blade.dual-offense",
 	"status": "candidate",
 	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/families/blade-dual-offense.json",
-	"promptHash": "4c4c61c9950ca09568917110f3c3120b8520b0ba9c8f39a2746d9a2ad0650cdc",
+	"promptHash": "17fd87d6eef4065cfbf66c6bf190a778385698188f9f6185083a0879a420b121",
 	"references": [
 		{
 			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",

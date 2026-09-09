@@ -4,7 +4,7 @@
 	"identity": "ranged.crossbow-cycle",
 	"status": "candidate",
 	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/families/ranged-crossbow-cycle.json",
-	"promptHash": "e08f04adb0384451207414dac8a802231e4366f64239ecfd734a5e8009d2336e",
+	"promptHash": "00406e83de065712adaab332a0feb0f9d6e94ee2958f21254f9acb125d9e5ebe",
 	"references": [
 		{
 			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",

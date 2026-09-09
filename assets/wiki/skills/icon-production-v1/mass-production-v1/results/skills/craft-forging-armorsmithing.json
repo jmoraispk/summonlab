@@ -4,7 +4,7 @@
 	"identity": "craft:forging:armorsmithing",
 	"status": "candidate",
 	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/craft-forging-armorsmithing.json",
-	"promptHash": "dddc58fc554bfb3c8105a26a5f6cfc17ac00b7eb565d45121c571d629c4d59ca",
+	"promptHash": "5266af9a6fde083aabbff587d253c3f0423e56ef95a6bca4304648e71b96518c",
 	"references": [
 		{
 			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",

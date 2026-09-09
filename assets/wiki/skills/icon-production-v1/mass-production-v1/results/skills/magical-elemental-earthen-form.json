@@ -4,7 +4,7 @@
 	"identity": "magical:elemental:earthen-form",
 	"status": "candidate",
 	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/magical-elemental-earthen-form.json",
-	"promptHash": "c024701cf3e4b64ac3ba5ffaaac30905877c77b6e67fe7cfdf37c824b0f7bd5c",
+	"promptHash": "ff702ca0ddef8912f69653ab0530fec162cd54c547b3ef4abdc5b803db2af29a",
 	"references": [
 		{
 			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",

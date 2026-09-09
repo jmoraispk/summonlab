@@ -4,7 +4,7 @@
 	"identity": "elemental.water-projectile",
 	"status": "candidate",
 	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/families/elemental-water-projectile.json",
-	"promptHash": "85d6ce93290e3836a913ec21e6419d24a6f5ed6910a50d010f68ae1e7dcacd53",
+	"promptHash": "80095c73f36e7733709f6a48a06a4e6ef89a06ad81840f23d79b374980adf76f",
 	"references": [
 		{
 			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",

@@ -4,7 +4,7 @@
 	"identity": "magical:elemental:harden",
 	"status": "candidate",
 	"promptPath": "assets/wiki/skills/icon-production-v1/mass-production-v1/prompts/skills/magical-elemental-harden.json",
-	"promptHash": "c1e038ed1c0aaf4add38767af84dcf54409fd4a719bb198907f6dd3c97ce03d3",
+	"promptHash": "f3a1ee63262aecdd57f99dc2f00db17f381e7f2c1e7cb2c0080431717c4bac6b",
 	"references": [
 		{
 			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/references/approved-seven-frame-sheet.png",
