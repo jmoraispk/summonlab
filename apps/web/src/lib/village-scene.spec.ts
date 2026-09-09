@@ -163,6 +163,16 @@ describe('Village facility projections', () => {
 		]);
 	});
 
+	it('presents the stable tower destination as Portal', () => {
+		const facilities = projectVillageFacilities(facilityScene, facilityPresentation);
+
+		expect(facilities.at(-1)).toMatchObject({
+			facilityId: 'tower-portal',
+			label: 'Portal',
+			hrefMode: 'tower'
+		});
+	});
+
 	it('marks a facility unknown when an authoritative building binding is missing', () => {
 		const presentationWithoutDormitory = {
 			...facilityPresentation,
