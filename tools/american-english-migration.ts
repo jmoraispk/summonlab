@@ -2231,6 +2231,7 @@ export async function materializeAuthenticatedOwnerSuccessors(
 	if (writes.length > 0) {
 		await runGit(repositoryRoot, [
 			'add',
+			'-u',
 			'--',
 			...writes.map(({ path: repositoryPath }) => repositoryPath)
 		]);
@@ -2488,7 +2489,7 @@ export async function applyAmericanEnglishMigration(
 		}
 
 		const stagingPaths = [...new Set(snapshots.map(({ destination }) => destination))];
-		await runGit(repositoryRoot, ['add', '-A', '--', ...stagingPaths]);
+		await runGit(repositoryRoot, ['add', '-u', '--', ...stagingPaths]);
 		const indexAfter = await currentIndexEntries(repositoryRoot);
 		const pathViolations = groupViolationsByPath(currentViolations, 'path');
 		const ruleCounts = Object.fromEntries(

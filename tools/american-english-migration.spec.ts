@@ -883,6 +883,32 @@ describe('American English transactional application', () => {
 		expect(receipt.files).toEqual([expect.objectContaining({ sourceBlobId: expectedSourceBlob })]);
 	});
 
+	it('stages an edited tracked file that is covered by a later ignore rule', async () => {
+		const armor = retired('armor');
+		const repository = await makeRepository({
+			'.superpowers/progress.md': `${armor} progress\n`
+		});
+		await writeFile(path.join(repository.root, '.gitignore'), '/.superpowers/\n');
+		commitAll(repository.root, 'ignore local reports');
+		const plan = await planAmericanEnglishMigration({
+			repositoryRoot: repository.root,
+			baselineCommit: repository.baseline
+		});
+		const receiptPath = path.join(tmpdir(), `ignored-tracked-${process.pid}.json`);
+		temporaryRoots.push(receiptPath);
+
+		await applyAmericanEnglishMigration(plan, {
+			repositoryRoot: repository.root,
+			receiptPath
+		});
+		expect(await readFile(path.join(repository.root, '.superpowers/progress.md'), 'utf8')).toBe(
+			'armor progress\n'
+		);
+		expect(git(repository.root, ['diff', '--cached', '--name-only'])).toBe(
+			'.superpowers/progress.md'
+		);
+	});
+
 	it('records the registered integrity owner on each successor receipt entry', async () => {
 		const behavior = retired('behavior');
 		const repository = await makeRepository({
