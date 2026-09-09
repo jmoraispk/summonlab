@@ -18,8 +18,9 @@ Their older `Tower` and `Gate` labels are superseded by the five-mode global she
 ## Accepted Village threshold revision
 
 The rear-center landmark remains a standalone Tower Portal; it is not a physical tower. The
-upper-left Residence plot becomes a separate Summoning Circle, while Residence and Kitchen merge into
-one larger building on the lower-left Kitchen plot. The Circle owns both summoning and painless,
+upper-left Residence plot becomes a separate Summoning Circle, while the lower-left plot holds one
+larger building labeled `Residence`. The Residence implicitly includes the communal kitchen rather
+than presenting Kitchen as a separate facility or label. The Circle owns both summoning and painless,
 irreversible synthesis: the sacrificed human hero becomes light and is absorbed by the receiving
 hero. The Tower Portal owns floor travel only.
 
@@ -28,7 +29,7 @@ training and materials. Choosing the next unconquered floor prepares an active e
 hands off to `/explore/[runId]`. Mission packing is part of that Tower preparation flow; `Missions`
 remains the objective and story-journal surface.
 
-![Village with merged Residence and Kitchen, separate Summoning Circle, Tower Portal, and five-item dock](./mockups/village-merged-residence-kitchen-desktop-v2.png)
+![Village with clean road graph, Residence, separate Summoning Circle, Tower Portal, and five-item dock](./mockups/village-clean-road-layout-desktop-v3.png)
 
 ### Mature Village and hero inspection
 
@@ -69,9 +70,11 @@ an exploratory story premise for review, not a runtime or shared-catalog change.
 - the five global modes: `Village`, `Residents`, `Tower`, `Inventory`, and `Missions`;
 - point-to-move for a selected resident, separate from facility and mode navigation;
 - the phone bottom-navigation placement and icon-plus-label treatment;
-- the tier-one Village composition: a merged Residence and Kitchen on the lower-left plot, a
-  Summoning Circle on the upper-left plot, Training Grounds upper right, Forge lower right, and a
-  standalone Tower Portal centered at the rear.
+- the tier-one Village composition: a Residence with an implicit communal kitchen on the lower-left
+  plot, a Summoning Circle on the upper-left plot, Training Grounds upper right, Forge lower right,
+  and a standalone Tower Portal centered at the rear;
+- the clean road graph: one broad central axis from the foreground to the Tower Portal and four
+  controlled branches connecting the other facilities without meandering.
 
 ### Continue designing
 
@@ -137,12 +140,18 @@ accepted five-mode threshold revision above.
 
 ### Opening Village threshold revision
 
-The current direction starts with a functioning tier-one Village: a merged Residence and Kitchen on
-the lower-left plot, a Summoning Circle on the former upper-left Residence plot, Training Grounds upper
-right, Forge lower right, and a standalone Tower Portal on the rear centerline. The five-item dock
-follows the engraved treatment of the player-provided mission-packing reference.
+The current direction starts with a functioning tier-one Village: a Residence with an implicit
+communal kitchen on the lower-left plot, a Summoning Circle on the former upper-left Residence plot,
+Training Grounds upper right, Forge lower right, and a standalone Tower Portal on the rear centerline.
+A clean axial road and four controlled branches connect every destination. The five-item dock follows
+the engraved treatment of the player-provided mission-packing reference.
 
-![Current Village merged-facility revision](./mockups/village-merged-residence-kitchen-desktop-v2.png)
+![Current clean-road Village revision](./mockups/village-clean-road-layout-desktop-v3.png)
+
+The previous merged-facility revision used the longer `Residence & Kitchen` label and an irregular
+road network. It remains as design history.
+
+![Previous merged-facility revision](./mockups/village-merged-residence-kitchen-desktop-v2.png)
 
 The previous threshold revision placed the Summoning Circle closer to the central path and kept
 Residence and Kitchen separate. It remains as design history.
