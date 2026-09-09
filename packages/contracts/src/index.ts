@@ -1,6 +1,7 @@
 export * from './affinity-review.js';
 export * from './character.js';
 export * from './campaign.js';
+export * from './city-actions.js';
 export * from './decision.js';
 export * from './decision-inspector.js';
 export * from './engine.js';
