@@ -14,22 +14,22 @@
 	},
 	"revisionPacket": {
 		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions-v3/magical-elemental-warmth-v3.json",
-		"contentHash": "28860f7c44036ddb7652d69ffadb99942378c598fee56d5149b4d2adfc36d19a"
+		"contentHash": "d8e6c49320b1be6913387463d1358223a9ae57b156f7e8979994500c186ce5a2"
 	},
 	"predecessor": {
 		"packet": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions-v2/magical-elemental-warmth-v2.json",
-			"contentHash": "f59d4a8b7f1d8faf98b31fadaec1db9e097b21d624b81ded82352e078e10034d"
+			"contentHash": "b46a41d0391d53a8fdd811a1ba12cf32660dc917c0679c59cf7a8556a81594f6"
 		},
 		"result": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/magical-elemental-warmth-v2.json",
-			"contentHash": "7eeb194fd2905c17a6efbf15c523e77468f03fb3e3ca7a4f8ecdf6603298b200"
+			"contentHash": "93508e2a87e5ecf50e132043015867591a30278e58058c929fb8b24c63d7b5e4"
 		},
 		"providerSource": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/magical-elemental-warmth-v2.png",
 			"contentHash": "ffbeda486636c808005014f230cfcc16f5b0359c2be2022308253b846c486a3d"
 		},
-		"transactionContentHash": "6cb4acd9861e93ac4058b4bfcc2985d8b460c9459396c13e1a6a55c7f93f450f",
+		"transactionContentHash": "f5fcd8b59ffaa36d93377400a891ccdeedacae7e6239a74ee07e3ccd9d57cae4",
 		"revisedInterior": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/revisions/magical-elemental-warmth-v2.png",
 			"contentHash": "8d5ae7417a68149aab4144a9c783473e43fb64004d5efc352b31b9344d0047a5"
@@ -152,7 +152,7 @@
 			"vipsVersion": "8.18.3"
 		}
 	},
-	"transactionContentHash": "b87da916456b794dcd440c4122e7b8a93a678ed4fc46614f0377f9b5b998a748",
+	"transactionContentHash": "3a2ef3a9c049f33e91362b0f882b2e4deb8ce3bd4133fd5327747fc668a11ac2",
 	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/magical-elemental-warmth-v3.json",
 	"writtenOutputPaths": [
 		"assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/magical-elemental-warmth-v3.png",

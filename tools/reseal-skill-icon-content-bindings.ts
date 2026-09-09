@@ -302,7 +302,6 @@ function visit(value: unknown, update: (record: Record<string, unknown>) => void
 }
 
 await resealMassProductionLineage();
-await resealCleanupRevisionLineage();
 
 for (let iteration = 0; iteration < bindingPaths.length; iteration += 1) {
 	let changed = false;
@@ -351,3 +350,5 @@ for (let iteration = 0; iteration < bindingPaths.length; iteration += 1) {
 		throw new Error('Skill-icon content binding reseal did not converge');
 	}
 }
+
+await resealCleanupRevisionLineage();

@@ -14,22 +14,22 @@
 	},
 	"revisionPacket": {
 		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions-v2/martial-polearm-red-harvest-v2.json",
-		"contentHash": "18fcef6d14dfffcde53fa908127b21c8cd6bb62665f4c294de0f5052881eb58a"
+		"contentHash": "3bbb0122653324f027c7c06420dba5581b9314fc2c70ab9466c758bc1b08f155"
 	},
 	"predecessor": {
 		"packet": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions/martial-polearm-red-harvest-v1.json",
-			"contentHash": "0dc1ccf882f12995dc5d440698d9889dc6c18c569aa39d009a032411fdc90c7b"
+			"contentHash": "bb626ff771dd1f517e9a1f97b1b081fcc43c2c66172342765f9ac38a2018e6d8"
 		},
 		"result": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/martial-polearm-red-harvest-v1.json",
-			"contentHash": "1c676d503177caa2f6a54e40af4dce7d9a526be5d9540736e8995d697184e0c8"
+			"contentHash": "5c44056db11306ace5454bcab399da78e52e7a262bffb9565dc4c83161e766cc"
 		},
 		"providerSource": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/martial-polearm-red-harvest-v1.png",
 			"contentHash": "b3399fecd2856a7edfe493fc2d9388d669cda3beee58ca6807cc6a5121ba637d"
 		},
-		"transactionContentHash": "62b9f9a1a2176d5e5ed72da84d71c31a5387f961685a64d04b5169405b091315",
+		"transactionContentHash": "ddc20c7f2913e415c9e7bf5105fec65a36f5f2f803c610d6e4b5b97a7e7b660e",
 		"revisedInterior": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/revisions/martial-polearm-red-harvest-v1.png",
 			"contentHash": "c27caea899de72e13d225f478c54c5fcb8958a18773c6e4e5f4b04ae832e038e"
@@ -157,7 +157,7 @@
 			"vipsVersion": "8.18.3"
 		}
 	},
-	"transactionContentHash": "37356b35c75a68b0ae77fb87d7d840848c4a2cc6033073810c9c0f2fcb0a0c27",
+	"transactionContentHash": "591d49d83008c8f61ddade7d12671a365aa5a2d8d9523bac386c9914e2dce2a8",
 	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/martial-polearm-red-harvest-v2.json",
 	"writtenOutputPaths": [
 		"assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/martial-polearm-red-harvest-v2.png",

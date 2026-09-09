@@ -16,17 +16,17 @@
 	"predecessor": {
 		"packet": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions/magical-elemental-warmth-v1.json",
-			"contentHash": "4c52fea5b5d1e4074173dc953cb8b1b14875ee73085b6049b91d9e64edcc137d"
+			"contentHash": "8bc5875456c543aa1157e289ce0efbecb3f13a102f11b74d84d772cdd1756ccf"
 		},
 		"result": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/magical-elemental-warmth-v1.json",
-			"contentHash": "f9a9d457c6ce84e40b8c45b31af8db8123a212aafd03ef7cdc560dffa20db4b9"
+			"contentHash": "e5919eb5b480e3b20cc3e27452b3ca1097536ceea6cc64d1f55d9a593598ef06"
 		},
 		"providerSource": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/magical-elemental-warmth-v1.png",
 			"contentHash": "ffbeda486636c808005014f230cfcc16f5b0359c2be2022308253b846c486a3d"
 		},
-		"transactionContentHash": "01dbc2f24089afa397299533380871b769cf4131bf54af7e2e2f0e3a9489929f",
+		"transactionContentHash": "5ec5266db6b64a476d40d116ad871d321bf8c08e2972aa1e0cd1007d5c7055e2",
 		"revisedInterior": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/revisions/magical-elemental-warmth-v1.png",
 			"contentHash": "8d5ae7417a68149aab4144a9c783473e43fb64004d5efc352b31b9344d0047a5"

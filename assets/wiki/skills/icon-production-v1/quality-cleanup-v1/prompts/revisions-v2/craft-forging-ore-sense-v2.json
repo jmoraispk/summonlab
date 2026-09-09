@@ -16,17 +16,17 @@
 	"predecessor": {
 		"packet": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions/craft-forging-ore-sense-v1.json",
-			"contentHash": "6682d9115f5441162b7afefb8329a865e1cb1fabf17ba3f4eb1096cc51e4a078"
+			"contentHash": "e50f4e29535694a7225881ed2ae0942cfaad8e3a0116e8afe04184477788213c"
 		},
 		"result": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/craft-forging-ore-sense-v1.json",
-			"contentHash": "f030c0840b1fe6453b92e56727e4f7243f80d93e7e38d19a4534345cb61af400"
+			"contentHash": "a2cedfd79f7e0a1d6502c93f47a96eafe7c277a8b24477d2818b9bbff033e84d"
 		},
 		"providerSource": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/craft-forging-ore-sense-v1.png",
 			"contentHash": "aab94c07eb98069a943546458299a657f64843ee0eb084a76b1b83374a4efa6f"
 		},
-		"transactionContentHash": "c0585c541942966e5d5b9525d6697014eed12e61be8f65dd987300adc0252794",
+		"transactionContentHash": "8604c2ec4073b8ecc2fea71ac1e2040012ccb8a10c4246097ae92ebf25c659a1",
 		"revisedInterior": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/revisions/craft-forging-ore-sense-v1.png",
 			"contentHash": "96f904d37cd14e9b99116b00fff05fce4a4b0c2fe8a8ee4072f2f20b45ae39b4"

@@ -16,17 +16,17 @@
 	"predecessor": {
 		"packet": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions/martial-polearm-rend-armor-v1.json",
-			"contentHash": "c07206a075140a0dd88a2a8bee6e3caff9d864d6357ddfed06a7e763ee0f805b"
+			"contentHash": "f82f1755b9e9ae74f5f8ee5badae6e94bea60454d86d570d04de07c384a75ac3"
 		},
 		"result": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/martial-polearm-rend-armor-v1.json",
-			"contentHash": "e8021a95ff4084d5c46a298e9945bc305c0581ea9a895a73cf0ea6dfda57c17b"
+			"contentHash": "c9d7eb7ef7182d1bc7138459346dea5c88cb92ae31fdf33f93fd4ea1548c18f7"
 		},
 		"providerSource": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/martial-polearm-rend-armor-v1.png",
 			"contentHash": "c1f8b530e64f3078530e1d8a96e614298be39e531bbdd2e5f2aee84004e671f1"
 		},
-		"transactionContentHash": "d1aeb46fdd9e11dbf551c539b20826adb7894b145cc920a2401ff271c729e108",
+		"transactionContentHash": "45a7f719798b86360edc42551365385557f329faf56d1505b36c280654263e4a",
 		"revisedInterior": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/revisions/martial-polearm-rend-armor-v1.png",
 			"contentHash": "67fc7ca4ef8353adb6098d76080b49c684c5eb3645ec80cb8e7664e4412c38ae"

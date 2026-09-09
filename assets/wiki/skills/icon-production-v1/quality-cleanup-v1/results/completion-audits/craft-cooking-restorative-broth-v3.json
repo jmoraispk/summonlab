@@ -4,11 +4,11 @@
 	"targetId": "craft:cooking:restorative-broth",
 	"revisionPacket": {
 		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions-v3/craft-cooking-restorative-broth-v3.json",
-		"contentHash": "2808ca7e5ce363bca249c2eba6106291088efbe51204c66a1b4b96a48e867b32"
+		"contentHash": "ddf06ed46defdf2eb2077622d1aea62b05e9999fa6a628d1ca3a12b52027d1ca"
 	},
 	"result": {
 		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/craft-cooking-restorative-broth-v3.json",
-		"contentHash": "a287f4c81e3f55c58a61bcc79402f6b6b554419ae3bf61f39449cf32c34418c9"
+		"contentHash": "a66c4976d7512ac6635a655836e86af8342ab8b892d29a8d7e895227d181f991"
 	},
 	"status": "candidate",
 	"corePublication": {
@@ -30,7 +30,7 @@
 			},
 			"result": {
 				"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/craft-cooking-restorative-broth-v3.json",
-				"contentHash": "a287f4c81e3f55c58a61bcc79402f6b6b554419ae3bf61f39449cf32c34418c9"
+				"contentHash": "a66c4976d7512ac6635a655836e86af8342ab8b892d29a8d7e895227d181f991"
 			}
 		}
 	}

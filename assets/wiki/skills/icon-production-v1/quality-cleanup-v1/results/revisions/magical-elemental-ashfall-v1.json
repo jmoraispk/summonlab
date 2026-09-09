@@ -13,11 +13,11 @@
 	},
 	"revisionPacket": {
 		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions/magical-elemental-ashfall-v1.json",
-		"contentHash": "4cb7e9034ecce05df0ee8bfa97364f3cb79e78773f42fcf0dc9eaa1c8d04e2dc"
+		"contentHash": "081daefb29f511c940e0ca79d04bf8cffaa755b580307ee351989bc45e81cf1a"
 	},
 	"cleanupManifest": {
 		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/manifest.json",
-		"contentHash": "b6a4fc968624464ac938fa9126d1df8e564c334f1a152077a38e93e97ac5873a"
+		"contentHash": "c74c3c7fe445d62271fc85a2a574d7ec6bef662f8e8415462dfa7c1cd84bda79"
 	},
 	"sourceCandidate": {
 		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-elemental-ashfall.png",
@@ -22846,7 +22846,7 @@
 	},
 	"attemptCount": 2,
 	"attemptCeiling": 2,
-	"transactionContentHash": "63fcbbb174d0cbaf0f7336c683c0c9531f3e3a08d9b87c13ca6d2688b0ac902f",
+	"transactionContentHash": "736e02d120397bc836c46b11fd09ddd5d7e5caeb86d4cd9ac8108acea84b86f4",
 	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/magical-elemental-ashfall-v1.json",
 	"writtenOutputPaths": [
 		"assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/magical-elemental-ashfall-v1.png",

@@ -14,22 +14,22 @@
 	},
 	"revisionPacket": {
 		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions-v3/martial-body-joint-lock-v3.json",
-		"contentHash": "7138bb8551b039e7e010fd557fa26adb2e37a39971c9b8603e59774eb179fbe4"
+		"contentHash": "9d4b155561650341bbe9feb8f62aa5c3ad138a40900dd259a2b2c6fd5068f423"
 	},
 	"predecessor": {
 		"packet": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions-v2/martial-body-joint-lock-v2.json",
-			"contentHash": "b9902c82d1c02396a307e536ca22c4fac674ac3bdc8816019ed702a881656892"
+			"contentHash": "00674f4861fbed8aa81d9eb2c159fd3574267784b6e2c480f9b8c56fdf4821c2"
 		},
 		"result": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/martial-body-joint-lock-v2.json",
-			"contentHash": "bd6e334729b962764cfa7570398d0680ec69f170e9ba26f5a4c28c8a542b7a32"
+			"contentHash": "0aee684598cba5ea3e37d89e699eb04a6286bab8092ad242f903c3f580a81983"
 		},
 		"providerSource": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/martial-body-joint-lock-v2.png",
 			"contentHash": "ccb115316c821435e6860f1b67cc78a386f9ee6fb9527cd18b62b786da4dc50b"
 		},
-		"transactionContentHash": "fef0445c10e028afed575cbff1ce63ab960d05a41c0ac3cf38ffb55b01ebfa8b",
+		"transactionContentHash": "ac85c7974ed7a92bf98a77bb5b6d7cfd19313ed882f3d0d84a4c737ac041c3cc",
 		"revisedInterior": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/revisions/martial-body-joint-lock-v2.png",
 			"contentHash": "46745153ed207c9e8b7be1cf22ccde25fcf32336fcedffb50ab74220e0618c9f"
@@ -159,7 +159,7 @@
 			"vipsVersion": "8.18.3"
 		}
 	},
-	"transactionContentHash": "ab22c4a4309d591a930d5c574aabcd7e296f5afe1e998766d9f567bd92c16a93",
+	"transactionContentHash": "547e3a77d2de8ebbc7993192cde53ffa9e24672ef4f3886b283c59c6c3da9b4d",
 	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/martial-body-joint-lock-v3.json",
 	"writtenOutputPaths": [
 		"assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/martial-body-joint-lock-v3.png",

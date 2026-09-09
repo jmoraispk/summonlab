@@ -4,11 +4,11 @@
 	"targetId": "martial:polearm:reaping-arc",
 	"revisionPacket": {
 		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions-v3/martial-polearm-reaping-arc-v3.json",
-		"contentHash": "aec260265bde7326a5a6eb584e8c065850395429a0801b92ba518b9be21ecf87"
+		"contentHash": "6f503bc2804d639da450f8dfdc8d1dd256ff9799fe22eb29547a32cf311b3763"
 	},
 	"result": {
 		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/martial-polearm-reaping-arc-v3.json",
-		"contentHash": "c6cff252b28c77b2b0ae16bd5d7212abd71db0d5c55a1bdc3cc91b4fefbf5630"
+		"contentHash": "2aef2493bd6bf77f4e4c94d5b294dd8188bbf07494ddc5580f4224dbc7cb1fb3"
 	},
 	"status": "candidate",
 	"corePublication": {
@@ -30,7 +30,7 @@
 			},
 			"result": {
 				"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/martial-polearm-reaping-arc-v3.json",
-				"contentHash": "c6cff252b28c77b2b0ae16bd5d7212abd71db0d5c55a1bdc3cc91b4fefbf5630"
+				"contentHash": "2aef2493bd6bf77f4e4c94d5b294dd8188bbf07494ddc5580f4224dbc7cb1fb3"
 			}
 		}
 	}

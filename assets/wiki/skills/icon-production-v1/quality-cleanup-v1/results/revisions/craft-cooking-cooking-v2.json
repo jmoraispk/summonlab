@@ -14,22 +14,22 @@
 	},
 	"revisionPacket": {
 		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions-v2/craft-cooking-cooking-v2.json",
-		"contentHash": "4acf325fe787b7586ac39d3407751956fcf424b991d29f9543eb2d9d773594f3"
+		"contentHash": "a46d7746b2d8fd0227dedc7a94091aeb5f387e0646e56a7d39486b14c848e7ad"
 	},
 	"predecessor": {
 		"packet": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions/craft-cooking-cooking-v1.json",
-			"contentHash": "8a6a382e9942905e274e419609e4f438854236fe5883f355362d4e6bc3d64e3d"
+			"contentHash": "3f8ebb9d49f7086b0da844040367848ce7315d038e54cc1336cb764c07cab051"
 		},
 		"result": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/craft-cooking-cooking-v1.json",
-			"contentHash": "146cb6a656c15b229b5f24e484cd22c0c3d9dfff758aa1a3a732a09fcf4a1eb4"
+			"contentHash": "a52716204fec97a991726990eb8cdaed9610399fdeceb6ecd20d827c70cfc929"
 		},
 		"providerSource": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/craft-cooking-cooking-v1.png",
 			"contentHash": "bcd32c0c6901a86f801d13c52556a8fbfedfc9a9d4c315a063d19ff91770d44b"
 		},
-		"transactionContentHash": "871666f515e0ecd5b2f073e18448679e869d255f32a7253dd4903f86d7253c4c",
+		"transactionContentHash": "417bf944a48c1a4bfff53d3359a74dc95a607f040eb72cae03f8a0efdac294ab",
 		"revisedInterior": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/revisions/craft-cooking-cooking-v1.png",
 			"contentHash": "a050e379801e7eda7f4adf0eadcd64a6244eea98ef70819dcb65f1ad0121df54"
@@ -164,7 +164,7 @@
 			"vipsVersion": "8.18.3"
 		}
 	},
-	"transactionContentHash": "98b62b7a170f9c96eae84de7b467c2cd209ee343fe2a154176c7edcdbba1ad86",
+	"transactionContentHash": "347787ecc469b3953951fd7fb8ede9236a1270b0ef7c68ce106525e4ceb95e35",
 	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/craft-cooking-cooking-v2.json",
 	"writtenOutputPaths": [
 		"assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/craft-cooking-cooking-v2.png",

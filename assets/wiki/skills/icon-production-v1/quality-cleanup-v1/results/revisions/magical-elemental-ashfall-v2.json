@@ -14,22 +14,22 @@
 	},
 	"revisionPacket": {
 		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions-v2/magical-elemental-ashfall-v2.json",
-		"contentHash": "5966ce8d3b5225bacc918501aceb1410496e6e61710d1398d4da01367bf3c6a1"
+		"contentHash": "68fabe4f650b2ed8ea9f61ff6931df2845a729a71b4ade5ae6c77c1865c969c1"
 	},
 	"predecessor": {
 		"packet": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions/magical-elemental-ashfall-v1.json",
-			"contentHash": "4cb7e9034ecce05df0ee8bfa97364f3cb79e78773f42fcf0dc9eaa1c8d04e2dc"
+			"contentHash": "081daefb29f511c940e0ca79d04bf8cffaa755b580307ee351989bc45e81cf1a"
 		},
 		"result": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/magical-elemental-ashfall-v1.json",
-			"contentHash": "dc097797c0fcacf68053edf46dffb761b132824872169d417d30ec519d047fe7"
+			"contentHash": "5d8085144911d5d4ebb2573547af91dff73343c356e8c0bfad7cfd4453bf6f7b"
 		},
 		"providerSource": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/magical-elemental-ashfall-v1.png",
 			"contentHash": "b8763ec722fc9782e7cf8912c32e03278c8488c9819324f5b9be3e6f5f421948"
 		},
-		"transactionContentHash": "63fcbbb174d0cbaf0f7336c683c0c9531f3e3a08d9b87c13ca6d2688b0ac902f",
+		"transactionContentHash": "736e02d120397bc836c46b11fd09ddd5d7e5caeb86d4cd9ac8108acea84b86f4",
 		"revisedInterior": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/revisions/magical-elemental-ashfall-v1.png",
 			"contentHash": "5b9471c55cce3ed2d899e3dbb07f16e372660fd5d32b8b999312ffe1d7ea7f98"
@@ -164,7 +164,7 @@
 			"vipsVersion": "8.18.3"
 		}
 	},
-	"transactionContentHash": "22bfa32ca986b884f56f87aa1065dce7b629afd86e78a4e71e7e1eb5df68a467",
+	"transactionContentHash": "38b862d4a4e469dbe432bd425b64f6f0f1ccdbb73b676f73719680cdfba8c388",
 	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/magical-elemental-ashfall-v2.json",
 	"writtenOutputPaths": [
 		"assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/magical-elemental-ashfall-v2.png",

@@ -16,17 +16,17 @@
 	"predecessor": {
 		"packet": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions-v2/craft-cooking-comfort-v2.json",
-			"contentHash": "d06365f996ceb546f664488d5ed1f84d7eb05788c13aedcdbf3d82b6d3e3a6fa"
+			"contentHash": "357c17471f377fca0614e6f916e90bf238a500e29516107758e8e587daf9a6a9"
 		},
 		"result": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/craft-cooking-comfort-v2.json",
-			"contentHash": "ad29f1a0684483e78c660974f10192a5003ffe103002372c4c67602c462451b4"
+			"contentHash": "2c6ec04810c3ef0c9502d4677df52ca338b8f6490460d931f8acdb9213987166"
 		},
 		"providerSource": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/craft-cooking-comfort-v2.png",
 			"contentHash": "1670b954317fd5d092e1d50eaa7ca463c3066e503b7e9dff608a2a51eb89cf79"
 		},
-		"transactionContentHash": "5216b7cc3f84d513668965a6af4e19eac43301dc9f44a3f531f502ca86b31a9f",
+		"transactionContentHash": "6f9bef9f00eb62b413437833fad6c91805dd48df7b8aefee2ae8b78d84f20384",
 		"revisedInterior": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/revisions/craft-cooking-comfort-v2.png",
 			"contentHash": "67798332fc70eb54f7e851226ae2e58978dd17320242338b4347330733a3e7ff"

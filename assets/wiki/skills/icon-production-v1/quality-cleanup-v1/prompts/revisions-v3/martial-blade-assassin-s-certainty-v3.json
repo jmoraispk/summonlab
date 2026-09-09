@@ -16,17 +16,17 @@
 	"predecessor": {
 		"packet": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions-v2/martial-blade-assassin-s-certainty-v2.json",
-			"contentHash": "aba4d89dc00aba99b49bb25dfb2c121966c429bc35eb07091e767a9b0f0f73a7"
+			"contentHash": "3da9c01d0faab86c111b0f6bcbaf06d9d5642cf456ab0a5573a6a4c5f7c79881"
 		},
 		"result": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/martial-blade-assassin-s-certainty-v2.json",
-			"contentHash": "94aaf6c598a7f7154549851f69ec2a217762b2e42109bf237082afa603186e4f"
+			"contentHash": "5de817ab455f961efffe06b9afd8e654f1f847b73ca567d46a8da0fc6847f954"
 		},
 		"providerSource": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/martial-blade-assassin-s-certainty-v2.png",
 			"contentHash": "29d2f3c4a27844ff184b7b81c8ba206b02a5b1d71d480c1e34e7213c2b67efc9"
 		},
-		"transactionContentHash": "7080b296e11350f6227b0dedd37002e24003c0d929aded9530914545856c945b",
+		"transactionContentHash": "4101179f452cfbb1cd71de5d476ec3d0781cd2180f0f9ab5f77fc0d7b40ff531",
 		"revisedInterior": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/revisions/martial-blade-assassin-s-certainty-v2.png",
 			"contentHash": "5ab8aef769aa1b85de5708f168d7cd3969d26fae3563e144c7f12e512ae2cd76"

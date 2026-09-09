@@ -14,22 +14,22 @@
 	},
 	"revisionPacket": {
 		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions-v2/magical-enchantment-sustained-weave-v2.json",
-		"contentHash": "28acd666ec8d9b835ee3c5a0d745f7acd9cf75557fab3473a77b82053949cb51"
+		"contentHash": "25921297d8754dd62b6dc2c7b16e3ebead84a64801fec1496a88b9b9e2018dc0"
 	},
 	"predecessor": {
 		"packet": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions/magical-enchantment-sustained-weave-v1.json",
-			"contentHash": "7bf1a05f68019a8878f4fc2c24598a2fa3d48e01091ec014ccc14a97256fb6d8"
+			"contentHash": "895c91f780ad2000831a1acb67efcc1815df53982d1f9bf98031459f28d2b0ec"
 		},
 		"result": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/magical-enchantment-sustained-weave-v1.json",
-			"contentHash": "47a63ae4d700de229360a5c09b327738d03249c801e1afaf4f0536a9b15d81ba"
+			"contentHash": "793b8fbee70e0bbec1335c0e0836901a2224401d9ac2e29c711e50011333226a"
 		},
 		"providerSource": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/magical-enchantment-sustained-weave-v1.png",
 			"contentHash": "53d028840a720c8da081303c027dd06f0853a80f1022e85791494262fd2ccc1c"
 		},
-		"transactionContentHash": "11329285b5718cff3e118b242bf73047b10853eab1d2cb27422b1b85db5351d5",
+		"transactionContentHash": "9147bc7c829652f6273ba2a96377ec0d4f006f894021f36781e12a9c9c9dff77",
 		"revisedInterior": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/revisions/magical-enchantment-sustained-weave-v1.png",
 			"contentHash": "4fbfb826c423445785c77d420ddf25ec200551871d1c3b93a9d38ce1aee8fbfc"
@@ -164,7 +164,7 @@
 			"vipsVersion": "8.18.3"
 		}
 	},
-	"transactionContentHash": "91fd58dd4ec39892f2b5ba5c70ce8985c43fbe76724187967724db82407f75b5",
+	"transactionContentHash": "9735758a4fedc9c0bd861ea782bf109611266c9ec71931d55206ea5ff1ed43b1",
 	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/magical-enchantment-sustained-weave-v2.json",
 	"writtenOutputPaths": [
 		"assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/magical-enchantment-sustained-weave-v2.png",

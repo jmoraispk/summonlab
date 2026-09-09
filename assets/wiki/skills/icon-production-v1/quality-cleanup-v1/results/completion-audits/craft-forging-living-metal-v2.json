@@ -4,11 +4,11 @@
 	"targetId": "craft:forging:living-metal",
 	"revisionPacket": {
 		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions-v2/craft-forging-living-metal-v2.json",
-		"contentHash": "6f1da013143e9a155a34e260a680d871afde6dc8402a6bb785abfced1fb04592"
+		"contentHash": "3feaea0cd07e9c52eca5e20501555c39ff9ce0fb1fefb29b9d781dd5b6414b8f"
 	},
 	"result": {
 		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/craft-forging-living-metal-v2.json",
-		"contentHash": "948545c43d76fdc1381606b27d1cb93fd4185157ebaea81b6605d3893e64bb14"
+		"contentHash": "ed6aa09b466d2345dd79a9d20c637e2beb58befe6a6c473ce1996ccd48d211b5"
 	},
 	"status": "candidate",
 	"corePublication": {
@@ -30,7 +30,7 @@
 			},
 			"result": {
 				"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/craft-forging-living-metal-v2.json",
-				"contentHash": "948545c43d76fdc1381606b27d1cb93fd4185157ebaea81b6605d3893e64bb14"
+				"contentHash": "ed6aa09b466d2345dd79a9d20c637e2beb58befe6a6c473ce1996ccd48d211b5"
 			}
 		}
 	}

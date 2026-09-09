@@ -174,6 +174,11 @@ const revisionTargetIds = [
 describe('cleanup semantic-revision persistence', () => {
 	it('builds exactly 28 collision-safe packets from confirmed stray-glyph findings', async () => {
 		const packets = await loadCleanupRevisionPackets(workspaceRoot);
+		const cleanupManifestPath =
+			'assets/wiki/skills/icon-production-v1/quality-cleanup-v1/manifest.json';
+		const cleanupManifestContentHash = sha256(
+			await readFile(path.join(workspaceRoot, cleanupManifestPath))
+		);
 
 		expect(packets.map(({ packet }) => packet.targetId)).toEqual(revisionTargetIds);
 		expect(packets).toHaveLength(28);
@@ -198,8 +203,8 @@ describe('cleanup semantic-revision persistence', () => {
 					requiredAction: 'revise-art'
 				},
 				cleanupManifest: {
-					path: 'assets/wiki/skills/icon-production-v1/quality-cleanup-v1/manifest.json',
-					contentHash: 'b6a4fc968624464ac938fa9126d1df8e564c334f1a152077a38e93e97ac5873a'
+					path: cleanupManifestPath,
+					contentHash: cleanupManifestContentHash
 				},
 				sourceCandidate: {
 					path: 'assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-blade-blade-dance.png',

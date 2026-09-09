@@ -14,22 +14,22 @@
 	},
 	"revisionPacket": {
 		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions-v2/martial-blade-hamstring-v2.json",
-		"contentHash": "7c851b16ac22036ee94e77149e62da02c37f7345f3de30fa966ca06466d37524"
+		"contentHash": "3003569273a2c59dbedefb22961c43a76cb12971a04b44f7b16336753e1052a9"
 	},
 	"predecessor": {
 		"packet": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions/martial-blade-hamstring-v1.json",
-			"contentHash": "ce8064641a2fe9d08a2796c434f7d4a9fb15b1251f993c39e5b6bdabc1de9363"
+			"contentHash": "e24d93534afa6c43cf1062ffe6357eef4cf995c41897258480b5fedbec1e0c87"
 		},
 		"result": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/martial-blade-hamstring-v1.json",
-			"contentHash": "441ea763268daab5b6adbb908feeada9150797f5f7cb2e0da5e7590ee644b8b4"
+			"contentHash": "276bbbbfad04d6e572da9ddb18c7116e0cb480fa265fbe5b94b4ab7571db66c3"
 		},
 		"providerSource": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/martial-blade-hamstring-v1.png",
 			"contentHash": "127dcf280a51e9567a8921164afaff221620e8a379c3d80543f51b002d984953"
 		},
-		"transactionContentHash": "8089395257dc63645c766acaa3be416fa3930d11d7449227a2de707a0989d67a",
+		"transactionContentHash": "229499b8e564f28b64306888c1011101f6189e3acf95480e48d8f2e5079beeb7",
 		"revisedInterior": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/revisions/martial-blade-hamstring-v1.png",
 			"contentHash": "2a7c3f57fef445ef0958047efe0e806c5f6c5796b418c68bf4d1d8f8d97f7e09"
@@ -164,7 +164,7 @@
 			"vipsVersion": "8.18.3"
 		}
 	},
-	"transactionContentHash": "3ada61d82d175831c3d58c580695db8c73af10c2715ed84cfd14c5cc73bf1e16",
+	"transactionContentHash": "fbc9d78e8f4184543c584068bddfd3dc0ea0ce0e910af8adf328aefbba14ee24",
 	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/martial-blade-hamstring-v2.json",
 	"writtenOutputPaths": [
 		"assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/martial-blade-hamstring-v2.png",

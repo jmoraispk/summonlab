@@ -14,22 +14,22 @@
 	},
 	"revisionPacket": {
 		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions-v3/craft-cooking-restorative-broth-v3.json",
-		"contentHash": "2808ca7e5ce363bca249c2eba6106291088efbe51204c66a1b4b96a48e867b32"
+		"contentHash": "ddf06ed46defdf2eb2077622d1aea62b05e9999fa6a628d1ca3a12b52027d1ca"
 	},
 	"predecessor": {
 		"packet": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions-v2/craft-cooking-restorative-broth-v2.json",
-			"contentHash": "26df9cb2d51ce0a40680d01f33f6cffa2055057ad7973ba998a5fa9ba6d92357"
+			"contentHash": "ebfc6e8ab44e5745ee7d6467babf36b8c11291dd8a12b2269a9c1f197d3280b4"
 		},
 		"result": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/craft-cooking-restorative-broth-v2.json",
-			"contentHash": "878369fb1e647ffa07948aced64ce26c5c7871d3596ecea630641bcae4d8eff2"
+			"contentHash": "c3a33f2de1296a16c831d833f456815759e9c7de2a1f76b3ee1f1c3360be31fc"
 		},
 		"providerSource": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/craft-cooking-restorative-broth-v2.png",
 			"contentHash": "24ce808577962d96aedbda3344513ec00461aa1a5e1fa62f7d09990014d47660"
 		},
-		"transactionContentHash": "57eb79ed40fb01f09568e5c7dfcf60a555da786317484c8b7911f1c7f0ff9897",
+		"transactionContentHash": "d61ed17901152c387020407bad30136fe15d3d55506c19b5facc0cd55a5b4335",
 		"revisedInterior": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/revisions/craft-cooking-restorative-broth-v2.png",
 			"contentHash": "64f228cbd5231b41ed5788a5856979a85770ff8dbfb7e8dce747796d049523bc"
@@ -159,7 +159,7 @@
 			"vipsVersion": "8.18.3"
 		}
 	},
-	"transactionContentHash": "bbffb486f523a59c95cac1f015aadcf1e094e93ea92c9fd8bddcdd013e51974b",
+	"transactionContentHash": "26535afc0722f5d99ad7fe87a2ed0fe21f3722ec22efdbbfc369881ebf42230f",
 	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/craft-cooking-restorative-broth-v3.json",
 	"writtenOutputPaths": [
 		"assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/craft-cooking-restorative-broth-v3.png",

@@ -14,22 +14,22 @@
 	},
 	"revisionPacket": {
 		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions-v3/martial-blade-severed-thread-v3.json",
-		"contentHash": "f19284fc02d03b94032e5d467a3dd74f0ec7045ce898860c3a15ef884c1d8d64"
+		"contentHash": "6d0308c9c9872812f27046a1d2692a4c9ad168d482c714518d595e114ec1cdee"
 	},
 	"predecessor": {
 		"packet": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions-v2/martial-blade-severed-thread-v2.json",
-			"contentHash": "8dac44510edf4bc20f66fa4083aef39547fc49555d40b94e0d6ac60953486cdc"
+			"contentHash": "6913d0c7ea174818f6bf693c5fe791ee0a0ba7a4d746b882bd4ccae2cb5f5045"
 		},
 		"result": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/martial-blade-severed-thread-v2.json",
-			"contentHash": "9ad8a7098a87fc3a1c5ee2d33fca08af661efac282021bd13db4a5d738ad9e0c"
+			"contentHash": "cb0c164399e3306b49f5a6d4349c43c7168b68e02d43037d1039feb41fe14359"
 		},
 		"providerSource": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/martial-blade-severed-thread-v2.png",
 			"contentHash": "ec7213cca5f63db172b421d969cc47a21ff834bd6fb7fb220c1665a41d59fb79"
 		},
-		"transactionContentHash": "d2852e356a22bbe2f69246f8f6e6a1822034c1fe92f2fa0dc3a2f845918a0a7f",
+		"transactionContentHash": "face63a99770eac3ec505108eeacfee708892858626d0bd325a9b4181a965352",
 		"revisedInterior": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/revisions/martial-blade-severed-thread-v2.png",
 			"contentHash": "ef8ac9a831cad11f51ac58fdab769de72fdf3ceecbc8874d689c45fa78b648d0"
@@ -159,7 +159,7 @@
 			"vipsVersion": "8.18.3"
 		}
 	},
-	"transactionContentHash": "21f5c16e7f95214abb6c35f69f406b067d01d01a3f9c912ee6c898c9b357d428",
+	"transactionContentHash": "b8e781c82555fb0617009205d2e2ee803feb6d8641358866dd35d2489b71aca0",
 	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/martial-blade-severed-thread-v3.json",
 	"writtenOutputPaths": [
 		"assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/martial-blade-severed-thread-v3.png",

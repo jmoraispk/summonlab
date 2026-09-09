@@ -16,17 +16,17 @@
 	"predecessor": {
 		"packet": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions-v2/martial-polearm-red-harvest-v2.json",
-			"contentHash": "18fcef6d14dfffcde53fa908127b21c8cd6bb62665f4c294de0f5052881eb58a"
+			"contentHash": "3bbb0122653324f027c7c06420dba5581b9314fc2c70ab9466c758bc1b08f155"
 		},
 		"result": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/martial-polearm-red-harvest-v2.json",
-			"contentHash": "89f9d0be12348b9a9f5104adf63510ddc3f94136cc6d260d208dfa6457aca1d5"
+			"contentHash": "dfe00a88a618d8431342fd0e3c8378affdb325f1afb5bbe2871551bd95854f8b"
 		},
 		"providerSource": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/martial-polearm-red-harvest-v2.png",
 			"contentHash": "b3399fecd2856a7edfe493fc2d9388d669cda3beee58ca6807cc6a5121ba637d"
 		},
-		"transactionContentHash": "37356b35c75a68b0ae77fb87d7d840848c4a2cc6033073810c9c0f2fcb0a0c27",
+		"transactionContentHash": "591d49d83008c8f61ddade7d12671a365aa5a2d8d9523bac386c9914e2dce2a8",
 		"revisedInterior": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/revisions/martial-polearm-red-harvest-v2.png",
 			"contentHash": "c27caea899de72e13d225f478c54c5fcb8958a18773c6e4e5f4b04ae832e038e"

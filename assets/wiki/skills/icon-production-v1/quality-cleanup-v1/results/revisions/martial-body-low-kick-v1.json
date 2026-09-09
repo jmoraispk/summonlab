@@ -13,11 +13,11 @@
 	},
 	"revisionPacket": {
 		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions/martial-body-low-kick-v1.json",
-		"contentHash": "e9d5be1ced574f569fcda9a44a16fb2ae8288277188540991a283a51161a325e"
+		"contentHash": "b0765dc3800fa6931885c01aa5b941ef958f36c6b153fe479d02af1b482e3308"
 	},
 	"cleanupManifest": {
 		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/manifest.json",
-		"contentHash": "b6a4fc968624464ac938fa9126d1df8e564c334f1a152077a38e93e97ac5873a"
+		"contentHash": "c74c3c7fe445d62271fc85a2a574d7ec6bef662f8e8415462dfa7c1cd84bda79"
 	},
 	"sourceCandidate": {
 		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-body-low-kick.png",
@@ -14656,7 +14656,7 @@
 	},
 	"attemptCount": 2,
 	"attemptCeiling": 2,
-	"transactionContentHash": "82aceeb38185ec08e2f34eaf3f4adb879f5acc86240ec08cdb8ced55998cc5e9",
+	"transactionContentHash": "8da9cc836828cbf6ee35e84f42977449b9def1b5fb005f7f1462059c51b4fd55",
 	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/martial-body-low-kick-v1.json",
 	"writtenOutputPaths": [
 		"assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/martial-body-low-kick-v1.png",

@@ -13,11 +13,11 @@
 	},
 	"revisionPacket": {
 		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions/martial-body-joint-lock-v1.json",
-		"contentHash": "33213e575f1f93ca31e153970ec67835f825ebd3c945da314a0bc738fe6ddd33"
+		"contentHash": "a708d572363a6b8fccbb33f7d6ecb95d71c09ae9fbf91aeb626affb1d209c932"
 	},
 	"cleanupManifest": {
 		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/manifest.json",
-		"contentHash": "b6a4fc968624464ac938fa9126d1df8e564c334f1a152077a38e93e97ac5873a"
+		"contentHash": "c74c3c7fe445d62271fc85a2a574d7ec6bef662f8e8415462dfa7c1cd84bda79"
 	},
 	"sourceCandidate": {
 		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-body-joint-lock.png",
@@ -8486,7 +8486,7 @@
 	},
 	"attemptCount": 2,
 	"attemptCeiling": 2,
-	"transactionContentHash": "9adffbc4ee3a7dc757d2710b76ff39c68ab181b6904a0000351c63ae3bf93eb1",
+	"transactionContentHash": "aa00a5f382a9a6e5433ec70c2c9f71dd1e873b2856fae0d80388d48a60af9072",
 	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/martial-body-joint-lock-v1.json",
 	"writtenOutputPaths": [
 		"assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/martial-body-joint-lock-v1.png",

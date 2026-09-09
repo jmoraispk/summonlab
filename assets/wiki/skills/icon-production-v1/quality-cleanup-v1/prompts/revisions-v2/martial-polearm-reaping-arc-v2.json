@@ -16,17 +16,17 @@
 	"predecessor": {
 		"packet": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions/martial-polearm-reaping-arc-v1.json",
-			"contentHash": "ca3555a0a38f4866e66d89a29ec26e0a5992a7b722370286aa6d5e0b7ec039d8"
+			"contentHash": "5c939ae4c6afb2ddd4df2f686f6a40b42fe799f5d49df8b1d5e7ce63208c671d"
 		},
 		"result": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/martial-polearm-reaping-arc-v1.json",
-			"contentHash": "c58abab8dce1ddd75807d400c0f1c073c28e6ee7030d282c7071cc9f81ef0f2e"
+			"contentHash": "6fa9c70b07738715937a33a948ddc4ea93bece468b28f17b99bf64563079e79c"
 		},
 		"providerSource": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/martial-polearm-reaping-arc-v1.png",
 			"contentHash": "c60aca23d5b88a74fab37a256d07fdae3bfcbf6b66008bf77708ae8fff0158b0"
 		},
-		"transactionContentHash": "fa62ba839a8ff2dcef13efdabaf03804c5d6b3cbd55c28dd84aa1874faa4ba4b",
+		"transactionContentHash": "f0d44aaeb42cbf71793c24b9b12e0ce6b6dd70ce7b089f10f674a6171c16c627",
 		"revisedInterior": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/revisions/martial-polearm-reaping-arc-v1.png",
 			"contentHash": "5f5027eafe527efd89b70b50cc0715cd8a404a9a2e42d896f241d6bc661b3115"

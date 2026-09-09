@@ -137,11 +137,23 @@ describe('canonical serializer characterization', () => {
 });
 
 describe('integrity owner successor planning', () => {
-	it('registers the deterministic skill contact-sheet writer and checker', () => {
-		expect(visualProductionIntegrityOwner.regeneration).toMatchObject({
-			writeCommand: expect.stringContaining('pnpm finalize:skill-icon-mass-production'),
-			checkCommand: expect.stringContaining('pnpm check:skill-icon-mass-production')
-		});
+	it('registers the ordered skill successor writers and cleanup closure checks', () => {
+		const regeneration = visualProductionIntegrityOwner.regeneration!;
+		const writeSteps = regeneration.writeCommand.split(' && ');
+		const finalizeMass = writeSteps.indexOf('pnpm finalize:skill-icon-mass-production');
+		const resealCleanup = writeSteps.indexOf(
+			'pnpm tsx tools/reseal-skill-icon-content-bindings.ts'
+		);
+		const exportWiki = writeSteps.indexOf('pnpm export:wiki-skill-visual-catalog');
+
+		expect(finalizeMass).toBeGreaterThanOrEqual(0);
+		expect(resealCleanup).toBeGreaterThan(finalizeMass);
+		expect(exportWiki).toBeGreaterThan(resealCleanup);
+		expect(regeneration.checkCommand).toEqual(
+			expect.stringContaining(
+				'pnpm check:skill-icon-mass-production && pnpm check:skill-icon-quality-cleanup && pnpm check:skill-icon-cleanup-v2-packets && pnpm check:skill-icon-cleanup-v3-packets && pnpm check:skill-icon-cleanup-v2 && pnpm check:skill-icon-cleanup-v3'
+			)
+		);
 	});
 
 	it('preserves a manifest-relative asset reference when the asset path spelling changes', async () => {

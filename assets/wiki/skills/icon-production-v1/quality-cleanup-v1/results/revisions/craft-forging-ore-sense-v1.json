@@ -13,11 +13,11 @@
 	},
 	"revisionPacket": {
 		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions/craft-forging-ore-sense-v1.json",
-		"contentHash": "6682d9115f5441162b7afefb8329a865e1cb1fabf17ba3f4eb1096cc51e4a078"
+		"contentHash": "e50f4e29535694a7225881ed2ae0942cfaad8e3a0116e8afe04184477788213c"
 	},
 	"cleanupManifest": {
 		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/manifest.json",
-		"contentHash": "b6a4fc968624464ac938fa9126d1df8e564c334f1a152077a38e93e97ac5873a"
+		"contentHash": "c74c3c7fe445d62271fc85a2a574d7ec6bef662f8e8415462dfa7c1cd84bda79"
 	},
 	"sourceCandidate": {
 		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/craft-forging-ore-sense.png",
@@ -17176,7 +17176,7 @@
 	},
 	"attemptCount": 2,
 	"attemptCeiling": 2,
-	"transactionContentHash": "c0585c541942966e5d5b9525d6697014eed12e61be8f65dd987300adc0252794",
+	"transactionContentHash": "8604c2ec4073b8ecc2fea71ac1e2040012ccb8a10c4246097ae92ebf25c659a1",
 	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/craft-forging-ore-sense-v1.json",
 	"writtenOutputPaths": [
 		"assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/craft-forging-ore-sense-v1.png",

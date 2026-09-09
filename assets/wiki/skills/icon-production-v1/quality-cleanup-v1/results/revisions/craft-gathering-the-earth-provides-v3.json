@@ -14,22 +14,22 @@
 	},
 	"revisionPacket": {
 		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions-v3/craft-gathering-the-earth-provides-v3.json",
-		"contentHash": "db69e5e492d89cade1beff334c083180c82f4a833558d03e0de26f72ca6f0e9b"
+		"contentHash": "b427afacac316b89fd3faeb6dc78c7e478098edf5f991baa967be993a6e654d4"
 	},
 	"predecessor": {
 		"packet": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions-v2/craft-gathering-the-earth-provides-v2.json",
-			"contentHash": "3ef220db1cd545f2628c32f0a18dc38f55e5d226232a3f03c57b7ca42e4d004b"
+			"contentHash": "83996e6ec805c92c30c761ef0a91ad7359e174494d55a1a0fc5d536a177e8fc9"
 		},
 		"result": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/craft-gathering-the-earth-provides-v2.json",
-			"contentHash": "6557073336b909192d8475dfdedb80f81c9d6105c4236c280b26302bb293cb70"
+			"contentHash": "1473245cf80af33f37911976199941a7512028146071b19a441fd79436622d76"
 		},
 		"providerSource": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/craft-gathering-the-earth-provides-v2.png",
 			"contentHash": "4676c24c3c2598f79c07324baee7d02f6cc659d03c72aa7d45324dfb36238544"
 		},
-		"transactionContentHash": "5dea73d3b80f9d84d9a00326466e81b66cccb0c210313a8fd384a1b549019ee2",
+		"transactionContentHash": "2a3f4b2207d35a837a7ffd4be47287732deb06596d309e6ed46eb71dd6752306",
 		"revisedInterior": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/revisions/craft-gathering-the-earth-provides-v2.png",
 			"contentHash": "ca3d918edef04d5eea3c016a8e3228a7c65f3e426c035f202e0f62fa9dc3a4e9"
@@ -159,7 +159,7 @@
 			"vipsVersion": "8.18.3"
 		}
 	},
-	"transactionContentHash": "bbdb8ff6682cfd3f986affda7cc2e23754b406ab02566ddb2e5713d3f63fc153",
+	"transactionContentHash": "9afd0cf53117b8056ff983475eec63a27b165096f6b2862e290f94cf5e58f534",
 	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/craft-gathering-the-earth-provides-v3.json",
 	"writtenOutputPaths": [
 		"assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/craft-gathering-the-earth-provides-v3.png",

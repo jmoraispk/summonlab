@@ -14,22 +14,22 @@
 	},
 	"revisionPacket": {
 		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions-v2/craft-forging-fuel-craft-v2.json",
-		"contentHash": "c0e0573e949fbdf59d7584ad85a4976486caf3788c45f461d79ef5d5bcc58cd9"
+		"contentHash": "9548a4993cb7f41e9a6d3ab853671f0a1140cfd6d3e329ea795166b1f60c3428"
 	},
 	"predecessor": {
 		"packet": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions/craft-forging-fuel-craft-v1.json",
-			"contentHash": "3f360b3bccc323181445f791483756bef69cdd433763db3090f764d2b7e843f4"
+			"contentHash": "bd4a2f23b934d590a5b829f1a0b6e28e461f37d84572ee85f8b8236f6af359e9"
 		},
 		"result": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/craft-forging-fuel-craft-v1.json",
-			"contentHash": "11fc4fbbc87f944215ccf9d879f6402156a78579b5c0e6f0da1b459808cde681"
+			"contentHash": "5a9ffcbc9182e0b0b0c0b009af2666fb20529c3f7307416d2c3be511de6756fd"
 		},
 		"providerSource": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/craft-forging-fuel-craft-v1.png",
 			"contentHash": "e9268cab018f0cc0c056ca939d208aeb65a62c55ecffecc7cf8d5b94a2b614ec"
 		},
-		"transactionContentHash": "f887ecd7c1691253643ff84e538f063d2305a83b462d2277806bb559647fe2ab",
+		"transactionContentHash": "1b84cf4552a3af852c4553ee70220e882a23958ae042abd677f728575bd9c058",
 		"revisedInterior": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/revisions/craft-forging-fuel-craft-v1.png",
 			"contentHash": "b2166aa707c7d773b6b8dd064b6ec675285ad4017e15a05d5b66288a6724291b"
@@ -164,7 +164,7 @@
 			"vipsVersion": "8.18.3"
 		}
 	},
-	"transactionContentHash": "01b4a1455938682cdf399aa8b8ac02d72beb951df12fd801d5746c35e5d5227f",
+	"transactionContentHash": "be73ceec3cc47d11c2ba16608c52dc680b9813a83ee75a9b143eda740fc4f62f",
 	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/craft-forging-fuel-craft-v2.json",
 	"writtenOutputPaths": [
 		"assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/craft-forging-fuel-craft-v2.png",

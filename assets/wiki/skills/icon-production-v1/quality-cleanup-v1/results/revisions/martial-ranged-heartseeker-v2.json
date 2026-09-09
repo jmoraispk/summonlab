@@ -14,22 +14,22 @@
 	},
 	"revisionPacket": {
 		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions-v2/martial-ranged-heartseeker-v2.json",
-		"contentHash": "0353431ad23c99d06aa9b286604431702d3d129639ee137471ea2fbec2e6a8d8"
+		"contentHash": "5b56f685195c369f5a42c09436e868a4a086fb5025ee284fb373c178830e2d60"
 	},
 	"predecessor": {
 		"packet": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions/martial-ranged-heartseeker-v1.json",
-			"contentHash": "231c691f1f5228d94c890aa6686d201ca7bd8dc12dbf2deb72437e1e320a4461"
+			"contentHash": "6f0fad94ee2f02beafb0d24e3bc33519d4b95ed26e4e78d83e25fabf59d7d2c2"
 		},
 		"result": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/martial-ranged-heartseeker-v1.json",
-			"contentHash": "c71d43b7518b9897cd44110b5e3150a8f3382da8af7a0557a0c2c2ec4670797a"
+			"contentHash": "9ccb914794687a4a922b590bc3ba1fc3caf1597163791a7485c68364c7abd727"
 		},
 		"providerSource": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/martial-ranged-heartseeker-v1.png",
 			"contentHash": "6277f4f66da64edf1c7f2c529baf925551ad5616a8caccfe7fa3378e9308b8bc"
 		},
-		"transactionContentHash": "0face51ed4fdb62718922be0ad0ff56b19e4febe10b5b6130c81bc537345f438",
+		"transactionContentHash": "0c8318031b74cac8347f89b54fe8a2301dd19a36e8f449d9f0b9558e5e1bf1e4",
 		"revisedInterior": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/revisions/martial-ranged-heartseeker-v1.png",
 			"contentHash": "a6ceb32a569e38eb77159afdba4b2fefbdda9cfcd2411777ade836919c9a4ede"
@@ -164,7 +164,7 @@
 			"vipsVersion": "8.18.3"
 		}
 	},
-	"transactionContentHash": "34e493516a3a185e1c8e05e176edfac5a1206f73a842c5666a7bc9fe517fa361",
+	"transactionContentHash": "e63d2dfce9caad66af9e24aa9cdbabe73979c9c845a85b3375d9138ea8ddabcf",
 	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/martial-ranged-heartseeker-v2.json",
 	"writtenOutputPaths": [
 		"assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/martial-ranged-heartseeker-v2.png",

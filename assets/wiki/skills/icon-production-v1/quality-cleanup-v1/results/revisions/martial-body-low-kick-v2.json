@@ -14,22 +14,22 @@
 	},
 	"revisionPacket": {
 		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions-v2/martial-body-low-kick-v2.json",
-		"contentHash": "7e13757c23089e0fbd3ab0b714a1b1409bb19de485670574f3798f81ba3d1c72"
+		"contentHash": "31f113e55ca46fe5e74b853bbd342e6c8e7ec71da97626906f731dc96adaadd4"
 	},
 	"predecessor": {
 		"packet": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions/martial-body-low-kick-v1.json",
-			"contentHash": "e9d5be1ced574f569fcda9a44a16fb2ae8288277188540991a283a51161a325e"
+			"contentHash": "b0765dc3800fa6931885c01aa5b941ef958f36c6b153fe479d02af1b482e3308"
 		},
 		"result": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/martial-body-low-kick-v1.json",
-			"contentHash": "44a9ed1462a15b0d94a8a2a7ed3162591274858f88b7eb3f606504486e7b735e"
+			"contentHash": "7b1e024ad19b47bd450c973a7e5ea756605a018180f993bd33547c399716721a"
 		},
 		"providerSource": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/martial-body-low-kick-v1.png",
 			"contentHash": "bec6b61c11e91d27192f0ef0e92f942ac1a26af68e38be3ac3833e07b25e7a55"
 		},
-		"transactionContentHash": "82aceeb38185ec08e2f34eaf3f4adb879f5acc86240ec08cdb8ced55998cc5e9",
+		"transactionContentHash": "8da9cc836828cbf6ee35e84f42977449b9def1b5fb005f7f1462059c51b4fd55",
 		"revisedInterior": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/revisions/martial-body-low-kick-v1.png",
 			"contentHash": "b065e5ac0349dd52278a9814b36f22f97a8065c45fb9bb27e2c5fabed418ae2d"
@@ -164,7 +164,7 @@
 			"vipsVersion": "8.18.3"
 		}
 	},
-	"transactionContentHash": "472040d7d861dc3e9d6f4bb8923e04f1b77e8d77fb7aa6a77b2090fbe15b2f34",
+	"transactionContentHash": "46ca4ee6c5faa2c13dcf2c9e28a95efed410c04a7b284f99224080d114a91ab5",
 	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/martial-body-low-kick-v2.json",
 	"writtenOutputPaths": [
 		"assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/martial-body-low-kick-v2.png",

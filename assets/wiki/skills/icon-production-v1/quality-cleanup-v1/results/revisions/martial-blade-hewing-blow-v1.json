@@ -13,11 +13,11 @@
 	},
 	"revisionPacket": {
 		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions/martial-blade-hewing-blow-v1.json",
-		"contentHash": "e0c0a51980f877e2a57f46b2eb4601f1e138372d23fdd25f9543e0a52b1360aa"
+		"contentHash": "7cd2bea4c6e4c3e14f35811f488a514bf4b622e58c51f1483da0476e79c9ab0c"
 	},
 	"cleanupManifest": {
 		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/manifest.json",
-		"contentHash": "b6a4fc968624464ac938fa9126d1df8e564c334f1a152077a38e93e97ac5873a"
+		"contentHash": "c74c3c7fe445d62271fc85a2a574d7ec6bef662f8e8415462dfa7c1cd84bda79"
 	},
 	"sourceCandidate": {
 		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-blade-hewing-blow.png",
@@ -13866,7 +13866,7 @@
 	},
 	"attemptCount": 2,
 	"attemptCeiling": 2,
-	"transactionContentHash": "c53bacc6c80e8b4336ab2dc568987393d116197c0887a63e54327c0ef11009fe",
+	"transactionContentHash": "087074acb10150d1ec79fb344454463c75335263f6f3f0278f4c322452e4446a",
 	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/martial-blade-hewing-blow-v1.json",
 	"writtenOutputPaths": [
 		"assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/martial-blade-hewing-blow-v1.png",

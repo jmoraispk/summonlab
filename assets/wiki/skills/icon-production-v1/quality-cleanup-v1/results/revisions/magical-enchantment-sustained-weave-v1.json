@@ -13,11 +13,11 @@
 	},
 	"revisionPacket": {
 		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions/magical-enchantment-sustained-weave-v1.json",
-		"contentHash": "7bf1a05f68019a8878f4fc2c24598a2fa3d48e01091ec014ccc14a97256fb6d8"
+		"contentHash": "895c91f780ad2000831a1acb67efcc1815df53982d1f9bf98031459f28d2b0ec"
 	},
 	"cleanupManifest": {
 		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/manifest.json",
-		"contentHash": "b6a4fc968624464ac938fa9126d1df8e564c334f1a152077a38e93e97ac5873a"
+		"contentHash": "c74c3c7fe445d62271fc85a2a574d7ec6bef662f8e8415462dfa7c1cd84bda79"
 	},
 	"sourceCandidate": {
 		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-enchantment-sustained-weave.png",
@@ -15526,7 +15526,7 @@
 	},
 	"attemptCount": 2,
 	"attemptCeiling": 2,
-	"transactionContentHash": "11329285b5718cff3e118b242bf73047b10853eab1d2cb27422b1b85db5351d5",
+	"transactionContentHash": "9147bc7c829652f6273ba2a96377ec0d4f006f894021f36781e12a9c9c9dff77",
 	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/magical-enchantment-sustained-weave-v1.json",
 	"writtenOutputPaths": [
 		"assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/magical-enchantment-sustained-weave-v1.png",

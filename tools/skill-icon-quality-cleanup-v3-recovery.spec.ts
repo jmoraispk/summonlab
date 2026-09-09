@@ -93,6 +93,11 @@ describe('cleanup semantic-revision v3 recovery', () => {
 		).buildCleanupGenerationRevisionV3Packets;
 		expect(builder).toBeTypeOf('function');
 		const packets = await builder!(workspaceRoot);
+		const tamingV2AuditPath =
+			'assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/completion-audits/craft-gathering-taming-v2.json';
+		const tamingV2AuditContentHash = sha256(
+			await readFile(path.join(workspaceRoot, tamingV2AuditPath))
+		);
 		expect(packets).toHaveLength(1);
 		expect(packets[0]).toMatchObject({
 			path: 'assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions-v3/craft-gathering-taming-v3.json',
@@ -108,8 +113,8 @@ describe('cleanup semantic-revision v3 recovery', () => {
 				},
 				predecessor: {
 					completionAudit: {
-						path: 'assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/completion-audits/craft-gathering-taming-v2.json',
-						contentHash: 'c45c6030cf8457362fa3986df1bccced9118d2124ebe0dec03a17deeb21ccf83'
+						path: tamingV2AuditPath,
+						contentHash: tamingV2AuditContentHash
 					}
 				}
 			}

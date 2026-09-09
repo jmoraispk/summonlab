@@ -4,11 +4,11 @@
 	"targetId": "martial:polearm:berserk-swing",
 	"revisionPacket": {
 		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions-v3/martial-polearm-berserk-swing-v3.json",
-		"contentHash": "db0d162120be243bd23045d084871711580ddb75b451d61e333645610159c78e"
+		"contentHash": "7c1eb100bc307c376c10800e2754791a6a05d10ee8531a5845c395437e02c887"
 	},
 	"result": {
 		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/martial-polearm-berserk-swing-v3.json",
-		"contentHash": "1e601affa6e3e6754128729114c9e98978faf7072f51eef57798dc43cefaa93d"
+		"contentHash": "8b1260081f42443956c20f64c5d38211739e7e9f27dd78f770702439cc4bcbc5"
 	},
 	"status": "candidate",
 	"corePublication": {
@@ -30,7 +30,7 @@
 			},
 			"result": {
 				"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/martial-polearm-berserk-swing-v3.json",
-				"contentHash": "1e601affa6e3e6754128729114c9e98978faf7072f51eef57798dc43cefaa93d"
+				"contentHash": "8b1260081f42443956c20f64c5d38211739e7e9f27dd78f770702439cc4bcbc5"
 			}
 		}
 	}

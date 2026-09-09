@@ -16,17 +16,17 @@
 	"predecessor": {
 		"packet": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions-v2/craft-forging-weaponsmithing-v2.json",
-			"contentHash": "0b5422bec5662da24e3540c095c7055da32f0edf86363188169e5320a0962107"
+			"contentHash": "2ebbbfc242b36d394f7fca43ba1f6eb608229942d955c07940a3db05ab76b7a5"
 		},
 		"result": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/craft-forging-weaponsmithing-v2.json",
-			"contentHash": "5d3e9eddeec8ace66b031a23f7915c80533d56db40f081156e2f4ec73e8a731f"
+			"contentHash": "1b2b19abe1ae128c0d5b97a8bea62b3eafa18ca70d4fe8ba8b83e0b4e6c492db"
 		},
 		"providerSource": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/craft-forging-weaponsmithing-v2.png",
 			"contentHash": "d026a3d5ee12364d1d555192d534fd3ecd3e94dd33fbf6f7420956c5204cbc75"
 		},
-		"transactionContentHash": "d0c35dc9fa1ec68879cde7c5204f774ad725f05200b269898612e4634d9a0580",
+		"transactionContentHash": "d0579787209c76354bbaf82600c8d07403a5263a123a2a9ad184da5e3ce6f8a2",
 		"revisedInterior": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/revisions/craft-forging-weaponsmithing-v2.png",
 			"contentHash": "ec4956b9e8c0cb1ff242c4dd09c32e39a59e11d83ee396b6e37c343c22a0ab48"

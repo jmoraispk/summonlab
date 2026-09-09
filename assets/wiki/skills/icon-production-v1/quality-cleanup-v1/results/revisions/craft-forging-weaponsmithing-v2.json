@@ -14,22 +14,22 @@
 	},
 	"revisionPacket": {
 		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions-v2/craft-forging-weaponsmithing-v2.json",
-		"contentHash": "0b5422bec5662da24e3540c095c7055da32f0edf86363188169e5320a0962107"
+		"contentHash": "2ebbbfc242b36d394f7fca43ba1f6eb608229942d955c07940a3db05ab76b7a5"
 	},
 	"predecessor": {
 		"packet": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions/craft-forging-weaponsmithing-v1.json",
-			"contentHash": "6379f3ba557487927881aac6e1eae30ae0b4583460eef84628aa4146d7ca95c8"
+			"contentHash": "38dabfdec80b408a69ce25ca11e81411f8a115af5bdc63c621f58a39d05c5c1e"
 		},
 		"result": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/craft-forging-weaponsmithing-v1.json",
-			"contentHash": "5d038aa3cbe2fb7983185af08e21ec63402096cabd36fc4b72cfdd52b73615c5"
+			"contentHash": "02730dcac2851fde30e9996c74cac92b45a119e9ba4e8f8d81092b0e9eb10f63"
 		},
 		"providerSource": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/craft-forging-weaponsmithing-v1.png",
 			"contentHash": "d026a3d5ee12364d1d555192d534fd3ecd3e94dd33fbf6f7420956c5204cbc75"
 		},
-		"transactionContentHash": "51903e3c90c75c8d9945b35d60b328b50b9b2624bfc0c4122547e53f3837af36",
+		"transactionContentHash": "55eeb0f40d6dc248fb2675d1216b3d724b054cb7f800712fd3558e382f38c870",
 		"revisedInterior": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/revisions/craft-forging-weaponsmithing-v1.png",
 			"contentHash": "78f641ebee6aac02cd773b2098107c51a034193f97dd5b3644b9f5c90cad5eb1"
@@ -164,7 +164,7 @@
 			"vipsVersion": "8.18.3"
 		}
 	},
-	"transactionContentHash": "d0c35dc9fa1ec68879cde7c5204f774ad725f05200b269898612e4634d9a0580",
+	"transactionContentHash": "d0579787209c76354bbaf82600c8d07403a5263a123a2a9ad184da5e3ce6f8a2",
 	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/craft-forging-weaponsmithing-v2.json",
 	"writtenOutputPaths": [
 		"assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/craft-forging-weaponsmithing-v2.png",
