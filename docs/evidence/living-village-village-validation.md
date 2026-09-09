@@ -6,6 +6,53 @@ Route: `/living-village-lab/village`
 
 Branch: `codex/lv-village-screen`
 
+## 2026-09-09 threshold-foundation revision
+
+Branch: `codex/village-threshold-implementation-plan`
+
+The accepted v4 Village direction is now represented by one UI-free, hero-free 1536×1024 runtime
+environment. Its stable presentation places the standalone Tower Portal at rear center, Summoning
+Circle upper left, Residence lower left, Training Grounds upper right, and Forge lower right. One
+broad axial road and four branches remain clear for code-rendered residents and route projections.
+
+The presentation layer deliberately preserves the authoritative Hearth 01 simulation. Residence
+aggregates the existing `kitchen` and `dormitory` building projections; Summoning Circle binds the
+existing `summoning-gate`; Training Grounds binds `training-ground`; Forge binds `workshop`; and the
+Tower Portal opens `mode=tower` without fabricating an engine building or route node.
+
+The persistent shell now exposes five ordered modes: Village, Residents, Tower, Inventory, and
+Missions. Tower is intentionally a truthful foundation surface: it explains conquered-floor repeat
+and next-floor preparation, but exposes no enabled action until floor, party, cargo, repeat, and
+`/explore/[runId]` contracts exist.
+
+Focused static-lab proof:
+
+```bash
+pnpm --filter @summonlab/web test:e2e -- living-village-lab/village/village.e2e.ts
+```
+
+Result: **2 passed** at 1440×1000 and 390×844. The test covers five current facility regions, the
+1536×1024 environment, true-alpha approved cutouts, selection, facility activation, pointer and
+keyboard camera controls, 100–300% zoom, Fit/Reset behavior, reduced motion, 44px phone controls,
+and horizontal-overflow prevention. It also confirms the lab makes no API requests.
+
+Current captures:
+
+- `docs/evidence/village-threshold-foundation-desktop.png`
+- `docs/evidence/village-threshold-foundation-phone.png`
+
+Both captures were inspected after the passing run. The production campaign E2E remains dependent
+on PostgreSQL at `127.0.0.1:54329`; Docker is unavailable in this environment, so that test is
+reported separately rather than replaced by client-owned fixtures. The historical settlement lab
+also remains blocked by its pre-existing stale `phase-3-runtime-budget.json` schema, outside this
+Village presentation slice.
+
+Tower progression, expedition preparation, Mission Inventory, return reconciliation, authoritative
+point-to-move commands, and facility tier upgrades remain separate contract-owned follow-ons.
+
+The sections below preserve the original 2026-08-29 prototype evidence and accepted feedback as
+design history.
+
 ## Crash recovery
 
 The resumed worktree was clean and detached at `b99c186` (`origin/main`). No modified or untracked

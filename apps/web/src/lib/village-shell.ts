@@ -1,6 +1,7 @@
 export const VILLAGE_MODES = [
 	{ id: 'village', label: 'Village', route: '/play/[runId]' },
 	{ id: 'residents', label: 'Residents', route: '/play/[runId]?mode=residents' },
+	{ id: 'tower', label: 'Tower', route: '/play/[runId]?mode=tower' },
 	{ id: 'inventory', label: 'Inventory', route: '/play/[runId]?mode=inventory' },
 	{ id: 'missions', label: 'Missions', route: '/play/[runId]?mode=missions' }
 ] as const;

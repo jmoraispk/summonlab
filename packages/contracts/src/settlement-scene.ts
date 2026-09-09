@@ -23,6 +23,38 @@ export const NormalizedSceneBoundsSchema = z
 		message: 'Scene bounds must remain inside the normalized canvas'
 	});
 
+export const VillageFacilityIdSchema = z.enum([
+	'summoning-circle',
+	'residence',
+	'training-grounds',
+	'forge',
+	'tower-portal'
+]);
+
+export const SettlementSceneHotspotTargetSchema = z.discriminatedUnion('kind', [
+	z
+		.object({
+			kind: z.literal('settlement-buildings'),
+			buildingIds: z.array(SceneSlugSchema).min(1).max(2),
+			entranceNodeIds: z.array(SceneSlugSchema).min(1).max(2)
+		})
+		.strict(),
+	z.object({ kind: z.literal('village-mode'), mode: z.literal('tower') }).strict()
+]);
+
+export const SettlementSceneHotspotSchema = z
+	.object({
+		facilityId: VillageFacilityIdSchema,
+		label: z.string().min(1).max(48),
+		target: SettlementSceneHotspotTargetSchema,
+		center: NormalizedScenePointSchema,
+		bounds: NormalizedSceneBoundsSchema,
+		labelAnchor: NormalizedScenePointSchema,
+		labelPlacement: z.enum(['above-left', 'above-right', 'below-left', 'below-right']),
+		labelPriority: z.number().int().min(1).max(5)
+	})
+	.strict();
+
 export const SettlementSceneLayerKindSchema = z.enum([
 	'bitmap-base',
 	'code-atmosphere',
@@ -45,7 +77,7 @@ export const SettlementSceneLayerSchema = z
 
 export const SettlementSceneDefinitionSchema = z
 	.object({
-		schemaVersion: z.literal('settlement-scene-v1'),
+		schemaVersion: z.literal('settlement-scene-v2'),
 		sceneVersion: ContentVersionSchema,
 		status: z.literal('approval-candidate'),
 		settlementContentVersion: ContentVersionSchema,
@@ -119,18 +151,7 @@ export const SettlementSceneDefinitionSchema = z
 			})
 			.strict(),
 		layers: z.array(SettlementSceneLayerSchema).length(6),
-		hotspots: z
-			.array(
-				z
-					.object({
-						buildingId: SceneSlugSchema,
-						entranceNodeId: SceneSlugSchema,
-						center: NormalizedScenePointSchema,
-						bounds: NormalizedSceneBoundsSchema
-					})
-					.strict()
-			)
-			.length(5),
+		hotspots: z.array(SettlementSceneHotspotSchema).length(5),
 		nodeProjections: z
 			.array(
 				z
@@ -175,13 +196,36 @@ export const SettlementSceneDefinitionSchema = z
 				context.addIssue({ code: 'custom', message: `Scene layer kind is missing: ${kind}` });
 			}
 		}
-		if (new Set(scene.hotspots.map((hotspot) => hotspot.buildingId)).size !== 5) {
+		const facilityIds = new Set(scene.hotspots.map((hotspot) => hotspot.facilityId));
+		if (
+			facilityIds.size !== VillageFacilityIdSchema.options.length ||
+			VillageFacilityIdSchema.options.some((facilityId) => !facilityIds.has(facilityId))
+		) {
 			context.addIssue({
 				code: 'custom',
-				message: 'Scene hotspots must reference unique buildings'
+				message: 'Scene hotspots must contain every visual facility exactly once'
 			});
 		}
+		const modeTargets = scene.hotspots.filter((hotspot) => hotspot.target.kind === 'village-mode');
+		if (modeTargets.length !== 1 || modeTargets[0]?.facilityId !== 'tower-portal') {
+			context.addIssue({
+				code: 'custom',
+				message: 'Tower Portal must be the only Village-mode scene target'
+			});
+		}
+		const buildingIds: string[] = [];
+		const entranceNodeIds: string[] = [];
 		for (const hotspot of scene.hotspots) {
+			if (hotspot.target.kind === 'settlement-buildings') {
+				if (hotspot.target.buildingIds.length !== hotspot.target.entranceNodeIds.length) {
+					context.addIssue({
+						code: 'custom',
+						message: `Scene facility bindings must pair buildings and entrances: ${hotspot.facilityId}`
+					});
+				}
+				buildingIds.push(...hotspot.target.buildingIds);
+				entranceNodeIds.push(...hotspot.target.entranceNodeIds);
+			}
 			if (
 				hotspot.center.x < hotspot.bounds.x ||
 				hotspot.center.x > hotspot.bounds.x + hotspot.bounds.width ||
@@ -190,9 +234,26 @@ export const SettlementSceneDefinitionSchema = z
 			) {
 				context.addIssue({
 					code: 'custom',
-					message: `Scene hotspot center escaped its bounds: ${hotspot.buildingId}`
+					message: `Scene hotspot center escaped its bounds: ${hotspot.facilityId}`
 				});
 			}
+			if (
+				hotspot.labelAnchor.x < hotspot.bounds.x ||
+				hotspot.labelAnchor.x > hotspot.bounds.x + hotspot.bounds.width ||
+				hotspot.labelAnchor.y < hotspot.bounds.y ||
+				hotspot.labelAnchor.y > hotspot.bounds.y + hotspot.bounds.height
+			) {
+				context.addIssue({
+					code: 'custom',
+					message: `Scene label anchor escaped its bounds: ${hotspot.facilityId}`
+				});
+			}
+		}
+		if (new Set(buildingIds).size !== buildingIds.length) {
+			context.addIssue({ code: 'custom', message: 'Scene building bindings must be unique' });
+		}
+		if (new Set(entranceNodeIds).size !== entranceNodeIds.length) {
+			context.addIssue({ code: 'custom', message: 'Scene entrance bindings must be unique' });
 		}
 		if (
 			new Set(scene.nodeProjections.map((projection) => projection.nodeId)).size !==
@@ -203,5 +264,7 @@ export const SettlementSceneDefinitionSchema = z
 	});
 
 export type NormalizedScenePoint = z.infer<typeof NormalizedScenePointSchema>;
+export type VillageFacilityId = z.infer<typeof VillageFacilityIdSchema>;
+export type SettlementSceneHotspot = z.infer<typeof SettlementSceneHotspotSchema>;
 export type SettlementSceneDefinition = z.infer<typeof SettlementSceneDefinitionSchema>;
 export type SettlementSceneLayer = z.infer<typeof SettlementSceneLayerSchema>;

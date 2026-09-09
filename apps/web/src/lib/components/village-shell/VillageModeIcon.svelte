@@ -5,7 +5,7 @@
 	const source = $derived(`/ui/village-nav/${mode}.png`);
 </script>
 
-<!-- Exact artwork extracted from the approved four-mode phone navigation reference. -->
+<!-- Raster artwork derived from the approved five-mode navigation reference. -->
 <img src={source} width="130" height="130" alt="" aria-hidden="true" data-testid="plan-nav-icon" />
 
 <style>

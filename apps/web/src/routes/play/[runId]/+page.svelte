@@ -19,6 +19,7 @@
 	import VillageMissionsPanel from '$lib/components/village-shell/VillageMissionsPanel.svelte';
 	import VillageModeNav from '$lib/components/village-shell/VillageModeNav.svelte';
 	import VillageResidentsPanel from '$lib/components/village-shell/VillageResidentsPanel.svelte';
+	import VillageTowerPanel from '$lib/components/village-shell/VillageTowerPanel.svelte';
 	import { focusDialog, handleModalKeydown } from '$lib/modal-focus';
 	import type { EquipmentWorkshopProjection } from '$lib/server/equipment-runtime';
 
@@ -267,6 +268,8 @@
 
 	{#if data.campaignView && data.mode === 'residents'}
 		<VillageResidentsPanel residents={data.residents} />
+	{:else if data.campaignView && data.mode === 'tower'}
+		<VillageTowerPanel />
 	{:else if data.campaignView && data.mode === 'missions'}
 		<VillageMissionsPanel objectives={data.campaignView.objectives} />
 	{:else if data.campaignView && data.mode === 'inventory'}

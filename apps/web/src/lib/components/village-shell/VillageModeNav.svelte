@@ -25,7 +25,7 @@
 		position: relative;
 		z-index: 35;
 		display: grid;
-		grid-template-columns: repeat(4, minmax(7.5rem, 10rem));
+		grid-template-columns: repeat(5, minmax(7.5rem, 10rem));
 		justify-content: center;
 		border-bottom: 1px solid rgba(194, 152, 89, 0.28);
 		background:
@@ -112,7 +112,7 @@
 			bottom: 0;
 			left: 0;
 			z-index: 80;
-			grid-template-columns: repeat(4, minmax(0, 1fr));
+			grid-template-columns: repeat(5, minmax(0, 1fr));
 			padding-bottom: env(safe-area-inset-bottom);
 			border-top: 1px solid rgba(195, 151, 87, 0.42);
 			border-bottom: 0;

@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { resolve } from '$app/paths';
 	import type {
 		SettlementBuilding,
 		SettlementDefinition,
@@ -75,7 +76,7 @@
 			class="environment-base"
 			data-layer-kind="bitmap-base"
 			src={scene.runtime.publicPath}
-			alt="Hero-free high three-quarter view of Hearth 01 with the summoning gate north, kitchen west, dormant workshop east, dormitory southwest, and training court southeast."
+			alt="Hero-free high three-quarter view of Hearth 01 with a rear Tower Portal, Summoning Circle and Residence to the left, and Training Grounds and Forge to the right."
 			width={scene.runtime.width}
 			height={scene.runtime.height}
 			decoding="async"
@@ -85,9 +86,9 @@
 			<i></i><i></i>
 		</div>
 		<div class="illumination-layer" data-layer-kind="code-illumination" aria-hidden="true">
-			<i class="gate-light"></i>
-			<i class="kitchen-light"></i>
-			<i class="dormitory-light"></i>
+			<i class="portal-light"></i>
+			<i class="circle-light"></i>
+			<i class="residence-light"></i>
 		</div>
 
 		<svg
@@ -122,28 +123,39 @@
 		</div>
 
 		<div class="hotspot-layer" data-layer-kind="code-interface">
-			{#each scene.hotspots as hotspot (hotspot.buildingId)}
-				{@const building = buildingById.get(hotspot.buildingId)!}
-				<button
-					type="button"
-					class="scene-hotspot"
-					class:selected={building.buildingId === selectedBuildingId}
-					class:dormant={building.kind === 'workshop' && routeProfile === 'reserve'}
-					style={hotspotStyle(hotspot)}
-					aria-label={`Inspect ${building.label} in painted settlement`}
-					aria-pressed={building.buildingId === selectedBuildingId}
-					onclick={() => onSelectBuilding(building)}
-				>
-					<span>
-						<i></i>
-						<strong>{building.shortLabel}</strong>
-						<small
-							>{building.kind === 'workshop' && routeProfile === 'reserve'
-								? 'dormant'
-								: 'inspect'}</small
-						>
-					</span>
-				</button>
+			{#each scene.hotspots as hotspot (hotspot.facilityId)}
+				{#if hotspot.target.kind === 'settlement-buildings'}
+					{@const building = buildingById.get(hotspot.target.buildingIds[0]!)!}
+					<button
+						type="button"
+						class="scene-hotspot"
+						class:selected={building.buildingId === selectedBuildingId}
+						class:dormant={building.kind === 'workshop' && routeProfile === 'reserve'}
+						style={hotspotStyle(hotspot)}
+						aria-label={`Inspect ${hotspot.label} in painted settlement`}
+						aria-pressed={building.buildingId === selectedBuildingId}
+						onclick={() => onSelectBuilding(building)}
+					>
+						<span>
+							<i></i>
+							<strong>{hotspot.label}</strong>
+							<small
+								>{building.kind === 'workshop' && routeProfile === 'reserve'
+									? 'dormant'
+									: 'inspect'}</small
+							>
+						</span>
+					</button>
+				{:else}
+					<a
+						class="scene-hotspot portal-hotspot"
+						style={hotspotStyle(hotspot)}
+						href={resolve('/living-village-lab/tower')}
+						aria-label="Open Tower mode through Tower Portal"
+					>
+						<span><i></i><strong>{hotspot.label}</strong><small>open</small></span>
+					</a>
+				{/if}
 			{/each}
 		</div>
 
@@ -291,25 +303,25 @@
 		filter: blur(15px);
 		animation: light-breathe 4.8s ease-in-out infinite alternate;
 	}
-	.gate-light {
+	.portal-light {
 		left: 39%;
 		top: 10%;
 		width: 22%;
 		height: 28%;
 		background: radial-gradient(circle, rgba(91, 211, 238, 0.2), transparent 68%);
 	}
-	.kitchen-light,
-	.dormitory-light {
+	.circle-light,
+	.residence-light {
 		width: 21%;
 		height: 22%;
 		background: radial-gradient(circle, rgba(230, 154, 68, 0.15), transparent 70%);
 		animation-delay: -2.2s;
 	}
-	.kitchen-light {
+	.circle-light {
 		left: 12%;
 		top: 24%;
 	}
-	.dormitory-light {
+	.residence-light {
 		left: 18%;
 		top: 56%;
 	}
@@ -386,6 +398,8 @@
 		background: transparent;
 		color: #f4efe3;
 		cursor: pointer;
+		color: inherit;
+		text-decoration: none;
 		pointer-events: auto;
 		transition:
 			border-color 160ms ease,

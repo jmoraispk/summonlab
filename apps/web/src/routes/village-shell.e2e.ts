@@ -102,7 +102,7 @@ test('persistent Village shell connects campaign destinations on desktop and pho
 	await page.goto(`/play/${runId}`);
 
 	const desktopNav = page.getByRole('navigation', { name: 'Village destinations' });
-	await expect(desktopNav.getByRole('link')).toHaveCount(4);
+	await expect(desktopNav.getByRole('link')).toHaveCount(5);
 	await expect(desktopNav.getByRole('link', { name: 'Village', exact: true })).toHaveAttribute(
 		'aria-current',
 		'page'
@@ -154,7 +154,19 @@ test('persistent Village shell connects campaign destinations on desktop and pho
 	await expect(desktopScene).not.toContainText('Dara Zev');
 	await expect(desktopScene).not.toContainText('Mara Vey');
 	await expect(desktopScene.locator('img.environment')).toBeVisible();
-	await expect(desktopScene.locator('.building-chip')).toHaveCount(5);
+	const desktopFacilities = desktopScene.getByTestId('village-facility');
+	await expect(desktopFacilities).toHaveCount(5);
+	for (const label of [
+		'Summoning Circle',
+		'Residence',
+		'Training Grounds',
+		'Forge',
+		'Tower Portal'
+	]) {
+		await expect(desktopFacilities.getByText(label, { exact: true })).toBeVisible();
+	}
+	await expect(desktopFacilities.getByText('Kitchen', { exact: true })).toHaveCount(0);
+	await expect(desktopFacilities.getByText('Dorm', { exact: true })).toHaveCount(0);
 	await expect(desktopScene.locator('.time-plaque')).toBeVisible();
 	await expect(desktopScene.getByText('Authoritative world')).toBeVisible();
 	await expect(
@@ -190,6 +202,13 @@ test('persistent Village shell connects campaign destinations on desktop and pho
 	await expect(page.getByTestId('village-inventory')).toContainText(
 		'Shared Village Inventory is not established for this campaign yet.'
 	);
+
+	await page.getByRole('link', { name: 'Tower', exact: true }).click();
+	await expect(page).toHaveURL(`/play/${runId}?mode=tower`);
+	await expect(page.getByTestId('village-tower')).toContainText(
+		'Expedition controls are not connected yet.'
+	);
+	await expect(page.getByRole('button', { name: /Depart|Repeat|Prepare/u })).toHaveCount(0);
 
 	await page.setViewportSize({ width: 390, height: 844 });
 	await page.goto(`/play/${runId}`);
@@ -227,7 +246,7 @@ test('persistent Village shell connects campaign destinations on desktop and pho
 	).toBe(false);
 	const phoneNav = page.getByRole('navigation', { name: 'Village destinations' });
 	const phoneLinks = phoneNav.getByRole('link');
-	await expect(phoneLinks).toHaveCount(4);
+	await expect(phoneLinks).toHaveCount(5);
 	const approvedIconPaths = [
 		'/ui/village-nav/village.png',
 		'/ui/village-nav/residents.png',

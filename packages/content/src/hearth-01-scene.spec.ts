@@ -27,12 +27,25 @@ describe('Hearth 01 layered scene', () => {
 
 	it('projects every authored building and node exactly once', async () => {
 		const [settlement, scene] = await Promise.all([loadHearth01(), loadHearth01Scene()]);
-
-		expect(scene.hotspots.map((hotspot) => hotspot.buildingId).sort()).toEqual(
-			settlement.buildings.map((building) => building.buildingId).sort()
-		);
-		expect(scene.hotspots.map((hotspot) => hotspot.entranceNodeId).sort()).toEqual(
-			settlement.buildings.map((building) => building.entranceNodeId).sort()
+		expect(
+			scene.hotspots
+				.flatMap((hotspot) =>
+					hotspot.target.kind === 'settlement-buildings' ? hotspot.target.buildingIds : []
+				)
+				.sort()
+		).toEqual(settlement.buildings.map((building) => building.buildingId).sort());
+		expect(
+			scene.hotspots
+				.flatMap((hotspot) =>
+					hotspot.target.kind === 'settlement-buildings' ? hotspot.target.entranceNodeIds : []
+				)
+				.sort()
+		).toEqual(settlement.buildings.map((building) => building.entranceNodeId).sort());
+		expect(scene.hotspots.find((hotspot) => hotspot.facilityId === 'tower-portal')?.target).toEqual(
+			{
+				kind: 'village-mode',
+				mode: 'tower'
+			}
 		);
 		expect(scene.nodeProjections.map((projection) => projection.nodeId).sort()).toEqual(
 			settlement.nodes.map((node) => node.nodeId).sort()

@@ -1,4 +1,5 @@
-export type VillageFacilityId = 'gate' | 'court' | 'tower' | 'forge' | 'kitchen' | 'dormitory';
+export type VillageFacilityId =
+	'summoning-circle' | 'residence' | 'training-grounds' | 'forge' | 'tower-portal';
 
 export type VillageHeroId =
 	'dara-zev' | 'mara-vey' | 'jori-daro' | 'kira-toren' | 'iven-orra' | 'remy-nahl';

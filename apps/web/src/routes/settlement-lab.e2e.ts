@@ -14,12 +14,16 @@ test('inspects all five Hearth 01 interiors and deterministic access-aware route
 	const routeBudgetText = (await routeBudget.textContent()) ?? '';
 	const routeKilobytes = Number(routeBudgetText.match(/(\d+\.\d) KB route JS/)?.[1]);
 	expect(routeKilobytes).toBeLessThanOrEqual(700);
-	await expect(page.getByText('c88d39611eee5b39')).toBeVisible();
-	await expect(page.getByText('296.2 KB WebP')).toBeVisible();
+	await expect(page.getByText('349343dac24f3708')).toBeVisible();
+	await expect(page.getByText('555.4 KB WebP')).toBeVisible();
 	const paintedScene = page.getByTestId('painted-settlement-scene');
 	await expect(paintedScene).toBeVisible();
 	await expect(paintedScene.locator('[data-layer-kind]')).toHaveCount(6);
 	await expect(paintedScene.locator('.scene-hotspot')).toHaveCount(5);
+	await expect(paintedScene.getByRole('button')).toHaveCount(4);
+	await expect(
+		paintedScene.getByRole('link', { name: 'Open Tower mode through Tower Portal' })
+	).toBeVisible();
 	await expect
 		.poll(() =>
 			paintedScene
@@ -28,9 +32,7 @@ test('inspects all five Hearth 01 interiors and deterministic access-aware route
 		)
 		.toBe('1536x1024');
 
-	await page
-		.getByRole('button', { name: 'Inspect Dormant Workshop in painted settlement' })
-		.click();
+	await page.getByRole('button', { name: 'Inspect Forge in painted settlement' }).click();
 	await expect(page.getByRole('heading', { name: 'Dormant Workshop' })).toBeVisible();
 	await expect(page.locator('.building-button')).toHaveCount(5);
 	for (const building of [

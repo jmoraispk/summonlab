@@ -1,7 +1,8 @@
 import type {
 	NormalizedScenePoint,
 	SettlementPresentation,
-	SettlementSceneDefinition
+	SettlementSceneDefinition,
+	VillageFacilityId
 } from '@summonlab/contracts';
 
 import type { VillageResident } from './village-shell';
@@ -15,9 +16,83 @@ export interface VillageSceneResident {
 	readonly label: string;
 }
 
+export interface VillageFacilityProjection {
+	readonly hotspot: SettlementSceneDefinition['hotspots'][number];
+	readonly facilityId: VillageFacilityId;
+	readonly label: string;
+	readonly buildingIds: readonly string[];
+	readonly occupantHeroIds: readonly string[];
+	readonly occupantCount: number;
+	readonly assignmentCount: number;
+	readonly assignmentCapacity: number;
+	readonly powerState: 'powered' | 'reserve' | 'unpowered' | 'unknown' | 'destination';
+	readonly hrefMode: 'tower' | null;
+}
+
 const MINIMUM_SCENE_X = 0.08;
 const MAXIMUM_SCENE_X = 0.92;
 const CLUSTER_SLOT_REM = 7.5;
+
+export function projectVillageFacilities(
+	scene: SettlementSceneDefinition,
+	presentation: SettlementPresentation
+): readonly VillageFacilityProjection[] {
+	const buildings = new Map(
+		presentation.buildings.map((building) => [building.buildingId, building])
+	);
+
+	return scene.hotspots.map((hotspot) => {
+		if (hotspot.target.kind === 'village-mode') {
+			return {
+				hotspot,
+				facilityId: hotspot.facilityId,
+				label: hotspot.label,
+				buildingIds: [],
+				occupantHeroIds: [],
+				occupantCount: 0,
+				assignmentCount: 0,
+				assignmentCapacity: 0,
+				powerState: 'destination',
+				hrefMode: hotspot.target.mode
+			};
+		}
+
+		const boundBuildings = hotspot.target.buildingIds.map((buildingId) =>
+			buildings.get(buildingId)
+		);
+		const missingBinding = boundBuildings.some((building) => building === undefined);
+		const knownBuildings = boundBuildings.filter((building) => building !== undefined);
+		const occupantHeroIds = [
+			...new Set(knownBuildings.flatMap((building) => building.occupantHeroIds))
+		];
+		const powerState = missingBinding
+			? 'unknown'
+			: knownBuildings.some((building) => building.powerState === 'powered')
+				? 'powered'
+				: knownBuildings.some((building) => building.powerState === 'reserve')
+					? 'reserve'
+					: 'unpowered';
+
+		return {
+			hotspot,
+			facilityId: hotspot.facilityId,
+			label: hotspot.label,
+			buildingIds: hotspot.target.buildingIds,
+			occupantHeroIds,
+			occupantCount: occupantHeroIds.length,
+			assignmentCount: knownBuildings.reduce(
+				(total, building) => total + building.assignmentCount,
+				0
+			),
+			assignmentCapacity: knownBuildings.reduce(
+				(total, building) => total + building.assignmentCapacity,
+				0
+			),
+			powerState,
+			hrefMode: null
+		};
+	});
+}
 
 export function projectVillageSceneResidents(
 	scene: SettlementSceneDefinition,

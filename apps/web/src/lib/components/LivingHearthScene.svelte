@@ -6,7 +6,7 @@
 		SettlementPresentation,
 		SettlementSceneDefinition
 	} from '@summonlab/contracts';
-	import { projectVillageSceneResidents } from '$lib/village-scene';
+	import { projectVillageFacilities, projectVillageSceneResidents } from '$lib/village-scene';
 	import type { VillageResident } from '$lib/village-shell';
 
 	let {
@@ -22,11 +22,10 @@
 	} = $props();
 
 	const sceneResidents = $derived(projectVillageSceneResidents(scene, presentation, residents));
+	const facilities = $derived(projectVillageFacilities(scene, presentation));
 	const primaryOccupant = $derived(sceneResidents[0]?.occupant ?? null);
 	let unavailableArtHeroIds = $state<ReadonlySet<string>>(new Set());
-	const buildingState = $derived(
-		new Map(presentation.buildings.map((building) => [building.buildingId, building]))
-	);
+	let focusedFacilityId = $state<string | null>(null);
 	const phaseCopy = $derived(
 		presentation.dayPhase === 'dawn'
 			? 'First light catches on the gate.'
@@ -39,15 +38,6 @@
 
 	function markSceneArtUnavailable(heroId: string) {
 		unavailableArtHeroIds = new Set([...unavailableArtHeroIds, heroId]);
-	}
-
-	function buildingLabel(buildingId: string): string {
-		return buildingId
-			.replace('summoning-gate', 'Gate')
-			.replace('training-ground', 'Training')
-			.replace('dormitory', 'Dorm')
-			.replace('workshop', 'Forge')
-			.replace('kitchen', 'Kitchen');
 	}
 </script>
 
@@ -76,22 +66,45 @@
 	<div class="mist mist-one"></div>
 	<div class="mist mist-two"></div>
 
-	{#each scene.hotspots as hotspot (hotspot.buildingId)}
-		{@const state = buildingState.get(hotspot.buildingId)}
+	{#each facilities as facility (facility.facilityId)}
+		{@const hotspot = facility.hotspot}
 		<div
-			class:powered={state?.powerState === 'powered'}
-			class:inhabited={(state?.occupantHeroIds.length ?? 0) > 0}
+			class:powered={facility.powerState === 'powered' || facility.powerState === 'destination'}
+			class:inhabited={facility.occupantCount > 0}
 			class="building-aura"
 			style={`--x:${hotspot.center.x * 100}%;--y:${hotspot.center.y * 100}%;--w:${hotspot.bounds.width * 100}%;--h:${hotspot.bounds.height * 100}%`}
 		></div>
-		<div
-			class="building-chip"
-			style={`--x:${hotspot.center.x * 100}%;--y:${hotspot.center.y * 100}%`}
-			data-power={state?.powerState ?? 'unknown'}
-		>
-			<span>{buildingLabel(hotspot.buildingId)}</span>
-			<small>{state?.occupantHeroIds.length ?? 0} here · {state?.powerState ?? 'unknown'}</small>
-		</div>
+		{#if facility.hrefMode === 'tower'}
+			<a
+				class="facility-pointer placement-{hotspot.labelPlacement}"
+				class:focused={focusedFacilityId === facility.facilityId}
+				style={`--x:${hotspot.labelAnchor.x * 100}%;--y:${hotspot.labelAnchor.y * 100}%`}
+				href={resolve(`/play/${page.params.runId}?mode=tower`)}
+				data-testid="village-facility"
+				data-power={facility.powerState}
+				onfocus={() => (focusedFacilityId = facility.facilityId)}
+				onblur={() => (focusedFacilityId = null)}
+				aria-label="Open Tower mode through Tower Portal"
+			>
+				<span>{facility.label}</span><small>Open floor travel</small>
+			</a>
+		{:else}
+			<button
+				type="button"
+				class="facility-pointer placement-{hotspot.labelPlacement}"
+				class:focused={focusedFacilityId === facility.facilityId}
+				style={`--x:${hotspot.labelAnchor.x * 100}%;--y:${hotspot.labelAnchor.y * 100}%`}
+				data-testid="village-facility"
+				data-power={facility.powerState}
+				onclick={() => (focusedFacilityId = facility.facilityId)}
+				onfocus={() => (focusedFacilityId = facility.facilityId)}
+				aria-pressed={focusedFacilityId === facility.facilityId}
+				aria-label={`Inspect ${facility.label}; ${facility.occupantCount} residents here`}
+			>
+				<span>{facility.label}</span>
+				<small>{facility.occupantCount} here · {facility.powerState}</small>
+			</button>
+		{/if}
 	{/each}
 
 	{#each sceneResidents as sceneResident (sceneResident.occupant.heroId)}
@@ -170,11 +183,15 @@
 	{/if}
 
 	<div class="occupancy-ledger" aria-label="Settlement occupancy and assignment capacity">
-		{#each presentation.buildings as building (building.buildingId)}
-			<div class:active={building.occupantHeroIds.length > 0}>
-				<span>{buildingLabel(building.buildingId)}</span>
-				<strong>{building.occupantHeroIds.length}</strong>
-				<small>{building.assignmentCount}/{building.assignmentCapacity} assigned</small>
+		{#each facilities as facility (facility.facilityId)}
+			<div class:active={facility.occupantCount > 0}>
+				<span>{facility.label}</span>
+				<strong>{facility.occupantCount}</strong>
+				<small
+					>{facility.hrefMode
+						? 'floor travel'
+						: `${facility.assignmentCount}/${facility.assignmentCapacity} assigned`}</small
+				>
 			</div>
 		{/each}
 	</div>
@@ -309,25 +326,40 @@
 		background: radial-gradient(ellipse, rgba(96, 219, 228, 0.26), transparent 68%);
 		opacity: 1;
 	}
-	.building-chip {
+	.facility-pointer {
 		position: absolute;
 		z-index: 4;
 		left: var(--x);
 		top: var(--y);
 		display: grid;
-		min-width: 5rem;
-		padding: 0.38rem 0.48rem;
+		min-width: 6.5rem;
+		min-height: 2.75rem;
+		box-sizing: border-box;
+		padding: 0.5rem 0.62rem;
 		border: 1px solid rgba(255, 255, 255, 0.13);
+		border-radius: 0;
 		background: rgba(4, 8, 13, 0.65);
 		box-shadow: 0 0.8rem 1.5rem rgba(0, 0, 0, 0.3);
 		backdrop-filter: blur(8px);
+		color: inherit;
+		font: inherit;
+		text-align: left;
+		text-decoration: none;
 		transform: translate(-50%, -50%);
-		pointer-events: none;
+		cursor: pointer;
 	}
-	.building-chip[data-power='powered'] {
+	.facility-pointer[data-power='powered'],
+	.facility-pointer[data-power='destination'],
+	.facility-pointer.focused,
+	.facility-pointer:hover,
+	.facility-pointer:focus-visible {
 		border-color: rgba(102, 224, 230, 0.65);
+		box-shadow:
+			0 0 0 1px rgba(102, 224, 230, 0.22),
+			0 0.8rem 1.5rem rgba(0, 0, 0, 0.3);
+		outline: none;
 	}
-	.building-chip span {
+	.facility-pointer span {
 		color: #eee7db;
 		font:
 			700 0.5rem/1.1 ui-sans-serif,
@@ -335,7 +367,7 @@
 		letter-spacing: 0.08em;
 		text-transform: uppercase;
 	}
-	.building-chip small {
+	.facility-pointer small {
 		margin-top: 0.2rem;
 		color: rgba(238, 231, 219, 0.46);
 		font:
@@ -693,7 +725,13 @@
 		.environment {
 			object-position: 50% 50%;
 		}
-		.building-chip {
+		.facility-pointer {
+			min-width: 4.6rem;
+			min-height: 2.75rem;
+			padding: 0.35rem 0.4rem;
+			transform: translate(-50%, -50%) scale(0.82);
+		}
+		.facility-pointer small {
 			display: none;
 		}
 		.occupancy-ledger {

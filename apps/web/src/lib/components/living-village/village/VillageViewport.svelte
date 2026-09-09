@@ -42,11 +42,11 @@
 	let zoom = $state(1);
 	let offsetX = $state(0);
 	let offsetY = $state(0);
-	let selectedFacilityId = $state<VillageFacilityId>('gate');
+	let selectedFacilityId = $state<VillageFacilityId>('summoning-circle');
 	let selectedHeroId = $state<VillageHeroId | null>(null);
 	let drawerHeroId = $state<VillageHeroId | null>(null);
 	let huntMenuOpen = $state(false);
-	let announcement = $state('Summoning Gate selected.');
+	let announcement = $state('Summoning Circle selected.');
 	let isDragging = $state(false);
 	let pointerTravel = 0;
 	let gestureDragged = false;
@@ -157,10 +157,10 @@
 
 	function resetVillage(): void {
 		fitVillage(false);
-		selectedFacilityId = 'gate';
+		selectedFacilityId = 'summoning-circle';
 		selectedHeroId = null;
 		huntMenuOpen = false;
-		announcement = 'View reset. Summoning Gate selected.';
+		announcement = 'View reset. Summoning Circle selected.';
 	}
 
 	function selectFacility(facility: VillageFacility): void {
@@ -196,14 +196,14 @@
 	}
 
 	function issueTraining(hero: VillageHero): void {
-		selectedFacilityId = 'court';
+		selectedFacilityId = 'training-grounds';
 		onOrder({ kind: 'court', heroId: hero.id });
 		announcement = `${hero.name} assigned to Court training.`;
 		selectedHeroId = null;
 	}
 
 	function issueHunt(hero: VillageHero, species: string): void {
-		selectedFacilityId = 'tower';
+		selectedFacilityId = 'tower-portal';
 		huntMenuOpen = false;
 		onOrder({ kind: 'hunt', heroId: hero.id, species });
 		announcement = `${hero.name} assigned to hunt ${species} at the Tower.`;
@@ -211,7 +211,7 @@
 	}
 
 	function issueRest(hero: VillageHero): void {
-		selectedFacilityId = 'dormitory';
+		selectedFacilityId = 'residence';
 		huntMenuOpen = false;
 		onOrder({ kind: 'rest', heroId: hero.id });
 		announcement = `${hero.name} assigned to rest in the Dormitory.`;
@@ -413,7 +413,7 @@
 				<img
 					class="environment"
 					src={environment.publicPath}
-					alt="Hearth Village with the Summoning Gate north, Kitchen northwest, Forge northeast, Dormitory southwest, Training Grounds southeast, and Tower Threshold south"
+					alt="Hearth Village with a rear Tower Portal, Summoning Circle and Residence to the left, and Training Grounds and Forge to the right"
 					width={environment.width}
 					height={environment.height}
 					draggable="false"

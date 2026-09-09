@@ -12,57 +12,57 @@ import type {
 } from '$lib/components/living-village/village/types';
 
 export const hearthEnvironment = {
-	publicPath: '/runtime/settlements/hearth-01/environment.96cbb666f3d9.webp',
+	publicPath: '/runtime/settlements/hearth-01/environment.931d862928be.webp',
 	width: 1536,
 	height: 1024
 } as const;
 
 export const facilities = [
 	{
-		id: 'gate',
-		name: 'Summoning Gate',
-		shortName: 'Gate',
+		id: 'summoning-circle',
+		name: 'Summoning Circle',
+		shortName: 'Circle',
 		state: 'Ready · 1 Normal token',
 		action: 'Reveal the next fixed hero',
 		detail: 'Kira Toren is bound to the Floor 3 token.',
 		href: '/living-village-lab/summon',
 		labelEdge: 'bottom',
-		position: { x: 0.5, y: 0.18 },
-		bounds: { x: 0.385, y: 0.03, width: 0.23, height: 0.305 }
+		position: { x: 0.27, y: 0.3 },
+		bounds: { x: 0.1, y: 0.14, width: 0.3, height: 0.3 }
 	},
 	{
-		id: 'court',
+		id: 'training-grounds',
 		name: 'Training Grounds',
 		shortName: 'Training grounds',
 		state: '3 slots open',
 		action: 'Assign a resident to local training',
 		detail: 'Training is available now and does not require a party.',
 		labelEdge: 'top',
-		position: { x: 0.76, y: 0.67 },
-		bounds: { x: 0.65, y: 0.51, width: 0.27, height: 0.31 }
+		position: { x: 0.77, y: 0.34 },
+		bounds: { x: 0.62, y: 0.17, width: 0.34, height: 0.3 }
 	},
 	{
-		id: 'tower',
-		name: 'Tower Threshold',
-		shortName: 'Tower',
+		id: 'tower-portal',
+		name: 'Tower Portal',
+		shortName: 'Portal',
 		state: 'Floor 4 available',
 		action: 'Send a resident on a species hunt',
 		detail: 'Known Floor 4 signs: moss goblins, stoneback boars, and ash wisps.',
 		href: '/living-village-lab/tower',
 		labelEdge: 'top',
-		position: { x: 0.5, y: 0.9 },
-		bounds: { x: 0.385, y: 0.775, width: 0.23, height: 0.235 }
+		position: { x: 0.5, y: 0.2 },
+		bounds: { x: 0.4, y: 0.06, width: 0.2, height: 0.24 }
 	},
 	{
-		id: 'kitchen',
-		name: 'Village Kitchen',
-		shortName: 'Kitchen',
-		state: 'Supper underway',
-		action: 'Prepare provisions',
-		detail: 'The evening meal is being prepared for Hearth residents.',
+		id: 'residence',
+		name: 'Residence',
+		shortName: 'Residence',
+		state: 'Supper underway · beds ready',
+		action: 'Inspect communal life',
+		detail: 'The Residence holds both the communal kitchen and recovery quarters.',
 		labelEdge: 'bottom',
-		position: { x: 0.225, y: 0.32 },
-		bounds: { x: 0.055, y: 0.14, width: 0.34, height: 0.34 }
+		position: { x: 0.25, y: 0.68 },
+		bounds: { x: 0.03, y: 0.46, width: 0.39, height: 0.36 }
 	},
 	{
 		id: 'forge',
@@ -72,19 +72,8 @@ export const facilities = [
 		action: 'Work equipment',
 		detail: 'The forge is ready for the next equipment order.',
 		labelEdge: 'top',
-		position: { x: 0.78, y: 0.32 },
-		bounds: { x: 0.62, y: 0.13, width: 0.32, height: 0.36 }
-	},
-	{
-		id: 'dormitory',
-		name: 'Village Dormitory',
-		shortName: 'Dormitory',
-		state: 'Beds ready',
-		action: 'Rest and recover',
-		detail: 'Residents can recover here between assignments.',
-		labelEdge: 'bottom',
-		position: { x: 0.25, y: 0.68 },
-		bounds: { x: 0.035, y: 0.49, width: 0.38, height: 0.34 }
+		position: { x: 0.76, y: 0.69 },
+		bounds: { x: 0.59, y: 0.47, width: 0.38, height: 0.36 }
 	}
 ] as const satisfies readonly VillageFacility[];
 
@@ -219,7 +208,7 @@ export const summaryItems = [
 		tone: 'violet'
 	},
 	{
-		label: 'Summoning Gate',
+		label: 'Summoning Circle',
 		value: '1 Normal',
 		detail: 'Kira token ready',
 		tone: 'gold'

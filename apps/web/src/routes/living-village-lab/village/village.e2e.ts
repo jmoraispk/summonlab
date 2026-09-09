@@ -47,8 +47,8 @@ test('unifies Village hotspots, resident inspection, orders, and camera controls
 			})
 		)
 		.toBe(0);
-	await expect(viewport.locator('.facility-hotspot')).toHaveCount(6);
-	const gateHotspot = page.getByRole('link', { name: 'Enter Summoning Gate' });
+	await expect(viewport.locator('.facility-hotspot')).toHaveCount(5);
+	const gateHotspot = page.getByRole('link', { name: 'Enter Summoning Circle' });
 	await expect(gateHotspot).toHaveAttribute('href', '/living-village-lab/summon');
 	await expect(gateHotspot).toHaveAttribute('draggable', 'false');
 	await expect
@@ -68,19 +68,11 @@ test('unifies Village hotspots, resident inspection, orders, and camera controls
 	await expect(viewport.locator('img.environment')).toHaveAttribute('draggable', 'false');
 
 	const courtHotspot = page.getByRole('button', { name: 'Inspect Training Grounds' });
-	const towerHotspot = page.getByRole('link', { name: 'Enter Tower Threshold' });
+	const towerHotspot = page.getByRole('link', { name: 'Enter Tower Portal' });
 	await expect(towerHotspot).toHaveAttribute('href', '/living-village-lab/tower');
-	const kitchenHotspot = page.getByRole('button', { name: 'Inspect Village Kitchen' });
 	const forgeHotspot = page.getByRole('button', { name: 'Inspect Village Forge' });
-	const dormitoryHotspot = page.getByRole('button', { name: 'Inspect Village Dormitory' });
-	for (const hotspot of [
-		gateHotspot,
-		courtHotspot,
-		towerHotspot,
-		kitchenHotspot,
-		forgeHotspot,
-		dormitoryHotspot
-	]) {
+	const residenceHotspot = page.getByRole('button', { name: 'Inspect Residence' });
+	for (const hotspot of [gateHotspot, courtHotspot, towerHotspot, forgeHotspot, residenceHotspot]) {
 		const label = hotspot.locator('span');
 		const labelBounds = await label.boundingBox();
 		const dotBounds = await hotspot.locator('i').boundingBox();
@@ -109,7 +101,7 @@ test('unifies Village hotspots, resident inspection, orders, and camera controls
 		).toBeLessThan(2);
 		expect(Math.abs(labelBounds!.y + labelBounds!.height / 2 - hotspotBounds!.y)).toBeLessThan(2);
 	}
-	for (const hotspot of [gateHotspot, kitchenHotspot, dormitoryHotspot]) {
+	for (const hotspot of [gateHotspot, residenceHotspot]) {
 		const hotspotBounds = await hotspot.boundingBox();
 		const labelBounds = await hotspot.locator('span').boundingBox();
 		expect(
@@ -144,12 +136,7 @@ test('unifies Village hotspots, resident inspection, orders, and camera controls
 	await page.getByRole('button', { name: 'Fit Village' }).click();
 	await expect(viewport).toHaveAttribute('data-offset-x', '0');
 
-	for (const facility of [
-		'Training Grounds',
-		'Village Kitchen',
-		'Village Forge',
-		'Village Dormitory'
-	] as const) {
+	for (const facility of ['Training Grounds', 'Village Forge', 'Residence'] as const) {
 		const hotspot = page.getByRole('button', { name: `Inspect ${facility}` });
 		await hotspot.click();
 		await expect(hotspot).toHaveAttribute('aria-pressed', 'true');
@@ -183,7 +170,7 @@ test('unifies Village hotspots, resident inspection, orders, and camera controls
 	await popover.getByRole('button', { name: 'Tower hunt' }).click();
 	await popover.getByRole('button', { name: 'Stoneback boar' }).click();
 	await expect(popover).toHaveCount(0);
-	await expect(page.getByRole('link', { name: 'Enter Tower Threshold' })).toHaveAttribute(
+	await expect(page.getByRole('link', { name: 'Enter Tower Portal' })).toHaveAttribute(
 		'aria-current',
 		'location'
 	);
@@ -196,7 +183,7 @@ test('unifies Village hotspots, resident inspection, orders, and camera controls
 	await expect(popover).toContainText('Jori Daro');
 	await popover.getByRole('button', { name: 'Rest' }).click();
 	await expect(popover).toHaveCount(0);
-	await expect(dormitoryHotspot).toHaveAttribute('aria-pressed', 'true');
+	await expect(residenceHotspot).toHaveAttribute('aria-pressed', 'true');
 	await expect(joriMarker).toHaveAttribute('aria-label', /Resting in the Dormitory/);
 	await expect(joriMarker).toHaveAttribute('data-availability', 'busy');
 	await expect(joriMarker.locator('xpath=..')).toHaveAttribute('style', /--x:\s*34%;\s*--y:\s*76%/);
@@ -233,7 +220,7 @@ test('unifies Village hotspots, resident inspection, orders, and camera controls
 	await page.getByRole('button', { name: 'Fit Village' }).click();
 	await expect(viewport).toHaveAttribute('data-zoom-percent', '100');
 	await expect(viewport).toHaveAttribute('data-offset-x', '0');
-	await expect(page.getByRole('button', { name: 'Inspect Village Dormitory' })).toHaveAttribute(
+	await expect(page.getByRole('button', { name: 'Inspect Residence' })).toHaveAttribute(
 		'aria-pressed',
 		'true'
 	);
@@ -298,7 +285,7 @@ test('keeps the unified Village deliberate and operable at 390 by 844', async ({
 	await expect(page.getByLabel('Village status').locator('article')).toHaveCount(5);
 	await expect(page.getByLabel('Find a resident').getByRole('button')).toHaveCount(6);
 	const phoneViewport = page.getByTestId('village-viewport');
-	await expect(phoneViewport.locator('.facility-hotspot')).toHaveCount(6);
+	await expect(phoneViewport.locator('.facility-hotspot')).toHaveCount(5);
 	expect((await phoneViewport.boundingBox())!.y).toBeLessThan(240);
 
 	await page
