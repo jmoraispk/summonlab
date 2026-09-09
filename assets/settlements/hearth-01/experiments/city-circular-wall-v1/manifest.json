@@ -1,0 +1,46 @@
+{
+	"schemaVersion": "city-environment-experiment-v1",
+	"experimentId": "city-circular-wall-v1",
+	"status": "candidate",
+	"createdAt": "2026-09-09T22:02:38Z",
+	"owner": "codex/village-threshold-implementation-plan",
+	"source": {
+		"file": "assets/settlements/hearth-01/hearth-01-threshold-v2.png",
+		"contentHash": "816d32574f07f55b58b42f19347831e8ce040463022756646b5d0f0c62a5c748",
+		"width": 1536,
+		"height": 1024,
+		"bytes": 3460720,
+		"role": "accepted-edit-target"
+	},
+	"generation": {
+		"mode": "built-in-imagegen",
+		"intent": "precise-object-edit",
+		"prompt": "Preserve this accepted Hearth 01 village image, camera, framing, style, palette, lighting, mountains, central road, Portal, Residence, Training Grounds, Forge, facility scale, and all unaffected pixels as closely as possible. Change only the upper-left district: curve the outer wall into a smooth circular silhouette that mirrors the rounded right wall; move the Summoning Circle slightly toward the foreground to create room for that curve; reconnect only its short branch path and adjust the immediately adjacent vegetation, lamps, and retaining stones. Keep the base plate hero-free and UI-free. Add no people, characters, animals, labels, text, icons, panels, tower building, separate kitchen, or watermark.",
+		"submittedPromptHash": "33de2a53c07252b95291a222768f3518872f1fde14cb28972a445b1feef331a0",
+		"attempts": [
+			{
+				"attempt": 1,
+				"conclusion": "malformed-output",
+				"detail": "The provider returned no usable artifact handle; no output from this attempt was persisted."
+			},
+			{
+				"attempt": 2,
+				"conclusion": "candidate",
+				"toolOutputPath": "/home/joao/.codex/generated_images/01a0873c-2ec5-7e03-932e-dc98f5135b6e/exec-69d29751-82b1-4563-a29b-831647ee6976.png"
+			}
+		]
+	},
+	"candidate": {
+		"file": "assets/settlements/hearth-01/experiments/city-circular-wall-v1/hearth-01-circular-wall-candidate.png",
+		"contentHash": "26a092776068692022986907e363fab0ab738b8b8da3408aecfe114460169e1e",
+		"width": 1536,
+		"height": 1024,
+		"bytes": 3166519,
+		"colorModel": "RGB",
+		"alphaHoles": false
+	},
+	"review": {
+		"humanReviewPending": true,
+		"runtimePromoted": false
+	}
+}
