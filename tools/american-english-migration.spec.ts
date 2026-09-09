@@ -840,6 +840,49 @@ describe('American English migration planning', () => {
 });
 
 describe('American English transactional application', () => {
+	it('authenticates a rebased text source that already differs from the integration base', async () => {
+		const armor = retired('armor');
+		const repository = await makeRepository({
+			'docs/rebased-note.txt': `${armor} first; ${armor} second\n`
+		});
+		await writeFile(
+			path.join(repository.root, 'docs/rebased-note.txt'),
+			`armor first; ${armor} second\n`
+		);
+		const planHead = commitAll(repository.root, 'apply earlier rebased wording');
+		const plan = await planAmericanEnglishMigration({
+			repositoryRoot: repository.root,
+			baselineCommit: repository.baseline
+		});
+		const expectedSourceBlob = git(repository.root, [
+			'rev-parse',
+			`${planHead}:docs/rebased-note.txt`
+		]);
+		expect(plan.directSuccessors).toEqual([
+			expect.objectContaining({ sourceBlobId: expectedSourceBlob })
+		]);
+		const receiptDirectory = await mkdtemp(path.join(tmpdir(), 'american-english-receipts-'));
+		temporaryRoots.push(receiptDirectory);
+		const initialReceiptPath = path.join(receiptDirectory, 'initial.json');
+		const finalReceiptPath = path.join(receiptDirectory, 'final.json');
+		const planArtifact = await writePlanArtifact(receiptDirectory, 'plan.json', plan);
+		await applyAmericanEnglishMigration(plan, {
+			repositoryRoot: repository.root,
+			receiptPath: initialReceiptPath
+		});
+		const migrationCommit = commitAll(repository.root, 'finish rebased wording');
+		const receipt = await finalizeAmericanEnglishMigrationReceipt({
+			repositoryRoot: repository.root,
+			expectedMigrationCommit: migrationCommit,
+			planPath: planArtifact.path,
+			expectedPlanHash: planArtifact.sha256,
+			initialReceiptPath,
+			expectedInitialReceiptHash: await fileSha256(initialReceiptPath),
+			receiptPath: finalReceiptPath
+		});
+		expect(receipt.files).toEqual([expect.objectContaining({ sourceBlobId: expectedSourceBlob })]);
+	});
+
 	it('records the registered integrity owner on each successor receipt entry', async () => {
 		const behavior = retired('behavior');
 		const repository = await makeRepository({

@@ -759,13 +759,23 @@ export async function planAmericanEnglishMigration(
 		if (receiptBlob !== undefined && index.get(source)?.blobId !== receiptBlob) {
 			throw new Error(`Prior receipt successor blob does not match the tracked source: ${source}`);
 		}
-		const sourceBlobId = receiptBlob ?? blobs.get(source);
-		if (sourceBlobId === undefined) {
+		const baselineBlob = blobs.get(source);
+		const expectedBlob = receiptBlob ?? baselineBlob;
+		const currentBlob = index.get(source)?.blobId;
+		if (expectedBlob === undefined) {
 			throw new Error(
 				`Tracked migration source is absent from baseline and prior receipt: ${source}`
 			);
 		}
-		return sourceBlobId;
+		if (currentBlob === undefined) {
+			throw new Error(`Tracked migration source is absent from the plan HEAD: ${source}`);
+		}
+		if ((binary.get(source) ?? false) && currentBlob !== expectedBlob) {
+			throw new Error(
+				`Tracked binary migration source differs from its authenticated predecessor: ${source}`
+			);
+		}
+		return receiptBlob ?? currentBlob;
 	};
 
 	const pathMoves: AmericanEnglishPathMove[] = [];
@@ -2337,6 +2347,9 @@ export async function applyAmericanEnglishMigration(
 	}
 
 	const moveBySource = new Map(plan.pathMoves.map((move) => [move.source, move]));
+	const directBySourcePathHash = new Map(
+		plan.directSuccessors.map((successor) => [successor.sourcePathHash, successor])
+	);
 	const affectedSources = [
 		...new Set([
 			...plan.pathMoves.map(({ source }) => source),
@@ -2353,9 +2366,12 @@ export async function applyAmericanEnglishMigration(
 		const current = indexBefore.get(source)?.blobId;
 		const previous = previousReceipt?.successorBlobsByPathHash.get(hashRepositoryPath(source));
 		const expected = new Set(
-			[previous, moveBySource.get(source)?.sourceBlobId, baselineBlobs.get(source)].filter(
-				(value): value is string => value !== undefined
-			)
+			[
+				previous,
+				moveBySource.get(source)?.sourceBlobId,
+				directBySourcePathHash.get(hashRepositoryPath(source))?.sourceBlobId,
+				baselineBlobs.get(source)
+			].filter((value): value is string => value !== undefined)
 		);
 		if (expected.size === 0) {
 			throw new Error(`Migration source is absent from baseline and prior receipt: ${source}`);
@@ -2495,6 +2511,7 @@ export async function applyAmericanEnglishMigration(
 			sourceBlobId:
 				moveBySource.get(source)?.sourceBlobId ??
 				previousReceipt?.successorBlobsByPathHash.get(hashRepositoryPath(source)) ??
+				directBySourcePathHash.get(hashRepositoryPath(source))?.sourceBlobId ??
 				baselineBlobs.get(source)!,
 			binary: moveBySource.get(source)?.binary ?? false
 		}));
