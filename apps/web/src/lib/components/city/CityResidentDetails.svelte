@@ -1,57 +1,67 @@
 <script lang="ts">
-	import type { VillageHero, VillageHeroRuntime } from './types';
+	import type { CityResident } from '$lib/city';
 
 	let {
-		hero,
-		runtime,
+		resident,
 		onClose
 	}: {
-		hero: VillageHero;
-		runtime: VillageHeroRuntime;
+		resident: CityResident;
 		onClose: () => void;
 	} = $props();
 </script>
 
-<aside class="drawer" aria-labelledby="hero-drawer-heading" data-testid="hero-drawer">
+<aside class="drawer" aria-labelledby="resident-details-heading" data-testid="resident-details">
 	<header>
 		<div>
-			<p>Resident record · Level {hero.level}</p>
-			<h2 id="hero-drawer-heading">{hero.name}</h2>
+			<p>
+				Resident record · {resident.level === null
+					? 'Level unavailable'
+					: `Level ${resident.level}`}
+			</p>
+			<h2 id="resident-details-heading">{resident.name}</h2>
 		</div>
-		<button type="button" aria-label="Close hero details" onclick={onClose}>×</button>
+		<button type="button" aria-label="Close resident details" onclick={onClose}>×</button>
 	</header>
 
 	<div class="identity">
-		<img src={hero.portrait} alt={hero.portraitAlt} width="1024" height="1536" />
+		{#if resident.portrait}
+			<img
+				src={resident.portrait.publicPath}
+				alt=""
+				width={resident.portrait.width}
+				height={resident.portrait.height}
+			/>
+		{/if}
 		<div>
 			<span>Current activity</span>
-			<strong>{runtime.activity}</strong>
-			<small>{hero.partyStatus}</small>
-			{#if runtime.order}<em>{runtime.order}</em>{/if}
+			<strong>{resident.activity}</strong>
+			<small>{resident.role} · {resident.location}</small>
+			<em>{resident.relationship} · {resident.authority}</em>
 		</div>
 	</div>
 
-	<section aria-labelledby="attributes-heading">
-		<h3 id="attributes-heading">Attributes</h3>
+	<section aria-labelledby="record-heading">
+		<h3 id="record-heading">Record</h3>
 		<div class="attributes">
-			{#each hero.attributes as attribute (attribute.label)}
-				<div><span>{attribute.label}</span><strong>{attribute.value}</strong></div>
+			<div>
+				<span>Health</span>
+				<strong
+					>{resident.health
+						? `${resident.health.current} / ${resident.health.maximum}`
+						: 'Unavailable'}</strong
+				>
+			</div>
+			<div><span>Rarity</span><strong>{resident.rarityStars}★</strong></div>
+			<div><span>Beliefs</span><strong>{resident.beliefCount}</strong></div>
+			{#each resident.detailRows as row (row.label)}
+				<div><span>{row.label}</span><strong>{row.value}</strong></div>
 			{/each}
 		</div>
 	</section>
 
-	<section aria-labelledby="skills-heading">
-		<h3 id="skills-heading">Skills</h3>
-		<ul>
-			{#each hero.skills as skill (skill)}<li>{skill}</li>{/each}
-		</ul>
-	</section>
-
-	<section aria-labelledby="equipment-heading">
-		<h3 id="equipment-heading">Equipment</h3>
-		<ul>
-			{#each hero.equipment as item (item)}<li>{item}</li>{/each}
-		</ul>
+	<section aria-labelledby="observation-heading">
+		<h3 id="observation-heading">Latest information</h3>
+		<p>{resident.latestObservation ?? resident.firstReply ?? 'No further information recorded.'}</p>
 	</section>
 </aside>
 
@@ -174,19 +184,10 @@
 			serif;
 	}
 
-	ul {
-		display: flex;
-		flex-wrap: wrap;
-		gap: 0.35rem;
+	section p {
 		margin: 0.55rem 0 0;
-		padding: 0;
-		list-style: none;
-	}
-
-	li {
-		padding: 0.42rem 0.5rem;
-		border: 1px solid rgba(238, 224, 198, 0.12);
 		color: rgba(245, 236, 221, 0.72);
-		font-size: 0.68rem;
+		font-size: 0.75rem;
+		line-height: 1.5;
 	}
 </style>

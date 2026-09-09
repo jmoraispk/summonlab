@@ -21,6 +21,12 @@ export type CityMode = (typeof CITY_MODES)[number]['id'];
 export type CityResidentAction = 'court-training' | 'rest' | 'details';
 export type CityResidentReadiness = 'available' | 'busy' | 'traveling' | 'unavailable';
 
+export interface CityIntent {
+	readonly action: 'court-training' | 'rest';
+	readonly heroId: string;
+	readonly expectedVersion: number;
+}
+
 export interface CityResidentArt {
 	readonly publicPath: string;
 	readonly width: number;
