@@ -2063,19 +2063,22 @@ export async function refreshAmericanEnglishMigrationReceipt(
 	const auditValue: unknown = JSON.parse(
 		(await readFile(path.resolve(options.auditPath))).toString('utf8')
 	);
+	if (!isRecord(auditValue) || auditValue.head !== baselineCommit) {
+		throw new Error('Baseline audit does not match the refreshed migration receipt');
+	}
+	const auditCounts = auditValue.counts;
 	if (
-		!isRecord(auditValue) ||
-		auditValue.head !== baselineCommit ||
-		!isRecord(auditValue.counts) ||
-		!isRecord(auditValue.counts.byRule) ||
-		!hasExactKeys(auditValue.counts.byRule, AMERICAN_ENGLISH_RULE_IDS) ||
+		!isRecord(auditCounts) ||
+		!isRecord(auditCounts.byRule) ||
+		!hasExactKeys(auditCounts.byRule, AMERICAN_ENGLISH_RULE_IDS) ||
 		!Array.isArray(auditValue.violations)
 	) {
 		throw new Error('Baseline audit does not match the refreshed migration receipt');
 	}
+	const auditRuleCounts = auditCounts.byRule;
 	const ruleCounts = Object.fromEntries(
 		AMERICAN_ENGLISH_RULE_IDS.map((ruleId) => {
-			const count = auditValue.counts.byRule[ruleId];
+			const count = auditRuleCounts[ruleId];
 			if (!Number.isSafeInteger(count) || Number(count) < 0) {
 				throw new Error('Baseline audit has invalid rule counts');
 			}
