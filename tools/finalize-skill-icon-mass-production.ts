@@ -4,6 +4,7 @@ import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 
 import sharp, { type OverlayOptions } from 'sharp';
+import { format, resolveConfig } from 'prettier';
 
 import {
 	MASS_PRODUCTION_MANIFEST_PATH,
@@ -47,6 +48,20 @@ const FAMILY_CONTACT_ROOT =
 	'assets/wiki/skills/icon-production-v1/mass-production-v1/contact-sheets/families';
 const CATALOG_CONTACT_ROOT =
 	'assets/wiki/skills/icon-production-v1/mass-production-v1/contact-sheets/catalog';
+
+export async function formatFinalizedMassProductionManifest(
+	manifest: unknown,
+	manifestPath = path.resolve(process.cwd(), MASS_PRODUCTION_MANIFEST_PATH)
+): Promise<Buffer> {
+	const config = await resolveConfig(manifestPath, { useCache: false });
+	return Buffer.from(
+		await format(JSON.stringify(manifest), {
+			...config,
+			filepath: manifestPath,
+			parser: 'json'
+		})
+	);
+}
 
 function parseMode(args: readonly string[]): Mode {
 	const normalized = args[0] === '--' ? args.slice(1) : args;
@@ -533,7 +548,10 @@ export async function finalizeSkillIconMassProduction(options: {
 			]
 		}
 	};
-	const finalizedBytes = Buffer.from(`${JSON.stringify(finalized, null, '\t')}\n`);
+	const finalizedBytes = await formatFinalizedMassProductionManifest(
+		finalized,
+		path.resolve(root, MASS_PRODUCTION_MANIFEST_PATH)
+	);
 	await syncBytes(root, MASS_PRODUCTION_MANIFEST_PATH, finalizedBytes, options.mode);
 
 	const expectedFamilyFiles = new Set(manifest.families.map((family) => `${family.slug}.png`));

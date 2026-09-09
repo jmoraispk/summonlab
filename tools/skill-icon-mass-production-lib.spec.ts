@@ -3,6 +3,7 @@ import { readFile } from 'node:fs/promises';
 import { SkillIconCatalogSchema } from '../packages/contracts/src/index.js';
 import { describe, expect, it } from 'vitest';
 
+import { formatFinalizedMassProductionManifest } from './finalize-skill-icon-mass-production.js';
 import type { SkillIconMotifMap } from './skill-icon-production-lib.js';
 import {
 	buildMassProductionManifest,
@@ -10,6 +11,20 @@ import {
 } from './skill-icon-mass-production-lib.js';
 
 describe('skill icon mass-production manifest', () => {
+	it('formats the finalized owner manifest with the repository JSON policy', async () => {
+		const bytes = await formatFinalizedMassProductionManifest({
+			schemaVersion: 'fixture-v1',
+			expected: {
+				families: 1,
+				skills: 2,
+				domains: { Martial: 2, Magical: 0, Craft: 0 }
+			}
+		});
+		expect(bytes.toString('utf8')).toBe(
+			'{\n\t"schemaVersion": "fixture-v1",\n\t"expected": { "families": 1, "skills": 2, "domains": { "Martial": 2, "Magical": 0, "Craft": 0 } }\n}\n'
+		);
+	});
+
 	it('derives one framed sheet per motif family and one independent image per skill', async () => {
 		const catalogBytes = await readFile('assets/wiki/skills/icon-production-v1/catalog.json');
 		const motifBytes = await readFile('assets/wiki/skills/icon-production-v1/motif-map.json');

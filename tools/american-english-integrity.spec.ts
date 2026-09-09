@@ -137,6 +137,13 @@ describe('canonical serializer characterization', () => {
 });
 
 describe('integrity owner successor planning', () => {
+	it('registers the deterministic skill contact-sheet writer and checker', () => {
+		expect(visualProductionIntegrityOwner.regeneration).toMatchObject({
+			writeCommand: expect.stringContaining('pnpm finalize:skill-icon-mass-production'),
+			checkCommand: expect.stringContaining('pnpm check:skill-icon-mass-production')
+		});
+	});
+
 	it('preserves a manifest-relative asset reference when the asset path spelling changes', async () => {
 		const experimentRoot = 'assets/heroes/experiments/relative-reference-v1';
 		const manifestPath = `${experimentRoot}/manifest.json`;
