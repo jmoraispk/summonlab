@@ -49,7 +49,7 @@ export const SkillIconCleanupAuthoritySchema = z
 	.object({
 		massProductionManifest: FixedAuthoritySchema(
 			'assets/wiki/skills/icon-production-v1/mass-production-v1/manifest.json',
-			'239cfb6cb1c31114717bb4e11868d6318466ce6a49371d8b3a267b6b8819e92e'
+			'01ebacc9e11eee66054d8b78b707707642c652a1734abca6c37ccfe2a25eb260'
 		),
 		catalog: FixedAuthoritySchema(
 			'assets/wiki/skills/icon-production-v1/catalog.json',

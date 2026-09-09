@@ -33,7 +33,7 @@ The cleanup run binds these exact starting authorities:
 
 | Authority | Path | SHA-256 |
 | --- | --- | --- |
-| Mass-production manifest | `assets/wiki/skills/icon-production-v1/mass-production-v1/manifest.json` | `239cfb6cb1c31114717bb4e11868d6318466ce6a49371d8b3a267b6b8819e92e` |
+| Mass-production manifest | `assets/wiki/skills/icon-production-v1/mass-production-v1/manifest.json` | `01ebacc9e11eee66054d8b78b707707642c652a1734abca6c37ccfe2a25eb260` |
 | Canonical skill catalog | `assets/wiki/skills/icon-production-v1/catalog.json` | `bdcaf53dc0f846cdab7b5b62c9c48e2661f69a2339892447fd5ec9cf1ec36a6a` |
 | Motif map | `assets/wiki/skills/icon-production-v1/motif-map.json` | `7efee70336d502625ca8129b47013011391687f3730d82362314a5a8ab9db308` |
 | Visual specifications | `assets/wiki/skills/icon-production-v1/visual-specs.json` | `1ec92e6597d2efa07a8df96293dd5365c0ba5583af8c66aff4b86c3d674f97e1` |
