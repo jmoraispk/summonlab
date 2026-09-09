@@ -1,8 +1,8 @@
 # Living Village client visual proposal
 
-**Status:** Title gateway, tier-one Village, and control model locked; Inventory redesign proposed
+**Status:** Title gateway and tier-one Village foundation locked; five-mode threshold revision accepted
 
-**Date:** 2026-09-02
+**Date:** 2026-09-09
 
 This packet turns the current client audit and the approved concept discussion into a durable phase-one
 design proposal. It contains mockups and interaction guidance only. It does not modify runtime code,
@@ -12,8 +12,24 @@ gameplay contracts, or shared content catalogs.
 
 These two promoted images set the dominant quality bar for the inhabited Village, hero inspection,
 mission preparation, responsive composition, portrait treatment, and engraved interaction language.
-Their older `Tower` and `Gate` navigation labels are not current behavior; the approved global shell is
-`Village`, `Residents`, `Inventory`, and `Missions`.
+Their older `Tower` and `Gate` labels are superseded by the five-mode global shell: `Village`,
+`Residents`, `Tower`, `Inventory`, and `Missions`.
+
+## Accepted Village threshold revision
+
+The rear-center landmark remains a standalone Tower Portal; it is not a physical tower. The
+upper-left Residence plot becomes a separate Summoning Circle, while the lower-left plot holds one
+larger building labeled `Residence`. The Residence implicitly includes the communal kitchen rather
+than presenting Kitchen as a separate facility or label. The Circle owns both summoning and painless,
+irreversible synthesis: the sacrificed human hero becomes light and is absorbed by the receiving
+hero. The Tower Portal owns floor travel only.
+
+The `Tower` mode begins with floor choice. Choosing a conquered floor starts an idle repeat for
+training and materials. Choosing the next unconquered floor prepares an active exploration and then
+hands off to `/explore/[runId]`. Mission packing is part of that Tower preparation flow; `Missions`
+remains the objective and story-journal surface.
+
+![Balanced, cozy Village with Residence, Summoning Circle, Tower Portal, and five-item dock](./mockups/village-balanced-cozy-layout-desktop-v4.png)
 
 ### Mature Village and hero inspection
 
@@ -51,11 +67,18 @@ an exploratory story premise for review, not a runtime or shared-catalog change.
 - a scene-first, centered Village composition on desktop;
 - direct facility labels with fine leader lines;
 - the cyan circle and arrow that connect a selected hero to the world;
-- the four global modes: `Village`, `Residents`, `Inventory`, and `Missions`;
+- the five global modes: `Village`, `Residents`, `Tower`, `Inventory`, and `Missions`;
 - point-to-move for a selected resident, separate from facility and mode navigation;
 - the phone bottom-navigation placement and icon-plus-label treatment;
-- the tier-one Village composition: Residence and Kitchen left, Training Grounds and Forge right, and
-  the portal landmark centered at the rear.
+- the tier-one Village composition: a Residence with an implicit communal kitchen on the lower-left
+  plot, a Summoning Circle on the upper-left plot, Training Grounds upper right, Forge lower right,
+  and a standalone Tower Portal centered at the rear;
+- the clean road graph: one broad central axis from the foreground to the Tower Portal and four
+  controlled branches connecting the other facilities without meandering;
+- the upper balance: the Summoning Circle and Training Grounds sit at comparable offsets from the
+  central portal axis;
+- the inhabited ground treatment: irregular verges, worn-earth shoulders, wild groundcover, field
+  stones, and restrained practical clutter soften the route geometry without obscuring it.
 
 ### Continue designing
 
@@ -110,8 +133,8 @@ and may better suit a tier-one Village. Generation prompts and invariants are re
 
 These three complete desktop mockups preserve one camera, road pattern, facility layout, and interface
 shell while the settlement grows in place. The stages describe visual maturity only; they do not create
-a three-level gameplay contract. The shell uses the approved four-mode navigation:
-`Village`, `Residents`, `Inventory`, and `Missions`.
+a three-level gameplay contract. Their four-mode shell and combined portal landmark predate the
+accepted five-mode threshold revision above.
 
 ![Starting Village](./mockups/village-stage-1-desktop.png)
 
@@ -119,12 +142,35 @@ a three-level gameplay contract. The shell uses the approved four-mode navigatio
 
 ![Mature Village](./mockups/village-stage-3-desktop.png)
 
-### Exploratory opening Village
+### Opening Village threshold revision
 
-The approved opening Village starts with a functioning tier-one Village: Residence and Kitchen on the left,
-Training Grounds and Forge on the right, and a Portal Tower on the centerline. Exactly four visible
-residents keep it intimate, while modest building footprints leave room for upgrades in place. All
-buildings and labels remain inside a comfortable viewing safe area.
+The current direction starts with a functioning tier-one Village: a Residence with an implicit
+communal kitchen on the lower-left plot, a Summoning Circle on the former upper-left Residence plot,
+Training Grounds upper right, Forge lower right, and a standalone Tower Portal on the rear centerline.
+A clean axial road and four controlled branches connect every destination. The Circle and Training
+Grounds balance one another across that axis, while irregular vegetation and practical domestic
+details keep the commons cozy rather than formally landscaped. The five-item dock follows the
+engraved treatment of the player-provided mission-packing reference.
+
+![Current balanced and cozy Village revision](./mockups/village-balanced-cozy-layout-desktop-v4.png)
+
+The previous clean-road revision placed the Summoning Circle too far left and divided the ground into
+overly straight grass panels. It remains as design history.
+
+![Previous clean-road Village revision](./mockups/village-clean-road-layout-desktop-v3.png)
+
+The previous merged-facility revision used the longer `Residence & Kitchen` label and an irregular
+road network. It remains as design history.
+
+![Previous merged-facility revision](./mockups/village-merged-residence-kitchen-desktop-v2.png)
+
+The previous threshold revision placed the Summoning Circle closer to the central path and kept
+Residence and Kitchen separate. It remains as design history.
+
+![Previous separate-facility threshold revision](./mockups/village-circle-and-tower-portal-desktop-v1.png)
+
+The earlier opening candidate used a combined Portal Tower and the superseded navigation model. It
+remains below as design history rather than the active direction.
 
 ![Opening Village desktop candidate v3](./mockups/opening-village-desktop-v3.png)
 
@@ -149,7 +195,7 @@ dimensions, and construction behavior remain undefined so interface work stays t
 
 ![Kitchen growth study](./mockups/kitchen-growth-study.png)
 
-![Portal Tower growth study](./mockups/portal-tower-growth-study.png)
+![Historical Portal Tower growth study](./mockups/portal-tower-growth-study.png)
 
 ### Shared Village Inventory
 
@@ -161,8 +207,8 @@ of sharing an ambiguous `Assign or Pack` action.
 
 ![Phone Village Inventory](./mockups/village-inventory-phone.png)
 
-The [earlier desktop concept](./mockups/village-inventory-desktop.png) remains as design history. Its
-five-mode shell and combined `Assign or Pack` action are superseded.
+The [earlier desktop concept](./mockups/village-inventory-desktop.png) remains as design history. Its old
+`Tower`/`Gate` shell and combined `Assign or Pack` action are superseded.
 
 ### Suggested mission packing
 

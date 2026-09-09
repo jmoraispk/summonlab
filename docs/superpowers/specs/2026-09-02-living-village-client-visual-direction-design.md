@@ -1,8 +1,8 @@
 # Living Village client visual direction
 
-**Status:** Title gateway, tier-one Village, and control model locked; Inventory redesign proposed
+**Status:** Title gateway and tier-one Village foundation locked; five-mode threshold revision accepted
 
-**Date:** 2026-09-02
+**Date:** 2026-09-09
 
 **Scope:** title gateway, Wiki presentation boundary, responsive Village shell, Village home, hero
 inspection, Village Inventory, mission packing, and motion language
@@ -27,17 +27,19 @@ not alter gameplay contracts or shared content catalogs.
 5. Desktop uses a centered, symmetrical panorama as its home composition.
 6. Facility pointers inherit the brighter, more legible callout treatment from the first explored
    direction.
-7. Phone uses a fixed bottom navigation bar with icon and label for `Village`, `Residents`, `Inventory`,
-   and `Missions`.
+7. Phone uses a fixed bottom navigation bar with icon and label for `Village`, `Residents`, `Tower`,
+   `Inventory`, and `Missions`.
 8. Hero details appear only after the player selects a resident.
 9. Inventory has two meanings only: the shared Village Inventory and a temporary per-hero Mission
    Inventory.
 10. Mission packs are suggested automatically and remain editable before departure.
-11. The starting settlement is already a functioning Village with four critical facilities:
-    `Residence`, `Forge`, `Training Grounds`, and `Kitchen`.
+11. The starting settlement is already a functioning Village with a `Residence`, `Summoning Circle`,
+    `Training Grounds`, `Forge`, and standalone `Tower Portal`. The Residence includes the communal
+    kitchen rather than presenting Kitchen as a separate facility.
 12. Starting buildings are humble, complete tier-one versions that can visibly upgrade in place.
-13. The current composition places Residence and Kitchen on the left, Training Grounds and Forge on the
-    right, and the portal landmark on the centerline.
+13. The current composition places Residence lower left, Summoning Circle upper left, Training Grounds
+    upper right, Forge lower right, and the Tower Portal on the rear centerline. One broad central road
+    and four controlled branches connect them.
 14. A selected resident physically moves through the Village. Facility pointers and navigation support
     that spatial experience; they do not reduce the Village to a static image map.
 15. Point-to-move directs the selected resident. Opening a facility or switching a global mode does not
@@ -45,20 +47,20 @@ not alter gameplay contracts or shared content catalogs.
 
 ## Approved control model
 
-The interface distinguishes global modes from physical Village places. The shell has four stable modes:
+The interface distinguishes global modes from physical Village places. The shell has five stable modes:
 
 | Global mode | Player expectation |
 | --- | --- |
 | `Village` | See the living settlement, select residents, inspect facilities, and direct movement |
 | `Residents` | Browse the full roster and inspect one person's state, equipment, and mission cargo |
+| `Tower` | Choose a floor, prepare its party and cargo, start a conquered-floor idle repeat, or depart for the next unconquered floor |
 | `Inventory` | Manage the shared Village stockpile and equip items to residents |
-| `Missions` | Choose a Tower or Portal expedition, prepare its party and cargo, depart, and reconcile the return |
+| `Missions` | Review current objectives and the story journal |
 
-Residence, Kitchen, Training Grounds, Forge, and Portal Tower are world facilities, not parallel global
-navigation modes. `Missions` is the player's task language; Portal Tower is a physical place that can
-lead into that task. Within `Missions`, `Tower` and `Portals` may remain distinct expedition categories.
-This consolidates them at the navigation level without collapsing their lore or rules, and removes the
-need for a separate global `Gate` control.
+Residence, Summoning Circle, Training Grounds, Forge, and Tower Portal are physical Village places.
+`Tower` is the task language for floor travel and preparation; selecting the Tower Portal is its
+in-world entrance. `Missions` preserves objectives and story history without duplicating expedition
+setup. This removes the old global `Gate` control while keeping Tower travel separate from the journal.
 
 ## Freeze boundary
 
@@ -69,11 +71,14 @@ The following visual foundation is approved and should not be reopened during ro
 - the centered, scene-first desktop Village composition;
 - bright facility labels attached to their targets with fine leader lines;
 - the cyan circle and arrow used to identify a selected hero in the scene;
-- the four global modes: `Village`, `Residents`, `Inventory`, and `Missions`;
+- the five global modes: `Village`, `Residents`, `Tower`, `Inventory`, and `Missions`;
 - point-to-move for the selected resident, kept separate from facility and mode navigation;
 - the phone bottom-navigation placement and icon-plus-label treatment;
-- the tier-one Village composition: Residence and Kitchen left, Training Grounds and Forge right,
-  Portal Tower centered at the rear, and four residents in the approved review frame.
+- the tier-one Village composition: Residence lower left, Summoning Circle upper left, Training Grounds
+  upper right, Forge lower right, and a standalone Tower Portal centered at the rear;
+- the clean road graph, with one broad central axis and four controlled facility branches;
+- irregular verges, worn-earth shoulders, wild groundcover, field stones, and restrained practical
+  clutter that soften the route geometry without obscuring it.
 
 Approval of the composition does not freeze the mature settlement shown in the exploratory Village
 mockups as the launch-state population or construction state. Inventory layout, mission packing details,
@@ -119,11 +124,12 @@ Title gateway
 │   └── Village shell
 │       ├── Village
 │       │   ├── Residence
-│       │   ├── Kitchen
+│       │   ├── Summoning Circle
 │       │   ├── Training Grounds
 │       │   ├── Forge
-│       │   └── Portal Tower
+│       │   └── Tower Portal
 │       ├── Residents
+│       ├── Tower
 │       ├── Inventory
 │       └── Missions
 └── Wiki
@@ -160,7 +166,7 @@ Mockups: [desktop](../../design-proposals/living-village-ui/mockups/title-gatewa
 
 Desktop is anchored in the centered panorama direction:
 
-- a restrained top navigation establishes the four global modes;
+- a restrained top navigation establishes the five global modes;
 - the panorama remains the dominant surface rather than becoming a banner;
 - facility names are placed near their targets with thin leader lines;
 - a resident strip anchors selection without covering the settlement;
@@ -178,7 +184,7 @@ Phone treats the Village as a vertical, explorable home rather than a compressed
 
 - the settlement fills the usable viewport;
 - facility pointers remain directly attached to the scene;
-- the fixed bottom bar exposes all four global modes with icon and label;
+- the fixed bottom bar exposes all five global modes with icon and label;
 - resident details rise as a bottom sheet or replace the resident strip after selection;
 - safe-area padding is part of the navigation height;
 - when the keyboard or a blocking confirmation opens, the bar may temporarily yield.
@@ -192,7 +198,7 @@ state. The home surface must tell the truth about the player's settlement and ro
 
 | Visual stage | World presentation |
 | --- | --- |
-| Starting Village | Three to five visible summoned residents; complete tier-one Residence, Forge, Training Grounds, and Kitchen; a portal landmark; and breathing room around every building |
+| Starting Village | Three to five visible summoned residents; complete tier-one Residence, Summoning Circle, Training Grounds, and Forge; a standalone Tower Portal; and breathing room around every destination |
 | Growing Village | Existing buildings expand upward or outward in place; new wings, stronger materials, work light, smoke, and a few purposeful residents communicate progress without background crowds |
 | Mature Village | The denser illuminated panorama, broader activity, and full facility labeling shown by the current exploratory mockups |
 
@@ -215,18 +221,20 @@ growth language:
 They intentionally use modest resident counts and purposeful activity rather than decorative crowds.
 Their three stages are visual comparison labels, not a commitment to three runtime settlement levels.
 
-Five lightweight growth studies illustrate that principle across the complete opening Village:
+Five earlier lightweight growth studies illustrate that principle across the previous opening Village:
 
 - [Residence](../../design-proposals/living-village-ui/mockups/residence-growth-study.png)
 - [Forge](../../design-proposals/living-village-ui/mockups/forge-growth-study.png)
 - [Training Grounds](../../design-proposals/living-village-ui/mockups/training-grounds-growth-study.png)
-- [Kitchen](../../design-proposals/living-village-ui/mockups/kitchen-growth-study.png)
-- [Portal Tower](../../design-proposals/living-village-ui/mockups/portal-tower-growth-study.png)
+- [Historical Kitchen](../../design-proposals/living-village-ui/mockups/kitchen-growth-study.png)
+- [Historical Portal Tower](../../design-proposals/living-village-ui/mockups/portal-tower-growth-study.png)
 
 Each tests three loose stages in which the same facility gains capability, stronger materials, activity,
-and restrained astronomical ornament while preserving its original identity. The stage and facility
-names are presentation labels only. These studies do not define a runtime tier count, costs, capacity,
-production dimensions, construction behavior, final global-mode names, or a content catalog.
+and restrained astronomical ornament while preserving its original identity. Kitchen is now implicit
+inside Residence, and the physical tower study is superseded by the standalone Tower Portal. The stage
+and facility names are presentation labels only. These studies do not define a runtime tier count,
+costs, capacity, production dimensions, construction behavior, final global-mode names, or a content
+catalog.
 
 The first opening-state candidate used one residence and three empty construction sites. It established
 the permanent road and plot logic but felt too bare to communicate that play begins in a real village.
@@ -236,24 +244,28 @@ The second candidate begins with four complete but modest facilities around the 
 Portal Tower. It established the right settlement density but placed Forge on the left and Kitchen on
 the right and allowed some labels to approach the frame edge.
 
-The approved third candidate switches Kitchen to the left and Forge to the right, pulls the Training Grounds and
-side labels into a comfortable safe area, and preserves the connected paths needed for direct character
-movement. This is the locked tier-one Village composition; subsequent exploration should add upgrade
-states without reopening its spatial foundation.
+The third candidate switched Kitchen to the left and Forge to the right, pulled the Training Grounds and
+side labels into a comfortable safe area, and preserved connected paths for direct character movement.
+It is now design history. The accepted revision replaces the separate Kitchen with a larger Residence,
+adds the Summoning Circle on the upper-left plot, replaces the physical tower with a standalone Tower
+Portal, and balances the destinations around a clean axial road softened by inhabited ground detail.
 
-Mockups: [approved tier-one Village](../../design-proposals/living-village-ui/mockups/opening-village-desktop-v3.png),
+Mockups: [accepted tier-one Village](../../design-proposals/living-village-ui/mockups/village-balanced-cozy-layout-desktop-v4.png),
+[previous third candidate](../../design-proposals/living-village-ui/mockups/opening-village-desktop-v3.png),
 [second candidate](../../design-proposals/living-village-ui/mockups/opening-village-desktop-v2.png), and
 [superseded sparse-site study](../../design-proposals/living-village-ui/mockups/opening-village-desktop-v1.png).
 
-### Portal Tower and Missions
+### Tower Portal, Tower, and Missions
 
-The portal remains inside the Portal Tower. `Portal Tower` names the physical facility in the scene;
-`Missions` names the complete player task spanning expedition selection, party preparation, packing,
-departure, and return. Within that mode, `Tower` and `Portals` can remain distinct mission categories if
-the game retains both. Selecting the Portal Tower in the Village opens its contextual surface and can
-offer `Plan mission`; selecting `Missions` enters preparation directly without first moving a resident.
-The exact fictional relationship between the campaign Tower and the Village portal remains open. There
-is no separate global `Gate` mode in the current recommendation.
+The rear-center landmark is a standalone `Tower Portal`, not a physical tower. Selecting it in the
+Village opens the global `Tower` mode, which begins with floor choice. Choosing a conquered floor starts
+an idle repeat for training and materials. Choosing the next unconquered floor opens party and cargo
+preparation, then hands off to `/explore/[runId]`. `Missions` remains the objective and story-journal
+surface. There is no separate global `Gate` mode.
+
+The Summoning Circle owns summoning and painless, irreversible synthesis. During synthesis, the
+sacrificed human hero becomes light and is absorbed by the receiving hero. The Tower Portal owns floor
+travel only.
 
 ### Facility pointer states
 
@@ -295,13 +307,14 @@ The sheet order is:
 
 `Equipment` represents persistent hero-bound gear. `Change Equipment` enters the shared Village
 Inventory with the relevant hero as the assignment target. `Mission Inventory` is explicitly temporary:
-outside preparation or an active mission it shows an empty state and routes the player to `Missions`.
+outside preparation or an active mission it shows an empty state and routes the player to `Tower`.
 There is no persistent personal backpack or hero-owned stockpile.
 
 Primary visual reference:
 [desktop hero inspection](../../design-proposals/living-village-ui/mockups/hero-inspection-desktop.png).
-Its scene composition, inspection hierarchy, portrait treatment, and material finish are promoted; its
-older `Tower`, `Gate`, and `Prepare at Tower` labels are superseded by the approved `Missions` mode.
+Its scene composition, inspection hierarchy, portrait treatment, and material finish are promoted. Its
+old `Gate` destination is superseded by `Missions`; `Tower` and `Prepare at Tower` now align with the
+accepted floor-travel flow.
 
 ## Inventory custody model
 
@@ -331,20 +344,20 @@ views of the same communal holding, not different owners.
 - Equipped rows name their current wearer and do not present another immediate `Equip` action.
 - Hero portraits appear only inside the contextual resident chooser and never turn the stockpile into a
   collection of personal inventories.
-- Mission supplies are packed from `Missions`; Inventory may link there, but it does not combine
+- Mission supplies are packed from `Tower`; Inventory may link there, but it does not combine
   equipment assignment and mission packing behind an ambiguous action.
 
 Mockups: [desktop Village Inventory](../../design-proposals/living-village-ui/mockups/village-inventory-desktop-v2.png)
 and [phone Village Inventory](../../design-proposals/living-village-ui/mockups/village-inventory-phone.png).
 The [earlier desktop concept](../../design-proposals/living-village-ui/mockups/village-inventory-desktop.png)
-is superseded because it used the old five-mode shell and combined `Assign or Pack` action.
+is superseded because it used the old `Tower`/`Gate` shell and combined `Assign or Pack` action.
 
 ### Mission Inventory and suggested packs
 
-The `Missions` mode owns mission preparation. The Portal Tower may provide its in-world entrance without
-owning a separate preparation model. After a mission is selected, the client proposes a pack for each
-hero based on known mission conditions. The player can adjust quantities hero by hero and accept the
-whole set when satisfied.
+The `Tower` mode owns floor choice and mission preparation. The Tower Portal provides its in-world
+entrance. After the next unconquered floor is selected, the client proposes a pack for each hero based
+on known conditions. The player can adjust quantities hero by hero and accept the whole set when
+satisfied.
 
 - Each pack states that its source is Village Inventory.
 - Each hero view is labeled `Mission Inventory` and `For this mission`.
@@ -356,8 +369,8 @@ whole set when satisfied.
 
 Primary visual reference:
 [phone mission packing](../../design-proposals/living-village-ui/mockups/mission-packing-phone.png).
-Its packing hierarchy, portrait treatment, controls, and phone finish are promoted; its older five-mode
-bottom navigation is superseded by the approved four-mode shell.
+Its packing hierarchy, portrait treatment, controls, and phone finish are promoted. Its old `Gate`
+destination is replaced by `Missions`, producing the accepted five-mode shell.
 
 ## Responsive navigation
 
@@ -452,7 +465,7 @@ The unresolved system work is ready for implementation planning when reviewers a
 12. reduced-motion and keyboard/touch behavior are defined, not deferred;
 13. the starting Village visibly contains only the roster and constructed facilities the player has;
 14. settlement growth preserves the approved composition while making progression visible;
-15. `Missions` and the physical Portal Tower have distinct, immediately understandable roles.
+15. `Tower`, `Missions`, and the physical Tower Portal have distinct, immediately understandable roles.
 
 ## Phase-one deliverable
 
