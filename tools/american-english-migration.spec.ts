@@ -20,9 +20,14 @@ import {
 	applyAmericanEnglishMigration,
 	finalizeAmericanEnglishMigrationReceipt,
 	planAmericanEnglishMigration,
+	refreshAmericanEnglishMigrationReceipt,
 	resolveIntentMaterializationPathPairs
 } from './american-english-migration.js';
-import { type AmericanEnglishRuleId, deriveRetiredForms } from './american-english-policy.js';
+import {
+	AMERICAN_ENGLISH_RULE_IDS,
+	type AmericanEnglishRuleId,
+	deriveRetiredForms
+} from './american-english-policy.js';
 import { hashCanonical } from '../packages/engine/src/hash.js';
 
 const temporaryRoots: string[] = [];
@@ -93,6 +98,13 @@ function commitAll(repositoryRoot: string, message: string): string {
 
 function pathHash(repositoryPath: string): string {
 	return createHash('sha256').update(repositoryPath).digest('hex');
+}
+
+function emptyRuleCounts(): Record<AmericanEnglishRuleId, number> {
+	return Object.fromEntries(AMERICAN_ENGLISH_RULE_IDS.map((ruleId) => [ruleId, 0])) as Record<
+		AmericanEnglishRuleId,
+		number
+	>;
 }
 
 async function fileSha256(filePath: string): Promise<string> {
@@ -168,6 +180,170 @@ async function trackedSnapshot(repositoryRoot: string): Promise<Readonly<Record<
 function planPaths(plan: Awaited<ReturnType<typeof planAmericanEnglishMigration>>): string[] {
 	return plan.pathMoves.map(({ source, destination }) => `${source} -> ${destination}`);
 }
+
+describe('rebased migration receipt refresh', () => {
+	it('rebinds retained successors to the new base, drops retired files, and merges new findings', async () => {
+		const oldColor = retired('color');
+		const oldArmor = retired('armor');
+		const oldVigor = retired('vigor');
+		const sourcePath = `docs/${oldColor}-note.txt`;
+		const successorPath = 'docs/color-note.txt';
+		const retiredPath = 'docs/retired-note.txt';
+		const incomingPath = 'docs/incoming-note.txt';
+		const repository = await makeRepository({
+			[sourcePath]: `${oldColor} baseline\n`,
+			[retiredPath]: `${oldArmor} retired\n`
+		});
+		const oldBaseline = repository.baseline;
+		git(repository.root, ['mv', sourcePath, successorPath]);
+		await writeFile(path.join(repository.root, successorPath), 'color baseline\n');
+		await writeFile(path.join(repository.root, retiredPath), 'armor retired\n');
+		const oldMigration = commitAll(repository.root, 'old migration');
+
+		const previousReceiptPath = path.join(repository.root, '..', `previous-${process.pid}.json`);
+		const previousRuleCounts = emptyRuleCounts();
+		previousRuleCounts.color = 2;
+		previousRuleCounts.armor = 1;
+		await writeFile(
+			previousReceiptPath,
+			`${JSON.stringify(
+				{
+					baselineCommit: oldBaseline,
+					policyVersion: 1,
+					ruleCounts: previousRuleCounts,
+					ownerCounts: { 'migration-planner': 2 },
+					files: [
+						{
+							sourceBlobId: git(repository.root, ['rev-parse', `${oldBaseline}:${sourcePath}`]),
+							successorPathHash: pathHash(successorPath),
+							successorBlobId: git(repository.root, [
+								'rev-parse',
+								`${oldMigration}:${successorPath}`
+							]),
+							unchangedBinary: false,
+							ownerId: 'migration-planner'
+						},
+						{
+							sourceBlobId: git(repository.root, ['rev-parse', `${oldBaseline}:${retiredPath}`]),
+							successorPathHash: pathHash(retiredPath),
+							successorBlobId: git(repository.root, [
+								'rev-parse',
+								`${oldMigration}:${retiredPath}`
+							]),
+							unchangedBinary: false,
+							ownerId: 'migration-planner'
+						}
+					]
+				},
+				null,
+				2
+			)}\n`
+		);
+
+		git(repository.root, ['checkout', '--quiet', '--detach', oldBaseline]);
+		await rm(path.join(repository.root, retiredPath));
+		await writeFile(path.join(repository.root, sourcePath), `${oldColor} upstream\n`);
+		await writeFile(path.join(repository.root, incomingPath), `${oldVigor} incoming\n`);
+		const newBaseline = commitAll(repository.root, 'new integration base');
+		git(repository.root, ['mv', sourcePath, successorPath]);
+		await writeFile(path.join(repository.root, successorPath), 'color upstream\n');
+		await writeFile(path.join(repository.root, incomingPath), 'vigor incoming\n');
+		const migrationCommit = commitAll(repository.root, 'rebased migration');
+
+		const incrementalReceiptPath = path.join(
+			repository.root,
+			'..',
+			`incremental-${process.pid}.json`
+		);
+		const refreshedRuleCounts = emptyRuleCounts();
+		refreshedRuleCounts.color = 2;
+		refreshedRuleCounts.vigor = 1;
+		await writeFile(
+			incrementalReceiptPath,
+			`${JSON.stringify(
+				{
+					baselineCommit: newBaseline,
+					policyVersion: 1,
+					ruleCounts: refreshedRuleCounts,
+					ownerCounts: { 'migration-planner': 1 },
+					files: [
+						{
+							sourceBlobId: git(repository.root, ['rev-parse', `${newBaseline}:${incomingPath}`]),
+							successorPathHash: pathHash(incomingPath),
+							successorBlobId: git(repository.root, [
+								'rev-parse',
+								`${migrationCommit}:${incomingPath}`
+							]),
+							unchangedBinary: false,
+							ownerId: 'migration-planner'
+						}
+					]
+				},
+				null,
+				2
+			)}\n`
+		);
+		const auditPath = path.join(repository.root, '..', `audit-${process.pid}.json`);
+		await writeFile(
+			auditPath,
+			`${JSON.stringify(
+				{
+					head: newBaseline,
+					counts: {
+						total: 3,
+						content: 2,
+						path: 1,
+						byRule: refreshedRuleCounts,
+						byRoot: { docs: 3 }
+					},
+					violations: [
+						{ kind: 'path', ruleId: 'color', path: sourcePath },
+						{ kind: 'content', ruleId: 'color', path: sourcePath },
+						{ kind: 'content', ruleId: 'vigor', path: incomingPath }
+					],
+					exceptionsUsed: []
+				},
+				null,
+				2
+			)}\n`
+		);
+		const receiptPath = path.join(repository.root, '..', `refreshed-${process.pid}.json`);
+		const refreshed = await refreshAmericanEnglishMigrationReceipt({
+			repositoryRoot: repository.root,
+			baselineCommit: newBaseline,
+			migrationCommit,
+			previousReceiptPath,
+			incrementalReceiptPath,
+			auditPath,
+			receiptPath
+		});
+
+		expect(refreshed.baselineCommit).toBe(newBaseline);
+		expect(refreshed.ruleCounts).toEqual(refreshedRuleCounts);
+		expect(refreshed.ownerCounts).toEqual({ 'migration-planner': 2 });
+		expect(refreshed.files).toHaveLength(2);
+		expect(refreshed.files).toEqual(
+			expect.arrayContaining([
+				expect.objectContaining({
+					sourceBlobId: git(repository.root, ['rev-parse', `${newBaseline}:${incomingPath}`]),
+					successorPathHash: pathHash(incomingPath),
+					successorBlobId: git(repository.root, ['rev-parse', `${migrationCommit}:${incomingPath}`])
+				}),
+				expect.objectContaining({
+					sourceBlobId: git(repository.root, ['rev-parse', `${newBaseline}:${sourcePath}`]),
+					successorPathHash: pathHash(successorPath),
+					successorBlobId: git(repository.root, [
+						'rev-parse',
+						`${migrationCommit}:${successorPath}`
+					])
+				})
+			])
+		);
+		expect(
+			refreshed.files.some(({ successorPathHash }) => successorPathHash === pathHash(retiredPath))
+		).toBe(false);
+	});
+});
 
 describe('American English migration planning', () => {
 	it('plans and applies the prefixed armor adjective in the armor slice', async () => {

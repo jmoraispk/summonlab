@@ -747,16 +747,20 @@ describe('integrity binding classification', () => {
 			])
 		);
 		const commands = equipmentIntegrityOwner.intentMaterialization?.commands ?? [];
+		expect(commands.some((command) => command.join(' ').includes('material-equipment-v2'))).toBe(
+			false
+		);
+		expect(commands.some((command) => command.join(' ').includes('equipment-image-profile'))).toBe(
+			false
+		);
 		expect(
-			commands.some((command) => command.join(' ').includes('material-equipment-v2'))
-		).toBe(false);
-		expect(
-			commands.some((command) => command.join(' ').includes('equipment-image-profile'))
-		).toBe(false);
-		expect(
-			commands.findIndex((command) => command[command.length - 1] === 'export:equipment-runtime-visuals')
+			commands.findIndex(
+				(command) => command[command.length - 1] === 'export:equipment-runtime-visuals'
+			)
 		).toBeLessThan(
-			commands.findIndex((command) => command[command.length - 1] === 'export:equipment-integration-report')
+			commands.findIndex(
+				(command) => command[command.length - 1] === 'export:equipment-integration-report'
+			)
 		);
 		expect(equipmentIntegrityOwner.intentMaterialization?.paths).toEqual(
 			expect.arrayContaining([
@@ -1144,9 +1148,7 @@ describe('integrity binding classification', () => {
 		const activationIntent = report.ownerPlans[0]!.successorIntents.find(
 			({ sourcePath }) => sourcePath === activationPath
 		)!;
-		expect(activationIntent.projectedValueDigest).toBe(
-			canonicalSha256(materializedActivation)
-		);
+		expect(activationIntent.projectedValueDigest).toBe(canonicalSha256(materializedActivation));
 		expect(activationIntent.dependencies).toEqual([
 			{ path: planPath, digest: canonicalSha256(projectedPlan) }
 		]);

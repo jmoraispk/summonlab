@@ -26,7 +26,8 @@ import {
 	AMERICAN_ENGLISH_RULE_IDS,
 	type AmericanEnglishRuleId,
 	type AmericanEnglishViolation,
-	auditTrackedTree
+	auditTrackedTree,
+	replaceRetiredForms
 } from './american-english-policy.js';
 import {
 	AMERICAN_ENGLISH_INTEGRITY_OWNERS,
@@ -152,6 +153,16 @@ export interface FinalizeAmericanEnglishMigrationReceiptOptions {
 	readonly initialReceiptPath: string;
 	readonly expectedInitialReceiptHash: string;
 	readonly previousReceiptPath?: string;
+	readonly receiptPath: string;
+}
+
+export interface RefreshAmericanEnglishMigrationReceiptOptions {
+	readonly repositoryRoot?: string;
+	readonly baselineCommit: string;
+	readonly migrationCommit: string;
+	readonly previousReceiptPath: string;
+	readonly incrementalReceiptPath: string;
+	readonly auditPath: string;
 	readonly receiptPath: string;
 }
 
@@ -2002,6 +2013,160 @@ export async function finalizeAmericanEnglishMigrationReceipt(
 	};
 	validateReceiptValue(receipt, plan.baselineCommit);
 	await writeReceipt(receiptPath, receipt);
+	return receipt;
+}
+
+export async function refreshAmericanEnglishMigrationReceipt(
+	options: RefreshAmericanEnglishMigrationReceiptOptions
+): Promise<AmericanEnglishMigrationReceipt> {
+	const repositoryRoot = path.resolve(options.repositoryRoot ?? process.cwd());
+	const baselineCommit = (
+		await runGit(repositoryRoot, ['rev-parse', '--verify', `${options.baselineCommit}^{commit}`])
+	)
+		.toString('utf8')
+		.trim();
+	const migrationCommit = (
+		await runGit(repositoryRoot, ['rev-parse', '--verify', `${options.migrationCommit}^{commit}`])
+	)
+		.toString('utf8')
+		.trim();
+	const ancestor = await runGitResult(repositoryRoot, [
+		'merge-base',
+		'--is-ancestor',
+		baselineCommit,
+		migrationCommit
+	]);
+	if (ancestor.exitCode !== 0) {
+		throw new Error(
+			'Refreshed migration receipt baseline is not an ancestor of the migration commit'
+		);
+	}
+
+	const previousValue: unknown = JSON.parse(
+		(await readFile(path.resolve(options.previousReceiptPath))).toString('utf8')
+	);
+	const previousReceipt = validateReceiptValue(previousValue);
+	const incrementalValue: unknown = JSON.parse(
+		(await readFile(path.resolve(options.incrementalReceiptPath))).toString('utf8')
+	);
+	const incrementalReceipt = validateReceiptValue(incrementalValue, baselineCommit);
+	const auditValue: unknown = JSON.parse(
+		(await readFile(path.resolve(options.auditPath))).toString('utf8')
+	);
+	if (
+		!isRecord(auditValue) ||
+		auditValue.head !== baselineCommit ||
+		!isRecord(auditValue.counts) ||
+		!isRecord(auditValue.counts.byRule) ||
+		!hasExactKeys(auditValue.counts.byRule, AMERICAN_ENGLISH_RULE_IDS) ||
+		!Array.isArray(auditValue.violations)
+	) {
+		throw new Error('Baseline audit does not match the refreshed migration receipt');
+	}
+	const ruleCounts = Object.fromEntries(
+		AMERICAN_ENGLISH_RULE_IDS.map((ruleId) => {
+			const count = auditValue.counts.byRule[ruleId];
+			if (!Number.isSafeInteger(count) || Number(count) < 0) {
+				throw new Error('Baseline audit has invalid rule counts');
+			}
+			return [ruleId, Number(count)];
+		})
+	) as Record<AmericanEnglishRuleId, number>;
+	const violations = auditValue.violations.map((violation) => {
+		if (
+			!isRecord(violation) ||
+			typeof violation.path !== 'string' ||
+			(violation.kind !== 'content' && violation.kind !== 'path') ||
+			typeof violation.ruleId !== 'string' ||
+			!AMERICAN_ENGLISH_RULE_IDS.includes(violation.ruleId as AmericanEnglishRuleId)
+		) {
+			throw new Error('Baseline audit contains an invalid violation');
+		}
+		return violation as {
+			readonly path: string;
+			readonly kind: 'content' | 'path';
+			readonly ruleId: AmericanEnglishRuleId;
+		};
+	});
+	const countedRules = Object.fromEntries(
+		AMERICAN_ENGLISH_RULE_IDS.map((ruleId) => [
+			ruleId,
+			violations.filter((violation) => violation.ruleId === ruleId).length
+		])
+	);
+	if (JSON.stringify(countedRules) !== JSON.stringify(ruleCounts)) {
+		throw new Error('Baseline audit rule counts do not match its violations');
+	}
+
+	const [baselineEntries, currentEntries] = await Promise.all([
+		commitTreeEntries(repositoryRoot, baselineCommit),
+		commitTreeEntries(repositoryRoot, migrationCommit)
+	]);
+	const currentPathsByHash = pathsByHash(currentEntries);
+	const baselineByProjectedPathHash = new Map<
+		string,
+		{ readonly path: string; readonly blobId: string }
+	>();
+	for (const [repositoryPath, { blobId }] of baselineEntries) {
+		const projectedPathHash = hashRepositoryPath(replaceRetiredForms(repositoryPath));
+		if (baselineByProjectedPathHash.has(projectedPathHash)) {
+			throw new Error('Refreshed migration baseline has a projected path collision');
+		}
+		baselineByProjectedPathHash.set(projectedPathHash, { path: repositoryPath, blobId });
+	}
+
+	const files = new Map<string, AmericanEnglishMigrationReceiptFile>();
+	const addReboundFile = (file: AmericanEnglishMigrationReceiptFile): void => {
+		const currentPath = currentPathsByHash.get(file.successorPathHash);
+		if (currentPath === undefined) return;
+		const baselineSource = baselineByProjectedPathHash.get(file.successorPathHash);
+		if (baselineSource === undefined) {
+			throw new Error('Retained migration successor has no exact integration-base source');
+		}
+		const successorBlobId = currentEntries.get(currentPath)!.blobId;
+		files.set(file.successorPathHash, {
+			sourceBlobId: baselineSource.blobId,
+			successorPathHash: file.successorPathHash,
+			successorBlobId,
+			unchangedBinary: file.unchangedBinary && baselineSource.blobId === successorBlobId,
+			ownerId: file.ownerId
+		});
+	};
+	for (const file of previousReceipt.files) addReboundFile(file);
+	for (const file of incrementalReceipt.files) {
+		const currentPath = currentPathsByHash.get(file.successorPathHash);
+		if (
+			currentPath === undefined ||
+			currentEntries.get(currentPath)?.blobId !== file.successorBlobId
+		) {
+			throw new Error(
+				'Incremental migration receipt successor does not match the migration commit'
+			);
+		}
+		addReboundFile(file);
+	}
+	for (const violation of violations) {
+		const successorPathHash = hashRepositoryPath(replaceRetiredForms(violation.path));
+		if (!files.has(successorPathHash)) {
+			throw new Error('Baseline audit finding has no refreshed migration successor');
+		}
+	}
+	const refreshedFiles = [...files.values()].sort((left, right) =>
+		compareCodepoints(left.successorPathHash, right.successorPathHash)
+	);
+	await assertBlobObjectsExist(
+		repositoryRoot,
+		refreshedFiles.flatMap(({ sourceBlobId, successorBlobId }) => [sourceBlobId, successorBlobId])
+	);
+	const receipt: AmericanEnglishMigrationReceipt = {
+		baselineCommit,
+		policyVersion: POLICY_VERSION,
+		ruleCounts,
+		ownerCounts: ownerCountsForReceiptFiles(refreshedFiles),
+		files: refreshedFiles
+	};
+	validateReceiptValue(receipt, baselineCommit);
+	await writeReceipt(options.receiptPath, receipt);
 	return receipt;
 }
 
