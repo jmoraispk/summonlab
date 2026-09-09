@@ -3,7 +3,7 @@ import {
 	type ExplorationCombatEnemy,
 	type ExplorationCombatHero,
 	type ExplorationEncounterRequest
-} from '@summonlab/contracts';
+} from '@summonlab/contracts/exploration-combat';
 
 import { combatValueHash } from './combat-hash';
 

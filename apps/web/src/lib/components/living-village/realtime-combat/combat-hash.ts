@@ -1,5 +1,5 @@
 import type { ExplorationEncounterRequest } from '@summonlab/contracts';
-import { deterministicUuid, hashCanonical } from '@summonlab/engine';
+import { deterministicUuid, hashCanonical } from '@summonlab/engine/hash';
 
 export function combatRequestHash(request: ExplorationEncounterRequest): string {
 	const { requestHash, ...body } = request;

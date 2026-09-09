@@ -4,7 +4,10 @@
 	"private": true,
 	"type": "module",
 	"sideEffects": false,
-	"exports": "./src/index.ts",
+	"exports": {
+		".": "./src/index.ts",
+		"./exploration-combat": "./src/exploration-combat.ts"
+	},
 	"scripts": {
 		"build": "tsup src/index.ts --format esm --dts --sourcemap --clean",
 		"lint": "eslint src",

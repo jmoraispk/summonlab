@@ -1,5 +1,5 @@
 import type { ExplorationEncounterRequest } from '@summonlab/contracts';
-import { sha256Hex as browserSafeSha256Hex } from '@summonlab/engine';
+import { sha256Hex as browserSafeSha256Hex } from '@summonlab/engine/hash';
 
 import type { StageAssetBinding, StageAssetLoader } from './stage-lifecycle';
 

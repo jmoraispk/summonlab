@@ -6,7 +6,7 @@ import {
 	type ExplorationCombatReceipt,
 	type ExplorationCombatRejection,
 	type ExplorationEncounterRequest
-} from '@summonlab/contracts';
+} from '@summonlab/contracts/exploration-combat';
 import { z } from 'zod';
 
 import { combatDeterministicId, combatRequestHash, combatValueHash } from './combat-hash';
