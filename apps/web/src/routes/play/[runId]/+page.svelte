@@ -13,7 +13,6 @@
 	import EventJournal from '$lib/components/EventJournal.svelte';
 	import EquipmentWorkshop from '$lib/components/EquipmentWorkshop.svelte';
 	import HeroArtPlaceholder from '$lib/components/HeroArtPlaceholder.svelte';
-	import LivingHearthScene from '$lib/components/LivingHearthScene.svelte';
 	import PlayerMenu from '$lib/components/PlayerMenu.svelte';
 	import RunConnection from '$lib/components/RunConnection.svelte';
 	import CityScreen from '$lib/components/city/CityScreen.svelte';
@@ -261,26 +260,28 @@
 	class:training={snapshot.destination === 'training-ground'}
 	class:has-village-nav={Boolean(data.city)}
 >
-	<header>
-		<a class="wordmark" href={resolve('/')}>summonlab</a>
-		<div class="clock">
-			<span>Hearth 01 · Day {settlementDay}</span>
-			<strong>{clock?.currentGameTime.slice(11, 16) ?? '00:00'}</strong>
-			<small>{clock?.speed ?? 4}× settlement time · server-owned</small>
-		</div>
-		<nav aria-label="Campaign utilities">
-			<button
-				type="button"
-				onclick={() => (journalOpen = !journalOpen)}
-				aria-expanded={journalOpen}
-				data-sound-cue="menu"
-			>
-				Journal <span>{snapshot.events.length}</span>
-			</button>
-			<a href={resolve('/replay/[runId]', { runId: snapshot.runId })}>Replay</a>
-			<a href={resolve('/wiki/art/hero-identity-and-evolution')}>Hero roster</a>
-		</nav>
-	</header>
+	{#if !data.city}
+		<header>
+			<a class="wordmark" href={resolve('/')}>summonlab</a>
+			<div class="clock">
+				<span>Hearth 01 · Day {settlementDay}</span>
+				<strong>{clock?.currentGameTime.slice(11, 16) ?? '00:00'}</strong>
+				<small>{clock?.speed ?? 4}× settlement time · server-owned</small>
+			</div>
+			<nav aria-label="Campaign utilities">
+				<button
+					type="button"
+					onclick={() => (journalOpen = !journalOpen)}
+					aria-expanded={journalOpen}
+					data-sound-cue="menu"
+				>
+					Journal <span>{snapshot.events.length}</span>
+				</button>
+				<a href={resolve('/replay/[runId]', { runId: snapshot.runId })}>Replay</a>
+				<a href={resolve('/wiki/art/hero-identity-and-evolution')}>Hero roster</a>
+			</nav>
+		</header>
+	{/if}
 	<RunConnection
 		runId={snapshot.runId}
 		initialCursor={data.eventHead.eventCursor}
@@ -363,8 +364,6 @@
 
 				<div class="foreground"><span></span><span></span><span></span></div>
 			</section>
-		{:else}
-			<LivingHearthScene scene={data.scene} {presentation} residents={data.residents} {eventCue} />
 		{/if}
 
 		{#if !walking && firstEmber}

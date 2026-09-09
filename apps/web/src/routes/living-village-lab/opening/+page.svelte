@@ -6,7 +6,7 @@
 	import arrivalsArt from '../../../../../../docs/design-proposals/living-village-ui/mockups/opening-three-arrivals-desktop.png';
 	import weaponsArt from '../../../../../../docs/design-proposals/living-village-ui/mockups/opening-weapon-assignment-desktop.png';
 	import objectiveArt from '../../../../../../docs/design-proposals/living-village-ui/mockups/opening-first-tower-objective-desktop.png';
-	import { heroes as villageHeroes } from '../village/fixtures';
+	import { openingHeroes } from './heroes';
 	import WeaponGlyph from './WeaponGlyph.svelte';
 
 	type Stage = 'connection' | 'arrivals' | 'weapons' | 'briefing';
@@ -38,7 +38,7 @@
 			text: 'Take a weapon and stay together. I will explain while we move.'
 		}
 	] as const;
-	const company = villageHeroes.slice(0, 3).map((hero, index) => ({
+	const company = openingHeroes.map((hero, index) => ({
 		...hero,
 		firstLine: firstLines[index]!,
 		reason: reasons[index]!

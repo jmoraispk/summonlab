@@ -74,21 +74,31 @@ test('campaign City uses the shared shell, authoritative actions, and responsive
 
 	await expect(page.getByTestId('city-screen')).toHaveCount(1);
 	await expect(page.getByTestId('living-settlement')).toHaveCount(0);
+	await expect(page.locator('main > header')).toHaveCount(0);
 	const desktopNav = page.getByRole('navigation', { name: 'City destinations' });
 	await expect(desktopNav.getByRole('link')).toHaveCount(5);
 	await expect(desktopNav.getByRole('link', { name: 'Village', exact: true })).toHaveAttribute(
 		'aria-current',
 		'page'
 	);
-	await expect(page.getByRole('link', { name: 'summonlab' })).toBeVisible();
-	await expect(page.getByRole('button', { name: /Journal/u })).toBeVisible();
-	await expect(page.getByRole('link', { name: 'Replay', exact: true })).toBeVisible();
-	await expect(page.getByRole('link', { name: 'New seed', exact: true })).toBeVisible();
-	const sensoryControls = page.getByTestId('sensory-controls');
-	await expect(sensoryControls).toBeVisible();
-	await expect(sensoryControls.getByRole('button', { name: /sound/u })).toBeVisible();
+	await expect(page.getByRole('link', { name: 'summonlab' })).toHaveCount(0);
+	await expect(page.getByRole('button', { name: /Journal/u })).toHaveCount(0);
 	await expect(page.getByTestId('campaign-status-header')).toHaveCount(0);
+	await expect(page.getByTestId('city-clock')).toContainText(/Day \d+/u);
 	const desktopScene = page.getByTestId('city-village-viewport');
+	const desktopWorld = desktopScene.getByTestId('city-world');
+	const [desktopViewportBox, desktopWorldBox] = await Promise.all([
+		desktopScene.boundingBox(),
+		desktopWorld.boundingBox()
+	]);
+	expect(desktopWorldBox!.x).toBeLessThanOrEqual(desktopViewportBox!.x + 1);
+	expect(desktopWorldBox!.y).toBeLessThanOrEqual(desktopViewportBox!.y + 1);
+	expect(desktopWorldBox!.x + desktopWorldBox!.width).toBeGreaterThanOrEqual(
+		desktopViewportBox!.x + desktopViewportBox!.width - 1
+	);
+	expect(desktopWorldBox!.y + desktopWorldBox!.height).toBeGreaterThanOrEqual(
+		desktopViewportBox!.y + desktopViewportBox!.height - 1
+	);
 	const sceneResidents = desktopScene.getByTestId('city-scene-resident');
 	await expect(sceneResidents).toHaveCount(3);
 	const residentArt = sceneResidents.locator('img');
@@ -98,15 +108,27 @@ test('campaign City uses the shared shell, authoritative actions, and responsive
 	}
 	await expect(desktopScene.locator('img.environment')).toBeVisible();
 	const desktopFacilities = desktopScene.getByTestId('city-facility');
+	const desktopFacilityLabels = desktopScene.getByTestId('city-facility-label');
 	await expect(desktopFacilities).toHaveCount(5);
+	await expect(desktopFacilityLabels).toHaveCount(5);
 	for (const label of ['Summoning Circle', 'Residence', 'Training Grounds', 'Forge', 'Portal']) {
-		await expect(desktopFacilities.getByText(label, { exact: true })).toBeVisible();
+		await expect(desktopFacilityLabels.getByText(label, { exact: true })).toBeVisible();
 	}
-	await expect(desktopFacilities.getByText('Tower Portal', { exact: true })).toHaveCount(0);
-	const occupancy = page.getByLabel('City occupancy and assignment capacity');
+	await expect(desktopFacilityLabels.getByText('Tower Portal', { exact: true })).toHaveCount(0);
+	const occupancy = page.getByLabel('People in each place');
 	for (const label of ['Dorm', 'Kitchen', 'Gate', 'Training', 'Forge']) {
 		await expect(occupancy.getByText(label, { exact: true })).toBeVisible();
 	}
+	await expect(occupancy.locator('li b')).toHaveCount(5);
+	await page.getByRole('button', { name: 'Zoom in' }).click();
+	await expect(desktopScene).toHaveAttribute('data-zoom-percent', '125');
+	await page.getByRole('button', { name: 'Fit Village' }).click();
+	await expect(desktopScene).toHaveAttribute('data-zoom-percent', '100');
+	await desktopScene.focus();
+	await page.keyboard.press('+');
+	await expect(desktopScene).toHaveAttribute('data-zoom-percent', '120');
+	await page.keyboard.press('Home');
+	await expect(desktopScene).toHaveAttribute('data-zoom-percent', '100');
 
 	await page.getByRole('button', { name: heroes[0]!.name, exact: true }).click();
 	const quickView = page.getByTestId('resident-quick-view');
@@ -123,16 +145,34 @@ test('campaign City uses the shared shell, authoritative actions, and responsive
 			response.url().includes(`/api/runs/${runId}/city-actions`) &&
 			response.request().method() === 'POST'
 	);
-	await page.getByTestId('resident-quick-view').getByRole('button', { name: 'Court training' }).click();
+	await page
+		.getByTestId('resident-quick-view')
+		.getByRole('button', { name: 'Court training' })
+		.click();
 	const committedAction = await actionResponse;
 	expect(committedAction.ok()).toBe(true);
 	expect((await committedAction.json()).assignment).toEqual({
 		buildingId: 'training-ground',
 		role: 'trainee'
 	});
-	await expect(page.getByLabel('City occupancy and assignment capacity')).toContainText(
-		'Training'
+	await expect(page.getByLabel('People in each place')).toContainText('Training');
+
+	const restingResident = page
+		.locator('[data-testid="city-scene-resident"][data-availability="available"]')
+		.first();
+	await restingResident.click();
+	const restResponse = page.waitForResponse(
+		(response) =>
+			response.url().includes(`/api/runs/${runId}/city-actions`) &&
+			response.request().method() === 'POST'
 	);
+	await page.getByTestId('resident-quick-view').getByRole('button', { name: 'Rest' }).click();
+	const committedRest = await restResponse;
+	expect(committedRest.ok()).toBe(true);
+	expect((await committedRest.json()).assignment).toEqual({
+		buildingId: 'dormitory',
+		role: 'resident'
+	});
 
 	await page.getByRole('link', { name: 'Missions', exact: true }).click();
 	await expect(page.getByTestId('village-missions')).toContainText(currentMission.title);
@@ -152,6 +192,19 @@ test('campaign City uses the shared shell, authoritative actions, and responsive
 	await page.setViewportSize({ width: 390, height: 844 });
 	await page.goto(`/play/${runId}`);
 	const phoneScene = page.getByTestId('city-village-viewport');
+	const phoneWorld = phoneScene.getByTestId('city-world');
+	const [phoneViewportBox, phoneWorldBox] = await Promise.all([
+		phoneScene.boundingBox(),
+		phoneWorld.boundingBox()
+	]);
+	expect(phoneWorldBox!.x).toBeLessThanOrEqual(phoneViewportBox!.x + 1);
+	expect(phoneWorldBox!.y).toBeLessThanOrEqual(phoneViewportBox!.y + 1);
+	expect(phoneWorldBox!.x + phoneWorldBox!.width).toBeGreaterThanOrEqual(
+		phoneViewportBox!.x + phoneViewportBox!.width - 1
+	);
+	expect(phoneWorldBox!.y + phoneWorldBox!.height).toBeGreaterThanOrEqual(
+		phoneViewportBox!.y + phoneViewportBox!.height - 1
+	);
 	const phoneResidents = phoneScene.getByTestId('city-scene-resident');
 	await expect(phoneResidents).toHaveCount(3);
 	for (const resident of await phoneResidents.all()) {

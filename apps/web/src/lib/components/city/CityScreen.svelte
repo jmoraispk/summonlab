@@ -8,7 +8,6 @@
 
 	import CityModeDock from './CityModeDock.svelte';
 	import CityOccupancyLedger from './CityOccupancyLedger.svelte';
-	import CityStatusStrip from './CityStatusStrip.svelte';
 	import CityVillageViewport from './CityVillageViewport.svelte';
 
 	let {
@@ -28,7 +27,6 @@
 
 <section class="city-screen" data-testid="city-screen">
 	<CityModeDock runId={view.runId} current={view.mode} />
-	<CityStatusStrip {view} />
 	{#if view.mode === 'village'}
 		<div class="village-stage">
 			<CityVillageViewport {view} {onIntent} {pendingIntent} {intentError} />

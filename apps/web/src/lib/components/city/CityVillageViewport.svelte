@@ -15,7 +15,6 @@
 	const WORLD_HEIGHT = 1024;
 	const MIN_ZOOM = 1;
 	const MAX_ZOOM = 3;
-	const FIT_PADDING = 10;
 
 	let {
 		view,
@@ -43,13 +42,9 @@
 	let pointerId: number | null = null;
 	let lastPointer: { x: number; y: number } | null = null;
 	let pointerTravel = 0;
+	const gameTime = $derived(view.gameTime.slice(11, 16));
 
-	const fitScale = $derived(
-		Math.min(
-			(viewportWidth - FIT_PADDING * 2) / WORLD_WIDTH,
-			(viewportHeight - FIT_PADDING * 2) / WORLD_HEIGHT
-		)
-	);
+	const fitScale = $derived(Math.max(viewportWidth / WORLD_WIDTH, viewportHeight / WORLD_HEIGHT));
 	const sceneScale = $derived(fitScale * zoom);
 	const heroCounterScale = $derived(Math.min(1.75, Math.pow(zoom, 0.55)) / sceneScale);
 	const baseX = $derived((viewportWidth - WORLD_WIDTH * sceneScale) / 2);
@@ -96,14 +91,8 @@
 	}
 
 	function clampOffsets(): void {
-		const maxX = Math.max(
-			Math.min(56, viewportWidth * 0.06),
-			(WORLD_WIDTH * sceneScale - viewportWidth) / 2 + FIT_PADDING
-		);
-		const maxY = Math.max(
-			Math.min(56, viewportHeight * 0.06),
-			(WORLD_HEIGHT * sceneScale - viewportHeight) / 2 + FIT_PADDING
-		);
+		const maxX = Math.max(0, (WORLD_WIDTH * sceneScale - viewportWidth) / 2);
+		const maxY = Math.max(0, (WORLD_HEIGHT * sceneScale - viewportHeight) / 2);
 		offsetX = clamp(offsetX, -maxX, maxX);
 		offsetY = clamp(offsetY, -maxY, maxY);
 	}
@@ -257,8 +246,12 @@
 		return `--left:${bounds.x * 100}%;--top:${bounds.y * 100}%;--width:${bounds.width * 100}%;--height:${bounds.height * 100}%`;
 	}
 
-	function labelEdge(facility: CityFacility): 'top' | 'bottom' {
-		return facility.hotspot.labelPlacement.startsWith('above') ? 'top' : 'bottom';
+	function labelStyle(facility: CityFacility): string {
+		const { labelAnchor } = facility.hotspot;
+		const x = baseX + offsetX + labelAnchor.x * WORLD_WIDTH * sceneScale;
+		const y = baseY + offsetY + labelAnchor.y * WORLD_HEIGHT * sceneScale;
+		const visible = x >= 96 && x <= viewportWidth - 96 && y >= 36 && y <= viewportHeight - 64;
+		return `--label-x:${labelAnchor.x * 100}%;--label-y:${labelAnchor.y * 100}%;left:${x}px;top:${y}px;display:${visible ? 'flex' : 'none'}`;
 	}
 </script>
 
@@ -320,8 +313,19 @@
 			onpointercancel={finishPointer}
 			onkeydown={handleViewportKeydown}
 		>
+			<aside
+				class="city-clock"
+				data-no-pan
+				data-testid="city-clock"
+				aria-label={`Day ${view.dayNumber}, ${gameTime}, ${view.dayPhase}`}
+			>
+				<span>Day {view.dayNumber}</span>
+				<strong>{gameTime}</strong>
+				<small>{view.dayPhase}</small>
+			</aside>
 			<div
 				class="city-world"
+				data-testid="city-world"
 				style={`transform:translate(${baseX + offsetX}px, ${baseY + offsetY}px) scale(${sceneScale});--scene-scale:${sceneScale};--hero-counter-scale:${heroCounterScale}`}
 			>
 				<img
@@ -342,7 +346,6 @@
 							class="facility-hotspot"
 							class:selected={selectedFacilityId === facility.facilityId}
 							data-facility={facility.facilityId}
-							data-label-edge={labelEdge(facility)}
 							data-testid="city-facility"
 							style={hotspotStyle(facility)}
 							aria-label={`Enter ${facility.label}`}
@@ -351,7 +354,6 @@
 							draggable="false"
 							onclick={() => selectFacility(facility)}
 						>
-							<span><i></i><strong>{facility.label}</strong></span>
 						</a>
 					{:else}
 						<button
@@ -359,14 +361,12 @@
 							class="facility-hotspot"
 							class:selected={selectedFacilityId === facility.facilityId}
 							data-facility={facility.facilityId}
-							data-label-edge={labelEdge(facility)}
 							data-testid="city-facility"
 							style={hotspotStyle(facility)}
 							aria-pressed={selectedFacilityId === facility.facilityId}
 							aria-label={`Inspect ${facility.label}`}
 							onclick={() => selectFacility(facility)}
 						>
-							<span><i></i><strong>{facility.label}</strong></span>
 						</button>
 					{/if}
 				{/each}
@@ -404,6 +404,16 @@
 					</div>
 				{/each}
 			</div>
+
+			{#each view.facilities as facility (facility.facilityId)}
+				<span
+					class="facility-label"
+					class:selected={selectedFacilityId === facility.facilityId}
+					data-facility={facility.facilityId}
+					data-testid="city-facility-label"
+					style={labelStyle(facility)}><i></i><strong>{facility.label}</strong></span
+				>
+			{/each}
 
 			{#if selectedHero}
 				<div
@@ -633,6 +643,48 @@
 		cursor: grabbing;
 	}
 
+	.city-clock {
+		position: absolute;
+		top: 0.75rem;
+		left: 0.75rem;
+		z-index: 45;
+		min-width: 5.4rem;
+		padding: 0.5rem 0.65rem;
+		border: 1px solid rgba(224, 197, 153, 0.36);
+		border-left: 3px solid #62d1dc;
+		background: rgba(5, 9, 13, 0.86);
+		box-shadow: 0 0.8rem 2rem rgba(0, 0, 0, 0.4);
+		pointer-events: none;
+	}
+
+	.city-clock span,
+	.city-clock strong,
+	.city-clock small {
+		display: block;
+	}
+
+	.city-clock span {
+		color: #dda765;
+		font-size: 0.58rem;
+		font-weight: 850;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+	}
+
+	.city-clock strong {
+		margin-top: 0.08rem;
+		font:
+			400 1rem Georgia,
+			serif;
+	}
+
+	.city-clock small {
+		margin-top: 0.04rem;
+		color: #79cbd0;
+		font-size: 0.52rem;
+		text-transform: capitalize;
+	}
+
 	.city-world {
 		position: absolute;
 		left: 0;
@@ -685,39 +737,37 @@
 		background: radial-gradient(ellipse, rgba(75, 188, 198, 0.13), transparent 70%);
 	}
 
-	.facility-hotspot > span {
+	.facility-label {
 		position: absolute;
-		z-index: 30;
-		left: 50%;
-		top: 0;
+		z-index: 40;
 		display: flex;
 		align-items: center;
 		gap: 0.45rem;
 		width: max-content;
+		max-width: min(12rem, calc(100% - 1rem));
 		padding: 0.45rem 0.55rem;
 		border: 1px solid rgba(239, 221, 187, 0.28);
 		border-radius: 0.4rem;
 		background: rgba(5, 9, 13, 0.84);
-		transform: translate(-50%, -50%) scale(calc(1 / var(--scene-scale)));
-		transform-origin: center;
+		transform: translate(-50%, -50%);
 		white-space: nowrap;
 		pointer-events: none;
 	}
 
-	.facility-hotspot[data-label-edge='bottom'] > span {
-		top: auto;
-		bottom: 0;
-		transform: translate(-50%, 50%) scale(calc(1 / var(--scene-scale)));
+	.facility-label strong {
+		overflow: hidden;
+		text-overflow: ellipsis;
 	}
 
-	.facility-hotspot i {
+	.facility-label i {
+		flex: 0 0 auto;
 		width: 0.35rem;
 		height: 0.35rem;
 		border-radius: 50%;
 		background: #d6a65e;
 	}
 
-	.facility-hotspot.selected i {
+	.facility-label.selected i {
 		background: #73d7dd;
 		box-shadow: 0 0 0.7rem #73d7dd;
 	}
@@ -866,6 +916,11 @@
 	}
 
 	@media (max-width: 760px) {
+		.city-clock {
+			top: 0.45rem;
+			left: 0.45rem;
+		}
+
 		.city-toolbar {
 			display: block;
 		}

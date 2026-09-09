@@ -5,7 +5,7 @@ import {
 
 import { HEARTH_01_CONTENT_VERSION } from './hearth-01.js';
 
-export const HEARTH_01_SCENE_VERSION = 'hearth-01-scene-v2';
+export const HEARTH_01_SCENE_VERSION = 'hearth-01-scene-v3';
 
 const HEARTH_01_SCENE_SOURCE = {
 	schemaVersion: 'settlement-scene-v2',
@@ -14,38 +14,38 @@ const HEARTH_01_SCENE_SOURCE = {
 	settlementContentVersion: HEARTH_01_CONTENT_VERSION,
 	settlementContentHash: '83e2d404fa3e119bc02ff6ff1f82896ea8ffb10a2661f8c7b0e858a35eeb89b9',
 	camera: 'high-three-quarter',
-	createdAt: '2026-09-09T19:56:00Z',
+	createdAt: '2026-09-09T22:21:03Z',
 	generation: {
 		mode: 'built-in-imagegen',
 		prompt:
-			'Use case: stylized-concept\nAsset type: production environment base plate for the Summonlab Hearth 01 Village runtime\nInput images: Image 1 is the authoritative spatial composition and facility-placement reference; Image 2 is the visual-style, material, lighting, camera, and environment-rendering reference.\nPrimary request: Create a new hero-free, UI-free 1536×1024 high-three-quarter dark-fantasy game environment base plate for a humble but complete tier-one Village.\nScene/backdrop: A compact fortified mountain refuge at blue-hour night. Preserve the accepted five-place composition: standalone glowing Tower Portal centered at the rear wall; modest Summoning Circle upper left; one larger Residence lower left with subtle hearth and communal-kitchen cues but no separate kitchen building; open Training Grounds upper right; working Forge lower right. One broad cobbled central road runs from foreground to the rear Portal, with exactly four clear branches to the side facilities.\nStyle/medium: premium painterly dark-fantasy game environment with controlled linework and readable silhouettes, midnight-navy stone, worn timber, soot, localized ember-gold habitation light, and cool cyan magical accents.\nComposition/framing: all destinations and entrances fully readable; generous unobstructed walkable ground for code-rendered characters; stable plots with breathing room; no cropped facility.\nEnvironmental detail: irregular grass verges, worn-earth shoulders, field stones, herb beds, timber, barrels, laundry, low fencing, and restrained practical clutter. Starting Village density only.\nConstraints: no people, no characters, no heroes, no monsters, no crowds, no labels, no text, no callout lines, no icons, no navigation, no panels, no logo, no watermark, no physical tower, no separate kitchen building, and no large central obstruction.',
+			'Use case: precise-object-edit\nAsset type: Summonlab Hearth 01 Village environment revision\nInput image: Image 1 is the edit target and authoritative reference for every unaffected feature.\nPrimary request: At the fully zoomed-out fitted view, make the Village outer perimeter wall read as one continuous rough circle or perspective ellipse. Remove the inward dent in the upper-left wall behind the Summoning Circle. Continue that wall as an uninterrupted outward-convex arc from the left side through the upper-left district toward the rear Portal, matching the smooth circular character of the right wall. The Summoning Circle must not push, dent, notch, or bulge the perimeter wall. Move the Summoning Circle slightly inward and toward the foreground only as much as needed to leave clear ground between it and the circular wall, then reconnect its short path and immediate lamps, vegetation, and retaining stones.\nConstraints: Preserve the camera, framing, mountains, moon, Portal, central road, Residence, Training Grounds, Forge, lighting, palette, scale, paths, props, and all pixels outside the necessary upper-left correction as closely as possible. Keep the full perimeter readable at fitted zoom. Do not add or remove buildings, people, characters, animals, labels, text, UI, icons, panels, or watermarks.',
 		references: [
 			{
-				file: 'assets/settlements/hearth-01/hearth-01-environment-v1.png',
-				contentHash: '2913be0a1cabf22002baadccd1eed42bffee86e5bfa06ed06e5f09cdc6674f2e',
+				file: 'assets/settlements/hearth-01/experiments/city-circular-wall-v1/hearth-01-circular-wall-candidate.png',
+				contentHash: '26a092776068692022986907e363fab0ab738b8b8da3408aecfe114460169e1e',
 				role: 'visual-style'
 			},
 			{
-				file: 'docs/design-proposals/living-village-ui/mockups/village-balanced-cozy-layout-desktop-v4.png',
-				contentHash: '40d69063975515799ca7f871e4debc1efacc46441f6a8424cda5a4cad768780a',
+				file: 'assets/settlements/hearth-01/hearth-01-threshold-v2.png',
+				contentHash: '816d32574f07f55b58b42f19347831e8ce040463022756646b5d0f0c62a5c748',
 				role: 'spatial-layout'
 			}
 		]
 	},
 	source: {
-		file: 'assets/settlements/hearth-01/hearth-01-threshold-v2.png',
+		file: 'assets/settlements/hearth-01/hearth-01-threshold-v3.png',
 		width: 1536,
 		height: 1024,
-		bytes: 3_460_720,
-		contentHash: '816d32574f07f55b58b42f19347831e8ce040463022756646b5d0f0c62a5c748'
+		bytes: 3_092_258,
+		contentHash: '02bb8a592627641e400d56fd94863aca52f2d45f9244475f9319b343a89fa1d1'
 	},
 	runtime: {
-		file: 'apps/web/static/runtime/settlements/hearth-01/environment.931d862928be.webp',
-		publicPath: '/runtime/settlements/hearth-01/environment.931d862928be.webp',
+		file: 'apps/web/static/runtime/settlements/hearth-01/environment.bce003169755.webp',
+		publicPath: '/runtime/settlements/hearth-01/environment.bce003169755.webp',
 		width: 1536,
 		height: 1024,
-		bytes: 555_376,
-		contentHash: '931d862928bee025fd529c22ab02799bba2bfacb3e3be9eb576b1292a220c727',
+		bytes: 447_374,
+		contentHash: 'bce003169755e70b215698ba5f68b513802b410ca7e46592b21d425882d9f595',
 		budgetBytes: 1_500_000,
 		budgetStatus: 'within-budget',
 		decodedRgbaBytes: 6_291_456,
@@ -120,8 +120,8 @@ const HEARTH_01_SCENE_SOURCE = {
 				entranceNodeIds: ['gate-court']
 			},
 			center: { x: 0.27, y: 0.3 },
-			bounds: { x: 0.1, y: 0.14, width: 0.3, height: 0.3 },
-			labelAnchor: { x: 0.16, y: 0.2 },
+			bounds: { x: 0.15, y: 0.21, width: 0.24, height: 0.2 },
+			labelAnchor: { x: 0.18, y: 0.24 },
 			labelPlacement: 'above-right',
 			labelPriority: 4
 		},
@@ -169,18 +169,18 @@ const HEARTH_01_SCENE_SOURCE = {
 		},
 		{
 			facilityId: 'tower-portal',
-			label: 'Tower Portal',
+			label: 'Portal',
 			target: { kind: 'village-mode', mode: 'tower' },
 			center: { x: 0.5, y: 0.2 },
 			bounds: { x: 0.4, y: 0.06, width: 0.2, height: 0.24 },
-			labelAnchor: { x: 0.52, y: 0.09 },
+			labelAnchor: { x: 0.5, y: 0.17 },
 			labelPlacement: 'below-right',
 			labelPriority: 5
 		}
 	],
 	nodeProjections: [
 		{ nodeId: 'gate-dais', point: { x: 0.27, y: 0.29 } },
-		{ nodeId: 'gate-court', point: { x: 0.33, y: 0.42 } },
+		{ nodeId: 'gate-court', point: { x: 0.33, y: 0.41 } },
 		{ nodeId: 'gate-rail', point: { x: 0.22, y: 0.35 } },
 		{ nodeId: 'courtyard-heart', point: { x: 0.5, y: 0.53 } },
 		{ nodeId: 'cistern-steps', point: { x: 0.45, y: 0.58 } },
@@ -198,7 +198,7 @@ const HEARTH_01_SCENE_SOURCE = {
 		{ nodeId: 'workshop-bench', point: { x: 0.75, y: 0.7 } },
 		{ nodeId: 'workshop-forge', point: { x: 0.82, y: 0.67 } }
 	],
-	sceneHash: '349343dac24f3708bfc7462c6274af1c84880de067b23d1b0968cd435341a70b'
+	sceneHash: '4dea1551545f6820778eed52e7fd37396124874d2c49b3252ec6a2c307d4d313'
 } as const;
 
 function canonicalJson(value: unknown): string {

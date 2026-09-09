@@ -23,7 +23,7 @@
 				'Find the six residents in Hearth 01, inspect their readiness, and assign training, rest, or a hunt from the village itself.',
 			action: 'Enter Village',
 			href: '/living-village-lab/village' as const,
-			image: '/runtime/settlements/hearth-01/environment.96cbb666f3d9.webp',
+			image: '/runtime/settlements/hearth-01/environment.bce003169755.webp',
 			alt: 'Hearth 01 village at dusk'
 		},
 		{

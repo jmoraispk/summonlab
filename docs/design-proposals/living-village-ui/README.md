@@ -8,6 +8,18 @@ This packet turns the current client audit and the approved concept discussion i
 design proposal. It contains mockups and interaction guidance only. It does not modify runtime code,
 gameplay contracts, or shared content catalogs.
 
+## Implemented City
+
+`/play/[runId]` now owns the canonical player-facing City. It renders one shared `CityScreen` backed by
+the campaign's authoritative projection and commands. The deterministic Village preview renders that
+same component only for no-database visual review; it is test input, not a second Village product or a
+second gameplay reducer.
+
+The implemented shell uses one header: the five-mode dock (`Village`, `Residents`, `Tower`, `Inventory`,
+and `Missions`). Day and time live on the upper-left of the map. The five engine-space people counts use
+the compact horizontal campaign treatment, and the accepted circular-wall candidate is promoted as
+`hearth-01-scene-v3`. Broader background iteration is deferred.
+
 ## Primary gameplay visual references
 
 These two promoted images set the dominant quality bar for the inhabited Village, hero inspection,

@@ -2,7 +2,7 @@
 	"schemaVersion": "city-environment-revision-v1",
 	"experimentId": "city-circular-wall-v1",
 	"revisionId": "candidate-02",
-	"status": "candidate",
+	"status": "accepted",
 	"createdAt": "2026-09-09T22:21:03Z",
 	"owner": "codex/village-threshold-implementation-plan",
 	"source": {
@@ -30,7 +30,7 @@
 		"alphaHoles": false
 	},
 	"review": {
-		"humanReviewPending": true,
-		"runtimePromoted": false
+		"humanReviewPending": false,
+		"runtimePromoted": true
 	}
 }

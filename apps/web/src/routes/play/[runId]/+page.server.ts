@@ -15,7 +15,6 @@ import { campaignExperienceView } from '$lib/server/campaign';
 import { projectCityView } from '$lib/server/city';
 import { projectEquipmentWorkshop } from '$lib/server/equipment-runtime';
 import { runtimePortraitFor } from '$lib/server/runtime-portraits';
-import { parseVillageMode, type VillageResident } from '$lib/village-shell';
 
 import type { PageServerLoad } from './$types';
 
@@ -53,6 +52,11 @@ export const load: PageServerLoad = async ({ params, url }) => {
 	const campaignView = await campaignExperienceView(config.databaseUrl, params.runId).catch(
 		() => null
 	);
+	if (snapshot.arrived && engineSnapshot?.state.schemaVersion === 13) {
+		if (!presentation || !campaignView) {
+			error(503, 'The authoritative City projection is temporarily unavailable.');
+		}
+	}
 	const heroPortrait = runtimePortraitFor(
 		snapshot.manifestHash,
 		snapshot.manifest.artKey,
@@ -73,9 +77,7 @@ export const load: PageServerLoad = async ({ params, url }) => {
 						pronouns: hero.draft.manifest.pronouns,
 						role: hero.draft.manifest.visualRole ?? 'resident',
 						firstReply: hero.firstReply?.exactText ?? null,
-						health: stateHero
-							? { current: stateHero.health, maximum: stateHero.maxHealth }
-							: null,
+						health: stateHero ? { current: stateHero.health, maximum: stateHero.maxHealth } : null,
 						level: stateHero?.progression.level ?? null,
 						detailRows: stateHero
 							? [
@@ -100,33 +102,6 @@ export const load: PageServerLoad = async ({ params, url }) => {
 					};
 				})
 			: [];
-	const residents: readonly VillageResident[] =
-		campaignView?.heroes.map((hero) => {
-			const heroId = hero.draft.manifest.characterId;
-			const occupant = presentation?.occupants.find((entry) => entry.heroId === heroId);
-			const social = presentation?.social.find((entry) => entry.heroId === heroId);
-			return {
-				heroId,
-				ordinal: hero.ordinal,
-				name: hero.draft.manifest.displayName,
-				rarityStars: hero.draft.manifest.rarityStars,
-				pronouns: hero.draft.manifest.pronouns,
-				role: hero.draft.manifest.visualRole ?? 'resident',
-				activity: occupant?.activityLabel ?? 'State unavailable',
-				location: (occupant?.buildingId ?? occupant?.nodeId ?? 'Hearth 01').replaceAll('-', ' '),
-				relationship: social?.relationshipToMaster.tone ?? 'unknown',
-				authority: social?.authority.standing ?? 'unknown',
-				beliefCount: social?.beliefCount ?? 0,
-				latestObservation: social?.latestObservation?.summary ?? null,
-				firstReply: hero.firstReply?.exactText ?? null,
-				portrait: runtimePortraitFor(hero.draft.manifestHash, hero.draft.manifest.artKey, 'roster'),
-				sceneArt: runtimePortraitFor(
-					hero.draft.manifestHash,
-					hero.draft.manifest.artKey,
-					'village-cutout'
-				)
-			};
-		}) ?? [];
 	return {
 		snapshot,
 		clock,
@@ -146,8 +121,6 @@ export const load: PageServerLoad = async ({ params, url }) => {
 						eventCue: null
 					})
 				: null,
-		mode: parseVillageMode(url.searchParams.get('mode')),
-		residents,
 		heroPortrait,
 		scene
 	};

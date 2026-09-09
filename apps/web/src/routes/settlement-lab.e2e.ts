@@ -14,8 +14,8 @@ test('inspects all five Hearth 01 interiors and deterministic access-aware route
 	const routeBudgetText = (await routeBudget.textContent()) ?? '';
 	const routeKilobytes = Number(routeBudgetText.match(/(\d+\.\d) KB route JS/)?.[1]);
 	expect(routeKilobytes).toBeLessThanOrEqual(700);
-	await expect(page.getByText('349343dac24f3708')).toBeVisible();
-	await expect(page.getByText('555.4 KB WebP')).toBeVisible();
+	await expect(page.getByText('4dea1551545f6820')).toBeVisible();
+	await expect(page.getByText('447.4 KB WebP')).toBeVisible();
 	const paintedScene = page.getByTestId('painted-settlement-scene');
 	await expect(paintedScene).toBeVisible();
 	await expect(paintedScene.locator('[data-layer-kind]')).toHaveCount(6);

@@ -1,6 +1,6 @@
 # Village City convergence design
 
-**Status:** Approved direction; implementation plan pending owner review
+**Status:** Implemented; live database campaign E2E pending local Docker availability
 
 **Date:** 2026-09-09
 
@@ -31,8 +31,8 @@ approved carry-forward is the five-option navigation dock.
 1. The fixture-driven visual lab supplies the canonical City composition and interaction model.
 2. The database-backed campaign remains the only source of persistent player state; it does not own a
    separate Village layout.
-3. The final player-facing route is `/play/[runId]`. The standalone Village lab route is removed after
-   migration rather than maintained as a parallel application.
+3. The final player-facing route is `/play/[runId]`. The lab URL is retained only as a no-database
+   review harness around the same `CityScreen`; it owns no renderer or gameplay behavior.
 4. Tests may construct a frozen sample City projection directly, but that sample does not own separate
    components, commands, navigation, or gameplay rules.
 5. Desktop shows the five global modes across the top. Phone fixes the same five modes to the bottom
@@ -76,7 +76,7 @@ CityViewModel
         ↓
 CityScreen.svelte
         ├── global mode dock
-        ├── status and resident ribbon
+        ├── map clock and resident ribbon
         ├── interactive Village viewport
         ├── resident quick view / details sheet
         ├── operational occupancy ledger
@@ -133,11 +133,11 @@ place and presents a concise reason beside the attempted action.
 
 ### Desktop
 
-The five-option dock spans the top of the City shell. Beneath it, the compact status strip and resident
-ribbon lead into the dominant Village panorama. Camera controls remain compact and adjacent to the
-scene. World facility labels remain visible unless collision handling temporarily suppresses a lower
-priority label. Resident quick view opens over a bounded part of the scene; full details use one side
-sheet and replace the quick view.
+The five-option dock is the City shell's only header. Beneath it, the resident ribbon and compact camera
+controls lead into the dominant Village panorama. Day and game time appear as a small clock over the
+map's upper-left corner. World facility labels remain visible while their authored anchors are on
+screen; labels outside a cropped phone view reappear when the player pans to their facilities. Resident
+quick view opens over a bounded part of the scene; full details use one side sheet and replace it.
 
 The operational occupancy ledger remains a compact overlay near a scene edge. It always reports the
 five engine spaces in this order: Dorm, Kitchen, Gate, Training, Forge. Each row shows current people
@@ -145,7 +145,7 @@ and assignment capacity. It is information, not a second set of navigation contr
 
 ### Phone
 
-The City fills the space between the compact status region and the fixed five-option bottom dock. The
+The City fills the space between the resident/camera toolbar and the fixed five-option bottom dock. The
 resident ribbon scrolls horizontally. Camera controls wrap without reducing the map to a thin band.
 Quick view rises as a bounded bottom sheet above the dock; full details replace it. Facility controls,
 hero targets, and dock controls retain non-overlapping touch targets of at least 44 by 44 CSS pixels.
@@ -199,8 +199,9 @@ updated to the actual pixels rather than moved speculatively.
    phone parity.
 7. Remove `LivingHearthScene` and any superseded campaign-only Village projection code once no route
    imports them.
-8. Remove the standalone `/living-village-lab/village` page and its route fixture after its useful
-   browser scenarios have been moved to shared component or campaign tests.
+8. Keep `/living-village-lab/village` only as a deterministic review harness for environments without a
+   local database. It imports the exact shared City component, implements no gameplay rules, and is not
+   a player-facing product alternative.
 9. Generate and promote the narrowly revised environment candidate, then recapture the canonical City
    evidence.
 
@@ -269,7 +270,8 @@ the occupancy ledger, and the environment revision at fitted scene scale.
 
 ## Completion criteria
 
-The convergence is complete when `/play/[runId]` renders the visual lab's approved composition with
+The implementation is complete when `/play/[runId]` renders the visual lab's approved composition with
 campaign-authoritative residents, time, occupancy, and commands; the five-option responsive dock and
-five world facilities are simultaneously present; the standalone Village lab and old campaign Village
-renderer have no remaining route imports; and migrated tests preserve every liked interaction.
+five world facilities are simultaneously present; the old campaign Village renderer has no remaining
+route imports; the lab URL is only a thin shared-screen review harness; and migrated tests preserve
+every liked interaction. Release validation still requires the database-backed campaign E2E.

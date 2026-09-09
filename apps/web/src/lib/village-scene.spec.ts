@@ -1,7 +1,7 @@
 import type { SettlementPresentation, SettlementSceneDefinition } from '@summonlab/contracts';
 import { describe, expect, it } from 'vitest';
 
-import type { VillageResident } from './village-shell';
+import type { CityResident } from './city';
 import { projectVillageFacilities, projectVillageSceneResidents } from './village-scene';
 
 const heroIds = [
@@ -30,7 +30,7 @@ const presentation = {
 	occupants: heroIds.map(occupant)
 } as SettlementPresentation;
 
-function resident(heroId: string): VillageResident {
+function resident(heroId: string): CityResident {
 	return {
 		heroId,
 		ordinal: 1,
@@ -45,8 +45,14 @@ function resident(heroId: string): VillageResident {
 		beliefCount: 0,
 		latestObservation: null,
 		firstReply: null,
+		health: null,
+		level: null,
+		detailRows: [],
 		portrait: null,
-		sceneArt: null
+		sceneArt: null,
+		nodeId: 'gate-dais',
+		readiness: 'available',
+		availableActions: ['court-training', 'rest', 'details']
 	};
 }
 
