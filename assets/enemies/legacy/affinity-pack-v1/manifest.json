@@ -18,7 +18,7 @@
 		{
 			"experimentId": "affinity-workflow-v1",
 			"catalogPath": "assets/enemies/experiments/affinity-workflow-v1/review/catalog.json",
-			"catalogSha256": "254d01d7d7e9f8e8c0879bb632b62749bf85147c39bc7250f6f8cdbdc17fab68",
+			"catalogSha256": "4478c47a51dd76ac01fa22a628dda78b94dfe5ce2d98921d372c01d41151d78a",
 			"candidateRoot": "assets/enemies/experiments/affinity-workflow-v1/candidates",
 			"candidateCount": 39
 		}

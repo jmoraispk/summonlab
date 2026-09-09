@@ -37,7 +37,7 @@
     "equipment": 581,
     "migration-planner": 512,
     "runtime-and-engine": 40,
-    "visual-production": 2174
+    "visual-production": 2177
   },
   "files": [
     {
@@ -4318,6 +4318,13 @@
       "ownerId": "visual-production"
     },
     {
+      "sourceBlobId": "d9bc982adb827b569dac193f37a4b852756b76a0",
+      "successorPathHash": "2f8ae97e46b94da73f2ff3b13977d98039d7865b3303b8ddc41e98605ae7f872",
+      "successorBlobId": "4a7232ca15cfb206c19d40b211b5150326d0e61b",
+      "unchangedBinary": false,
+      "ownerId": "visual-production"
+    },
+    {
       "sourceBlobId": "de61e880f09e9bb536aa460e21652fa6f9150ae1",
       "successorPathHash": "2f96aab14a5016f26e7d2fbbabdfeed35f46ce44efe126f28a2fd374b5413bac",
       "successorBlobId": "08d83109c2c983592addb717612edf5916d4b78d",
@@ -6997,6 +7004,13 @@
       "successorBlobId": "a058304fe36a0a60686c492ffa11bf10b03afd61",
       "unchangedBinary": false,
       "ownerId": "equipment"
+    },
+    {
+      "sourceBlobId": "e8a5ece861dc1f87f6cdd76fc87abecf5d09b56e",
+      "successorPathHash": "4ce109a3b18991b201409ac242c07861c94c77c3c757337f4fbf18e97e586be5",
+      "successorBlobId": "bf0d5df54af3d42a161b1ea730ed10b58777b282",
+      "unchangedBinary": false,
+      "ownerId": "visual-production"
     },
     {
       "sourceBlobId": "e2eb5b9709280179533eb8167b705602d6bfc167",
@@ -16592,6 +16606,13 @@
       "sourceBlobId": "15e8ce28a2f46bb383c5bbd820bdbaee33bbf3ad",
       "successorPathHash": "b8385534417e38a1ca6a8d9f2576bef4a93df67f1fd5ea9914c961162b78724d",
       "successorBlobId": "71433d92b7f67c3233cab1637b670b76c416fef3",
+      "unchangedBinary": false,
+      "ownerId": "visual-production"
+    },
+    {
+      "sourceBlobId": "34b7606f062d66ea5d7ac6bcbdbe40a01e28bfb5",
+      "successorPathHash": "b83fe5891f8981ef502279185205cb061f723b61f582486d89d274e0bc70201b",
+      "successorBlobId": "3b11729419901a01666965674d5274fcfeae7617",
       "unchangedBinary": false,
       "ownerId": "visual-production"
     },

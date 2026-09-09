@@ -748,6 +748,32 @@ describe('integrity binding classification', () => {
 		);
 	});
 
+	it('owns and materializes the retained enemy catalog digest', () => {
+		const manifestPath = 'assets/enemies/legacy/affinity-pack-v1/manifest.json';
+		expect(visualProductionIntegrityOwner.owns(manifestPath, '/sources/1/catalogSha256')).toBe(
+			true
+		);
+		expect(visualProductionIntegrityOwner.intentMaterialization?.commands).toContainEqual([
+			'pnpm',
+			'tsx',
+			'tools/reseal-retained-enemy-pack-lineage.ts',
+			'--write'
+		]);
+		expect(visualProductionIntegrityOwner.intentMaterialization?.paths).toContain(manifestPath);
+	});
+
+	it('owns and materializes the affinity wiki promotion digest', () => {
+		const provenancePath = 'assets/enemies/wiki/affinities/reference/provenance.json';
+		expect(visualProductionIntegrityOwner.owns(provenancePath, '/promotions/0/sha256')).toBe(true);
+		expect(visualProductionIntegrityOwner.intentMaterialization?.commands).toContainEqual([
+			'pnpm',
+			'tsx',
+			'tools/reseal-affinity-wiki-provenance.ts',
+			'--write'
+		]);
+		expect(visualProductionIntegrityOwner.intentMaterialization?.paths).toContain(provenancePath);
+	});
+
 	it('materializes equipment runtime and integration self-derived outputs', () => {
 		expect(equipmentIntegrityOwner.intentMaterialization?.commands).toEqual(
 			expect.arrayContaining([

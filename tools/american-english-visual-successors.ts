@@ -96,6 +96,8 @@ export const visualProductionIntegrityOwner: AmericanEnglishIntegrityOwner = {
 	id: 'visual-production',
 	intentMaterialization: {
 		commands: [
+			['pnpm', 'tsx', 'tools/reseal-affinity-wiki-provenance.ts', '--write'],
+			['pnpm', 'tsx', 'tools/reseal-retained-enemy-pack-lineage.ts', '--write'],
 			['pnpm', 'tsx', 'tools/reseal-family-affinity-source-lineage.ts'],
 			['pnpm', 'tsx', 'tools/reseal-fauna-family-promotion-lineage.ts', '--write'],
 			['pnpm', 'build:family-affinity-dispatch-bundle'],
@@ -111,6 +113,8 @@ export const visualProductionIntegrityOwner: AmericanEnglishIntegrityOwner = {
 			['pnpm', 'prettier', '--write', 'packages/contracts/src/character.ts']
 		],
 		paths: [
+			'assets/enemies/wiki/affinities/reference/provenance.json',
+			'assets/enemies/legacy/affinity-pack-v1/manifest.json',
 			'assets/enemies/experiments/family-affinity-v1/waves/earth-bridge-v1.json',
 			'assets/enemies/experiments/fauna-family-v1/inventory.json',
 			'assets/enemies/experiments/fauna-family-v1/manifest.json',
@@ -140,9 +144,9 @@ export const visualProductionIntegrityOwner: AmericanEnglishIntegrityOwner = {
 	},
 	regeneration: {
 		writeCommand:
-			'pnpm export:family-affinity-production && pnpm tsx tools/reseal-fauna-family-promotion-lineage.ts --write && pnpm export:affinity-workflow && pnpm export:enemy-affinity-expansion && pnpm export:wiki-monsters && pnpm export:wiki-monster-visuals && pnpm export:wiki-skill-visual-catalog && pnpm export:player-visuals && pnpm export:summonable-hero-runtime && pnpm export:skill-icon-runtime',
+			'pnpm export:family-affinity-production && pnpm tsx tools/reseal-fauna-family-promotion-lineage.ts --write && pnpm export:affinity-workflow && pnpm tsx tools/reseal-retained-enemy-pack-lineage.ts --write && pnpm tsx tools/reseal-affinity-wiki-provenance.ts --write && pnpm export:enemy-affinity-expansion && pnpm export:wiki-monsters && pnpm export:wiki-monster-visuals && pnpm export:wiki-skill-visual-catalog && pnpm export:player-visuals && pnpm export:summonable-hero-runtime && pnpm export:skill-icon-runtime',
 		checkCommand:
-			'pnpm check:family-affinity-production && pnpm tsx tools/reseal-fauna-family-promotion-lineage.ts --check && pnpm validate:affinity-workflow && pnpm check:enemy-affinity-expansion-review && pnpm validate:wiki-monsters && pnpm validate:wiki-monster-visuals && pnpm validate:wiki-skill-visual-catalog && pnpm validate:player-visuals && pnpm validate:summonable-hero-runtime && pnpm check:skill-icon-runtime && pnpm validate:skill-icons'
+			'pnpm tsx tools/reseal-retained-enemy-pack-lineage.ts --check && pnpm tsx tools/reseal-affinity-wiki-provenance.ts --check && pnpm check:family-affinity-production && pnpm tsx tools/reseal-fauna-family-promotion-lineage.ts --check && pnpm validate:affinity-workflow && pnpm check:enemy-affinity-expansion-review && pnpm validate:wiki-monsters && pnpm validate:wiki-monster-visuals && pnpm validate:wiki-skill-visual-catalog && pnpm validate:player-visuals && pnpm validate:summonable-hero-runtime && pnpm check:skill-icon-runtime && pnpm validate:skill-icons'
 	},
 	serializerFor(path, kind) {
 		if (kind === 'raw-file')
