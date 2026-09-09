@@ -17,17 +17,18 @@ Their older `Tower` and `Gate` labels are superseded by the five-mode global she
 
 ## Accepted Village threshold revision
 
-The rear-center landmark remains a standalone Tower Portal; it is not a physical tower. A separate
-Summoning Circle sits on a raised side terrace off the central walking path. The Circle owns both
-summoning and painless, irreversible synthesis: the sacrificed human hero becomes light and is
-absorbed by the receiving hero. The Tower Portal owns floor travel only.
+The rear-center landmark remains a standalone Tower Portal; it is not a physical tower. The
+upper-left Residence plot becomes a separate Summoning Circle, while Residence and Kitchen merge into
+one larger building on the lower-left Kitchen plot. The Circle owns both summoning and painless,
+irreversible synthesis: the sacrificed human hero becomes light and is absorbed by the receiving
+hero. The Tower Portal owns floor travel only.
 
 The `Tower` mode begins with floor choice. Choosing a conquered floor starts an idle repeat for
 training and materials. Choosing the next unconquered floor prepares an active exploration and then
 hands off to `/explore/[runId]`. Mission packing is part of that Tower preparation flow; `Missions`
 remains the objective and story-journal surface.
 
-![Village with separate Summoning Circle, Tower Portal, and five-item dock](./mockups/village-circle-and-tower-portal-desktop-v1.png)
+![Village with merged Residence and Kitchen, separate Summoning Circle, Tower Portal, and five-item dock](./mockups/village-merged-residence-kitchen-desktop-v2.png)
 
 ### Mature Village and hero inspection
 
@@ -68,8 +69,9 @@ an exploratory story premise for review, not a runtime or shared-catalog change.
 - the five global modes: `Village`, `Residents`, `Tower`, `Inventory`, and `Missions`;
 - point-to-move for a selected resident, separate from facility and mode navigation;
 - the phone bottom-navigation placement and icon-plus-label treatment;
-- the tier-one Village composition: Residence and Kitchen left, Training Grounds and Forge right, a
-  standalone Tower Portal centered at the rear, and a separate Summoning Circle on a side terrace.
+- the tier-one Village composition: a merged Residence and Kitchen on the lower-left plot, a
+  Summoning Circle on the upper-left plot, Training Grounds upper right, Forge lower right, and a
+  standalone Tower Portal centered at the rear.
 
 ### Continue designing
 
@@ -135,12 +137,17 @@ accepted five-mode threshold revision above.
 
 ### Opening Village threshold revision
 
-The current direction starts with a functioning tier-one Village: Residence and Kitchen on the left,
-Training Grounds and Forge on the right, a standalone Tower Portal on the rear centerline, and a
-separate Summoning Circle on a raised side terrace. The five-item dock follows the engraved treatment
-of the player-provided mission-packing reference.
+The current direction starts with a functioning tier-one Village: a merged Residence and Kitchen on
+the lower-left plot, a Summoning Circle on the former upper-left Residence plot, Training Grounds upper
+right, Forge lower right, and a standalone Tower Portal on the rear centerline. The five-item dock
+follows the engraved treatment of the player-provided mission-packing reference.
 
-![Current Village threshold revision](./mockups/village-circle-and-tower-portal-desktop-v1.png)
+![Current Village merged-facility revision](./mockups/village-merged-residence-kitchen-desktop-v2.png)
+
+The previous threshold revision placed the Summoning Circle closer to the central path and kept
+Residence and Kitchen separate. It remains as design history.
+
+![Previous separate-facility threshold revision](./mockups/village-circle-and-tower-portal-desktop-v1.png)
 
 The earlier opening candidate used a combined Portal Tower and the superseded navigation model. It
 remains below as design history rather than the active direction.
