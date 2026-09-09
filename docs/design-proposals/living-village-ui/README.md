@@ -207,8 +207,8 @@ of sharing an ambiguous `Assign or Pack` action.
 
 ![Phone Village Inventory](./mockups/village-inventory-phone.png)
 
-The [earlier desktop concept](./mockups/village-inventory-desktop.png) remains as design history. Its
-five-mode shell and combined `Assign or Pack` action are superseded.
+The [earlier desktop concept](./mockups/village-inventory-desktop.png) remains as design history. Its old
+`Tower`/`Gate` shell and combined `Assign or Pack` action are superseded.
 
 ### Suggested mission packing
 
