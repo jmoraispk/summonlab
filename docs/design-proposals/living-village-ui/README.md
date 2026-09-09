@@ -29,7 +29,7 @@ training and materials. Choosing the next unconquered floor prepares an active e
 hands off to `/explore/[runId]`. Mission packing is part of that Tower preparation flow; `Missions`
 remains the objective and story-journal surface.
 
-![Village with clean road graph, Residence, separate Summoning Circle, Tower Portal, and five-item dock](./mockups/village-clean-road-layout-desktop-v3.png)
+![Balanced, cozy Village with Residence, Summoning Circle, Tower Portal, and five-item dock](./mockups/village-balanced-cozy-layout-desktop-v4.png)
 
 ### Mature Village and hero inspection
 
@@ -74,7 +74,11 @@ an exploratory story premise for review, not a runtime or shared-catalog change.
   plot, a Summoning Circle on the upper-left plot, Training Grounds upper right, Forge lower right,
   and a standalone Tower Portal centered at the rear;
 - the clean road graph: one broad central axis from the foreground to the Tower Portal and four
-  controlled branches connecting the other facilities without meandering.
+  controlled branches connecting the other facilities without meandering;
+- the upper balance: the Summoning Circle and Training Grounds sit at comparable offsets from the
+  central portal axis;
+- the inhabited ground treatment: irregular verges, worn-earth shoulders, wild groundcover, field
+  stones, and restrained practical clutter soften the route geometry without obscuring it.
 
 ### Continue designing
 
@@ -143,10 +147,17 @@ accepted five-mode threshold revision above.
 The current direction starts with a functioning tier-one Village: a Residence with an implicit
 communal kitchen on the lower-left plot, a Summoning Circle on the former upper-left Residence plot,
 Training Grounds upper right, Forge lower right, and a standalone Tower Portal on the rear centerline.
-A clean axial road and four controlled branches connect every destination. The five-item dock follows
-the engraved treatment of the player-provided mission-packing reference.
+A clean axial road and four controlled branches connect every destination. The Circle and Training
+Grounds balance one another across that axis, while irregular vegetation and practical domestic
+details keep the commons cozy rather than formally landscaped. The five-item dock follows the
+engraved treatment of the player-provided mission-packing reference.
 
-![Current clean-road Village revision](./mockups/village-clean-road-layout-desktop-v3.png)
+![Current balanced and cozy Village revision](./mockups/village-balanced-cozy-layout-desktop-v4.png)
+
+The previous clean-road revision placed the Summoning Circle too far left and divided the ground into
+overly straight grass panels. It remains as design history.
+
+![Previous clean-road Village revision](./mockups/village-clean-road-layout-desktop-v3.png)
 
 The previous merged-facility revision used the longer `Residence & Kitchen` label and an irregular
 road network. It remains as design history.
