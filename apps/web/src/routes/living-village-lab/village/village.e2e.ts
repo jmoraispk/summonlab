@@ -61,11 +61,11 @@ test('shared City preserves the approved Village interactions and responsive doc
 
 	await viewport.getByRole('button', { name: /Inspect Yaso Dreno/u }).click();
 	await expect(quickView).toContainText('Yaso Dreno');
-	await viewport.getByRole('button', { name: 'Zoom in' }).click();
-	await expect(viewport).toHaveAttribute('data-zoom-percent', '125');
-	await viewport.getByRole('button', { name: 'Fit Village' }).click();
+	await city.getByRole('button', { name: 'Zoom in' }).click();
+	await expect(viewport).toHaveAttribute('data-zoom-percent', '190');
+	await city.getByRole('button', { name: 'Fit Village' }).click();
 	await expect(viewport).toHaveAttribute('data-zoom-percent', '100');
-	await viewport.getByRole('button', { name: 'Reset View' }).click();
+	await city.getByRole('button', { name: 'Reset View' }).click();
 	await expect(quickView).toHaveCount(0);
 	expect(apiRequests).toEqual([]);
 

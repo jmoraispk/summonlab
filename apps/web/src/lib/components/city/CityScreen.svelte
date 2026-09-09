@@ -1,4 +1,9 @@
 <script lang="ts">
+	import EquipmentWorkshop from '$lib/components/EquipmentWorkshop.svelte';
+	import VillageInventoryPanel from '$lib/components/village-shell/VillageInventoryPanel.svelte';
+	import VillageMissionsPanel from '$lib/components/village-shell/VillageMissionsPanel.svelte';
+	import VillageResidentsPanel from '$lib/components/village-shell/VillageResidentsPanel.svelte';
+	import VillageTowerPanel from '$lib/components/village-shell/VillageTowerPanel.svelte';
 	import type { CityIntent, CityViewModel } from '$lib/city';
 
 	import CityModeDock from './CityModeDock.svelte';
@@ -10,12 +15,14 @@
 		view,
 		onIntent = async () => undefined,
 		pendingIntent = null,
-		intentError = null
+		intentError = null,
+		onEquipmentChanged
 	}: {
 		view: CityViewModel;
 		onIntent?: (intent: CityIntent) => void | Promise<void>;
 		pendingIntent?: CityIntent | null;
 		intentError?: string | null;
+		onEquipmentChanged?: () => void | Promise<void>;
 	} = $props();
 </script>
 
@@ -27,10 +34,24 @@
 			<CityVillageViewport {view} {onIntent} {pendingIntent} {intentError} />
 			<CityOccupancyLedger rows={view.occupancy} />
 		</div>
+	{:else if view.mode === 'residents'}
+		<VillageResidentsPanel residents={view.residents} />
+	{:else if view.mode === 'tower'}
+		<VillageTowerPanel />
+	{:else if view.mode === 'missions' && view.objectives}
+		<VillageMissionsPanel objectives={view.objectives} />
+	{:else if view.mode === 'inventory' && view.inventory}
+		<EquipmentWorkshop
+			runId={view.runId}
+			initialProjection={view.inventory}
+			onChanged={onEquipmentChanged}
+		/>
+	{:else if view.mode === 'inventory'}
+		<VillageInventoryPanel />
 	{:else}
 		<section class="mode-placeholder" aria-label={`${view.mode} City mode`}>
 			<h2>{view.mode}</h2>
-			<p>This campaign surface remains available while the City shell converges.</p>
+			<p>This City record is not available for the current campaign.</p>
 		</section>
 	{/if}
 </section>

@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { invalidateAll } from '$app/navigation';
 	import { resolve } from '$app/paths';
 	import type {
 		AuthoritativeEvent,
@@ -15,11 +16,8 @@
 	import LivingHearthScene from '$lib/components/LivingHearthScene.svelte';
 	import PlayerMenu from '$lib/components/PlayerMenu.svelte';
 	import RunConnection from '$lib/components/RunConnection.svelte';
-	import VillageInventoryPanel from '$lib/components/village-shell/VillageInventoryPanel.svelte';
-	import VillageMissionsPanel from '$lib/components/village-shell/VillageMissionsPanel.svelte';
-	import VillageModeNav from '$lib/components/village-shell/VillageModeNav.svelte';
-	import VillageResidentsPanel from '$lib/components/village-shell/VillageResidentsPanel.svelte';
-	import VillageTowerPanel from '$lib/components/village-shell/VillageTowerPanel.svelte';
+	import CityScreen from '$lib/components/city/CityScreen.svelte';
+	import type { CityIntent } from '$lib/city';
 	import { focusDialog, handleModalKeydown } from '$lib/modal-focus';
 	import type { EquipmentWorkshopProjection } from '$lib/server/equipment-runtime';
 
@@ -37,6 +35,8 @@
 	// svelte-ignore state_referenced_locally
 	let equipment = $state<EquipmentWorkshopProjection | null>(data.equipment);
 	let eventCue = $state<AuthoritativeEvent | null>(null);
+	let pendingCityIntent = $state<CityIntent | null>(null);
+	let cityIntentError = $state<string | null>(null);
 	let emberPending = $state(false);
 	let selectedEmberFacility = $state<FirstEmberFacility | null>(null);
 	let selectedEmberRationale = $state<FirstEmberRationale>('prepare-tower');
@@ -99,8 +99,8 @@
 			: 'Cold iron, straw targets, and a private answer to what this summoned body remembers.'
 	);
 	const pageTitle = $derived(
-		data.campaignView && data.mode !== 'village'
-			? `${data.mode[0].toUpperCase()}${data.mode.slice(1)} · Hearth 01 · summonlab`
+		data.city
+			? `${data.city.mode[0].toUpperCase()}${data.city.mode.slice(1)} · Hearth 01 · summonlab`
 			: `${snapshot.manifest.displayName} walks to ${destinationLabel} · summonlab`
 	);
 
@@ -143,6 +143,10 @@
 	}
 
 	async function refreshProjection() {
+		if (data.city) {
+			await invalidateAll();
+			return;
+		}
 		const equipmentQuery = new URLSearchParams({ heroId: snapshot.manifest.characterId });
 		const [projectionResponse, clockResponse, equipmentResponse] = await Promise.all([
 			fetch(`/api/runs/${snapshot.runId}/projection`),
@@ -156,6 +160,27 @@
 		if (clockResponse.ok) clock = (await clockResponse.json()) as SimulationClock;
 		if (equipmentResponse?.ok) {
 			equipment = (await equipmentResponse.json()) as EquipmentWorkshopProjection;
+		}
+	}
+
+	async function submitCityIntent(intent: CityIntent) {
+		if (pendingCityIntent) return;
+		pendingCityIntent = intent;
+		cityIntentError = null;
+		try {
+			const response = await fetch(`/api/runs/${snapshot.runId}/city-actions`, {
+				method: 'POST',
+				headers: { 'content-type': 'application/json' },
+				body: JSON.stringify(intent)
+			});
+			const result = (await response.json()) as { message?: string };
+			if (!response.ok) throw new Error(result.message ?? 'The resident action was not recorded.');
+			await invalidateAll();
+		} catch (error) {
+			cityIntentError =
+				error instanceof Error ? error.message : 'The resident action was not recorded.';
+		} finally {
+			pendingCityIntent = null;
 		}
 	}
 
@@ -234,7 +259,7 @@
 <main
 	class:kitchen={snapshot.destination === 'kitchen'}
 	class:training={snapshot.destination === 'training-ground'}
-	class:has-village-nav={Boolean(data.campaignView)}
+	class:has-village-nav={Boolean(data.city)}
 >
 	<header>
 		<a class="wordmark" href={resolve('/')}>summonlab</a>
@@ -256,9 +281,6 @@
 			<a href={resolve('/wiki/art/hero-identity-and-evolution')}>Hero roster</a>
 		</nav>
 	</header>
-	{#if data.campaignView}
-		<VillageModeNav runId={snapshot.runId} current={data.mode} />
-	{/if}
 	<RunConnection
 		runId={snapshot.runId}
 		initialCursor={data.eventHead.eventCursor}
@@ -266,22 +288,14 @@
 		onEvent={showEventCue}
 	/>
 
-	{#if data.campaignView && data.mode === 'residents'}
-		<VillageResidentsPanel residents={data.residents} />
-	{:else if data.campaignView && data.mode === 'tower'}
-		<VillageTowerPanel />
-	{:else if data.campaignView && data.mode === 'missions'}
-		<VillageMissionsPanel objectives={data.campaignView.objectives} />
-	{:else if data.campaignView && data.mode === 'inventory'}
-		{#if equipment}
-			<EquipmentWorkshop
-				runId={snapshot.runId}
-				initialProjection={equipment}
-				onChanged={refreshProjection}
-			/>
-		{:else}
-			<VillageInventoryPanel />
-		{/if}
+	{#if data.city}
+		<CityScreen
+			view={{ ...data.city, eventCue }}
+			onIntent={submitCityIntent}
+			pendingIntent={pendingCityIntent}
+			intentError={cityIntentError}
+			onEquipmentChanged={refreshProjection}
+		/>
 	{:else if equipment}
 		<EquipmentWorkshop
 			runId={snapshot.runId}
@@ -576,7 +590,7 @@
 		runId={snapshot.runId}
 		initialObjectives={data.campaignView.objectives}
 		villageNavigation
-		compact={data.mode !== 'village'}
+		compact={data.city?.mode !== 'village'}
 	/>
 {/if}
 

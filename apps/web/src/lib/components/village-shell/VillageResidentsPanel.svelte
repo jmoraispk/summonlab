@@ -1,8 +1,8 @@
 <script lang="ts">
 	import HeroArtPlaceholder from '$lib/components/HeroArtPlaceholder.svelte';
-	import type { VillageResident } from '$lib/village-shell';
+	import type { CityResident } from '$lib/city';
 
-	let { residents }: { residents: readonly VillageResident[] } = $props();
+	let { residents }: { residents: readonly CityResident[] } = $props();
 </script>
 
 <section class="resident-ledger" data-testid="village-residents" aria-labelledby="residents-title">
