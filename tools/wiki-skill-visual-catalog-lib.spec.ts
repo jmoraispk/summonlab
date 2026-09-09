@@ -150,7 +150,7 @@ async function mutateJson(
 }
 
 describe('wiki skill visual catalog exporter', () => {
-	it('keeps the derivative validator in local and CI release gates and the durable root suite', async () => {
+	it('keeps the audit first, the derivative validator second, and release gates wired', async () => {
 		const workspaceRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 		const packageJson = JSON.parse(
 			await readFile(path.join(workspaceRoot, 'package.json'), 'utf8')
@@ -160,9 +160,10 @@ describe('wiki skill visual catalog exporter', () => {
 			/- name: Validate visual assets[\s\S]*?(?=\n\s+- name:)/u
 		)?.[0];
 
-		expect(packageJson.scripts.check.split(' && ')[0]).toBe(
+		expect(packageJson.scripts.check.split(' && ').slice(0, 2)).toEqual([
+			'pnpm check:american-english',
 			'pnpm validate:wiki-skill-visual-catalog'
-		);
+		]);
 		expect(packageJson.scripts.test.split(' && ')[0]).toBe('pnpm test:wiki-skill-visual-catalog');
 		expect(packageJson.scripts['test:wiki-skill-visual-catalog']).toContain(
 			'tools/wiki-skill-visual-catalog-lib.spec.ts'
