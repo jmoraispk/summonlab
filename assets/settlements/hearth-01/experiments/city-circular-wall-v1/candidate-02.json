@@ -1,0 +1,36 @@
+{
+	"schemaVersion": "city-environment-revision-v1",
+	"experimentId": "city-circular-wall-v1",
+	"revisionId": "candidate-02",
+	"status": "candidate",
+	"createdAt": "2026-09-09T22:21:03Z",
+	"owner": "codex/village-threshold-implementation-plan",
+	"source": {
+		"file": "assets/settlements/hearth-01/experiments/city-circular-wall-v1/hearth-01-circular-wall-candidate.png",
+		"contentHash": "26a092776068692022986907e363fab0ab738b8b8da3408aecfe114460169e1e",
+		"width": 1536,
+		"height": 1024,
+		"bytes": 3166519,
+		"role": "approved-revision-edit-target"
+	},
+	"generation": {
+		"mode": "built-in-imagegen",
+		"intent": "precise-object-edit",
+		"prompt": "Use case: precise-object-edit\nAsset type: Summonlab Hearth 01 Village environment revision\nInput image: Image 1 is the edit target and authoritative reference for every unaffected feature.\nPrimary request: At the fully zoomed-out fitted view, make the Village outer perimeter wall read as one continuous rough circle or perspective ellipse. Remove the inward dent in the upper-left wall behind the Summoning Circle. Continue that wall as an uninterrupted outward-convex arc from the left side through the upper-left district toward the rear Portal, matching the smooth circular character of the right wall. The Summoning Circle must not push, dent, notch, or bulge the perimeter wall. Move the Summoning Circle slightly inward and toward the foreground only as much as needed to leave clear ground between it and the circular wall, then reconnect its short path and immediate lamps, vegetation, and retaining stones.\nConstraints: Preserve the camera, framing, mountains, moon, Portal, central road, Residence, Training Grounds, Forge, lighting, palette, scale, paths, props, and all pixels outside the necessary upper-left correction as closely as possible. Keep the full perimeter readable at fitted zoom. Do not add or remove buildings, people, characters, animals, labels, text, UI, icons, panels, or watermarks.",
+		"submittedPromptHash": "bb425ee6a48c834c14a7b5420c38d23d536da6a7aae8b01309eaec37d2bb4738",
+		"toolOutputPath": "/home/joao/.codex/generated_images/01a0873c-2ec5-7e03-932e-dc98f5135b6e/exec-a0d357cf-582d-4039-b967-9cca7eb3d449.png"
+	},
+	"candidate": {
+		"file": "assets/settlements/hearth-01/experiments/city-circular-wall-v1/hearth-01-circular-wall-candidate-02.png",
+		"contentHash": "02bb8a592627641e400d56fd94863aca52f2d45f9244475f9319b343a89fa1d1",
+		"width": 1536,
+		"height": 1024,
+		"bytes": 3092258,
+		"colorModel": "RGB",
+		"alphaHoles": false
+	},
+	"review": {
+		"humanReviewPending": true,
+		"runtimePromoted": false
+	}
+}
