@@ -186,10 +186,12 @@ describe('rebased migration receipt refresh', () => {
 		const oldColor = retired('color');
 		const oldArmor = retired('armor');
 		const oldVigor = retired('vigor');
+		const oldGray = retired('gray');
 		const sourcePath = `docs/${oldColor}-note.txt`;
 		const successorPath = 'docs/color-note.txt';
 		const retiredPath = 'docs/retired-note.txt';
 		const incomingPath = 'docs/incoming-note.txt';
+		const rebasedOwnerPath = 'docs/wiki/creatures/monsters/families/rebased-owner.md';
 		const repository = await makeRepository({
 			[sourcePath]: `${oldColor} baseline\n`,
 			[retiredPath]: `${oldArmor} retired\n`
@@ -201,6 +203,7 @@ describe('rebased migration receipt refresh', () => {
 		const oldMigration = commitAll(repository.root, 'old migration');
 
 		const previousReceiptPath = path.join(repository.root, '..', `previous-${process.pid}.json`);
+		temporaryRoots.push(previousReceiptPath);
 		const previousRuleCounts = emptyRuleCounts();
 		previousRuleCounts.color = 2;
 		previousRuleCounts.armor = 1;
@@ -244,10 +247,13 @@ describe('rebased migration receipt refresh', () => {
 		await rm(path.join(repository.root, retiredPath));
 		await writeFile(path.join(repository.root, sourcePath), `${oldColor} upstream\n`);
 		await writeFile(path.join(repository.root, incomingPath), `${oldVigor} incoming\n`);
+		await mkdir(path.dirname(path.join(repository.root, rebasedOwnerPath)), { recursive: true });
+		await writeFile(path.join(repository.root, rebasedOwnerPath), `${oldGray} owner output\n`);
 		const newBaseline = commitAll(repository.root, 'new integration base');
 		git(repository.root, ['mv', sourcePath, successorPath]);
 		await writeFile(path.join(repository.root, successorPath), 'color upstream\n');
 		await writeFile(path.join(repository.root, incomingPath), 'vigor incoming\n');
+		await writeFile(path.join(repository.root, rebasedOwnerPath), 'gray owner output\n');
 		const migrationCommit = commitAll(repository.root, 'rebased migration');
 
 		const incrementalReceiptPath = path.join(
@@ -255,9 +261,11 @@ describe('rebased migration receipt refresh', () => {
 			'..',
 			`incremental-${process.pid}.json`
 		);
+		temporaryRoots.push(incrementalReceiptPath);
 		const refreshedRuleCounts = emptyRuleCounts();
 		refreshedRuleCounts.color = 2;
 		refreshedRuleCounts.vigor = 1;
+		refreshedRuleCounts.gray = 1;
 		await writeFile(
 			incrementalReceiptPath,
 			`${JSON.stringify(
@@ -284,22 +292,24 @@ describe('rebased migration receipt refresh', () => {
 			)}\n`
 		);
 		const auditPath = path.join(repository.root, '..', `audit-${process.pid}.json`);
+		temporaryRoots.push(auditPath);
 		await writeFile(
 			auditPath,
 			`${JSON.stringify(
 				{
 					head: newBaseline,
 					counts: {
-						total: 3,
-						content: 2,
+						total: 4,
+						content: 3,
 						path: 1,
 						byRule: refreshedRuleCounts,
-						byRoot: { docs: 3 }
+						byRoot: { docs: 4 }
 					},
 					violations: [
 						{ kind: 'path', ruleId: 'color', path: sourcePath },
 						{ kind: 'content', ruleId: 'color', path: sourcePath },
-						{ kind: 'content', ruleId: 'vigor', path: incomingPath }
+						{ kind: 'content', ruleId: 'vigor', path: incomingPath },
+						{ kind: 'content', ruleId: 'gray', path: rebasedOwnerPath }
 					],
 					exceptionsUsed: []
 				},
@@ -308,6 +318,7 @@ describe('rebased migration receipt refresh', () => {
 			)}\n`
 		);
 		const receiptPath = path.join(repository.root, '..', `refreshed-${process.pid}.json`);
+		temporaryRoots.push(receiptPath);
 		const refreshed = await refreshAmericanEnglishMigrationReceipt({
 			repositoryRoot: repository.root,
 			baselineCommit: newBaseline,
@@ -320,8 +331,11 @@ describe('rebased migration receipt refresh', () => {
 
 		expect(refreshed.baselineCommit).toBe(newBaseline);
 		expect(refreshed.ruleCounts).toEqual(refreshedRuleCounts);
-		expect(refreshed.ownerCounts).toEqual({ 'migration-planner': 2 });
-		expect(refreshed.files).toHaveLength(2);
+		expect(refreshed.ownerCounts).toEqual({
+			'migration-planner': 2,
+			'visual-production': 1
+		});
+		expect(refreshed.files).toHaveLength(3);
 		expect(refreshed.files).toEqual(
 			expect.arrayContaining([
 				expect.objectContaining({
@@ -336,6 +350,18 @@ describe('rebased migration receipt refresh', () => {
 						'rev-parse',
 						`${migrationCommit}:${successorPath}`
 					])
+				}),
+				expect.objectContaining({
+					sourceBlobId: git(repository.root, [
+						'rev-parse',
+						`${newBaseline}:${rebasedOwnerPath}`
+					]),
+					successorPathHash: pathHash(rebasedOwnerPath),
+					successorBlobId: git(repository.root, [
+						'rev-parse',
+						`${migrationCommit}:${rebasedOwnerPath}`
+					]),
+					ownerId: 'visual-production'
 				})
 			])
 		);

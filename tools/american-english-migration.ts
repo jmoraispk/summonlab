@@ -2157,9 +2157,25 @@ export async function refreshAmericanEnglishMigrationReceipt(
 	}
 	for (const violation of violations) {
 		const successorPathHash = hashRepositoryPath(replaceRetiredForms(violation.path));
-		if (!files.has(successorPathHash)) {
+		if (files.has(successorPathHash)) continue;
+		const currentPath = currentPathsByHash.get(successorPathHash);
+		const baselineSource = baselineByProjectedPathHash.get(successorPathHash);
+		const matchingOwners =
+			currentPath === undefined
+				? []
+				: AMERICAN_ENGLISH_INTEGRITY_OWNERS.filter(
+						(owner) => owner.ownsPath(currentPath) && owner.regeneratesPath(currentPath)
+					);
+		if (currentPath === undefined || baselineSource === undefined || matchingOwners.length !== 1) {
 			throw new Error('Baseline audit finding has no refreshed migration successor');
 		}
+		files.set(successorPathHash, {
+			sourceBlobId: baselineSource.blobId,
+			successorPathHash,
+			successorBlobId: currentEntries.get(currentPath)!.blobId,
+			unchangedBinary: false,
+			ownerId: matchingOwners[0]!.id
+		});
 	}
 	const refreshedFiles = [...files.values()].sort((left, right) =>
 		compareCodepoints(left.successorPathHash, right.successorPathHash)
