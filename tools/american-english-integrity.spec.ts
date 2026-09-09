@@ -1282,6 +1282,95 @@ describe('integrity binding classification', () => {
 		);
 	});
 
+	it('registers every integrated visual-production digest contract', () => {
+		const pointers = [
+			'/assembly/backing/contentHash',
+			'/authority/catalog/contentHash',
+			'/authority/cleanupManifest/contentHash',
+			'/authority/geometry/contentHash',
+			'/authority/massProductionManifest/contentHash',
+			'/authority/motifMap/contentHash',
+			'/authority/optionCMaterial/contentHash',
+			'/authority/providerSpaceGuide/contentHash',
+			'/authority/selectedFrameSheet/contentHash',
+			'/authority/v10Audit/contentHash',
+			'/authority/v12Review/contentHash',
+			'/authority/visualSpecifications/contentHash',
+			'/backing/contentHash',
+			'/cellEvidence/pages/0/contentHash',
+			'/cleanupCompositeContentHash',
+			'/cleanupInterior/contentHash',
+			'/cleanupManifest/contentHash',
+			'/composite/contentHash',
+			'/compositionAuthority/backing/contentHash',
+			'/compositionAuthority/frame/contentHash',
+			'/compositionAuthority/geometry/contentHash',
+			'/corePublication/artifacts/composite/contentHash',
+			'/corePublication/artifacts/providerSource/contentHash',
+			'/corePublication/artifacts/result/contentHash',
+			'/corePublication/artifacts/revisedInterior/contentHash',
+			'/currentCandidate/contentHash',
+			'/currentResult/contentHash',
+			'/display384/contentHash',
+			'/entries/0/candidateSha256',
+			'/exactPromptHash',
+			'/frameAudits/0/completeFrame/contentHash',
+			'/frameAudits/0/providerSource/contentHash',
+			'/frameAudits/0/rejectedFrame/contentHash',
+			'/geometry/contentHash',
+			'/inputs/geometry/contentHash',
+			'/inputs/priorReport/contentHash',
+			'/inputs/priorReview/contentHash',
+			'/normalization/containerBox/contentHash',
+			'/normalization/decoderInputContentHash',
+			'/normalization/geometryContentHash',
+			'/normalization/outputContentHash',
+			'/normalization/sourceContentHash',
+			'/predecessor/composite/contentHash',
+			'/predecessor/completionAudit/contentHash',
+			'/predecessor/packet/contentHash',
+			'/predecessor/providerSource/contentHash',
+			'/predecessor/result/contentHash',
+			'/predecessor/revisedInterior/contentHash',
+			'/predecessor/transactionContentHash',
+			'/records/0/accepted/contentHash',
+			'/records/0/baseline/contentHash',
+			'/records/0/candidate/contentHash',
+			'/records/0/candidateHash',
+			'/records/0/comparisonBaselineHash',
+			'/records/0/compositeHash',
+			'/records/0/currentHash',
+			'/records/0/display384Hash',
+			'/records/0/exposedInteriorHash',
+			'/records/0/frameHash',
+			'/records/0/generationAttempts/0/contentHash',
+			'/records/0/interiorHash',
+			'/records/0/referenceHash',
+			'/records/0/source/contentHash',
+			'/records/0/sourceBinding/v11ContentHash',
+			'/records/0/sourceCandidate/contentHash',
+			'/records/0/sourceInteriorHash',
+			'/resultContentHash',
+			'/revisedInterior/contentHash',
+			'/revisionPacket/contentHash',
+			'/sourceCandidate/contentHash',
+			'/sourceManifest/sha256',
+			'/transactionContentHash',
+			'/transform/composite/contentHash',
+			'/transform/revisedInterior/contentHash'
+		];
+		for (const pointer of pointers) {
+			expect(
+				OWNER_DIGEST_POINTER_PATTERNS['visual-production'].some((pattern) => pattern.test(pointer)),
+				pointer
+			).toBe(true);
+		}
+		const integratedReport =
+			'docs/superpowers/reports/2026-09-06-skill-icon-quality-cleanup-task-7a.md';
+		expect(visualProductionIntegrityOwner.ownsPath(integratedReport)).toBe(true);
+		expect(visualProductionIntegrityOwner.owns(integratedReport, '')).toBe(true);
+	});
+
 	it('blocks every selected binary move without exactly one raw-file owner', async () => {
 		const path = 'unregistered/gray.png';
 		const report = await classifyIntegrityBindings(
