@@ -16,11 +16,11 @@
 	"predecessor": {
 		"packet": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions/martial-polearm-red-harvest-v1.json",
-			"contentHash": "eb2e3ee9ed6e73c0545c878f3e2be53c1cfe3d9c12b5cabd49cf785856ba0d2b"
+			"contentHash": "4750ab6cd82fc47bb799ef8856c292212533a6187572abc1ae5d0d24fc02ba5f"
 		},
 		"result": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/martial-polearm-red-harvest-v1.json",
-			"contentHash": "4815060214570a6b7f09747fb5005cb273a17b46187ebb23d8b8bed087f899d4"
+			"contentHash": "4d2bb959c85bde77b886c0d833d5aca540606d7fa741fd9e9b2122750fcd4481"
 		},
 		"providerSource": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/martial-polearm-red-harvest-v1.png",

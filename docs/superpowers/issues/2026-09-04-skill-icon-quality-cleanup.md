@@ -209,7 +209,7 @@ targets use the exact authenticated `1254×1254` RGB provider recovery (`caBX` r
 one Lanczos3 `696×696` inset at `(164,192)`, then the existing aperture/backing/frame). Still
 Depths, Warmth, and Red Harvest use byte-for-byte identity adoption. The 24 current-run receipts
 are candidate-v2, record current timing/tool provenance and zero generator calls, and have
-1024px/384px review sheets under `review/v2-recovery/`. Taming, Rend Armour, Living Metal, and
+1024px/384px review sheets under `review/v2-recovery/`. Taming, Rend Armor, Living Metal, and
 Ore Sense are deliberately unresolved generation-v2 packets; their strengthened prompts require
 complete limbs/equipment inside the safe area. The semantic finalizer and final review renderer
 accept only the highest valid `candidate` per target and fail closed until all 28 are present.
@@ -219,7 +219,7 @@ accept only the highest valid `candidate` per target and fail closed until all 2
 The preceding v2 recovery statement is retained as historical progress, not current selection
 authority. V2 receipts are immutable but lack a separately published post-core completion audit, so
 they cannot independently establish core-publication order. Their review sheet named
-`deterministic-v2-1024.png` contains 512px cells; it is now explicitly labelled scaled legacy
+`deterministic-v2-1024.png` contains 512px cells; it is now explicitly labeled scaled legacy
 evidence rather than an original-size inspection artifact.
 
 Round 2 preserves every v1/v2 byte and appends 24 V3 deterministic recoveries. The 21 inset lanes

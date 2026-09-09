@@ -13,11 +13,11 @@
 	},
 	"revisionPacket": {
 		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions/magical-restoration-soothe-v1.json",
-		"contentHash": "07a52398db2ba700883f05878a7f29ca206eec73b32e1e7a6fc596377c141c7f"
+		"contentHash": "2d540cb49560621e269e71e783fc08077d3bf7cc40d495c2e09b6a531350ed04"
 	},
 	"cleanupManifest": {
 		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/manifest.json",
-		"contentHash": "f7f4690d71b0786283c867f46ac5e48c9f48cd19fac9d969396f94a5f986b12b"
+		"contentHash": "8280a46b2eb358ab4b9f1bc1c0a3b84f79dd5b4fce3407da6f42a25ce67c8a73"
 	},
 	"sourceCandidate": {
 		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-restoration-soothe.png",

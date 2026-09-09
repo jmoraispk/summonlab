@@ -16,11 +16,11 @@
 	"predecessor": {
 		"packet": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions/martial-blade-hewing-blow-v1.json",
-			"contentHash": "0d45449e1d2dcf07851747253bdadf414ac07c07242b4adbe81f4cb255f0d021"
+			"contentHash": "9d1d5b2d7902bff25a95ed351a01bbd2e5ed633da11930e3a9d08764a2003e64"
 		},
 		"result": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/martial-blade-hewing-blow-v1.json",
-			"contentHash": "aa34c4c59a03ba3431833f0a5cb69b9a7e67e7d1c101f2cf3b40f74168f61634"
+			"contentHash": "95e9dc09b054a020ba54ae3350a27e0d017f622011dd76045110ecfbc8ed648d"
 		},
 		"providerSource": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/martial-blade-hewing-blow-v1.png",

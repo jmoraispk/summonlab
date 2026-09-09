@@ -14,16 +14,16 @@
 	},
 	"revisionPacket": {
 		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions-v2/martial-blade-severed-thread-v2.json",
-		"contentHash": "9d747d85a45025095faa5129c0168cca8719b89ddd74cef662cc1f27752e04a7"
+		"contentHash": "193323b0023c67b9890e6564d66db64d7067de8f4ee37a273c8f0d197b89a9fc"
 	},
 	"predecessor": {
 		"packet": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions/martial-blade-severed-thread-v1.json",
-			"contentHash": "3be2b5370b457504affec141a1ed26e3aec55a45198629e35906eab81e1f99da"
+			"contentHash": "0b06545907689a100594ca8394c022bd956d23c9d3dfe5098922f387b952606f"
 		},
 		"result": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/martial-blade-severed-thread-v1.json",
-			"contentHash": "e913ce49e9932c2ef3a584204bc99c9299b09a8bf2d07796cdcd4a9512a4ba5b"
+			"contentHash": "abdc56588cd6bc48088f82568ef1fbd637dbdfc1f01884a9fc63a1d0977a0d08"
 		},
 		"providerSource": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/martial-blade-severed-thread-v1.png",

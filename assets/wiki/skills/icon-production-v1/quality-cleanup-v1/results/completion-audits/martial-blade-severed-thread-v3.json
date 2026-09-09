@@ -4,11 +4,11 @@
 	"targetId": "martial:blade:severed-thread",
 	"revisionPacket": {
 		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions-v3/martial-blade-severed-thread-v3.json",
-		"contentHash": "9502277da9973ceb90594d726e2020cae15cbc0d00c4b166c1700a5f11814d7f"
+		"contentHash": "cc6777b7af212e0134a9bf68c3e54c29a59db22140be654bab1f40bde76935dc"
 	},
 	"result": {
 		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/martial-blade-severed-thread-v3.json",
-		"contentHash": "aaaf2c6a1d4117af907c54a90e16283c16506b831aa8081fa4a36ed8335a0c31"
+		"contentHash": "1eca87049520226bb81f43756889632fcfdf5a190fa893dbcac634eb504a70c4"
 	},
 	"status": "candidate",
 	"corePublication": {
@@ -30,7 +30,7 @@
 			},
 			"result": {
 				"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/martial-blade-severed-thread-v3.json",
-				"contentHash": "aaaf2c6a1d4117af907c54a90e16283c16506b831aa8081fa4a36ed8335a0c31"
+				"contentHash": "1eca87049520226bb81f43756889632fcfdf5a190fa893dbcac634eb504a70c4"
 			}
 		}
 	}

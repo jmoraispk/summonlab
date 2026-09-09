@@ -4,11 +4,11 @@
 	"targetId": "craft:cooking:comfort",
 	"revisionPacket": {
 		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions-v3/craft-cooking-comfort-v3.json",
-		"contentHash": "3d5e588d9b0da83d0704ada199450f6cf68849ad43422652e85b947676f5d975"
+		"contentHash": "24c60a3922ba7d09a036bfa939e00df3e6a0f95fd26450cc553f5c2dfdbe3c53"
 	},
 	"result": {
 		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/craft-cooking-comfort-v3.json",
-		"contentHash": "ed4ddd76370fc4315eec17e6b8071cfd89f26014c24103f76eafac89daf313bb"
+		"contentHash": "08c19d6075234f92bb0098bf29fd8767bf4111b81f0ac1a73199e8191aace1b9"
 	},
 	"status": "candidate",
 	"corePublication": {
@@ -30,7 +30,7 @@
 			},
 			"result": {
 				"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/craft-cooking-comfort-v3.json",
-				"contentHash": "ed4ddd76370fc4315eec17e6b8071cfd89f26014c24103f76eafac89daf313bb"
+				"contentHash": "08c19d6075234f92bb0098bf29fd8767bf4111b81f0ac1a73199e8191aace1b9"
 			}
 		}
 	}

@@ -4,11 +4,11 @@
 	"targetId": "magical:elemental:warmth",
 	"revisionPacket": {
 		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions-v3/magical-elemental-warmth-v3.json",
-		"contentHash": "84dbf175d86fa58348cc97fe728753e1a1a4c93cfe1560662212169106996bcb"
+		"contentHash": "05f7da561e420524bb706b1acc36b2b790304365c5362a4dba5e3a8e137161fb"
 	},
 	"result": {
 		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/magical-elemental-warmth-v3.json",
-		"contentHash": "19115cf56774bf03eb7a1ed2c8af692d9f2378af960bf60ae76ba3c6da974fb9"
+		"contentHash": "25681eb2031b1353db229baedb86cdc80914b51480cb22e75575802b7397ec87"
 	},
 	"status": "candidate",
 	"corePublication": {
@@ -30,7 +30,7 @@
 			},
 			"result": {
 				"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/magical-elemental-warmth-v3.json",
-				"contentHash": "19115cf56774bf03eb7a1ed2c8af692d9f2378af960bf60ae76ba3c6da974fb9"
+				"contentHash": "25681eb2031b1353db229baedb86cdc80914b51480cb22e75575802b7397ec87"
 			}
 		}
 	}

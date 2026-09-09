@@ -16,11 +16,11 @@
 	"predecessor": {
 		"packet": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions/craft-gathering-taming-v1.json",
-			"contentHash": "ba9e36736132e17e92f0a85936263c76c934b2d99285e2a5d220633c647e2b5b"
+			"contentHash": "bb01826aade50d72618963cc28f765adb5bbed138620fe73767768b78da764cb"
 		},
 		"result": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/craft-gathering-taming-v1.json",
-			"contentHash": "d3c2953883eca77ae4cded3e888af4d365606e52d48a995d0000ebb985c2fd4e"
+			"contentHash": "ab40ae4954952231ad306441b6541f354492a39254f82049eb42e0d8753afe58"
 		},
 		"providerSource": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/craft-gathering-taming-v1.png",

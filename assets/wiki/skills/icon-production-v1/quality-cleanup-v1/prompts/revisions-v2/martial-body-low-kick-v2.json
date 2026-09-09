@@ -16,11 +16,11 @@
 	"predecessor": {
 		"packet": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions/martial-body-low-kick-v1.json",
-			"contentHash": "fb368f0c66df07a8ac8186b0c4c40484e81b71990e55dda60ddb28b24a99e858"
+			"contentHash": "4ef43834eb86be0069b526a8ccc511c673b35ec7c1bec204bee7abeee7a3fe16"
 		},
 		"result": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/martial-body-low-kick-v1.json",
-			"contentHash": "d2d86319c6131c439114fc107997d5ee100ec736915d5712e6c897f12770aa52"
+			"contentHash": "c3cbd4fee30fc94882f92c5eb960f45ebb6bcc9abb658b9ffe5182c72fcf7042"
 		},
 		"providerSource": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/martial-body-low-kick-v1.png",

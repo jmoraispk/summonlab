@@ -5,30 +5,30 @@ Spec: `/home/joao/.codex/worktrees/ddb0/summonlab/docs/superpowers/specs/2026-09
 
 ## Preflight scan
 
-| Scope | Produces / consumes | Finding |
-| --- | --- | --- |
-| Task 1 self | Strict schemas, tests, and authored finding inventory | Internally consistent; tests target observable schema acceptance/rejection and inventory completeness. |
-| Task 2 self | Cleanup library/exporter and generated 456-record manifest | Internally consistent; write/check modes and byte-bound authorities match the spec. |
-| Task 3 self | Six frame-v5 packets plus one backing-v5 packet | Internally consistent; existing F-v5 is deliberately reused rather than regenerated. |
-| Task 4 self | Geometry-v2 extraction, composition, inspection, finalization | Internally consistent; deterministic pixel behavior has explicit tests and encoding settings. |
-| Task 5 self | Seven new shared candidates plus 456 deterministic recompositions | Internally consistent except “one batch” must be reconciled with sequential SDD implementer ownership; ruled below. |
-| Task 6 self | Cleanup-specific revision packets and no-replace persister | Internally consistent; this is a distinct coordinator cleanup protocol, not an ordinary SkillIconTarget packet. |
-| Task 7 self | 28 semantic revisions and complete review sheets | Internally consistent; progress is collision-safe and technical completion precedes owner review. |
-| Task 8 self | Owner review, selection, promotion, and wiki refresh | Owner-authored acceptance is externally authoritative and cannot be fabricated; ruled below. |
-| Tasks 1 → 2 | Schemas/findings source → generated manifest/findings | Clean interface; Task 2 consumes the exact authored inventory and exported contracts. |
-| Tasks 1 → 8 | Review/selection schemas → owner review and selection | Clean interface; Task 8 must use the strict hashes and explicit symbolic decisions. |
-| Tasks 2 → 4 | Cleanup library/manifest → deterministic finalizer | Clean interface; Task 4 extends the same library and consumes generated inventory. |
-| Tasks 2 → 5 | 456-record manifest → recomposition inputs/outputs | Clean interface; Task 5 materializes paths already derived by Task 2. |
-| Tasks 2 → 6 | Exporter/library → immutable revision packets | Clean interface; Task 6 extends rather than replaces authority loading. |
-| Tasks 2 → 8 | Cleanup manifest → selected cleanup authority | Clean interface; selection remains hash-bound to the frozen manifest. |
-| Tasks 3 → 5 | Target/assignment packets → seven producer jobs | Clean interface; packet ownership is one candidate/result pair per job. |
-| Tasks 4 → 5 | Finalizer/compositor → 456 candidates | Clean interface; generation supplies shared layers before deterministic composition. |
-| Tasks 4 → 7 | Finalizer/review renderer → revised catalog/review sheets | Clean interface; revised interiors are selected by the finalizer without changing deterministic-only records. |
-| Tasks 5 → 6 | Current cleanup composites/shared layers → revision references | Clean interface; references are hash-bound and purpose-limited. |
-| Tasks 5 → 7 | Completed deterministic set → targeted revision batch | Clean interface; all base composites remain present during semantic cleanup. |
-| Tasks 6 → 7 | Revision packets/persister → 28 generated revisions | Clean interface; no-replace persistence makes partial progress resumable. |
-| Tasks 7 → 8 | Completed review package → owner decision/selection | Clean interface but crosses a real owner-authority boundary; ruled below. |
-| Task 8 → wiki exporter | Valid selection → cleanup-derived WebP assets | Clean interface; without accepted selection, historical mass-production remains authoritative. |
+| Scope                  | Produces / consumes                                               | Finding                                                                                                             |
+| ---------------------- | ----------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| Task 1 self            | Strict schemas, tests, and authored finding inventory             | Internally consistent; tests target observable schema acceptance/rejection and inventory completeness.              |
+| Task 2 self            | Cleanup library/exporter and generated 456-record manifest        | Internally consistent; write/check modes and byte-bound authorities match the spec.                                 |
+| Task 3 self            | Six frame-v5 packets plus one backing-v5 packet                   | Internally consistent; existing F-v5 is deliberately reused rather than regenerated.                                |
+| Task 4 self            | Geometry-v2 extraction, composition, inspection, finalization     | Internally consistent; deterministic pixel behavior has explicit tests and encoding settings.                       |
+| Task 5 self            | Seven new shared candidates plus 456 deterministic recompositions | Internally consistent except “one batch” must be reconciled with sequential SDD implementer ownership; ruled below. |
+| Task 6 self            | Cleanup-specific revision packets and no-replace persister        | Internally consistent; this is a distinct coordinator cleanup protocol, not an ordinary SkillIconTarget packet.     |
+| Task 7 self            | 28 semantic revisions and complete review sheets                  | Internally consistent; progress is collision-safe and technical completion precedes owner review.                   |
+| Task 8 self            | Owner review, selection, promotion, and wiki refresh              | Owner-authored acceptance is externally authoritative and cannot be fabricated; ruled below.                        |
+| Tasks 1 → 2            | Schemas/findings source → generated manifest/findings             | Clean interface; Task 2 consumes the exact authored inventory and exported contracts.                               |
+| Tasks 1 → 8            | Review/selection schemas → owner review and selection             | Clean interface; Task 8 must use the strict hashes and explicit symbolic decisions.                                 |
+| Tasks 2 → 4            | Cleanup library/manifest → deterministic finalizer                | Clean interface; Task 4 extends the same library and consumes generated inventory.                                  |
+| Tasks 2 → 5            | 456-record manifest → recomposition inputs/outputs                | Clean interface; Task 5 materializes paths already derived by Task 2.                                               |
+| Tasks 2 → 6            | Exporter/library → immutable revision packets                     | Clean interface; Task 6 extends rather than replaces authority loading.                                             |
+| Tasks 2 → 8            | Cleanup manifest → selected cleanup authority                     | Clean interface; selection remains hash-bound to the frozen manifest.                                               |
+| Tasks 3 → 5            | Target/assignment packets → seven producer jobs                   | Clean interface; packet ownership is one candidate/result pair per job.                                             |
+| Tasks 4 → 5            | Finalizer/compositor → 456 candidates                             | Clean interface; generation supplies shared layers before deterministic composition.                                |
+| Tasks 4 → 7            | Finalizer/review renderer → revised catalog/review sheets         | Clean interface; revised interiors are selected by the finalizer without changing deterministic-only records.       |
+| Tasks 5 → 6            | Current cleanup composites/shared layers → revision references    | Clean interface; references are hash-bound and purpose-limited.                                                     |
+| Tasks 5 → 7            | Completed deterministic set → targeted revision batch             | Clean interface; all base composites remain present during semantic cleanup.                                        |
+| Tasks 6 → 7            | Revision packets/persister → 28 generated revisions               | Clean interface; no-replace persistence makes partial progress resumable.                                           |
+| Tasks 7 → 8            | Completed review package → owner decision/selection               | Clean interface but crosses a real owner-authority boundary; ruled below.                                           |
+| Task 8 → wiki exporter | Valid selection → cleanup-derived WebP assets                     | Clean interface; without accepted selection, historical mass-production remains authoritative.                      |
 
 Ruling: “one batch” in Tasks 5 and 7 means continuous no-checkpoint production, while individual producer assignments run sequentially under SDD’s single-implementer rule — this preserves collision safety and avoids concurrent Git writes — if wrong, the cost is longer wall-clock time rather than changed output semantics.
 
@@ -142,7 +142,7 @@ Task 7C Phase 1: complete (commit `46ae596a3`; independent review PASS; Taming v
 Task 7C Phase 2: Taming v3 raster production started (base `46ae596a324edccb31a8f9e89ef2ca784d19d60f`)
 Task 7C Phase 2: complete (Taming v3 authenticated candidate; 2 bounded calls; literal 1024/384 pass; finalizer 28/28 and full 23-file review package rendered; no owner acceptance, selection, promotion, or wiki refresh)
 Task 7C Phase 1: complete (one create-only Taming v3 generation packet; audited v2 predecessor bound; finalizer 27/28 with Taming v3 pending)
-Task 7B: terminal batch persisted in sorted packet order: Living Metal, Ore Sense, and Rend Armour
+Task 7B: terminal batch persisted in sorted packet order: Living Metal, Ore Sense, and Rend Armor
 are revision-2 audited candidates; Taming is an audited revision-2 `revise` after its bounded
 correction retained a cropped left-edge forearm. Finalizer state is 27/28, `ready: false`, with
 Taming as the only unresolved target; no semantic review package, owner action, selection,

@@ -16,11 +16,11 @@
 	"predecessor": {
 		"packet": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions/martial-polearm-reaping-arc-v1.json",
-			"contentHash": "dd9f9c1143b90a32302ecb8533fb20a273e97376f8afd03c094f74fb94cfeaa5"
+			"contentHash": "343c5ed85e5744b9fcd07035c2ec8b7a67e8cf418e1589c5a37e93008f42425f"
 		},
 		"result": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/martial-polearm-reaping-arc-v1.json",
-			"contentHash": "42ebd90dcd552efcba7d62e0d8d90fb4a7b477569214a3ea0f9c0c40673fa72f"
+			"contentHash": "f0c21e073dfdcfb4e894757246475b6855727b5fa970ea07da7f773e357b0770"
 		},
 		"providerSource": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/martial-polearm-reaping-arc-v1.png",

@@ -16,11 +16,11 @@
 	"predecessor": {
 		"packet": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions-v2/martial-body-joint-lock-v2.json",
-			"contentHash": "3cfc25f2be820dcac539f0745f28d8fb6548951e28a1209635e7f1658eebf42f"
+			"contentHash": "cd6ca1787dfa222cb4b1fe4e9b0d54bd3478049b8c0daf72400cf0d8000d4be8"
 		},
 		"result": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/martial-body-joint-lock-v2.json",
-			"contentHash": "f6dc15413b7abc492d3103a77ba0611f8474e327142cdea6db8f4301cee77ade"
+			"contentHash": "e7caf2665bb80a943b2d15d601a4a68bf669db0310c683cc0842ee4fd5a4b6ac"
 		},
 		"providerSource": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/martial-body-joint-lock-v2.png",

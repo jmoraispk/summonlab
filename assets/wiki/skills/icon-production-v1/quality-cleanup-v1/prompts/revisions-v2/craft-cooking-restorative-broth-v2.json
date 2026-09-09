@@ -16,11 +16,11 @@
 	"predecessor": {
 		"packet": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions/craft-cooking-restorative-broth-v1.json",
-			"contentHash": "6c1155b1fdabbedce54f3b1f54327e0a239e75eafee3cfcde9158d70a3090833"
+			"contentHash": "6486c00dff7378676c58c9f77e99e2d3e641fb4ea0a0771ed23d8c8279a9d7be"
 		},
 		"result": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/craft-cooking-restorative-broth-v1.json",
-			"contentHash": "3caec78b4015f20a36a424c6fee16590551602ced98cd575e1c7217019d6a95d"
+			"contentHash": "5184db8740bd6d874ca9ec20ee6330493e567749aae17eccf8cba096c09b4e36"
 		},
 		"providerSource": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/craft-cooking-restorative-broth-v1.png",

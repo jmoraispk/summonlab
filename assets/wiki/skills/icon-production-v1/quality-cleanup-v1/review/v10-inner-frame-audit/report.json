@@ -11,7 +11,7 @@
 	"inputs": {
 		"priorReport": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/review/v9-complete-frame-rollout/report.json",
-			"contentHash": "bbde2270f6849b7bad08ae5ab4ab8bae8dc16d0bbbb7bf8819f73af59cd3592d"
+			"contentHash": "deb8001ffcc41c6ad125ddc8bdef93187967a2cda09d2d78dd1f72f36e789edf"
 		},
 		"geometry": {
 			"path": "assets/wiki/skills/icon-production-v1/geometry-v2.json",
@@ -167,15 +167,15 @@
 			"exposedInteriorHash": "31d1ad034a7735e1b8853b9a27a5253964d594382255b62c45cff7b3d009df74"
 		},
 		{
-			"targetId": "martial:polearm:rend-armour",
-			"name": "Rend Armour",
+			"targetId": "martial:polearm:rend-armor",
+			"name": "Rend Armor",
 			"rank": "E",
 			"currentHash": "cd92657bfef3e7d9073079dcb2417dcfb4fbea9c48301a19634b82c52ea5bfe3",
-			"interiorPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/martial-polearm-rend-armour.png",
+			"interiorPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/martial-polearm-rend-armor.png",
 			"sourceInteriorHash": "a127cb9138cbdaa162522c4418ab313caf952a5bfcc295b75d7fac3a01c97b97",
 			"interiorHash": "dc08def9fba7f1698d3e5ccfad6e5d938efa6bfb44bbb5e66a62db854dc3147c",
 			"candidateHash": "f59f2bff0eae6cef839558a9a8e368ca3dbed2b52a422ed9a5ac940b33ed1f7f",
-			"currentPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-polearm-rend-armour.png",
+			"currentPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-polearm-rend-armor.png",
 			"inspection": {
 				"layerHashesMatch": true,
 				"exactComposite": true,

@@ -43,7 +43,7 @@ const AUDIT = [
 		'clear',
 		'Purple side and lower rails remain inside the B frame.'
 	],
-	['martial:polearm:rend-armour', 'clear', 'Orange source-frame edges form an inner hexagon.'],
+	['martial:polearm:rend-armor', 'clear', 'Orange source-frame edges form an inner hexagon.'],
 	['martial:ranged:fletching', 'clear', 'A strong brown-gold inner frame surrounds the artwork.'],
 	['martial:ranged:power-draw', 'clear', 'Thin orange source rails remain near the aperture edge.'],
 	['martial:ranged:piercing-shot', 'clear', 'Blue source-frame lines remain on the opening sides.'],

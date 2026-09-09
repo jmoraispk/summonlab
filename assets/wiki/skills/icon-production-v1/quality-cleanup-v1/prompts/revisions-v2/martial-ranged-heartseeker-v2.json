@@ -16,11 +16,11 @@
 	"predecessor": {
 		"packet": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions/martial-ranged-heartseeker-v1.json",
-			"contentHash": "3ad21f00134581f7658dd7b1a605537d01c2e9670d2591e13e6d14c7a7d011b7"
+			"contentHash": "8e6f73707dd9c7645ba55dd73e225a7eef185eda8563ef16610d8b38c100cd13"
 		},
 		"result": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/martial-ranged-heartseeker-v1.json",
-			"contentHash": "1a643023eaeda90fd13ca7fc56498a220cd850e30884751c55c4634f554be59f"
+			"contentHash": "2bfc74b882b790f80e7570d48fa36e13b4dfb9c11aa893eff6a0d8256a044b55"
 		},
 		"providerSource": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/martial-ranged-heartseeker-v1.png",

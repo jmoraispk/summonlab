@@ -56,7 +56,7 @@
 			"requiredAction": "recompose"
 		},
 		{
-			"targetId": "martial:polearm:rend-armour",
+			"targetId": "martial:polearm:rend-armor",
 			"kind": "frame-composition",
 			"detail": "Generated art and semantic overlay approach the lower rail.",
 			"requiredAction": "recompose"
@@ -92,7 +92,7 @@
 			"requiredAction": "revise-art"
 		},
 		{
-			"targetId": "martial:polearm:rend-armour",
+			"targetId": "martial:polearm:rend-armor",
 			"kind": "stray-ui-glyph",
 			"detail": "Three stacked chevrons.",
 			"requiredAction": "revise-art"

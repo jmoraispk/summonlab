@@ -1,17 +1,17 @@
 {
-	"targetId": "magical:enchantment:armour-imbuing",
+	"targetId": "magical:enchantment:armor-imbuing",
 	"sourceCandidate": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-enchantment-armour-imbuing.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-enchantment-armor-imbuing.png",
 		"contentHash": "34ca516618b8eab44c3e4814242535cb3c7d7324539df5cdff8496d55ee1d041"
 	},
 	"rank": "E",
 	"disposition": "accepted-unchanged",
 	"findings": [],
-	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/magical-enchantment-armour-imbuing.png",
-	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/magical-enchantment-armour-imbuing.json",
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/magical-enchantment-armor-imbuing.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/magical-enchantment-armor-imbuing.json",
 	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
 	"cleanupInterior": {
-		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/magical-enchantment-armour-imbuing.png",
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/magical-enchantment-armor-imbuing.png",
 		"contentHash": "2f2c9e965124dac40e18d49b648e15217b13262136e614731df776c6681e323a",
 		"removedPixels": 153688,
 		"removedPixelBounds": {

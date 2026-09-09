@@ -146,7 +146,7 @@ const revisionTargetIds = [
 	'martial:blade:assassin-s-certainty',
 	'martial:blade:severed-thread',
 	'martial:blade:hewing-blow',
-	'martial:polearm:rend-armour',
+	'martial:polearm:rend-armor',
 	'martial:polearm:berserk-swing',
 	'martial:polearm:reaping-arc',
 	'martial:polearm:red-harvest',

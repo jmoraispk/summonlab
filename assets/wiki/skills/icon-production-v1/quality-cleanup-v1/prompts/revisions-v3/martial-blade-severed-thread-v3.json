@@ -16,11 +16,11 @@
 	"predecessor": {
 		"packet": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions-v2/martial-blade-severed-thread-v2.json",
-			"contentHash": "9d747d85a45025095faa5129c0168cca8719b89ddd74cef662cc1f27752e04a7"
+			"contentHash": "193323b0023c67b9890e6564d66db64d7067de8f4ee37a273c8f0d197b89a9fc"
 		},
 		"result": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/martial-blade-severed-thread-v2.json",
-			"contentHash": "553a1aa0a798d9e5a225c7da3f5d8dd66807f62977424507d9904ec03954b649"
+			"contentHash": "33ab97ae430f6c24c106b13f0859c26ed2a45e99cae5ab921c5c6a8338b37c93"
 		},
 		"providerSource": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/martial-blade-severed-thread-v2.png",

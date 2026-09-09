@@ -14,16 +14,16 @@
 	},
 	"revisionPacket": {
 		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions-v3/craft-cooking-preserving-v3.json",
-		"contentHash": "3a9f102ba41ea97760ebab29d8dd8238ed541bcc6eb40df6549f0faed6a0a972"
+		"contentHash": "871029876e5b7268308f8a73ff374c164f670df222ab32b355d20054acbfe914"
 	},
 	"predecessor": {
 		"packet": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions-v2/craft-cooking-preserving-v2.json",
-			"contentHash": "ba80f12eb6d6313dfebf0bd5313f0309a1e23cce00837bdf8e6c3b2ddc5d2a0d"
+			"contentHash": "c36cf6e2c3b35009ac3af5a04e0eff4e60079b4ee6bcee3a54829391b73d4535"
 		},
 		"result": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/craft-cooking-preserving-v2.json",
-			"contentHash": "f06a29586ab14f0f932daa6dbaa6ca6d8ff75a3ce3e98b18d2d2922d6acf8e75"
+			"contentHash": "11ee607a188c05976c8b15feb572b89fbe07e3b2e0270fe4fc7e9d84a8e25726"
 		},
 		"providerSource": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/craft-cooking-preserving-v2.png",

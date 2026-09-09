@@ -16,11 +16,11 @@
 	"predecessor": {
 		"packet": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions/craft-forging-fuel-craft-v1.json",
-			"contentHash": "932f15882a5331e291466b1c627952baa29e1b352f8d5f5c0bd586f2c38db986"
+			"contentHash": "2e701d73b140764aa8407861c89f09738df5100abc6d9fc2316fa0cc22acc64b"
 		},
 		"result": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/craft-forging-fuel-craft-v1.json",
-			"contentHash": "dbe9f1380d882e2b6ae843922ab6f6f877773f1e1c824a9b2dcd43d836c0396f"
+			"contentHash": "1b2d03561cc8bd0e5f7babfd6cf2db794a7c6451c3cfbf6672f7ce54498cf6f5"
 		},
 		"providerSource": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/craft-forging-fuel-craft-v1.png",

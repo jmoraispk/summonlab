@@ -4,11 +4,11 @@
 	"targetId": "craft:forging:weaponsmithing",
 	"revisionPacket": {
 		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions-v3/craft-forging-weaponsmithing-v3.json",
-		"contentHash": "623eecec2db65303dcda37727a70d26453021580c30a08b21686f8d073ad0961"
+		"contentHash": "b9ea58dedffd94ff4e94c1e931a2236d2d846a2d1d44c426d82be823ca406d7b"
 	},
 	"result": {
 		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/craft-forging-weaponsmithing-v3.json",
-		"contentHash": "5293492fc4fd345a5d5aef7bab5c441fc0cf901048a2ee8c37754ba1058731ac"
+		"contentHash": "54bf3b8e5b61626903635ca2bb5530b202d4eda368b6b0735448f91bc15c872b"
 	},
 	"status": "candidate",
 	"corePublication": {
@@ -30,7 +30,7 @@
 			},
 			"result": {
 				"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/craft-forging-weaponsmithing-v3.json",
-				"contentHash": "5293492fc4fd345a5d5aef7bab5c441fc0cf901048a2ee8c37754ba1058731ac"
+				"contentHash": "54bf3b8e5b61626903635ca2bb5530b202d4eda368b6b0735448f91bc15c872b"
 			}
 		}
 	}

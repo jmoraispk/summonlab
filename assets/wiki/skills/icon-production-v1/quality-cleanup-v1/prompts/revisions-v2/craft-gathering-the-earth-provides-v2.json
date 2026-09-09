@@ -16,11 +16,11 @@
 	"predecessor": {
 		"packet": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions/craft-gathering-the-earth-provides-v1.json",
-			"contentHash": "b28b624bafe81366e69e17438e572a6cf7c9412b49aca1d8f856c98467d2ed4b"
+			"contentHash": "f8b77bb052a4f9cb6f77e83b2a8df1e2ab2db7500eb1809214901e61f9faab74"
 		},
 		"result": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/craft-gathering-the-earth-provides-v1.json",
-			"contentHash": "9b64bade512063eaac9285b40e733de97ba491da98cf7e887e2dc8c545d2ed79"
+			"contentHash": "43c74a609ad0447a6ecfd985c74fe0cc0b1a2cd9ec88792c9c925e00df434d44"
 		},
 		"providerSource": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/craft-gathering-the-earth-provides-v1.png",

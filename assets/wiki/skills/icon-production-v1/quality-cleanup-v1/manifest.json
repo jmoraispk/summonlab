@@ -1438,29 +1438,29 @@
 			"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/martial-polearm-split-grip.json"
 		},
 		{
-			"targetId": "martial:polearm:rend-armour",
+			"targetId": "martial:polearm:rend-armor",
 			"sourceCandidate": {
-				"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-polearm-rend-armour.png",
+				"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-polearm-rend-armor.png",
 				"contentHash": "83726d3a04d4dd291b093fbd1776d924fcc6532d866c1beb8fac385e1342db58"
 			},
 			"rank": "E",
 			"disposition": "recompose",
 			"findings": [
 				{
-					"targetId": "martial:polearm:rend-armour",
+					"targetId": "martial:polearm:rend-armor",
 					"kind": "frame-composition",
 					"detail": "Generated art and semantic overlay approach the lower rail.",
 					"requiredAction": "recompose"
 				},
 				{
-					"targetId": "martial:polearm:rend-armour",
+					"targetId": "martial:polearm:rend-armor",
 					"kind": "stray-ui-glyph",
 					"detail": "Three stacked chevrons.",
 					"requiredAction": "revise-art"
 				}
 			],
-			"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-polearm-rend-armour.png",
-			"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/martial-polearm-rend-armour.json"
+			"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-polearm-rend-armor.png",
+			"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/martial-polearm-rend-armor.json"
 		},
 		{
 			"targetId": "martial:polearm:berserk-swing",
@@ -4277,16 +4277,16 @@
 			"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/magical-enchantment-group-blessing.json"
 		},
 		{
-			"targetId": "magical:enchantment:armour-imbuing",
+			"targetId": "magical:enchantment:armor-imbuing",
 			"sourceCandidate": {
-				"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-enchantment-armour-imbuing.png",
+				"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-enchantment-armor-imbuing.png",
 				"contentHash": "34ca516618b8eab44c3e4814242535cb3c7d7324539df5cdff8496d55ee1d041"
 			},
 			"rank": "E",
 			"disposition": "accepted-unchanged",
 			"findings": [],
-			"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/magical-enchantment-armour-imbuing.png",
-			"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/magical-enchantment-armour-imbuing.json"
+			"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/magical-enchantment-armor-imbuing.png",
+			"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/magical-enchantment-armor-imbuing.json"
 		},
 		{
 			"targetId": "magical:enchantment:component-craft",
@@ -4514,16 +4514,16 @@
 			"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/magical-restoration-cure.json"
 		},
 		{
-			"targetId": "magical:restoration:shared-vigour",
+			"targetId": "magical:restoration:shared-vigor",
 			"sourceCandidate": {
-				"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-restoration-shared-vigour.png",
+				"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-restoration-shared-vigor.png",
 				"contentHash": "32cfcf3670ed70ea5a639eb862b35007e75bd1a2689a99499623601f58bc44cf"
 			},
 			"rank": "E",
 			"disposition": "accepted-unchanged",
 			"findings": [],
-			"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/magical-restoration-shared-vigour.png",
-			"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/magical-restoration-shared-vigour.json"
+			"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/magical-restoration-shared-vigor.png",
+			"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/magical-restoration-shared-vigor.json"
 		},
 		{
 			"targetId": "magical:restoration:mass-mending",
@@ -4938,16 +4938,16 @@
 			"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/craft-forging-weaponsmithing.json"
 		},
 		{
-			"targetId": "craft:forging:armoursmithing",
+			"targetId": "craft:forging:armorsmithing",
 			"sourceCandidate": {
-				"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/craft-forging-armoursmithing.png",
+				"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/craft-forging-armorsmithing.png",
 				"contentHash": "6e2bfcc345bc129ce1f5fdd6cfabd9fd479e2fede60ce76f06e84cb8b06cc939"
 			},
 			"rank": "E",
 			"disposition": "accepted-unchanged",
 			"findings": [],
-			"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/craft-forging-armoursmithing.png",
-			"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/craft-forging-armoursmithing.json"
+			"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/craft-forging-armorsmithing.png",
+			"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/craft-forging-armorsmithing.json"
 		},
 		{
 			"targetId": "craft:forging:fuel-craft",

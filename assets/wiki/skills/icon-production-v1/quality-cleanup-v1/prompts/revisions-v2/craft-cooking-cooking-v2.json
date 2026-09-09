@@ -16,11 +16,11 @@
 	"predecessor": {
 		"packet": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions/craft-cooking-cooking-v1.json",
-			"contentHash": "326189a6073e5b75bde2bec4e659aab2e8b1c137c06fa7ec92b074b53825728a"
+			"contentHash": "7fc11de510ca3099e42b523bb5aa133d495e52ff458bf8727d2470afef2a0502"
 		},
 		"result": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/craft-cooking-cooking-v1.json",
-			"contentHash": "397f050f2f6b032fe02ef3ef739da7cff2328666e431d06cdfed167f6374294a"
+			"contentHash": "6b9658a4b7ce724bc39b944c5564754809339e86a3fca7c8f1849b0a2754843b"
 		},
 		"providerSource": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/craft-cooking-cooking-v1.png",

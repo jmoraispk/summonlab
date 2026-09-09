@@ -13,11 +13,11 @@
 	},
 	"revisionPacket": {
 		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions/craft-cooking-preserving-v1.json",
-		"contentHash": "d469296322961ba6a9426702b2f50625596ffd30f4d219c3f463e45bccc89235"
+		"contentHash": "a9b302b933012f97f032a73c2438813561f06919423e73aa75a23f066d6b2f5c"
 	},
 	"cleanupManifest": {
 		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/manifest.json",
-		"contentHash": "f7f4690d71b0786283c867f46ac5e48c9f48cd19fac9d969396f94a5f986b12b"
+		"contentHash": "8280a46b2eb358ab4b9f1bc1c0a3b84f79dd5b4fce3407da6f42a25ce67c8a73"
 	},
 	"sourceCandidate": {
 		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/craft-cooking-preserving.png",

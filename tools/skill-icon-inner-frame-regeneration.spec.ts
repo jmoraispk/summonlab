@@ -37,7 +37,7 @@ describe('inner-frame regeneration jobs', () => {
 				'craft-knowledge-languages',
 				'craft-knowledge-research',
 				'magical-enchantment-component-craft',
-				'martial-polearm-rend-armour'
+				'martial-polearm-rend-armor'
 			]).has(job.slug)
 				? 'v2'
 				: 'v1';

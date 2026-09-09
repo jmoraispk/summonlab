@@ -16,11 +16,11 @@
 	"predecessor": {
 		"packet": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions/martial-blade-blade-dance-v1.json",
-			"contentHash": "1eb1076eba2235a667a668bcda563b8124c2659b444492fb6a5cfe10fe004b11"
+			"contentHash": "7f98673da2f66523e528a9cbb1e9e361c2bbb9b9c84873dd3f0877b4211b958d"
 		},
 		"result": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/martial-blade-blade-dance-v1.json",
-			"contentHash": "2b55490397ab10f9fc46d21b80b8ff8149da41e9f7588860e78a7514a69aaccf"
+			"contentHash": "1c47fdec0fec581a6e29b57e45a4a7313d2556137b07b0227af7fc0245838329"
 		},
 		"providerSource": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/martial-blade-blade-dance-v1.png",

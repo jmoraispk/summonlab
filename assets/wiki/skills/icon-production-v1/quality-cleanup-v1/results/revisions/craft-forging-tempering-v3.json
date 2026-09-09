@@ -14,16 +14,16 @@
 	},
 	"revisionPacket": {
 		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions-v3/craft-forging-tempering-v3.json",
-		"contentHash": "8c1d16394c60c6c99de111609fcb593cdcafc44166efb615304aff7e3187318b"
+		"contentHash": "7fa5951c655d7438ec8a4a182efb2b040d49036764848224e207a92bdea44e08"
 	},
 	"predecessor": {
 		"packet": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions-v2/craft-forging-tempering-v2.json",
-			"contentHash": "05a652c569354e1a0c515c164bd059916411c240cf53ba218c28181f1ef893ed"
+			"contentHash": "0361219a11b07d3682c1691ec7d744fc3191474f394bed6de27a1ca0fe69dc6b"
 		},
 		"result": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/craft-forging-tempering-v2.json",
-			"contentHash": "a0e17894c6025f25031d4ecdff5e43c80fd66be2eb52a1c503cc8fcaa2885f2e"
+			"contentHash": "3b23960e524b8d6fa85fe14ac4fefa3091b208dc679c8161d33949ec18d82e1a"
 		},
 		"providerSource": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/craft-forging-tempering-v2.png",

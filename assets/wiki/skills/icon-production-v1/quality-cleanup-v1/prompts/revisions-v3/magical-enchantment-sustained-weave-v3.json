@@ -16,11 +16,11 @@
 	"predecessor": {
 		"packet": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions-v2/magical-enchantment-sustained-weave-v2.json",
-			"contentHash": "71f2dc85b03ca7240029e1ba141823b671609815760acacf22978ff26c4f9661"
+			"contentHash": "c82a809a69d1098a5dc709b5fa3bad593df599fc189f397e726f896f435cb8be"
 		},
 		"result": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/magical-enchantment-sustained-weave-v2.json",
-			"contentHash": "144ecb9963a322f1892d2f5dc6885ee63d63f15e85805d53827ddf2c07b5d0c6"
+			"contentHash": "6a28a6bfe1bb623028afe49eb1b2a8c25445e23fb26ed859d081070910c202e3"
 		},
 		"providerSource": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/magical-enchantment-sustained-weave-v2.png",

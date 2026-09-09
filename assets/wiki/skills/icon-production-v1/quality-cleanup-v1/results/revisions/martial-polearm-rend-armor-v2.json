@@ -2,40 +2,40 @@
 	"schemaVersion": "skill-icon-quality-cleanup-revision-result-v2",
 	"revision": 2,
 	"status": "candidate",
-	"targetId": "martial:polearm:rend-armour",
-	"name": "Rend Armour",
+	"targetId": "martial:polearm:rend-armor",
+	"name": "Rend Armor",
 	"rank": "E",
-	"motifFamily": "polearm.armour-rend",
+	"motifFamily": "polearm.armor-rend",
 	"finding": {
-		"targetId": "martial:polearm:rend-armour",
+		"targetId": "martial:polearm:rend-armor",
 		"kind": "stray-ui-glyph",
 		"detail": "Three stacked chevrons.",
 		"requiredAction": "revise-art"
 	},
 	"revisionPacket": {
-		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions-v2/martial-polearm-rend-armour-v2.json",
-		"contentHash": "7fe3c752e78809f030ea1201e88a68219f91e1651d93adfac13508a62bb01458"
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions-v2/martial-polearm-rend-armor-v2.json",
+		"contentHash": "0c7ebfc0aa53612fc367c8159e4ed6d8ba726a0da2160b33b920bdcb7f7d308e"
 	},
 	"predecessor": {
 		"packet": {
-			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions/martial-polearm-rend-armour-v1.json",
-			"contentHash": "4131b51442834f97059c6c7b980d3ec1d1e8f17d2d1d63821db47f9c8c6dcad2"
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions/martial-polearm-rend-armor-v1.json",
+			"contentHash": "e4359976f4486602e397c7915b276445e611bfe79e729de12a8508858c97ed27"
 		},
 		"result": {
-			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/martial-polearm-rend-armour-v1.json",
-			"contentHash": "72591e1fd99204cff3bebfbba0ec264bd57ffd58ccc5810c20513956801ca402"
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/martial-polearm-rend-armor-v1.json",
+			"contentHash": "575b0e1cc5031a74242855167ec1cec5345ab46b44f9ddea682305434484498c"
 		},
 		"providerSource": {
-			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/martial-polearm-rend-armour-v1.png",
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/martial-polearm-rend-armor-v1.png",
 			"contentHash": "c1f8b530e64f3078530e1d8a96e614298be39e531bbdd2e5f2aee84004e671f1"
 		},
 		"transactionContentHash": "c52967c057cf1db0158975f9693f649acffa318b3250e2df36931c1697331b14",
 		"revisedInterior": {
-			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/revisions/martial-polearm-rend-armour-v1.png",
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/revisions/martial-polearm-rend-armor-v1.png",
 			"contentHash": "67fc7ca4ef8353adb6098d76080b49c684c5eb3645ec80cb8e7664e4412c38ae"
 		},
 		"composite": {
-			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-polearm-rend-armour-v1.png",
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-polearm-rend-armor-v1.png",
 			"contentHash": "8d65a66f494b0c72ba6aef9bc463384a4a6b192fc0f68f097bd014b1e7ef1ad9"
 		}
 	},
@@ -60,7 +60,7 @@
 		"mask": "geometry-v2-protected-central-aperture"
 	},
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/martial-polearm-rend-armour-v2.png",
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/martial-polearm-rend-armor-v2.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -69,7 +69,7 @@
 		"alphaMode": "rgb"
 	},
 	"revisedInterior": {
-		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/revisions/martial-polearm-rend-armour-v2.png",
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/revisions/martial-polearm-rend-armor-v2.png",
 		"mediaType": "image/png",
 		"width": 1024,
 		"height": 1024,
@@ -91,7 +91,7 @@
 		}
 	},
 	"composite": {
-		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-polearm-rend-armour-v2.png",
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-polearm-rend-armor-v2.png",
 		"mediaType": "image/png",
 		"width": 1024,
 		"height": 1024,
@@ -166,12 +166,12 @@
 		}
 	},
 	"transactionContentHash": "1e9deed4a5cf479fa8e7d421c195c53f3884694a4dedbf685badd52fb31754bf",
-	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/martial-polearm-rend-armour-v2.json",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/martial-polearm-rend-armor-v2.json",
 	"writtenOutputPaths": [
-		"assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/martial-polearm-rend-armour-v2.png",
-		"assets/wiki/skills/icon-production-v1/quality-cleanup-v1/revisions/martial-polearm-rend-armour-v2.png",
-		"assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-polearm-rend-armour-v2.png",
-		"assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/martial-polearm-rend-armour-v2.json"
+		"assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/martial-polearm-rend-armor-v2.png",
+		"assets/wiki/skills/icon-production-v1/quality-cleanup-v1/revisions/martial-polearm-rend-armor-v2.png",
+		"assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-polearm-rend-armor-v2.png",
+		"assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/martial-polearm-rend-armor-v2.json"
 	],
 	"completionContract": {
 		"sharedFilesRemainUntouched": true,

@@ -13,11 +13,11 @@
 	},
 	"revisionPacket": {
 		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions/craft-forging-living-metal-v1.json",
-		"contentHash": "d7cca4d98dfcc8b58b38548fc45a8be565a4d091329a62655ae4f9750ac1c1c5"
+		"contentHash": "f462b1aed92c6a3a1ac58d759d5992b56ee90106a87710c9e0e32966f20bccd6"
 	},
 	"cleanupManifest": {
 		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/manifest.json",
-		"contentHash": "f7f4690d71b0786283c867f46ac5e48c9f48cd19fac9d969396f94a5f986b12b"
+		"contentHash": "8280a46b2eb358ab4b9f1bc1c0a3b84f79dd5b4fce3407da6f42a25ce67c8a73"
 	},
 	"sourceCandidate": {
 		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/craft-forging-living-metal.png",

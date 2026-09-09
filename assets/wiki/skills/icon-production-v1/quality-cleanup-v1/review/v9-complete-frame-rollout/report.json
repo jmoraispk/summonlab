@@ -2227,15 +2227,15 @@
 			}
 		},
 		{
-			"targetId": "martial:polearm:rend-armour",
-			"name": "Rend Armour",
+			"targetId": "martial:polearm:rend-armor",
+			"name": "Rend Armor",
 			"rank": "E",
 			"currentHash": "cd92657bfef3e7d9073079dcb2417dcfb4fbea9c48301a19634b82c52ea5bfe3",
-			"interiorPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/martial-polearm-rend-armour.png",
+			"interiorPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/martial-polearm-rend-armor.png",
 			"sourceInteriorHash": "a127cb9138cbdaa162522c4418ab313caf952a5bfcc295b75d7fac3a01c97b97",
 			"interiorHash": "dc08def9fba7f1698d3e5ccfad6e5d938efa6bfb44bbb5e66a62db854dc3147c",
 			"candidateHash": "f59f2bff0eae6cef839558a9a8e368ca3dbed2b52a422ed9a5ac940b33ed1f7f",
-			"currentPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-polearm-rend-armour.png",
+			"currentPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-polearm-rend-armor.png",
 			"inspection": {
 				"layerHashesMatch": true,
 				"exactComposite": true,
@@ -6277,15 +6277,15 @@
 			}
 		},
 		{
-			"targetId": "magical:enchantment:armour-imbuing",
-			"name": "Armour Imbuing",
+			"targetId": "magical:enchantment:armor-imbuing",
+			"name": "Armor Imbuing",
 			"rank": "E",
 			"currentHash": "54e08c091f7f4ef323d3855a49ce1ab382ed9f7ae1d02fed896b031ba580ba29",
-			"interiorPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/magical-enchantment-armour-imbuing.png",
+			"interiorPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/magical-enchantment-armor-imbuing.png",
 			"sourceInteriorHash": "2f2c9e965124dac40e18d49b648e15217b13262136e614731df776c6681e323a",
 			"interiorHash": "b0d4060e2e066eeb9a228cd7ab116fd8cd70b36c8fadad080e6017cf9cce075c",
 			"candidateHash": "005e667d8aea7c5ea2290e2858ee128fad0ed69441d4bd3bc0d8629b47fcac68",
-			"currentPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/magical-enchantment-armour-imbuing.png",
+			"currentPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/magical-enchantment-armor-imbuing.png",
 			"inspection": {
 				"layerHashesMatch": true,
 				"exactComposite": true,
@@ -6601,15 +6601,15 @@
 			}
 		},
 		{
-			"targetId": "magical:restoration:shared-vigour",
-			"name": "Shared Vigour",
+			"targetId": "magical:restoration:shared-vigor",
+			"name": "Shared Vigor",
 			"rank": "E",
 			"currentHash": "80adb34c71976c71fbfed1fe8ca50ebb1c0c79a7887e43564670ff1b5abd5223",
-			"interiorPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/magical-restoration-shared-vigour.png",
+			"interiorPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/magical-restoration-shared-vigor.png",
 			"sourceInteriorHash": "a30f9612201653ad2ec33f3d215a1e5ceecdf0dc9b994498836700683121e3c1",
 			"interiorHash": "030549b3069a5a72768733b684403724a76b2badbc4f3ffc9cb9f33e031a15ee",
 			"candidateHash": "1afc07c10a3c244fb04dd6719fa005faba7b71ada6006076b60e79a8e6f34848",
-			"currentPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/magical-restoration-shared-vigour.png",
+			"currentPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/magical-restoration-shared-vigor.png",
 			"inspection": {
 				"layerHashesMatch": true,
 				"exactComposite": true,
@@ -7195,15 +7195,15 @@
 			}
 		},
 		{
-			"targetId": "craft:forging:armoursmithing",
-			"name": "Armoursmithing",
+			"targetId": "craft:forging:armorsmithing",
+			"name": "Armorsmithing",
 			"rank": "E",
 			"currentHash": "f55cf3cb70f01b39d00e87734e937be98f42552927ba9e3b153c51b424542520",
-			"interiorPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/craft-forging-armoursmithing.png",
+			"interiorPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/craft-forging-armorsmithing.png",
 			"sourceInteriorHash": "8b6b0f3315ed849f07d3b633634c9ed6058d58d767d603bbf2c250172804e7d3",
 			"interiorHash": "67abba2a463cc81db7a6909bfaef8c1740bc74d37e4fca78ce66280d6c5ff6a6",
 			"candidateHash": "e1e332adb4aa23f632fd22ed64ed8c80d735f11b56ff77a7138c6a3a580df0a1",
-			"currentPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/craft-forging-armoursmithing.png",
+			"currentPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/craft-forging-armorsmithing.png",
 			"inspection": {
 				"layerHashesMatch": true,
 				"exactComposite": true,

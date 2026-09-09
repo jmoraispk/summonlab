@@ -9,7 +9,7 @@ Task 7 remains incomplete. The four assigned generation-v2 packets were processe
 | `craft:forging:living-metal` | candidate | `exec-ceefc90d-65aa-4c9a-b9bc-d9cd02aba141` / `exec-60935503-3c1a-4582-a767-7c0bda1cd5c2` | pass / pass |
 | `craft:forging:ore-sense` | candidate | `exec-decc6b6f-813a-42e4-a244-6a767d3bcfdf` / `exec-d5b9325c-7c89-42c9-81bc-19467fa97c07` | pass / pass |
 | `craft:gathering:taming` | revise | `exec-46c20faf-c579-4ff8-a914-00a55da3f89b` / `exec-a20897ae-2b74-4579-bb7b-a9b89425dc5f` | fail / fail |
-| `martial:polearm:rend-armour` | candidate | `exec-03bc1bc2-a6ee-4600-8a8b-26f99c49488c` / `exec-bab71130-1686-49eb-b27b-892d9e37b811` | pass / pass |
+| `martial:polearm:rend-armor` | candidate | `exec-03bc1bc2-a6ee-4600-8a8b-26f99c49488c` / `exec-bab71130-1686-49eb-b27b-892d9e37b811` | pass / pass |
 
 ## Receipt evidence
 
@@ -20,9 +20,9 @@ Every provider is a native `1254×1254` RGB PNG accepted by the strict caBX enve
 | Living Metal | `fbab5ade4b0dc42911d11778e2ce12c3891796d74aec17c89194dbb49390ef78`, `ed96812101246b09d4aeb7b1f0011ebba80b2f02effd24b263b879aeb9a220dd` | `ed96812101246b09d4aeb7b1f0011ebba80b2f02effd24b263b879aeb9a220dd` | `12:33:29.403Z`–`12:33:31.588Z` / `12:33:31.650Z`–`12:33:31.704Z` |
 | Ore Sense | `8b6b9745fdc9b7cbbc7bc58f8cc8b4393ade48fc51c991c4e795fd925f66a4a2`, `a6292d553d39de67c7a65ce5d6a3d19294743abfa206ea5a664f9b8ddb66329d` | `a6292d553d39de67c7a65ce5d6a3d19294743abfa206ea5a664f9b8ddb66329d` | `12:37:17.484Z`–`12:37:19.811Z` / `12:37:19.900Z`–`12:37:19.943Z` |
 | Taming | `5c7467eb9dfec732d3057f532a2a93dbfb10d2caa614b09481dac5926ee3053f`, `3d7be588e8dd691025c127851e96ae0f948878a3102e2285e2f4c38fa991de0c` | `3d7be588e8dd691025c127851e96ae0f948878a3102e2285e2f4c38fa991de0c` | `12:41:25.525Z`–`12:41:27.752Z` / `12:41:27.822Z`–`12:41:27.870Z` |
-| Rend Armour | `d452a08b084163c22a50618498a9fd61ebc1915c80ed44c04691698455a65907`, `111df61b487bfb2283e1938ff96cc097e3907c11855ada881dafc6a1d0cba81b` | `111df61b487bfb2283e1938ff96cc097e3907c11855ada881dafc6a1d0cba81b` | `12:45:47.869Z`–`12:45:50.168Z` / `12:45:50.255Z`–`12:45:50.296Z` |
+| Rend Armor | `d452a08b084163c22a50618498a9fd61ebc1915c80ed44c04691698455a65907`, `111df61b487bfb2283e1938ff96cc097e3907c11855ada881dafc6a1d0cba81b` | `111df61b487bfb2283e1938ff96cc097e3907c11855ada881dafc6a1d0cba81b` | `12:45:47.869Z`–`12:45:50.168Z` / `12:45:50.255Z`–`12:45:50.296Z` |
 
-Living Metal retains a complete hammer, anvil, and living-metal motif without an upgrade arrow. Ore Sense retains the complete gloved hand/cuff/fingertips and raw ore without an eye badge. Rend Armour retains the full halberd and armored target without chevrons. Taming removes its copied frame and medallion, but its offered human forearm still enters from the left source edge; that is the sole fail finding at both scales.
+Living Metal retains a complete hammer, anvil, and living-metal motif without an upgrade arrow. Ore Sense retains the complete gloved hand/cuff/fingertips and raw ore without an eye badge. Rend Armor retains the full halberd and armored target without chevrons. Taming removes its copied frame and medallion, but its offered human forearm still enters from the left source edge; that is the sole fail finding at both scales.
 
 ## Independent finalization
 

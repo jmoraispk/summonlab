@@ -1,30 +1,30 @@
 {
-	"targetId": "martial:polearm:rend-armour",
+	"targetId": "martial:polearm:rend-armor",
 	"sourceCandidate": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-polearm-rend-armour.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-polearm-rend-armor.png",
 		"contentHash": "83726d3a04d4dd291b093fbd1776d924fcc6532d866c1beb8fac385e1342db58"
 	},
 	"rank": "E",
 	"disposition": "recompose",
 	"findings": [
 		{
-			"targetId": "martial:polearm:rend-armour",
+			"targetId": "martial:polearm:rend-armor",
 			"kind": "frame-composition",
 			"detail": "Generated art and semantic overlay approach the lower rail.",
 			"requiredAction": "recompose"
 		},
 		{
-			"targetId": "martial:polearm:rend-armour",
+			"targetId": "martial:polearm:rend-armor",
 			"kind": "stray-ui-glyph",
 			"detail": "Three stacked chevrons.",
 			"requiredAction": "revise-art"
 		}
 	],
-	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-polearm-rend-armour.png",
-	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/martial-polearm-rend-armour.json",
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-polearm-rend-armor.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/martial-polearm-rend-armor.json",
 	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
 	"cleanupInterior": {
-		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/martial-polearm-rend-armour.png",
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/martial-polearm-rend-armor.png",
 		"contentHash": "a127cb9138cbdaa162522c4418ab313caf952a5bfcc295b75d7fac3a01c97b97",
 		"removedPixels": 139030,
 		"removedPixelBounds": {

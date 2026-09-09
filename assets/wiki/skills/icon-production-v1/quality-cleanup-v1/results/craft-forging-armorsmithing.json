@@ -1,17 +1,17 @@
 {
-	"targetId": "craft:forging:armoursmithing",
+	"targetId": "craft:forging:armorsmithing",
 	"sourceCandidate": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/craft-forging-armoursmithing.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/craft-forging-armorsmithing.png",
 		"contentHash": "6e2bfcc345bc129ce1f5fdd6cfabd9fd479e2fede60ce76f06e84cb8b06cc939"
 	},
 	"rank": "E",
 	"disposition": "accepted-unchanged",
 	"findings": [],
-	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/craft-forging-armoursmithing.png",
-	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/craft-forging-armoursmithing.json",
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/craft-forging-armorsmithing.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/craft-forging-armorsmithing.json",
 	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
 	"cleanupInterior": {
-		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/craft-forging-armoursmithing.png",
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/craft-forging-armorsmithing.png",
 		"contentHash": "8b6b0f3315ed849f07d3b633634c9ed6058d58d767d603bbf2c250172804e7d3",
 		"removedPixels": 181755,
 		"removedPixelBounds": {

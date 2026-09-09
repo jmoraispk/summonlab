@@ -53,7 +53,7 @@ export const GENERATION_V2_TARGET_IDS = [
 	'craft:forging:living-metal',
 	'craft:forging:ore-sense',
 	'craft:gathering:taming',
-	'martial:polearm:rend-armour'
+	'martial:polearm:rend-armor'
 ] as const;
 
 const IDENTITY_ADOPTION_TARGETS = new Set<string>(IDENTITY_ADOPTION_TARGET_IDS);
@@ -1132,7 +1132,7 @@ export async function deriveCleanupRevisionV2(input: {
 				limitInputPixels: 1254 * 1254,
 				sequentialRead: true
 			})
-				.toColourspace('srgb')
+				.toColorspace('srgb')
 				.removeAlpha()
 				.resize(insetTransform.resize.width, insetTransform.resize.height, {
 					fit: 'fill',

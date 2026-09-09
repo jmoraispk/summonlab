@@ -16,11 +16,11 @@
 	"predecessor": {
 		"packet": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions/martial-polearm-berserk-swing-v1.json",
-			"contentHash": "8b51a702a1af4f7f58f5c6f39cfadb762775e5f67430e09807548f74d8c556ce"
+			"contentHash": "e302f117aa31a56f86ac08c1a65cadf7fd3bfd53f925fb3412a4a7c7d646a9cf"
 		},
 		"result": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/martial-polearm-berserk-swing-v1.json",
-			"contentHash": "8daea7a53cf575a28179aeb3fbf22c7e8a509efa47136c179063b720b9606ea8"
+			"contentHash": "f3ecc62857584c28dfd8d8b60a375e310dddb8d081617c5e9d735f382e6782bd"
 		},
 		"providerSource": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/martial-polearm-berserk-swing-v1.png",

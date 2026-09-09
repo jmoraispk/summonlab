@@ -13,11 +13,11 @@
 	},
 	"revisionPacket": {
 		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions/craft-gathering-the-earth-provides-v1.json",
-		"contentHash": "b28b624bafe81366e69e17438e572a6cf7c9412b49aca1d8f856c98467d2ed4b"
+		"contentHash": "f8b77bb052a4f9cb6f77e83b2a8df1e2ab2db7500eb1809214901e61f9faab74"
 	},
 	"cleanupManifest": {
 		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/manifest.json",
-		"contentHash": "f7f4690d71b0786283c867f46ac5e48c9f48cd19fac9d969396f94a5f986b12b"
+		"contentHash": "8280a46b2eb358ab4b9f1bc1c0a3b84f79dd5b4fce3407da6f42a25ce67c8a73"
 	},
 	"sourceCandidate": {
 		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/craft-gathering-the-earth-provides.png",

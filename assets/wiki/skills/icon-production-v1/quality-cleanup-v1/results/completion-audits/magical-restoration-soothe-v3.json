@@ -4,11 +4,11 @@
 	"targetId": "magical:restoration:soothe",
 	"revisionPacket": {
 		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions-v3/magical-restoration-soothe-v3.json",
-		"contentHash": "24c1e5a7d895fbdad5b56dd013c6cde4b3c7af641ec585bd33081bd0c54d605c"
+		"contentHash": "86930676a3ad37e096c01fd5e3855b4035ad907646f1867f125beef7b1f56de7"
 	},
 	"result": {
 		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/magical-restoration-soothe-v3.json",
-		"contentHash": "57b0634a70a7a58dbd3bd507c5bfdf97d3aff32b07e6255c0fcf8e413a4faf34"
+		"contentHash": "33573d08e15aab80532f5bf400b05860dc60ffa7a6830ef50a5bcdd508beb6df"
 	},
 	"status": "candidate",
 	"corePublication": {
@@ -30,7 +30,7 @@
 			},
 			"result": {
 				"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/magical-restoration-soothe-v3.json",
-				"contentHash": "57b0634a70a7a58dbd3bd507c5bfdf97d3aff32b07e6255c0fcf8e413a4faf34"
+				"contentHash": "33573d08e15aab80532f5bf400b05860dc60ffa7a6830ef50a5bcdd508beb6df"
 			}
 		}
 	}

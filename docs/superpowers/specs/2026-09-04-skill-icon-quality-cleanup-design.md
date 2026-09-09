@@ -198,7 +198,7 @@ claim about when its own publication finishes. Selection and review require this
 re-derive the source, interior, composite, and 384px render, recompute the transaction digest, and
 check predecessor/source/tool/geometry/backing/frame/findings/status bindings.
 
-Exactly four v2 packets remain generation lanes: Taming, Rend Armour, Living Metal, and Ore Sense.
+Exactly four v2 packets remain generation lanes: Taming, Rend Armor, Living Metal, and Ore Sense.
 Their prompt retains the named-glyph removal while explicitly keeping the complete subject, all
 visible limbs, equipment, and companion content inside a generous safe area. The persistence lane is
 ready to accept only a native `1254×1254` RGB caBX provider, its exact source hash, every actual

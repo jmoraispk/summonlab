@@ -16,11 +16,11 @@
 	"predecessor": {
 		"packet": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions/craft-forging-ore-sense-v1.json",
-			"contentHash": "3e12ee161eb52ecacc1ed58e9cd187c682b63c81fa845aede4f28bbf385f81a9"
+			"contentHash": "15ba1e9660376a41ffeeda8654832e692a8479112e63e1393e00034683b381e4"
 		},
 		"result": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/craft-forging-ore-sense-v1.json",
-			"contentHash": "e43d30b6904256bbf0551e820e7d373054048d71ddb1258d3560e39b5c4ac2eb"
+			"contentHash": "ca7d029be16af83217cae4e8906781a4204e940d9b101e1bc32b67e64549a2e2"
 		},
 		"providerSource": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/craft-forging-ore-sense-v1.png",

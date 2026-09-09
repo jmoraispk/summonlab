@@ -4,11 +4,11 @@
 	"targetId": "magical:elemental:still-depths",
 	"revisionPacket": {
 		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions-v3/magical-elemental-still-depths-v3.json",
-		"contentHash": "3768725609b6b6e0b7ac0be6fa0e665f780863a10e5bc82bdd371c95df970f39"
+		"contentHash": "38ee6efef21ef2fb00927be8717cff562ee006dfba26840613602dc4745cfab8"
 	},
 	"result": {
 		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/magical-elemental-still-depths-v3.json",
-		"contentHash": "b439ff24f2d0332d0b8b5d5e9f255f5d8be9fd7a86f7a1a2168a18096263b55f"
+		"contentHash": "80721d5c5d191676eee13dad15ad7e24e179e48c82315329be49eb30a23ecb25"
 	},
 	"status": "candidate",
 	"corePublication": {
@@ -30,7 +30,7 @@
 			},
 			"result": {
 				"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/magical-elemental-still-depths-v3.json",
-				"contentHash": "b439ff24f2d0332d0b8b5d5e9f255f5d8be9fd7a86f7a1a2168a18096263b55f"
+				"contentHash": "80721d5c5d191676eee13dad15ad7e24e179e48c82315329be49eb30a23ecb25"
 			}
 		}
 	}

@@ -14,7 +14,7 @@ Round 2 adds the current authority without altering either historical scope:
   placement at `(164,192)`;
 - 3 V3 identity/adoption recoveries: Still Depths, Warmth, and Red Harvest;
 - 24 V3 `candidate` provider/revision/composite/result sets, each with a separate completion audit;
-- 4 pending V2 generation packets: Living Metal, Ore Sense, Taming, and Rend Armour;
+- 4 pending V2 generation packets: Living Metal, Ore Sense, Taming, and Rend Armor;
 - zero image-generation calls.
 
 The semantic state is deliberately `24/28`, `candidateCount: 24`, and `ready: false`. No owner
@@ -88,7 +88,7 @@ The following gates passed after V3 materialization:
 - `corepack pnpm test:skill-icons`: 21 files / 427 tests.
 
 `check:skill-icon-cleanup-v2-complete` was also run and failed as required, reporting only Living
-Metal, Ore Sense, Taming, and Rend Armour as missing revision-2 receipts.
+Metal, Ore Sense, Taming, and Rend Armor as missing revision-2 receipts.
 
 The protected immutable aggregates were recomputed from sorted `sha256sum` records:
 
@@ -127,7 +127,7 @@ Round-3 validation passed:
 - focused contract, persistence, V3 recovery, and finalizer tests: 22 tests across 4 files;
 - `corepack pnpm typecheck:skill-icons`;
 - V2 packet check: 28 existing packets with exactly Living Metal, Ore Sense, Taming, and Rend
-  Armour still pending generation;
+  Armor still pending generation;
 - V3 packet check: 24 existing deterministic packets;
 - V3 recovery/finalizer check: 24 audited candidates, `ready: false`, and the same four missing
   V2 generation receipts.

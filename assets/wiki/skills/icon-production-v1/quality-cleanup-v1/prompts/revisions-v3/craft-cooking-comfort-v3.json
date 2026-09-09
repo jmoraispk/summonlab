@@ -16,11 +16,11 @@
 	"predecessor": {
 		"packet": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions-v2/craft-cooking-comfort-v2.json",
-			"contentHash": "a7281be1896388d7d3bac44e65db87ae1b7b268b8cb3fd6d7f210db3d3908a8a"
+			"contentHash": "6c9015edf2a993cfe46a0a70ab564aaa6cc9bb46c745859b5b3209115e13cf1b"
 		},
 		"result": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/craft-cooking-comfort-v2.json",
-			"contentHash": "8e6fd27453f3d7eaaef8ce0015a02879e48963789c816bbc58cac4a9a585e298"
+			"contentHash": "d89962e262716ee3dff87037c54ab87197fc22af3e204849d351e5116c1356ec"
 		},
 		"providerSource": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/craft-cooking-comfort-v2.png",

@@ -29,7 +29,7 @@ const APPROVED_TARGET_IDS = [
 	'martial:polearm:serpent-s-tongue',
 	'martial:polearm:heaven-piercer',
 	'martial:polearm:thousand-li-thrust',
-	'martial:polearm:rend-armour',
+	'martial:polearm:rend-armor',
 	'martial:ranged:fletching',
 	'martial:ranged:power-draw',
 	'martial:ranged:piercing-shot',

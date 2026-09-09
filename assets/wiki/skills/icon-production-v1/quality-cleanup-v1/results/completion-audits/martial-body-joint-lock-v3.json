@@ -4,11 +4,11 @@
 	"targetId": "martial:body:joint-lock",
 	"revisionPacket": {
 		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions-v3/martial-body-joint-lock-v3.json",
-		"contentHash": "345729958ead6c2ef0089a95b713f629c663e0bcfbe0e0410ad692ad53610c97"
+		"contentHash": "139b345a285fe9dd1e50f77c0812ea961c6c3ec742cb734b09ef2fc0ab3fc75e"
 	},
 	"result": {
 		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/martial-body-joint-lock-v3.json",
-		"contentHash": "b2036a10daa05aec1d356376ddb1f5e92a3084f30313dc3442ea451f8d51ee03"
+		"contentHash": "1801ed658221d09e59293940a0e85f856cb6e602473e22a6e4fec72e96285537"
 	},
 	"status": "candidate",
 	"corePublication": {
@@ -30,7 +30,7 @@
 			},
 			"result": {
 				"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/martial-body-joint-lock-v3.json",
-				"contentHash": "b2036a10daa05aec1d356376ddb1f5e92a3084f30313dc3442ea451f8d51ee03"
+				"contentHash": "1801ed658221d09e59293940a0e85f856cb6e602473e22a6e4fec72e96285537"
 			}
 		}
 	}

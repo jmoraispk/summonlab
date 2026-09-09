@@ -14,16 +14,16 @@
 	},
 	"revisionPacket": {
 		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions-v3/magical-elemental-ashfall-v3.json",
-		"contentHash": "41ac6e7e6d7fc1537ebd4e5458a81df3cecae8284670bdb441d491ef7d1c9b13"
+		"contentHash": "7d39fed1a3e7f72082628c14aef6873d81263ddae735344029b20a237051d580"
 	},
 	"predecessor": {
 		"packet": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions-v2/magical-elemental-ashfall-v2.json",
-			"contentHash": "c57465e2e89772ac10a2c2c84104622bebf466dbdd15c05d111bb4c4394968b2"
+			"contentHash": "1abfde2933abea95d3ea39594912b748c9578c28e08af8b402a0da431d7a0063"
 		},
 		"result": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/magical-elemental-ashfall-v2.json",
-			"contentHash": "c096a0971b4b2585e1f7210362e94cd67e48e83005358a9af35749ce47549843"
+			"contentHash": "74d6487d37ef2d937bc1f9539ca8271b79128711d594ce465c11bf2d4e8d9bf0"
 		},
 		"providerSource": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/magical-elemental-ashfall-v2.png",

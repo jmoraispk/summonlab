@@ -14,15 +14,15 @@
 	"authority": {
 		"v10Audit": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/review/v10-inner-frame-audit/report.json",
-			"contentHash": "fe7e79587ceb399b9d7e19887f22b344d85927727b01b66a6af7713304514c36"
+			"contentHash": "40227287ea80e81d8077061cb86984c332bb9e1a00b6baf7c7ecf1bcad819e8d"
 		},
 		"v12Review": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/review/v12-inner-frame-regeneration-scale/report.json",
-			"contentHash": "c9ccd5ff067740cc3dc3d85ea259fd8a3feb70c0fc1db4790bbbe5b485129f97"
+			"contentHash": "daa25cb159f14fcc2b2872cf0727702d2440bd0de70683aa47d1c215dca74391"
 		},
 		"cleanupManifest": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/manifest.json",
-			"contentHash": "f7f4690d71b0786283c867f46ac5e48c9f48cd19fac9d969396f94a5f986b12b"
+			"contentHash": "8280a46b2eb358ab4b9f1bc1c0a3b84f79dd5b4fce3407da6f42a25ce67c8a73"
 		}
 	},
 	"records": [
@@ -132,17 +132,17 @@
 			}
 		},
 		{
-			"targetId": "martial:polearm:rend-armour",
+			"targetId": "martial:polearm:rend-armor",
 			"baseline": {
-				"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-polearm-rend-armour.png",
+				"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-polearm-rend-armor.png",
 				"contentHash": "cd92657bfef3e7d9073079dcb2417dcfb4fbea9c48301a19634b82c52ea5bfe3"
 			},
 			"candidate": {
-				"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/review/v12-inner-frame-regeneration-scale/candidates/martial-polearm-rend-armour.png",
+				"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/review/v12-inner-frame-regeneration-scale/candidates/martial-polearm-rend-armor.png",
 				"contentHash": "aa7c203feffff07c037281e421042862e361e2ac792dfaf8836bbca5a5c01fc3"
 			},
 			"accepted": {
-				"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/accepted-overlays/inner-frame-v1/composites/martial-polearm-rend-armour.png",
+				"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/accepted-overlays/inner-frame-v1/composites/martial-polearm-rend-armor.png",
 				"contentHash": "aa7c203feffff07c037281e421042862e361e2ac792dfaf8836bbca5a5c01fc3"
 			}
 		},

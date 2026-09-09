@@ -42,7 +42,7 @@ describe('cleanup semantic-revision v2 authority', () => {
 			'craft:forging:living-metal',
 			'craft:forging:ore-sense',
 			'craft:gathering:taming',
-			'martial:polearm:rend-armour'
+			'martial:polearm:rend-armor'
 		]);
 		for (const { path: packetPath, packet } of packets) {
 			const slug = packet.targetId.replaceAll(':', '-');
@@ -71,7 +71,7 @@ describe('cleanup semantic-revision v2 authority', () => {
 
 	it('does not fall back to a v1 candidate after a higher v2 receipt is revise or failed', () => {
 		const result = selectHighestCleanupRevisionCandidates({
-			requiredTargetIds: ['craft:gathering:taming', 'martial:polearm:rend-armour'],
+			requiredTargetIds: ['craft:gathering:taming', 'martial:polearm:rend-armor'],
 			receipts: [
 				{
 					targetId: 'craft:gathering:taming',
@@ -86,13 +86,13 @@ describe('cleanup semantic-revision v2 authority', () => {
 					compositePath: 'v2-taming.png'
 				},
 				{
-					targetId: 'martial:polearm:rend-armour',
+					targetId: 'martial:polearm:rend-armor',
 					revision: 1,
 					status: 'candidate',
 					compositePath: 'v1-rend.png'
 				},
 				{
-					targetId: 'martial:polearm:rend-armour',
+					targetId: 'martial:polearm:rend-armor',
 					revision: 2,
 					status: 'failed',
 					compositePath: null
@@ -103,7 +103,7 @@ describe('cleanup semantic-revision v2 authority', () => {
 		expect(result.selected).toEqual([]);
 		expect(result.unresolved).toEqual([
 			{ targetId: 'craft:gathering:taming', revision: 2, status: 'revise' },
-			{ targetId: 'martial:polearm:rend-armour', revision: 2, status: 'failed' }
+			{ targetId: 'martial:polearm:rend-armor', revision: 2, status: 'failed' }
 		]);
 	});
 
@@ -132,7 +132,7 @@ describe('cleanup semantic-revision v2 authority', () => {
 			await readFile(path.join(workspaceRoot, packet.predecessor.providerSource.path))
 		);
 		const independentlyResized = await sharp(provider.decoderInput)
-			.toColourspace('srgb')
+			.toColorspace('srgb')
 			.removeAlpha()
 			.resize(696, 696, { fit: 'fill', kernel: sharp.kernel.lanczos3, fastShrinkOnLoad: false })
 			.ensureAlpha()
@@ -212,7 +212,7 @@ describe('cleanup semantic-revision v2 authority', () => {
 			{ targetId: 'craft:forging:living-metal', status: 'candidate' },
 			{ targetId: 'craft:forging:ore-sense', status: 'candidate' },
 			{ targetId: 'craft:gathering:taming', status: 'revise' },
-			{ targetId: 'martial:polearm:rend-armour', status: 'candidate' }
+			{ targetId: 'martial:polearm:rend-armor', status: 'candidate' }
 		]);
 		expect(finalization.selection.selected).toHaveLength(28);
 		expect(
@@ -225,7 +225,7 @@ describe('cleanup semantic-revision v2 authority', () => {
 		).toEqual([
 			{ targetId: 'craft:forging:living-metal', status: 'candidate' },
 			{ targetId: 'craft:forging:ore-sense', status: 'candidate' },
-			{ targetId: 'martial:polearm:rend-armour', status: 'candidate' }
+			{ targetId: 'martial:polearm:rend-armor', status: 'candidate' }
 		]);
 		expect(finalization.selection.unresolved).toEqual([]);
 		expect(finalization.pendingGenerationTargetIds).toEqual([]);

@@ -1,17 +1,17 @@
 {
-	"targetId": "magical:restoration:shared-vigour",
+	"targetId": "magical:restoration:shared-vigor",
 	"sourceCandidate": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-restoration-shared-vigour.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/magical-restoration-shared-vigor.png",
 		"contentHash": "32cfcf3670ed70ea5a639eb862b35007e75bd1a2689a99499623601f58bc44cf"
 	},
 	"rank": "E",
 	"disposition": "accepted-unchanged",
 	"findings": [],
-	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/magical-restoration-shared-vigour.png",
-	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/magical-restoration-shared-vigour.json",
+	"cleanupCompositePath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/magical-restoration-shared-vigor.png",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/magical-restoration-shared-vigor.json",
 	"schemaVersion": "skill-icon-quality-cleanup-result-v1",
 	"cleanupInterior": {
-		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/magical-restoration-shared-vigour.png",
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/interiors/magical-restoration-shared-vigor.png",
 		"contentHash": "a30f9612201653ad2ec33f3d215a1e5ceecdf0dc9b994498836700683121e3c1",
 		"removedPixels": 183466,
 		"removedPixelBounds": {

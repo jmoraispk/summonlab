@@ -16,11 +16,11 @@
 	"predecessor": {
 		"packet": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions-v2/craft-forging-weaponsmithing-v2.json",
-			"contentHash": "92ae99bfebd73ab218817330547f6f5e4463b681224f2ed8da400fcdf8f15914"
+			"contentHash": "445de32a07e6fd649547c421bc2dbf1a510436b77cbb643219800158976ddbf6"
 		},
 		"result": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/craft-forging-weaponsmithing-v2.json",
-			"contentHash": "b0a54931043f3d9eba64c7f1ea75819c469e422270a19f83ed0bd8f4027a0d20"
+			"contentHash": "5ff6011a63480090a71f5a76fd4902aa751656e8ccd5a1d8ebbc5fba33a69cff"
 		},
 		"providerSource": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/craft-forging-weaponsmithing-v2.png",

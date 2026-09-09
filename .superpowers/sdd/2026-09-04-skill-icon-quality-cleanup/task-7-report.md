@@ -23,36 +23,36 @@ selection, promotion, or wiki-source replacement was created or inferred.
 Every row used two attempts. `candidate` rows passed both the full-size and 384px inspection;
 `revise` rows retain their honest failures rather than receiving an unapproved third attempt.
 
-| Target | Status | Full / 384px |
-| --- | --- | --- |
-| `craft:cooking:comfort` | candidate | pass / pass |
-| `craft:cooking:cooking` | candidate | pass / pass |
-| `craft:cooking:preserving` | candidate | pass / pass |
-| `craft:cooking:restorative-broth` | candidate | pass / pass |
-| `craft:forging:fuel-craft` | candidate | pass / pass |
-| `craft:forging:living-metal` | revise | fail / fail |
-| `craft:forging:ore-sense` | revise | fail / fail |
-| `craft:forging:tempering` | candidate | pass / pass |
-| `craft:forging:weaponsmithing` | candidate | pass / pass |
-| `craft:gathering:taming` | candidate | pass / pass |
-| `craft:gathering:the-earth-provides` | candidate | pass / pass |
-| `magical:elemental:ashfall` | candidate | pass / pass |
-| `magical:elemental:still-depths` | candidate | pass / pass |
-| `magical:elemental:warmth` | candidate | pass / pass |
-| `magical:enchantment:sustained-weave` | candidate | pass / pass |
-| `magical:restoration:soothe` | candidate | pass / pass |
-| `martial:blade:assassin-s-certainty` | candidate | pass / pass |
-| `martial:blade:blade-dance` | candidate | pass / pass |
-| `martial:blade:hamstring` | candidate | pass / pass |
-| `martial:blade:hewing-blow` | candidate | pass / pass |
-| `martial:blade:severed-thread` | candidate | pass / pass |
-| `martial:body:joint-lock` | candidate | pass / pass |
-| `martial:body:low-kick` | candidate | pass / pass |
-| `martial:polearm:berserk-swing` | candidate | pass / pass |
-| `martial:polearm:reaping-arc` | candidate | pass / pass |
-| `martial:polearm:red-harvest` | candidate | pass / pass |
-| `martial:polearm:rend-armour` | candidate | pass / pass |
-| `martial:ranged:heartseeker` | candidate | pass / pass |
+| Target                                | Status    | Full / 384px |
+| ------------------------------------- | --------- | ------------ |
+| `craft:cooking:comfort`               | candidate | pass / pass  |
+| `craft:cooking:cooking`               | candidate | pass / pass  |
+| `craft:cooking:preserving`            | candidate | pass / pass  |
+| `craft:cooking:restorative-broth`     | candidate | pass / pass  |
+| `craft:forging:fuel-craft`            | candidate | pass / pass  |
+| `craft:forging:living-metal`          | revise    | fail / fail  |
+| `craft:forging:ore-sense`             | revise    | fail / fail  |
+| `craft:forging:tempering`             | candidate | pass / pass  |
+| `craft:forging:weaponsmithing`        | candidate | pass / pass  |
+| `craft:gathering:taming`              | candidate | pass / pass  |
+| `craft:gathering:the-earth-provides`  | candidate | pass / pass  |
+| `magical:elemental:ashfall`           | candidate | pass / pass  |
+| `magical:elemental:still-depths`      | candidate | pass / pass  |
+| `magical:elemental:warmth`            | candidate | pass / pass  |
+| `magical:enchantment:sustained-weave` | candidate | pass / pass  |
+| `magical:restoration:soothe`          | candidate | pass / pass  |
+| `martial:blade:assassin-s-certainty`  | candidate | pass / pass  |
+| `martial:blade:blade-dance`           | candidate | pass / pass  |
+| `martial:blade:hamstring`             | candidate | pass / pass  |
+| `martial:blade:hewing-blow`           | candidate | pass / pass  |
+| `martial:blade:severed-thread`        | candidate | pass / pass  |
+| `martial:body:joint-lock`             | candidate | pass / pass  |
+| `martial:body:low-kick`               | candidate | pass / pass  |
+| `martial:polearm:berserk-swing`       | candidate | pass / pass  |
+| `martial:polearm:reaping-arc`         | candidate | pass / pass  |
+| `martial:polearm:red-harvest`         | candidate | pass / pass  |
+| `martial:polearm:rend-armor`          | candidate | pass / pass  |
+| `martial:ranged:heartseeker`          | candidate | pass / pass  |
 
 The two retained `revise` findings are deliberate terminal evidence:
 
@@ -127,11 +127,11 @@ no drift or failure.
 
 ## Immutable-byte audit
 
-| Protected scope | Files | Aggregate SHA-256 | Task 6 baseline match |
-| --- | ---: | --- | --- |
-| `mass-production-v1` | 2,465 | `55133003f54d931442ff9acb653dda821d735674ab87873a581d8b030f475339` | yes |
-| Cleanup base interiors/composites/base results | 1,368 | `7483e18aeb37be211ae7174f4eef69e78d75732c554711567b04b467d97fe330` | yes |
-| Shared reference targets/assignments/candidates/results | 210 | `d5582c4a721a8ed2a54f225d616a424d3127935d2f7dbd3967a6e8b272eba1f7` | yes |
+| Protected scope                                         | Files | Aggregate SHA-256                                                  | Task 6 baseline match |
+| ------------------------------------------------------- | ----: | ------------------------------------------------------------------ | --------------------- |
+| `mass-production-v1`                                    | 2,465 | `55133003f54d931442ff9acb653dda821d735674ab87873a581d8b030f475339` | yes                   |
+| Cleanup base interiors/composites/base results          | 1,368 | `7483e18aeb37be211ae7174f4eef69e78d75732c554711567b04b467d97fe330` | yes                   |
+| Shared reference targets/assignments/candidates/results |   210 | `d5582c4a721a8ed2a54f225d616a424d3127935d2f7dbd3967a6e8b272eba1f7` | yes                   |
 
 The immutable packet aggregate remains
 `3dea4152c13d4b7c3bf3d87c683637b6ff836f1a7383b416fce947fbee0b8715`.

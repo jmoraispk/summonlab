@@ -1,37 +1,37 @@
 {
 	"schemaVersion": "skill-icon-quality-cleanup-revision-result-v1",
 	"status": "candidate",
-	"targetId": "martial:polearm:rend-armour",
-	"name": "Rend Armour",
+	"targetId": "martial:polearm:rend-armor",
+	"name": "Rend Armor",
 	"rank": "E",
-	"motifFamily": "polearm.armour-rend",
+	"motifFamily": "polearm.armor-rend",
 	"finding": {
-		"targetId": "martial:polearm:rend-armour",
+		"targetId": "martial:polearm:rend-armor",
 		"kind": "stray-ui-glyph",
 		"detail": "Three stacked chevrons.",
 		"requiredAction": "revise-art"
 	},
 	"revisionPacket": {
-		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions/martial-polearm-rend-armour-v1.json",
-		"contentHash": "4131b51442834f97059c6c7b980d3ec1d1e8f17d2d1d63821db47f9c8c6dcad2"
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions/martial-polearm-rend-armor-v1.json",
+		"contentHash": "e4359976f4486602e397c7915b276445e611bfe79e729de12a8508858c97ed27"
 	},
 	"cleanupManifest": {
 		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/manifest.json",
-		"contentHash": "f7f4690d71b0786283c867f46ac5e48c9f48cd19fac9d969396f94a5f986b12b"
+		"contentHash": "8280a46b2eb358ab4b9f1bc1c0a3b84f79dd5b4fce3407da6f42a25ce67c8a73"
 	},
 	"sourceCandidate": {
-		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-polearm-rend-armour.png",
+		"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/icons/martial-polearm-rend-armor.png",
 		"contentHash": "83726d3a04d4dd291b093fbd1776d924fcc6532d866c1beb8fac385e1342db58"
 	},
 	"currentCandidate": {
-		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-polearm-rend-armour.png",
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-polearm-rend-armor.png",
 		"contentHash": "cd92657bfef3e7d9073079dcb2417dcfb4fbea9c48301a19634b82c52ea5bfe3"
 	},
 	"currentResult": {
-		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/martial-polearm-rend-armour.json",
-		"contentHash": "043aac9664e28b1a03a71412d6d10a394b950e7c7b416f0c3bd734c850943b0b"
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/martial-polearm-rend-armor.json",
+		"contentHash": "66f8042d17ac5ee1f17482576f70df26148b696a49fddd5deec129de496c4d46"
 	},
-	"exactPrompt": "Use case: stylized-concept\nAsset type: isolated full-resolution Summonlab skill-icon artwork revision\nPrimary request: Revise only the painted artwork for Rend Armour in the Martial / Polearm taxonomy.\nDominant subject: a clearly visible halberd actively performing Rend Armour, with the acting tool never replaced by a free-floating effect\nSupporting cue: one restrained secondary cue communicating this effect: Stacking armour reduction on the target\nPalette: tempered steel, charcoal black, restrained warm sparks\nComposition: Centered painted emblem with one dominant silhouette, strong negative space, and a readable action direction. Keep all important detail clear of the frame rim and top rank crest.\nExisting exclusions: no skill name, mastery, level, caption, logo, watermark, or UI panel; no extra frame letter or rarity symbol beyond the required integrated crest; no narrative scenery or unrelated props; no effect-only abstraction replacing the concrete acting subject from F through A\nUnwanted detached explanatory UI glyph: Three stacked chevrons.\nPreserve the dominant subject, action, palette, lighting, and motif-family ancestry. Remove only the detached explanatory UI glyph named in this packet. Add no replacement badge, arrow, gauge, heart, cross, chevron, corner symbol, text, frame, crest, or rarity letter. Keep the complete subject inside the protected central aperture.\nOutput exactly one 1254×1254 RGB PNG provider source containing only the revised painted artwork. Do not crop, resize, mask, or preprocess the provider source; the authenticated cleanup pipeline retains its exact bytes, applies the packet-authorized deterministic resize and protected-aperture mask, and supplies the canonical backing and E-rank frame.",
+	"exactPrompt": "Use case: stylized-concept\nAsset type: isolated full-resolution Summonlab skill-icon artwork revision\nPrimary request: Revise only the painted artwork for Rend Armor in the Martial / Polearm taxonomy.\nDominant subject: a clearly visible halberd actively performing Rend Armor, with the acting tool never replaced by a free-floating effect\nSupporting cue: one restrained secondary cue communicating this effect: Stacking armor reduction on the target\nPalette: tempered steel, charcoal black, restrained warm sparks\nComposition: Centered painted emblem with one dominant silhouette, strong negative space, and a readable action direction. Keep all important detail clear of the frame rim and top rank crest.\nExisting exclusions: no skill name, mastery, level, caption, logo, watermark, or UI panel; no extra frame letter or rarity symbol beyond the required integrated crest; no narrative scenery or unrelated props; no effect-only abstraction replacing the concrete acting subject from F through A\nUnwanted detached explanatory UI glyph: Three stacked chevrons.\nPreserve the dominant subject, action, palette, lighting, and motif-family ancestry. Remove only the detached explanatory UI glyph named in this packet. Add no replacement badge, arrow, gauge, heart, cross, chevron, corner symbol, text, frame, crest, or rarity letter. Keep the complete subject inside the protected central aperture.\nOutput exactly one 1254×1254 RGB PNG provider source containing only the revised painted artwork. Do not crop, resize, mask, or preprocess the provider source; the authenticated cleanup pipeline retains its exact bytes, applies the packet-authorized deterministic resize and protected-aperture mask, and supplies the canonical backing and E-rank frame.",
 	"exactPromptHash": "a3b017587f0d0d6e27473d35a123947514b31f68a08225c1b0693eb77c7c4329",
 	"references": [
 		{
@@ -45,17 +45,17 @@
 			"contentHash": "8f1c01435f3e32de07560b154d9e3becba3ca2a38773ca74c3115d66ba28094e"
 		},
 		{
-			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/polearm-armour-rend.png",
-			"purpose": "Exact polearm.armour-rend motif-family ancestry only; never crop or copy a complete icon.",
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/reference-sheets/polearm-armor-rend.png",
+			"purpose": "Exact polearm.armor-rend motif-family ancestry only; never crop or copy a complete icon.",
 			"contentHash": "88b98f536c67d099baa7a3af72db24e751aea9455abdd9ddac1cf8eb4e906880"
 		},
 		{
-			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-polearm-rend-armour-v1.png",
+			"path": "assets/wiki/skills/icon-production-v1/mass-production-v1/provider-sources/martial-polearm-rend-armor-v1.png",
 			"purpose": "Original provider source for target identity, subject, palette, lighting, and action continuity only.",
 			"contentHash": "f818b70e717e78723b2f6e4232fd8fa1f87a8d9572290f932a9a3c3c2e8bd07c"
 		},
 		{
-			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-polearm-rend-armour.png",
+			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-polearm-rend-armor.png",
 			"purpose": "Current deterministic cleanup candidate for target-specific composition continuity only; never reproduce its backing, frame, crest, or rank letter.",
 			"contentHash": "cd92657bfef3e7d9073079dcb2417dcfb4fbea9c48301a19634b82c52ea5bfe3"
 		}
@@ -89,7 +89,7 @@
 		"vipsVersion": "8.18.3"
 	},
 	"providerSource": {
-		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/martial-polearm-rend-armour-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/martial-polearm-rend-armor-v1.png",
 		"mediaType": "image/png",
 		"width": 1254,
 		"height": 1254,
@@ -98,7 +98,7 @@
 		"alphaMode": "rgb"
 	},
 	"revisedInterior": {
-		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/revisions/martial-polearm-rend-armour-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/revisions/martial-polearm-rend-armor-v1.png",
 		"mediaType": "image/png",
 		"width": 1024,
 		"height": 1024,
@@ -140,7 +140,7 @@
 		}
 	},
 	"composite": {
-		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-polearm-rend-armour-v1.png",
+		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-polearm-rend-armor-v1.png",
 		"mediaType": "image/png",
 		"width": 1024,
 		"height": 1024,
@@ -17987,7 +17987,7 @@
 	"inspection": {
 		"fullSize": {
 			"outcome": "pass",
-			"observation": "Revised rend-armour artwork retains the clear tempered-steel halberd actively rending an armored target, broad halberd blade, visible armor breach at the impact point, charcoal-black palette, and restrained warm sparks; the detached stacked chevrons are absent, with no replacement badge, text, frame, crest, or rank letter."
+			"observation": "Revised rend-armor artwork retains the clear tempered-steel halberd actively rending an armored target, broad halberd blade, visible armor breach at the impact point, charcoal-black palette, and restrained warm sparks; the detached stacked chevrons are absent, with no replacement badge, text, frame, crest, or rank letter."
 		},
 		"display384": {
 			"outcome": "pass",
@@ -17997,12 +17997,12 @@
 	"attemptCount": 2,
 	"attemptCeiling": 2,
 	"transactionContentHash": "c52967c057cf1db0158975f9693f649acffa318b3250e2df36931c1697331b14",
-	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/martial-polearm-rend-armour-v1.json",
+	"resultPath": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/martial-polearm-rend-armor-v1.json",
 	"writtenOutputPaths": [
-		"assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/martial-polearm-rend-armour-v1.png",
-		"assets/wiki/skills/icon-production-v1/quality-cleanup-v1/revisions/martial-polearm-rend-armour-v1.png",
-		"assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-polearm-rend-armour-v1.png",
-		"assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/martial-polearm-rend-armour-v1.json"
+		"assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/martial-polearm-rend-armor-v1.png",
+		"assets/wiki/skills/icon-production-v1/quality-cleanup-v1/revisions/martial-polearm-rend-armor-v1.png",
+		"assets/wiki/skills/icon-production-v1/quality-cleanup-v1/composites/martial-polearm-rend-armor-v1.png",
+		"assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/martial-polearm-rend-armor-v1.json"
 	],
 	"completionContract": {
 		"sharedFilesRemainUntouched": true,

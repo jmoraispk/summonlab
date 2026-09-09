@@ -731,7 +731,7 @@ ordinary `pnpm test` CI path.
 The v1 generation batch is not completion evidence. Task 7A first materialized 28 immutable v2
 packets in sorted path order: 21 rejected v1 candidates use the exact `1254 -> 696` single-pass
 Lanczos3 inset at `(164,192)` before the existing mask/backing/frame; Still Depths, Warmth, and Red
-Harvest use byte-for-byte identity adoption; Taming, Rend Armour, Living Metal, and Ore Sense are
+Harvest use byte-for-byte identity adoption; Taming, Rend Armor, Living Metal, and Ore Sense are
 explicit generation-v2 packets. V2 bytes remain immutable but cannot prove core-publication order.
 Round 2 appends 24 v3 deterministic packets/results/audits with exact v2 predecessor chains. Each
 audit is written only after the provider/interior/composite/result core transaction succeeds; the
@@ -757,7 +757,7 @@ generation-v2 candidate receipts exist.
 The historical v1/v2 review remains unchanged. Round 2 writes immutable V3 evidence under
 `review/v3-recovery/`: six pages made from literal `1024×1024` composite cells (four per `2048px`
 page) and a separately versioned `display-384-v3-r2.png` sheet. The former v2 file whose name said
-`1024` is labelled as legacy 512px evidence. Review consumes resolver-selected audited candidates,
+`1024` is labeled as legacy 512px evidence. Review consumes resolver-selected audited candidates,
 never a raw receipt list, so it cannot substitute a `revise`, `failed`, or older candidate.
 
 - [~] **Step 4: Run complete technical validation**

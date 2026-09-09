@@ -14,7 +14,7 @@ const CORRECTED_SOURCE_SLUGS = new Set([
 	'craft-knowledge-languages',
 	'craft-knowledge-research',
 	'magical-enchantment-component-craft',
-	'martial-polearm-rend-armour'
+	'martial-polearm-rend-armor'
 ]);
 const CORRECTION_PROMPT_BY_SLUG: Readonly<Record<string, string>> = {
 	'craft-knowledge-languages':
@@ -23,7 +23,7 @@ const CORRECTION_PROMPT_BY_SLUG: Readonly<Record<string, string>> = {
 		'Targeted correction edit only. Preserve the composition, open research book, magnifying glass, candles, dark scholarly fantasy painting, palette, lighting, and all other visual identity. Remove every written character, faux script, rune, letter-like marking, and floating symbol. Replace page writing with purely pictorial sketches of artifacts, plants, and non-symbolic connecting lines; no alphabetic, runic, numeric, or UI-like glyphs. Frameless artwork layer only, no border, rank crest, UI, label, logo, watermark, or text.',
 	'magical-enchantment-component-craft':
 		'Targeted correction edit only. Preserve the composition, crystals, potion vessels, alchemical tools, pedestal, luminous magical material-crafting scene, palette, lighting, and all other visual identity. Remove every written character, rune, faux script, letter-like marking, diagram label, and detached symbol. Replace those marks with irregular mineral veins, sparks, and abstract non-symbolic filaments of light. Frameless artwork layer only, no border, rank crest, UI, label, logo, watermark, or text.',
-	'martial-polearm-rend-armour':
+	'martial-polearm-rend-armor':
 		'Targeted correction edit only. Preserve the armored target, polearm impact, shattered armor plates, sparks, dramatic martial fantasy painting, palette, lighting, and all other visual identity. Remove only the three detached glowing orange downward chevrons and any other UI-like indicator. Replace them with natural fragments of broken armor, sparks, and dust integrated into the impact. Frameless artwork layer only, no border, rank crest, UI, label, logo, watermark, or text.'
 };
 

@@ -14,16 +14,16 @@
 	},
 	"revisionPacket": {
 		"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions-v3/martial-ranged-heartseeker-v3.json",
-		"contentHash": "893f67e509daa6e827fe928efc7b122ff7d01bbc57f146110c03a447762ef9a3"
+		"contentHash": "c8c4f0df035e39ad9105426536da42aeda296f6810fa39cbe8672cc9c541a62a"
 	},
 	"predecessor": {
 		"packet": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions-v2/martial-ranged-heartseeker-v2.json",
-			"contentHash": "181b53316ab85e6921ab5a1c2c135e4e02ee8967290197185acffaa6996c52df"
+			"contentHash": "3f5b564ab566d7a9c465f9c711840ed9fa4e50f64137603146815b982acfe982"
 		},
 		"result": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/revisions/martial-ranged-heartseeker-v2.json",
-			"contentHash": "71c659d24b01286626259c67d8aa43423949c1e1b8b556b595bcab4a91a8959f"
+			"contentHash": "ff66a6e01200080d1126d1d3b5fe3bef10763769de2d48a820f66e20d03b8a20"
 		},
 		"providerSource": {
 			"path": "assets/wiki/skills/icon-production-v1/quality-cleanup-v1/provider-sources/martial-ranged-heartseeker-v2.png",

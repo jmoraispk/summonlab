@@ -890,7 +890,7 @@ export async function persistCleanupRevision(
 		limitInputPixels: SKILL_ICON_PROVIDER_SIZE * SKILL_ICON_PROVIDER_SIZE,
 		sequentialRead: true
 	})
-		.toColourspace('srgb')
+		.toColorspace('srgb')
 		.removeAlpha()
 		.resize(
 			packet.normalizationAuthority.resize.width,
