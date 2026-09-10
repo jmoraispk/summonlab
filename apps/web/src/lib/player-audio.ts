@@ -24,8 +24,9 @@ const profileFrequencies: Record<
 
 export function soundProfileForPath(pathname: string): PlayerSoundProfile {
 	if (pathname === '/') return 'title';
-	if (pathname.startsWith('/onboarding/')) return 'gate';
-	if (pathname.startsWith('/play/')) return 'hearth';
+	if (['/village', '/residents', '/tower', '/inventory', '/missions'].includes(pathname)) {
+		return 'hearth';
+	}
 	if (
 		pathname.startsWith('/mission/') ||
 		pathname.startsWith('/synthesis/') ||

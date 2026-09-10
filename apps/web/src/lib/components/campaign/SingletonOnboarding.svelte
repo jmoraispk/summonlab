@@ -4,8 +4,9 @@
 	import HeroArtPlaceholder from '$lib/components/HeroArtPlaceholder.svelte';
 	import PlayerMenu from '$lib/components/PlayerMenu.svelte';
 	import { trackPlaytestEvent } from '$lib/playtest-analytics';
+	import type { OnboardingPageData } from '$lib/server/singleton-village-page';
 
-	let { data } = $props();
+	let { data }: { data: OnboardingPageData } = $props();
 	// svelte-ignore state_referenced_locally
 	let view = $state(data.view);
 	let selectedOrdinal = $state(1);
@@ -155,7 +156,7 @@
 					destination: decisionBody.destination
 				});
 			}
-			await goto(resolve('/play/[runId]', { runId: view.campaign.runId }));
+			await goto(resolve('/village'));
 		} catch (error) {
 			errorMessage =
 				error instanceof Error ? error.message : 'The company could not enter Hearth 01.';

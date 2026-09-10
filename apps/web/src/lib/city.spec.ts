@@ -5,18 +5,37 @@ import { describe, expect, it } from 'vitest';
 import { CITY_MODES, cityModeHref, parseCityMode } from './city';
 
 describe('City navigation', () => {
-	it('is the sole owner of the player Village renderer and five-mode navigation', () => {
+	it('mounts every player campaign stage on the canonical Village route', () => {
 		const repositoryRoot = fileURLToPath(new URL('../../../..', import.meta.url));
-		const playerRoute = readFileSync(
-			`${repositoryRoot}/apps/web/src/routes/play/[runId]/+page.svelte`,
-			'utf8'
-		);
+		const canonicalRoute = `${repositoryRoot}/apps/web/src/routes/(city)/[mode=city]/+page.svelte`;
+		const canonicalServer = `${repositoryRoot}/apps/web/src/routes/(city)/[mode=city]/+page.server.ts`;
+		expect(existsSync(canonicalRoute), canonicalRoute).toBe(true);
+		expect(existsSync(canonicalServer), canonicalServer).toBe(true);
+		if (!existsSync(canonicalRoute) || !existsSync(canonicalServer)) return;
+
+		const canonicalSource = readFileSync(canonicalRoute, 'utf8');
+		expect(canonicalSource).toContain('SingletonCampaign');
+		expect(canonicalSource).toContain('SingletonOnboarding');
+		expect(
+			existsSync(`${repositoryRoot}/apps/web/src/routes/play/[runId]/+page.svelte`)
+		).toBe(false);
+		expect(
+			existsSync(`${repositoryRoot}/apps/web/src/routes/onboarding/[runId]/+page.svelte`)
+		).toBe(false);
+		expect(
+			readFileSync(`${repositoryRoot}/apps/web/src/routes/play/[runId]/+page.server.ts`, 'utf8')
+		).toContain("redirect(308, '/village')");
+		expect(
+			readFileSync(`${repositoryRoot}/apps/web/src/routes/onboarding/[runId]/+page.server.ts`, 'utf8')
+		).toContain("redirect(308, '/village')");
+	});
+
+	it('keeps current Village renderers consolidated while the preview is being retired', () => {
+		const repositoryRoot = fileURLToPath(new URL('../../../..', import.meta.url));
 		const previewRoute = readFileSync(
 			`${repositoryRoot}/apps/web/src/routes/living-village-lab/village/+page.svelte`,
 			'utf8'
 		);
-		expect(playerRoute).toContain("from '$lib/components/city/CityScreen.svelte'");
-		expect(playerRoute).not.toContain('LivingHearthScene');
 		expect(previewRoute).toContain("from '$lib/components/city/CityScreen.svelte'");
 		expect(previewRoute).not.toContain('VillageViewport');
 		for (const retiredPath of [

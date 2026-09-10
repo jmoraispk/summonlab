@@ -19,8 +19,9 @@
 	import type { CityIntent } from '$lib/city';
 	import { focusDialog, handleModalKeydown } from '$lib/modal-focus';
 	import type { EquipmentWorkshopProjection } from '$lib/server/equipment-runtime';
+	import type { CampaignPageData } from '$lib/server/singleton-village-page';
 
-	let { data } = $props();
+	let { data }: { data: CampaignPageData } = $props();
 	// svelte-ignore state_referenced_locally
 	let snapshot = $state<ProofRunSnapshot>(data.snapshot);
 	// svelte-ignore state_referenced_locally

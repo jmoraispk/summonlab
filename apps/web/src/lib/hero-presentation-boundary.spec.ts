@@ -46,7 +46,7 @@ describe('premium-only hero presentation boundary', () => {
 			return retiredPaths.some((retiredPath) => source.includes(`/${retiredPath}`));
 		});
 		const onboarding = readFileSync(
-			resolve(sourceRoot, 'routes/onboarding/[runId]/+page.svelte'),
+			resolve(sourceRoot, 'lib/components/campaign/SingletonOnboarding.svelte'),
 			'utf8'
 		);
 
