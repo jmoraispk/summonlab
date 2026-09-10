@@ -2,20 +2,20 @@
 	"schemaVersion": "web-build-budget-v1",
 	"budgets": {
 		"initialJavaScriptGzipBytes": 700000,
-		"settlementRouteLabLoadedJavaScriptGzipBytes": 700000,
+		"villageRouteLoadedJavaScriptGzipBytes": 700000,
 		"missionPackageLabLoadedJavaScriptGzipBytes": 700000,
 		"missionLifecycleLoadedJavaScriptGzipBytes": 700000
 	},
 	"measurements": {
-		"initialJavaScriptGzipBytes": 43965,
-		"settlementRouteLabLoadedJavaScriptGzipBytes": 49157,
-		"missionPackageLabLoadedJavaScriptGzipBytes": 48800,
-		"missionLifecycleLoadedJavaScriptGzipBytes": 58132,
-		"largestRuntimeLazyChunkGzipBytes": 15262
+		"initialJavaScriptGzipBytes": 44176,
+		"villageRouteLoadedJavaScriptGzipBytes": 70547,
+		"missionPackageLabLoadedJavaScriptGzipBytes": 48909,
+		"missionLifecycleLoadedJavaScriptGzipBytes": 58191,
+		"largestRuntimeLazyChunkGzipBytes": 26845
 	},
 	"status": {
 		"initialJavaScript": "within-budget",
-		"settlementRouteLabLoadedJavaScript": "within-budget",
+		"villageRouteLoadedJavaScript": "within-budget",
 		"missionPackageLabLoadedJavaScript": "within-budget",
 		"missionLifecycleLoadedJavaScript": "within-budget"
 	}

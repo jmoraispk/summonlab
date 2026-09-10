@@ -41,7 +41,7 @@ export const load = (({ params }) => {
 						heroes: visualPacketHeroes.map(([name, fileName]) => ({
 							name,
 							image: getWikiAsset(
-								`apps/web/src/routes/living-village-lab/village/cutouts/${fileName}`
+								`assets/heroes/visuals/living-village-lab-cutouts-v1/${fileName}`
 							),
 							status: 'Retained lab cutout · source in Git history'
 						})),

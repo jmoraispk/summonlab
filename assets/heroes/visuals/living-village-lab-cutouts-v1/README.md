@@ -1,8 +1,9 @@
-# Route-local Village cutouts
+# Historical Living Village visual packet
 
-These six PNGs are retained visual-development fixtures for the Living Village lab only: Dara Zev,
-Mara Vey, Jori Daro, Kira Toren, Iven Orra, and Remy Nahl. They are separate from the approved
-summonable-hero roster and must never be used as a fallback for a persistent Village resident.
+These six PNGs are retained wiki evidence from the former Living Village lab: Dara Zev, Mara Vey,
+Jori Daro, Kira Toren, Iven Orra, and Remy Nahl. They are separate from the approved summonable-hero
+roster and must never be used as a fallback for a persistent Village resident or satisfy a
+`village-cutout` runtime lookup.
 Canonical playable-hero ownership remains exclusively with
 `assets/heroes/approved/summonable-roster-v1/catalog.json` and its runtime derivatives.
 
@@ -20,5 +21,6 @@ pose, or painted character content was regenerated. Background isolation used `r
 | `remy-nahl.png` | `assets/heroes/visuals/hearth-02-anchor-v1.png` |
 
 The source Forge and owner-playtest experiments were retired on 2026-09-07. Their full provenance
-remains recoverable from Git history; these route-local derivatives remain because the lab consumes
-them directly.
+remains recoverable from Git history. A later hero migration may promote one of these identities only
+through the canonical summonable-hero catalog and the summon, combat-chibi, and Village-cutout visual
+trio validation.

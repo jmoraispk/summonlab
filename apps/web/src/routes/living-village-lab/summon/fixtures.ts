@@ -1,9 +1,9 @@
-import daraAnchor from '../village/cutouts/dara-zev.png';
-import ivenAnchor from '../village/cutouts/iven-orra.png';
-import joriAnchor from '../village/cutouts/jori-daro.png';
-import kiraAnchor from '../village/cutouts/kira-toren.png';
-import maraAnchor from '../village/cutouts/mara-vey.png';
-import remyAnchor from '../village/cutouts/remy-nahl.png';
+import daraAnchor from '../../../../../../assets/heroes/visuals/living-village-lab-cutouts-v1/dara-zev.png';
+import ivenAnchor from '../../../../../../assets/heroes/visuals/living-village-lab-cutouts-v1/iven-orra.png';
+import joriAnchor from '../../../../../../assets/heroes/visuals/living-village-lab-cutouts-v1/jori-daro.png';
+import kiraAnchor from '../../../../../../assets/heroes/visuals/living-village-lab-cutouts-v1/kira-toren.png';
+import maraAnchor from '../../../../../../assets/heroes/visuals/living-village-lab-cutouts-v1/mara-vey.png';
+import remyAnchor from '../../../../../../assets/heroes/visuals/living-village-lab-cutouts-v1/remy-nahl.png';
 
 export type HeroId = 'dara' | 'mara' | 'jori' | 'kira' | 'iven' | 'remy';
 export type RevealDirection = 'gate' | 'constellation' | 'identity';

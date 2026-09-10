@@ -16,9 +16,9 @@ describe('City navigation', () => {
 		const canonicalSource = readFileSync(canonicalRoute, 'utf8');
 		expect(canonicalSource).toContain('SingletonCampaign');
 		expect(canonicalSource).toContain('SingletonOnboarding');
-		expect(
-			existsSync(`${repositoryRoot}/apps/web/src/routes/play/[runId]/+page.svelte`)
-		).toBe(false);
+		expect(existsSync(`${repositoryRoot}/apps/web/src/routes/play/[runId]/+page.svelte`)).toBe(
+			false
+		);
 		expect(
 			existsSync(`${repositoryRoot}/apps/web/src/routes/onboarding/[runId]/+page.svelte`)
 		).toBe(false);
@@ -26,19 +26,24 @@ describe('City navigation', () => {
 			readFileSync(`${repositoryRoot}/apps/web/src/routes/play/[runId]/+page.server.ts`, 'utf8')
 		).toContain("redirect(308, '/village')");
 		expect(
-			readFileSync(`${repositoryRoot}/apps/web/src/routes/onboarding/[runId]/+page.server.ts`, 'utf8')
+			readFileSync(
+				`${repositoryRoot}/apps/web/src/routes/onboarding/[runId]/+page.server.ts`,
+				'utf8'
+			)
 		).toContain("redirect(308, '/village')");
 	});
 
-	it('keeps current Village renderers consolidated while the preview is being retired', () => {
+	it('keeps CityScreen as the sole player Village renderer', () => {
 		const repositoryRoot = fileURLToPath(new URL('../../../..', import.meta.url));
-		const previewRoute = readFileSync(
-			`${repositoryRoot}/apps/web/src/routes/living-village-lab/village/+page.svelte`,
-			'utf8'
-		);
-		expect(previewRoute).toContain("from '$lib/components/city/CityScreen.svelte'");
-		expect(previewRoute).not.toContain('VillageViewport');
 		for (const retiredPath of [
+			'apps/web/src/routes/settlement-lab/+page.svelte',
+			'apps/web/src/routes/settlement-lab/+page.server.ts',
+			'apps/web/src/routes/settlement-lab.e2e.ts',
+			'apps/web/src/lib/components/HearthScene.svelte',
+			'apps/web/src/routes/living-village-lab/village/+page.svelte',
+			'apps/web/src/routes/living-village-lab/village/+page.server.ts',
+			'apps/web/src/routes/living-village-lab/village/village.e2e.ts',
+			'apps/web/src/lib/components/city/city-screen.fixture.ts',
 			'apps/web/src/lib/components/LivingHearthScene.svelte',
 			'apps/web/src/lib/components/living-village/village/VillageViewport.svelte',
 			'apps/web/src/lib/components/living-village/village/VillageHeroDrawer.svelte',

@@ -2,6 +2,10 @@
 
 Status: accepted on 2026-08-24.
 
+> Superseded for player routing on 2026-09-10 by
+> `docs/superpowers/specs/2026-09-10-single-village-progression-design.md`.
+> The settlement topology remains authoritative; `/settlement-lab` no longer exists.
+
 ## Context
 
 The Phase 1 proof uses three engine locations for one opening branch, but the living settlement needs

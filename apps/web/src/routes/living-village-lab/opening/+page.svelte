@@ -130,7 +130,7 @@
 		departing = true;
 		const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 		departureTimer = window.setTimeout(
-			() => void goto(resolve('/living-village-lab/village')),
+			() => void goto(resolve('/village')),
 			reducedMotion ? 80 : 720
 		);
 	}
