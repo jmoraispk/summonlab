@@ -62,16 +62,17 @@ pushed on `origin/codex/lv-village-screen`. The worktree was switched to that br
 on the current `origin/codex/shared-system-architecture` tip `0494229`.
 
 The revised assignment superseded the plan's earlier three-owned-hero framing. The completed route
-shows exactly Dara Zev, Mara Vey, Jori Daro, Kira Toren, Iven Orra, and Remy Nahl in-world and in one
-compact find/focus ribbon. No separate roster route was created.
+shows exactly Dara Zev, Mara Vey, Jori Daro, Kira Toren, Iven Orra, and Remy Nahl in-world. The later
+City convergence moved directory discovery into the shared Residents destination and removed the
+compact find/focus ribbon from the Village itself.
 
 ## Completed interaction slice
 
 - Map-first composition: Hearth begins immediately beneath a single compact status bar; the prior
   editorial title, explanatory copy, card wall, secondary heading, and footer were removed after
   owner review.
-- The optional Residents finder and camera controls share one compact command toolbar on desktop
-  and collapse into two shallow rows on phone.
+- The five-destination dock is the only header. The Village has no resident directory row; camera
+  controls float over the map and collapse into a compact two-by-two block on phone.
 - Existing Hearth environment with six named facility regions: Gate, Kitchen, Forge, Dormitory,
   Training Grounds, and Tower. Forge, Training Grounds, and Tower labels straddle non-colliding top
   borders; Gate, Kitchen, and Dormitory use lower borders. Gate and Tower use taller interaction
@@ -184,6 +185,10 @@ The following owner review accepted Residents as an optional toolbar concern, re
 availability on the in-world bodies, and required the Gate to lead somewhere useful. The revision
 formally groups Residents and camera actions as the Village toolbar, applies a light silhouette only
 while `order === null`, and binds the Gate region to the existing `/forge` Summoning Forge.
+
+The post-convergence owner review superseded the optional-toolbar decision: the five City destinations
+are now the sole header, the resident directory belongs exclusively to Residents, and the preserved
+camera actions float inside the Village map rather than occupying a second row.
 
 The latest review rejected the remaining opaque portrait pixels, off-edge labels, and native-drag
 interference. Repository inspection confirmed every existing anchor, continuity sheet, and runtime

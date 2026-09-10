@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { resolve } from '$app/paths';
 	import { onMount } from 'svelte';
 
 	import {
@@ -147,26 +148,10 @@
 		);
 	}
 
-	function selectHero(hero: CityResident, focusMarker = false): void {
+	function selectHero(hero: CityResident): void {
 		selectedHeroId = hero.heroId;
 		detailHeroId = null;
 		announcement = `${hero.name} selected. ${hero.activity}.`;
-		if (!focusMarker) return;
-		focusHero(hero);
-		setTimeout(() => {
-			document.getElementById(heroButtonId(hero.heroId))?.focus({ preventScroll: true });
-		}, 0);
-	}
-
-	function focusHero(hero: CityResident): void {
-		zoom = Math.max(zoom, 1.65);
-		const nextScale = fitScale * zoom;
-		const nextBaseX = (viewportWidth - WORLD_WIDTH * nextScale) / 2;
-		const nextBaseY = (viewportHeight - WORLD_HEIGHT * nextScale) / 2;
-		const point = pointFor(hero.heroId);
-		offsetX = viewportWidth / 2 - nextBaseX - point.x * WORLD_WIDTH * nextScale;
-		offsetY = viewportHeight / 2 - nextBaseY - point.y * WORLD_HEIGHT * nextScale;
-		clampOffsets();
 	}
 
 	function openDetails(hero: CityResident): void {
@@ -257,43 +242,6 @@
 
 <section class:details-open={detailHero !== null} class="city-village-surface">
 	<div class="city-village-column">
-		<div class="city-toolbar" role="toolbar" aria-label="Village toolbar">
-			<section class="resident-ribbon" aria-label="Find a resident">
-				<div class="ribbon-label"><span>Residents</span><strong>Find in Village</strong></div>
-				<div class="ribbon-list">
-					{#each view.residents as resident (resident.heroId)}
-						<button
-							type="button"
-							class:active={selectedHeroId === resident.heroId}
-							aria-pressed={selectedHeroId === resident.heroId}
-							onclick={() => selectHero(resident, true)}
-						>
-							{#if resident.portrait}
-								<img
-									src={resident.portrait.publicPath}
-									alt=""
-									width={resident.portrait.width}
-									height={resident.portrait.height}
-									draggable="false"
-								/>
-							{/if}
-							<span>{resident.name}</span>
-						</button>
-					{/each}
-				</div>
-			</section>
-			<div class="viewport-toolbar">
-				<div><span>Hearth overlook</span><strong>{Math.round(zoom * 100)}%</strong></div>
-				<div class="camera-controls" role="group" aria-label="Village camera controls">
-					<button type="button" aria-label="Zoom out" onclick={() => setZoom(zoom - 0.25)}>−</button
-					>
-					<button type="button" aria-label="Zoom in" onclick={() => setZoom(zoom + 0.25)}>+</button>
-					<button type="button" onclick={() => fitVillage()}>Fit Village</button>
-					<button type="button" onclick={resetVillage}>Reset View</button>
-				</div>
-			</div>
-		</div>
-
 		<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
 		<!-- svelte-ignore a11y_no_noninteractive_tabindex -->
 		<div
@@ -323,6 +271,15 @@
 				<strong>{gameTime}</strong>
 				<small>{view.dayPhase}</small>
 			</aside>
+			<div class="floating-camera" data-no-pan role="group" aria-label="Village camera controls">
+				<strong aria-label={`${Math.round(zoom * 100)} percent zoom`}
+					>{Math.round(zoom * 100)}%</strong
+				>
+				<button type="button" aria-label="Zoom out" onclick={() => setZoom(zoom - 0.25)}>−</button>
+				<button type="button" aria-label="Zoom in" onclick={() => setZoom(zoom + 0.25)}>+</button>
+				<button type="button" aria-label="Fit Village" onclick={() => fitVillage()}>Fit</button>
+				<button type="button" aria-label="Reset View" onclick={resetVillage}>Reset</button>
+			</div>
 			<div
 				class="city-world"
 				data-testid="city-world"
@@ -350,7 +307,7 @@
 							style={hotspotStyle(facility)}
 							aria-label={`Enter ${facility.label}`}
 							aria-current={selectedFacilityId === facility.facilityId ? 'location' : undefined}
-							href={cityModeHref(view.runId, 'tower')}
+							href={resolve(cityModeHref(view.runId, 'tower') as `/play/${string}`)}
 							draggable="false"
 							onclick={() => selectFacility(facility)}
 						>
@@ -505,31 +462,6 @@
 		min-width: 0;
 	}
 
-	.city-toolbar {
-		display: grid;
-		grid-template-columns: minmax(0, 1fr) auto;
-	}
-
-	.resident-ribbon {
-		display: flex;
-		align-items: stretch;
-		gap: 0.6rem;
-		min-width: 0;
-		padding: 0.45rem;
-		border: 1px solid rgba(221, 192, 142, 0.16);
-		background: rgba(12, 15, 20, 0.96);
-	}
-
-	.ribbon-label {
-		display: grid;
-		align-content: center;
-		flex: 0 0 auto;
-		padding: 0 0.55rem;
-		border-right: 1px solid rgba(221, 192, 142, 0.13);
-	}
-
-	.ribbon-label span,
-	.viewport-toolbar span,
 	.resident-popover header span,
 	.resident-status span {
 		color: #cf9f61;
@@ -539,76 +471,7 @@
 		text-transform: uppercase;
 	}
 
-	.ribbon-label strong {
-		font:
-			400 0.82rem Georgia,
-			serif;
-	}
-
-	.ribbon-list {
-		display: grid;
-		grid-auto-flow: column;
-		grid-auto-columns: minmax(5.5rem, 1fr);
-		gap: 0.35rem;
-		min-width: 0;
-		width: 100%;
-		overflow-x: auto;
-	}
-
-	.ribbon-list button {
-		display: flex;
-		align-items: center;
-		min-height: 2.75rem;
-		padding: 0.25rem;
-		border: 1px solid transparent;
-		background: rgba(255, 255, 255, 0.035);
-		color: rgba(247, 238, 221, 0.72);
-		cursor: pointer;
-	}
-
-	.ribbon-list button:hover,
-	.ribbon-list button.active {
-		border-color: rgba(105, 209, 214, 0.62);
-		background: rgba(62, 130, 136, 0.16);
-		color: #fff8e9;
-	}
-
-	.ribbon-list img {
-		width: 2.1rem;
-		height: 2.1rem;
-		object-fit: cover;
-		object-position: 50% 16%;
-	}
-
-	.ribbon-list span {
-		overflow: hidden;
-		padding: 0 0.35rem;
-		font-size: 0.66rem;
-		text-overflow: ellipsis;
-		white-space: nowrap;
-	}
-
-	.viewport-toolbar {
-		display: flex;
-		align-items: center;
-		gap: 0.7rem;
-		padding: 0.4rem 0.5rem;
-		border: 1px solid rgba(221, 192, 142, 0.16);
-		background: #181b20;
-	}
-
-	.viewport-toolbar > div:first-child {
-		display: flex;
-		align-items: baseline;
-		gap: 0.5rem;
-	}
-
-	.camera-controls {
-		display: flex;
-		gap: 0.3rem;
-	}
-
-	.camera-controls button,
+	.floating-camera button,
 	.resident-actions button,
 	.resident-popover header button {
 		min-width: 2.75rem;
@@ -620,7 +483,6 @@
 		cursor: pointer;
 	}
 
-	.camera-controls button:disabled,
 	.resident-actions button:disabled {
 		cursor: wait;
 		opacity: 0.55;
@@ -629,7 +491,7 @@
 	.city-viewport {
 		position: relative;
 		isolation: isolate;
-		height: max(32rem, calc(100svh - 12rem));
+		height: max(32rem, calc(100svh - 5.2rem));
 		overflow: hidden;
 		border: 1px solid rgba(221, 192, 142, 0.2);
 		background: #05080d;
@@ -661,6 +523,30 @@
 	.city-clock strong,
 	.city-clock small {
 		display: block;
+	}
+
+	.floating-camera {
+		position: absolute;
+		top: 0.75rem;
+		right: 0.75rem;
+		z-index: 46;
+		display: flex;
+		align-items: center;
+		gap: 0.3rem;
+		padding: 0.3rem;
+		border: 1px solid rgba(224, 197, 153, 0.3);
+		background: rgba(5, 9, 13, 0.86);
+		box-shadow: 0 0.8rem 2rem rgba(0, 0, 0, 0.4);
+		cursor: default;
+	}
+
+	.floating-camera > strong {
+		min-width: 2.75rem;
+		color: #dda765;
+		font:
+			400 0.76rem Georgia,
+			serif;
+		text-align: center;
 	}
 
 	.city-clock span {
@@ -921,50 +807,15 @@
 			left: 0.45rem;
 		}
 
-		.city-toolbar {
-			display: block;
+		.floating-camera {
+			top: 0.45rem;
+			right: 0.45rem;
+			display: grid;
+			grid-template-columns: repeat(2, 3.2rem);
 		}
 
-		.resident-ribbon {
-			display: block;
-			padding: 0.3rem;
-		}
-
-		.ribbon-label,
-		.viewport-toolbar > div:first-child {
+		.floating-camera > strong {
 			display: none;
-		}
-
-		.ribbon-list {
-			grid-auto-columns: 4.5rem;
-		}
-
-		.ribbon-list button {
-			display: grid;
-			justify-items: center;
-			min-height: 3.2rem;
-		}
-
-		.ribbon-list img {
-			width: 2.4rem;
-			height: 2.4rem;
-		}
-
-		.ribbon-list span {
-			width: 100%;
-			padding: 0;
-			font-size: 0.52rem;
-			text-align: center;
-		}
-
-		.viewport-toolbar {
-			display: block;
-			padding: 0.3rem;
-		}
-
-		.camera-controls {
-			display: grid;
-			grid-template-columns: 2.75rem 2.75rem 1fr 1fr;
 		}
 
 		.city-viewport {

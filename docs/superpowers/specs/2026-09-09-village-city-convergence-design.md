@@ -133,9 +133,11 @@ place and presents a concise reason beside the attempted action.
 
 ### Desktop
 
-The five-option dock is the City shell's only header. Beneath it, the resident ribbon and compact camera
-controls lead into the dominant Village panorama. Day and game time appear as a small clock over the
-map's upper-left corner. World facility labels remain visible while their authored anchors are on
+The five-option dock is the City shell's only header. The dominant Village panorama begins directly
+beneath it, with no resident directory or camera toolbar consuming a second row. Resident discovery
+belongs to the Residents destination; in-world figures remain directly selectable for quick actions.
+Day and game time appear as a small clock over the map's upper-left corner, and compact camera controls
+float at the upper-right. World facility labels remain visible while their authored anchors are on
 screen; labels outside a cropped phone view reappear when the player pans to their facilities. Resident
 quick view opens over a bounded part of the scene; full details use one side sheet and replace it.
 
@@ -145,10 +147,11 @@ and assignment capacity. It is information, not a second set of navigation contr
 
 ### Phone
 
-The City fills the space between the resident/camera toolbar and the fixed five-option bottom dock. The
-resident ribbon scrolls horizontally. Camera controls wrap without reducing the map to a thin band.
-Quick view rises as a bounded bottom sheet above the dock; full details replace it. Facility controls,
-hero targets, and dock controls retain non-overlapping touch targets of at least 44 by 44 CSS pixels.
+The City fills the space above the fixed five-option bottom dock. Camera controls use a compact two-by-two
+map overlay instead of introducing a header row. The Residents destination owns the resident directory,
+while in-world figures still open quick actions. Quick view rises as a bounded bottom sheet above the
+dock; full details replace it. Facility controls, hero targets, and dock controls retain non-overlapping
+touch targets of at least 44 by 44 CSS pixels.
 
 ## Facility language
 

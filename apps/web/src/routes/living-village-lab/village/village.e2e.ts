@@ -45,6 +45,9 @@ test('shared City preserves the approved Village interactions and responsive doc
 
 	const viewport = city.getByTestId('city-village-viewport');
 	await expect(viewport).toBeVisible();
+	await expect(city.getByRole('toolbar', { name: 'Village toolbar' })).toHaveCount(0);
+	await expect(city.getByLabel('Find a resident')).toHaveCount(0);
+	await expect(viewport.getByRole('group', { name: 'Village camera controls' })).toBeVisible();
 	const world = viewport.getByTestId('city-world');
 	const assertWorldCoversViewport = async () => {
 		const [viewportBox, worldBox] = await Promise.all([
@@ -74,11 +77,7 @@ test('shared City preserves the approved Village interactions and responsive doc
 	await expect(viewport.getByTestId('city-scene-resident')).toHaveCount(3);
 	await expect(viewport.locator('.resident-marker img')).toHaveCount(3);
 
-	await city
-		.getByLabel('Find a resident')
-		.getByRole('button', { name: /Yaso Dreno/u })
-		.click();
-	await expect(page.locator('#city-resident-00000000-0000-4000-8000-000000000001')).toBeFocused();
+	await viewport.getByRole('button', { name: /Inspect Yaso Dreno/u }).click();
 	const quickView = city.getByTestId('resident-quick-view');
 	await expect(quickView).toContainText('Yaso Dreno');
 	await expect(quickView).toContainText('Keeping watch');
@@ -92,7 +91,7 @@ test('shared City preserves the approved Village interactions and responsive doc
 	await viewport.getByRole('button', { name: /Inspect Yaso Dreno/u }).click();
 	await expect(quickView).toContainText('Yaso Dreno');
 	await city.getByRole('button', { name: 'Zoom in' }).click();
-	await expect(viewport).toHaveAttribute('data-zoom-percent', '190');
+	await expect(viewport).toHaveAttribute('data-zoom-percent', '125');
 	await city.getByRole('button', { name: 'Fit Village' }).click();
 	await expect(viewport).toHaveAttribute('data-zoom-percent', '100');
 	await city.getByRole('button', { name: 'Reset View' }).click();

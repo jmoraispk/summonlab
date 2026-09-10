@@ -104,8 +104,10 @@ test('campaign City uses the shared shell, authoritative actions, and responsive
 	const residentArt = sceneResidents.locator('img');
 	await expect(residentArt).toHaveCount(3);
 	for (const hero of heroes) {
-		await expect(page.getByRole('button', { name: hero.name, exact: true })).toBeVisible();
+		await expect(page.locator(`#city-resident-${hero.heroId}`)).toBeVisible();
 	}
+	await expect(page.getByLabel('Find a resident')).toHaveCount(0);
+	await expect(desktopScene.getByRole('group', { name: 'Village camera controls' })).toBeVisible();
 	await expect(desktopScene.locator('img.environment')).toBeVisible();
 	const desktopFacilities = desktopScene.getByTestId('city-facility');
 	const desktopFacilityLabels = desktopScene.getByTestId('city-facility-label');
@@ -130,7 +132,7 @@ test('campaign City uses the shared shell, authoritative actions, and responsive
 	await page.keyboard.press('Home');
 	await expect(desktopScene).toHaveAttribute('data-zoom-percent', '100');
 
-	await page.getByRole('button', { name: heroes[0]!.name, exact: true }).click();
+	await page.locator(`#city-resident-${heroes[0]!.heroId}`).click();
 	const quickView = page.getByTestId('resident-quick-view');
 	await expect(quickView).toContainText(heroes[0]!.name);
 	await quickView.getByRole('button', { name: 'Details' }).click();
