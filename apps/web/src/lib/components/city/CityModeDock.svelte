@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { base } from '$app/paths';
+	import { resolve } from '$app/paths';
 
 	import { CITY_MODES, cityModeHref, type CityMode } from '$lib/city';
 
@@ -11,7 +11,7 @@
 <nav class="city-mode-dock" aria-label="City destinations" data-testid="city-mode-dock">
 	{#each CITY_MODES as mode (mode.id)}
 		<a
-			href={`${base}${cityModeHref(mode.id)}`}
+			href={resolve(cityModeHref(mode.id))}
 			class:active={current === mode.id}
 			aria-current={current === mode.id ? 'page' : undefined}
 			data-sound-cue="menu"

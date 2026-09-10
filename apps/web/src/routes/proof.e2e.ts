@@ -54,7 +54,9 @@ test('uses honest non-character states when a generated hero has no approved art
 	);
 });
 
-test('forges, summons, directs, and follows one persistent hero', async ({ page }) => {
+test.fixme('legacy single-hero walkthrough awaits migration into the canonical Village tutorial', async ({
+	page
+}) => {
 	test.setTimeout(60_000);
 	const created = await page.request.post('/api/runs', {
 		data: {

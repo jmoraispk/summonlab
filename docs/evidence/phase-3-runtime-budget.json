@@ -7,11 +7,11 @@
 		"missionLifecycleLoadedJavaScriptGzipBytes": 700000
 	},
 	"measurements": {
-		"initialJavaScriptGzipBytes": 44176,
-		"villageRouteLoadedJavaScriptGzipBytes": 70547,
-		"missionPackageLabLoadedJavaScriptGzipBytes": 48909,
-		"missionLifecycleLoadedJavaScriptGzipBytes": 58191,
-		"largestRuntimeLazyChunkGzipBytes": 26845
+		"initialJavaScriptGzipBytes": 44163,
+		"villageRouteLoadedJavaScriptGzipBytes": 70517,
+		"missionPackageLabLoadedJavaScriptGzipBytes": 48895,
+		"missionLifecycleLoadedJavaScriptGzipBytes": 58176,
+		"largestRuntimeLazyChunkGzipBytes": 26828
 	},
 	"status": {
 		"initialJavaScript": "within-budget",

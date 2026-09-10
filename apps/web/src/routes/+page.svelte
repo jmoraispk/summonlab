@@ -43,11 +43,8 @@
 	<section class="entry">
 		<h1>Summonlab</h1>
 		<form method="POST">
-			<button
-				class="enter-village"
-				type="submit"
-				data-testid="enter-village"
-				data-sound-cue="gate">Enter Village</button
+			<button class="enter-village" type="submit" data-testid="enter-village" data-sound-cue="gate"
+				>Enter Village</button
 			>
 		</form>
 		{#if form?.entryError}

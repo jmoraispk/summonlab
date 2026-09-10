@@ -276,9 +276,10 @@ none may silently become a second product path.
 
 This design is delivered as five reviewable subprojects rather than one repository-wide rewrite:
 
-1. **Singleton route foundation:** create the anonymous create-or-resume entry, establish the five
-   canonical public destinations, remove the old settlement renderer, and remove the browsable
-   fixture Village.
+1. **Singleton route foundation — implemented 2026-09-10:** create the anonymous create-or-resume
+   entry, establish the five canonical public destinations, remove the old settlement renderer, and
+   remove the browsable fixture Village. See the
+   [implementation plan](../plans/2026-09-10-singleton-village-route-foundation.md).
 2. **Village introduction and summoning:** move the story and summon presentation into the Summoning
    Circle, persist the first three arrivals, migrate their approved visual bundles, and retire the
    competing opening and summon routes.

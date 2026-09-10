@@ -120,7 +120,7 @@ async function measureFrames(page: Page, durationMs: number): Promise<number> {
 
 test('meets the complete target-phone performance budget', async ({ browser, request }) => {
 	test.setTimeout(120_000);
-	const runId = await prepareArrivedCampaign(request);
+	await prepareArrivedCampaign(request);
 	const context = await browser.newContext({
 		viewport: { width: profile.viewportWidth, height: profile.viewportHeight },
 		deviceScaleFactor: profile.deviceScaleFactor,

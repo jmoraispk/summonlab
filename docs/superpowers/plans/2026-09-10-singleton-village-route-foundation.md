@@ -50,7 +50,7 @@
 - Replaces: `cityModeHref(runId, mode)`.
 - Produces: `CITY_MODE_PATHS`, `CityModePath`, `cityModeHref(mode)`, and the SvelteKit `city` matcher.
 
-- [ ] **Step 1: Write failing navigation and matcher tests**
+- [x] **Step 1: Write failing navigation and matcher tests**
 
   Replace the run-ID URL assertions in `apps/web/src/lib/city.spec.ts` with the complete public mapping:
 
@@ -84,7 +84,7 @@
   });
   ```
 
-- [ ] **Step 2: Run the focused tests and verify RED**
+- [x] **Step 2: Run the focused tests and verify RED**
 
   Run:
 
@@ -94,7 +94,7 @@
 
   Expected: FAIL because `cityModeHref` still requires a run ID and the matcher does not exist.
 
-- [ ] **Step 3: Implement one typed path table**
+- [x] **Step 3: Implement one typed path table**
 
   In `apps/web/src/lib/city.ts`, keep `CITY_MODES` as the product-order source and add:
 
@@ -126,11 +126,11 @@
   }
   ```
 
-- [ ] **Step 4: Remove run IDs from both dock entry points**
+- [x] **Step 4: Remove run IDs from both dock entry points**
 
   Change `CityModeDock.svelte` to accept only `current`, and resolve each `cityModeHref(mode.id)`. Remove `runId` from the `CityScreen` call. Change the Portal hotspot in `CityVillageViewport.svelte` to resolve `cityModeHref('tower')`. Use `CityModePath` in the `resolve` casts; do not retain `/play/${string}` casts or query-string mode navigation.
 
-- [ ] **Step 5: Verify navigation types and behavior**
+- [x] **Step 5: Verify navigation types and behavior**
 
   Run:
 
@@ -141,7 +141,7 @@
 
   Expected: PASS; no City dock or Portal source contains `/play/`, `runId` props, or `?mode=`.
 
-- [ ] **Step 6: Commit and push the canonical-link slice**
+- [x] **Step 6: Commit and push the canonical-link slice**
 
   ```bash
   git add apps/web/src/lib/city.ts apps/web/src/lib/city.spec.ts apps/web/src/params/city.ts apps/web/src/params/city.spec.ts apps/web/src/lib/components/city/CityModeDock.svelte apps/web/src/lib/components/city/CityScreen.svelte apps/web/src/lib/components/city/CityVillageViewport.svelte
@@ -166,7 +166,7 @@
 - Produces: `createSingletonVillageResolver(dependencies)` for deterministic tests and `getOrCreateSingletonVillage(databaseUrl, clockSpeed)` for runtime.
 - Keeps: `POST /api/campaigns` as an internal deterministic-fixture/restart seam, while every returned player continuation points to `/village`.
 
-- [ ] **Step 1: Write failing singleton orchestration tests**
+- [x] **Step 1: Write failing singleton orchestration tests**
 
   Create `apps/web/src/lib/server/singleton-village.spec.ts` with an in-memory active campaign and deferred creation promise. Test all three contracts:
 
@@ -203,7 +203,7 @@
   }
   ```
 
-- [ ] **Step 2: Run the focused unit test and verify RED**
+- [x] **Step 2: Run the focused unit test and verify RED**
 
   Run:
 
@@ -213,7 +213,7 @@
 
   Expected: FAIL because no singleton resolver exists.
 
-- [ ] **Step 3: Implement create-or-resume with one in-flight promise**
+- [x] **Step 3: Implement create-or-resume with one in-flight promise**
 
   In `singleton-village.ts`, define server-owned defaults:
 
@@ -240,7 +240,7 @@
 
   Bind one module-level runtime resolver to `getLatestActiveCampaignRun` and `createPlayerCampaign`. Pass `getConfig().simulationSpeed` from the public wrapper; do not expose seed or control-mode inputs to the page.
 
-- [ ] **Step 4: Turn Enter Village into a server action**
+- [x] **Step 4: Turn Enter Village into a server action**
 
   Replace root `resumePath` loading with a simple `hasVillage` boolean. Add a default action:
 
@@ -262,7 +262,7 @@
 
   In `+page.svelte`, replace the anchor with `<form method="POST">` and a submit button retaining `class="enter-village"`, `data-testid="enter-village"`, and `data-sound-cue="gate"`. Display `form?.entryError` in an `aria-live="polite"` status. Remove `openingPath`, `villagePath`, and all front-page references to `/living-village-lab`.
 
-- [ ] **Step 5: Make every campaign continuation canonical**
+- [x] **Step 5: Make every campaign continuation canonical**
 
   Change `campaignResumePath` in `apps/web/src/lib/server/campaign.ts` to return the constant `/village` for every campaign lifecycle stage:
 
@@ -274,11 +274,11 @@
 
   Keep `POST /api/campaigns` seed/control-mode behavior as an internal fixture and restart seam; changing its creation semantics would erase deterministic test coverage without improving the player path. Its GET and POST responses now inherit `/village` from `campaignResumePath`. Add a source-boundary assertion in `singleton-village.spec.ts` that no component under `apps/web/src/routes/+page.svelte` or `apps/web/src/lib/components/` posts to `/api/campaigns` except `PlayerMenu.svelte`'s explicit restart action.
 
-- [ ] **Step 6: Update entry E2E assertions**
+- [x] **Step 6: Update entry E2E assertions**
 
   In `campaign.e2e.ts`, replace assertions expecting `/onboarding/<id>` or `/play/<id>` from the front page/API with `/village`. Add a front-page test that submits **Enter Village** twice across two page loads and confirms the same active campaign through `GET /api/campaigns`; do not display that ID in DOM or URL assertions.
 
-- [ ] **Step 7: Verify, commit, and push singleton ownership**
+- [x] **Step 7: Verify, commit, and push singleton ownership**
 
   Run:
 
@@ -321,7 +321,7 @@
 - Keeps: current authoritative onboarding APIs, arrival API, city-action API, projections, clock catch-up, and event streaming.
 - Retires: ID-bearing player page implementations. Their route servers remain redirect-only for old bookmarks and test artifacts.
 
-- [ ] **Step 1: Write failing server-stage and source-boundary tests**
+- [x] **Step 1: Write failing server-stage and source-boundary tests**
 
   In `singleton-village-page.spec.ts`, test a pure selector separately from database projection:
 
@@ -343,7 +343,7 @@
   expect(existsSync(legacyOnboardingPageSvelte)).toBe(false);
   ```
 
-- [ ] **Step 2: Run focused tests and verify RED**
+- [x] **Step 2: Run focused tests and verify RED**
 
   Run:
 
@@ -353,7 +353,7 @@
 
   Expected: FAIL because the canonical stage union and page do not exist.
 
-- [ ] **Step 3: Extract the existing pages without behavior redesign**
+- [x] **Step 3: Extract the existing pages without behavior redesign**
 
   Move the markup and logic from `onboarding/[runId]/+page.svelte` into `SingletonOnboarding.svelte`. Replace only its final navigation:
 
@@ -383,7 +383,7 @@
 
   Keep the internal run ID only in component/API props. It must not be interpolated into navigation URLs.
 
-- [ ] **Step 4: Extract one server projection for all three stages**
+- [x] **Step 4: Extract one server projection for all three stages**
 
   Move the useful load logic from the two legacy page servers into `singleton-village-page.ts`. Define the public union:
 
@@ -412,7 +412,7 @@
   - throw the existing 404/409/503 errors with their current meaning;
   - call `projectCityView` exactly once and use the requested `mode` only for the `city` stage.
 
-- [ ] **Step 5: Add the one canonical route**
+- [x] **Step 5: Add the one canonical route**
 
   In `(city)/[mode=city]/+page.server.ts`, resolve the active campaign server-side. Redirect to `/` if none exists. Parse `params.mode` through `parseCityMode`, load the union, and redirect non-Village modes during tutorial stages:
 
@@ -435,7 +435,7 @@
 
   Use exhaustive type narrowing; do not add a default placeholder.
 
-- [ ] **Step 6: Convert old player routes into redirects**
+- [x] **Step 6: Convert old player routes into redirects**
 
   Delete both legacy `+page.svelte` files. Replace both route servers with unconditional permanent redirects to `/village`:
 
@@ -448,7 +448,7 @@
 
   Do not trust a run ID from an old bookmark and do not use it to switch the singleton.
 
-- [ ] **Step 7: Point route-sensitive support code at the canonical stage**
+- [x] **Step 7: Point route-sensitive support code at the canonical stage**
 
   Update `player-audio.ts` so all five canonical paths return the `hearth` profile; keep the gate sound as the explicit Enter-button cue. Remove the `/onboarding/` and `/play/` pathname cases and update the table in `player-audio.spec.ts` exactly:
 
@@ -464,7 +464,7 @@
 
   Update both route-profile objects and restart navigation in `PlayerMenu.svelte` to use `hearth` and `/village`. Move the hero-art source-boundary check from the deleted onboarding page to `SingletonOnboarding.svelte`.
 
-- [ ] **Step 8: Verify, commit, and push the canonical stage owner**
+- [x] **Step 8: Verify, commit, and push the canonical stage owner**
 
   Run:
 
@@ -500,7 +500,7 @@
 - E2E setup may still use internal API run IDs to prepare authoritative state.
 - Browser navigation and player assertions use only the five canonical paths.
 
-- [ ] **Step 1: Change Village shell assertions first and verify RED**
+- [x] **Step 1: Change Village shell assertions first and verify RED**
 
   In `village-shell.e2e.ts`, continue using the returned `runId` only for setup requests and API-response matching. Navigate with:
 
@@ -527,7 +527,7 @@
   pnpm --filter @summonlab/web test:e2e -- village-shell.e2e.ts
   ```
 
-- [ ] **Step 2: Keep singleton E2E state deterministic**
+- [x] **Step 2: Keep singleton E2E state deterministic**
 
   Add `workers: 1` to `apps/web/playwright.config.ts`. The canonical browser routes resolve the latest active fixture, so campaign UI tests must not create competing latest campaigns in parallel. Each setup creates its deterministic fixture immediately before opening the canonical route. Add a helper local to the campaign E2E group:
 
@@ -540,11 +540,15 @@
 
   Do not add `?runId=`, cookies that select a run, or test-only browser routes.
 
-- [ ] **Step 3: Migrate the remaining browser destinations**
+- [x] **Step 3: Migrate the remaining browser destinations**
 
   Update the listed E2E files so setup API calls retain their internal `runId`, but `page.goto` and final navigation use `/village` or the relevant dock destination. Change Replay’s “Return to settlement” link to `/village`. Where a test truly validates a legacy API rather than the player page, keep the API URL and rename the assertion to say `internal run API`.
 
 - [ ] **Step 4: Run the focused canonical progression suite**
+
+  > Environment note (2026-09-10): browser-test discovery succeeds, but execution remains open
+  > because this workspace has neither Docker nor a PostgreSQL listener. The database-backed suite
+  > must be run before integration.
 
   Start the repository harness if it is not running:
 
@@ -560,7 +564,7 @@
 
   Expected: PASS. The browser remains on canonical paths while authoritative API calls still target the resolved internal run.
 
-- [ ] **Step 5: Commit and push the E2E migration**
+- [x] **Step 5: Commit and push the E2E migration**
 
   ```bash
   git add apps/web/playwright.config.ts apps/web/src/routes/village-shell.e2e.ts apps/web/src/routes/campaign.e2e.ts apps/web/src/routes/equipment-forging.e2e.ts apps/web/src/routes/events.e2e.ts apps/web/src/routes/performance.e2e.ts apps/web/src/routes/playtest-analytics.e2e.ts apps/web/src/routes/proof.e2e.ts apps/web/src/routes/replay/'[runId]'/+page.svelte
@@ -583,8 +587,8 @@
 - Delete: `apps/web/src/routes/living-village-lab/village/playwright.village.config.ts`
 - Delete: `apps/web/src/routes/living-village-lab/village/village.e2e.ts`
 - Delete: `apps/web/src/lib/components/city/city-screen.fixture.ts`
-- Move: `apps/web/src/routes/living-village-lab/village/cutouts/*` to `assets/heroes/visuals/living-village-lab-cutouts-v1/`
-- Modify: `assets/heroes/visuals/living-village-lab-cutouts-v1/README.md`
+- Move: `apps/web/src/routes/living-village-lab/village/cutouts/*` to `docs/evidence/living-village-lab-cutouts-v1/`
+- Modify: `docs/evidence/living-village-lab-cutouts-v1/README.md`
 - Modify: `apps/web/src/routes/living-village-lab/+page.svelte`
 - Modify: `apps/web/src/routes/living-village-lab/living-village.e2e.ts`
 - Modify: `apps/web/src/routes/living-village-lab/opening/+page.svelte`
@@ -600,7 +604,7 @@
 - Preserves: six PNGs as historical, non-spawnable wiki visual evidence.
 - Deletes: both obsolete renderers, their browse routes, their route-local fixture, and their dedicated E2E/config files.
 
-- [ ] **Step 1: Expand the source-boundary test and verify RED**
+- [x] **Step 1: Expand the source-boundary test and verify RED**
 
   In `city.spec.ts`, make the sole-renderer test assert all retired files are absent, including:
 
@@ -626,9 +630,9 @@
 
   Expected: FAIL because both retired paths still exist.
 
-- [ ] **Step 2: Move the six cutouts out of route ownership**
+- [x] **Step 2: Move the six cutouts out of route ownership**
 
-  Use `git mv` for all PNGs and the README into `assets/heroes/visuals/living-village-lab-cutouts-v1/`. Rewrite the README title to `Historical Living Village visual packet` and preserve the full source table. Add these explicit rules:
+  Use `git mv` for all PNGs and the README into `docs/evidence/living-village-lab-cutouts-v1/`. Rewrite the README title to `Historical Living Village visual packet` and preserve the full source table. Add these explicit rules:
 
   - the images are wiki evidence, not approved summonable runtime assets;
   - they may not satisfy `village-cutout` lookup;
@@ -636,15 +640,15 @@
 
   Update the wiki glob, `getWikiAsset` paths, route visual-packet mapping, and wiki tests to the new asset prefix.
 
-- [ ] **Step 3: Remove links before deleting routes**
+- [x] **Step 3: Remove links before deleting routes**
 
   Remove the Village preview card from `living-village-lab/+page.svelte` and update its E2E expected-card list. Change the opening lab’s completion navigation to `/village`; it remains a developer story experiment until Task 2 of the governing design migrates it. Change the mission lab’s Hearth link to `/village`. Verify no player component or front page contains `/settlement-lab` or `/living-village-lab/village`.
 
-- [ ] **Step 4: Delete obsolete routes, renderer, fixture, and dedicated tests**
+- [x] **Step 4: Delete obsolete routes, renderer, fixture, and dedicated tests**
 
   Delete every listed settlement-lab and living-village-lab/village source file after Step 3. Delete `city-screen.fixture.ts` instead of moving it: its canonical behaviors now live in `village-shell.e2e.ts`, and deterministic data that remains useful must be declared inside tests rather than exported to a route.
 
-- [ ] **Step 5: Replace the obsolete build-budget surface**
+- [x] **Step 5: Replace the obsolete build-budget surface**
 
   In `tools/validate-web-build-budget.mjs`, replace `settlementRouteKey` and the `settlementRouteLabLoadedJavaScriptGzipBytes` fields with canonical Village equivalents:
 
@@ -655,7 +659,7 @@
 
   Keep the same 700 KB gzip budget under `villageRouteLoadedJavaScriptGzipBytes`. Rebuild with `--write` so the evidence schema and measurement names match the living runtime rather than a deleted lab.
 
-- [ ] **Step 6: Mark the old topology decision superseded**
+- [x] **Step 6: Mark the old topology decision superseded**
 
   Add a status note at the top of `docs/decisions/0011-versioned-settlement-route-graph.md`:
 
@@ -667,7 +671,7 @@
 
   Do not remove its original rationale.
 
-- [ ] **Step 7: Verify deletion and evidence integrity**
+- [x] **Step 7: Verify deletion and evidence integrity**
 
   Run:
 
@@ -683,7 +687,7 @@
 
   Expected: tests and validators PASS. The final `rg` returns no obsolete runtime route references; historical docs may still mention them.
 
-- [ ] **Step 8: Commit and push prototype retirement**
+- [x] **Step 8: Commit and push prototype retirement**
 
   Stage only the files in this task, inspect `git diff --cached --stat`, then:
 
@@ -701,7 +705,7 @@
 - Modify: `docs/superpowers/specs/2026-09-10-single-village-progression-design.md`
 - Modify: this plan’s checkbox states as work completes
 
-- [ ] **Step 1: Run focused unit and source-boundary checks**
+- [x] **Step 1: Run focused unit and source-boundary checks**
 
   ```bash
   pnpm --filter @summonlab/web exec vitest run src/lib/city.spec.ts src/params/city.spec.ts src/lib/server/singleton-village.spec.ts src/lib/server/singleton-village-page.spec.ts src/lib/player-audio.spec.ts src/lib/hero-presentation-boundary.spec.ts src/lib/server/wiki.spec.ts
@@ -713,6 +717,10 @@
 
 - [ ] **Step 2: Run database-backed canonical E2E checks**
 
+  > Blocked in this workspace: Docker is unavailable and no PostgreSQL listener is present.
+  > `playwright test --list` discovers all 72 browser tests, including the canonical campaign and
+  > Village shell tests, but it does not substitute for executing them.
+
   With `pnpm dev` running and listening on `0.0.0.0`, run:
 
   ```bash
@@ -722,6 +730,12 @@
   Expected: PASS. The test browser never exposes `/play/<id>` or `/onboarding/<id>`.
 
 - [ ] **Step 3: Run repository gates proportional to the route deletion**
+
+  > The asset, wiki, build, Village build-budget, lint, typecheck, and in-scope formatting gates
+  > pass. Repository-wide `format:check` remains open because three pre-existing realtime-combat
+  > files are not formatted; they are outside this plan's change set. A full `pnpm test` audit also
+  > reaches 15 pre-existing family-affinity production failures caused by an installed skill profile
+  > drifting from its sealed approval receipt; all 263 web tests pass.
 
   ```bash
   pnpm validate:repository-assets
@@ -744,11 +758,11 @@
 
   The decision requested from this checkpoint is whether route convergence feels invisible and stable enough to begin the in-Village story/summoning replacement. Do not ask for final Tower, forging, or schedule feedback yet.
 
-- [ ] **Step 5: Record accepted foundation status**
+- [x] **Step 5: Record accepted foundation status**
 
   In the governing spec’s Delivery Decomposition, mark only subproject 1 implemented and link this plan. Keep subprojects 2–5 pending. Update this plan’s completed checkboxes with the verified commands; do not mark a failed or skipped check complete.
 
-- [ ] **Step 6: Commit, push, and report the clean branch**
+- [x] **Step 6: Commit, push, and report the clean branch**
 
   If Step 5 or verification fixes changed files:
 

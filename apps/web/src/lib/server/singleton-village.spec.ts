@@ -71,7 +71,10 @@ describe('singleton Village resolver', () => {
 	it('keeps singleton creation behind the Enter Village server action', () => {
 		const repositoryRoot = fileURLToPath(new URL('../../../../..', import.meta.url));
 		const rootPage = readFileSync(`${repositoryRoot}/apps/web/src/routes/+page.svelte`, 'utf8');
-		const rootServer = readFileSync(`${repositoryRoot}/apps/web/src/routes/+page.server.ts`, 'utf8');
+		const rootServer = readFileSync(
+			`${repositoryRoot}/apps/web/src/routes/+page.server.ts`,
+			'utf8'
+		);
 
 		expect(rootPage).toContain('<form method="POST"');
 		expect(rootPage).not.toContain('/living-village-lab');

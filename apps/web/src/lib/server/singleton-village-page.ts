@@ -95,9 +95,7 @@ async function loadCampaignPage(databaseUrl: string, campaign: CampaignRun, mode
 						pronouns: hero.draft.manifest.pronouns,
 						role: hero.draft.manifest.visualRole ?? 'resident',
 						firstReply: hero.firstReply?.exactText ?? null,
-						health: stateHero
-							? { current: stateHero.health, maximum: stateHero.maxHealth }
-							: null,
+						health: stateHero ? { current: stateHero.health, maximum: stateHero.maxHealth } : null,
 						level: stateHero?.progression.level ?? null,
 						detailRows: stateHero
 							? [
