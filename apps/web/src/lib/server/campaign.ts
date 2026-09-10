@@ -106,5 +106,6 @@ export async function campaignExperienceView(databaseUrl: string, runId: string)
 }
 
 export function campaignResumePath(campaign: CampaignRun): string {
-	return campaign.onboardingStep < 3 ? `/onboarding/${campaign.runId}` : `/play/${campaign.runId}`;
+	void campaign;
+	return '/village';
 }
