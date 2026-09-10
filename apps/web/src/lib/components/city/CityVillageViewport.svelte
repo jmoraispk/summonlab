@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { resolve } from '$app/paths';
+	import { base } from '$app/paths';
 	import { onMount } from 'svelte';
 
 	import {
@@ -307,7 +307,7 @@
 							style={hotspotStyle(facility)}
 							aria-label={`Enter ${facility.label}`}
 							aria-current={selectedFacilityId === facility.facilityId ? 'location' : undefined}
-							href={resolve(cityModeHref(view.runId, 'tower') as `/play/${string}`)}
+							href={`${base}${cityModeHref('tower')}`}
 							draggable="false"
 							onclick={() => selectFacility(facility)}
 						>

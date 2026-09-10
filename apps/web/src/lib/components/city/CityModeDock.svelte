@@ -1,17 +1,17 @@
 <script lang="ts">
-	import { resolve } from '$app/paths';
+	import { base } from '$app/paths';
 
 	import { CITY_MODES, cityModeHref, type CityMode } from '$lib/city';
 
 	import CityModeIcon from './CityModeIcon.svelte';
 
-	let { runId, current }: { runId: string; current: CityMode } = $props();
+	let { current }: { current: CityMode } = $props();
 </script>
 
 <nav class="city-mode-dock" aria-label="City destinations" data-testid="city-mode-dock">
 	{#each CITY_MODES as mode (mode.id)}
 		<a
-			href={resolve(cityModeHref(runId, mode.id) as `/play/${string}`)}
+			href={`${base}${cityModeHref(mode.id)}`}
 			class:active={current === mode.id}
 			aria-current={current === mode.id ? 'page' : undefined}
 			data-sound-cue="menu"

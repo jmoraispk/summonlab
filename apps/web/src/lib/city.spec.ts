@@ -46,8 +46,14 @@ describe('City navigation', () => {
 			'Inventory',
 			'Missions'
 		]);
-		expect(cityModeHref('run with spaces', 'village')).toBe('/play/run%20with%20spaces');
-		expect(cityModeHref('run with spaces', 'tower')).toBe('/play/run%20with%20spaces?mode=tower');
+		expect(CITY_MODES.map(({ id }) => cityModeHref(id))).toEqual([
+			'/village',
+			'/residents',
+			'/tower',
+			'/inventory',
+			'/missions'
+		]);
+		expect(cityModeHref('tower')).toBe('/tower');
 	});
 
 	it.each(['village', 'residents', 'tower', 'inventory', 'missions'] as const)(

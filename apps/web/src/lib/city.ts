@@ -18,6 +18,15 @@ export const CITY_MODES = [
 ] as const;
 
 export type CityMode = (typeof CITY_MODES)[number]['id'];
+export const CITY_MODE_PATHS = {
+	village: '/village',
+	residents: '/residents',
+	tower: '/tower',
+	inventory: '/inventory',
+	missions: '/missions'
+} as const satisfies Record<CityMode, `/${string}`>;
+
+export type CityModePath = (typeof CITY_MODE_PATHS)[CityMode];
 export type CityResidentAction = 'court-training' | 'rest' | 'details';
 export type CityResidentReadiness = 'available' | 'busy' | 'traveling' | 'unavailable';
 
@@ -117,7 +126,6 @@ export function parseCityMode(value: string | null): CityMode {
 	return value !== null && CITY_MODE_IDS.has(value) ? (value as CityMode) : 'village';
 }
 
-export function cityModeHref(runId: string, mode: CityMode): string {
-	const base = `/play/${encodeURIComponent(runId)}`;
-	return mode === 'village' ? base : `${base}?mode=${mode}`;
+export function cityModeHref(mode: CityMode): CityModePath {
+	return CITY_MODE_PATHS[mode];
 }

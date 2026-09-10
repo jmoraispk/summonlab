@@ -26,7 +26,7 @@
 </script>
 
 <section class="city-screen" data-testid="city-screen">
-	<CityModeDock runId={view.runId} current={view.mode} />
+	<CityModeDock current={view.mode} />
 	{#if view.mode === 'village'}
 		<div class="village-stage">
 			<CityVillageViewport {view} {onIntent} {pendingIntent} {intentError} />
