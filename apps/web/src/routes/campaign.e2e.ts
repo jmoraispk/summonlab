@@ -86,12 +86,9 @@ test('onboards a stable company and preserves the prior chronicle when restarted
 
 	const { campaign, resumePath } = await createCampaign(page, seed);
 	await page.goto('/');
-	await expect(page.getByTestId('enter-village')).toHaveAttribute(
-		'href',
-		/^\/(?:onboarding|play)\/[a-f0-9-]+$/u
-	);
+	await expect(page.getByTestId('enter-village')).toHaveAttribute('type', 'submit');
 	await page.goto(resumePath);
-	await expect(page).toHaveURL(/\/onboarding\/[a-f0-9-]+$/u);
+	await expect(page).toHaveURL('/village');
 	expect(await page.evaluate(() => window.scrollY)).toBe(0);
 	const firstRunId = campaign.runId;
 
@@ -127,7 +124,7 @@ test('onboards a stable company and preserves the prior chronicle when restarted
 	await expect(page.getByTestId('enter-hearth')).toBeEnabled();
 
 	await page.getByTestId('enter-hearth').click();
-	await expect(page).toHaveURL(new RegExp(`/play/${firstRunId}$`, 'u'));
+	await expect(page).toHaveURL('/village');
 	await expect(page.getByText(/Arrived · (?:Kitchen|Training Ground)/)).toBeVisible();
 	await expect(page.getByText(/Agent-altered route/)).toBeVisible();
 	await expect(page.getByTestId('active-objective')).toContainText('Recover the First Ember');
@@ -155,9 +152,13 @@ test('onboards a stable company and preserves the prior chronicle when restarted
 
 	await pauseMenu.getByRole('button', { name: 'Restart same seed', exact: true }).click();
 	await pauseMenu.getByRole('button', { name: 'Confirm restart', exact: true }).click();
-	await expect(page).toHaveURL(/\/onboarding\/[a-f0-9-]+$/u);
-	const secondRunId = page.url().split('/').at(-1);
-	if (!secondRunId) throw new Error('Restarted onboarding URL did not include a run ID');
+	await expect(page).toHaveURL('/village');
+	const activeCampaignResponse = await page.request.get('/api/campaigns');
+	expect(activeCampaignResponse.ok()).toBe(true);
+	const activeCampaign = (await activeCampaignResponse.json()) as {
+		campaign: { runId: string };
+	};
+	const secondRunId = activeCampaign.campaign.runId;
 	expect(secondRunId).not.toBe(firstRunId);
 
 	await page.getByTestId('answer-reserve-bell').click();

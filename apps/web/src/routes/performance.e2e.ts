@@ -164,12 +164,12 @@ test('meets the complete target-phone performance budget', async ({ browser, req
 	expect(playerTitleVisualBytes).toBeLessThanOrEqual(budgets.playerTitleVisualBytes);
 	expect(interactiveShellMs).toBeLessThanOrEqual(budgets.interactiveShellMs);
 
-	await page.goto(`/play/${runId}`, { waitUntil: 'domcontentloaded' });
+	await page.goto('/village', { waitUntil: 'domcontentloaded' });
 	await waitForPlayerReady(page);
-	await expect(page.getByTestId('living-settlement')).toBeVisible();
+	await expect(page.getByTestId('city-village-viewport')).toBeVisible();
 	await page.waitForFunction(() =>
 		[...document.images]
-			.filter((image) => image.closest('[data-testid="living-settlement"], .hero-hud'))
+			.filter((image) => image.closest('[data-testid="city-village-viewport"]'))
 			.every((image) => image.complete && image.naturalWidth > 0)
 	);
 	const reconnectMs = await page.evaluate(() => performance.now());

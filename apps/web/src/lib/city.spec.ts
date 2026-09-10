@@ -50,6 +50,15 @@ describe('City navigation', () => {
 		}
 	});
 
+	it('keeps surviving player transitions off the retired play route', () => {
+		const repositoryRoot = fileURLToPath(new URL('../../../..', import.meta.url));
+		const sources = [
+			'apps/web/src/routes/summon/[runId]/+page.svelte',
+			'apps/web/src/routes/replay/[runId]/+page.svelte'
+		].map((path) => readFileSync(`${repositoryRoot}/${path}`, 'utf8'));
+		for (const source of sources) expect(source).not.toContain("resolve('/play/[runId]'");
+	});
+
 	it('builds the five approved campaign destinations in product order', () => {
 		expect(CITY_MODES.map((mode) => mode.id)).toEqual([
 			'village',

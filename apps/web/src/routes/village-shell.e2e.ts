@@ -70,13 +70,35 @@ test('campaign City uses the shared shell, authoritative actions, and responsive
 }) => {
 	test.setTimeout(90_000);
 	const { runId, heroes, currentMission } = await prepareArrivedCampaign(request);
-	await page.goto(`/play/${runId}`);
+	await page.goto('/village');
+	await expect(page).toHaveURL('/village');
 
 	await expect(page.getByTestId('city-screen')).toHaveCount(1);
+	await expect(page.getByTestId('run-connection')).toContainText('Live');
 	await expect(page.getByTestId('living-settlement')).toHaveCount(0);
 	await expect(page.locator('main > header')).toHaveCount(0);
 	const desktopNav = page.getByRole('navigation', { name: 'City destinations' });
 	await expect(desktopNav.getByRole('link')).toHaveCount(5);
+	await expect(desktopNav.getByRole('link', { name: 'Village', exact: true })).toHaveAttribute(
+		'href',
+		'/village'
+	);
+	await expect(desktopNav.getByRole('link', { name: 'Residents', exact: true })).toHaveAttribute(
+		'href',
+		'/residents'
+	);
+	await expect(desktopNav.getByRole('link', { name: 'Tower', exact: true })).toHaveAttribute(
+		'href',
+		'/tower'
+	);
+	await expect(desktopNav.getByRole('link', { name: 'Inventory', exact: true })).toHaveAttribute(
+		'href',
+		'/inventory'
+	);
+	await expect(desktopNav.getByRole('link', { name: 'Missions', exact: true })).toHaveAttribute(
+		'href',
+		'/missions'
+	);
 	await expect(desktopNav.getByRole('link', { name: 'Village', exact: true })).toHaveAttribute(
 		'aria-current',
 		'page'
@@ -177,22 +199,24 @@ test('campaign City uses the shared shell, authoritative actions, and responsive
 	});
 
 	await page.getByRole('link', { name: 'Missions', exact: true }).click();
+	await expect(page).toHaveURL('/missions');
 	await expect(page.getByTestId('village-missions')).toContainText(currentMission.title);
 
 	await page.getByRole('link', { name: 'Inventory', exact: true }).click();
+	await expect(page).toHaveURL('/inventory');
 	await expect(page.getByTestId('village-inventory')).toContainText(
 		'Shared Village Inventory is not established for this campaign yet.'
 	);
 
 	await page.getByRole('link', { name: 'Tower', exact: true }).click();
-	await expect(page).toHaveURL(`/play/${runId}?mode=tower`);
+	await expect(page).toHaveURL('/tower');
 	await expect(page.getByTestId('village-tower')).toContainText(
 		'Expedition controls are not connected yet.'
 	);
 	await expect(page.getByRole('button', { name: /Depart|Repeat|Prepare/u })).toHaveCount(0);
 
 	await page.setViewportSize({ width: 390, height: 844 });
-	await page.goto(`/play/${runId}`);
+	await page.goto('/village');
 	const phoneScene = page.getByTestId('city-village-viewport');
 	const phoneWorld = phoneScene.getByTestId('city-world');
 	const [phoneViewportBox, phoneWorldBox] = await Promise.all([

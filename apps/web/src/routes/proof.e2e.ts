@@ -47,11 +47,6 @@ test('uses honest non-character states when a generated hero has no approved art
 		/portrait pending$/u
 	);
 
-	await page.goto(`/play/${runId}`);
-	await expect(page.getByTestId('hero-art-placeholder')).toHaveCount(2);
-	await expect(page.getByTestId('living-settlement')).toBeVisible({ timeout: 6_000 });
-	await expect(page.getByTestId('settlement-occupant')).toBeVisible();
-
 	await page.goto(`/mission/${runId}`);
 	await expect(page.getByTestId('hero-art-placeholder')).toHaveAttribute(
 		'aria-label',

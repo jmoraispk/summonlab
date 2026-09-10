@@ -24,7 +24,8 @@ async function enterHearth(page: Page, resumePath: string, runId: string) {
 		);
 	}
 	await page.getByTestId('enter-hearth').click();
-	await expect(page).toHaveURL(new RegExp(`/play/${runId}$`, 'u'));
+	await expect(page).toHaveURL('/village');
+	expect(runId).toMatch(/^[a-f0-9-]+$/u);
 }
 
 test('keeps analytics off until consent and deletes the typed journey on withdrawal', async ({
@@ -123,7 +124,7 @@ test('keeps analytics off until consent and deletes the typed journey on withdra
 		});
 	}
 
-	await page.goto(`/play/${runId}`);
+	await page.goto('/village');
 	await page.getByRole('button', { name: 'Pause menu' }).click();
 	const withdrawalPause = page.getByRole('dialog', { name: 'Paused campaign menu' });
 	await withdrawalPause.getByRole('button', { name: 'Settings', exact: true }).click();

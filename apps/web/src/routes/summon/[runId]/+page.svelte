@@ -965,7 +965,7 @@
 						</div>
 					</div>
 				{/if}
-				<a class="follow" href={resolve('/play/[runId]', { runId: snapshot.runId })}>
+				<a class="follow" href={resolve('/village')}>
 					<span>Follow to {destinationLabel}</span>
 					<small>Continue with the same manifest-bound identity in the settlement</small>
 				</a>
