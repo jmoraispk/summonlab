@@ -1,6 +1,7 @@
 # Village City convergence design
 
-**Status:** Implemented; live database campaign E2E pending local Docker availability
+**Status:** Village composition implemented; player-route and lab-retention decisions superseded by
+`docs/superpowers/specs/2026-09-10-single-village-progression-design.md`
 
 **Date:** 2026-09-09
 
