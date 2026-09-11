@@ -2,6 +2,13 @@
 
 Status: **candidate / transport-only**
 
+## Gate 1 disposition
+
+**Pass.** Spine 4.3.26 import/export and Spine Pixi 4.3.13 playback are technically validated.
+The art remains candidate / transport-only: this gate generated no new Asha pixels and does not
+approve a production animation. Owner review is required before a Gate 2 decomposition plan is
+written.
+
 This canary proves the Spine editor-to-runtime transport path with Asha's existing approved raster
 cutout. `idle_transport_probe` is a deliberately tiny technical motion test, not Asha's production
 idle, and none of these files author or approve new character artwork.
@@ -50,7 +57,8 @@ npx --yes node@24.14.1 node_modules/tsx/dist/cli.mjs tools/asha-spine-transport.
 Once the web review route is available, run it with:
 
 ```bash
-npx --yes node@24.14.1 apps/web/node_modules/vite/bin/vite.js dev apps/web --host 0.0.0.0 --port 5173
+cd apps/web
+npx --yes node@24.14.1 node_modules/vite/bin/vite.js dev --host 0.0.0.0 --port 5174
 ```
 
 Review `/living-village-lab/asha-spine-transport`. Floor One remains on a separate branch; this
