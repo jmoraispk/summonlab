@@ -1,6 +1,6 @@
 # Asha Spine Exploration Canary Design
 
-**Status:** Owner-approved direction recorded on 2026-09-10; written-spec review pending.
+**Status:** Approved by the project owner on 2026-09-10.
 
 ## Purpose
 
