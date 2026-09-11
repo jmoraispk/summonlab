@@ -156,7 +156,7 @@ The migration is complete only when all of the following pass:
 10. The review page references only existing canonical paths and exposes all six sheets and all 42
     individual frames.
 11. Active Heroes wiki and review files contain no references to removed versioned packet paths.
-12. The canonical preview responds over `0.0.0.0` and is shared using `10.110.24.218`.
+12. The canonical preview responds over `0.0.0.0` and is shared using `10.110.24.122`.
 13. No engine contract, affinity contract, or shared runtime catalog changes appear in the diff.
 
 ## Delivery batches

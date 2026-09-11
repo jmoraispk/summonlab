@@ -23,7 +23,7 @@
 - `CityScreen` and `CityVillageViewport` remain the sole player Village renderer. No new canvas, CSS-built character, fixture resident, or second City projector is permitted.
 - Keep the six historical lab cutouts as non-playable wiki evidence, but move them out of route ownership. Do not promote them into the summonable roster in this slice.
 - Historical documents remain historical. Mark superseded decisions; do not rewrite old evidence to pretend the retired routes never existed.
-- Follow `AGENTS.md`: isolate in-scope changes, validate, commit with concise Conventional Commit subjects, push every completed task, and provide the remote `0.0.0.0` preview as `http://10.110.24.218:<port>`.
+- Follow `AGENTS.md`: isolate in-scope changes, validate, commit with concise Conventional Commit subjects, push every completed task, and provide the remote `0.0.0.0` preview as `http://10.110.24.122:<port>`.
 
 ## Deliberately Deferred Follow-On Work
 
@@ -750,7 +750,7 @@
 
 - [ ] **Step 4: Perform desktop and phone playtest checks**
 
-  Share `http://10.110.24.218:<port>/` and verify:
+  Share `http://10.110.24.122:<port>/` and verify:
 
   1. Click **Enter Village** twice or reload; both resume the same Village and the address remains `/village`.
   2. On an arrived campaign, click all five dock destinations and the Portal; URLs are the five named paths, state and residents persist, and there is one header.

@@ -534,7 +534,7 @@ PATH=/tmp/summonlab-node-24.14.1/bin:$PATH pnpm --filter @summonlab/web exec vit
 ```
 
 Verify `0.0.0.0:4174` is listening and the index, Goblin family, Goblin Runt, and Grey Wolf routes
-return HTTP 200. Share `http://10.110.24.218:4174/wiki/creatures/monsters`.
+return HTTP 200. Share `http://10.110.24.122:4174/wiki/creatures/monsters`.
 
 - [ ] **Step 5: Commit any final test-proven integration fix**
 

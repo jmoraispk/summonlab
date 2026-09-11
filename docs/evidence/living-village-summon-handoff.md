@@ -2,7 +2,7 @@
 
 Status: isolated browser prototype ready for coordinator review
 
-Public direct route: `http://10.110.24.218:4180/living-village-lab/summon`
+Public direct route: `http://10.110.24.122:4180/living-village-lab/summon`
 
 Implementation branch: `codex/lv-summon-screen`
 

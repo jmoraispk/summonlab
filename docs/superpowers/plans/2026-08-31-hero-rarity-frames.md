@@ -20,7 +20,7 @@
 - Keep all frame layers and composed review cards at 1024 by 1536.
 - Reserve x=132..892 and y=1322..1450 as the star-safe tray.
 - Render the canonical star once and reuse it at 88 by 88 with a 12-pixel gap and y=1348.
-- Publish review links through `10.110.24.218`, never localhost.
+- Publish review links through `10.110.24.122`, never localhost.
 
 ---
 

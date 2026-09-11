@@ -735,4 +735,4 @@
   git status --short
   ```
 
-  Hand off the exact remote preview URL using `10.110.24.218` with the full port and `/play/[runId]` path. Ask the owner to test: (1) dock placement and mode continuity on desktop/phone, (2) resident quick view → Details → training/rest behavior, and (3) upper-left wall/Circle composition. The decisions sought are whether the City is now the sole preferred Village, whether any liked lab interaction is missing, and whether the bounded environment revision is final.
+  Hand off the exact remote preview URL using `10.110.24.122` with the full port and `/play/[runId]` path. Ask the owner to test: (1) dock placement and mode continuity on desktop/phone, (2) resident quick view → Details → training/rest behavior, and (3) upper-left wall/Circle composition. The decisions sought are whether the City is now the sole preferred Village, whether any liked lab interaction is missing, and whether the bounded environment revision is final.

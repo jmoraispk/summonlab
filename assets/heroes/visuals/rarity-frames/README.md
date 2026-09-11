@@ -63,5 +63,5 @@ Replay the local wiki/catalog and migration-scope delivery checks with:
 python3 tools/verify-hero-rarity-frame-delivery.py --repo-root . --base-ref origin/main
 ```
 
-Add `--base-url http://10.110.24.218:4177` to verify the review page and all 48 manifest PNGs over
+Add `--base-url http://10.110.24.122:4177` to verify the review page and all 48 manifest PNGs over
 HTTP.
