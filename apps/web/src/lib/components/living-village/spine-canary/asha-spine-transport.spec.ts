@@ -11,6 +11,7 @@ class FakeSpine {
 	readonly state = {
 		current: undefined as string | undefined,
 		setAnimation: (_track: number, name: string, _loop: boolean) => {
+			void _loop;
 			this.state.current = name;
 		}
 	};

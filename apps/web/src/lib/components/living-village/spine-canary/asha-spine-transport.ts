@@ -1,6 +1,3 @@
-import { Spine } from '@esotericsoftware/spine-pixi-v8';
-import { Assets } from 'pixi.js';
-
 export const ASHA_SPINE_TRANSPORT_ASSETS = {
 	data: '/runtime/exploration/spine-canary-v1/asha/asha-transport-v1.json',
 	atlas: '/runtime/exploration/spine-canary-v1/asha/asha-transport-v1.atlas'
@@ -28,7 +25,7 @@ type SpineConstructor<T> = new (options: AshaSpineConstructorOptions) => T;
 
 const loadedAssetApis = new WeakSet<object>();
 
-export async function loadAshaSpineTransport(assets: TransportAssetsApi = Assets): Promise<void> {
+export async function loadAshaSpineTransport(assets: TransportAssetsApi): Promise<void> {
 	assets.add({
 		alias: ASHA_SPINE_TRANSPORT_ALIASES.data,
 		src: ASHA_SPINE_TRANSPORT_ASSETS.data
@@ -41,11 +38,8 @@ export async function loadAshaSpineTransport(assets: TransportAssetsApi = Assets
 	loadedAssetApis.add(assets);
 }
 
-export function createAshaSpineTransportInstance(): Spine;
 export function createAshaSpineTransportInstance<T>(SpineClass: SpineConstructor<T>): T;
-export function createAshaSpineTransportInstance<T>(
-	SpineClass: SpineConstructor<T> = Spine as unknown as SpineConstructor<T>
-): T {
+export function createAshaSpineTransportInstance<T>(SpineClass: SpineConstructor<T>): T {
 	return new SpineClass({
 		skeleton: ASHA_SPINE_TRANSPORT_ALIASES.data,
 		atlas: ASHA_SPINE_TRANSPORT_ALIASES.atlas,
@@ -54,9 +48,7 @@ export function createAshaSpineTransportInstance<T>(
 	});
 }
 
-export async function destroyAshaSpineTransportAssets(
-	assets: TransportAssetsApi = Assets
-): Promise<void> {
+export async function destroyAshaSpineTransportAssets(assets: TransportAssetsApi): Promise<void> {
 	if (!loadedAssetApis.has(assets)) return;
 	loadedAssetApis.delete(assets);
 	const failures: unknown[] = [];
