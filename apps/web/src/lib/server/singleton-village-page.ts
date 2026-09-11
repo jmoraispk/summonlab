@@ -82,6 +82,46 @@ async function loadCampaignPage(databaseUrl: string, campaign: CampaignRun, mode
 	);
 	const scene = await loadHearth01Scene();
 	const cityState = engineSnapshot?.state.schemaVersion === 13 ? engineSnapshot.state : null;
+	const citySummonHeroes = campaignView
+		? campaignView.heroes.map((hero) => {
+				const summonArt = runtimePortraitFor(
+					hero.draft.manifestHash,
+					hero.draft.manifest.artKey,
+					'summon'
+				);
+				if (!summonArt) {
+					error(503, `${hero.draft.manifest.displayName} has no approved summon portrait.`);
+				}
+				return {
+					heroId: hero.draft.manifest.characterId,
+					ordinal: hero.ordinal as 1 | 2 | 3,
+					name: hero.draft.manifest.displayName,
+					rarityStars: hero.draft.manifest.rarityStars,
+					adultAge: hero.draft.manifest.adultAge,
+					heightCm: hero.draft.manifest.heightCm,
+					bodyBuild: hero.draft.manifest.bodyBuild,
+					voice: hero.draft.manifest.voice.cadence,
+					role: hero.draft.manifest.visualRole ?? 'resident',
+					primaryValue: hero.draft.mind.primaryValue,
+					primaryDrive: hero.draft.mind.primaryDrive,
+					socialStyle: hero.draft.mind.socialStyle,
+					stressResponse: hero.draft.mind.stressResponse,
+					dailyHabit: hero.draft.mind.dailyHabit,
+					summonArt,
+					rosterArt: runtimePortraitFor(
+						hero.draft.manifestHash,
+						hero.draft.manifest.artKey,
+						'roster'
+					),
+					firstReply: hero.firstReply
+						? {
+								exactText: hero.firstReply.exactText,
+								publicReason: hero.firstReply.publicReason
+							}
+						: null
+				};
+			})
+		: [];
 	const cityResidents: readonly CityResidentSource[] =
 		campaignView && cityState
 			? campaignView.heroes.map((hero) => {
@@ -134,6 +174,11 @@ async function loadCampaignPage(databaseUrl: string, campaign: CampaignRun, mode
 						scene,
 						presentation,
 						residents: cityResidents,
+						campaign,
+						summonHeroes: citySummonHeroes,
+						visibleHeroIds: campaign.heroes
+							.slice(0, campaign.summonedHeroCount)
+							.map((hero) => hero.draft.manifest.characterId),
 						objectives: campaignView.objectives,
 						inventory: equipment,
 						eventCue: null

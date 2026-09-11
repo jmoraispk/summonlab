@@ -5,7 +5,7 @@ import type {
 } from '@summonlab/contracts';
 import { describe, expect, it } from 'vitest';
 
-import type { CityResidentSource } from '../city';
+import type { CityResidentSource, CitySummonHero } from '../city';
 import { projectCityView } from './city';
 
 const heroIds = [
@@ -104,6 +104,37 @@ const residents: readonly CityResidentSource[] = [
 	residentSource(heroIds[1], 2, 'Second')
 ];
 
+const summonHeroes: readonly CitySummonHero[] = heroIds.map((heroId, index) => ({
+	heroId,
+	ordinal: (index + 1) as 1 | 2 | 3,
+	name: `Summon ${index + 1}`,
+	rarityStars: 1,
+	adultAge: 30,
+	heightCm: 170,
+	bodyBuild: 'athletic',
+	voice: 'measured',
+	role: 'resident',
+	primaryValue: 'duty',
+	primaryDrive: 'protect',
+	socialStyle: 'direct',
+	stressResponse: 'prepare',
+	dailyHabit: 'checks exits',
+	summonArt: { publicPath: `/summon-${index + 1}.webp`, width: 1024, height: 1536 },
+	rosterArt: null,
+	firstReply: null
+}));
+
+function campaign(summonedHeroCount: 0 | 1 | 2 | 3, onboardingStep = 0) {
+	return {
+		summonedHeroCount,
+		onboardingStep,
+		heroes: heroIds.map((heroId, index) => ({
+			ordinal: index + 1,
+			draft: { manifest: { characterId: heroId } }
+		}))
+	} as never;
+}
+
 const objectives = {
 	projectionVersion: 'campaign-objectives-v1',
 	runId: presentation.runId,
@@ -121,6 +152,9 @@ describe('City projection', () => {
 			scene,
 			presentation,
 			residents,
+			campaign: campaign(3, 3),
+			summonHeroes,
+			visibleHeroIds: heroIds,
 			objectives,
 			inventory: null,
 			eventCue: null
@@ -205,6 +239,9 @@ describe('City projection', () => {
 			scene,
 			presentation,
 			residents,
+			campaign: campaign(3, 3),
+			summonHeroes,
+			visibleHeroIds: heroIds,
 			objectives: null,
 			inventory: null,
 			eventCue: null
@@ -226,6 +263,39 @@ describe('City projection', () => {
 			availableActions: ['details']
 		});
 	});
+
+	it.each([
+		{ count: 0 as const, residentCount: 0, stage: 'village-entry', nextOrdinal: 1 },
+		{ count: 1 as const, residentCount: 1, stage: 'summoning', nextOrdinal: 2 },
+		{ count: 3 as const, residentCount: 3, stage: 'first-voices', nextOrdinal: null }
+	])(
+		'projects $count committed summons without leaking latent candidates',
+		({ count, residentCount, stage, nextOrdinal }) => {
+			const city = projectCityView({
+				mode: 'village',
+				scene,
+				presentation,
+				residents,
+				campaign: campaign(count),
+				summonHeroes,
+				visibleHeroIds: heroIds.slice(0, count),
+				objectives: null,
+				inventory: null,
+				eventCue: null
+			});
+
+			expect(city.residents).toHaveLength(residentCount);
+			expect(city.sceneResidents).toHaveLength(residentCount);
+			expect(city.introduction).toMatchObject({
+				stage,
+				summonedHeroCount: count,
+				nextHero: nextOrdinal === null ? null : { ordinal: nextOrdinal }
+			});
+			expect(city.occupancy.reduce((total, row) => total + row.occupantCount, 0)).toBe(
+				residentCount
+			);
+		}
+	);
 });
 
 function building(

@@ -42,6 +42,39 @@ export interface CityResidentArt {
 	readonly height: number;
 }
 
+export interface CitySummonHero {
+	readonly heroId: string;
+	readonly ordinal: 1 | 2 | 3;
+	readonly name: string;
+	readonly rarityStars: number;
+	readonly adultAge: number;
+	readonly heightCm: number;
+	readonly bodyBuild: string;
+	readonly voice: string;
+	readonly role: string;
+	readonly primaryValue: string;
+	readonly primaryDrive: string;
+	readonly socialStyle: string;
+	readonly stressResponse: string;
+	readonly dailyHabit: string;
+	readonly summonArt: CityResidentArt;
+	readonly rosterArt: CityResidentArt | null;
+	readonly firstReply: { readonly exactText: string; readonly publicReason: string } | null;
+}
+
+export interface CityIntroduction {
+	readonly stage: 'village-entry' | 'summoning' | 'first-voices' | 'complete';
+	readonly summonedHeroCount: 0 | 1 | 2 | 3;
+	readonly nextHero: CitySummonHero | null;
+	readonly summonedHeroes: readonly CitySummonHero[];
+	readonly answeredHeroCount: number;
+}
+
+export interface CitySummonIntent {
+	readonly ordinal: 1 | 2 | 3;
+	readonly expectedSummonedHeroCount: 0 | 1 | 2;
+}
+
 export interface CityResidentSource {
 	readonly heroId: string;
 	readonly ordinal: number;
@@ -109,6 +142,7 @@ export interface CityViewModel {
 	readonly gameTime: string;
 	readonly dayPhase: string;
 	readonly mode: CityMode;
+	readonly introduction: CityIntroduction;
 	readonly scene: SettlementSceneDefinition;
 	readonly residents: readonly CityResident[];
 	readonly sceneResidents: readonly CitySceneResident[];

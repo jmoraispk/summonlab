@@ -25,6 +25,12 @@ export async function generateCampaignCompany(
 	return [first, second, third];
 }
 
+export function campaignHeroIsSummoned(campaign: CampaignRun, heroId: string): boolean {
+	return campaign.heroes
+		.slice(0, campaign.summonedHeroCount)
+		.some((hero) => hero.draft.manifest.characterId === heroId);
+}
+
 export async function createPlayerCampaign(input: {
 	readonly databaseUrl: string;
 	readonly campaignSeed: string;
