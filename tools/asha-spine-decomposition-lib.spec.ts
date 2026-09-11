@@ -1,5 +1,5 @@
 import { createHash } from 'node:crypto';
-import { mkdir, mkdtemp, rm, symlink, writeFile } from 'node:fs/promises';
+import { mkdir, mkdtemp, readFile, rm, symlink, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 
@@ -8,9 +8,12 @@ import { afterEach, describe, expect, it } from 'vitest';
 
 import {
 	loadDecompositionBrief,
+	materializeDecompositionCandidate,
+	normalizeProviderBoard,
 	parseDecompositionCliArgs,
 	preflightDecomposition,
 	resolveDecompositionPaths,
+	validateDecompositionCandidate,
 	type AshaSpineDecompositionBrief,
 	type DecompositionVersion
 } from './asha-spine-decomposition-lib.js';
@@ -43,6 +46,54 @@ async function identityPortraitPng(): Promise<Buffer> {
 			background: { r: 18, g: 32, b: 48 }
 		}
 	})
+		.png()
+		.toBuffer();
+}
+
+function setRectangle(
+	pixels: Buffer,
+	canvasWidth: number,
+	rectangle: { left: number; top: number; width: number; height: number },
+	color: readonly [number, number, number, number]
+): void {
+	for (let y = rectangle.top; y < rectangle.top + rectangle.height; y += 1) {
+		for (let x = rectangle.left; x < rectangle.left + rectangle.width; x += 1) {
+			const offset = (y * canvasWidth + x) * 4;
+			pixels.set(color, offset);
+		}
+	}
+}
+
+async function providerBoard(
+	options: {
+		nearArm?: { left: number; top: number; width: number; height: number };
+		braid?: { left: number; top: number; width: number; height: number };
+	} = {}
+): Promise<Buffer> {
+	const panelSize = 768;
+	const boardSize = panelSize * 2;
+	const pixels = Buffer.alloc(boardSize * boardSize * 4);
+	setRectangle(pixels, boardSize, { left: 0, top: 0, width: 768, height: 768 }, [220, 42, 36, 255]);
+	const nearArm = options.nearArm ?? { left: 430, top: 300, width: 20, height: 30 };
+	const braid = options.braid ?? { left: 170, top: 300, width: 20, height: 30 };
+	setRectangle(
+		pixels,
+		boardSize,
+		{
+			left: panelSize + nearArm.left,
+			top: nearArm.top,
+			width: nearArm.width,
+			height: nearArm.height
+		},
+		[255, 255, 255, 255]
+	);
+	setRectangle(
+		pixels,
+		boardSize,
+		{ left: braid.left, top: panelSize + braid.top, width: braid.width, height: braid.height },
+		[255, 255, 255, 255]
+	);
+	return sharp(pixels, { raw: { width: boardSize, height: boardSize, channels: 4 } })
 		.png()
 		.toBuffer();
 }
@@ -103,6 +154,25 @@ describe('Asha Spine decomposition preflight', () => {
 			command: 'preflight',
 			version: 1
 		});
+	});
+
+	it('requires an absolute provider output for materialization', () => {
+		expect(
+			parseDecompositionCliArgs([
+				'materialize',
+				'--version',
+				'1',
+				'--provider-output',
+				'/tmp/provider-result.png'
+			])
+		).toEqual({
+			command: 'materialize',
+			version: 1,
+			providerOutputPath: '/tmp/provider-result.png'
+		});
+		expect(() =>
+			parseDecompositionCliArgs(['materialize', '--provider-output', 'provider-result.png'])
+		).toThrow('provider output path must be absolute and normalized');
 	});
 
 	it('resolves every versioned output beneath the owned root', async () => {
@@ -243,5 +313,151 @@ describe('Asha Spine decomposition preflight', () => {
 		);
 
 		await expect(loadDecompositionBrief(path)).rejects.toThrow('Unrecognized key');
+	});
+});
+
+describe('Asha Spine decomposition materialization', () => {
+	it('uses provider alpha for semantics and approved RGB for visible parts', async () => {
+		const fixture = await workspaceFixture();
+		const brief = briefFixture(fixture.identityBytes, fixture.cutoutBytes);
+		const providerOutputPath = join(fixture.workspace, 'provider-return.png');
+		await writeFile(providerOutputPath, await providerBoard());
+
+		const result = await materializeDecompositionCandidate({
+			brief,
+			workspaceRoot: fixture.workspace,
+			version: 1,
+			providerOutputPath
+		});
+		if (result.disposition === 'failed') throw new Error(result.failure.reason);
+
+		expect(result.measurements).toMatchObject({
+			visiblePartSourceMismatchPixels: 0,
+			bodyOutsideMatteMismatchPixels: 0,
+			recompositionOutsideRepairMismatchPixels: 0,
+			nearArmMattePixels: 600,
+			braidMattePixels: 600
+		});
+		const nearArm = await sharp(join(fixture.workspace, result.outputs.nearArm.path))
+			.ensureAlpha()
+			.raw()
+			.toBuffer();
+		const source = await sharp(join(fixture.workspace, brief.acceptedCutout))
+			.ensureAlpha()
+			.raw()
+			.toBuffer();
+		const selectedOffset = (310 * 768 + 435) * 4;
+		expect(nearArm.subarray(selectedOffset, selectedOffset + 4)).toEqual(
+			source.subarray(selectedOffset, selectedOffset + 4)
+		);
+		expect(await validateDecompositionCandidate(brief, fixture.workspace, 1)).toEqual(result);
+	});
+
+	it('records a matte entering the protected face region as failed evidence', async () => {
+		const fixture = await workspaceFixture();
+		const brief = {
+			...briefFixture(fixture.identityBytes, fixture.cutoutBytes),
+			partEnvelopes: {
+				nearArm: { left: 0, top: 0, width: 768, height: 768 },
+				braid: { left: 156, top: 0, width: 305, height: 515 }
+			}
+		};
+		const providerOutputPath = join(fixture.workspace, 'provider-return.png');
+		await writeFile(
+			providerOutputPath,
+			await providerBoard({ nearArm: { left: 330, top: 120, width: 20, height: 20 } })
+		);
+
+		const result = await materializeDecompositionCandidate({
+			brief,
+			workspaceRoot: fixture.workspace,
+			version: 1,
+			providerOutputPath
+		});
+		expect(result).toMatchObject({
+			disposition: 'failed',
+			failure: {
+				stage: 'decomposition',
+				reason: 'near-arm matte intersects protected faceAndMarking region'
+			}
+		});
+	});
+
+	it('rejects a non-square provider board before creating outputs', async () => {
+		const bytes = await sharp({
+			create: {
+				width: 1024,
+				height: 1200,
+				channels: 4,
+				background: { r: 0, g: 0, b: 0, alpha: 0 }
+			}
+		})
+			.png()
+			.toBuffer();
+
+		await expect(normalizeProviderBoard(bytes, 1024)).rejects.toThrow(
+			'provider board must be square RGBA'
+		);
+	});
+
+	it('persists an invalid provider board as terminal evidence without part outputs', async () => {
+		const fixture = await workspaceFixture();
+		const brief = briefFixture(fixture.identityBytes, fixture.cutoutBytes);
+		const providerOutputPath = join(fixture.workspace, 'invalid-provider-return.png');
+		await writeFile(
+			providerOutputPath,
+			await sharp({
+				create: {
+					width: 1024,
+					height: 1200,
+					channels: 4,
+					background: { r: 0, g: 0, b: 0, alpha: 0 }
+				}
+			})
+				.png()
+				.toBuffer()
+		);
+
+		const result = await materializeDecompositionCandidate({
+			brief,
+			workspaceRoot: fixture.workspace,
+			version: 1,
+			providerOutputPath
+		});
+		const paths = resolveDecompositionPaths(brief, fixture.workspace, 1);
+		expect(result).toMatchObject({
+			disposition: 'failed',
+			failure: { stage: 'provider-board', reason: 'provider board must be square RGBA' },
+			outputs: null,
+			measurements: null
+		});
+		await expect(readFile(paths.providerBoard)).resolves.toEqual(
+			await readFile(providerOutputPath)
+		);
+		await expect(readFile(paths.result, 'utf8')).resolves.toContain('provider-board');
+		await expect(readFile(paths.bodyCore)).rejects.toMatchObject({ code: 'ENOENT' });
+		expect(await validateDecompositionCandidate(brief, fixture.workspace, 1)).toEqual(result);
+	});
+
+	it('detects a changed materialized output by its persisted hash', async () => {
+		const fixture = await workspaceFixture();
+		const brief = briefFixture(fixture.identityBytes, fixture.cutoutBytes);
+		const providerOutputPath = join(fixture.workspace, 'provider-return.png');
+		await writeFile(providerOutputPath, await providerBoard());
+		const result = await materializeDecompositionCandidate({
+			brief,
+			workspaceRoot: fixture.workspace,
+			version: 1,
+			providerOutputPath
+		});
+		if (result.disposition === 'failed') throw new Error(result.failure.reason);
+		const bodyCorePath = join(fixture.workspace, result.outputs.bodyCore.path);
+		const changed = await readFile(bodyCorePath);
+		changed[changed.length - 1] = changed[changed.length - 1]! ^ 1;
+		await writeFile(bodyCorePath, changed);
+
+		await expect(validateDecompositionCandidate(brief, fixture.workspace, 1)).rejects.toThrow(
+			'bodyCore hash mismatch'
+		);
 	});
 });

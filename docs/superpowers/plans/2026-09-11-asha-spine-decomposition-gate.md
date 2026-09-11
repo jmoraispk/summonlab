@@ -300,6 +300,11 @@ export type AshaSpineDecompositionResult = Readonly<{
 
 Stable-serialize with sorted keys and trailing newline. Redact the home username in the provider return path to `$PROVIDER_OUTPUT_ROOT/...`, while retaining the repository board path and raw hash.
 
+A failed receipt keeps the same authority, prompt, and provider fields but sets `outputs` and
+`measurements` to `null`, sets `reconstructedRegions` to `[]`, and records
+`failure: { stage: 'provider-board' | 'decomposition', reason: string }`. In that state the raw board
+and receipt are required and every part/recomposition path is forbidden.
+
 - [ ] **Step 6: Extend the CLI**
 
 Support only:
