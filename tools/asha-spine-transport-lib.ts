@@ -306,15 +306,16 @@ export type TransportImport = Readonly<{
 	}>;
 }>;
 
-export function buildTransportImport(_manifest: AshaSpineTransportManifest): TransportImport {
+export function buildTransportImport(manifest: AshaSpineTransportManifest): TransportImport {
+	const paddedFeetY = manifest.feetAnchor.sourceY + manifest.transportCanvas.top;
 	return {
 		skeleton: {
 			hash: 'asha-spine-transport-v1',
-			spine: '4.3.26',
-			x: -512,
-			y: -158,
-			width: 1024,
-			height: 1024,
+			spine: manifest.editorVersion,
+			x: -manifest.transportCanvas.width / 2,
+			y: -(manifest.transportCanvas.height - paddedFeetY),
+			width: manifest.transportCanvas.width,
+			height: manifest.transportCanvas.height,
 			images: './images/'
 		},
 		bones: [{ name: 'root' }, { name: 'body', parent: 'root' }],
@@ -326,9 +327,9 @@ export function buildTransportImport(_manifest: AshaSpineTransportManifest): Tra
 					body: {
 						asha_transport: {
 							path: 'asha-transport-v1',
-							y: 354,
-							width: 1024,
-							height: 1024
+							y: paddedFeetY - manifest.transportCanvas.height / 2,
+							width: manifest.transportCanvas.width,
+							height: manifest.transportCanvas.height
 						}
 					}
 				}
@@ -338,7 +339,11 @@ export function buildTransportImport(_manifest: AshaSpineTransportManifest): Tra
 			idle_transport_probe: {
 				bones: {
 					body: {
-						rotate: [{ value: 0 }, { time: 0.5, value: 0.35 }, { time: 1, value: 0 }]
+						rotate: [
+							{ value: 0 },
+							{ time: manifest.animation.durationSeconds / 2, value: 0.35 },
+							{ time: manifest.animation.durationSeconds, value: 0 }
+						]
 					}
 				}
 			}

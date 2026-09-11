@@ -8,9 +8,9 @@ if (mode !== '--write' && mode !== '--check') {
 const result = await runAshaSpineTransport({
 	workspaceRoot: process.cwd(),
 	mode: mode === '--write' ? 'write' : 'check',
-	log: (message) => console.log(message)
+	log: (message) => process.stdout.write(`${message}\n`)
 });
 
-console.log(
-	`Asha Spine transport ${result.mode} passed: ${result.validation.pageWidth}x${result.validation.pageHeight}, ${result.validation.animationDurationSeconds}s probe.`
+process.stdout.write(
+	`Asha Spine transport ${result.mode} passed: ${result.validation.pageWidth}x${result.validation.pageHeight}, ${result.validation.animationDurationSeconds}s probe.\n`
 );
