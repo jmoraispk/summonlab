@@ -17,6 +17,7 @@
 		"test:e2e": "node scripts/run-playwright.js"
 	},
 	"dependencies": {
+		"@esotericsoftware/spine-pixi-v8": "4.3.13",
 		"@summonlab/characters": "workspace:*",
 		"@summonlab/config": "workspace:*",
 		"@summonlab/content": "workspace:*",
