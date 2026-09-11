@@ -347,7 +347,7 @@ git commit -m "feat(art): materialize Asha decomposition layers"
 
 - [ ] **Step 1: Read production instructions**
 
-At execution time, read `summonlab-image-production/SKILL.md` and `imagegen/SKILL.md` completely, including directly required references. Use the former for manifest-bound persistence and the latter for one source-referenced raster edit. Do not use Blender or manually paint anatomy.
+At execution time, read `summonlab-image-production/SKILL.md` and `imagegen/SKILL.md` completely, including directly required references. Apply the former's source-bound, collision-safe persistence and provenance rules and use the latter for one source-referenced raster edit. Its packaged family/legacy scripts are intentionally not used here: their schemas and owned roots cover enemy-production targets, while this canary has an approved Asha-specific brief, output root, and strict validator. Do not invent an incompatible family assignment merely to route through those scripts. The Asha decomposition CLI is the persistence and validation boundary for this gate. Do not use Blender or manually paint anatomy.
 
 - [ ] **Step 2: Prove preflight before provider access**
 
