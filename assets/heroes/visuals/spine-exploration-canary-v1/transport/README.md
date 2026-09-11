@@ -9,6 +9,9 @@ The art remains candidate / transport-only: this gate generated no new Asha pixe
 approve a production animation. Owner review is required before a Gate 2 decomposition plan is
 written.
 
+Owner review on 2026-09-11 selected **84 px visible character height** as the balanced,
+configurable exploration default and authorized Gate 2 planning.
+
 This canary proves the Spine editor-to-runtime transport path with Asha's existing approved raster
 cutout. `idle_transport_probe` is a deliberately tiny technical motion test, not Asha's production
 idle, and none of these files author or approve new character artwork.

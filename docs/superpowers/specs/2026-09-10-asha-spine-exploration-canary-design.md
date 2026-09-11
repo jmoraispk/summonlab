@@ -2,6 +2,10 @@
 
 **Status:** Approved by the project owner on 2026-09-10.
 
+**Owner calibration checkpoint (2026-09-11):** Use **84 px visible character height** as the
+balanced exploration default. Keep the value configurable; 72 px and 96 px remain calibration
+evidence, not additional production sizes.
+
 ## Purpose
 
 Prove that Summonlab can build, export, load, and visually review one identity-safe Spine 4.3
