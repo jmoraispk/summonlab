@@ -1,8 +1,8 @@
 # Single Village Progression Design
 
-**Status:** Accepted in conversation; written specification awaiting owner review
+**Status:** Approved architecture; consolidated specification awaiting owner review
 
-**Date:** 2026-09-10
+**Date:** 2026-09-11
 
 **Supersedes:** The player-facing route and lab-retention decisions in
 `docs/superpowers/specs/2026-09-09-village-city-convergence-design.md`
@@ -10,14 +10,15 @@
 ## Purpose
 
 Summonlab currently exposes implementation history as if it were product structure. A fixture
-Village, a database campaign route, an old settlement inspector, separate onboarding, separate Tower
-and exploration studies, and multiple combat studies can all look like competing ways to play. The
+Village, a database campaign route, a full-page onboarding presentation, separate Tower and
+exploration studies, and multiple combat studies can all look like competing ways to play. The
 player should not need to understand any of those names.
 
 The current product has one anonymous player, one persistent Village, one chronological tutorial,
-and one ongoing game loop. Internal run identifiers remain available for persistence, replay,
-concurrency, and future account migration, but they are never a player choice and never create a
-second Village interface.
+and one ongoing game loop. The front page enters the visual Village directly; it never interposes a
+full-page prologue, company reveal, or lab. Internal run identifiers remain available for
+persistence, replay, concurrency, and future account migration, but they are never a player choice
+and never create a second Village interface.
 
 ## Product invariant
 
@@ -36,9 +37,10 @@ The tutorial is a persisted, monotonic sequence:
 
 ```text
 Front page
-  → enter or resume the single Village
-  → Village story introduction
-  → summon three heroes at the Summoning Circle
+  → enter or resume directly in the visual Village
+  → receive the story introduction in the Village
+  → enter the Summoning House from the Summoning Circle site
+  → summon three heroes individually into the Village
   → create the starter equipment at the Forge
   → equip the three residents
   → inspect the Tower and select Floor One
@@ -53,8 +55,8 @@ stage. It never falls back to a lab or restarts through a second onboarding impl
 
 ### Progression gates
 
-1. The initial Village introduction activates the Summoning Circle and explains the Village,
-   summoning, and immediate Tower pressure.
+1. The initial in-Village introduction activates the Summoning Circle site and explains the Village,
+   summoning, and immediate Tower pressure without replacing the map.
 2. Each of the three required summons is committed individually. The summoned hero appears at the
    center of the current Village before the next summon begins.
 3. Completing the third summon activates the starter Forge tutorial.
@@ -66,6 +68,17 @@ stage. It never falls back to a lab or restarts through a second onboarding impl
 The Missions destination always shows the current tutorial objective and completed steps. Locked
 actions remain visible only when their location helps teach the Village; they give one concise unlock
 condition and never send the player to a prototype.
+
+## Entry presentation rule
+
+`/village` always mounts `CityScreen` with `CityVillageViewport`, including for a new campaign. A
+new Village initially has no summoned residents. Story beats, guidance, locks, and calls to action
+appear as map overlays, facility states, dialogue, or contextual panels over the canonical Village.
+
+The current full-screen `SingletonOnboarding` presentation and the static **The First Three** opening
+lab are deleted once their required story state and actions are represented in the Village. They are
+not retained behind an alternate URL. Each successful summon commits one resident and places that
+resident in the center of the current Village before the next summon is offered.
 
 ## Anonymous singleton state
 
@@ -109,19 +122,26 @@ The approved Village image and interactive composition remain canonical.
 
 | Facility | Canonical action |
 | --- | --- |
-| Summoning Circle | Open the summon sequence and introduce the arriving hero in the current Village |
+| Summoning Circle site / Summoning House | Open the interior summon sequence and introduce each arriving hero in the current Village |
 | Residence | Recovery, sleep, meals, social activity, reading, and unstructured time |
 | Training Grounds | Training proposals, practice activity, and skill or attribute development |
 | Forge | Starter equipment tutorial, later crafting, materials, and forge work |
 | Portal | Open the same Tower surface as the Tower dock destination |
 
-The Portal and Tower dock never lead to competing Tower screens. The facility is the spatial entry;
-the dock is the global entry. Both open the same `/tower` state.
+The blue Portal and Tower dock never lead to competing Tower screens. The facility is the spatial
+entry; the dock is the global entry. Both open the same `/tower` state. The blue Portal is not used
+for hero summoning.
+
+The existing Summoning Circle remains the clickable site until a later Village-background revision
+can replace its outdoor art with a house. Its action may open the Summoning House interior before the
+background art changes. That visual revision must not introduce another route, campaign, or Village
+renderer.
 
 ## Summoning and hero visual contract
 
-The Summoning Circle owns all player-facing hero acquisition. The useful presentation from the
-existing summon study is migrated into the canonical Village interaction rather than linked as a
+The Summoning House, entered from the Summoning Circle site, owns all player-facing hero acquisition.
+Useful choreography, identity presentation, dossier feedback, and individual-arrival behavior from
+the existing summon study are migrated into this canonical interaction rather than linked as a
 separate lab.
 
 Every spawn-enabled hero has one canonical identity record and three approved raster roles:
@@ -136,14 +156,21 @@ summon pool. Development tools may show a labeled missing-art state, but product
 character through CSS, SVG, emoji, canvas geometry, or an opaque rectangular portrait.
 
 The current catalog contains 200 approved summon/chibi pairs but only three canonical Village
-cutouts. The six approved route-local Village cutouts are migrated into the canonical catalog before
-their prototype directory is deleted. Remaining heroes become spawn-enabled as their Village cutouts
-are approved; completing art readiness does not create another runtime path.
+cutouts. Six historical route-local Village cutouts remain documentation evidence and are not
+implicitly approved or spawn-enabled. A visual enters the runtime only after it is deliberately
+reviewed, promoted into the canonical catalog, and passes the summon/portrait/chibi/Village identity
+checks. Remaining heroes become spawn-enabled through that same promotion process; completing art
+readiness does not create another runtime path.
 
 The initial three summons use the same catalog and command path as every later summon. Tutorial
 selection rules may constrain which three are offered, but they do not create tutorial-only hero
 records. Each arrival explains why the hero was summoned, introduces the Village and Tower pressure
 from that hero's perspective, and records the hero's first response before returning to the same map.
+
+The four existing opening mockups remain historical visual evidence outside route ownership. In
+particular, the empty stone-chamber background from the opening study is the leading candidate for
+the Summoning House interior. Preserving an image does not preserve the opening lab UI, make it a
+runtime asset, or approve it for production; that requires an explicit later visual decision.
 
 ## Starter equipment and Forge tutorial
 
@@ -170,13 +197,16 @@ starter exception.
 ## Unified Tower mode
 
 Tower selection, exploration, and combat are states of one `/tower` surface. They are not separate
-player routes.
+player routes. The Tower Threshold lab has no product role and is deleted outright rather than
+migrated as another threshold screen.
 
 ### Floor selection
 
 The Tower opens on an authored floor list. Each floor reports locked, available, active, or cleared
 state; known monster families; objective; notable rewards; and available control modes. The initial
-tutorial selects Floor One.
+tutorial selects Floor One. The useful authored material from Mission Lab for the first five floors
+-- objectives, topology, discoveries, knowledge boundaries, story anchors, and rewards -- migrates
+into this floor model before Mission Lab is deleted.
 
 ### First clear
 
@@ -185,13 +215,23 @@ automatic choices, reveals fog, inspects landmarks, collects resources, and enco
 The same legal movement and encounter commands serve player clicks and later agent-selected choices.
 
 When an encounter begins, the exploration map remains mounted with its exact authoritative state.
-The central Tower viewport transitions into combat presentation. Victory returns to the same tile,
-reveals or grants the encounter result, and resumes exploration. Defeat resolves the attempt without
-navigating through an unrelated combat page.
+The central Tower viewport transitions into the shared encounter interface. Victory returns to the
+same tile, reveals or grants the encounter result, and resumes exploration. Defeat resolves the
+attempt without navigating through an unrelated combat page.
 
-This is one unified Tower encounter mode: exploration supplies position and opportunities; combat is
-the encounter state inside that mode. Separate reducers or contracts may own their data, but the
-player experiences one continuous surface.
+Exploration supplies position and opportunities; combat is the encounter state inside the same
+surface. One authoritative encounter, party, action, result, reward, and replay contract supports two
+initial control presentations:
+
+- **Turn-based:** based on the useful Ruined Observatory study; the player chooses legal actions and
+  advances the encounter deliberately.
+- **Automated:** based on the useful Ruined Threshold study; residents choose actions while the
+  player observes and may use agreed presentation controls such as pause, speed, or detail views.
+
+These are adapters over the same rules and state, not independent combat engines, loot paths, or
+player routes. Both are initially available through the canonical Tower encounter interface so they
+can be compared in context. A later playtest may keep both or delete one; retiring the old lab routes
+does not wait for that choice once both useful presentations have canonical homes.
 
 ### Cleared floors
 
@@ -258,19 +298,24 @@ stronger authority than routine proposals, but ordinary schedule management pres
 | City projector, typed intents, clock, occupancy, Residents, Inventory, and Missions modes | Keep and extend |
 | `/settlement-lab` and `HearthScene` | Delete; obsolete parallel Village inspector |
 | `/living-village-lab/village` | Remove as a browsable route; keep deterministic data only inside tests |
-| `/living-village-lab/opening` | Migrate useful story presentation into the Village introduction, then delete |
-| `/living-village-lab/summon` | Migrate useful summon presentation into the Summoning Circle, then delete |
-| `/living-village-lab/tower` and `/living-village-lab/exploration` | Migrate useful mechanics into `/tower`, then delete |
-| `/living-village-lab/combat` and `/living-village-lab/realtime-combat` | Select and migrate the canonical combat presentation into `/tower`, then delete |
-| `/onboarding/[runId]` | Replace with persisted Village tutorial stages, then delete |
+| `SingletonOnboarding` and `/onboarding/[runId]` | Move required story state and actions onto the Village, then delete the full-page presentation and route |
+| `/living-village-lab/opening` (**The First Three**) | Preserve its four mockups as evidence, move any required story into the Village, then delete the UI and route |
+| `/living-village-lab/summon` | Migrate useful summon behavior into the Summoning House, then delete |
+| `/living-village-lab/tower` (**Tower Threshold**) | Delete outright; the canonical blue Portal and Tower dock already own entry |
+| `/living-village-lab/exploration` | Port compatible Floor One mechanics into `/tower`, then delete |
+| `/mission-lab` | Migrate useful first-five-floor authored content into `/tower`, then delete |
+| `/living-village-lab/combat` (**Ruined Observatory**) | Migrate as the turn-based presentation of the shared Tower encounter, then delete the route |
+| `/living-village-lab/realtime-combat` (**Ruined Threshold**) | Migrate as the automated presentation of the shared Tower encounter, then delete the route |
+| `/living-village-lab` root, `LabBackLink`, route fixtures, and route tests | Delete after the last owned child capability has a tested canonical home |
 | Pre-City settlement presentation inside `/play/[runId]` | Remove after the singleton entry and tutorial own those stages |
-| `/mission/[runId]` as a player combat destination | Fold the relevant encounter presentation into `/tower`; retain only non-UI engine ownership that remains useful |
-| Route-local hero cutouts and fixture hero catalogs | Promote approved assets to the canonical catalog, then delete the route-local ownership |
+| `/summon/[runId]` and `/mission/[runId]` player interfaces | Delete after their required commands are available canonically; retain internal engine/API identifiers only where persistence needs them |
+| Route-local hero cutouts and fixture hero catalogs | Keep historical images as evidence; promote only explicitly approved assets, then delete route-local runtime ownership |
 | Historical specs, decisions, and evidence | Retain as history; mark superseded decisions explicitly rather than rewriting provenance |
 
-Other labs are developer-only experiments until reviewed. They are not linked from the front page,
-Village, dock, facilities, or canonical progression. Each is later classified as migrate or delete;
-none may silently become a second product path.
+Other experiments are not part of the product merely because they exist in the repository. They are
+not linked from the front page, Village, dock, facilities, or canonical progression. Each must be
+explicitly classified as evidence, migrate, or delete; none may silently become a second product
+path.
 
 ## Delivery decomposition
 
@@ -280,14 +325,15 @@ This design is delivered as five reviewable subprojects rather than one reposito
    entry, establish the five canonical public destinations, remove the old settlement renderer, and
    remove the browsable fixture Village. See the
    [implementation plan](../plans/2026-09-10-singleton-village-route-foundation.md).
-2. **Village introduction and summoning:** move the story and summon presentation into the Summoning
-   Circle, persist the first three arrivals, migrate their approved visual bundles, and retire the
-   competing opening and summon routes.
+2. **Direct Village and Summoning House:** make every campaign stage mount the visual Village, move
+   required story into its overlays and facilities, persist the first three individual arrivals,
+   and retire `SingletonOnboarding`, the opening lab, the summon lab, and the legacy summon UI.
 3. **Starter equipment:** add the Master-assisted Forge tutorial, create the fixed starting items,
    assign three legal loadouts, and make Inventory and Residents read the same state.
-4. **Unified Floor One:** port the compatible exploration contracts, render floor selection,
-   exploration, and combat inside `/tower`, return to the exact encounter tile, and retire the Tower,
-   exploration, combat, and player mission prototypes that it replaces.
+4. **Canonical Tower and combat:** port the compatible exploration contracts and first-five-floor
+   authored content; render floor selection, exploration, turn-based combat, and automated combat
+   inside `/tower`; return to the exact encounter tile; and retire Tower Threshold, Mission Lab,
+   Ruined Observatory, Ruined Threshold, legacy mission UI, and the emptied lab root.
 5. **Village return and autonomy:** persist extraction return, introduce proposed schedules and agent
    deviations, and unlock the ongoing Village-to-Tower loop.
 
@@ -301,12 +347,14 @@ Deletion follows behavior migration, not filename recognition:
 
 1. Identify liked behavior, authoritative state, approved assets, tests, and historical evidence owned
    by the old path.
-2. Add a failing canonical-path test for the behavior that must survive.
-3. Implement the behavior through the singleton Village or Tower path.
-4. Verify the canonical path on desktop and phone.
-5. Delete the old route, renderer, route-local state, and navigation entry in the same reviewable
+2. Record a route-retirement manifest naming each behavior to migrate, asset to preserve, contract to
+   reuse, and implementation artifact to delete. Unclassified files block deletion.
+3. Add a failing canonical-path test for the behavior that must survive.
+4. Implement the behavior through the singleton Village or Tower path.
+5. Verify the canonical path on desktop and phone and compare it with the source study.
+6. Delete the old route, renderer, route-local state, and navigation entry in the same reviewable
    slice.
-6. Add source-boundary tests that prevent the retired component or route from returning.
+7. Add source-boundary tests that prevent the retired component or route from returning.
 
 Old routes do not remain as interactive compatibility pages. Saved-state compatibility belongs in
 engine adapters and database migrations, not duplicate interfaces.
@@ -328,15 +376,17 @@ engine adapters and database migrations, not duplicate interfaces.
 
 The convergence is complete when:
 
-1. **Enter Village** creates or resumes one anonymous persisted Village and reaches `/village` without
-   exposing a run ID.
+1. **Enter Village** creates or resumes one anonymous persisted Village and reaches the visual
+   `CityVillageViewport` at `/village` without exposing a run ID or showing a full-page prologue.
 2. Source-boundary tests prove that only `CityVillageViewport` renders the player-facing Village and
    that the retired Village components and routes no longer exist.
 3. A clean run completes the introduction, three summons, starter craft, three legal loadouts, Floor
    One, extraction, return, and schedule tutorial without visiting a lab or alternate onboarding page.
-4. Portal and Tower dock entry reach the same Tower state.
-5. An encounter transitions within `/tower`, returns to the exact exploration tile after victory, and
-   resumes correctly after reload.
+4. The Summoning Circle site opens the Summoning House; it never opens the Tower or a lab. The blue
+   Portal and Tower dock entry reach the same Tower state.
+5. Turn-based and automated encounters are selectable inside the same `/tower` interface, consume
+   the same encounter, party, result, and reward contracts, return to the exact exploration tile
+   after victory, and resume correctly after reload.
 6. Every spawn-enabled hero has approved summon, combat-chibi, and Village-cutout assets resolved from
    the canonical catalog.
 7. Legacy and current heroes use identical summon, Village, equipment, Tower, and persistence paths.
@@ -344,8 +394,10 @@ The convergence is complete when:
    read the same singleton campaign state.
 9. Desktop and 390-by-844 phone E2E tests complete the same progression with the five-option dock as
    the only global navigation chrome.
-10. No public navigation or facility links to `/living-village-lab`, `/settlement-lab`, ID-bearing play
-    routes, or separate exploration/combat pages.
+10. No player-facing `/living-village-lab`, `/mission-lab`, `/settlement-lab`, `/summon/[runId]`,
+    `/mission/[runId]`, full-page onboarding, or separate exploration/combat interface remains.
+11. The four opening-study mockups and other retained historical evidence live outside deleted route
+    ownership and cannot be imported by the production application accidentally.
 
 ## Explicitly deferred
 
@@ -353,6 +405,9 @@ The convergence is complete when:
 - Multiple Villages or Village selection.
 - Multiple simultaneous campaigns or parties.
 - Final cleared-floor idle timing, risk, injury, and yield balance.
+- The final decision to keep both Tower combat control modes or delete one after canonical playtests.
+- Replacing the outdoor Summoning Circle artwork with a Summoning House building; the canonical
+  interior interaction may ship first.
 - Full forging skill progression beyond the starter exception.
 - Floors Two through One Hundred beyond interfaces required to keep Floor One extensible.
 - Synthesis placement and rules.
