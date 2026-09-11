@@ -1,0 +1,63 @@
+{
+  "skeleton": {
+    "hash": "asha-spine-transport-v1",
+    "spine": "4.3.26",
+    "x": -512,
+    "y": -158,
+    "width": 1024,
+    "height": 1024,
+    "images": "./images/"
+  },
+  "bones": [
+    {
+      "name": "root"
+    },
+    {
+      "name": "body",
+      "parent": "root"
+    }
+  ],
+  "slots": [
+    {
+      "name": "body",
+      "bone": "body",
+      "attachment": "asha_transport"
+    }
+  ],
+  "skins": [
+    {
+      "name": "default",
+      "attachments": {
+        "body": {
+          "asha_transport": {
+            "path": "asha-transport-v1",
+            "y": 354,
+            "width": 1024,
+            "height": 1024
+          }
+        }
+      }
+    }
+  ],
+  "animations": {
+    "idle_transport_probe": {
+      "bones": {
+        "body": {
+          "rotate": [
+            {
+              "value": 0
+            },
+            {
+              "time": 0.5,
+              "value": 0.35
+            },
+            {
+              "time": 1,
+              "value": 0
+            }
+          ]
+        }
+      }
+    }
+  }
+}
