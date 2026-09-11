@@ -4,7 +4,12 @@ import { FIRST_OBSERVATION, generateCharacterDraft, recipeFromSeed } from '@summ
 import type { EngineCommand } from '@summonlab/contracts';
 import { describe, expect, it } from 'vitest';
 
-import { advanceCampaignOnboarding, getCampaignRun, registerCampaignRun } from './campaign.js';
+import {
+	advanceCampaignOnboarding,
+	getCampaignRun,
+	registerCampaignRun,
+	summonNextCampaignHero
+} from './campaign.js';
 import { commitEngineCommand, getEngineReplay, getEngineSnapshot } from './engine.js';
 import { createProofRun } from './proof.js';
 
@@ -51,8 +56,42 @@ describe('campaign persistence', () => {
 			controlMode: 'wait',
 			heroes
 		});
-		expect((await advanceCampaignOnboarding(databaseUrl, firstRunId, 1)).onboardingStep).toBe(1);
-		expect((await advanceCampaignOnboarding(databaseUrl, firstRunId, 2)).onboardingStep).toBe(2);
+		expect((await getCampaignRun(databaseUrl, firstRunId))?.summonedHeroCount).toBe(0);
+		await expect(advanceCampaignOnboarding(databaseUrl, firstRunId, 2)).rejects.toThrow(
+			'All three heroes must be summoned before onboarding can advance'
+		);
+		await expect(
+			summonNextCampaignHero(databaseUrl, firstRunId, {
+				ordinal: 2,
+				expectedSummonedHeroCount: 0
+			})
+		).rejects.toThrow('The next summon must be ordinal 1');
+
+		const firstSummon = await summonNextCampaignHero(databaseUrl, firstRunId, {
+			ordinal: 1,
+			expectedSummonedHeroCount: 0
+		});
+		expect(firstSummon).toMatchObject({ summonedHeroCount: 1, onboardingStep: 1 });
+		expect(
+			(
+				await summonNextCampaignHero(databaseUrl, firstRunId, {
+					ordinal: 1,
+					expectedSummonedHeroCount: 0
+				})
+			).summonedHeroCount
+		).toBe(1);
+		expect(
+			await summonNextCampaignHero(databaseUrl, firstRunId, {
+				ordinal: 2,
+				expectedSummonedHeroCount: 1
+			})
+		).toMatchObject({ summonedHeroCount: 2, onboardingStep: 1 });
+		expect(
+			await summonNextCampaignHero(databaseUrl, firstRunId, {
+				ordinal: 3,
+				expectedSummonedHeroCount: 2
+			})
+		).toMatchObject({ summonedHeroCount: 3, onboardingStep: 2 });
 		await expect(advanceCampaignOnboarding(databaseUrl, firstRunId, 3)).rejects.toThrow(
 			'Each summoned hero must answer'
 		);
@@ -99,11 +138,13 @@ describe('campaign persistence', () => {
 			runId: secondRunId,
 			restartedFromRunId: firstRunId,
 			lifecycle: 'active',
-			onboardingStep: 0
+			onboardingStep: 0,
+			summonedHeroCount: 0
 		});
 		expect(await getCampaignRun(databaseUrl, firstRunId)).toMatchObject({
 			lifecycle: 'superseded',
-			onboardingStep: 3
+			onboardingStep: 3,
+			summonedHeroCount: 3
 		});
 		const replay = await getEngineReplay(databaseUrl, firstRunId);
 		expect(replay?.verified).toBe(true);

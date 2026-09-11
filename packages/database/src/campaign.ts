@@ -5,6 +5,7 @@ import {
 	type CampaignControlMode,
 	type CampaignHero,
 	type CampaignRun,
+	type CampaignSummonRequest,
 	type CharacterDraft,
 	type Run
 } from '@summonlab/contracts';
@@ -18,6 +19,7 @@ interface CampaignRunRow {
 	control_mode: CampaignControlMode;
 	lifecycle: CampaignRun['lifecycle'];
 	onboarding_step: number;
+	summoned_hero_count: number;
 	restarted_from_run_id: string | null;
 	heroes: unknown;
 	created_at: Date | string;
@@ -45,6 +47,7 @@ function campaignFromRow(row: CampaignRunRow): CampaignRun {
 		lifecycle: row.lifecycle,
 		engineStatus: row.engine_status,
 		onboardingStep: row.onboarding_step,
+		summonedHeroCount: row.summoned_hero_count,
 		restartedFromRunId: row.restarted_from_run_id,
 		heroes: row.heroes,
 		createdAt: iso(row.created_at),
@@ -151,17 +154,21 @@ export async function advanceCampaignOnboarding(
 			const rows = await transaction<
 				{
 					onboarding_step: number;
+					summoned_hero_count: number;
 					lifecycle: CampaignRun['lifecycle'];
 					heroes: unknown;
 				}[]
 			>`
-				select onboarding_step, lifecycle, heroes
+				select onboarding_step, summoned_hero_count, lifecycle, heroes
 				from summonlab_campaign_runs where run_id = ${runId} for update
 			`;
 			const row = rows[0];
 			if (!row) throw new Error('Campaign run not found');
 			if (row.lifecycle !== 'active') throw new Error('Campaign run is no longer active');
 			if (requestedStep <= row.onboarding_step) return;
+			if (requestedStep === 2 && row.summoned_hero_count !== 3) {
+				throw new Error('All three heroes must be summoned before onboarding can advance');
+			}
 			if (requestedStep !== row.onboarding_step + 1) {
 				throw new Error('Onboarding steps must advance in order');
 			}
@@ -181,6 +188,53 @@ export async function advanceCampaignOnboarding(
 			await transaction`
 				update summonlab_campaign_runs
 				set onboarding_step = ${requestedStep}, updated_at = now()
+				where run_id = ${runId}
+			`;
+		});
+		const campaign = await getCampaignRun(databaseUrl, runId);
+		if (!campaign) throw new Error('Campaign run could not be reloaded');
+		return campaign;
+	} finally {
+		await sql.end({ timeout: 5 });
+	}
+}
+
+export async function summonNextCampaignHero(
+	databaseUrl: string,
+	runId: string,
+	request: CampaignSummonRequest
+): Promise<CampaignRun> {
+	const sql = postgres(databaseUrl, { max: 1 });
+	try {
+		await sql.begin(async (transaction) => {
+			const rows = await transaction<
+				{
+					summoned_hero_count: number;
+					lifecycle: CampaignRun['lifecycle'];
+				}[]
+			>`
+				select summoned_hero_count, lifecycle
+				from summonlab_campaign_runs where run_id = ${runId} for update
+			`;
+			const row = rows[0];
+			if (!row) throw new Error('Campaign run not found');
+			if (row.lifecycle !== 'active') throw new Error('Campaign run is no longer active');
+			if (request.ordinal <= row.summoned_hero_count) return;
+
+			const nextOrdinal = row.summoned_hero_count + 1;
+			if (request.ordinal !== nextOrdinal) {
+				throw new Error(`The next summon must be ordinal ${nextOrdinal}`);
+			}
+			if (request.expectedSummonedHeroCount !== row.summoned_hero_count) {
+				throw new Error('Summon progress changed. Refresh the Village and try again');
+			}
+
+			const onboardingStep = request.ordinal === 3 ? 2 : 1;
+			await transaction`
+				update summonlab_campaign_runs
+				set summoned_hero_count = ${request.ordinal},
+					onboarding_step = greatest(onboarding_step, ${onboardingStep}),
+					updated_at = now()
 				where run_id = ${runId}
 			`;
 		});

@@ -41,6 +41,7 @@ describe('campaign objectives', () => {
 			lifecycle: 'active',
 			engineStatus: 'active',
 			onboardingStep: 2,
+			summonedHeroCount: 3,
 			restartedFromRunId: null,
 			heroes: drafts.map((draft, index) => ({ ordinal: index + 1, draft })),
 			createdAt: '2000-01-01T00:00:00.000Z',

@@ -6,6 +6,12 @@ import { EntityIdSchema, IsoDateTimeSchema, StateHashSchema } from './shared.js'
 
 export const CampaignControlModeSchema = z.enum(['wait', 'countdown']);
 export const CampaignRunLifecycleSchema = z.enum(['active', 'superseded']);
+export const CampaignSummonedHeroCountSchema = z.union([
+	z.literal(0),
+	z.literal(1),
+	z.literal(2),
+	z.literal(3)
+]);
 
 export const CampaignHeroSchema = z
 	.object({
@@ -24,6 +30,7 @@ export const CampaignRunSchema = z
 		lifecycle: CampaignRunLifecycleSchema,
 		engineStatus: RunStatusSchema,
 		onboardingStep: z.number().int().min(0).max(3),
+		summonedHeroCount: CampaignSummonedHeroCountSchema,
 		restartedFromRunId: EntityIdSchema.nullable(),
 		heroes: CampaignHeroesSchema,
 		createdAt: IsoDateTimeSchema,
@@ -77,6 +84,13 @@ export const CampaignOnboardingRequestSchema = z
 	.object({ step: z.number().int().min(1).max(3) })
 	.strict();
 
+export const CampaignSummonRequestSchema = z
+	.object({
+		ordinal: z.number().int().min(1).max(3),
+		expectedSummonedHeroCount: CampaignSummonedHeroCountSchema
+	})
+	.strict();
+
 export const CampaignObjectiveStatusSchema = z.enum(['complete', 'current', 'locked']);
 
 export const CampaignObjectiveSchema = z
@@ -110,3 +124,5 @@ export type CampaignOnboardingRequest = z.infer<typeof CampaignOnboardingRequest
 export type CampaignRestartRequest = z.infer<typeof CampaignRestartRequestSchema>;
 export type CampaignRun = z.infer<typeof CampaignRunSchema>;
 export type CampaignRunCreateRequest = z.infer<typeof CampaignRunCreateRequestSchema>;
+export type CampaignSummonRequest = z.infer<typeof CampaignSummonRequestSchema>;
+export type CampaignSummonedHeroCount = z.infer<typeof CampaignSummonedHeroCountSchema>;
