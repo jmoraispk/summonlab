@@ -1,0 +1,12 @@
+{
+	"extends": "../tsconfig.base.json",
+	"compilerOptions": {
+		"noEmit": true,
+		"types": ["node", "vitest/globals"]
+	},
+	"include": [
+		"asha-spine-decomposition-lib.ts",
+		"asha-spine-decomposition-lib.spec.ts",
+		"asha-spine-decomposition.ts"
+	]
+}

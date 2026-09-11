@@ -134,7 +134,10 @@ Write this authority exactly. The prompt is committed before generation so the r
 
 - [ ] **Step 4: Implement secure schema and path handling**
 
-Use strict Zod objects and repository-contained paths. Read both authority images with `O_NOFOLLOW` on Linux, verify SHA-256 before metadata, and require 768×768 RGBA.
+Use strict Zod objects and repository-contained paths. Read both authority images with `O_NOFOLLOW`
+on Linux and verify both SHA-256 values. Require 768×768 RGBA only for the accepted cutout being
+decomposed; the immutable normal-proportion identity portrait is hash-locked at its native
+1024×1536 RGB format.
 
 ```ts
 export type DecompositionMode = 'write' | 'check';
