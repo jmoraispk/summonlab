@@ -66,6 +66,9 @@ corresponding full names as accessible labels and hover expansions. The lowercas
 survives only inside frozen legacy schemas, replay state, and their explicit compatibility
 projections.
 
+Character sheets present these four attributes as one neutral group. They may use one row or a 2×2
+grid according to available width, but they do not classify attributes into Body and Mind subsets.
+
 `Magic` also names the top-level skill domain. When the context is not an attribute list or
 character sheet, use `Magic attribute` for the stat and `Magic domain` or `magical skills` for the
 skill taxonomy.

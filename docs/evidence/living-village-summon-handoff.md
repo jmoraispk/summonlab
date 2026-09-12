@@ -39,14 +39,12 @@ Implementation branch: `codex/lv-summon-screen`
 - Five sequential singles and an eleven-result batch remain in a clickable recent-arrivals strip.
   Every receipt slot starts with a rarity-colored `NEW` marker, opens an in-place identity dossier,
   and clears independently even when two slots reference the same fixed person.
-- Dossiers use the wiki's accepted six attributes—Strength, Vitality, Agility, Dexterity, Intellect,
-  and Magic—and split them visually into Body (Strength, Vitality, Agility) on the left and Mind
-  (Dexterity, Intellect, Magic) on the right. Personality remains separate as traits, value, drive,
-  social style, stress response, and leadership/risk tendency.
+- Dossiers use the accepted four attributes—Strength, Agility, Vitality, and Magic—in one neutral
+  grid. Wide layouts use one row and narrow layouts use a 2×2 grid. Personality remains separate as
+  traits, value, drive, social style, stress response, and leadership/risk tendency.
 - Elemental affinities now have explicit Ember, Tide, Gale, or Grove icons. Aptitudes have icon-led
   route-local Martial, Magical, or Craft & Life classes, using sword, arcane, and hammer marks.
-  Body uses a flexed-arm mark and Mind uses a brain. Star presentation is visibly tiered: 1★
-  ember-gold, 2★ arc-blue, and 3★ astral-violet.
+  Star presentation is visibly tiered: 1★ ember-gold, 2★ arc-blue, and 3★ astral-violet.
 - The accidental opaque-yellow rate and reveal-option fills were removed. The dialog now uses dark
   opaque surfaces, warm primary type, and brighter secondary copy.
 - Only Dara Zev, Mara Vey, Jori Daro, Kira Toren, Iven Orra, and Remy Nahl appear. The browser
@@ -64,8 +62,8 @@ open. The dossier bars are therefore route-local readiness estimates, and one qu
 line remains in Rates and the purchase column. This is the minimum disclosure needed to avoid
 presenting prototype economics as canon.
 
-The Body/Mind grouping and icon mapping are presentation proposals in this route. The wiki
-establishes the six-attribute vocabulary and the Martial, Magical, and Craft & Life skill sectors;
+The dossier's neutral four-attribute grid is a presentation rule for this route. The wiki
+establishes the four-attribute vocabulary and the Martial, Magical, and Craft & Life skill sectors;
 it does not assign these route-local aptitude families to the six people as production state.
 
 The wiki preserves all 520 imported draft rows in the immutable legacy inventory and reconciles them
@@ -115,10 +113,9 @@ readable rate surfaces, side-by-side visible-cost actions, absence of player-fac
 three animations, frame-before-portrait ordering, skip/replay, reduced motion including
 the result child, five sequential arrivals, natural-3★ reset, the `10 + 1` message, exact `5 / 5 /
 1` desktop geometry, eleven visible star badges, connected currency and live guarantee movement,
-independent unread clearing for duplicate slots, distinct 1★/2★ presentation, Body/Mind
-positioning, the three/three Body/Mind split with Dexterity on Mind, all six canonical attribute
-names, elemental affinity icons, canonical aptitude-family labels, all three aptitude-class icons,
-and five bounded 390 × 844 animation checkpoints.
+independent unread clearing for duplicate slots, distinct 1★/2★ presentation, one neutral four-stat
+grid in `STR`, `AGI`, `VIT`, `MAG` order, elemental affinity icons, canonical aptitude-family labels,
+all three aptitude-class icons, and five bounded 390 × 844 animation checkpoints.
 
 ## Validation record
 
@@ -196,7 +193,7 @@ type SummonHeroSummary = {
 	calling: string;
 	affinity: { label: string; icon: 'ember' | 'tide' | 'gale' | 'grove' };
 	attributes: Array<{
-		attribute: 'Strength' | 'Vitality' | 'Agility' | 'Dexterity' | 'Intellect' | 'Magic';
+		attribute: 'Strength' | 'Agility' | 'Vitality' | 'Magic';
 		value: number;
 		scaleVersion: string;
 	}>;

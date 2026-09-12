@@ -6,7 +6,9 @@ Research status: **user-supplied secondary synthesis; not Summonlab canon**.
 
 This component page preserves the supplied reconstruction as research evidence. Its formulas,
 adaptation notes, recommendations, and open items are claims from that source, not accepted
-Summonlab mechanics or implementation instructions. See the parent
+Summonlab mechanics or implementation instructions. References to the unsupplied
+`attribute_adjustments_v2.md` companion are retained as source provenance rather than actionable
+project links. See the parent
 [attribute-system research entry](../attribute-systems.md#overgeared-satisfy), the companion
 [equipment catalogue](equipment-catalogue.md), and the companion
 [equipment mechanics reference](equipment-mechanics.md).
@@ -48,61 +50,80 @@ chapter 300, and revised the third awakening again at chapter 959. Tiers marked
 
 | Tier | Trigger | Attack power / pt | Health / pt | Weight limit / pt |
 |---|---|---|---|---|
-| Base | Level 1–99 | 0.1 | 3 | +20 |
-| 1st awakening | Level 100 | 0.2 | 6 | +40 |
-| 2nd awakening | Level 200 | *unknown* | *unknown* | *unknown* |
-| 3rd awakening | Level 300 | 0.7 | 7 | +50 |
-| 4th awakening | Level 400 | *unknown* | *unknown* | *unknown* |
+| Basic | Level 1–99 | 0.1 | 3 | +20 |
+| 1st awakening | Level 100 | 0.2 | 5 | +30 |
+| 2nd awakening | Level 200 | 0.3 | 5 | +40 |
+| 3rd awakening | Level 300 | 0.7 *(derived)* | 7 | +50 |
+| 4th awakening | Level 400 | 0.8 | 9 | — |
 
-*Conflicts:* the third-awakening attack-power figure was 0.6 in chapters 295 and
-849 before being revised to 0.7 at chapter 959. A separate chapter gives 0.8
-attack power and 9 health per point, presumably a higher tier. Treat the exact
-numbers as unstable and the ladder as real.
+*Revision history:* the third-awakening attack power was 0.6 in chapters 295 and
+849 before being revised to 0.7 at chapter 959. Chapters 136 and 229 gave the
+original table; the author appears to have changed it around chapter 300.
 
-**Shape of the curve:** attack power multiplies 7× from base to third awakening,
-while health only multiplies 2.3× and carry weight 2.5×. The awakening ladder is
-overwhelmingly an *offence* escalator. Defensive scaling is left to Stamina.
+**Shape of the curve.** Attack power runs 0.1 → 0.2 → 0.3 → 0.7 → 0.8. The first
+three steps are a flat arithmetic progression, then the third awakening more than
+doubles it. Health meanwhile runs 3 → 5 → 5 → 7 → 9, barely moving, and stalls
+completely at the second awakening.
 
-### Stamina → health, defense, recovery
+So the ladder is not a uniform escalator. **Attack power multiplies 8× across the
+documented tiers while health multiplies 3×**, and the big offensive jump lands
+at level 300 rather than being spread evenly. That is a deliberate pacing choice —
+the power spike is placed where the story needed one.
+
+### Stamina → health, defense
 
 | Tier | Trigger | Health / pt | Defense / pt | Health regen / 100 pts |
 |---|---|---|---|---|
-| Base | Level 1–99 | *unknown* | *unknown* | 2 |
-| 1st awakening | Level 100 | *unknown* | *unknown* | 2 |
-| Documented tier | *(tier not specified in source)* | 30 | 1.2 | 2 |
-| Later awakenings | Level 200+ | *unknown* | *unknown* | 2 |
+| Basic | Level 1–99 | *unpublished* | *unpublished* | 2 |
+| 1st awakening | Level 100 | — | 0.2 | 2 |
+| 2nd awakening | Level 200 | 20 | — | 2 |
+| 3rd awakening | Level 300 | 25 | 0.9 | 2 |
+| 4th awakening | Level 400 | 30 | 1.2 | 2 |
 
-A class emphasising defense invests more in stamina. The wiki notes that the
-early status windows in chapters 3 and 15 are mutually inconsistent, so the base
-tier could not be solved.
+The early tiers publish only one of the two values each — the first awakening
+states defense, the second states health. The wiki also notes that the chapter 3
+and chapter 15 status windows are mutually inconsistent, so the basic tier could
+not be solved.
 
-**The regeneration row is the important one.** Health Recovery Rate derives from
-stamina at 2 points per 100 stamina, and that base value does **not** rise from a
+**The regeneration column is the important one.** Health Recovery Rate derives
+from stamina at 2 points per 100, and that base value does **not** rise from a
 stat awakening, nor from any "all stats +N" effect. It can only be raised through
 items and skills.
 
-That is a deliberate carve-out: regeneration is excluded from the stat-inflation
-spiral entirely, so it stays a gear-and-skill dimension forever. Worth stealing
-outright.
+Regeneration is deliberately excluded from the stat-inflation spiral, so it stays
+a gear-and-skill dimension forever. Worth stealing outright.
 
-Stamina is also a **resource** (fatigue), spent on chopping, climbing, mining and
-similar labour, recovered by resting. A character can die of exhaustion at zero.
+**And a mechanic worth more than the table itself.** A contract — the Twilight Orc
+contract with Teruchan — multiplies the *stamina coefficient* by 1.8. Health per
+point goes from 30 to 54, and defense per point from 1.2 to 2.1.
+
+That is not a flat stat bonus and not a percentage on the derived value. It is a
+**multiplier on the conversion rate itself**, sitting between the attribute and
+its outputs. It scales with everything the hero has already invested, and it
+reads as a change in *what the hero is* rather than what they are carrying.
+
+This is the single most portable idea in the stat pages, and §5 returns to it.
 
 ### Agility → action frequency, evasion, movement
 
-| Tier | Trigger | Interval improvement / 1,000 pts | Hard cap |
-|---|---|---|---|
-| All documented tiers | — | 0.1 seconds | 6 basic attacks per second |
+| Tier | Trigger | Effect |
+|---|---|---|
+| All documented tiers | — | Every 1,000 points: attack speed +0.1 |
+| At 3,000 points | Threshold | Maximum movement speed +30 |
+| System cap | — | 6 basic attacks per second |
 
-No awakening table was ever published for Agility. What is stated is a single
-linear rule that holds across the observed range: every 1,000 agility improves
-the general attack interval by 0.1 seconds. At 2,876 agility the base interval is
-0.8s; at 3,000 agility it is 0.7s. Working backwards, the implied zero-agility
-interval is roughly 1.08s.
+No awakening ladder was published for Agility. What exists is a linear rule plus
+one threshold. Every 1,000 agility improves the general attack interval by 0.1
+seconds: at 2,876 agility the base interval is 0.8s, at 3,000 it is 0.7s, implying
+a zero-agility interval of roughly 1.08s.
 
-Basic attacks are hard-capped at six per second (a 0.167s interval) regardless of
-stats or buffs — a system limit that cannot be exceeded by any combination of
-stat, magic or gear.
+**Movement is grounded in real units.** A player's maximum movement speed is
+normally 100 metres in five seconds — 20 m/s — and it is possible to exceed that.
+At 3,000 agility the maximum rises by 30.
+
+This is the only place in the system where a stat maps onto a physical quantity
+the reader can picture, and it is why Agility reads as more concrete than the
+other three. §5 proposes doing the same thing deliberately.
 
 Agility does not contribute to attack power at normal levels.
 
@@ -112,33 +133,28 @@ attribute produces different derived stats depending on which mastery holds it.
 
 ### Intelligence → mana pool, magic power, spell access
 
-| Tier | Trigger | Mana / pt | Magic power / pt |
+| Tier | Trigger | Magic power / pt | Mana / pt |
 |---|---|---|---|
-| Base | Level 1–99 | 3 | *unknown* |
-| 1st awakening | Level 100 | *unknown* | *unknown* |
-| 2nd awakening | Level 200 | 6 | *unknown* |
-| 3rd awakening | Level 300 | 6 *(unchanged)* | *unknown* |
+| Basic | Level 1–99 | *unpublished* | 3 |
+| 1st awakening | Level 100 | 0.5 | *unpublished* |
+| 2nd awakening | Level 200 | 2.0 | 6 |
+| 3rd awakening | Level 300 | **1.2** | 6 *(unchanged)* |
 
-**Intelligence is the one stat whose ladder visibly plateaus.** The second and
-third awakenings give the same mana per point. Where Strength keeps escalating,
-the mana pool stops — which is consistent with magicians being told to grow their
-Mana Core instead once the stat stops paying.
+**Two anomalies, and the wiki flags both.** Magic power *drops* from 2.0 at the
+second awakening to 1.2 at the third — the ladder goes backwards. And mana per
+point is identical at the second and third awakenings, so the pool stops growing
+with the tier. The wiki's own note says the author is not tracking his formula
+and hopes for clarification.
+
+Treat Intelligence's table as evidence of what happens when a stat ladder is
+maintained by narrative convenience rather than by a spreadsheet. It is the
+strongest single argument against adopting awakenings without a fixed, published,
+terminating table.
+
+The plateau does have a defensible reading: once the stat stops paying, magicians
+are pushed toward Mana Core expansion instead. Two axes, one role.
 
 Two mechanics beyond the pool:
-
-**A spell will not cast if intelligence is too low.** Not a damage penalty, not a
-failure chance — the magic simply does not fire, because the mind cannot hold the
-magic formula. Intelligence is a hard gate on spell *access*, separate from spell
-*power*.
-
-**The Mana Core is a second axis.** Expanding it raises total mana, purity of
-mana, magic damage, casting speed, and the rating of spells that can be learned.
-Expansion runs from untrained through four stages, and spell ratings roughly
-correspond to the stages. A magician progresses on intelligence *and* on core
-expansion — two independent tracks feeding one role.
-
-It is rare for a third-awakening character to exceed 1,000 intelligence unless
-they are a magician or a scholar. The stat is genuinely specialised.
 
 ### Special stats feed the same pools — and awaken differently
 
@@ -518,6 +534,19 @@ gates which skill grades a hero can learn. Fits the xianxia framing exactly.
 
 **Conditional option layers.** Iyarugt's combo-keyed effects cost nothing in the
 core equation. Most weapon identity should live here.
+
+**Coefficient multipliers as a power source.** The Twilight Orc contract multiplies
+the stamina *coefficient* by 1.8, not the stat and not the derived value. Summonlab
+already has aptitudes; expressing an aptitude as a multiplier on an attribute's
+conversion coefficient is strictly more interesting than expressing it as a growth
+rate, because it changes what the hero *is* rather than how fast they get there,
+and it stays meaningful at every point on the curve. See
+`attribute_adjustments_v2.md` §4.
+
+**Physical grounding for Agility.** Overgeared states movement speed in metres per
+second, which is why Agility reads as more concrete than its three siblings.
+Summonlab can do the same and get world-map travel times out of it for free. See
+`attribute_adjustments_v2.md` §5.
 
 **Flat post-multiplier damage as its own budget class.** The +200 per attack on
 the Sword of Self-transcendence behaves completely differently on a fast weapon

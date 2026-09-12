@@ -128,29 +128,30 @@ test('portal connects spending, reveal controls, arrival history, and hero dossi
 	await expect(dossier.getByTitle('Strength')).toHaveText('STR');
 	await expect(dossier.getByTitle('Vitality')).toHaveText('VIT');
 	await expect(dossier.getByTitle('Agility')).toHaveText('AGI');
-	await expect(dossier).toContainText('Dexterity');
-	await expect(dossier).toContainText('Intellect');
+	await expect(dossier).not.toContainText('Dexterity');
+	await expect(dossier).not.toContainText('Intellect');
 	await expect(dossier.getByTitle('Magic')).toHaveText('MAG');
 	await expect(dossier.getByTestId('hero-attribute').locator('span')).toHaveText([
 		'STR',
 		'AGI',
 		'VIT',
-		'MAG',
-		'Dexterity',
-		'Intellect'
+		'MAG'
 	]);
-	await expect(dossier.getByTestId('hero-attribute')).toHaveCount(6);
-	await expect(dossier.getByTestId('body-attributes').getByTestId('hero-attribute')).toHaveCount(3);
-	await expect(dossier.getByTestId('mind-attributes').getByTestId('hero-attribute')).toHaveCount(3);
-	await expect(dossier.getByTestId('mind-attributes')).toContainText('Dexterity');
-	await expect(dossier.getByTestId('body-attributes')).not.toContainText('Dexterity');
-	await expect(dossier.locator('[data-icon="body"]')).toBeVisible();
-	await expect(dossier.locator('[data-icon="mind"]')).toBeVisible();
-	const [bodyBox, mindBox] = await Promise.all([
-		dossier.getByTestId('body-attributes').boundingBox(),
-		dossier.getByTestId('mind-attributes').boundingBox()
-	]);
-	expect(bodyBox!.x).toBeLessThan(mindBox!.x);
+	await expect(dossier.getByTestId('hero-attribute')).toHaveCount(4);
+	const attributeGrid = dossier.getByTestId('attribute-grid');
+	await expect(attributeGrid).toBeVisible();
+	expect(
+		(
+			await attributeGrid.evaluate((element) => getComputedStyle(element).gridTemplateColumns)
+		).split(' ')
+	).toHaveLength(4);
+	await page.setViewportSize({ width: 390, height: 844 });
+	expect(
+		(
+			await attributeGrid.evaluate((element) => getComputedStyle(element).gridTemplateColumns)
+		).split(' ')
+	).toHaveLength(2);
+	await page.setViewportSize({ width: 1280, height: 720 });
 	await expect(dossier.locator('[data-icon="ember"]')).toBeVisible();
 	await expect(dossier.locator('[data-icon="martial"]').first()).toBeVisible();
 	await expect(dossier.locator('[data-icon="magic"]')).toBeVisible();

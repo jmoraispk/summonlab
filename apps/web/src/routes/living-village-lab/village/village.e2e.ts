@@ -165,7 +165,9 @@ test('unifies Village hotspots, resident inspection, orders, and camera controls
 	const heroDrawer = page.getByTestId('hero-drawer');
 	await expect(heroDrawer).toContainText('Shield line');
 	await expect(heroDrawer).toContainText('Ashwood shield');
-	await expect(heroDrawer.getByTitle('Strength')).toHaveText('STR');
+	await expect(heroDrawer.locator('.attributes span')).toHaveText(['STR', 'AGI', 'VIT', 'MAG']);
+	await expect(heroDrawer).not.toContainText('Guard');
+	await expect(heroDrawer).not.toContainText('Focus');
 	await page.getByRole('button', { name: 'Close hero details' }).click();
 
 	await popover.getByRole('button', { name: 'Court training' }).click();
@@ -312,7 +314,15 @@ test('keeps the unified Village deliberate and operable at 390 by 844', async ({
 		page.getByTestId('hero-popover').getByRole('button', { name: 'Rest' })
 	).toBeVisible();
 	await page.getByTestId('hero-popover').getByRole('button', { name: 'Details' }).click();
-	await expect(page.getByTestId('hero-drawer')).toContainText('Field notes');
+	const heroDrawer = page.getByTestId('hero-drawer');
+	await expect(heroDrawer).toContainText('Field notes');
+	expect(
+		(
+			await heroDrawer
+				.locator('.attributes')
+				.evaluate((element) => getComputedStyle(element).gridTemplateColumns)
+		).split(' ')
+	).toHaveLength(2);
 
 	for (const label of ['Zoom out', 'Zoom in', 'Fit Village', 'Reset View']) {
 		const control = page.getByRole('button', { name: label });

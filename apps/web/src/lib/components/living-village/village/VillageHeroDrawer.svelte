@@ -155,7 +155,7 @@
 
 	.attributes {
 		display: grid;
-		grid-template-columns: repeat(3, 1fr);
+		grid-template-columns: repeat(4, minmax(0, 1fr));
 		gap: 0.4rem;
 		margin-top: 0.55rem;
 	}
@@ -196,5 +196,11 @@
 		border: 1px solid rgba(238, 224, 198, 0.12);
 		color: rgba(245, 236, 221, 0.72);
 		font-size: 0.68rem;
+	}
+
+	@media (max-width: 720px) {
+		.attributes {
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+		}
 	}
 </style>

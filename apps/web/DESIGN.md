@@ -344,6 +344,8 @@ names to `STR`, `AGI`, `VIT`, and `MAG`, always in that order; every abbreviatio
 name as the accessible label and hover expansion. Never expose the frozen legacy `might` key as a
 current player-facing name. Where the attribute could be confused with the top-level skill domain,
 write `Magic attribute` for the stat and `Magic domain` or `magical skills` for the taxonomy.
+Character sheets present the four attributes as one neutral group rather than classifying them as
+Body or Mind: one four-cell row where space permits, reflowing to a 2×2 grid on narrow surfaces.
 
 ## Do's and Don'ts
 
