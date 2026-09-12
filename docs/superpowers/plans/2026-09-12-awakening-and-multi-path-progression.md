@@ -2,20 +2,20 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Ship immutable-star level growth, levels 1–999, versioned awakening conversion tables, intrinsic attribute growth, and shared hero experience from combat and completed crafting as `engine-v26`.
+**Goal:** Ship immutable-star level growth, levels 1–999, versioned awakening conversion tables, intrinsic attribute growth, and shared hero experience from combat and completed crafting as `engine-v27`.
 
-**Architecture:** Build a versioned progression owner on the completed four-attribute `engine-v25` foundation. Pure functions consume an injected, content-hashed `progression-rules-v1` table; domain adapters turn training, synthesis, combat, and production evidence into one typed experience-claim contract, while the event log retains every before/after receipt. `engine-v27` readiness combat then consumes the same claims instead of owning progression.
+**Architecture:** Build a versioned progression owner on the completed four-attribute and readiness-combat `engine-v26` foundation. Pure functions consume an injected, content-hashed `progression-rules-v1` table; domain adapters turn training, synthesis, legacy-combat, readiness-combat, and production evidence into one typed experience-claim contract, while the event log retains every before/after receipt.
 
 **Tech Stack:** TypeScript 6, Zod 4, Vitest 4, event-sourced `@summonlab/engine`, SvelteKit, pnpm.
 
 **Spec:** `docs/superpowers/specs/2026-09-12-awakening-and-multi-path-progression-design.md`
 
-**Prerequisite:** Complete and verify `docs/superpowers/plans/2026-09-06-four-attribute-legacy-combat.md`. Execute this plan before `docs/superpowers/plans/2026-09-06-agent-readiness-combat.md`.
+**Prerequisite:** Complete and verify both `docs/superpowers/plans/2026-09-06-four-attribute-legacy-combat.md` and `docs/superpowers/plans/2026-09-06-agent-readiness-combat.md`. The implementation branch already contains both prerequisites as `engine-v25` and `engine-v26`.
 
 ## Global Constraints
 
-- Preserve every `engine-v1` through `engine-v25` schema, state hash, event hash, content binding, and replay result.
-- New heroes use `engine-v26`; existing runs continue under the engine and progression rules they already bind.
+- Preserve every `engine-v1` through `engine-v26` schema, state hash, event hash, content binding, and replay result, except for the accepted canonical-name correction applied before these unreleased versions are integrated.
+- New heroes use `engine-v27`; existing runs continue under the engine and progression rules they already bind.
 - Hero level is an integer from `1` through `999`; awakening tier is exactly `Math.floor(level / 100)` and therefore `0..9`.
 - `stars` remains an integer from `1` through `7`, is immutable after generation, and grants exactly `stars` unallocated attribute points for every crossed level after level 1.
 - The canonical compact attribute order is `STR`, `AGI`, `VIT`, `MAG`; full names remain canonical in prose and accessible labels.
@@ -26,6 +26,62 @@
 - Hero XP and skill practice remain separate. Completed crafting can grant both, but one never substitutes for the other.
 - Final XP quantities are calibration data rather than schema. A later buff or nerf creates a new content-hashed rules table and leaves earlier receipts replayable.
 - Use `apply_patch` for edits. Run each task's focused red/green tests and create the listed Conventional Commit before starting the next task.
+
+---
+
+### Task 0: Correct the unreleased four-attribute names
+
+**Files:**
+
+- Modify: `packages/contracts/src/capability.ts`
+- Modify: `packages/contracts/src/capability.spec.ts`
+- Modify: `packages/content/src/combat-rules.ts`
+- Modify: `packages/content/src/combat-rules.spec.ts`
+- Modify: `packages/engine/src/domains/capability`
+- Modify: `packages/engine/src/domains/combat`
+- Modify: `packages/engine/src/domains/readiness-combat`
+- Modify: affected engine, compatibility, replay, presentation, and fixture tests
+
+**Interfaces:**
+
+- Consumes: the implemented but not yet integrated `engine-v25`/`engine-v26` four-attribute contracts.
+- Produces: canonical `strength`, `agility`, `vitality`, `magic` fields and `STR`, `AGI`, `VIT`, `MAG` presentation without preserving the rejected Might/Spirit vocabulary in v25/v26.
+
+- [ ] **Step 1: Write failing canonical-name tests**
+
+Assert v25 and v26 accept only Strength/Agility/Vitality/Magic fields, canonical display order is `STR`, `AGI`, `VIT`, `MAG`, physical power reads Strength, magical power and Mana read Magic, and v1-v24 historical mind schemas remain byte-stable.
+
+- [ ] **Step 2: Run focused tests and verify red**
+
+```bash
+pnpm --filter @summonlab/contracts test -- capability.spec.ts engine-compatibility.spec.ts
+pnpm --filter @summonlab/content test -- combat-rules.spec.ts
+pnpm --filter @summonlab/engine test -- domains/capability domains/combat domains/readiness-combat compatibility/replay-vectors.spec.ts
+```
+
+Expected: FAIL because the unreleased v25/v26 implementation still exposes Might and Spirit.
+
+- [ ] **Step 3: Rename the canonical v25/v26 contract and consumers**
+
+Replace only the v25/v26 capability vocabulary and derived rule names. Keep historical v1-v24 `CharacterMind` fields untouched. Update fixtures and regenerate affected v25/v26 snapshots or replay evidence; do not introduce alias fields or a second canonical order.
+
+- [ ] **Step 4: Run focused verification**
+
+```bash
+pnpm --filter @summonlab/contracts test -- capability.spec.ts engine-compatibility.spec.ts
+pnpm --filter @summonlab/content test -- combat-rules.spec.ts
+pnpm --filter @summonlab/engine test -- domains/capability domains/combat domains/readiness-combat compatibility/replay-vectors.spec.ts
+pnpm --filter @summonlab/contracts typecheck
+pnpm --filter @summonlab/content typecheck
+pnpm --filter @summonlab/engine typecheck
+```
+
+- [ ] **Step 5: Commit**
+
+```bash
+git add packages/contracts packages/content packages/engine
+git commit -m "refactor(attributes): adopt strength and magic names"
+```
 
 ---
 
@@ -42,7 +98,7 @@
 
 **Interfaces:**
 
-- Consumes: `CombatAttributeNameSchema`, `CombatAttributesSchema`, and `SkillProgressSchema` from the completed v25 foundation.
+- Consumes: `CombatAttributeNameSchema`, `CombatAttributesSchema`, and `SkillProgressSchema` from the completed v26 foundation after Task 0.
 - Produces: `HeroProgressionV2Schema`, `ProgressionRulesBindingSchema`, `ExperienceClaimSchema`, `ExperienceReceiptSchema`, `AttributeGrowthClaimSchema`, and `AttributeGrowthReceiptSchema` for every later task.
 
 - [ ] **Step 1: Write failing strict-schema tests**
@@ -168,11 +224,11 @@ export const AttributeGrowthReceiptSchema = z.object({
 }).strict();
 ```
 
-Allocation claims spend unallocated points; `training`, `achievement`, `consumable`, and `cultivation` growth claims grant direct permanent points. `ProgressionMacroPathSchema` is exported taxonomy only in v26: do not add a hero macro-path field until the deferred selection/generated/inferred decision has its own accepted design.
+Allocation claims spend unallocated points; `training`, `achievement`, `consumable`, and `cultivation` growth claims grant direct permanent points. `ProgressionMacroPathSchema` is exported taxonomy only in v27: do not add a hero macro-path field until the deferred selection/generated/inferred decision has its own accepted design.
 
 - [ ] **Step 4: Export v2 without mutating v1**
 
-Keep `HeroProgressionSchema` and all v1-v25 imports unchanged. Export the v2 schema from `engine/index.ts` and the package root, and add its intentional names to the public-contract snapshot test.
+Keep `HeroProgressionSchema` and all v1-v26 imports unchanged. Export the v2 schema from `engine/index.ts` and the package root, and add its intentional names to the public-contract snapshot test.
 
 - [ ] **Step 5: Run focused verification**
 
@@ -203,7 +259,7 @@ git commit -m "feat(contracts): define versioned hero progression"
 
 **Interfaces:**
 
-- Consumes: `ProgressionRulesBindingSchema` and canonical four-attribute types from Task 1 and v25.
+- Consumes: `ProgressionRulesBindingSchema` and canonical four-attribute types from Task 1 and v26.
 - Produces: `PROGRESSION_RULES_V1`, `awakeningTier(level)`, `intrinsicAttributes(profile, growth)`, `attributePowerMilli(attribute, level, rules)`, `maximumHealth(vitality, level, rules)`, `craftExperience(input, rules)`, and `combatExperience(input, rules)`.
 
 - [ ] **Step 1: Write failing table and boundary tests**
@@ -301,7 +357,7 @@ git add packages/content/src packages/engine/src/domains/progression packages/en
 git commit -m "feat(progression): add authored awakening rules"
 ```
 
-### Task 3: Add `engine-v26` progression state and bindings
+### Task 3: Add `engine-v27` progression state and bindings
 
 **Files:**
 
@@ -320,11 +376,11 @@ git commit -m "feat(progression): add authored awakening rules"
 **Interfaces:**
 
 - Consumes: `HeroProgressionV2Schema` from Task 1 and `PROGRESSION_RULES_V1` binding from Task 2.
-- Produces: `EngineHeroStateV26Schema`, `EngineGameStateV26Schema`, `PROGRESSION_ENGINE_CONTENT_VERSION`, and v26 bootstrap state for all domain adapters.
+- Produces: `EngineHeroStateV27Schema`, `EngineGameStateV27Schema`, `PROGRESSION_ENGINE_CONTENT_VERSION`, and v27 bootstrap state for all domain adapters.
 
-- [ ] **Step 1: Add failing v25/v26 compatibility tests**
+- [ ] **Step 1: Add failing v26/v27 compatibility tests**
 
-Assert the frozen v25 state still parses and hashes identically. Assert v26 requires a rules binding and v2 progression, accepts level 999, rejects level 1000, and accepts permanent growth beyond the generated base-attribute range.
+Assert the corrected v26 state still parses and hashes identically after Task 0. Assert v27 requires a rules binding and v2 progression, accepts level 999, rejects level 1000, and accepts permanent growth beyond the generated base-attribute range.
 
 - [ ] **Step 2: Run compatibility tests and verify red**
 
@@ -333,34 +389,34 @@ pnpm --filter @summonlab/contracts test -- engine-compatibility.spec.ts
 pnpm --filter @summonlab/engine test -- engine.spec.ts compatibility/replay-vectors.spec.ts
 ```
 
-Expected: FAIL because v26 is not in the state union.
+Expected: FAIL because v27 is not in the state union.
 
-- [ ] **Step 3: Add additive v26 schemas**
+- [ ] **Step 3: Add additive v27 schemas**
 
-Extend v25 rather than widening any earlier schema:
+Extend v26 rather than widening any earlier schema:
 
 ```ts
-export const EngineHeroStateV26Schema = EngineHeroStateV25Schema.extend({
+export const EngineHeroStateV27Schema = EngineHeroStateV26Schema.extend({
 	progression: HeroProgressionV2Schema
 }).strict();
 
-export const EngineGameStateV26Schema = EngineGameStateV25BaseSchema.extend({
-	schemaVersion: z.literal(26),
-	contentVersion: z.literal('engine-v26'),
-	heroes: z.record(EntityIdSchema, EngineHeroStateV26Schema),
+export const EngineGameStateV27Schema = EngineGameStateV26BaseSchema.extend({
+ schemaVersion: z.literal(27),
+	contentVersion: z.literal('engine-v27'),
+	heroes: z.record(EntityIdSchema, EngineHeroStateV27Schema),
 	progressionRules: ProgressionRulesBindingSchema
-}).strict().superRefine(validateV26State);
+}).strict().superRefine(validateV27State);
 ```
 
-`validateV26State` verifies the bound hash, progression level cap, nonnegative growth, and ordinary v25 ownership invariants. It must not derive or persist awakening tier because the tier is a pure projection from level.
+`validateV27State` verifies the bound hash, progression level cap, nonnegative growth, and ordinary v26 ownership invariants. It must not derive or persist awakening tier because the tier is a pure projection from level.
 
-- [ ] **Step 4: Bootstrap new runs as v26**
+- [ ] **Step 4: Bootstrap new runs as v27**
 
 Initialize each hero with immutable generated stars, level 1, zero experience, zero unallocated points, zero permanent growth, empty evidence counts, and the v1 rules binding. Preserve explicit development-version bootstraps used by replay vectors.
 
-- [ ] **Step 5: Add v26 capability routing**
+- [ ] **Step 5: Add v27 capability routing**
 
-Add `PROGRESSION_ENGINE_CONTENT_VERSION = 'engine-v26'`, include `26` only in APIs already available to v25, and add `supportsProgressionV2(state): state is EngineGameStateV26`. Do not reinterpret v1-v25 through v2 helpers.
+Add `PROGRESSION_ENGINE_CONTENT_VERSION = 'engine-v27'`, include `27` only in APIs already available to v26, and add `supportsProgressionV2(state): state is EngineGameStateV27`. Do not reinterpret v1-v26 through v2 helpers.
 
 - [ ] **Step 6: Run focused verification**
 
@@ -375,7 +431,7 @@ pnpm --filter @summonlab/engine typecheck
 
 ```bash
 git add packages/contracts/src/engine packages/contracts/src/engine-public-api.snapshot.ts packages/engine/src
-git commit -m "feat(engine): add v26 progression state"
+git commit -m "feat(engine): add v27 progression state"
 ```
 
 ### Task 4: Centralize experience, level crossing, and star point grants
@@ -438,7 +494,7 @@ Export `reconcileHealthAfterProgression({ health, oldMaximum, newMaximum })`. It
 
 - [ ] **Step 5: Register the event and reducer**
 
-Add a v26-only `hero.experience.applied` event whose payload contains the claim, receipt, progression before/after, maximum Health before/after, and current Health after reconciliation. During replay, recompute the outcome from the bound v1 rules and reject any payload mismatch with `ReplayIntegrityError`.
+Add a v27-only `hero.experience.applied` event whose payload contains the claim, receipt, progression before/after, maximum Health before/after, and current Health after reconciliation. During replay, recompute the outcome from the bound v1 rules and reject any payload mismatch with `ReplayIntegrityError`.
 
 - [ ] **Step 6: Prove there is no star mutation path**
 
@@ -473,7 +529,7 @@ git commit -m "feat(progression): grant immutable-star level points"
 
 **Interfaces:**
 
-- Consumes: `AttributeGrowthClaim`, v26 state, `intrinsicAttributes`, and `maximumHealth`.
+- Consumes: `AttributeGrowthClaim`, v27 state, `intrinsicAttributes`, and `maximumHealth`.
 - Produces: `hero.allocate.attribute`, internal `applyAttributeGrowthClaim`, and replayable `hero.attribute.growth.applied` receipts.
 
 - [ ] **Step 1: Write failing allocation and direct-growth tests**
@@ -509,7 +565,7 @@ export const AllocateAttributeCommandSchema = EngineCommandBaseSchema.extend({
 }).strict();
 ```
 
-Only a living v26 hero with enough unallocated points may allocate. The command becomes a typed allocation claim; it cannot write capability profile, rates, Health, or progression state directly.
+Only a living v27 hero with enough unallocated points may allocate. The command becomes a typed allocation claim; it cannot write capability profile, rates, Health, or progression state directly.
 
 - [ ] **Step 4: Implement one growth applier**
 
@@ -551,11 +607,11 @@ git commit -m "feat(attributes): apply typed intrinsic growth"
 **Interfaces:**
 
 - Consumes: `applyExperienceClaim` from Task 4.
-- Produces: training and synthesis evidence adapters; removes duplicate v26 level calculations while retaining frozen v1-v25 behavior.
+- Produces: training and synthesis evidence adapters; removes duplicate v27 level calculations while retaining frozen v1-v26 behavior.
 
 - [ ] **Step 1: Write failing adapter tests**
 
-For v26 training, assert the existing `8 + First Ember modifier` hero XP and separate sword-practice XP flow through an `ExperienceClaim` with `sourceKind: 'training'`. For synthesis, assert essence XP flows through `sourceKind: 'synthesis'`. In both cases, verify multi-level star grants and no star mutation.
+For v27 training, assert the existing `8 + First Ember modifier` hero XP and separate sword-practice XP flow through an `ExperienceClaim` with `sourceKind: 'training'`. For synthesis, assert essence XP flows through `sourceKind: 'synthesis'`. In both cases, verify multi-level star grants and no star mutation.
 
 - [ ] **Step 2: Run focused tests and verify red**
 
@@ -565,13 +621,13 @@ pnpm --filter @summonlab/engine test -- domains/settlement/progression.spec.ts d
 
 Expected: FAIL because both domains still call their local `levelFor` functions.
 
-- [ ] **Step 3: Adapt v26 training**
+- [ ] **Step 3: Adapt v27 training**
 
-Keep the v1-v25 routine branch unchanged. In the v26 branch, build a deterministic claim ID from the scheduled event ID, call `applyExperienceClaim`, and include its receipt in the scheduled activity outcome. Continue to calculate sword skill practice independently.
+Keep the v1-v26 routine branch unchanged. In the v27 branch, build a deterministic claim ID from the scheduled event ID, call `applyExperienceClaim`, and include its receipt in the scheduled activity outcome. Continue to calculate sword skill practice independently.
 
-- [ ] **Step 4: Adapt v26 synthesis**
+- [ ] **Step 4: Adapt v27 synthesis**
 
-Replace only the v26 direct `experience + essence` and `levelFor` path with the shared claim. Preserve the existing essence formula, source/recipient legality, and v22-v25 receipt schemas.
+Replace only the v27 direct `experience + essence` and `levelFor` path with the shared claim. Preserve the existing essence formula, source/recipient legality, and v22-v26 receipt schemas.
 
 - [ ] **Step 5: Recompute awakening-derived Health**
 
@@ -652,7 +708,7 @@ Convert material rank `F/E/D/C/B/A/S` to rarity bands `1..7`; pass the actual cr
 
 - [ ] **Step 5: Attach XP to forging completion, never reservation**
 
-Extend only the v26 forging outcome with production evidence, claim, and experience receipt. `hero.forging.started`, material reservation, invalid starts, and any canceled/abandoned job grant zero XP. `hero.forging.complete` creates the item, increments history, and applies XP atomically.
+Extend only the v27 forging outcome with production evidence, claim, and experience receipt. `hero.forging.started`, material reservation, invalid starts, and any canceled/abandoned job grant zero XP. `hero.forging.complete` creates the item, increments history, and applies XP atomically.
 
 - [ ] **Step 6: Preserve the cooking boundary**
 
@@ -688,7 +744,7 @@ git commit -m "feat(progression): grant completed crafting experience"
 **Interfaces:**
 
 - Consumes: common resolved combat effects, mission objective evidence, `combatExperience`, and `applyExperienceClaim`.
-- Produces: `CombatContributionEvidenceV1`, deterministic contributor claims, and terminal mission progression receipts reusable by `engine-v27` readiness combat.
+- Produces: `CombatContributionEvidenceV1`, deterministic contributor claims, and terminal mission progression receipts reusable by both legacy and readiness combat.
 
 - [ ] **Step 1: Write failing contributor tests**
 
@@ -724,7 +780,7 @@ On success, failure, or retreat, sort evidence by hero ID, derive one claim per 
 
 - [ ] **Step 5: Preserve mode independence**
 
-Read only the common resolved-effect and objective-evidence contract. Add an exported `experienceClaimsForCombatResult` function that takes no legacy round-state fields, so the v27 readiness outcome adapter can call it unchanged.
+Read only the common resolved-effect and objective-evidence contract. Add an exported `experienceClaimsForCombatResult` function that takes no mode-specific round or readiness-state fields, so both existing combat outcome adapters call it unchanged.
 
 - [ ] **Step 6: Run focused verification**
 
@@ -756,7 +812,7 @@ git commit -m "feat(progression): award evidence-based combat experience"
 
 **Interfaces:**
 
-- Consumes: v26 public state, rules binding, pure tier/rate helpers, and existing canonical attribute-display ordering.
+- Consumes: v27 public state, rules binding, pure tier/rate helpers, and existing canonical attribute-display ordering.
 - Produces: `presentHeroProgression(hero, rules)` with level, stars, XP, tier, unallocated points, intrinsic attributes, and per-point conversions.
 
 - [ ] **Step 1: Write failing presentation tests**
@@ -769,7 +825,7 @@ Assert sheet order `STR`, `AGI`, `VIT`, `MAG`; accessible full names; level 99 v
 pnpm --filter @summonlab/web test -- src/lib/progression-presentation.spec.ts src/lib/components/living-village/attribute-display.spec.ts
 ```
 
-Expected: FAIL because the v26 progression projection does not exist.
+Expected: FAIL because the v27 progression projection does not exist.
 
 - [ ] **Step 3: Implement one server-safe projection**
 
@@ -800,7 +856,7 @@ Render the four attributes in one row or a responsive 2×2 grid. Use abbreviatio
 
 - [ ] **Step 5: Update replay and synthesis projections**
 
-Display v26 level and awakening details while retaining existing v22-v25 branches. Synthesis may grant XP but must never alter or describe stars as upgradeable.
+Display v27 level and awakening details while retaining existing v22-v26 branches. Synthesis may grant XP but must never alter or describe stars as upgradeable.
 
 - [ ] **Step 6: Run focused verification**
 
@@ -837,8 +893,8 @@ git commit -m "feat(web): present awakening progression"
 
 **Interfaces:**
 
-- Consumes: all v26 rules, reducers, receipts, projections, and replay fixtures.
-- Produces: byte-stable balance evidence, authoritative wiki copy, ADR 0073, repository validation commands, and a clean prerequisite boundary for the v27 readiness plan.
+- Consumes: all v27 rules, reducers, receipts, projections, and replay fixtures.
+- Produces: byte-stable balance evidence, authoritative wiki copy, ADR 0073, and repository validation commands for the v27 rollout.
 
 - [ ] **Step 1: Write failing balance-harness tests**
 
@@ -870,7 +926,7 @@ Document levels `1..999`, awakenings every 100 levels, immutable stars as points
 
 - [ ] **Step 6: Reconcile predecessor plans and specs**
 
-Mark the v25 plan's `4 Health per VIT`, level-99 balance ceiling, and one-point-per-level Task 6 as prototype behavior superseded by this completed v26 plan. Set the progression design status to `accepted; implementation complete`, link this plan and ADR, and preserve the v27 readiness plan as the next consumer.
+Mark the v25 plan's `4 Health per VIT`, level-99 balance ceiling, and one-point-per-level Task 6 as prototype behavior superseded by this completed v27 plan. Set the progression design status to `accepted; implementation complete`, and link this plan and ADR. Record that both v25 legacy combat and v26 readiness combat now consume the shared v27 progression owner.
 
 - [ ] **Step 7: Run full compatibility and repository verification**
 
@@ -886,15 +942,15 @@ pnpm build
 git diff --check
 ```
 
-Expected: every command exits `0`; v1-v25 replay vectors retain their exact hashes; v26 fixtures use only the new bound rules.
+Expected: every command exits `0`; v1-v24 replay vectors retain their exact hashes; corrected v25/v26 fixtures use only canonical attribute names; v27 fixtures use only the new bound rules.
 
 - [ ] **Step 8: Commit**
 
 ```bash
 git add tools/progression-balance-harness.ts tools/progression-balance-harness.spec.ts docs/evidence/progression-balance-v1.json package.json docs/wiki docs/decisions/0073-awakening-and-multi-path-progression.md docs/superpowers
-git commit -m "docs(progression): complete v26 progression rollout"
+git commit -m "docs(progression): complete v27 progression rollout"
 ```
 
 ## Execution handoff
 
-Execute Tasks 1–10 in order. Each task must finish its red/green cycle, focused verification, and commit before the next begins. After Task 10, run the repository's end-of-turn delivery checks, push the implementation branch, and then begin the separately reviewed `engine-v27` readiness-combat plan.
+Execute Tasks 0–10 in order. Each task must finish its red/green cycle, focused verification, and commit before the next begins. After Task 10, run the repository's end-of-turn delivery checks and push the implementation branch.

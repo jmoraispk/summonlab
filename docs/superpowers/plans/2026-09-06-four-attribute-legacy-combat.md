@@ -12,8 +12,8 @@
 
 **Progression sequencing:** Complete this plan as the `engine-v25` foundation. Its provisional
 `4 Health per Vitality`, level-99 balance fixtures, and one-point-per-level Task 6 remain v25
-compatibility behavior; `docs/superpowers/plans/2026-09-12-awakening-and-multi-path-progression.md`
-replaces them in `engine-v26` before the readiness-combat plan begins.
+compatibility behavior. The readiness-combat plan extends this foundation as `engine-v26`; the
+later awakening and multi-path progression plan supersedes those provisional values in `engine-v27`.
 
 ## Global constraints
 

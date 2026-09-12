@@ -4,13 +4,13 @@
 
 **Goal:** Add a deterministic, replayable `agent-readiness-v1` combat mode in which heroes independently choose legal intents from one frozen readiness window and the engine alone resolves timing, collisions, hits, damage, downing, and outcomes.
 
-**Architecture:** Build `engine-v27` on the completed v26 progression foundation. A pure stepped combat kernel advances to one-tick readiness cohorts, emits a shared canonical snapshot plus filtered actor views, and accepts one validated choice batch. Durable decision jobs run outside the engine and are grouped by a window coordinator; replay bypasses providers and reapplies recorded batches. The operator may enable the mode after internal gates pass, but no player route receives a mode selector.
+**Architecture:** Build `engine-v26` on the completed v25 foundation. A pure stepped combat kernel advances to one-tick readiness cohorts, emits a shared canonical snapshot plus filtered actor views, and accepts one validated choice batch. Durable decision jobs run outside the engine and are grouped by a window coordinator; replay bypasses providers and reapplies recorded batches. The operator may enable the mode after internal gates pass, but no player route receives a mode selector.
 
 **Tech Stack:** TypeScript 6, Zod 4, Vitest 4, event-sourced `@summonlab/engine`, PostgreSQL durable jobs, `@summonlab/policies`, OpenAI Responses API adapter already present in the repository, SvelteKit, pnpm.
 
 **Spec:** `docs/superpowers/specs/2026-09-06-attributes-and-combat-modes-design.md`
 
-**Prerequisite:** Complete and verify `docs/superpowers/plans/2026-09-06-four-attribute-legacy-combat.md`, then `docs/superpowers/plans/2026-09-12-awakening-and-multi-path-progression.md`.
+**Prerequisite:** Complete and verify `docs/superpowers/plans/2026-09-06-four-attribute-legacy-combat.md` first.
 
 ## Global constraints
 
@@ -20,12 +20,11 @@
 - Batch order is exact readiness time, authored interrupt priority, then purpose-keyed seeded tie-break. Agility does not get a second general initiative bonus.
 - No provider re-query occurs during collision arbitration. Every legal action declares invalid-target, occupied-destination, retarget, cancellation, and refund policies.
 - The engine owns death/downing. Provider prose cannot mutate state or create effects.
-- `legacy-auto-v1` and all engine-v25/v26 behavior remain unchanged. Readiness outcomes use the
-  existing v26 progression claim owner rather than creating a second XP or attribute system.
+- `legacy-auto-v1` and all engine-v25 behavior remain unchanged.
 
 ---
 
-### Task 1: Add v27 readiness contracts and versioned mission state
+### Task 1: Add v26 readiness contracts and versioned mission state
 
 **Files:**
 
@@ -43,8 +42,8 @@
 - Modify: `packages/engine/src/core/state.ts`
 
 - [ ] Write failing strict-schema tests for combatants, positions, resources, readiness, conditions, action intents, fallback choices, frozen windows, batches, resolved events, safety stops, results, and claims.
-- [ ] Define these versioned identifiers: `readiness-combat-state-v1`, `combat-window-v1`, `combat-choice-batch-v1`, `combat-result-v1`, `combat-rules-v1`, and `engine-v27`.
-- [ ] Add `MissionAttemptV10Schema` whose mode-specific state is a discriminated union: existing legacy turn state for `legacy-auto-v1`, or `ReadinessCombatStateV1Schema` for `agent-readiness-v1`. Add `MissionRunStateV10Schema` and `EngineGameStateV27Schema` without mutating v25 or v26.
+- [ ] Define these versioned identifiers: `readiness-combat-state-v1`, `combat-window-v1`, `combat-choice-batch-v1`, `combat-result-v1`, `combat-rules-v1`, and `engine-v26`.
+- [ ] Add `MissionAttemptV10Schema` whose mode-specific state is a discriminated union: existing legacy turn state for `legacy-auto-v1`, or `ReadinessCombatStateV1Schema` for `agent-readiness-v1`. Add `MissionRunStateV10Schema` and `EngineGameStateV26Schema` without mutating v25.
 - [ ] Define the stepped public return types:
 
 ```ts
@@ -60,7 +59,7 @@ function applyChoiceBatch(
 ): { state: ReadinessCombatStateV1; events: CombatResolvedEvent[] };
 ```
 
-- [ ] Add v27 to only the supported engine capabilities and update intentional export snapshots.
+- [ ] Add v26 to only the supported engine capabilities and update intentional export snapshots.
 - [ ] Verify:
 
 ```bash
@@ -73,7 +72,7 @@ pnpm --filter @summonlab/engine test -- compatibility/replay-vectors.spec.ts
 
 ```bash
 git add packages/contracts packages/engine/src/core
-git commit -m "feat(combat): define v27 readiness contracts"
+git commit -m "feat(combat): define v26 readiness contracts"
 ```
 
 ### Task 2: Implement readiness accumulation and one-tick cohorts
@@ -149,7 +148,7 @@ git commit -m "feat(combat): assemble frozen actor decision views"
 - [ ] Add tests proving rolls are stable across object insertion order, unrelated actors, area-target ordering, and replay; changing purpose, actor, action instance, target, or local sequence must change the draw.
 - [ ] Implement purpose-key draws from `seed + attemptId + tick + actorId + actionInstanceId + optional targetId + purpose + local sequence`. Do not consume the legacy entropy cursor.
 - [ ] Implement hit resolution from skill accuracy/mastery versus defender evasion, a clamped relative-Agility modifier, and explicit flank/surround/unaware modifiers. Use separate `hit`, `critical`, `status`, and `target-fallback` purposes.
-- [ ] Resolve damage in this order: authored base/coefficient; v26 `attributePowerMilli` from Strength for physical or Magic for magical; bounded affinity contribution; critical/status multiplier; armour and penetration for general physical mitigation; matching named resistances; resource clamp; typed downing event. Use the attempt's bound awakening table and never apply that multiplier to flat gear power or ratio statistics.
+- [ ] Resolve damage in this order: authored base/coefficient; Strength for physical or Magic for magical; bounded affinity contribution; critical/status multiplier; armour and penetration for general physical mitigation; matching named resistances; resource clamp; typed downing event.
 - [ ] Apply Vitality Health regeneration and Magic Mana regeneration only during readiness advancement, respecting post-hit delay, caps, and downed state.
 - [ ] Assert no model/provider data can supply damage, hit result, critical result, status, downing, loot, or death.
 - [ ] Verify:
@@ -210,7 +209,7 @@ git commit -m "feat(combat): arbitrate conflicting intent batches"
 - Modify: `packages/engine/src/engine.spec.ts`
 
 - [ ] Test victory, extraction, retreat, total party downing, authored deadline, and engine safety stop. Assert legacy and readiness modes both emit the common outer result and claims.
-- [ ] Emit idempotent claims for final combat-local resources, harm/recovery, skill-practice evidence, loot/extraction, objective state, and attempt outcome. Apply them through existing owning reducers, never directly inside the combat kernel. Feed readiness contribution evidence to the v26 `experienceClaimsForCombatResult` function and its bound progression rules; do not calculate XP or levels inside readiness combat.
+- [ ] Emit idempotent claims for final combat-local resources, harm/recovery, skill-practice evidence, loot/extraction, objective state, and attempt outcome. Apply them through existing owning reducers, never directly inside the combat kernel.
 - [ ] Preserve legitimate practice evidence on retreat. A hero who was downed but recovered by victory/extraction returns at the minimum safe Health defined by the rules; an unrecovered downed hero at failed extraction is lost through the engine-owned aftermath transition.
 - [ ] Ensure natural regeneration never revives, removes injuries, or substitutes for recovery claims. Ensure model text cannot declare recovery or death.
 - [ ] Verify:
