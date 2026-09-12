@@ -13,6 +13,7 @@ import type {
 	EngineGameStateV24,
 	EngineGameStateV25,
 	EngineGameStateV26,
+	EngineGameStateV27,
 	EquipmentDefinition,
 	EquipmentLoadoutSlot,
 	EquipmentRank,
@@ -50,13 +51,15 @@ type NavigationState = Extract<
 			| 22
 			| 23
 			| 24
-			| 25;
+			| 25
+			| 27;
 	}
 >;
 type MissionState = Extract<
 	EngineGameState,
 	{
-		schemaVersion: 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21 | 22 | 23 | 24 | 25 | 26;
+		schemaVersion:
+			11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21 | 22 | 23 | 24 | 25 | 26 | 27;
 	}
 >;
 
@@ -66,7 +69,8 @@ let verifiedBandStory: typeof TOWER_BAND_01_STORY_ENVELOPE | undefined;
 let verifiedEquipment = false;
 let verifiedEquipmentDropFixture: MissionEquipmentDropFixture | undefined;
 const EQUIPMENT_RANKS = Object.freeze(['F', 'E', 'D', 'C', 'B', 'A', 'S'] as const);
-type EquipmentState = EngineGameStateV24 | EngineGameStateV25 | EngineGameStateV26;
+type EquipmentState =
+	EngineGameStateV24 | EngineGameStateV25 | EngineGameStateV26 | EngineGameStateV27;
 
 function verifyEquipmentCatalog(): void {
 	if (verifiedEquipment) return;

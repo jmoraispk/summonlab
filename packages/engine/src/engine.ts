@@ -2,6 +2,7 @@ export {
 	ATTEMPT_AFTERMATH_ENGINE_CONTENT_VERSION,
 	CAPABILITY_ENGINE_CONTENT_VERSION,
 	READINESS_COMBAT_ENGINE_CONTENT_VERSION,
+	PROGRESSION_ENGINE_CONTENT_VERSION,
 	COMMUNICATION_ENGINE_CONTENT_VERSION,
 	CONVERSATION_ENGINE_CONTENT_VERSION,
 	DIRECTIVE_ENGINE_CONTENT_VERSION,
@@ -36,6 +37,7 @@ export {
 	supportsEquipmentApi,
 	supportsFirstBandArchiveApi,
 	supportsMissionApi,
+	supportsProgressionV2,
 	supportsStoryPatchApi,
 	supportsSynthesisApi
 } from './core/versions.js';

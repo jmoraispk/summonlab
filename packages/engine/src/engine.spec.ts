@@ -247,7 +247,7 @@ function arriveAtTraining() {
 }
 
 describe('deterministic engine', () => {
-	it('bootstraps v2 drafts directly into v25 capability state without legacy aptitudes', () => {
+	it('bootstraps v2 drafts directly into v27 capability state without legacy aptitudes', () => {
 		const runId = deterministicUuid('engine-v25-test-run');
 		const heroId = deterministicUuid('engine-v25-test-hero');
 		const draft = v2Draft(heroId);
@@ -256,19 +256,19 @@ describe('deterministic engine', () => {
 			seed: 'engine-v25-test-seed',
 			draft
 		});
-		if (bootstrap.snapshot.state.schemaVersion !== 25) {
-			throw new Error('Expected engine-v25 state');
+		if (bootstrap.snapshot.state.schemaVersion !== 27) {
+			throw new Error('Expected engine-v27 state');
 		}
 
 		expect(bootstrap.snapshot.state).toMatchObject({
-			schemaVersion: 25,
-			contentVersion: 'engine-v25',
+			schemaVersion: 27,
+			contentVersion: 'engine-v27',
 			heroes: {
 				[heroId]: {
 					mind: draft.mind,
 					capabilityProfile: draft.capabilityProfile,
-					health: 348,
-					maxHealth: 348,
+					health: 310,
+					maxHealth: 310,
 					mana: 88,
 					maxMana: 88
 				}
@@ -283,7 +283,7 @@ describe('deterministic engine', () => {
 			firstLine: 'I will test the practice ring.',
 			storyBranch: 'steel-before-trust'
 		});
-		if (chosen.state.schemaVersion !== 25) throw new Error('Expected engine-v25 state');
+		if (chosen.state.schemaVersion !== 27) throw new Error('Expected engine-v27 state');
 		expect(chosen.state.heroes[heroId]).toMatchObject({
 			capabilityProfile: draft.capabilityProfile,
 			destination: 'training-ground'
@@ -298,7 +298,7 @@ describe('deterministic engine', () => {
 			commandType: 'simulation.advance',
 			targetGameTime: traveling.scheduled[0]!.dueGameTime
 		});
-		if (arrived.state.schemaVersion !== 25) throw new Error('Expected engine-v25 state');
+		if (arrived.state.schemaVersion !== 27) throw new Error('Expected engine-v27 state');
 		expect(arrived.state.heroes[heroId]).toMatchObject({
 			location: 'training-ground',
 			capabilityProfile: draft.capabilityProfile
@@ -347,8 +347,8 @@ describe('deterministic engine', () => {
 			seed: 'engine-v25-legacy-draft-seed',
 			draft: legacyDraft
 		});
-		if (migrated.snapshot.state.schemaVersion !== 25) {
-			throw new Error('Expected migrated engine-v25 state');
+		if (migrated.snapshot.state.schemaVersion !== 27) {
+			throw new Error('Expected migrated engine-v27 state');
 		}
 		expect(migrated.snapshot.state.heroes[legacyDraft.manifest.characterId]).toMatchObject({
 			mind: source.mind,
@@ -402,7 +402,7 @@ describe('deterministic engine', () => {
 		}>().not.toMatchTypeOf<BootstrapAdditionalHeroInput>();
 	});
 
-	it('admits additional v2 drafts only when the whole bootstrap enters v25', () => {
+	it('admits additional v2 drafts only when the whole bootstrap enters v27', () => {
 		const primary = v2Draft(deterministicUuid('engine-v25-primary-draft'));
 		const additional = v2Draft(deterministicUuid('engine-v25-additional-draft'));
 		const direct = createBootstrapEngine({
@@ -411,7 +411,7 @@ describe('deterministic engine', () => {
 			draft: primary,
 			additionalHeroes: [{ draft: additional }]
 		});
-		if (direct.snapshot.state.schemaVersion !== 25) throw new Error('Expected engine-v25 state');
+		if (direct.snapshot.state.schemaVersion !== 27) throw new Error('Expected engine-v27 state');
 		expect(direct.snapshot.state.heroes[primary.manifest.characterId]!.capabilityProfile).toEqual(
 			primary.capabilityProfile
 		);
@@ -457,7 +457,7 @@ describe('deterministic engine', () => {
 		);
 	});
 
-	it('boots readiness-configured capability runs into v26 without changing legacy v25', () => {
+	it('boots new capability runs into bound v27 progression', () => {
 		const draft = v2Draft(deterministicUuid('operator-readiness-bootstrap-draft'));
 		const readiness = createBootstrapEngine({
 			runId: deterministicUuid('operator-readiness-bootstrap-run'),
@@ -473,15 +473,28 @@ describe('deterministic engine', () => {
 		});
 
 		expect(readiness.snapshot.state).toMatchObject({
-			schemaVersion: 26,
-			contentVersion: 'engine-v26',
+			schemaVersion: 27,
+			contentVersion: 'engine-v27',
+			progressionRules: { rulesVersion: 'progression-rules-v1' },
 			mission: { attemptCount: 0, attempt: null }
 		});
-		expect(readiness.event).toMatchObject({ schemaVersion: 26, contentVersion: 'engine-v26' });
+		expect(readiness.event).toMatchObject({ schemaVersion: 27, contentVersion: 'engine-v27' });
 		expect(legacy.snapshot.state).toMatchObject({
-			schemaVersion: 26,
-			contentVersion: 'engine-v26',
+			schemaVersion: 27,
+			contentVersion: 'engine-v27',
+			progressionRules: { rulesVersion: 'progression-rules-v1' },
 			mission: { attemptCount: 0, attempt: null }
+		});
+		if (readiness.snapshot.state.schemaVersion !== 27) throw new Error('Expected engine-v27 state');
+		const hero = readiness.snapshot.state.heroes[draft.manifest.characterId]!;
+		expect(hero.progression).toMatchObject({
+			progressionVersion: 'hero-progression-v2',
+			stars: draft.manifest.rarityStars,
+			level: 1,
+			experience: 0,
+			unallocatedAttributePoints: 0,
+			permanentGrowth: { strength: 0, agility: 0, vitality: 0, magic: 0 },
+			evidenceCounts: { combat: {}, crafting: {} }
 		});
 	});
 

@@ -25,6 +25,7 @@ import {
 	EngineGameStateV24Schema,
 	EngineGameStateV25Schema,
 	EngineGameStateV26Schema,
+	EngineGameStateV27Schema,
 	type EngineGameState
 } from '@summonlab/contracts';
 
@@ -34,7 +35,12 @@ import type { EngineGameStateModern } from './types.js';
 
 export function parseGameState(value: unknown): EngineGameState {
 	const state = EngineGameStateSchema.parse(value);
-	if (state.schemaVersion === 24 || state.schemaVersion === 25 || state.schemaVersion === 26) {
+	if (
+		state.schemaVersion === 24 ||
+		state.schemaVersion === 25 ||
+		state.schemaVersion === 26 ||
+		state.schemaVersion === 27
+	) {
 		validateEquipmentStateContent(state);
 	}
 	return state;
@@ -82,7 +88,9 @@ export function parseModernState<State extends EngineGameStateModern>(
 	const parsed =
 		state.schemaVersion === 25
 			? EngineGameStateV25Schema.parse(value)
-			: EngineGameStateV26Schema.parse(value);
+			: state.schemaVersion === 26
+				? EngineGameStateV26Schema.parse(value)
+				: EngineGameStateV27Schema.parse(value);
 	validateEquipmentStateContent(parsed);
 	return parsed as State;
 }

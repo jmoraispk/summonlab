@@ -548,6 +548,61 @@ describe('engine contracts compatibility', () => {
 		expect(gameStateContracts.EngineGameStateV25Schema.safeParse(v26).success).toBe(false);
 	});
 
+	it('adds bound v27 progression without widening the frozen v26 schema', () => {
+		const v26 = v26ReadinessStateFromV24Fixture();
+		const v27 = {
+			...v26,
+			schemaVersion: 27 as const,
+			contentVersion: 'engine-v27',
+			progressionRules: {
+				rulesVersion: 'progression-rules-v1' as const,
+				contentHash: '97e69f0c427cf1eff6c886179475a5b0b27ef0b7babbf592cde22ffb64ec0119'
+			},
+			heroes: Object.fromEntries(
+				Object.entries(v26.heroes as Record<string, Record<string, unknown>>).map(
+					([heroId, hero]) => [
+						heroId,
+						{
+							...hero,
+							progression: {
+								progressionVersion: 'hero-progression-v2' as const,
+								stars: 7,
+								level: 999,
+								experience: 9_980,
+								unallocatedAttributePoints: 6_986,
+								permanentGrowth: {
+									strength: 2_000,
+									agility: 1_500,
+									vitality: 1_250,
+									magic: 2_800
+								},
+								evidenceCounts: { combat: {}, crafting: {} },
+								skills: (hero.progression as { skills: Record<string, unknown> }).skills
+							}
+						}
+					]
+				)
+			)
+		};
+
+		expect(gameStateContracts.EngineGameStateV27Schema.parse(v27).schemaVersion).toBe(27);
+		expect(gameStateContracts.EngineGameStateV26Schema.safeParse(v27).success).toBe(false);
+		expect(
+			gameStateContracts.EngineGameStateV27Schema.safeParse({ ...v27, progressionRules: undefined })
+				.success
+		).toBe(false);
+		expect(
+			gameStateContracts.EngineGameStateV27Schema.safeParse({
+				...v27,
+				progressionRules: { ...v27.progressionRules, contentHash: '0'.repeat(64) }
+			}).success
+		).toBe(false);
+		const overCap = structuredClone(v27);
+		(Object.values(overCap.heroes)[0] as { progression: { level: number } }).progression.level =
+			1000;
+		expect(gameStateContracts.EngineGameStateV27Schema.safeParse(overCap).success).toBe(false);
+	});
+
 	it('validates inherited mission references and decision lifecycle in readiness mode', () => {
 		const v26 = v26ReadinessStateFromV24Fixture();
 		expect(gameStateContracts.EngineGameStateV26Schema.parse(v26).schemaVersion).toBe(26);
@@ -840,7 +895,7 @@ describe('engine contracts compatibility', () => {
 
 		const unsupported = {
 			...ENGINE_COMPATIBILITY_STATE_FIXTURES[23],
-			schemaVersion: 27
+			schemaVersion: 28
 		};
 		const directVersionResult = gameStateContracts.EngineGameStateV24Schema.safeParse(unsupported);
 		expect(directVersionResult).toStrictEqual(
@@ -875,7 +930,7 @@ describe('engine contracts compatibility', () => {
 				code: 'invalid_union',
 				path: ['schemaVersion'],
 				message:
-					"Invalid discriminator value. Expected '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' | '10' | '11' | '12' | '13' | '14' | '15' | '16' | '17' | '18' | '19' | '20' | '21' | '22' | '23' | '24' | '25' | '26'"
+					"Invalid discriminator value. Expected '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' | '10' | '11' | '12' | '13' | '14' | '15' | '16' | '17' | '18' | '19' | '20' | '21' | '22' | '23' | '24' | '25' | '26' | '27'"
 			}
 		]);
 	});

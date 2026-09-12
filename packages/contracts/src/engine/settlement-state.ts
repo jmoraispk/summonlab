@@ -10,6 +10,7 @@ import {
 	EquipmentStandardRecipeDescriptorSchema
 } from '../equipment.js';
 import { SettlementRoutePlanSchema, SettlementSlugSchema } from '../settlement.js';
+import { HeroProgressionV2Schema } from '../progression.js';
 import {
 	ContentVersionSchema,
 	EntityIdSchema,
@@ -533,19 +534,21 @@ function validateEngineHeroStateV25(
 	if (hero.lifeState !== 'active' && hero.currentForging !== null) {
 		context.addIssue({ code: 'custom', message: 'A terminal hero cannot forge equipment' });
 	}
-	const intrinsic = { ...hero.capabilityProfile.attributes };
-	for (const receipt of hero.progression.attributeGrowthReceipts) {
-		if (
-			receipt.heroId !== hero.heroId ||
-			receipt.beforeIntrinsicValue !== intrinsic[receipt.attribute]
-		) {
-			context.addIssue({
-				code: 'custom',
-				message: 'Attribute growth receipt chain diverged from intrinsic capability'
-			});
-			break;
+	if ('attributeGrowthReceipts' in hero.progression) {
+		const intrinsic = { ...hero.capabilityProfile.attributes };
+		for (const receipt of hero.progression.attributeGrowthReceipts) {
+			if (
+				receipt.heroId !== hero.heroId ||
+				receipt.beforeIntrinsicValue !== intrinsic[receipt.attribute]
+			) {
+				context.addIssue({
+					code: 'custom',
+					message: 'Attribute growth receipt chain diverged from intrinsic capability'
+				});
+				break;
+			}
+			intrinsic[receipt.attribute] = receipt.afterIntrinsicValue;
 		}
-		intrinsic[receipt.attribute] = receipt.afterIntrinsicValue;
 	}
 	const activeEntries = hero.dailyPlan?.entries.filter((entry) => entry.status === 'active') ?? [];
 	if (hero.currentRoutine) {
@@ -602,6 +605,20 @@ export const EngineHeroStateV26Schema = z
 	.strict()
 	.superRefine(validateEngineHeroStateV25);
 
+export const EngineHeroStateV27Schema = z
+	.object({
+		...EngineHeroStateV25BaseSchema.shape,
+		progression: HeroProgressionV2Schema,
+		combatTraining: HeroCombatTrainingV1Schema
+	})
+	.strict()
+	.superRefine((hero, context) =>
+		validateEngineHeroStateV25(
+			hero as unknown as z.infer<typeof EngineHeroStateV25BaseSchema>,
+			context
+		)
+	);
+
 const materialLotShape = Object.fromEntries(
 	EquipmentMaterialIdSchema.options.map((materialId) => [
 		materialId,
@@ -628,6 +645,7 @@ export type CurrentForging = z.infer<typeof CurrentForgingSchema>;
 export type EngineHeroStateV24 = z.infer<typeof EngineHeroStateV24Schema>;
 export type EngineHeroStateV25 = z.infer<typeof EngineHeroStateV25Schema>;
 export type EngineHeroStateV26 = z.infer<typeof EngineHeroStateV26Schema>;
+export type EngineHeroStateV27 = z.infer<typeof EngineHeroStateV27Schema>;
 export type HeroCombatTrainingV1 = z.infer<typeof HeroCombatTrainingV1Schema>;
 export type EngineSettlementStateV24 = z.infer<typeof EngineSettlementStateV24Schema>;
 export type EquipmentMaterialLotsV24 = z.infer<typeof EquipmentMaterialLotsV24Schema>;

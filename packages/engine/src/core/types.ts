@@ -32,6 +32,7 @@ import type {
 	EngineGameStateV24,
 	EngineGameStateV25,
 	EngineGameStateV26,
+	EngineGameStateV27,
 	EngineSnapshot,
 	EntropyDraw,
 	LegalAction,
@@ -64,8 +65,10 @@ export type EngineGameStateModern =
 	| EngineGameStateV23
 	| EngineGameStateV24
 	| EngineGameStateV25
-	| EngineGameStateV26;
-export type EngineReadinessState = EngineGameStateV26;
+	| EngineGameStateV26
+	| EngineGameStateV27;
+export type EngineReadinessState = EngineGameStateV26 | EngineGameStateV27;
+export type EngineProgressionState = EngineGameStateV27;
 export type EngineRoutineState =
 	| EngineGameStateV5
 	| EngineGameStateV6
@@ -87,7 +90,8 @@ export type EngineRoutineState =
 	| EngineGameStateV22
 	| EngineGameStateV23
 	| EngineGameStateV24
-	| EngineGameStateV25;
+	| EngineGameStateV25
+	| EngineGameStateV27;
 
 interface BootstrapEngineInputBase {
 	readonly runId: string;

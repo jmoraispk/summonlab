@@ -25,6 +25,7 @@ import {
 	type EngineGameStateV23,
 	type EngineGameStateV24,
 	type EngineGameStateV25,
+	type EngineGameStateV27,
 	type LegalAction
 } from '@summonlab/contracts';
 import { COMBAT_RULES_V1 } from '@summonlab/content';
@@ -82,7 +83,8 @@ export function settlementTravelActions(
 		| EngineGameStateV22
 		| EngineGameStateV23
 		| EngineGameStateV24
-		| EngineGameStateV25,
+		| EngineGameStateV25
+		| EngineGameStateV27,
 	actorId: string,
 	targetNodeIds?: readonly string[]
 ): LegalAction[] {

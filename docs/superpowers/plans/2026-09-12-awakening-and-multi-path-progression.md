@@ -378,11 +378,11 @@ git commit -m "feat(progression): add authored awakening rules"
 - Consumes: `HeroProgressionV2Schema` from Task 1 and `PROGRESSION_RULES_V1` binding from Task 2.
 - Produces: `EngineHeroStateV27Schema`, `EngineGameStateV27Schema`, `PROGRESSION_ENGINE_CONTENT_VERSION`, and v27 bootstrap state for all domain adapters.
 
-- [ ] **Step 1: Add failing v26/v27 compatibility tests**
+- [x] **Step 1: Add failing v26/v27 compatibility tests**
 
 Assert the corrected v26 state still parses and hashes identically after Task 0. Assert v27 requires a rules binding and v2 progression, accepts level 999, rejects level 1000, and accepts permanent growth beyond the generated base-attribute range.
 
-- [ ] **Step 2: Run compatibility tests and verify red**
+- [x] **Step 2: Run compatibility tests and verify red**
 
 ```bash
 pnpm --filter @summonlab/contracts test -- engine-compatibility.spec.ts
@@ -391,7 +391,7 @@ pnpm --filter @summonlab/engine test -- engine.spec.ts compatibility/replay-vect
 
 Expected: FAIL because v27 is not in the state union.
 
-- [ ] **Step 3: Add additive v27 schemas**
+- [x] **Step 3: Add additive v27 schemas**
 
 Extend v26 rather than widening any earlier schema:
 
@@ -410,15 +410,15 @@ export const EngineGameStateV27Schema = EngineGameStateV26BaseSchema.extend({
 
 `validateV27State` verifies the bound hash, progression level cap, nonnegative growth, and ordinary v26 ownership invariants. It must not derive or persist awakening tier because the tier is a pure projection from level.
 
-- [ ] **Step 4: Bootstrap new runs as v27**
+- [x] **Step 4: Bootstrap new runs as v27**
 
 Initialize each hero with immutable generated stars, level 1, zero experience, zero unallocated points, zero permanent growth, empty evidence counts, and the v1 rules binding. Preserve explicit development-version bootstraps used by replay vectors.
 
-- [ ] **Step 5: Add v27 capability routing**
+- [x] **Step 5: Add v27 capability routing**
 
 Add `PROGRESSION_ENGINE_CONTENT_VERSION = 'engine-v27'`, include `27` only in APIs already available to v26, and add `supportsProgressionV2(state): state is EngineGameStateV27`. Do not reinterpret v1-v26 through v2 helpers.
 
-- [ ] **Step 6: Run focused verification**
+- [x] **Step 6: Run focused verification**
 
 ```bash
 pnpm --filter @summonlab/contracts test -- engine-compatibility.spec.ts
@@ -427,7 +427,7 @@ pnpm --filter @summonlab/contracts typecheck
 pnpm --filter @summonlab/engine typecheck
 ```
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add packages/contracts/src/engine packages/contracts/src/engine-public-api.snapshot.ts packages/engine/src

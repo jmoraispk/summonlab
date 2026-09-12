@@ -1379,7 +1379,7 @@ function reduceSettlementEvent(
 		}
 		if (state.schemaVersion === 26) {
 			throw new ReplayIntegrityError(
-				'Engine v26 simulation reducer is not yet supported',
+				`Engine v${state.schemaVersion} simulation reducer is not yet supported`,
 				event.sequence
 			);
 		}
