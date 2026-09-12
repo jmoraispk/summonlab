@@ -53,8 +53,7 @@ const staleReferencePaths = [
 	...(await authoredSourcePaths('docs/decisions', ['.md'])),
 	...(await authoredSourcePaths('docs/evidence', ['.md'])),
 	'apps/web/src/lib/components/wiki/SkillTree.svelte',
-	'apps/web/src/lib/components/wiki/skill-tree-data.ts',
-	'apps/web/src/routes/living-village-lab/summon/fixtures.ts'
+	'apps/web/src/lib/components/wiki/skill-tree-data.ts'
 ];
 const staleReferenceFiles: SkillMarkdownFile[] = await Promise.all(
 	staleReferencePaths.map(async (sourcePath) => ({

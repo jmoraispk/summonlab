@@ -13,14 +13,14 @@ stays outside runtime route ownership and is not implicitly approved for product
 
 ## Source disposition
 
-| Source | Preserve or migrate | Delete after replacement | Current status |
+| Source | Disposition | Canonical replacement | Focused proof |
 | --- | --- | --- | --- |
-| `apps/web/src/lib/components/campaign/SingletonOnboarding.svelte` | Story copy, individual first questions, observable dossier fields, persisted resumption | Full-page renderer and its isolated CSS | Retired |
-| `apps/web/src/routes/living-village-lab/opening/` (**The First Three**) | Four desktop mockups as historical evidence; in-Village story context | Route, `WeaponGlyph`, fixture heroes, and route E2E | Retired |
-| `apps/web/src/routes/living-village-lab/summon/` (**The Summoning Portal**) | Single-arrival reveal cadence, reduced-motion completion, dossier interaction, and Pixi gate effect | Wallets, rates, batch pull, pity, fixtures, route, and route E2E | Retired |
-| `apps/web/src/routes/summon/[runId]/` | First reveal and first question move to the Summoning House; communication, directive, policy-preview, and decision-job APIs remain covered without a player page | Page loader, page component, and fixed legacy walkthrough | Retired |
-| `apps/web/src/routes/onboarding/[runId]/+page.server.ts` | Campaign persistence remains internal to the singleton Village | ID-bearing redirect route | Retired |
-| `apps/web/src/routes/living-village-lab/+page.svelte` | Tower and combat study cards remain until their own canonical migrations | Opening and summon cards plus their imports | Retired |
+| `apps/web/src/lib/components/campaign/SingletonOnboarding.svelte` | Behavior migrated; renderer deleted | `/village` through `SingletonCampaign.svelte` and `SummoningHouse.svelte` | `pnpm --filter @summonlab/web test:e2e -- src/routes/campaign.e2e.ts` |
+| `apps/web/src/routes/living-village-lab/opening/` (**The First Three**) | Mockups preserved as evidence; route, fixtures, helper, and E2E deleted | `/village` opening objective and in-place first-company progression | `pnpm --filter @summonlab/web exec vitest run src/lib/city.spec.ts` |
+| `apps/web/src/routes/living-village-lab/summon/` (**The Summoning Portal**) | Reveal/dossier/Pixi behavior migrated; economy and route deleted | `apps/web/src/lib/components/summoning/` opened from the Village circle | `pnpm --filter @summonlab/web test:e2e -- src/routes/campaign.e2e.ts` |
+| `apps/web/src/routes/summon/[runId]/` | Useful mechanics retained behind APIs; player page and walkthrough deleted | Summoning House plus Residents-facing mechanics later | `pnpm --filter @summonlab/web test:e2e -- src/routes/proof.e2e.ts` |
+| `apps/web/src/routes/onboarding/[runId]/+page.server.ts` | Redirect deleted; persistence retained | Singleton `/village` loader | `pnpm --filter @summonlab/web exec vitest run src/lib/server/singleton-village-page.spec.ts` |
+| `apps/web/src/routes/living-village-lab/+page.svelte` | Opening and summon cards deleted; Tower/combat study cards retained | Canonical `/village`; Tower/combat remain explicitly out of scope below | `pnpm --filter @summonlab/web test:e2e -- src/routes/living-village-lab/index.e2e.ts` |
 
 ## Preserved evidence
 
@@ -70,3 +70,10 @@ restoring a summon page.
 
 Their dispositions are approved by the governing specification but require the canonical Tower and
 combat slice before deletion.
+
+## Acceptance evidence
+
+The final canonical flow was captured from one persisted campaign at desktop and phone sizes in
+`docs/evidence/direct-village-summoning-house/`. The acceptance run verifies five City destination
+links at both sizes, no horizontal phone overflow, in-place House entry, three individual persisted
+summons, reload resumption, first replies, and return to the Village.

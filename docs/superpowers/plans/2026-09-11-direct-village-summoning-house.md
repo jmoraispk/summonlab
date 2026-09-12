@@ -730,7 +730,7 @@ git push origin HEAD
 - Consumes: the complete direct-entry and canonical summon slice.
 - Produces: release evidence, checked retirement status, and a collaborator preview.
 
-- [ ] **Step 1: Run the focused and repository gates**
+- [x] **Step 1: Run the focused and repository gates**
 
 Run:
 
@@ -749,15 +749,15 @@ git diff --check
 
 Expected: every command exits zero.
 
-- [ ] **Step 2: Capture desktop and phone evidence from one persisted campaign**
+- [x] **Step 2: Capture desktop and phone evidence from one persisted campaign**
 
 Run the campaign E2E test with `CAPTURE_DIRECT_VILLAGE_SUMMON_DIR` set to `docs/evidence/direct-village-summoning-house`. Capture `/village` before summoning and the open House at 1440 by 1000, then repeat at 390 by 844. Assert `document.documentElement.scrollWidth <= window.innerWidth` on phone and exactly five City destination links in both sizes.
 
-- [ ] **Step 3: Complete the retirement manifest**
+- [x] **Step 3: Complete the retirement manifest**
 
 Mark each row `migrated`, `preserved evidence`, or `deleted`, add the canonical replacement path, and record the focused test command that proves the disposition. Leave Tower and combat studies explicitly `out of scope for this slice`.
 
-- [ ] **Step 4: Start and verify the collaborator preview**
+- [x] **Step 4: Start and verify the collaborator preview**
 
 Run:
 
@@ -770,7 +770,7 @@ curl -I http://10.110.24.122:5173/village
 
 Expected: web listens on `0.0.0.0:5173`, worker listens on `0.0.0.0:4174`, and both HTTP checks return 200 after the singleton campaign exists.
 
-- [ ] **Step 5: Commit evidence and final manifest state**
+- [x] **Step 5: Commit evidence and final manifest state**
 
 ```bash
 git add docs/decisions/2026-09-11-direct-village-summoning-retirement.md docs/evidence/direct-village-summoning-house
@@ -778,7 +778,7 @@ git commit -m "test(village): capture direct summoning acceptance"
 git push origin HEAD
 ```
 
-- [ ] **Step 6: Report the exact playtest**
+- [x] **Step 6: Report the exact playtest**
 
 Share `http://10.110.24.122:5173/` and ask the owner to test these decisions:
 

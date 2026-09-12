@@ -35,7 +35,7 @@
 	}
 
 	$effect(() => {
-		runToken;
+		const activeRunToken = runToken;
 		clearTimers();
 		phase = 'charge';
 		const beats: ReadonlyArray<{ phase: Exclude<RevealPhase, 'charge'>; delay: number }> =
@@ -55,6 +55,7 @@
 		for (const beat of beats) {
 			timers.push(
 				setTimeout(() => {
+					if (activeRunToken !== runToken) return;
 					if (beat.phase === 'complete') complete();
 					else phase = beat.phase;
 				}, beat.delay)

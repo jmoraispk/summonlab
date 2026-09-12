@@ -7,6 +7,19 @@ test('enters the canonical Village and summons the first company in place', asyn
 	request
 }) => {
 	test.setTimeout(120_000);
+	await page.setViewportSize({ width: 1440, height: 1000 });
+	await page.addInitScript(() => {
+		localStorage.setItem(
+			'summonlab.player-settings.v2',
+			JSON.stringify({
+				motion: 'reduced',
+				textScale: 'standard',
+				controlMode: 'wait',
+				sound: 'muted',
+				soundCaptions: true
+			})
+		);
+	});
 	const creation = await request.post('/api/campaigns', {
 		data: { seed: `campaign-e2e-${randomUUID()}`, controlMode: 'wait' }
 	});
@@ -47,6 +60,40 @@ test('enters the canonical Village and summons the first company in place', asyn
 	await expect(page.getByTestId('city-screen')).toBeVisible();
 	await expect(page.getByTestId('campaign-onboarding')).toHaveCount(0);
 	await expect(page.getByTestId('city-scene-resident')).toHaveCount(0);
+	const dismissReturnSummary = async () => {
+		const continueButton = page.getByRole('button', { name: 'Continue to settlement' });
+		if (await continueButton.isVisible()) await continueButton.click();
+	};
+	const captureDirectory = process.env.CAPTURE_DIRECT_VILLAGE_SUMMON_DIR;
+	const destinations = page
+		.getByRole('navigation', { name: 'City destinations' })
+		.getByRole('link');
+	await expect(destinations).toHaveCount(5);
+	if (captureDirectory) {
+		await page.screenshot({ path: `${captureDirectory}/village-desktop.png`, fullPage: true });
+		await page.getByRole('button', { name: 'Enter Summoning House' }).click();
+		await expect(page.getByRole('dialog', { name: 'Summoning House' })).toBeVisible();
+		await page.screenshot({
+			path: `${captureDirectory}/summoning-house-desktop.png`,
+			fullPage: true
+		});
+		await page.getByRole('button', { name: 'Close Summoning House' }).click();
+
+		await page.setViewportSize({ width: 390, height: 844 });
+		await expect(destinations).toHaveCount(5);
+		expect(
+			await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)
+		).toBe(true);
+		await page.screenshot({ path: `${captureDirectory}/village-phone.png`, fullPage: true });
+		await page.getByRole('button', { name: 'Enter Summoning House' }).click();
+		await expect(page.getByRole('dialog', { name: 'Summoning House' })).toBeVisible();
+		await page.screenshot({
+			path: `${captureDirectory}/summoning-house-phone.png`,
+			fullPage: true
+		});
+		await page.getByRole('button', { name: 'Close Summoning House' }).click();
+		await page.setViewportSize({ width: 1440, height: 1000 });
+	}
 
 	for (let ordinal = 1; ordinal <= 3; ordinal += 1) {
 		await page.getByRole('button', { name: 'Enter Summoning House' }).click();
@@ -59,9 +106,11 @@ test('enters the canonical Village and summons the first company in place', asyn
 		await house.getByRole('button', { name: 'Return to Village' }).click();
 		await expect(page.getByTestId('city-scene-resident')).toHaveCount(ordinal);
 		await page.reload();
+		await dismissReturnSummary();
 		await expect(page.getByTestId('city-scene-resident')).toHaveCount(ordinal);
 	}
 
+	await dismissReturnSummary();
 	await page.getByRole('button', { name: 'Enter Summoning House' }).click();
 	const house = page.getByRole('dialog', { name: 'Summoning House' });
 	for (let answered = 1; answered <= 3; answered += 1) {
