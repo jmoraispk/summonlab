@@ -18,7 +18,7 @@ This produces two independent multipliers on any single action. Attributes decid
 
 | Affinity | Attribute nudged | Reason |
 |---|---|---|
-| Fire | Might | Expansion, force |
+| Fire | Strength | Expansion, force |
 | Earth | Vitality | Stability, endurance |
 | Wind | Agility | Motion, displacement |
 | Water | Spirit | Depth, patience, flow |

@@ -26,7 +26,7 @@ rather than parallel item catalogs. The canonical Equipment forms live in the
 ## Weight
 
 Every equipment piece has weight, linking gear to attributes. The source drives weight tolerance
-with Might, supported by Vitality.
+with Strength, supported by Vitality.
 
 | Load | Proposed effect |
 | --- | --- |
@@ -35,7 +35,7 @@ with Might, supported by Vitality.
 | Substantially over | Also lower attack speed and initiative |
 | Far over | Severe penalties across all Agility-derived stats |
 
-This makes heavy armor costly and gives Might value to nonphysical builds. A Spirit caster in plate
+This makes heavy armor costly and gives Strength value to nonphysical builds. A Spirit caster in plate
 is slow while one in robes is not. High Armorsmithing is proposed to reduce weight for equal
 protection, giving a settlement a reason to cultivate smiths.
 
@@ -114,11 +114,11 @@ pressures a strike team to grow into a settlement. It is explicitly an unfinishe
 
 | Type | Form | Capacity | Availability |
 | --- | --- | --- | --- |
-| Spatial | Backpack, pouch, satchel | Limited by volume and Might-driven carry capacity | Common |
+| Spatial | Backpack, pouch, satchel | Limited by volume and Strength-driven carry capacity | Common |
 | Dimensional | Ring, bracelet, pocket space | Much larger and weight-independent | Rare reward |
 
 Real per-hero capacity creates legitimate gathering and hauling roles, especially for heroes with
-Gathering, high Might, or dimensional storage.
+Gathering, high Strength, or dimensional storage.
 
 ## Living Village subset
 

@@ -60,7 +60,7 @@ Water, and Earth preserve their imported ladders below.
 | 42 | **Spike Field** | Earth | E | A | Stone Shard Expert | Stone spikes erupt across an area |
 | 43 | **Earthen Wall** | Earth | E | A | Stoneshape Expert | Raises a solid barrier from the ground |
 | 44 | **Crushing Weight** | Earth | D | A | Tremor Master, Rank II | Applies heavy Weight; target's poise collapses |
-| 45 | **Boulder Throw** | Earth | D | A | Spike Field Master, Might threshold | Hurls a mass of stone; area impact |
+| 45 | **Boulder Throw** | Earth | D | A | Spike Field Master, Strength threshold | Hurls a mass of stone; area impact |
 | 46 | **Fissure** | Earth | D | A | Earthen Wall Master | Splits the ground in a line; lasting difficult terrain |
 | 47 | **Unshakeable** | Earth | D | P | Stone Skin Master, 10,000 casts | Cannot be moved, displaced or knocked down |
 | 48 | **Mountain Rise** | Earth | C | A | Fissure Master, Rank III | Raises terrain; alters the entire field's geometry |

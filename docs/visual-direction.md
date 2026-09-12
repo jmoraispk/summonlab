@@ -148,7 +148,7 @@ Build a developer-facing Character Forge before producing a large cast. It must 
 
 Use six compact attribute marks rather than a spreadsheet wall:
 
-- Might;
+- Strength;
 - Vigor;
 - Agility;
 - Focus;

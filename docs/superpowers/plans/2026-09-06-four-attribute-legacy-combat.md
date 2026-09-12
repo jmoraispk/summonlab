@@ -2,7 +2,7 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Ship the canonical Might/Vitality/Agility/Spirit character model and operator-selected `legacy-auto-v1` combat as a beta-safe `engine-v25`, while preserving every historical v24 replay byte-for-byte.
+**Goal:** Ship the canonical Strength/Vitality/Agility/Spirit character model and operator-selected `legacy-auto-v1` combat as a beta-safe `engine-v25`, while preserving every historical v24 replay byte-for-byte.
 
 **Architecture:** Add versioned v2 character capability contracts beside the legacy mind schema, persist them independently, and materialize an operator-owned combat-mode binding on every new mission attempt. The existing round resolver remains frozen behind a legacy adapter; new four-attribute heroes enter it only through an explicit compatibility projection. Shared combat math is introduced as pure, parameterized functions and promoted only after a deterministic balance harness passes.
 
@@ -63,9 +63,9 @@ git commit -m "test(combat): freeze legacy automatic resolution"
 - [ ] Define the new public primitives:
 
 ```ts
-export const CombatAttributeNameSchema = z.enum(['might', 'vitality', 'agility', 'spirit']);
+export const CombatAttributeNameSchema = z.enum(['strength', 'vitality', 'agility', 'spirit']);
 export const CombatAttributesSchema = z.object({
-	might: z.number().int().min(1).max(100),
+	strength: z.number().int().min(1).max(100),
 	vitality: z.number().int().min(1).max(100),
 	agility: z.number().int().min(1).max(100),
 	spirit: z.number().int().min(1).max(100)
@@ -169,7 +169,7 @@ export function capabilityProfileFromLegacyMind(mind: CharacterMind): CharacterC
 	return {
 		profileVersion: 'character-capability-v1',
 		attributes: {
-			might: mind.aptitudes.might * 10,
+			strength: mind.aptitudes.might * 10,
 			vitality: mind.aptitudes.resolve * 10,
 			agility: mind.aptitudes.finesse * 10,
 			spirit: mind.aptitudes.insight * 10
@@ -213,7 +213,7 @@ git commit -m "feat(engine): add v25 capability state"
 - Modify: `packages/content/src/index.ts`
 - Modify: `packages/engine/src/index.ts`
 
-- [ ] Add tests for intrinsic/effective separation, typed modifier scope, stacking order, Might-only physical scaling, Spirit-only magical scaling, Vitality Health and regeneration, armour-only general mitigation, named resistance caps, and the bounded cognitive factor.
+- [ ] Add tests for intrinsic/effective separation, typed modifier scope, stacking order, Strength-only physical scaling, Spirit-only magical scaling, Vitality Health and regeneration, armour-only general mitigation, named resistance caps, and the bounded cognitive factor.
 - [ ] Define `AttributeModifier`, `ResistanceTag`, `DamageTag`, `CombatRulesV1`, and typed source receipts. Use basis points and integers in authoritative math.
 - [ ] Publish `combat-rules-v1` from content with these first harness candidates: base Health `100`, Health per Vitality `4`, base Mana `40`, Mana per Spirit `2`, combat Health regeneration delay `50` ticks, combat recovery at one-fifth safe-rest recovery, armour curve constant `100`, resistance cap `7500` basis points, cognitive factor from `9000..11000` basis points, and affinity contribution nudge capped at `1000` basis points.
 - [ ] Implement pure functions with explicit rules input:
@@ -296,7 +296,7 @@ git commit -m "feat(progression): add intrinsic attribute allocation"
 
 - [ ] Add failing tests that reject an attack unless equipped-family tags intersect both the skill's delivery tags and the hero's trained tags. Test related-family familiarization explicitly rather than accepting a specific item instance.
 - [ ] Add `EquipmentFamilyTagSchema` (`unarmed`, `one-handed-blade`, `two-handed-blade`, `bow`, `staff-focus`, `shield`), per-skill mastery, trained delivery tags, authored accuracy/reliability progression, and optional refinement unlocks.
-- [ ] Add equipment load, Might load tolerance, explicit heavy-item Might requirements, and `armour-training` proficiency. Do not add Vitality requirements.
+- [ ] Add equipment load, Strength load tolerance, explicit heavy-item Strength requirements, and `armour-training` proficiency. Do not add Vitality requirements.
 - [ ] Add named `cut`, `pierce`, `impact`, `burn`, `frost`, `shock`, and `arcane` resistance grants to equipment/passive skills/physiology records. Do not add a universal poise field. Permit only explicitly authored `breakMeter` mechanics on content that owns them.
 - [ ] Adapt the current sword and bow runtime records to the new tags while keeping all old catalog IDs stable.
 - [ ] Verify:
@@ -339,7 +339,7 @@ git commit -m "feat(combat): bind skills to trained equipment families"
 - [ ] Add `CombatModeIdSchema = z.enum(['legacy-auto-v1', 'agent-readiness-v1'])` and `CombatModeBindingSchema` containing mode ID, rules version, content hash, and bound timestamp. Add the binding to `MissionAttemptV9Schema`; validate that it cannot change after preparation.
 - [ ] Add `COMBAT_MODE` to config, but in this phase parse only `legacy-auto-v1` and default to it. Expose it as `config.combatMode`; never add it to `ProofRunCreateRequestSchema` or `MissionLifecycleRequestSchema`.
 - [ ] Replace client-supplied `masterActionId` resolution for v25 with `advance-automatic-combat`. The route reads the attempt binding and dispatches internally. Keep old schema-version routes working for historical development fixtures.
-- [ ] Implement `legacyCapabilityProjection()` exactly as `{ might: Might, finesse: Agility, insight: Spirit, resolve: Vitality }`, scaled back from `1..100` to the legacy `1..10` range with integer half-up rounding and clamping. Feed the projection only to a frozen copy/adapter of the existing resolver.
+- [ ] Implement `legacyCapabilityProjection()` exactly as `{ might: Strength, finesse: Agility, insight: Spirit, resolve: Vitality }`, scaled back from `1..100` to the legacy `1..10` range with integer half-up rounding and clamping. Feed the projection only to a frozen copy/adapter of the existing resolver.
 - [ ] Use a seeded random policy for every autonomous party choice, record policy ID and hashes, and retain the existing resolver's sequential entropy semantics and 48-round safety behavior. A player may press **Continue battle**, but cannot choose actors' actions or the combat mode.
 - [ ] Assert request bodies containing `combatMode`, `masterActionId`, `choices`, `targetId`, or `policy` are rejected by strict schemas for v25. Assert changing `COMBAT_MODE` after attempt creation cannot change its binding.
 - [ ] Verify legacy parity, config ownership, and UI behavior:

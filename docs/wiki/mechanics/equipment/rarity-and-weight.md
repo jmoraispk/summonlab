@@ -49,7 +49,7 @@ supplement a build, not define one.
 
 ## Weight classes
 
-Weight is the link between equipment and attributes. A hero's weight tolerance is driven by Might,
+Weight is the link between equipment and attributes. A hero's weight tolerance is driven by Strength,
 supported by Vitality in the source draft.
 
 | Class | Typical wearer | Penalty if over tolerance |

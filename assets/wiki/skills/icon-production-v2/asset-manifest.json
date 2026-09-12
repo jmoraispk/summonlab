@@ -4,7 +4,7 @@
 	"sourcePolicy": "exact-frameless-source",
 	"catalog": {
 		"path": "assets/wiki/skills/icon-production-v2/catalog.json",
-		"contentHash": "699ebc2e91788f08646ce3fa05a215b975a14bf19721c8e159f025db6536296d"
+		"contentHash": "c92a2c4b0db9a795f73e14027128ffe804c681f0a8587bb98f5d3595800576ec"
 	},
 	"composition": {
 		"canvasSize": 1024,

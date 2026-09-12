@@ -11,7 +11,8 @@ export type OfferMode = 'single' | 'batch';
 export type AffinityIcon = 'ember' | 'tide' | 'gale' | 'grove';
 export type AptitudeClass = 'martial' | 'magic' | 'crafting';
 
-export type AttributeName = 'Might' | 'Vitality' | 'Agility' | 'Dexterity' | 'Intellect' | 'Spirit';
+export type AttributeName =
+	'Strength' | 'Vitality' | 'Agility' | 'Dexterity' | 'Intellect' | 'Spirit';
 
 export type AttributeReadiness = {
 	name: AttributeName;
@@ -49,14 +50,14 @@ export type RevealDirectionFixture = {
 };
 
 const attributes = (
-	might: number,
+	strength: number,
 	vitality: number,
 	agility: number,
 	dexterity: number,
 	intellect: number,
 	spirit: number
 ): readonly AttributeReadiness[] => [
-	{ name: 'Might', value: might },
+	{ name: 'Strength', value: strength },
 	{ name: 'Vitality', value: vitality },
 	{ name: 'Agility', value: agility },
 	{ name: 'Dexterity', value: dexterity },

@@ -50,7 +50,7 @@ deferred to the user-owned skills pass.
 
 Source precedence now resolves the first five earlier collisions as follows:
 
-1. use `Might / Vitality / Agility / Dexterity / Intellect / Spirit`;
+1. use `Strength / Vitality / Agility / Dexterity / Intellect / Spirit`;
 2. Fire, Earth, Wind, and Water are the four base affinities; Wood and Metal are retired as
    affinities;
 3. XP comes from kills; other growth uses separately typed grants;

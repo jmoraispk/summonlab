@@ -125,7 +125,7 @@ test('portal connects spending, reveal controls, arrival history, and hero dossi
 	await expect(dossier).toBeVisible();
 	await expect(dossier).toContainText('Attributes');
 	await expect(dossier).toContainText('Personality');
-	await expect(dossier).toContainText('Might');
+	await expect(dossier.getByTitle('Strength')).toHaveText('STR');
 	await expect(dossier).toContainText('Vitality');
 	await expect(dossier).toContainText('Agility');
 	await expect(dossier).toContainText('Dexterity');

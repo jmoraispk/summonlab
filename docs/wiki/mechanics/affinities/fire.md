@@ -6,7 +6,7 @@ Wiki ID: `affinity.fire`
 
 **Status:** **Burn** — damage over time; intensity stacks rather than duration.
 
-**Attribute nudge:** Might on level-up.
+**Attribute nudge:** Strength on level-up.
 
 **Material language:** Vermilion embers, localized heat distortion, material glow, smoke, ash, and
 cooling residue.

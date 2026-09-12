@@ -56,7 +56,7 @@ export type NetNewSkillLedger = {
 };
 
 export const LEGACY_SKILL_INVENTORY_V1_SHA256 =
-	'c4b0d6efe79987686fd3cfb6d3400d21c081936c23d7254f63b6b342d2c70df4';
+	'89af719098c738707972718822933dfc877e1a4b46b959d25571ee73f7e48d6b';
 
 export type TargetSkillRow = {
 	targetId: string;

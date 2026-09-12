@@ -43,7 +43,7 @@ aptitudes are innate talent for an attribute, skill family, or learning mode. Th
 must not label invented phrases such as `Shieldwork` or `Ember control` as if they were accepted
 skills.
 
-- Body contains exactly `Might`, `Vitality`, and `Agility` and uses a muscle/arm icon.
+- Body contains exactly `Strength`, `Vitality`, and `Agility` and uses a muscle/arm icon.
 - Mind contains exactly `Dexterity`, `Intellect`, and `Spirit` and uses a brain icon. Dexterity's
   wiki territory includes accuracy, control, weak-point execution, and crafting precision, so this
   is a presentation grouping rather than a change to its canonical definition.
@@ -176,7 +176,7 @@ This revision supersedes the visible lab-comparison composition below:
    result batch both remain inside the portal surface.
 3. Keep a session arrival strip so five sequential singles or an eleven-result batch remain
    clickable. Selecting an arrival opens an in-place hero dossier rather than navigating away.
-4. Model dossiers with the accepted six attributes (`Might`, `Vitality`, `Agility`, `Dexterity`,
+4. Model dossiers with the accepted six attributes (`Strength`, `Vitality`, `Agility`, `Dexterity`,
    `Intellect`, `Spirit`) and the accepted personality dimensions (traits, value, drive, social
    style, stress response, and risk/leadership tendency). Numeric readiness bars are explicitly
    local presentation estimates because the wiki still leaves attribute numeric ranges open.
@@ -202,7 +202,7 @@ instructions. This pass keeps the accepted in-gate composition and raises its cr
 2. Give every browser receipt slot an arrival ID and unread state. New results carry a visible
    `NEW` marker in both the result contact sheet and Recent arrivals; opening a dossier clears only
    that receipt slot, including when several slots reference the same fixed identity.
-3. Present canonical attributes in two mechanical columns: Body on the left (`Might`, `Vitality`,
+3. Present canonical attributes in two mechanical columns: Body on the left (`Strength`, `Vitality`,
    `Agility`, `Dexterity`) and Mind on the right (`Intellect`, `Spirit`). This grouping is a view
    convention, not a change to the wiki vocabulary or progression contract.
 4. Add code-native elemental affinity icons and aptitude-class icons. Route-local aptitude entries

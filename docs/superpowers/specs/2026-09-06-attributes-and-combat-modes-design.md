@@ -30,7 +30,8 @@ versioned combat mode a release uses; players cannot change combat rules.
 
 ## Goals
 
-1. Make `Might`, `Vitality`, `Agility`, and `Spirit` the canonical visible attributes.
+1. Make `Strength`, `Vitality`, `Agility`, and `Spirit` the canonical visible attributes, with
+   `Strength` abbreviated as `STR` on character sheets.
 2. Give each attribute a narrow, combat-first role without creating a universal best stat.
 3. Move learned precision, resistance, morale, and learning differences to their proper systems.
 4. Keep Health and Mana as the only universal resource bars.
@@ -53,13 +54,18 @@ versioned combat mode a release uses; players cannot change combat rules.
 
 | Attribute | Owns | Does not own |
 | --- | --- | --- |
-| **Might** | physical damage; carrying capacity; equipment-load tolerance; explicit heavy-equipment requirements | accuracy; critical rate; general mitigation; action cadence |
+| **Strength** | physical damage; carrying capacity; equipment-load tolerance; explicit heavy-equipment requirements | accuracy; critical rate; general mitigation; action cadence |
 | **Vitality** | maximum Health; modest natural Health regeneration | armour mitigation; poise; broad physical resistance; status immunity |
 | **Agility** | readiness accumulation; movement capability; evasion; a bounded relative-speed contribution to hit contests | learned accuracy; critical rate; unrestricted extra actions |
 | **Spirit** | magical damage; maximum Mana; modest saturating Mana regeneration | morale; learning rate; control duration; mental resistance; decision quality |
 
-The old `Might / Vitality / Agility / Dexterity / Intellect / Spirit` vocabulary is retired for new
-canonical content. Historical schema fields remain readable under their original rules.
+`Strength` is the canonical name in prose and data contracts. Compact character sheets display
+`STR` while retaining `Strength` as the accessible label. The lowercase `might` key survives only
+inside frozen legacy schemas, replay state, and their explicit compatibility projections.
+
+The earlier six-attribute set—`Strength / Vitality / Agility / Dexterity / Intellect / Spirit`—is
+retired as a set. New canonical content uses only the four attributes above. Historical schema
+fields remain readable under their original rules.
 
 ### Why Dexterity is removed
 
@@ -70,7 +76,7 @@ accuracy stat.
 
 Equipment character replaces finesse scaling. Daggers, swords, bows, and heavy weapons combine
 physical coefficient, delivery restrictions, properties, and recovery cost to produce different
-cadences while physical damage continues to scale from Might.
+cadences while physical damage continues to scale from Strength.
 
 ### Why Intellect is removed
 
@@ -151,7 +157,7 @@ The four base affinities retain a small thematic association:
 
 | Affinity | Matching attribute |
 | --- | --- |
-| Fire | Might |
+| Fire | Strength |
 | Earth | Vitality |
 | Wind | Agility |
 | Water | Spirit |
@@ -162,7 +168,7 @@ Fire casters, Water martial heroes, and other off-association builds before prom
 
 ## Damage and defence
 
-The initial target retains physical and magical action types. Might scales physical magnitude;
+The initial target retains physical and magical action types. Strength scales physical magnitude;
 Spirit scales magical magnitude. Skill-specific base effect, compatible equipment, affinity, and
 the defender's applicable mitigation complete the action calculation.
 
@@ -183,7 +189,7 @@ and cap. No base attribute grants blanket physical or mental resistance.
 ### Armour eligibility
 
 Vitality is not an armour requirement because that would combine Health, regeneration, and access
-to mitigation in one investment. Might supplies load tolerance and may satisfy an explicit heavy
+to mitigation in one investment. Strength supplies load tolerance and may satisfy an explicit heavy
 equipment requirement. Armour Training supplies learned proficiency. Items may add other authored
 requirements without making Vitality the universal tank gate.
 
@@ -304,7 +310,7 @@ Historical attempts retain their stored legacy aptitude fields and original rule
 four-attribute state consumed by an active legacy runner uses an explicit compatibility projection:
 
 ```text
-legacy might   <- Might
+legacy might   <- Strength
 legacy finesse <- Agility
 legacy insight <- Spirit
 legacy resolve <- Vitality

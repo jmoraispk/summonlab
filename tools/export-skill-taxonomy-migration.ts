@@ -287,7 +287,7 @@ function mapRow(row: LegacySkillRow): SkillMigrationRecord {
 				skill: 'Polehammer Handling',
 				labels: [{ namespace: 'Equipment', value: 'Polehammer' }]
 			},
-			replacementRequires: 'Might threshold, hold a polehammer',
+			replacementRequires: 'Strength threshold, hold a polehammer',
 			replacementEffect: 'Damage and poise-damage bonus with polehammers. **Foundation.**'
 		};
 

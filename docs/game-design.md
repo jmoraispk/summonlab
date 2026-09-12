@@ -312,7 +312,7 @@ Stable traits should bias behavior without becoming hard-coded caricatures. Curr
 
 | Attribute | Covers | Example roles |
 | --- | --- | --- |
-| Might | Force, lifting, melee power | Sword fighter, miner, builder |
+| Strength | Force, lifting, melee power | Sword fighter, miner, builder |
 | Vigor | Health, stamina, resistance | Guardian, laborer, explorer |
 | Agility | Speed, coordination, precision | Archer, scout, craftsperson |
 | Focus | Mana control, concentration, technical execution | Mage, alchemist, smith |

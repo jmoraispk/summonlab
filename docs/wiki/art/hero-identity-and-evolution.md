@@ -191,13 +191,13 @@ locking a hero to a combat class.
 
 ## Capability is suggested, not diagrammed
 
-The accepted attributes remain Might, Vitality, Agility, Dexterity, Intellect, and Spirit. The
+The accepted attributes remain Strength, Vitality, Agility, Dexterity, Intellect, and Spirit. The
 image should use concrete, drawable evidence rather than abstract claims such as "has fine motor
 habits."
 
 | Attribute | Useful candidate cues | Cues that must not become a rule |
 | --- | --- | --- |
-| Might | frame and muscle distribution, stable leverage, garment fit across shoulders or legs, forceful stance | large body always means high Might |
+| Strength | frame and muscle distribution, stable leverage, garment fit across shoulders or legs, forceful stance | large body always means high Strength |
 | Vitality | robust conditioning, grounded balance, durable bearing, recovery-ready clothing construction | body fat, age, scars, or attractiveness prove Vitality |
 | Agility | low visual inertia, mobile stance, free hems, close sleeves, long or coiled movement lines | thinness always means fast |
 | Dexterity | precise closures, controlled hand pose when reliably rendered, meticulous wrapping or repair, uncluttered hand silhouette | face shape or social class proves precision |

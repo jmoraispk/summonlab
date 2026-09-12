@@ -2,7 +2,7 @@
 
 Wiki ID: `mechanics.progression.attributes-training`
 
-Design status: **authoritative vocabulary with open tuning**. Might, Vitality, Agility, Dexterity,
+Design status: **authoritative vocabulary with open tuning**. Strength, Vitality, Agility, Dexterity,
 Intellect, and Spirit are the accepted six attributes. Their numeric curves and the broader training
 proposal remain subject to review.
 
@@ -14,20 +14,20 @@ then adds understanding, which the fable omits and a pure fighter can afford to 
 
 | Axis | Physical | Mental |
 | --- | --- | --- |
-| Power—what is put out | Might | Intellect |
+| Power—what is put out | Strength | Intellect |
 | Resilience—what is absorbed and sustained | Vitality | Spirit |
 | Execution—how the act lands | Agility (how fast) | Dexterity (how exactly) |
 
 | Attribute | Pillar | Proposed territory | Failure without it |
 | --- | --- | --- | --- |
-| Might | Strength | Physical damage, stagger force, carry capacity, equipment-weight tolerance, forceful interaction, heavy-weapon scaling | A blow connects but moves nothing |
+| Strength | Strength | Physical damage, stagger force, carry capacity, equipment-weight tolerance, forceful interaction, heavy-weapon scaling | A blow connects but moves nothing |
 | Vitality | Strength | Health, mitigation, poise, physical-status resistance | Death on the first mistake |
 | Agility | Speed | Attack and movement speed, evasion, initiative, action economy | Acting last and being hit first |
 | Dexterity | Control | Accuracy, critical rate, weak-point targeting, technique execution, crafting precision, finesse-weapon scaling | Real damage delivered unreliably |
 | Intellect | Understanding | Magical magnitude, learning, analysis, identification, recipe comprehension | Unable to learn what is shown |
 | Spirit | Control | Mana and regeneration, channel stability, control duration, mental resistance, stance upkeep | Running dry or losing a technique halfway |
 
-Might mirrors Intellect as physical and mental output. Vitality mirrors Spirit as bodily and mental
+Strength mirrors Intellect as physical and mental output. Vitality mirrors Spirit as bodily and mental
 endurance. Agility is the fist arriving quickly; Dexterity is its arriving at the intended point;
 stopping it there is Spirit.
 
@@ -63,25 +63,25 @@ fragile.
 | Health pool | Vitality | — |
 | Mana pool | Spirit | — |
 | Mana regeneration | Spirit | Intellect |
-| Physical damage | Might | Dexterity |
+| Physical damage | Strength | Dexterity |
 | Magical damage | Intellect | Spirit |
 | Critical rate | Dexterity | Agility |
-| Critical damage | Might | Dexterity |
+| Critical damage | Strength | Dexterity |
 | Accuracy | Dexterity | Agility |
 | Attack speed | Agility | Dexterity |
 | Movement speed | Agility | — |
 | Evasion | Agility | Dexterity |
 | Initiative | Agility | Intellect |
-| Armour/mitigation | Vitality | Might |
-| Poise | Vitality | Might |
+| Armour/mitigation | Vitality | Strength |
+| Poise | Vitality | Strength |
 | Physical-status resistance | Vitality | Spirit |
 | Mental-status resistance | Spirit | Intellect |
 | Control duration inflicted | Spirit | Intellect |
 | Channel stability | Spirit | Vitality |
 | Learning rate | Intellect | Dexterity |
 | Stance-upkeep efficiency | Spirit | Vitality |
-| Carry capacity | Might | Vitality |
-| Weight tolerance | Might | Vitality |
+| Carry capacity | Strength | Vitality |
+| Weight tolerance | Strength | Vitality |
 | Gathering yield | Dexterity | Intellect |
 | Crafting quality | Dexterity | Intellect |
 
@@ -102,7 +102,7 @@ a civic or other non-combat hero can become formidable.
 
 | Attribute | Example training actions |
 | --- | --- |
-| Might | Weighted labor, forge work, hauling, wrestling, breaking stone, marching in armor |
+| Strength | Weighted labor, forge work, hauling, wrestling, breaking stone, marching in armor |
 | Vitality | Long marches, climate exposure, watch duty, hit-taking sparring, hard work in bad conditions |
 | Agility | Footwork, obstacle traversal, climbing, dance, sprint intervals, dodge practice |
 | Dexterity | Target practice, calligraphy, whittling, lockpicking, blade forms, instruments, fine crafting |
@@ -110,7 +110,7 @@ a civic or other non-combat hero can become formidable.
 | Spirit | Meditation, breathing forms, vigil, ritual, stillness at a leyline node |
 
 One action can train two attributes: fine crafting may train Dexterity and Intellect, while marching
-in armor trains Might and Vitality. This keeps the world from looking like a menu. Attribute
+in armor trains Strength and Vitality. This keeps the world from looking like a menu. Attribute
 training uses the same repetition × quality × variety × aptitude practice model as skills and shows
 the same yield.
 

@@ -9,19 +9,23 @@ morality, obedience, social worth, personality, or the value of a life.
 ## Authoritative shared vocabulary
 
 The supplied [progression design](progression/attributes-and-training.md) defines six attributes:
-`Might`, `Vitality`, `Agility`, `Dexterity`, `Intellect`, and `Spirit`. Under ADR 0063 this model
-supersedes the earlier `Might / Vigor / Agility / Focus / Insight / Presence` proposal. Historical
+`Strength`, `Vitality`, `Agility`, `Dexterity`, `Intellect`, and `Spirit`. Under ADR 0063 this model
+supersedes the earlier `Strength / Vigor / Agility / Focus / Insight / Presence` proposal. Historical
 engine content keeps its old IDs; new Living Village content must use or explicitly migrate to the
 authored vocabulary as one versioned change.
 
 | Attribute | Mechanical territory | Example use |
 | --- | --- | --- |
-| Might | force, leverage, carrying, melee power | lifting, mining, breaking guard |
+| Strength | force, leverage, carrying, melee power | lifting, mining, breaking guard |
 | Vitality | health, mitigation, poise, physical resistance | enduring harm and resisting bodily status |
 | Agility | speed, balance, reaction, evasion | moving first and escaping danger |
 | Dexterity | accuracy, control, weak-point execution, crafting precision | landing a shot or making a fine object |
 | Intellect | magical output, analysis, comprehension, learning | understanding a recipe or spell |
 | Spirit | mana, mental endurance, control stability, mental resistance | sustaining magic or resisting fear |
+
+Character sheets abbreviate `Strength` as `STR`; prose, rules, and new data contracts use the full
+name. A lowercase `might` key may still appear in frozen historical engine state and compatibility
+adapters, but it is not the current attribute name.
 
 The earlier vocabulary remains partially represented by the current prototype engine. Exact numeric
 ranges, growth curves, and combat formulas still require progression-v2 implementation, but the
@@ -30,7 +34,7 @@ names and mechanical territories above are no longer an open choice.
 ## Attribute rules
 
 - Base attributes belong to progression/capability state and change only through typed growth.
-- Skills turn attributes into specific competence. High Might does not automatically grant sword
+- Skills turn attributes into specific competence. High Strength does not automatically grant sword
   mastery; high Intellect does not grant knowledge the actor never observed.
 - Context selects the relevant attribute or combination. The same task must not silently change its
   formula by UI surface.
@@ -68,7 +72,7 @@ different actions or scale, and deterministic monster policies can use fewer cog
 
 - What numeric range should base attributes use?
 - Which checks combine two attributes, and how are ties explained?
-- How should size/physiology remain distinct from Might and Vitality?
+- How should size/physiology remain distinct from Strength and Vitality?
 - Which modifiers should be visible exactly and which should use descriptive bands?
 
 ## References

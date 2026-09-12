@@ -221,7 +221,7 @@ remain preserved rather than silently normalized:
 - A material supplies base rank. Item and material difficulty set the required Forging level;
   Standard work keeps the base rank, Fine work adds one rank, and Masterwork adds two, capped at S.
   The exact difficulty values and benefit table remain to be authored.
-- Weight tolerance uses Might supported by Vitality as authored.
+- Weight tolerance uses Strength supported by Vitality as authored.
 - An item's rarity is fixed forever, while Living Metal grows with its wielder. Growth can be
   compatible with fixed rarity, but the mutable stats/properties need an explicit boundary.
 - Clarify whether material/monster is one source axis while enchantment and binding are independent

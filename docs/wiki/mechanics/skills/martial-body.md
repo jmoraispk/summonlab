@@ -46,17 +46,17 @@ command in combat. `Unarmed` appears only when a technique truly requires empty 
 | 32 | **Empty Force** | Unarmed | B | A | One Inch Master, Affinity Rank IV | The strike lands without contact, at range |
 | 33 | **Formless Body** | Unarmed | A | St | Diamond Body Master, composite condition | Attacks pass through the hero without effect for the duration |
 | 34 | **The Fist That Ends** | Unarmed | S | A | Empty Force Master, Formless Body Master, composite condition | One strike. Whatever it touches ceases. |
-| 35 | **Wrestling** | — | F | P | Might threshold | Enables grabs and holds. **Foundation.** |
+| 35 | **Wrestling** | — | F | P | Strength threshold | Enables grabs and holds. **Foundation.** |
 | 36 | **Grab** | — | F | A | Wrestling Novice | Holds a target in place; both are immobilised |
 | 37 | **Shove** | — | F | A | Wrestling Novice | Pushes a target back; breaks their stance |
 | 38 | **Trip** | — | E | A | Wrestling Intermediate | Knocks the target prone |
 | 39 | **Joint Lock** | — | E | A | Grab Expert, Dexterity threshold | Prevents the target from using skills while held |
-| 40 | **Throw** | — | E | A | Grab Expert, Might threshold | Hurls the target; damages whatever they land on |
+| 40 | **Throw** | — | E | A | Grab Expert, Strength threshold | Hurls the target; damages whatever they land on |
 | 41 | **Ground Control** | — | D | P | Trip Master | Prone targets cannot rise while the hero is adjacent |
 | 42 | **Chokehold** | — | D | A | Joint Lock Master | Escalating damage and silence while maintained |
-| 43 | **Suplex** | — | D | A | Throw Master, Might threshold | Heavy damage and area knockdown on impact |
+| 43 | **Suplex** | — | D | A | Throw Master, Strength threshold | Heavy damage and area knockdown on impact |
 | 44 | **Immovable Grip** | — | C | P | Chokehold Master, 10,000 grabs | Grabbed targets cannot be freed by allies |
-| 45 | **Giant Toss** | — | C | A | Suplex Master, Might threshold | Throws targets of any size, including ones much larger |
+| 45 | **Giant Toss** | — | C | A | Suplex Master, Strength threshold | Throws targets of any size, including ones much larger |
 | 46 | **Bind the Beast** | — | B | A | Immovable Grip Master, Animal Handling Expert | Grapples and holds monsters no human should be able to hold |
 | 47 | **Footwork** | — | F | P | None | Improved movement speed and turning. **Foundation.** |
 | 48 | **Dash** | — | F | A | Footwork Novice | Short burst of speed in any direction |

@@ -100,7 +100,7 @@ export const heroes = [
 		portraitAlt: 'Dara Zev approved identity portrait',
 		position: { x: 0.42, y: 0.38 },
 		attributes: [
-			{ label: 'Might', value: 18 },
+			{ label: 'Strength', value: 18 },
 			{ label: 'Guard', value: 21 },
 			{ label: 'Focus', value: 12 }
 		],
@@ -118,7 +118,7 @@ export const heroes = [
 		portraitAlt: 'Mara Vey approved identity portrait',
 		position: { x: 0.31, y: 0.51 },
 		attributes: [
-			{ label: 'Might', value: 11 },
+			{ label: 'Strength', value: 11 },
 			{ label: 'Guard', value: 14 },
 			{ label: 'Focus', value: 22 }
 		],
@@ -136,7 +136,7 @@ export const heroes = [
 		portraitAlt: 'Jori Daro approved identity portrait',
 		position: { x: 0.62, y: 0.43 },
 		attributes: [
-			{ label: 'Might', value: 20 },
+			{ label: 'Strength', value: 20 },
 			{ label: 'Guard', value: 13 },
 			{ label: 'Focus', value: 16 }
 		],
@@ -154,7 +154,7 @@ export const heroes = [
 		portraitAlt: 'Kira Toren fixed identity portrait',
 		position: { x: 0.54, y: 0.53 },
 		attributes: [
-			{ label: 'Might', value: 13 },
+			{ label: 'Strength', value: 13 },
 			{ label: 'Guard', value: 12 },
 			{ label: 'Focus', value: 19 }
 		],
@@ -172,7 +172,7 @@ export const heroes = [
 		portraitAlt: 'Iven Orra fixed identity portrait',
 		position: { x: 0.69, y: 0.58 },
 		attributes: [
-			{ label: 'Might', value: 21 },
+			{ label: 'Strength', value: 21 },
 			{ label: 'Guard', value: 17 },
 			{ label: 'Focus', value: 10 }
 		],
@@ -190,7 +190,7 @@ export const heroes = [
 		portraitAlt: 'Remy Nahl fixed identity portrait',
 		position: { x: 0.4, y: 0.68 },
 		attributes: [
-			{ label: 'Might', value: 12 },
+			{ label: 'Strength', value: 12 },
 			{ label: 'Guard', value: 15 },
 			{ label: 'Focus', value: 21 }
 		],

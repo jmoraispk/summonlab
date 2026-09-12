@@ -335,6 +335,13 @@ Copy is concise, literal, and written from the reader's perspective. Taxonomy la
 canonical `Domain → Family → Skill` model. Counts describe authored records; labels communicate
 compatibility, not progression or ownership.
 
+### Attribute presentation
+
+The canonical combat attributes are Strength, Vitality, Agility, and Spirit. Prose and data
+contracts use the full names. Compact character sheets render Strength as `STR`, retain `Strength`
+as the accessible label and hover expansion, and never expose the frozen legacy `might` key as a
+current player-facing name.
+
 ## Do's and Don'ts
 
 - **Do:** Let expressive domain imagery carry the visual weight of a reference surface, with

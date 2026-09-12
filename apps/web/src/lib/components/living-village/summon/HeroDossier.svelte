@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { attributeDisplayName } from '../attribute-display';
 	import PortalGlyph from './PortalGlyph.svelte';
 	import MechanicIcon from './MechanicIcon.svelte';
 
@@ -23,7 +24,7 @@
 	};
 
 	let { hero, onclose }: { hero: Hero; onclose: () => void } = $props();
-	const bodyNames = new Set(['Might', 'Vitality', 'Agility']);
+	const bodyNames = new Set(['Strength', 'Vitality', 'Agility']);
 	const aptitudeClassLabels = {
 		martial: 'Martial',
 		magic: 'Magical',
@@ -87,8 +88,9 @@
 					<div class="attribute-grid">
 						{#each bodyAttributes as attribute (attribute.name)}
 							<div data-testid="hero-attribute">
-								<span>{attribute.name}</span><strong>{attribute.value}</strong><i
-									><b style:width={`${attribute.value}%`}></b></i
+								<span title={attribute.name} aria-label={attribute.name}
+									>{attributeDisplayName(attribute.name)}</span
+								><strong>{attribute.value}</strong><i><b style:width={`${attribute.value}%`}></b></i
 								>
 							</div>
 						{/each}
@@ -103,8 +105,9 @@
 					<div class="attribute-grid">
 						{#each mindAttributes as attribute (attribute.name)}
 							<div data-testid="hero-attribute">
-								<span>{attribute.name}</span><strong>{attribute.value}</strong><i
-									><b style:width={`${attribute.value}%`}></b></i
+								<span title={attribute.name} aria-label={attribute.name}
+									>{attributeDisplayName(attribute.name)}</span
+								><strong>{attribute.value}</strong><i><b style:width={`${attribute.value}%`}></b></i
 								>
 							</div>
 						{/each}

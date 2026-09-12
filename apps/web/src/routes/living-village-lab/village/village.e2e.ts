@@ -162,8 +162,10 @@ test('unifies Village hotspots, resident inspection, orders, and camera controls
 	await expect(popover).toContainText('146 / 160');
 	await expect(popover).toContainText('Party I · Vanguard');
 	await popover.getByRole('button', { name: 'Details' }).click();
-	await expect(page.getByTestId('hero-drawer')).toContainText('Shield line');
-	await expect(page.getByTestId('hero-drawer')).toContainText('Ashwood shield');
+	const heroDrawer = page.getByTestId('hero-drawer');
+	await expect(heroDrawer).toContainText('Shield line');
+	await expect(heroDrawer).toContainText('Ashwood shield');
+	await expect(heroDrawer.getByTitle('Strength')).toHaveText('STR');
 	await page.getByRole('button', { name: 'Close hero details' }).click();
 
 	await popover.getByRole('button', { name: 'Court training' }).click();
