@@ -30,8 +30,8 @@ versioned combat mode a release uses; players cannot change combat rules.
 
 ## Goals
 
-1. Make `Strength`, `Vitality`, `Agility`, and `Magic` the canonical visible attributes, with
-   `STR`, `VIT`, `AGI`, and `MAG` available as compact character-sheet labels.
+1. Make `Strength`, `Agility`, `Vitality`, and `Magic` the canonical visible attributes, with
+   `STR`, `AGI`, `VIT`, and `MAG` available as compact character-sheet labels.
 2. Give each attribute a narrow, combat-first role without creating a universal best stat.
 3. Move learned precision, resistance, morale, and learning differences to their proper systems.
 4. Keep Health and Mana as the only universal resource bars.
@@ -55,15 +55,16 @@ versioned combat mode a release uses; players cannot change combat rules.
 | Attribute | Owns | Does not own |
 | --- | --- | --- |
 | **Strength** | physical damage; carrying capacity; equipment-load tolerance; explicit heavy-equipment requirements | accuracy; critical rate; general mitigation; action cadence |
-| **Vitality** | maximum Health; modest natural Health regeneration | armour mitigation; poise; broad physical resistance; status immunity |
 | **Agility** | readiness accumulation; movement capability; evasion; a bounded relative-speed contribution to hit contests | learned accuracy; critical rate; unrestricted extra actions |
+| **Vitality** | maximum Health; modest natural Health regeneration | armour mitigation; poise; broad physical resistance; status immunity |
 | **Magic** | magical damage; maximum Mana; modest saturating Mana regeneration | morale; learning rate; control duration; mental resistance; decision quality |
 
 The full names are canonical in prose and data contracts and remain the default in explanations,
 headings, summaries, tutorials, and ordinary interface copy. Dense character-sheet stat cells may
-display `STR`, `VIT`, `AGI`, and `MAG` to save space while retaining the corresponding full names as
-accessible labels and hover expansions. The lowercase `might` key survives only inside frozen
-legacy schemas, replay state, and their explicit compatibility projections.
+display `STR`, `AGI`, `VIT`, and `MAG`, always in that order, to save space while retaining the
+corresponding full names as accessible labels and hover expansions. The lowercase `might` key
+survives only inside frozen legacy schemas, replay state, and their explicit compatibility
+projections.
 
 `Magic` also names the top-level skill domain. When the context is not an attribute list or
 character sheet, use `Magic attribute` for the stat and `Magic domain` or `magical skills` for the

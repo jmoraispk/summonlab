@@ -7,7 +7,7 @@ what a source says before comparing it with Summonlab, so inspiration and projec
 silently become one another.
 
 This page is evidence, not canon. Summonlab's accepted four-attribute direction remains `Strength`,
-`Vitality`, `Agility`, and `Magic` as defined by the
+`Agility`, `Vitality`, and `Magic` as defined by the
 [four-attribute design](../../superpowers/specs/2026-09-06-attributes-and-combat-modes-design.md).
 The public [Attributes](../mechanics/attributes.md) page still describes the earlier six-attribute
 draft and requires a separate convergence update.
@@ -169,7 +169,7 @@ later story mechanics, or an inaccurate source. This notebook leaves the conflic
 ### Comparison with Summonlab's four-attribute direction
 
 At the high-level fantasy and responsibility level, the two systems match remarkably well:
-Summonlab's Strength, Vitality, Agility, and Magic correspond closely to Overgeared's
+Summonlab's Strength, Agility, Vitality, and Magic correspond closely to Overgeared's
 Strength, Stamina, Agility, and Intelligence. The difference is primarily in the mechanics and in
 where each system draws its ownership boundaries, rather than in the fundamental role of the four
 attributes.

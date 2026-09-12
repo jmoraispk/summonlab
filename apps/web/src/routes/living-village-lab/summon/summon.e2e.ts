@@ -131,6 +131,14 @@ test('portal connects spending, reveal controls, arrival history, and hero dossi
 	await expect(dossier).toContainText('Dexterity');
 	await expect(dossier).toContainText('Intellect');
 	await expect(dossier.getByTitle('Magic')).toHaveText('MAG');
+	await expect(dossier.getByTestId('hero-attribute').locator('span')).toHaveText([
+		'STR',
+		'AGI',
+		'VIT',
+		'MAG',
+		'Dexterity',
+		'Intellect'
+	]);
 	await expect(dossier.getByTestId('hero-attribute')).toHaveCount(6);
 	await expect(dossier.getByTestId('body-attributes').getByTestId('hero-attribute')).toHaveCount(3);
 	await expect(dossier.getByTestId('mind-attributes').getByTestId('hero-attribute')).toHaveCount(3);

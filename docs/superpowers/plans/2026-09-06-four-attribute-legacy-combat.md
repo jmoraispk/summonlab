@@ -2,7 +2,7 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Ship the canonical Strength/Vitality/Agility/Magic character model and operator-selected `legacy-auto-v1` combat as a beta-safe `engine-v25`, while preserving every historical v24 replay byte-for-byte.
+**Goal:** Ship the canonical Strength/Agility/Vitality/Magic character model and operator-selected `legacy-auto-v1` combat as a beta-safe `engine-v25`, while preserving every historical v24 replay byte-for-byte.
 
 **Architecture:** Add versioned v2 character capability contracts beside the legacy mind schema, persist them independently, and materialize an operator-owned combat-mode binding on every new mission attempt. The existing round resolver remains frozen behind a legacy adapter; new four-attribute heroes enter it only through an explicit compatibility projection. Shared combat math is introduced as pure, parameterized functions and promoted only after a deterministic balance harness passes.
 

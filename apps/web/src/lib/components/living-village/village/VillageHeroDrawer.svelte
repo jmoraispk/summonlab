@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { attributeDisplayName } from '../attribute-display';
+	import { attributeDisplayName, orderCharacterSheetAttributes } from '../attribute-display';
 	import type { VillageHero, VillageHeroRuntime } from './types';
 
 	let {
@@ -11,6 +11,9 @@
 		runtime: VillageHeroRuntime;
 		onClose: () => void;
 	} = $props();
+	const orderedAttributes = $derived(
+		orderCharacterSheetAttributes(hero.attributes, (attribute) => attribute.label)
+	);
 </script>
 
 <aside class="drawer" aria-labelledby="hero-drawer-heading" data-testid="hero-drawer">
@@ -35,7 +38,7 @@
 	<section aria-labelledby="attributes-heading">
 		<h3 id="attributes-heading">Attributes</h3>
 		<div class="attributes">
-			{#each hero.attributes as attribute (attribute.label)}
+			{#each orderedAttributes as attribute (attribute.label)}
 				<div>
 					<span title={attribute.label} aria-label={attribute.label}
 						>{attributeDisplayName(attribute.label)}</span

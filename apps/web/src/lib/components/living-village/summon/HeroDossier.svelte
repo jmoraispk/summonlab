@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { attributeDisplayName } from '../attribute-display';
+	import { attributeDisplayName, orderCharacterSheetAttributes } from '../attribute-display';
 	import PortalGlyph from './PortalGlyph.svelte';
 	import MechanicIcon from './MechanicIcon.svelte';
 
@@ -24,17 +24,20 @@
 	};
 
 	let { hero, onclose }: { hero: Hero; onclose: () => void } = $props();
-	const bodyNames = new Set(['Strength', 'Vitality', 'Agility']);
+	const bodyNames = new Set(['Strength', 'Agility', 'Vitality']);
 	const aptitudeClassLabels = {
 		martial: 'Martial',
 		magic: 'Magical',
 		crafting: 'Craft & life'
 	} as const;
+	const orderedAttributes = $derived(
+		orderCharacterSheetAttributes(hero.attributes, (attribute) => attribute.name)
+	);
 	const bodyAttributes = $derived(
-		hero.attributes.filter((attribute) => bodyNames.has(attribute.name))
+		orderedAttributes.filter((attribute) => bodyNames.has(attribute.name))
 	);
 	const mindAttributes = $derived(
-		hero.attributes.filter((attribute) => !bodyNames.has(attribute.name))
+		orderedAttributes.filter((attribute) => !bodyNames.has(attribute.name))
 	);
 
 	function handleKeydown(event: KeyboardEvent) {

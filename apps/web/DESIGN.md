@@ -337,13 +337,13 @@ compatibility, not progression or ownership.
 
 ### Attribute presentation
 
-The canonical combat attributes are Strength, Vitality, Agility, and Magic. Prose and data
+The canonical combat attributes are Strength, Agility, Vitality, and Magic. Prose and data
 contracts use the full names. Full names are also the default in headings, explanations, summaries,
 tutorials, and other ordinary interface copy. Dense character-sheet stat cells may shorten the four
-names to `STR`, `VIT`, `AGI`, and `MAG`; every abbreviation retains its full name as the accessible
-label and hover expansion. Never expose the frozen legacy `might` key as a current player-facing
-name. Where the attribute could be confused with the top-level skill domain, write `Magic attribute`
-for the stat and `Magic domain` or `magical skills` for the taxonomy.
+names to `STR`, `AGI`, `VIT`, and `MAG`, always in that order; every abbreviation retains its full
+name as the accessible label and hover expansion. Never expose the frozen legacy `might` key as a
+current player-facing name. Where the attribute could be confused with the top-level skill domain,
+write `Magic attribute` for the stat and `Magic domain` or `magical skills` for the taxonomy.
 
 ## Do's and Don'ts
 
