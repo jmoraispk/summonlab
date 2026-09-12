@@ -1,6 +1,6 @@
 {
   "schemaVersion": "summonlab-wiki-catalog-v1",
-  "lastReviewed": "2026-09-04",
+  "lastReviewed": "2026-09-12",
   "entries": [
     {
       "wikiId": "wiki.root",
@@ -51,6 +51,16 @@
       "implementationStatus": "partial",
       "visualStatus": "none",
       "spoilerScope": "public"
+    },
+    {
+      "wikiId": "research.attribute-systems",
+      "path": "docs/wiki/research/attribute-systems.md",
+      "pageType": "research",
+      "owner": "progression",
+      "designStatus": "seed",
+      "implementationStatus": "none",
+      "visualStatus": "none",
+      "spoilerScope": "internal"
     },
     {
       "wikiId": "mechanics.rewards-engagement",

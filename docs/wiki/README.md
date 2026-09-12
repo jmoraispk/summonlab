@@ -37,6 +37,8 @@ replay evidence make that claim verifiable rather than aspirational.
 - [Rewards and engagement](mechanics/rewards-and-engagement.md) — benefits, daily return, mission
   rewards, special access, and the ownership boundary for claims.
 - [Attributes](mechanics/attributes.md) — the shared mechanical vocabulary behind capability.
+- [Attribute-system research](research/attribute-systems.md) — internal comparisons of external
+  models, currently focused on Dexterity and Endurance/Stamina boundaries.
 - [Affinities](mechanics/affinities/README.md) — hero/monster affinities, attribute expression, and
   typed effects.
 - [Creature taxonomy](creatures/taxonomy.md) — family, race/species, archetype, variant, and faction.
