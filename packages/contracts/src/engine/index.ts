@@ -227,6 +227,27 @@ export {
 	type SynthesisVisibility
 } from './story-synthesis-state.js';
 
+export {
+	AttributeGrowthClaimSchema,
+	AttributeGrowthReceiptV2Schema,
+	ExperienceClaimSchema,
+	ExperienceReceiptSchema,
+	ExperienceSourceKindSchema,
+	HeroProgressionV2Schema,
+	PermanentAttributeGrowthSchema,
+	ProgressionMacroPathSchema,
+	ProgressionRulesBindingSchema,
+	type AttributeGrowthClaim,
+	type AttributeGrowthReceiptV2,
+	type ExperienceClaim,
+	type ExperienceReceipt,
+	type ExperienceSourceKind,
+	type HeroProgressionV2,
+	type PermanentAttributeGrowth,
+	type ProgressionMacroPath,
+	type ProgressionRulesBinding
+} from '../progression.js';
+
 export * from './game-state.js';
 export * from './commands.js';
 export * from './runtime.js';

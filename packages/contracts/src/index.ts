@@ -19,6 +19,7 @@ export * from './later-pack-rules.js';
 export * from './mission.js';
 export * from './playtest.js';
 export * from './proof.js';
+export * from './progression.js';
 export * from './readiness-combat.js';
 export * from './presentation.js';
 export * from './run.js';
