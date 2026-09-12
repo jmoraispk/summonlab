@@ -10,6 +10,11 @@
 
 **Spec:** `docs/superpowers/specs/2026-09-06-attributes-and-combat-modes-design.md`
 
+**Progression sequencing:** Complete this plan as the `engine-v25` foundation. Its provisional
+`4 Health per Vitality`, level-99 balance fixtures, and one-point-per-level Task 6 remain v25
+compatibility behavior; `docs/superpowers/plans/2026-09-12-awakening-and-multi-path-progression.md`
+replaces them in `engine-v26` before the readiness-combat plan begins.
+
 ## Global constraints
 
 - Preserve all v1 character, proof, mission, event, and `engine-v1` through `engine-v24` schemas and hashes.
@@ -63,11 +68,11 @@ git commit -m "test(combat): freeze legacy automatic resolution"
 - [ ] Define the new public primitives:
 
 ```ts
-export const CombatAttributeNameSchema = z.enum(['strength', 'vitality', 'agility', 'magic']);
+export const CombatAttributeNameSchema = z.enum(['strength', 'agility', 'vitality', 'magic']);
 export const CombatAttributesSchema = z.object({
 	strength: z.number().int().min(1).max(100),
-	vitality: z.number().int().min(1).max(100),
 	agility: z.number().int().min(1).max(100),
+	vitality: z.number().int().min(1).max(100),
 	magic: z.number().int().min(1).max(100)
 }).strict();
 export const LearningDomainSchema = z.enum([
@@ -160,7 +165,7 @@ git commit -m "feat(characters): persist versioned capability profiles"
 - Modify: `packages/engine/src/compatibility/public-api.snapshot.ts`
 
 - [ ] First write tests asserting `EngineGameStateV24Schema` still accepts the frozen replay, while v25 requires every hero to have `capabilityProfile` and never reads `mind.aptitudes` for canonical mechanics.
-- [ ] Add `EngineHeroStateV25Schema` by extending v24 with `capabilityProfile`, and add `EngineGameStateV25Schema`/types/unions. Add `CAPABILITY_ENGINE_CONTENT_VERSION = 'engine-v25'` and extend only the API/version lists that v25 actually supports.
+- [ ] Add `EngineHeroStateV25Schema` by extending v24 with `capabilityProfile`, and add an internal `EngineGameStateV25BaseSchema` plus the refined public `EngineGameStateV25Schema`/types/unions. Add `CAPABILITY_ENGINE_CONTENT_VERSION = 'engine-v25'` and extend only the API/version lists that v25 actually supports.
 - [ ] Change bootstrap input to accept the v1/v2 draft union. New web runs bootstrap directly as v25 from the v2 capability profile. Compatibility fixtures may still request their explicit older development version.
 - [ ] Implement the only allowed bootstrap conversion for explicitly migrated v1 fixtures:
 

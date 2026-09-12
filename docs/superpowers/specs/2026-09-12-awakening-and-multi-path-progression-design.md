@@ -1,12 +1,16 @@
 # Awakening and Multi-Path Progression Design
 
-Status: **owner-approved direction; written-spec review pending**
+Status: **accepted; implementation planned**
 
 Date: 2026-09-12
 
 Related design:
 
 - [Four-Attribute and Versioned Combat Modes](2026-09-06-attributes-and-combat-modes-design.md)
+
+Implementation plan:
+
+- [Awakening and Multi-Path Progression](../plans/2026-09-12-awakening-and-multi-path-progression.md)
 
 ## Purpose
 
