@@ -556,7 +556,7 @@ describe('engine contracts compatibility', () => {
 			contentVersion: 'engine-v27',
 			progressionRules: {
 				rulesVersion: 'progression-rules-v1' as const,
-				contentHash: '97e69f0c427cf1eff6c886179475a5b0b27ef0b7babbf592cde22ffb64ec0119'
+				contentHash: '06fc61271c9c3254836c4f50f845624bea08731952957d0c1d6faf295e8744ce'
 			},
 			synthesis: {
 				...v26.synthesis,

@@ -341,7 +341,7 @@ function assertSettlementCommandLegal(
 	}
 	if (command.commandType === 'hero.start.forging') {
 		if (
-			state.schemaVersion !== 24 ||
+			(state.schemaVersion !== 24 && state.schemaVersion !== 27) ||
 			!canStartStandardForging(
 				state,
 				command.actorId,
@@ -1105,7 +1105,8 @@ function buildModernSettlementEvent(
 		});
 	}
 	if (command.commandType === 'hero.start.forging') {
-		if (state.schemaVersion !== 24) throw new IllegalActionError(command.commandType);
+		if (state.schemaVersion !== 24 && state.schemaVersion !== 27)
+			throw new IllegalActionError(command.commandType);
 		const base = eventBase(state, command, 'hero.forging.started');
 		const start = buildStandardForgingStart({
 			state,
@@ -1348,7 +1349,7 @@ function buildModernSettlementEvent(
 				});
 			const routineOutcomes = dueRoutines.map((hero) => buildRoutineOutcome(state, hero.heroId));
 			const dueForgings =
-				state.schemaVersion === 24
+				state.schemaVersion === 24 || state.schemaVersion === 27
 					? Object.values(state.heroes)
 							.filter(
 								(hero) =>
@@ -1364,8 +1365,8 @@ function buildModernSettlementEvent(
 							})
 					: [];
 			const forgingOutcomes =
-				state.schemaVersion === 24
-					? dueForgings.map((hero) => buildForgingOutcome(state, hero.heroId))
+				state.schemaVersion === 24 || state.schemaVersion === 27
+					? dueForgings.map((hero) => buildForgingOutcome(state, hero.heroId, base.eventId))
 					: [];
 			const dueByScheduleId = new Map<string, string>();
 			for (const hero of dueHeroes)
@@ -1445,7 +1446,7 @@ function buildModernSettlementEvent(
 					activityOutcomes: outcomes,
 					travelOutcomes,
 					routineOutcomes,
-					...(state.schemaVersion === 24 ? { forgingOutcomes } : {}),
+					...(state.schemaVersion === 24 || state.schemaVersion === 27 ? { forgingOutcomes } : {}),
 					expiredDirectiveIds: expiredDirectives.map((directive) => directive.directiveId),
 					nextVersion: state.version + 1,
 					...emptyMetadata(

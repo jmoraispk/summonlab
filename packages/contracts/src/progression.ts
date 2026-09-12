@@ -50,6 +50,20 @@ export const ProgressionRulesBindingSchema = z
 	})
 	.strict();
 
+export const ProductionCompletionEvidenceV1Schema = z
+	.object({
+		evidenceVersion: z.literal('production-completion-v1'),
+		craftKind: z.enum(['forging', 'cooking']),
+		heroId: EntityIdSchema,
+		resultId: z.string().min(1).max(160),
+		recipeId: z.string().min(1).max(160),
+		recipeDifficulty: z.number().int().min(1).max(7),
+		consumedIngredientRarities: z.array(z.number().int().min(1).max(7)).min(1).max(64),
+		resultQuality: z.enum(['standard', 'fine', 'masterwork']),
+		completionEventId: EntityIdSchema
+	})
+	.strict();
+
 const ExperienceClaimBaseSchema = z.object({
 	claimId: EntityIdSchema,
 	heroId: EntityIdSchema,
@@ -122,3 +136,4 @@ export type HeroProgressionV2 = z.infer<typeof HeroProgressionV2Schema>;
 export type PermanentAttributeGrowth = z.infer<typeof PermanentAttributeGrowthSchema>;
 export type ProgressionMacroPath = z.infer<typeof ProgressionMacroPathSchema>;
 export type ProgressionRulesBinding = z.infer<typeof ProgressionRulesBindingSchema>;
+export type ProductionCompletionEvidenceV1 = z.infer<typeof ProductionCompletionEvidenceV1Schema>;

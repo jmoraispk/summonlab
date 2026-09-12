@@ -71,6 +71,7 @@ import { equipEquipmentItem } from './equipment.js';
 import {
 	ForgingMaterialLotChangeSchema,
 	ForgingOutcomeSchema,
+	ForgingOutcomeV27Schema,
 	buildStandardForgingStart,
 	currentForgingFor,
 	forgingOutcomeMatches
@@ -277,7 +278,8 @@ const SimulationAdvancedPayloadV25Schema = SimulationAdvancedPayloadV5Schema.ext
 
 const SimulationAdvancedPayloadV27Schema = SimulationAdvancedPayloadV25Schema.extend({
 	activityOutcomes: z.array(ActivityOutcomeV27Schema),
-	routineOutcomes: z.array(RoutineOutcomeV27Schema)
+	routineOutcomes: z.array(RoutineOutcomeV27Schema),
+	forgingOutcomes: z.array(ForgingOutcomeV27Schema)
 }).strict();
 
 const SimulationClockSyncedPayloadSchema = EmptyMetadataSchema.extend({
@@ -965,8 +967,11 @@ function reduceSettlementEvent(
 		});
 	}
 	if (event.eventType === 'hero.forging.started') {
-		if (state.schemaVersion !== 24 || !event.commandId) {
-			throw new ReplayIntegrityError('Forging start requires engine-v24', event.sequence);
+		if ((state.schemaVersion !== 24 && state.schemaVersion !== 27) || !event.commandId) {
+			throw new ReplayIntegrityError(
+				'Forging start requires a forging-capable engine',
+				event.sequence
+			);
 		}
 		const payload = ForgingStartedPayloadSchema.parse(event.payload);
 		const hero = state.heroes[payload.heroId];
@@ -1233,8 +1238,11 @@ function reduceSettlementEvent(
 					currentRoutine: null
 				};
 			}
-			if (state.schemaVersion === 24) {
-				const forgingPayload = SimulationAdvancedPayloadV24Schema.parse(event.payload);
+			if (state.schemaVersion === 24 || state.schemaVersion === 27) {
+				const forgingPayload =
+					state.schemaVersion === 27
+						? SimulationAdvancedPayloadV27Schema.parse(event.payload)
+						: SimulationAdvancedPayloadV24Schema.parse(event.payload);
 				const dueForgingHeroIds = Object.values(state.heroes)
 					.filter(
 						(hero) =>
@@ -1253,7 +1261,8 @@ function reduceSettlementEvent(
 					forgingPayload.forgingOutcomes.length !== dueForgingHeroIds.length ||
 					forgingPayload.forgingOutcomes.some(
 						(outcome, index) =>
-							outcome.heroId !== dueForgingHeroIds[index] || !forgingOutcomeMatches(state, outcome)
+							outcome.heroId !== dueForgingHeroIds[index] ||
+							!forgingOutcomeMatches(state, outcome, event.eventId)
 					)
 				) {
 					throw new ReplayIntegrityError('Scheduled forging outcomes diverged', event.sequence);
@@ -1266,7 +1275,18 @@ function reduceSettlementEvent(
 					if (items[outcome.item.itemId]) {
 						throw new ReplayIntegrityError('Forged item already exists', event.sequence);
 					}
-					heroes[outcome.heroId] = { ...hero, currentForging: null };
+					const v27Outcome = ForgingOutcomeV27Schema.safeParse(outcome);
+					heroes[outcome.heroId] = {
+						...hero,
+						...(v27Outcome.success
+							? {
+									progression: v27Outcome.data.progressionAfter,
+									maxHealth: v27Outcome.data.maxHealthAfter,
+									health: v27Outcome.data.healthAfter
+								}
+							: {}),
+						currentForging: null
+					} as (typeof heroes)[string];
 					items[outcome.item.itemId] = outcome.item;
 				}
 			}

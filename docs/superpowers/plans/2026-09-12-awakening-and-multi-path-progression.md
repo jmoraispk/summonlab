@@ -664,7 +664,7 @@ git commit -m "refactor(progression): centralize hero experience grants"
 - Consumes: `craftExperience`, `applyExperienceClaim`, forging outcomes, material ranks, and craftsmanship labels.
 - Produces: `ProductionCompletionEvidenceV1`, `experienceClaimForProduction(evidence, history, rules)`, and a generic contract usable by forging and future cooking completion.
 
-- [ ] **Step 1: Write failing generic production tests**
+- [x] **Step 1: Write failing generic production tests**
 
 Test `craftKind: 'forging'` and `craftKind: 'cooking'` evidence with recipe difficulty, every consumed ingredient rarity, result quality, novelty, and repetition count. Assert rarer ingredients and harder recipes never lower XP; first success beats repetition; and repeated work never drops below the authored floor.
 
@@ -683,17 +683,17 @@ expect(experienceClaimForProduction(cookingEvidence, { priorCompletions: 0 }, ru
 	.toBe('crafting');
 ```
 
-- [ ] **Step 2: Run production tests and verify red**
+- [x] **Step 2: Run production tests and verify red**
 
 Run: `pnpm --filter @summonlab/engine test -- domains/progression/production.spec.ts`
 
 Expected: FAIL because production completion evidence does not exist.
 
-- [ ] **Step 3: Implement the generic completion adapter**
+- [x] **Step 3: Implement the generic completion adapter**
 
 Average consumed ingredient rarity with integer half-up rounding, then call the Task 2 craft formula. Use `craftKind:recipeId` as the evidence-count key. `priorCompletions === 0` supplies the discovery bonus; increment the count only in the same authoritative completion event that grants XP.
 
-- [ ] **Step 4: Author forging difficulty bands without changing equipment identity**
+- [x] **Step 4: Author forging difficulty bands without changing equipment identity**
 
 Put this editable map in progression rules rather than mutating equipment definitions:
 
@@ -706,15 +706,15 @@ equipmentClassDifficulty: {
 
 Convert material rank `F/E/D/C/B/A/S` to rarity bands `1..7`; pass the actual craftsmanship label as result quality.
 
-- [ ] **Step 5: Attach XP to forging completion, never reservation**
+- [x] **Step 5: Attach XP to forging completion, never reservation**
 
 Extend only the v27 forging outcome with production evidence, claim, and experience receipt. `hero.forging.started`, material reservation, invalid starts, and any canceled/abandoned job grant zero XP. `hero.forging.complete` creates the item, increments history, and applies XP atomically.
 
-- [ ] **Step 6: Preserve the cooking boundary**
+- [x] **Step 6: Preserve the cooking boundary**
 
 The generic adapter accepts and tests cooking evidence now. Do not invent food recipes, ingredient inventories, or a cooking UI in this slice; the future cooking completion owner must emit `ProductionCompletionEvidenceV1` and immediately receives the same XP behavior without a progression-schema change.
 
-- [ ] **Step 7: Run focused verification**
+- [x] **Step 7: Run focused verification**
 
 ```bash
 pnpm --filter @summonlab/content test -- progression-rules.spec.ts
@@ -722,7 +722,7 @@ pnpm --filter @summonlab/engine test -- domains/progression/production.spec.ts d
 pnpm --filter @summonlab/engine typecheck
 ```
 
-- [ ] **Step 8: Commit**
+- [x] **Step 8: Commit**
 
 ```bash
 git add packages/content/src/progression-rules.ts packages/content/src/progression-rules.spec.ts packages/engine/src/domains/progression packages/engine/src/domains/settlement

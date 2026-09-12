@@ -243,6 +243,7 @@ export {
 	PermanentAttributeGrowthSchema,
 	ProgressionMacroPathSchema,
 	ProgressionRulesBindingSchema,
+	ProductionCompletionEvidenceV1Schema,
 	type AttributeGrowthClaim,
 	type AttributeGrowthReceiptV2,
 	type ExperienceClaim,
@@ -251,7 +252,8 @@ export {
 	type HeroProgressionV2,
 	type PermanentAttributeGrowth,
 	type ProgressionMacroPath,
-	type ProgressionRulesBinding
+	type ProgressionRulesBinding,
+	type ProductionCompletionEvidenceV1
 } from '../progression.js';
 
 export * from './game-state.js';

@@ -1,6 +1,18 @@
 import { ProgressionRulesBindingSchema, type ProgressionRulesBinding } from '@summonlab/contracts';
 
 export type CraftQuality = 'standard' | 'fine' | 'masterwork';
+export type ProgressionEquipmentClass =
+	| 'dagger'
+	| 'sword'
+	| 'spear'
+	| 'bow'
+	| 'axe'
+	| 'mace'
+	| 'shield'
+	| 'staff'
+	| 'light-armour'
+	| 'robes'
+	| 'heavy-armour';
 
 export type ProgressionRulesV1 = Readonly<{
 	rulesVersion: 'progression-rules-v1';
@@ -9,6 +21,7 @@ export type ProgressionRulesV1 = Readonly<{
 	powerPerAttributeMilli: readonly number[];
 	healthPerVitality: readonly number[];
 	crafting: Readonly<{
+		equipmentClassDifficulty: Readonly<Record<ProgressionEquipmentClass, number>>;
 		difficultyExperience: readonly number[];
 		ingredientRarityBps: readonly number[];
 		qualityBps: Readonly<Record<CraftQuality, number>>;
@@ -40,6 +53,19 @@ export const PROGRESSION_RULES_V1 = deepFreeze({
 	powerPerAttributeMilli: [1_000, 1_200, 1_400, 1_800, 2_200, 2_600, 3_200, 3_800, 4_400, 5_000],
 	healthPerVitality: [5, 6, 7, 9, 11, 13, 16, 19, 22, 25],
 	crafting: {
+		equipmentClassDifficulty: {
+			dagger: 1,
+			sword: 2,
+			spear: 3,
+			bow: 3,
+			axe: 3,
+			mace: 3,
+			shield: 3,
+			staff: 4,
+			'light-armour': 4,
+			robes: 4,
+			'heavy-armour': 5
+		},
 		difficultyExperience: [4, 6, 9, 13, 18, 25, 35],
 		ingredientRarityBps: [10_000, 11_000, 12_000, 13_000, 14_000, 15_000, 16_000],
 		qualityBps: { standard: 10_000, fine: 12_500, masterwork: 15_000 },
@@ -79,7 +105,7 @@ export async function calculateProgressionRulesContentHash(
 export const PROGRESSION_RULES_V1_BINDING: ProgressionRulesBinding = Object.freeze(
 	ProgressionRulesBindingSchema.parse({
 		rulesVersion: 'progression-rules-v1',
-		contentHash: '97e69f0c427cf1eff6c886179475a5b0b27ef0b7babbf592cde22ffb64ec0119'
+		contentHash: '06fc61271c9c3254836c4f50f845624bea08731952957d0c1d6faf295e8744ce'
 	})
 );
 

@@ -220,6 +220,7 @@ export const ENGINE_CONTRACT_RUNTIME_EXPORTS = [
 	'PortalPressureStageSchema',
 	'PortalRoundWindowSchema',
 	'PrepareMissionCommandSchema',
+	'ProductionCompletionEvidenceV1Schema',
 	'ProgressionMacroPathSchema',
 	'ProgressionRulesBindingSchema',
 	'RecoverFirstEmberCommandSchema',

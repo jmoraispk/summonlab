@@ -69,6 +69,11 @@ export {
 	type ProgressionHero
 } from './domains/progression/attributes.js';
 export {
+	experienceClaimForProduction,
+	productionEvidenceKey,
+	type ProductionHistory
+} from './domains/progression/production.js';
+export {
 	adaptV26LegacyCombatOutcome,
 	transitionCombatResultClaims,
 	type CombatClaimTransition,

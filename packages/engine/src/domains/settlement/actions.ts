@@ -514,7 +514,10 @@ function heroSettlementActions(state: EngineGameStateModern, actorId: string): L
 	)
 		return allocationActions;
 	const actions: LegalAction[] = [...allocationActions];
-	if (state.schemaVersion === 24 && heroHasForgePermission(state, actorId)) {
+	if (
+		(state.schemaVersion === 24 || state.schemaVersion === 27) &&
+		heroHasForgePermission(state, actorId)
+	) {
 		for (const definition of availableStandardForgeDefinitions(state, actorId)) {
 			actions.push(
 				action({

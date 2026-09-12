@@ -1,7 +1,10 @@
+import { generateSummonableCharacterDraft, listSummonableHeroDrafts } from '@summonlab/characters';
 import {
 	EngineGameStateV24Schema,
+	EngineGameStateV27Schema,
 	type EngineCommand,
-	type EngineGameStateV24
+	type EngineGameStateV24,
+	type EngineGameStateV27
 } from '@summonlab/contracts';
 import { EQUIPMENT_DEFINITION_CATALOG } from '@summonlab/content';
 import { describe, expect, it } from 'vitest';
@@ -155,6 +158,98 @@ describe('Standard Forging', () => {
 			catalogContentVersion: job.catalogContentVersion,
 			catalogContentHash: job.catalogContentHash
 		});
+	});
+
+	it('grants v27 crafting XP atomically on completion but not reservation', async () => {
+		const recipe = listSummonableHeroDrafts()[0];
+		if (!recipe) throw new Error('Expected an approved summonable draft');
+		const draft = await generateSummonableCharacterDraft(recipe.recipe, {
+			capabilityEntropy: '7'.repeat(64)
+		});
+		const initial = createBootstrapEngine({
+			runId: deterministicUuid('forging-v27-run'),
+			seed: 'forging-v27-seed',
+			draft
+		}).snapshot.state;
+		if (initial.schemaVersion !== 27) throw new Error('Expected v27 bootstrap');
+		const heroId = draft.manifest.characterId;
+		const hero = initial.heroes[heroId]!;
+		const state: EngineGameStateV27 = EngineGameStateV27Schema.parse({
+			...initial,
+			settlement: {
+				...initial.settlement,
+				forgeSystemPower: 'powered',
+				materialLots: { ...initial.settlement.materialLots, bronze: 1 },
+				buildings: {
+					...initial.settlement.buildings,
+					workshop: { ...initial.settlement.buildings.workshop!, assignedHeroIds: [heroId] }
+				}
+			},
+			heroes: {
+				...initial.heroes,
+				[heroId]: {
+					...hero,
+					location: 'workshop',
+					locationNodeId: 'workshop-forge',
+					firstArrivalCompleted: true,
+					destination: 'training-ground',
+					assignment: {
+						buildingId: 'workshop',
+						nodeId: 'workshop-bench',
+						role: 'artisan',
+						assignedAt: initial.simulatedAt
+					},
+					health: Math.floor(hero.maxHealth / 2),
+					progression: { ...hero.progression, level: 99, experience: 985 }
+				}
+			}
+		});
+		const start = applyCommand(state, {
+			...startCommand(forgingState()),
+			commandId: deterministicUuid('forging-v27-start-command'),
+			runId: state.runId,
+			actorId: heroId,
+			expectedVersion: state.version,
+			correlationId: deterministicUuid('forging-v27-start-correlation')
+		});
+		if (start.state.schemaVersion !== 27) throw new Error('Expected v27 forging start');
+		expect(start.state.heroes[heroId]!.progression).toStrictEqual(
+			state.heroes[heroId]!.progression
+		);
+		const job = start.state.heroes[heroId]!.currentForging!;
+		const completed = applyCommand(start.state, {
+			commandId: deterministicUuid('forging-v27-complete-command'),
+			runId: start.state.runId,
+			actorId: start.state.master.masterId,
+			expectedVersion: start.state.version,
+			correlationId: deterministicUuid('forging-v27-complete-correlation'),
+			source: source('system'),
+			commandType: 'simulation.advance',
+			targetGameTime: job.completesAt
+		});
+		if (completed.state.schemaVersion !== 27) throw new Error('Expected v27 completion');
+		const after = completed.state.heroes[heroId]!;
+		const outcome = (
+			completed.events[0]!.payload as {
+				forgingOutcomes: Array<{
+					experienceReceipt: { claim: { sourceKind: string }; pointsGranted: number };
+					productionEvidence: { craftKind: string };
+				}>;
+			}
+		).forgingOutcomes[0]!;
+		expect(outcome.productionEvidence.craftKind).toBe('forging');
+		expect(outcome.experienceReceipt.claim.sourceKind).toBe('crafting');
+		expect(outcome.experienceReceipt.pointsGranted).toBe(hero.progression.stars);
+		expect(after.progression).toMatchObject({
+			level: 100,
+			experience: 994,
+			unallocatedAttributePoints: hero.progression.stars,
+			evidenceCounts: { crafting: { 'forging:equipment-bronze-sword': 1 } }
+		});
+		expect(after.progression.stars).toBe(hero.progression.stars);
+		expect(after.health).toBe(state.heroes[heroId]!.health);
+		expect(after.maxHealth).toBeGreaterThan(state.heroes[heroId]!.maxHealth);
+		expect(completed.state.items[job.itemId]).toBeDefined();
 	});
 
 	it('surfaces and resolves the scheduled completion through v24 catch-up', () => {

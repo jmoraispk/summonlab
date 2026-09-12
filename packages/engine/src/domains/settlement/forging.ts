@@ -2,15 +2,24 @@ import {
 	CurrentForgingSchema,
 	EngineEquipmentItemStateV24Schema,
 	EquipmentMaterialIdSchema,
+	ExperienceReceiptSchema,
+	HeroProgressionV2Schema,
+	ProductionCompletionEvidenceV1Schema,
 	ScheduledEventSchema,
 	type CurrentForging,
 	type EngineGameStateV24,
+	type EngineGameStateV27,
 	type EquipmentCraftsmanship,
 	type EquipmentDefinition,
 	type EquipmentMaterialId,
 	type ScheduledEvent
 } from '@summonlab/contracts';
-import { EQUIPMENT_DEFINITIONS, deriveStandardEquipmentRecipe } from '@summonlab/content';
+import {
+	EQUIPMENT_DEFINITIONS,
+	PROGRESSION_RULES_V1,
+	PROGRESSION_RULES_V1_BINDING,
+	deriveStandardEquipmentRecipe
+} from '@summonlab/content';
 import { z } from 'zod';
 
 import {
@@ -19,6 +28,12 @@ import {
 } from '../../core/content-bindings.js';
 import { deterministicUuid, hashCanonical } from '../../hash.js';
 import { addGameMinutes } from '../../time.js';
+import {
+	applyExperienceClaim,
+	reconcileHealthAfterProgression
+} from '../progression/experience.js';
+import { intrinsicAttributes, maximumHealth } from '../progression/math.js';
+import { experienceClaimForProduction, productionEvidenceKey } from '../progression/production.js';
 import { createEquipmentItem } from './equipment.js';
 
 export const STANDARD_FORGING_DURATION_MINUTES = 60;
@@ -50,8 +65,18 @@ export const ForgingOutcomeSchema = z
 	})
 	.strict();
 
+export const ForgingOutcomeV27Schema = ForgingOutcomeSchema.extend({
+	productionEvidence: ProductionCompletionEvidenceV1Schema,
+	experienceReceipt: ExperienceReceiptSchema,
+	progressionAfter: HeroProgressionV2Schema,
+	maxHealthAfter: z.number().int().positive(),
+	healthAfter: z.number().int().nonnegative()
+}).strict();
+
 export type ForgingMaterialLotChange = z.infer<typeof ForgingMaterialLotChangeSchema>;
 export type ForgingOutcome = z.infer<typeof ForgingOutcomeSchema>;
+export type ForgingOutcomeV27 = z.infer<typeof ForgingOutcomeV27Schema>;
+type ForgingState = EngineGameStateV24 | EngineGameStateV27;
 
 export interface StandardForgingStart {
 	readonly currentForging: CurrentForging;
@@ -63,13 +88,13 @@ export function currentForgingFor(
 	state: { readonly schemaVersion: number; readonly heroes: Record<string, unknown> },
 	heroId: string
 ): CurrentForging | null {
-	if (state.schemaVersion !== 24) return null;
+	if (state.schemaVersion !== 24 && state.schemaVersion !== 27) return null;
 	const hero = state.heroes[heroId] as
 		{ readonly currentForging?: CurrentForging | null } | undefined;
 	return hero?.currentForging ?? null;
 }
 
-export function heroHasForgePermission(state: EngineGameStateV24, heroId: string): boolean {
+export function heroHasForgePermission(state: ForgingState, heroId: string): boolean {
 	const hero = state.heroes[heroId];
 	const workshop = state.settlement.buildings.workshop;
 	return Boolean(
@@ -94,7 +119,7 @@ function standardRequest(craftsmanship: EquipmentCraftsmanship): boolean {
 }
 
 export function canStartStandardForging(
-	state: EngineGameStateV24,
+	state: ForgingState,
 	heroId: string,
 	definitionId: string,
 	materialId: EquipmentMaterialId,
@@ -115,7 +140,7 @@ export function canStartStandardForging(
 }
 
 export function availableStandardForgeDefinitions(
-	state: EngineGameStateV24,
+	state: ForgingState,
 	heroId: string
 ): readonly Readonly<EquipmentDefinition>[] {
 	if (!heroHasForgePermission(state, heroId)) return [];
@@ -126,7 +151,7 @@ export function availableStandardForgeDefinitions(
 }
 
 export function buildStandardForgingStart(input: {
-	readonly state: EngineGameStateV24;
+	readonly state: ForgingState;
 	readonly commandId: string;
 	readonly forgeEventId: string;
 	readonly heroId: string;
@@ -195,7 +220,13 @@ export function buildStandardForgingStart(input: {
 	};
 }
 
-export function buildForgingOutcome(state: EngineGameStateV24, heroId: string): ForgingOutcome {
+const MATERIAL_RARITY_BAND = { F: 1, E: 2, D: 3, C: 4, B: 5, A: 6, S: 7 } as const;
+
+export function buildForgingOutcome(
+	state: ForgingState,
+	heroId: string,
+	completionEventId?: string
+): ForgingOutcome | ForgingOutcomeV27 {
 	const job = state.heroes[heroId]?.currentForging;
 	if (!job) throw new Error('Cannot resolve a missing forging job');
 	const definition = verifiedEquipmentDefinition(job.definitionId);
@@ -217,7 +248,7 @@ export function buildForgingOutcome(state: EngineGameStateV24, heroId: string): 
 		craftsmanship: job.recipe.craftsmanship,
 		origin: { kind: 'forged', forgeEventId: job.forgeEventId, crafterId: heroId }
 	});
-	return ForgingOutcomeSchema.parse({
+	const baseOutcome = {
 		scheduledEventId: job.scheduledEventId,
 		forgingJobId: job.forgingJobId,
 		forgeEventId: job.forgeEventId,
@@ -227,12 +258,73 @@ export function buildForgingOutcome(state: EngineGameStateV24, heroId: string): 
 		catalogContentVersion: binding.contentVersion,
 		catalogContentHash: binding.contentHash,
 		item
+	};
+	if (state.schemaVersion === 24) return ForgingOutcomeSchema.parse(baseOutcome);
+	if (!completionEventId) throw new Error('V27 forging completion requires an event ID');
+	const hero = state.heroes[heroId]!;
+	const productionEvidence = ProductionCompletionEvidenceV1Schema.parse({
+		evidenceVersion: 'production-completion-v1',
+		craftKind: 'forging',
+		heroId,
+		resultId: item.itemId,
+		recipeId: definition.definitionId,
+		recipeDifficulty:
+			PROGRESSION_RULES_V1.crafting.equipmentClassDifficulty[definition.equipmentClass],
+		consumedIngredientRarities: [MATERIAL_RARITY_BAND[definition.materialRank]],
+		resultQuality: job.recipe.craftsmanship.label,
+		completionEventId
+	});
+	const evidenceKey = productionEvidenceKey(productionEvidence);
+	const experienceClaim = experienceClaimForProduction(
+		productionEvidence,
+		{ priorCompletions: hero.progression.evidenceCounts.crafting[evidenceKey] ?? 0 },
+		PROGRESSION_RULES_V1
+	);
+	const experience = applyExperienceClaim({
+		progression: hero.progression,
+		claim: experienceClaim,
+		rules: PROGRESSION_RULES_V1,
+		rulesBinding: PROGRESSION_RULES_V1_BINDING,
+		occurredAt: state.simulatedAt
+	});
+	const maxHealthAfter = maximumHealth(
+		intrinsicAttributes(hero.capabilityProfile, experience.progression.permanentGrowth).vitality,
+		experience.progression.level,
+		PROGRESSION_RULES_V1
+	);
+	return ForgingOutcomeV27Schema.parse({
+		...baseOutcome,
+		productionEvidence,
+		experienceReceipt: experience.receipt,
+		progressionAfter: {
+			...experience.progression,
+			evidenceCounts: {
+				...experience.progression.evidenceCounts,
+				crafting: {
+					...experience.progression.evidenceCounts.crafting,
+					[evidenceKey]: (experience.progression.evidenceCounts.crafting[evidenceKey] ?? 0) + 1
+				}
+			}
+		},
+		maxHealthAfter,
+		healthAfter: reconcileHealthAfterProgression({
+			health: hero.health,
+			oldMaximum: hero.maxHealth,
+			newMaximum: maxHealthAfter
+		})
 	});
 }
 
-export function forgingOutcomeMatches(state: EngineGameStateV24, outcome: ForgingOutcome): boolean {
+export function forgingOutcomeMatches(
+	state: ForgingState,
+	outcome: ForgingOutcome | ForgingOutcomeV27,
+	completionEventId?: string
+): boolean {
 	try {
-		return hashCanonical(buildForgingOutcome(state, outcome.heroId)) === hashCanonical(outcome);
+		return (
+			hashCanonical(buildForgingOutcome(state, outcome.heroId, completionEventId)) ===
+			hashCanonical(outcome)
+		);
 	} catch {
 		return false;
 	}
