@@ -505,7 +505,10 @@ export type EngineCommunicationState =
 	| EngineGameStateV23;
 
 export function heroCanHearCommunication(
-	hero: EngineCommunicationState['heroes'][string]
+	hero: Pick<
+		EngineCommunicationState['heroes'][string],
+		'lifeState' | 'currentTravel' | 'currentActivity' | 'currentRoutine'
+	>
 ): boolean {
 	return (
 		hero.lifeState === 'active' &&

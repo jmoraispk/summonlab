@@ -558,6 +558,10 @@ describe('engine contracts compatibility', () => {
 				rulesVersion: 'progression-rules-v1' as const,
 				contentHash: '97e69f0c427cf1eff6c886179475a5b0b27ef0b7babbf592cde22ffb64ec0119'
 			},
+			synthesis: {
+				...v26.synthesis,
+				contentVersion: 'synthesis-v2' as const
+			},
 			heroes: Object.fromEntries(
 				Object.entries(v26.heroes as Record<string, Record<string, unknown>>).map(
 					([heroId, hero]) => [

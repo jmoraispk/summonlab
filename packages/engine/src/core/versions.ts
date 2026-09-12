@@ -94,7 +94,7 @@ export const MISSION_API_SUPPORTED_VERSIONS = Object.freeze([
 	13, 15, 16, 17, 18, 19, 20, 25, 26, 27
 ] as const);
 export const STORY_PATCH_API_SUPPORTED_VERSIONS = Object.freeze([21] as const);
-export const SYNTHESIS_API_SUPPORTED_VERSIONS = Object.freeze([22] as const);
+export const SYNTHESIS_API_SUPPORTED_VERSIONS = Object.freeze([22, 27] as const);
 export const FIRST_BAND_ARCHIVE_API_SUPPORTED_VERSIONS = Object.freeze([23] as const);
 export const EQUIPMENT_API_SUPPORTED_VERSIONS = Object.freeze([24] as const);
 

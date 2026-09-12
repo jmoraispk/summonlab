@@ -660,6 +660,75 @@ describe('engine-v27 typed intrinsic growth', () => {
 			permanentGrowth: { strength: 3 }
 		});
 	});
+
+	it('routes training XP through the shared claim and crosses an awakening without healing', async () => {
+		const legacyDraft = listSummonableHeroDrafts()[0];
+		if (!legacyDraft) throw new Error('Expected an approved summonable draft');
+		const draft = await generateSummonableCharacterDraft(legacyDraft.recipe, {
+			capabilityEntropy: '9'.repeat(64)
+		});
+		const initial = createBootstrapEngine({
+			runId: deterministicUuid('progression:v27-training:run'),
+			seed: 'progression:v27-training:seed',
+			draft
+		}).snapshot.state;
+		if (initial.schemaVersion !== 27) throw new Error('Expected engine-v27 state');
+		const heroId = draft.manifest.characterId;
+		const hero = initial.heroes[heroId]!;
+		const ready = EngineGameStateV27Schema.parse({
+			...initial,
+			heroes: {
+				...initial.heroes,
+				[heroId]: {
+					...hero,
+					location: 'training-ground',
+					locationNodeId: 'training-ring',
+					firstArrivalCompleted: true,
+					destination: 'training-ground',
+					health: hero.maxHealth - 10,
+					progression: { ...hero.progression, level: 99, experience: 985 }
+				}
+			}
+		});
+		const started = applyCommand(
+			ready,
+			command(ready, heroId, 'v27-start-training', {
+				commandType: 'hero.start.activity',
+				activity: 'train'
+			})
+		);
+		if (started.state.schemaVersion !== 27) throw new Error('Expected engine-v27 state');
+		const completed = applyCommand(
+			started.state,
+			command(
+				started.state,
+				started.state.master.masterId,
+				'v27-complete-training',
+				{
+					commandType: 'simulation.advance',
+					targetGameTime: started.scheduled[0]!.dueGameTime
+				},
+				systemSource()
+			)
+		);
+		if (completed.state.schemaVersion !== 27) throw new Error('Expected engine-v27 state');
+		const trained = completed.state.heroes[heroId]!;
+		expect(trained.progression).toMatchObject({
+			level: 100,
+			experience: 993,
+			unallocatedAttributePoints: hero.progression.stars
+		});
+		const activityOutcomes = completed.events[0]!.payload.activityOutcomes as Array<{
+			experienceReceipt: unknown;
+		}>;
+		expect(activityOutcomes[0]!.experienceReceipt).toMatchObject({
+			claim: { sourceKind: 'training', amount: 8 },
+			levelsCrossed: [100],
+			pointsGranted: hero.progression.stars
+		});
+		expect(trained.health).toBe(hero.maxHealth - 10);
+		expect(trained.maxHealth).toBeGreaterThan(hero.maxHealth);
+	});
 });
 
 describe('engine-v25 settlement resource transitions', () => {

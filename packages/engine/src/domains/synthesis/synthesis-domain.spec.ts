@@ -1,12 +1,16 @@
+import { generateSummonableCharacterDraft, listSummonableHeroDrafts } from '@summonlab/characters';
 import {
 	EngineCommandSchema,
 	EngineGameStateV22Schema,
+	EngineGameStateV27Schema,
 	type AuthoritativeEvent,
-	type EngineGameStateV22
+	type EngineGameStateV22,
+	type EngineGameStateV27
 } from '@summonlab/contracts';
 import { describe, expect, it } from 'vitest';
 
 import { IllegalActionError, ReplayIntegrityError } from '../../errors.js';
+import { deterministicUuid } from '../../hash.js';
 import { applyCommand, createBootstrapEngine, hashGameState, legalActions } from '../../index.js';
 import { type SynthesisCommand, synthesisCommandHandler } from './commands.js';
 import { synthesisEventReducer } from './reducer.js';
@@ -817,6 +821,79 @@ describe('synthesis domain ownership', () => {
 			rumors: {}
 		});
 		expect(state).toStrictEqual(before);
+	});
+
+	it('routes v27 synthesis essence through the shared progression owner', async () => {
+		const recipes = listSummonableHeroDrafts();
+		const primaryRecipe = recipes[0];
+		const sourceRecipe = recipes[1];
+		if (!primaryRecipe || !sourceRecipe) throw new Error('Expected two approved summonable drafts');
+		const recipientDraft = await generateSummonableCharacterDraft(primaryRecipe.recipe, {
+			capabilityEntropy: '1'.repeat(64)
+		});
+		const sourceDraft = await generateSummonableCharacterDraft(sourceRecipe.recipe, {
+			capabilityEntropy: '2'.repeat(64)
+		});
+		const bootstrapped = createBootstrapEngine({
+			runId: deterministicUuid('synthesis-v27-run'),
+			seed: 'synthesis-v27-seed',
+			draft: recipientDraft,
+			additionalHeroes: [{ draft: sourceDraft }]
+		}).snapshot.state;
+		if (bootstrapped.schemaVersion !== 27) throw new Error('Expected engine-v27 state');
+		const recipientId = recipientDraft.manifest.characterId;
+		const sourceId = sourceDraft.manifest.characterId;
+		const recipient = bootstrapped.heroes[recipientId]!;
+		const state: EngineGameStateV27 = EngineGameStateV27Schema.parse({
+			...bootstrapped,
+			heroes: {
+				...bootstrapped.heroes,
+				[recipientId]: {
+					...recipient,
+					health: Math.floor(recipient.maxHealth / 2),
+					progression: { ...recipient.progression, level: 99, experience: 985 }
+				}
+			}
+		});
+		const command = EngineCommandSchema.parse({
+			commandId: deterministicUuid('synthesis-v27-command'),
+			runId: state.runId,
+			actorId: state.master.masterId,
+			expectedVersion: state.version,
+			correlationId: deterministicUuid('synthesis-v27-correlation'),
+			source: {
+				source: 'manual',
+				timing: null,
+				fallbackPolicy: null,
+				directiveIds: [],
+				decisionJobId: null
+			},
+			commandType: 'settlement.synthesize.hero',
+			sourceHeroId: sourceId,
+			recipientHeroId: recipientId,
+			visibility: 'private',
+			warningVersion: 'synthesis-warning-v1',
+			confirmedIrreversible: true,
+			rationale: 'Verify shared v27 progression accounting.'
+		});
+
+		const result = applyCommand(state, command);
+		if (result.state.schemaVersion !== 27) throw new Error('Expected engine-v27 result');
+		const after = result.state.heroes[recipientId]!;
+		const receipt = Object.values(result.state.synthesis.receipts)[0]!;
+
+		expect(receipt.receiptVersion).toBe('synthesis-receipt-v2');
+		if (receipt.receiptVersion !== 'synthesis-receipt-v2') throw new Error('Expected v2 receipt');
+		expect(receipt.experienceReceipt.claim.sourceKind).toBe('synthesis');
+		expect(receipt.experienceReceipt.levelBefore).toBe(99);
+		expect(receipt.experienceReceipt.levelAfter).toBeGreaterThanOrEqual(100);
+		expect(receipt.experienceReceipt.pointsGranted).toBe(
+			(receipt.experienceReceipt.levelAfter - 99) * recipient.progression.stars
+		);
+		expect(after.progression).toStrictEqual(receipt.recipientProgressionAfter);
+		expect(after.health).toBe(state.heroes[recipientId]!.health);
+		expect(after.maxHealth).toBeGreaterThan(state.heroes[recipientId]!.maxHealth);
+		expect(result.state.heroes[sourceId]!.lifeState).toBe('synthesized');
 	});
 
 	it('builds the complete frozen pre-extraction rumor event and provenance state', () => {

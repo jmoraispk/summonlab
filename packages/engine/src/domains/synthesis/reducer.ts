@@ -1,6 +1,7 @@
 import {
 	EngineCommandSchema,
 	SynthesisReceiptSchema,
+	SynthesisReceiptV2Schema,
 	SynthesisRumorRecordSchema,
 	type AuthoritativeEvent,
 	type EngineGameState
@@ -19,7 +20,7 @@ import {
 } from './runtime.js';
 
 const SynthesisCommittedPayloadSchema = EmptyMetadataSchema.extend({
-	receipt: SynthesisReceiptSchema,
+	receipt: z.union([SynthesisReceiptSchema, SynthesisReceiptV2Schema]),
 	nextVersion: z.number().int().positive()
 }).strict();
 
@@ -33,7 +34,7 @@ export const SYNTHESIS_EVENT_TYPES = ['hero.synthesized', 'social.synthesis.rumo
 function reduceSynthesisEvent(state: EngineGameState, event: AuthoritativeEvent): EngineGameState {
 	if (event.eventType === 'hero.synthesized') {
 		if (
-			state.schemaVersion !== 22 ||
+			(state.schemaVersion !== 22 && state.schemaVersion !== 27) ||
 			event.actorId !== state.master.masterId ||
 			event.gameTime !== state.simulatedAt ||
 			event.seedCursor !== state.entropyCursor ||
@@ -78,7 +79,7 @@ function reduceSynthesisEvent(state: EngineGameState, event: AuthoritativeEvent)
 	}
 	if (event.eventType === 'social.synthesis.rumor.shared') {
 		if (
-			state.schemaVersion !== 22 ||
+			(state.schemaVersion !== 22 && state.schemaVersion !== 27) ||
 			!event.actorId ||
 			event.gameTime !== state.simulatedAt ||
 			event.seedCursor !== state.entropyCursor ||

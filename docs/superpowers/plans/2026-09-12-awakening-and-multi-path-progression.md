@@ -609,11 +609,11 @@ git commit -m "feat(attributes): apply typed intrinsic growth"
 - Consumes: `applyExperienceClaim` from Task 4.
 - Produces: training and synthesis evidence adapters; removes duplicate v27 level calculations while retaining frozen v1-v26 behavior.
 
-- [ ] **Step 1: Write failing adapter tests**
+- [x] **Step 1: Write failing adapter tests**
 
 For v27 training, assert the existing `8 + First Ember modifier` hero XP and separate sword-practice XP flow through an `ExperienceClaim` with `sourceKind: 'training'`. For synthesis, assert essence XP flows through `sourceKind: 'synthesis'`. In both cases, verify multi-level star grants and no star mutation.
 
-- [ ] **Step 2: Run focused tests and verify red**
+- [x] **Step 2: Run focused tests and verify red**
 
 ```bash
 pnpm --filter @summonlab/engine test -- domains/settlement/progression.spec.ts domains/synthesis/synthesis-domain.spec.ts
@@ -621,26 +621,26 @@ pnpm --filter @summonlab/engine test -- domains/settlement/progression.spec.ts d
 
 Expected: FAIL because both domains still call their local `levelFor` functions.
 
-- [ ] **Step 3: Adapt v27 training**
+- [x] **Step 3: Adapt v27 training**
 
 Keep the v1-v26 routine branch unchanged. In the v27 branch, build a deterministic claim ID from the scheduled event ID, call `applyExperienceClaim`, and include its receipt in the scheduled activity outcome. Continue to calculate sword skill practice independently.
 
-- [ ] **Step 4: Adapt v27 synthesis**
+- [x] **Step 4: Adapt v27 synthesis**
 
 Replace only the v27 direct `experience + essence` and `levelFor` path with the shared claim. Preserve the existing essence formula, source/recipient legality, and v22-v26 receipt schemas.
 
-- [ ] **Step 5: Recompute awakening-derived Health**
+- [x] **Step 5: Recompute awakening-derived Health**
 
 When either source crosses levels 100–900, set the new maximum from the bound table and leave current Health unchanged. Add a test crossing level 99→100 at partial Health.
 
-- [ ] **Step 6: Run focused verification**
+- [x] **Step 6: Run focused verification**
 
 ```bash
 pnpm --filter @summonlab/engine test -- domains/settlement/progression.spec.ts domains/settlement/settlement-domain.spec.ts domains/synthesis/synthesis-domain.spec.ts
 pnpm --filter @summonlab/engine typecheck
 ```
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add packages/engine/src/domains/settlement packages/engine/src/domains/synthesis

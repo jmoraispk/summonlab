@@ -22,9 +22,11 @@ import {
 	EngineGameStateV24Schema,
 	EngineGameStateV25Schema,
 	EngineGameStateV27Schema,
+	ExperienceReceiptSchema,
 	HabitStateSchema,
 	HeroProgressionSchema,
 	HeroProgressionV25Schema,
+	HeroProgressionV2Schema,
 	InjurySchema,
 	NeedStateSchema,
 	RoutineResolutionSchema,
@@ -34,6 +36,7 @@ import {
 	type RewardDelta,
 	type RoutineKind
 } from '@summonlab/contracts';
+import { PROGRESSION_RULES_V1, PROGRESSION_RULES_V1_BINDING } from '@summonlab/content';
 import { z } from 'zod';
 
 import { RewardDeltasSchema } from '../../core/event-metadata.js';
@@ -42,6 +45,11 @@ import { ENGINE_EPOCH, hasFirstEmberState } from '../../core/versions.js';
 import { createEntropyCursor, drawInteger } from '../../entropy.js';
 import { IllegalActionError } from '../../errors.js';
 import { deterministicUuid } from '../../hash.js';
+import { applyExperienceClaim } from '../progression/experience.js';
+import {
+	intrinsicAttributes as progressionIntrinsicAttributes,
+	maximumHealth as progressionMaximumHealth
+} from '../progression/math.js';
 
 export const ItemUpdateSchema = z
 	.object({
@@ -72,6 +80,13 @@ export const ActivityOutcomeV25Schema = ActivityOutcomeSchema.extend({
 	progressionAfter: HeroProgressionV25Schema
 }).strict();
 
+export const ActivityOutcomeV27Schema = ActivityOutcomeSchema.extend({
+	healthAfter: z.number().int().nonnegative().max(Number.MAX_SAFE_INTEGER),
+	maxHealthAfter: z.number().int().positive().max(Number.MAX_SAFE_INTEGER),
+	progressionAfter: HeroProgressionV2Schema,
+	experienceReceipt: ExperienceReceiptSchema.nullable()
+}).strict();
+
 export const RoutineOutcomeSchema = z
 	.object({
 		scheduledEventId: z.string().uuid(),
@@ -99,6 +114,10 @@ export const RoutineOutcomeSchema = z
 
 export const RoutineOutcomeV25Schema = RoutineOutcomeSchema.extend({
 	healthAfter: CapabilityHealthSchema
+}).strict();
+
+export const RoutineOutcomeV27Schema = RoutineOutcomeSchema.extend({
+	healthAfter: z.number().int().nonnegative().max(Number.MAX_SAFE_INTEGER)
 }).strict();
 
 export function clamp(value: number, minimum = 0, maximum = 100): number {
@@ -386,7 +405,10 @@ export function buildActivityOutcome(
 	eventId: string,
 	entropyCursor: { seed: string; cursor: number }
 ): {
-	outcome: z.infer<typeof ActivityOutcomeSchema> | z.infer<typeof ActivityOutcomeV25Schema>;
+	outcome:
+		| z.infer<typeof ActivityOutcomeSchema>
+		| z.infer<typeof ActivityOutcomeV25Schema>
+		| z.infer<typeof ActivityOutcomeV27Schema>;
 	entropy: typeof entropyCursor;
 	draws: EntropyDraw[];
 } {
@@ -402,6 +424,8 @@ export function buildActivityOutcome(
 	let nextEntropy = entropyCursor;
 	const draws: EntropyDraw[] = [];
 	const deltas: RewardDelta[] = [];
+	let experienceReceipt: z.infer<typeof ExperienceReceiptSchema> | null = null;
+	let maxHealthAfter = hero.maxHealth;
 
 	if (activity.kind === 'train') {
 		const experienceBonus = firstEmberModifier(state, 'hero-experience');
@@ -411,30 +435,67 @@ export function buildActivityOutcome(
 		const skillBefore = hero.progression.skills.swordFighting.experience;
 		const skillAfter = skillBefore + 6 + skillBonus;
 		const experienceAfter = experienceBefore + 8 + experienceBonus;
-		const levelAfter = levelFor(experienceAfter, hero.progression.stars);
-		const capabilityProgression =
-			state.schemaVersion === 25 ? state.heroes[heroId]!.progression : null;
-		progressionAfter = {
-			...hero.progression,
-			experience: experienceAfter,
-			level: levelAfter,
-			...(capabilityProgression
-				? {
-						unspentAttributePoints: attributePointsForLevelTransition(
-							capabilityProgression.unspentAttributePoints,
-							levelBefore,
-							levelAfter
-						),
-						attributeGrowthReceipts: capabilityProgression.attributeGrowthReceipts
+		if (state.schemaVersion === 27) {
+			const progressionHero = state.heroes[heroId]!;
+			const claimOutcome = applyExperienceClaim({
+				progression: progressionHero.progression,
+				claim: {
+					claimId: deterministicUuid(`${eventId}:${heroId}:training-experience-claim`),
+					heroId,
+					sourceEventId: eventId,
+					evidenceKey: `training:${activity.scheduledEventId}`,
+					amount: 8 + experienceBonus,
+					sourceKind: 'training'
+				},
+				rules: PROGRESSION_RULES_V1,
+				rulesBinding: PROGRESSION_RULES_V1_BINDING,
+				occurredAt: activity.completesAt
+			});
+			experienceReceipt = claimOutcome.receipt;
+			progressionAfter = {
+				...claimOutcome.progression,
+				skills: {
+					swordFighting: {
+						experience: skillAfter,
+						rank: Math.min(20, Math.floor(skillAfter / 5))
 					}
-				: {}),
-			skills: {
-				swordFighting: {
-					experience: skillAfter,
-					rank: Math.min(20, Math.floor(skillAfter / 5))
 				}
-			}
-		};
+			};
+			const intrinsic = progressionIntrinsicAttributes(
+				progressionHero.capabilityProfile,
+				progressionHero.progression.permanentGrowth
+			);
+			maxHealthAfter = progressionMaximumHealth(
+				intrinsic.vitality,
+				claimOutcome.progression.level,
+				PROGRESSION_RULES_V1
+			);
+		} else {
+			const levelAfter = levelFor(experienceAfter, hero.progression.stars);
+			const capabilityProgression =
+				state.schemaVersion === 25 ? state.heroes[heroId]!.progression : null;
+			progressionAfter = {
+				...hero.progression,
+				experience: experienceAfter,
+				level: levelAfter,
+				...(capabilityProgression
+					? {
+							unspentAttributePoints: attributePointsForLevelTransition(
+								capabilityProgression.unspentAttributePoints,
+								levelBefore,
+								levelAfter
+							),
+							attributeGrowthReceipts: capabilityProgression.attributeGrowthReceipts
+						}
+					: {}),
+				skills: {
+					swordFighting: {
+						experience: skillAfter,
+						rank: Math.min(20, Math.floor(skillAfter / 5))
+					}
+				}
+			};
+		}
 		needsAfter = {
 			hunger: clamp(hero.needs.hunger + 10),
 			fatigue: clamp(hero.needs.fatigue + 15)
@@ -584,7 +645,12 @@ export function buildActivityOutcome(
 	}
 
 	return {
-		outcome: (state.schemaVersion === 25 ? ActivityOutcomeV25Schema : ActivityOutcomeSchema).parse({
+		outcome: (state.schemaVersion === 27
+			? ActivityOutcomeV27Schema
+			: state.schemaVersion === 25
+				? ActivityOutcomeV25Schema
+				: ActivityOutcomeSchema
+		).parse({
 			scheduledEventId: activity.scheduledEventId,
 			heroId,
 			activity: activity.kind,
@@ -593,6 +659,7 @@ export function buildActivityOutcome(
 			needsAfter,
 			injuriesAfter,
 			progressionAfter,
+			...(state.schemaVersion === 27 ? { maxHealthAfter, experienceReceipt } : {}),
 			itemUpdate,
 			rewardDeltas: deltas
 		}),
@@ -682,7 +749,13 @@ export function buildRoutineOutcome(state: EngineRoutineState, heroId: string) {
 		}
 	}
 
-	return (state.schemaVersion === 25 ? RoutineOutcomeV25Schema : RoutineOutcomeSchema).parse({
+	return (
+		state.schemaVersion === 27
+			? RoutineOutcomeV27Schema
+			: state.schemaVersion === 25
+				? RoutineOutcomeV25Schema
+				: RoutineOutcomeSchema
+	).parse({
 		scheduledEventId: routine.scheduledEventId,
 		heroId,
 		planId: routine.planId,

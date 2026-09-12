@@ -246,10 +246,12 @@ export const ENGINE_CONTRACT_RUNTIME_EXPORTS = [
 	'SyncSimulationClockCommandSchema',
 	'SynthesisKnowledgeSchema',
 	'SynthesisReceiptSchema',
+	'SynthesisReceiptV2Schema',
 	'SynthesisRequestSchema',
 	'SynthesisRumorRecordSchema',
 	'SynthesisSocialConsequenceSchema',
 	'SynthesisStateSchema',
+	'SynthesisStateV2Schema',
 	'SynthesisVisibilitySchema',
 	'SynthesizeHeroCommandSchema',
 	'UnassignHeroBuildingCommandSchema'

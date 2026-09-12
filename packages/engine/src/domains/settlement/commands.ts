@@ -45,6 +45,7 @@ import {
 import {
 	ActivityOutcomeSchema,
 	ActivityOutcomeV25Schema,
+	ActivityOutcomeV27Schema,
 	activityDuration,
 	buildActivityOutcome,
 	buildRoutineOutcome,
@@ -1281,7 +1282,9 @@ function buildModernSettlementEvent(
 			});
 		let entropy = createEntropyCursor(state.seed, state.entropyCursor);
 		const outcomes: (
-			z.infer<typeof ActivityOutcomeSchema> | z.infer<typeof ActivityOutcomeV25Schema>
+			| z.infer<typeof ActivityOutcomeSchema>
+			| z.infer<typeof ActivityOutcomeV25Schema>
+			| z.infer<typeof ActivityOutcomeV27Schema>
 		)[] = [];
 		const draws: EntropyDraw[] = [];
 		for (const hero of dueHeroes) {

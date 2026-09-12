@@ -216,16 +216,20 @@ export {
 	FirstBandExtractionReceiptSchema,
 	SynthesisKnowledgeSchema,
 	SynthesisReceiptSchema,
+	SynthesisReceiptV2Schema,
 	SynthesisRumorRecordSchema,
 	SynthesisSocialConsequenceSchema,
 	SynthesisStateSchema,
+	SynthesisStateV2Schema,
 	SynthesisVisibilitySchema,
 	type FirstBandArchiveReveal,
 	type FirstBandArchiveState,
 	type FirstBandExtractionReceipt,
 	type SynthesisReceipt,
+	type SynthesisReceiptV2,
 	type SynthesisRumorRecord,
 	type SynthesisState,
+	type SynthesisStateV2,
 	type SynthesisVisibility
 } from './story-synthesis-state.js';
 

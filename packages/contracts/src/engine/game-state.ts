@@ -50,7 +50,8 @@ import { ContentVersionSchema, EntityIdSchema, IsoDateTimeSchema } from '../shar
 import {
 	FirstBandArchiveStateSchema,
 	RuntimeBandStoryStateSchema,
-	SynthesisStateSchema
+	SynthesisStateSchema,
+	SynthesisStateV2Schema
 } from './story-synthesis-state.js';
 
 export const EngineGameStateV1Schema = z
@@ -866,6 +867,7 @@ const EngineGameStateV27BaseSchema = z
 		schemaVersion: z.literal(27),
 		contentVersion: z.literal('engine-v27'),
 		heroes: z.record(EntityIdSchema, EngineHeroStateV27Schema),
+		synthesis: SynthesisStateV2Schema,
 		progressionRules: ProgressionRulesBindingSchema
 	})
 	.strict();

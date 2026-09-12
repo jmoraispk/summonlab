@@ -47,8 +47,10 @@ import { currentTravelFor } from './navigation.js';
 import {
 	ActivityOutcomeSchema,
 	ActivityOutcomeV25Schema,
+	ActivityOutcomeV27Schema,
 	RoutineOutcomeSchema,
 	RoutineOutcomeV25Schema,
+	RoutineOutcomeV27Schema,
 	buildRoutineOutcome,
 	createDailyPlan,
 	gameDayIndex,
@@ -271,6 +273,11 @@ const SimulationAdvancedPayloadV24Schema = SimulationAdvancedPayloadV5Schema.ext
 const SimulationAdvancedPayloadV25Schema = SimulationAdvancedPayloadV5Schema.extend({
 	activityOutcomes: z.array(ActivityOutcomeV25Schema),
 	routineOutcomes: z.array(RoutineOutcomeV25Schema)
+}).strict();
+
+const SimulationAdvancedPayloadV27Schema = SimulationAdvancedPayloadV25Schema.extend({
+	activityOutcomes: z.array(ActivityOutcomeV27Schema),
+	routineOutcomes: z.array(RoutineOutcomeV27Schema)
 }).strict();
 
 const SimulationClockSyncedPayloadSchema = EmptyMetadataSchema.extend({
@@ -1117,11 +1124,13 @@ function reduceSettlementEvent(
 	if (event.eventType === 'simulation.advanced') {
 		if (hasRoutineState(state)) {
 			const payload =
-				state.schemaVersion === 25
-					? SimulationAdvancedPayloadV25Schema.parse(event.payload)
-					: state.schemaVersion === 24
-						? SimulationAdvancedPayloadV24Schema.parse(event.payload)
-						: SimulationAdvancedPayloadV5Schema.parse(event.payload);
+				state.schemaVersion === 27
+					? SimulationAdvancedPayloadV27Schema.parse(event.payload)
+					: state.schemaVersion === 25
+						? SimulationAdvancedPayloadV25Schema.parse(event.payload)
+						: state.schemaVersion === 24
+							? SimulationAdvancedPayloadV24Schema.parse(event.payload)
+							: SimulationAdvancedPayloadV5Schema.parse(event.payload);
 			const heroes = { ...state.heroes };
 			const items = { ...state.items };
 			let settlement = state.settlement;
@@ -1141,6 +1150,7 @@ function reduceSettlementEvent(
 					needs: outcome.needsAfter,
 					injuries: outcome.injuriesAfter,
 					progression: outcome.progressionAfter,
+					...('maxHealthAfter' in outcome ? { maxHealth: outcome.maxHealthAfter } : {}),
 					currentActivity: null,
 					assignment: outcome.lifeStateAfter === 'active' ? hero.assignment : null,
 					dailyPlan:

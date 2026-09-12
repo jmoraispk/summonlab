@@ -741,7 +741,13 @@ export function createBootstrapEngine(input: BootstrapEngineInput): BootstrapEng
 				}
 			: {}),
 		...(synthesisDevelopmentScenario || firstBandArchiveState
-			? { synthesis: { contentVersion: 'synthesis-v1', receipts: {}, rumors: {} } }
+			? {
+					synthesis: {
+						contentVersion: capabilitySchemaVersion === 27 ? 'synthesis-v2' : 'synthesis-v1',
+						receipts: {},
+						rumors: {}
+					}
+				}
 			: {}),
 		...(firstBandArchiveState ? { firstBandArchive: createSealedFirstBandArchive() } : {}),
 		...(capabilitySchemaVersion === 27 ? { progressionRules: PROGRESSION_RULES_V1_BINDING } : {})
