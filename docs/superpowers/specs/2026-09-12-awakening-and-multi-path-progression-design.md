@@ -32,7 +32,7 @@ the exact per-point conversions without requiring the player to reconstruct a hi
 3. Allow direct attribute growth outside leveling through typed progression sources.
 4. Award shared hero experience for meaningful combat and completed crafting.
 5. Establish Combat and Crafting as the two initial macro paths without forbidding later crossover.
-6. Use one clean additive awakening ladder for physical power, magical power, and Health.
+6. Use one clean, staged additive awakening ladder for physical power, magical power, and Health.
 7. Keep ratio statistics and flat equipment values outside the awakening multiplier.
 8. Preserve deterministic progression receipts and historical replay.
 
@@ -89,32 +89,40 @@ awakening_tier = floor(level / 100)
 ```
 
 The level maximum bounds the tier to `0..9`. Crossing levels 100, 200, 300, 400, 500, 600, 700,
-800, or 900 increases the conversion rate. The table is the authored rules artifact; its additive
-shape is also validated by formula so a mistyped row cannot silently alter one tier.
+800, or 900 increases the conversion rate. The table is the authored rules artifact. Resolution
+looks up the tier's multiplier and applies ordinary multiplication; it does not reconstruct the
+rates from a hidden progression formula.
 
 | Level | Tier | Power per STR/MAG | Health per VIT | Relative rate |
 | ---: | ---: | ---: | ---: | ---: |
 | 1–99 | 0 | 1.0 | 5 | ×1.0 |
 | 100–199 | 1 | 1.2 | 6 | ×1.2 |
 | 200–299 | 2 | 1.4 | 7 | ×1.4 |
-| 300–399 | 3 | 1.6 | 8 | ×1.6 |
-| 400–499 | 4 | 1.8 | 9 | ×1.8 |
-| 500–599 | 5 | 2.0 | 10 | ×2.0 |
-| 600–699 | 6 | 2.2 | 11 | ×2.2 |
-| 700–799 | 7 | 2.4 | 12 | ×2.4 |
-| 800–899 | 8 | 2.6 | 13 | ×2.6 |
-| 900–999 | 9 | 2.8 | 14 | ×2.8 |
+| 300–399 | 3 | 1.8 | 9 | ×1.8 |
+| 400–499 | 4 | 2.2 | 11 | ×2.2 |
+| 500–599 | 5 | 2.6 | 13 | ×2.6 |
+| 600–699 | 6 | 3.2 | 16 | ×3.2 |
+| 700–799 | 7 | 3.8 | 19 | ×3.8 |
+| 800–899 | 8 | 4.4 | 22 | ×4.4 |
+| 900–999 | 9 | 5.0 | 25 | ×5.0 |
 
-Equivalent validation formulas:
+Canonical authored lookup data:
 
 ```text
-power_rate(tier)  = 1.0 + 0.2 × tier
-health_rate(tier) = 5.0 + 1.0 × tier
+power_rate  = [1.0, 1.2, 1.4, 1.8, 2.2, 2.6, 3.2, 3.8, 4.4, 5.0]
+health_rate = [5,   6,   7,   9,   11,  13,  16,  19,  22,  25]
 ```
 
 The earlier provisional `0.8 power / 4 Health` constants had the same 1:5 relationship. Moving to
-`1 power / 5 Health` preserves that relationship while making each awakening a literal additive
-20 percent of the base rate and keeping the table easy to read.
+`1 power / 5 Health` preserves that relationship and keeps the table easy to read. The staged
+additive increments make early awakenings controlled and later awakenings increasingly meaningful:
+
+- tiers 1–2 add `0.2 Power / 1 Health` per awakening;
+- tiers 3–5 add `0.4 Power / 2 Health` per awakening;
+- tiers 6–9 add `0.6 Power / 3 Health` per awakening.
+
+Power and Health preserve the 1:5 relationship in every row. At tier 9, one attribute point is
+therefore worth exactly five times its tier-0 contribution.
 
 ### Derived magnitude
 
@@ -216,16 +224,27 @@ An experience source never writes attributes, stars, awakening tier, Health, or 
 directly. Attribute training may separately emit a typed direct-growth claim, but that claim does
 not pretend to be level experience.
 
+## Tuning and versioning
+
+The rates are balance data, not permanent schema constants. Designers may nerf or otherwise revise
+the table after simulation or playtesting without changing attribute storage, tier derivation, or
+the multiplication pipeline. A revised table receives a new rules version so historical receipts
+and replay continue to resolve with the rates under which they were created.
+
+The first tuning target is the table above. It deliberately favors legible round values over a
+formula-generated curve. Balance tooling should make each row editable and compare proposed rows
+against encounter, equipment, and time-to-kill benchmarks before promotion.
+
 ## Balance consequences
 
-The additive ladder reaches ×2.8 at level 900. It is intentionally much gentler and more regular
+The staged additive ladder reaches ×5 at level 900. It is still gentler in its early progression
 than Overgeared's documented Strength attack ladder, which reaches ×8 by the fourth awakening and
 uses different irregular ladders for different outputs.
 
 Because all existing applicable points receive the current rate, an awakening rewards attributes
 earned through training as well as points earned from levels. Immutable stars already create a
-linear difference in level-earned point budgets, so the awakening ladder remains additive rather
-than compounding.
+linear difference in level-earned point budgets, so authored conversion rates increase additively
+between tiers rather than compounding one awakening multiplier onto another.
 
 Physical and magical attribute power share one rate. Health keeps the same 1:5 rate relationship
 at every tier. Matched-tier peer pacing therefore remains understandable before equipment, action
