@@ -7,10 +7,8 @@ test('provides one comparison entry point for all Living Village screens', async
 	expect(response?.ok()).toBe(true);
 	await expect(page.getByRole('heading', { name: 'Living Village laboratory' })).toBeVisible();
 	await expect(page.getByRole('link', { name: /Enter Village/ })).toHaveCount(0);
-	await expect(page.getByRole('link', { name: /Open Summoning Portal/ })).toHaveAttribute(
-		'href',
-		'/living-village-lab/summon'
-	);
+	await expect(page.getByRole('link', { name: /Open Summoning Portal/ })).toHaveCount(0);
+	await expect(page.getByRole('link', { name: /Play Opening/ })).toHaveCount(0);
 	await expect(page.getByRole('link', { name: /Test Tower Expedition/ })).toHaveAttribute(
 		'href',
 		'/living-village-lab/tower'

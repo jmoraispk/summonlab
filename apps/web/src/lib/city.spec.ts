@@ -1,8 +1,19 @@
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync } from 'node:fs';
+import { extname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 
 import { CITY_MODES, cityModeHref, parseCityMode } from './city';
+
+function productionSources(directory: string): string[] {
+	return readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
+		const path = resolve(directory, entry.name);
+		if (entry.isDirectory()) return productionSources(path);
+		if (!['.svelte', '.ts'].includes(extname(entry.name))) return [];
+		if (entry.name.endsWith('.spec.ts') || entry.name.endsWith('.e2e.ts')) return [];
+		return [path];
+	});
+}
 
 describe('City navigation', () => {
 	it('mounts every player campaign stage on the canonical Village route', () => {
@@ -21,22 +32,31 @@ describe('City navigation', () => {
 			false
 		);
 		expect(
-			existsSync(`${repositoryRoot}/apps/web/src/routes/onboarding/[runId]/+page.svelte`)
+			existsSync(`${repositoryRoot}/apps/web/src/routes/onboarding/[runId]/+page.server.ts`)
 		).toBe(false);
 		expect(
 			readFileSync(`${repositoryRoot}/apps/web/src/routes/play/[runId]/+page.server.ts`, 'utf8')
-		).toContain("redirect(308, '/village')");
-		expect(
-			readFileSync(
-				`${repositoryRoot}/apps/web/src/routes/onboarding/[runId]/+page.server.ts`,
-				'utf8'
-			)
 		).toContain("redirect(308, '/village')");
 	});
 
 	it('keeps CityScreen as the sole player Village renderer', () => {
 		const repositoryRoot = fileURLToPath(new URL('../../../..', import.meta.url));
 		for (const retiredPath of [
+			'apps/web/src/lib/components/campaign/SingletonOnboarding.svelte',
+			'apps/web/src/routes/onboarding/[runId]/+page.server.ts',
+			'apps/web/src/routes/summon/[runId]/+page.server.ts',
+			'apps/web/src/routes/summon/[runId]/+page.svelte',
+			'apps/web/src/routes/living-village-lab/opening/+page.svelte',
+			'apps/web/src/routes/living-village-lab/opening/WeaponGlyph.svelte',
+			'apps/web/src/routes/living-village-lab/opening/heroes.ts',
+			'apps/web/src/routes/living-village-lab/opening/opening.e2e.ts',
+			'apps/web/src/routes/living-village-lab/summon/+page.svelte',
+			'apps/web/src/routes/living-village-lab/summon/fixtures.ts',
+			'apps/web/src/routes/living-village-lab/summon/summon.e2e.ts',
+			'apps/web/src/lib/components/living-village/summon/HeroDossier.svelte',
+			'apps/web/src/lib/components/living-village/summon/RatesPanel.svelte',
+			'apps/web/src/lib/components/living-village/summon/ResultPresentation.svelte',
+			'apps/web/src/lib/components/living-village/summon/RevealStage.svelte',
 			'apps/web/src/routes/settlement-lab/+page.svelte',
 			'apps/web/src/routes/settlement-lab/+page.server.ts',
 			'apps/web/src/routes/settlement-lab.e2e.ts',
@@ -54,14 +74,27 @@ describe('City navigation', () => {
 		]) {
 			expect(existsSync(`${repositoryRoot}/${retiredPath}`), retiredPath).toBe(false);
 		}
+
+		const stalePatterns = [
+			'SingletonOnboarding',
+			'/living-village-lab/opening',
+			'/living-village-lab/summon',
+			'/onboarding/[runId]',
+			'/summon/[runId]'
+		];
+		const sourceRoot = `${repositoryRoot}/apps/web/src`;
+		const staleSources = productionSources(sourceRoot).filter((path) => {
+			const source = readFileSync(path, 'utf8');
+			return stalePatterns.some((pattern) => source.includes(pattern));
+		});
+		expect(staleSources).toEqual([]);
 	});
 
 	it('keeps surviving player transitions off the retired play route', () => {
 		const repositoryRoot = fileURLToPath(new URL('../../../..', import.meta.url));
-		const sources = [
-			'apps/web/src/routes/summon/[runId]/+page.svelte',
-			'apps/web/src/routes/replay/[runId]/+page.svelte'
-		].map((path) => readFileSync(`${repositoryRoot}/${path}`, 'utf8'));
+		const sources = ['apps/web/src/routes/replay/[runId]/+page.svelte'].map((path) =>
+			readFileSync(`${repositoryRoot}/${path}`, 'utf8')
+		);
 		for (const source of sources) expect(source).not.toContain("resolve('/play/[runId]'");
 	});
 

@@ -32,7 +32,7 @@
 			<span>Development instrument</span>
 			<strong>Decision trace</strong>
 		</div>
-		<a href={resolve('/summon/[runId]', { runId: report.job.runId })}>Return to summon</a>
+		<a href={resolve('/village')}>Return to Village</a>
 	</nav>
 
 	<header class="hero">

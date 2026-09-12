@@ -1,6 +1,6 @@
 # Direct Village and Summoning Retirement
 
-**Status:** Active migration inventory
+**Status:** Completed for the opening and summoning interfaces
 
 **Governing specification:**
 `docs/superpowers/specs/2026-09-10-single-village-progression-design.md`
@@ -15,12 +15,12 @@ stays outside runtime route ownership and is not implicitly approved for product
 
 | Source | Preserve or migrate | Delete after replacement | Current status |
 | --- | --- | --- | --- |
-| `apps/web/src/lib/components/campaign/SingletonOnboarding.svelte` | Story copy, individual first questions, observable dossier fields, persisted resumption | Full-page renderer and its isolated CSS | Classified |
-| `apps/web/src/routes/living-village-lab/opening/` (**The First Three**) | Four desktop mockups as historical evidence; in-Village story context | Route, `WeaponGlyph`, fixture heroes, and route E2E | Classified |
-| `apps/web/src/routes/living-village-lab/summon/` (**The Summoning Portal**) | Single-arrival reveal cadence, reduced-motion completion, dossier interaction, and Pixi gate effect | Wallets, rates, batch pull, pity, fixtures, route, and route E2E | Classified |
-| `apps/web/src/routes/summon/[runId]/` | First reveal and first question move to the Summoning House; communication, directive, policy-preview, and decision-job APIs remain covered without a player page | Page loader, page component, and fixed legacy walkthrough | Classified |
-| `apps/web/src/routes/onboarding/[runId]/+page.server.ts` | Campaign persistence remains internal to the singleton Village | ID-bearing redirect route | Classified |
-| `apps/web/src/routes/living-village-lab/+page.svelte` | Tower and combat study cards remain until their own canonical migrations | Opening and summon cards plus their imports | Classified |
+| `apps/web/src/lib/components/campaign/SingletonOnboarding.svelte` | Story copy, individual first questions, observable dossier fields, persisted resumption | Full-page renderer and its isolated CSS | Retired |
+| `apps/web/src/routes/living-village-lab/opening/` (**The First Three**) | Four desktop mockups as historical evidence; in-Village story context | Route, `WeaponGlyph`, fixture heroes, and route E2E | Retired |
+| `apps/web/src/routes/living-village-lab/summon/` (**The Summoning Portal**) | Single-arrival reveal cadence, reduced-motion completion, dossier interaction, and Pixi gate effect | Wallets, rates, batch pull, pity, fixtures, route, and route E2E | Retired |
+| `apps/web/src/routes/summon/[runId]/` | First reveal and first question move to the Summoning House; communication, directive, policy-preview, and decision-job APIs remain covered without a player page | Page loader, page component, and fixed legacy walkthrough | Retired |
+| `apps/web/src/routes/onboarding/[runId]/+page.server.ts` | Campaign persistence remains internal to the singleton Village | ID-bearing redirect route | Retired |
+| `apps/web/src/routes/living-village-lab/+page.svelte` | Tower and combat study cards remain until their own canonical migrations | Opening and summon cards plus their imports | Retired |
 
 ## Preserved evidence
 

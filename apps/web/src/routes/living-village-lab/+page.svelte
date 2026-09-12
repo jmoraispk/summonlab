@@ -1,31 +1,9 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
-	import openingArtwork from '../../../../../docs/design-proposals/living-village-ui/mockups/opening-master-connection-desktop.png';
-	import summonArtwork from '../../../../../assets/agent-summoning-concept.png';
 	import towerArtwork from '../../../../../assets/tower-prototype.png';
 	import combatArtwork from '../../../../../docs/evidence/living-village-combat-motion-storyboard-v1.png';
 
 	const screens = [
-		{
-			eyebrow: 'Playable prologue',
-			title: 'The First Three',
-			description:
-				'Connect as Master, summon the first company, answer their questions, assign three starter weapons, and learn why the Tower matters.',
-			action: 'Play Opening',
-			href: '/living-village-lab/opening' as const,
-			image: openingArtwork,
-			alt: 'An empty summoning chamber waiting for the Master'
-		},
-		{
-			eyebrow: 'Acquisition surface',
-			title: 'The Summoning Portal',
-			description:
-				'Test the portal choreography, disclosed rates, pity progress, single summons, and the ten-summon bonus arrival.',
-			action: 'Open Summoning Portal',
-			href: '/living-village-lab/summon' as const,
-			image: summonArtwork,
-			alt: 'A hero approaching the Summoning Portal'
-		},
 		{
 			eyebrow: 'Mission surface',
 			title: 'The Tower Threshold',
