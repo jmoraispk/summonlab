@@ -7,7 +7,7 @@ what a source says before comparing it with Summonlab, so inspiration and projec
 silently become one another.
 
 This page is evidence, not canon. Summonlab's accepted four-attribute direction remains `Strength`,
-`Vitality`, `Agility`, and `Spirit` as defined by the
+`Vitality`, `Agility`, and `Magic` as defined by the
 [four-attribute design](../../superpowers/specs/2026-09-06-attributes-and-combat-modes-design.md).
 The public [Attributes](../mechanics/attributes.md) page still describes the earlier six-attribute
 draft and requires a separate convergence update.
@@ -62,7 +62,7 @@ establishing whether each term is a separate statistic.
 | Vitality | Vitality plus armour/equipment | Both associate Vitality with Health; Loop Bound also gives it broad defence that Summonlab deliberately assigns to armour and named resistances |
 | Agility | Agility plus action rules | Strong overlap in movement, evasion, and speed; the example does not use Dexterity to own accuracy or precision |
 | Endurance / Stamina | Current condition, action costs, skills, and recovery rules | Exposes a sustained-effort fantasy absent from the base four, but does not by itself show that a permanent attribute or universal bar is needed |
-| Intelligence / Willpower | Spirit plus learned skills and explicit resistances | The source bundles magical output, cognition, resource capacity, and resistance; Summonlab intentionally separates learned knowledge and decision quality from combat attributes |
+| Intelligence / Willpower | Magic plus learned skills and explicit resistances | The source bundles magical output, cognition, resource capacity, and resistance; Summonlab intentionally separates learned knowledge and decision quality from combat attributes |
 
 ### What this example contributes
 
@@ -156,7 +156,7 @@ later story mechanics, or an inaccurate source. This notebook leaves the conflic
 ### Comparison with Summonlab's four-attribute direction
 
 At the high-level fantasy and responsibility level, the two systems match remarkably well:
-Summonlab's Strength, Vitality, Agility, and magic-facing Spirit correspond closely to Overgeared's
+Summonlab's Strength, Vitality, Agility, and Magic correspond closely to Overgeared's
 Strength, Stamina, Agility, and Intelligence. The difference is primarily in the mechanics and in
 where each system draws its ownership boundaries, rather than in the fundamental role of the four
 attributes.
@@ -166,7 +166,7 @@ attributes.
 | Strength | Strength plus Vitality | Both give Strength physical output and carrying territory; Overgeared also grants Health, which Summonlab assigns to Vitality |
 | Stamina | Vitality plus armour and recovery rules | Both express bodily durability through Health; Overgeared's stat also raises defence, while Summonlab keeps general mitigation on armour and gives Vitality modest recovery |
 | Agility | Agility plus action rules | Both own swiftness and movement. Overgeared exposes attack- and movement-speed thresholds; Summonlab expresses the same fantasy through readiness, movement capability, evasion, and bounded hit-contest influence |
-| Intelligence | Spirit plus learned skills | Both own magical output and Mana capacity. Summonlab calls the combat-facing attribute Spirit and keeps knowledge, spell understanding, and learning in practiced skills rather than the base stat |
+| Intelligence | Magic plus learned skills | Both own magical output and Mana capacity. Summonlab keeps knowledge, spell understanding, and learning in practiced skills rather than the Magic attribute |
 | Special Dexterity | Craft mastery or a production-specific capability | The example supports precision as something unlocked and raised through relevant practice rather than a universal freely allocated base stat |
 
 ### What this example contributes

@@ -35,7 +35,7 @@ with Strength, supported by Vitality.
 | Substantially over | Also lower attack speed and initiative |
 | Far over | Severe penalties across all Agility-derived stats |
 
-This makes heavy armor costly and gives Strength value to nonphysical builds. A Spirit caster in plate
+This makes heavy armor costly and gives Strength value to nonphysical builds. A Magic caster in plate
 is slow while one in robes is not. High Armorsmithing is proposed to reduce weight for equal
 protection, giving a settlement a reason to cultivate smiths.
 

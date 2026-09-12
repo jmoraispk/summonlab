@@ -40,8 +40,8 @@ Implementation branch: `codex/lv-summon-screen`
   Every receipt slot starts with a rarity-colored `NEW` marker, opens an in-place identity dossier,
   and clears independently even when two slots reference the same fixed person.
 - Dossiers use the wiki's accepted six attributes—Strength, Vitality, Agility, Dexterity, Intellect,
-  and Spirit—and split them visually into Body (Strength, Vitality, Agility) on the left and Mind
-  (Dexterity, Intellect, Spirit) on the right. Personality remains separate as traits, value, drive,
+  and Magic—and split them visually into Body (Strength, Vitality, Agility) on the left and Mind
+  (Dexterity, Intellect, Magic) on the right. Personality remains separate as traits, value, drive,
   social style, stress response, and leadership/risk tendency.
 - Elemental affinities now have explicit Ember, Tide, Gale, or Grove icons. Aptitudes have icon-led
   route-local Martial, Magical, or Craft & Life classes, using sword, arcane, and hammer marks.
@@ -196,7 +196,7 @@ type SummonHeroSummary = {
 	calling: string;
 	affinity: { label: string; icon: 'ember' | 'tide' | 'gale' | 'grove' };
 	attributes: Array<{
-		attribute: 'Strength' | 'Vitality' | 'Agility' | 'Dexterity' | 'Intellect' | 'Spirit';
+		attribute: 'Strength' | 'Vitality' | 'Agility' | 'Dexterity' | 'Intellect' | 'Magic';
 		value: number;
 		scaleVersion: string;
 	}>;

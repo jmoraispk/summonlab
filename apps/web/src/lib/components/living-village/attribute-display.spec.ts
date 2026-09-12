@@ -7,7 +7,7 @@ describe('attributeDisplayName', () => {
 		['Strength', 'STR'],
 		['Vitality', 'VIT'],
 		['Agility', 'AGI'],
-		['Spirit', 'SPI']
+		['Magic', 'MAG']
 	])('shortens %s on compact character sheets', (fullName, abbreviation) => {
 		expect(attributeDisplayName(fullName)).toBe(abbreviation);
 	});

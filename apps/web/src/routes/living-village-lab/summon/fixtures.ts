@@ -12,7 +12,7 @@ export type AffinityIcon = 'ember' | 'tide' | 'gale' | 'grove';
 export type AptitudeClass = 'martial' | 'magic' | 'crafting';
 
 export type AttributeName =
-	'Strength' | 'Vitality' | 'Agility' | 'Dexterity' | 'Intellect' | 'Spirit';
+	'Strength' | 'Vitality' | 'Agility' | 'Dexterity' | 'Intellect' | 'Magic';
 
 export type AttributeReadiness = {
 	name: AttributeName;
@@ -55,14 +55,14 @@ const attributes = (
 	agility: number,
 	dexterity: number,
 	intellect: number,
-	spirit: number
+	magic: number
 ): readonly AttributeReadiness[] => [
 	{ name: 'Strength', value: strength },
 	{ name: 'Vitality', value: vitality },
 	{ name: 'Agility', value: agility },
 	{ name: 'Dexterity', value: dexterity },
 	{ name: 'Intellect', value: intellect },
-	{ name: 'Spirit', value: spirit }
+	{ name: 'Magic', value: magic }
 ];
 
 export const heroes: readonly HeroFixture[] = [

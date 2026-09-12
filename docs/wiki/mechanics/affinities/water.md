@@ -6,7 +6,7 @@ Wiki ID: `affinity.water`
 
 **Status:** **Chill** — reduces attack speed and mana regeneration; escalates toward torpor.
 
-**Attribute nudge:** Spirit on level-up.
+**Attribute nudge:** Magic on level-up.
 
 **Material language:** Deep-blue condensation, flowing water, and residue.
 

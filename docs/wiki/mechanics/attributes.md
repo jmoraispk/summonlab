@@ -9,7 +9,7 @@ morality, obedience, social worth, personality, or the value of a life.
 ## Authoritative shared vocabulary
 
 The supplied [progression design](progression/attributes-and-training.md) defines six attributes:
-`Strength`, `Vitality`, `Agility`, `Dexterity`, `Intellect`, and `Spirit`. Under ADR 0063 this model
+`Strength`, `Vitality`, `Agility`, `Dexterity`, `Intellect`, and `Magic`. Under ADR 0063 this model
 supersedes the earlier `Strength / Vigor / Agility / Focus / Insight / Presence` proposal. Historical
 engine content keeps its old IDs; new Living Village content must use or explicitly migrate to the
 authored vocabulary as one versioned change.
@@ -21,7 +21,7 @@ authored vocabulary as one versioned change.
 | Agility | speed, balance, reaction, evasion | moving first and escaping danger |
 | Dexterity | accuracy, control, weak-point execution, crafting precision | landing a shot or making a fine object |
 | Intellect | magical output, analysis, comprehension, learning | understanding a recipe or spell |
-| Spirit | mana, mental endurance, control stability, mental resistance | sustaining magic or resisting fear |
+| Magic | mana, mental endurance, control stability, mental resistance | sustaining magic or resisting fear |
 
 Character sheets abbreviate `Strength` as `STR`; prose, rules, and new data contracts use the full
 name. A lowercase `might` key may still appear in frozen historical engine state and compatibility

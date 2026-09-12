@@ -44,7 +44,7 @@ must not label invented phrases such as `Shieldwork` or `Ember control` as if th
 skills.
 
 - Body contains exactly `Strength`, `Vitality`, and `Agility` and uses a muscle/arm icon.
-- Mind contains exactly `Dexterity`, `Intellect`, and `Spirit` and uses a brain icon. Dexterity's
+- Mind contains exactly `Dexterity`, `Intellect`, and `Magic` and uses a brain icon. Dexterity's
   wiki territory includes accuracy, control, weak-point execution, and crafting precision, so this
   is a presentation grouping rather than a change to its canonical definition.
 - Aptitude names use accepted wiki family/focus vocabulary under the three supplied sectors:
@@ -177,7 +177,7 @@ This revision supersedes the visible lab-comparison composition below:
 3. Keep a session arrival strip so five sequential singles or an eleven-result batch remain
    clickable. Selecting an arrival opens an in-place hero dossier rather than navigating away.
 4. Model dossiers with the accepted six attributes (`Strength`, `Vitality`, `Agility`, `Dexterity`,
-   `Intellect`, `Spirit`) and the accepted personality dimensions (traits, value, drive, social
+   `Intellect`, `Magic`) and the accepted personality dimensions (traits, value, drive, social
    style, stress response, and risk/leadership tendency). Numeric readiness bars are explicitly
    local presentation estimates because the wiki still leaves attribute numeric ranges open.
 5. Retain all three reveal directions, replay, skip, muted sound hooks, recognition timing, and the
@@ -203,7 +203,7 @@ instructions. This pass keeps the accepted in-gate composition and raises its cr
    `NEW` marker in both the result contact sheet and Recent arrivals; opening a dossier clears only
    that receipt slot, including when several slots reference the same fixed identity.
 3. Present canonical attributes in two mechanical columns: Body on the left (`Strength`, `Vitality`,
-   `Agility`, `Dexterity`) and Mind on the right (`Intellect`, `Spirit`). This grouping is a view
+   `Agility`, `Dexterity`) and Mind on the right (`Intellect`, `Magic`). This grouping is a view
    convention, not a change to the wiki vocabulary or progression contract.
 4. Add code-native elemental affinity icons and aptitude-class icons. Route-local aptitude entries
    are tagged `martial`, `magic`, or `crafting`; no shared catalog or production skill contract is

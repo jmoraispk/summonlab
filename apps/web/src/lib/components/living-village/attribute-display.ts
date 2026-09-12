@@ -2,7 +2,7 @@ const characterSheetAbbreviations: Readonly<Record<string, string>> = {
 	Strength: 'STR',
 	Vitality: 'VIT',
 	Agility: 'AGI',
-	Spirit: 'SPI'
+	Magic: 'MAG'
 };
 
 export function attributeDisplayName(name: string): string {

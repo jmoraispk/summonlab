@@ -3,7 +3,7 @@
 Wiki ID: `mechanics.progression.attributes-training`
 
 Design status: **authoritative vocabulary with open tuning**. Strength, Vitality, Agility, Dexterity,
-Intellect, and Spirit are the accepted six attributes. Their numeric curves and the broader training
+Intellect, and Magic are the accepted six attributes. Their numeric curves and the broader training
 proposal remain subject to review.
 
 ## Three pillars and six attributes
@@ -15,7 +15,7 @@ then adds understanding, which the fable omits and a pure fighter can afford to 
 | Axis | Physical | Mental |
 | --- | --- | --- |
 | Power—what is put out | Strength | Intellect |
-| Resilience—what is absorbed and sustained | Vitality | Spirit |
+| Resilience—what is absorbed and sustained | Vitality | Magic |
 | Execution—how the act lands | Agility (how fast) | Dexterity (how exactly) |
 
 | Attribute | Pillar | Proposed territory | Failure without it |
@@ -25,11 +25,11 @@ then adds understanding, which the fable omits and a pure fighter can afford to 
 | Agility | Speed | Attack and movement speed, evasion, initiative, action economy | Acting last and being hit first |
 | Dexterity | Control | Accuracy, critical rate, weak-point targeting, technique execution, crafting precision, finesse-weapon scaling | Real damage delivered unreliably |
 | Intellect | Understanding | Magical magnitude, learning, analysis, identification, recipe comprehension | Unable to learn what is shown |
-| Spirit | Control | Mana and regeneration, channel stability, control duration, mental resistance, stance upkeep | Running dry or losing a technique halfway |
+| Magic | Control | Mana and regeneration, channel stability, control duration, mental resistance, stance upkeep | Running dry or losing a technique halfway |
 
-Strength mirrors Intellect as physical and mental output. Vitality mirrors Spirit as bodily and mental
+Strength mirrors Intellect as physical and mental output. Vitality mirrors Magic as bodily and mental
 endurance. Agility is the fist arriving quickly; Dexterity is its arriving at the intended point;
-stopping it there is Spirit.
+stopping it there is Magic.
 
 ## Resources
 
@@ -38,7 +38,7 @@ The source proposes exactly two bars and explicitly rejects stamina:
 | Bar | Driven by | Spent on | Restored by |
 | --- | --- | --- | --- |
 | Health | Vitality | Damage taken | Slow out-of-combat recovery, skills, consumables |
-| Mana | Spirit | Every martial or magical skill | Continuous Spirit-scaled regeneration |
+| Mana | Magic | Every martial or magical skill | Continuous Magic-scaled regeneration |
 
 Internal energy treats a perfect sword cut and flame magic as techniques drawing on one resource.
 Basic attacks, movement, and dodging cost nothing; pacing comes from mana, cooldowns, and poise. The
@@ -51,7 +51,7 @@ to dodge after choosing correctly.
 | --- | --- | --- |
 | Absorb | Vitality | Larger Health pool, mitigation, and poise |
 | Avoid | Agility | Evasion, movement, and acting first |
-| Resist | Spirit | Mental resistance, shorter control effects, and channel stability |
+| Resist | Magic | Mental resistance, shorter control effects, and channel stability |
 
 Equipment also supplies mitigation, allowing a low-Vitality build to remain viable rather than only
 fragile.
@@ -61,10 +61,10 @@ fragile.
 | Derived stat | Primary | Support |
 | --- | --- | --- |
 | Health pool | Vitality | — |
-| Mana pool | Spirit | — |
-| Mana regeneration | Spirit | Intellect |
+| Mana pool | Magic | — |
+| Mana regeneration | Magic | Intellect |
 | Physical damage | Strength | Dexterity |
-| Magical damage | Intellect | Spirit |
+| Magical damage | Intellect | Magic |
 | Critical rate | Dexterity | Agility |
 | Critical damage | Strength | Dexterity |
 | Accuracy | Dexterity | Agility |
@@ -74,12 +74,12 @@ fragile.
 | Initiative | Agility | Intellect |
 | Armour/mitigation | Vitality | Strength |
 | Poise | Vitality | Strength |
-| Physical-status resistance | Vitality | Spirit |
-| Mental-status resistance | Spirit | Intellect |
-| Control duration inflicted | Spirit | Intellect |
-| Channel stability | Spirit | Vitality |
+| Physical-status resistance | Vitality | Magic |
+| Mental-status resistance | Magic | Intellect |
+| Control duration inflicted | Magic | Intellect |
+| Channel stability | Magic | Vitality |
 | Learning rate | Intellect | Dexterity |
-| Stance-upkeep efficiency | Spirit | Vitality |
+| Stance-upkeep efficiency | Magic | Vitality |
 | Carry capacity | Strength | Vitality |
 | Weight tolerance | Strength | Vitality |
 | Gathering yield | Dexterity | Intellect |
@@ -107,7 +107,7 @@ a civic or other non-combat hero can become formidable.
 | Agility | Footwork, obstacle traversal, climbing, dance, sprint intervals, dodge practice |
 | Dexterity | Target practice, calligraphy, whittling, lockpicking, blade forms, instruments, fine crafting |
 | Intellect | Reading, scholarly study, puzzles, star charts, alchemy, deciphering, recipe development |
-| Spirit | Meditation, breathing forms, vigil, ritual, stillness at a leyline node |
+| Magic | Meditation, breathing forms, vigil, ritual, stillness at a leyline node |
 
 One action can train two attributes: fine crafting may train Dexterity and Intellect, while marching
 in armor trains Strength and Vitality. This keeps the world from looking like a menu. Attribute

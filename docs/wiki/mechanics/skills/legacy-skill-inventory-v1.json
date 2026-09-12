@@ -986,7 +986,7 @@
 		"name": "Empowerment",
 		"rarity": "D",
 		"type": "A",
-		"requires": "Greater Blessing Master, Spirit threshold",
+		"requires": "Greater Blessing Master, Magic attribute threshold",
 		"effect": "One ally's next skill is cast at greatly increased potency"
 	},
 	{
@@ -1085,7 +1085,7 @@
 		"name": "Presence",
 		"rarity": "F",
 		"type": "P",
-		"requires": "Spirit threshold",
+		"requires": "Magic attribute threshold",
 		"effect": "Small mental resistance; awareness of hostile intent. **Foundation.**"
 	},
 	{
@@ -1173,7 +1173,7 @@
 		"name": "Suggestion",
 		"rarity": "D",
 		"type": "A",
-		"requires": "Read Surface Master, Spirit threshold",
+		"requires": "Read Surface Master, Magic attribute threshold",
 		"effect": "A single simple command the target obeys"
 	},
 	{
@@ -1371,7 +1371,7 @@
 		"name": "Life Link",
 		"rarity": "D",
 		"type": "P",
-		"requires": "Shared Vigour Master, Spirit threshold",
+		"requires": "Shared Vigour Master, Magic attribute threshold",
 		"effect": "Damage to a linked ally is partly taken by the hero instead"
 	},
 	{
@@ -1514,7 +1514,7 @@
 		"name": "Reflect",
 		"rarity": "E",
 		"type": "A",
-		"requires": "Shield Sigil Expert, Spirit threshold",
+		"requires": "Shield Sigil Expert, Magic attribute threshold",
 		"effect": "Returns the next spell to its caster"
 	},
 	{
@@ -1580,7 +1580,7 @@
 		"name": "Absorption",
 		"rarity": "D",
 		"type": "P",
-		"requires": "Reflect Master, Spirit threshold",
+		"requires": "Reflect Master, Magic attribute threshold",
 		"effect": "Damage absorbed by wards is converted into mana"
 	},
 	{
@@ -1943,7 +1943,7 @@
 		"name": "Flame Jet",
 		"rarity": "D",
 		"type": "A",
-		"requires": "Fireball Expert, Spirit threshold",
+		"requires": "Fireball Expert, Magic attribute threshold",
 		"effect": "Sustained cone; channelled, drains while held"
 	},
 	{
@@ -2152,7 +2152,7 @@
 		"name": "Floating Blades",
 		"rarity": "D",
 		"type": "P",
-		"requires": "Iron Bindings Master, Spirit threshold",
+		"requires": "Iron Bindings Master, Magic attribute threshold",
 		"effect": "Several blades orbit the hero, striking automatically"
 	},
 	{
@@ -2350,7 +2350,7 @@
 		"name": "Deep Cold",
 		"rarity": "D",
 		"type": "A",
-		"requires": "Cold Touch Master, Spirit threshold",
+		"requires": "Cold Touch Master, Magic attribute threshold",
 		"effect": "Heavy Chill escalating toward Freeze"
 	},
 	{
@@ -2867,7 +2867,7 @@
 		"name": "Ghost Step",
 		"rarity": "C",
 		"type": "St",
-		"requires": "Silent Step Master, Spirit threshold",
+		"requires": "Silent Step Master, Magic attribute threshold",
 		"effect": "Continuous evasion bonus; allows re-entering stealth mid-combat"
 	},
 	{
@@ -3505,7 +3505,7 @@
 		"name": "Still Water Stance",
 		"rarity": "C",
 		"type": "St",
-		"requires": "Spirit threshold, Parry Master",
+		"requires": "Magic attribute threshold, Parry Master",
 		"effect": "Automatic parry chance against each opponent's first attack"
 	},
 	{
@@ -4319,7 +4319,7 @@
 		"name": "Focused Strike",
 		"rarity": "D",
 		"type": "A",
-		"requires": "Combination Master, Spirit threshold",
+		"requires": "Combination Master, Magic attribute threshold",
 		"effect": "Damage passes through armour and barriers entirely"
 	},
 	{
@@ -4836,7 +4836,7 @@
 		"name": "Blink Step",
 		"rarity": "D",
 		"type": "A",
-		"requires": "Spirit threshold, Dash Master",
+		"requires": "Magic attribute threshold, Dash Master",
 		"effect": "Short teleport; ignores intervening space"
 	},
 	{
@@ -5188,7 +5188,7 @@
 		"name": "Aegis",
 		"rarity": "D",
 		"type": "A",
-		"requires": "Interpose Master, Spirit threshold",
+		"requires": "Interpose Master, Magic attribute threshold",
 		"effect": "Redirects a portion of allied damage to the hero for a duration"
 	},
 	{

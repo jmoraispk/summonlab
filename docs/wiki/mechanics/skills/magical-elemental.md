@@ -24,7 +24,7 @@ Water, and Earth preserve their imported ladders below.
 | 6 | **Cinder Trail** | Fire | E | A | Ignite Expert | Leaves burning ground along a path |
 | 7 | **Flame Shroud** | Fire | E | P | Warmth Expert, Rank II | A thin burning aura; retaliates against melee attackers |
 | 8 | **Great Fireball** | Fire | D | A | Fireball Expert, 5,000 casts | Larger, slower, heavier impact with a small blast |
-| 9 | **Flame Jet** | Fire | D | A | Fireball Expert, Spirit threshold | Sustained cone; channelled, drains while held |
+| 9 | **Flame Jet** | Fire | D | A | Fireball Expert, Magic attribute threshold | Sustained cone; channelled, drains while held |
 | 10 | **Detonation** | Fire | D | A | Fireball Expert, Dexterity threshold | A targeted explosion placed at a point rather than thrown |
 | 11 | **Kindling** | Fire | D | P | Fireball Master | Casting Fire skills builds a charge that empowers the next one |
 | 12 | **Firestorm** | Fire | C | A | Flame Jet Master, Rank III | A rotating column of flame over an area; pulls and burns |
@@ -43,7 +43,7 @@ Water, and Earth preserve their imported ladders below.
 | 25 | **Water Whip** | Water | E | A | Flow Expert, Dexterity threshold | Reaching strike that can also pull or trip |
 | 26 | **Torrent** | Water | D | A | Pressure Lance Master | A sustained wave that pushes everything back |
 | 27 | **Drowning Grasp** | Water | D | A | Water Whip Master, Rank II | Encases a target's head; silences and suffocates |
-| 28 | **Deep Cold** | Water | D | A | Cold Touch Master, Spirit threshold | Heavy Chill escalating toward Freeze |
+| 28 | **Deep Cold** | Water | D | A | Cold Touch Master, Magic attribute threshold | Heavy Chill escalating toward Freeze |
 | 29 | **Tide Sense** | Water | D | P | Flow Master, 10,000 casts | Water skills cost less and reach further near any water |
 | 30 | **Maelstrom** | Water | C | A | Torrent Master, Rank III | A rotating vortex that drags enemies inward |
 | 31 | **Glacier** | Water | C | A | Deep Cold Master, Rank III | Freezes an area solid; terrain and enemies alike |

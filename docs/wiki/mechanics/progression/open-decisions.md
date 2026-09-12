@@ -12,7 +12,7 @@ content rather than instructions to repository workers.
 | --- | --- | --- | --- |
 | 6★/7★ caps | 70 / 99 | Earlier ADR 0058: 99 / 999 | Source values authoritative; ADR 0063 supersedes the old caps |
 | Readiness | Level gates implied by rank package | ADR 0058 uses smooth effective-power anchors | Use smooth readiness; retain levels as only one input |
-| Attribute vocabulary | Strength, Vitality, Agility, Dexterity, Intellect, Spirit | Earlier wiki vocabulary differed | Source vocabulary authoritative; migrate new content IDs together |
+| Attribute vocabulary | Strength, Vitality, Agility, Dexterity, Intellect, Magic | Earlier wiki vocabulary differed | Source vocabulary authoritative; migrate new content IDs together |
 | Resources | Health and Mana; explicitly no stamina | Earlier wiki mentioned stamina | Source wins; combat must use Health and Mana only |
 | Affinity stat effect | Permanent matching attribute nudge each level | Earlier affinity contract used derived-action contribution only | Source wins; version the progression/affinity contract |
 | Base affinity roster | Fire, Earth, Wind, Water | Earlier source used Wood, Fire, Earth, Metal, Water | Latest affinity revision wins; Wood and Metal are no longer affinities |

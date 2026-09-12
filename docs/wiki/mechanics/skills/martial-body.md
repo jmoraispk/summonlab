@@ -38,7 +38,7 @@ command in combat. `Unarmed` appears only when a technique truly requires empty 
 | 24 | **Iron Body** | Unarmed | E | P | Vitality threshold, 5,000 hits taken | Standing mitigation while unarmed |
 | 25 | **Rising Kick** | Unarmed | E | A | Low Kick Expert | Launches the target; opens an air chain |
 | 26 | **Flowing Redirect** | Unarmed | D | A | Palm Block Master | Redirects an attack into another enemy |
-| 27 | **Focused Strike** | Unarmed | D | A | Combination Master, Spirit threshold | Damage passes through armour and barriers entirely |
+| 27 | **Focused Strike** | Unarmed | D | A | Combination Master, Magic attribute threshold | Damage passes through armour and barriers entirely |
 | 28 | **Hundred Hands** | Unarmed | D | A | Combination Master, Agility threshold | Rapid multi-hit; count scales with attack speed |
 | 29 | **Diamond Body** | Unarmed | C | St | Iron Body Master | Heavy mitigation while held; no weapons may be used |
 | 30 | **One Inch** | Unarmed | C | A | Focused Strike Master, 50,000 punches | Full damage delivered from no distance at all |
@@ -67,7 +67,7 @@ command in combat. `Unarmed` appears only when a technique truly requires empty 
 | 53 | **Wall Run** | — | E | A | Sure Step Expert, Agility threshold | Traverse vertical surfaces briefly |
 | 54 | **Weave** | — | E | P | Roll Expert, 10,000 evades | Evasion increases while moving continuously |
 | 55 | **Dive** | — | E | A | Roll Master | Longer evade that ends prone; recovers instantly with Recovery |
-| 56 | **Blink Step** | — | D | A | Spirit threshold, Dash Master | Short teleport; ignores intervening space |
+| 56 | **Blink Step** | — | D | A | Magic attribute threshold, Dash Master | Short teleport; ignores intervening space |
 | 57 | **Air Walk** | — | D | P | Wall Run Master, Agility threshold | A limited number of steps taken on nothing at all |
 | 58 | **Afterimage** | — | D | P | Weave Master | Evaded attacks leave a decoy that briefly draws attention |
 | 59 | **Shadowless** | — | C | St | Blink Step Master | Movement leaves no trail, sound, or mark of any kind |

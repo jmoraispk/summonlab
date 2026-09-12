@@ -12,11 +12,11 @@
 	"sourceAuthorities": {
 		"catalog": {
 			"path": "assets/wiki/skills/icon-production-v2/catalog.json",
-			"contentHash": "c92a2c4b0db9a795f73e14027128ffe804c681f0a8587bb98f5d3595800576ec"
+			"contentHash": "5b47a3334628d814b75c63ec8fcd678259440bfe950576fbe6f08fd96ff0dd9f"
 		},
 		"assetManifest": {
 			"path": "assets/wiki/skills/icon-production-v2/asset-manifest.json",
-			"contentHash": "fb35dc9322cf0ea4779513bc56c122ea721b85a5272ba03bc606c45af618b176"
+			"contentHash": "53235eacf33d6792bd6c8c97bcf7076a0fa1081dba0135e62400da02d6a668cb"
 		}
 	},
 	"records": [

@@ -1,6 +1,6 @@
 {
 	"schemaVersion": "summonlab-skill-taxonomy-migration-v2",
-	"sourceInventorySha256": "89af719098c738707972718822933dfc877e1a4b46b959d25571ee73f7e48d6b",
+	"sourceInventorySha256": "e65e00573ea6ebaa2591e1aab02c3f413301bef571c0e8640fcee518b7fc5c18",
 	"sourceRowCount": 520,
 	"records": [
 		{
@@ -1544,7 +1544,7 @@
 			"name": "Empowerment",
 			"rarity": "D",
 			"type": "A",
-			"requires": "Greater Blessing Master, Spirit threshold",
+			"requires": "Greater Blessing Master, Magic attribute threshold",
 			"effect": "One ally's next skill is cast at greatly increased potency",
 			"disposition": "retain",
 			"target": {
@@ -1704,7 +1704,7 @@
 			"name": "Presence",
 			"rarity": "F",
 			"type": "P",
-			"requires": "Spirit threshold",
+			"requires": "Magic attribute threshold",
 			"effect": "Small mental resistance; awareness of hostile intent. **Foundation.**",
 			"disposition": "retain",
 			"target": {
@@ -1840,7 +1840,7 @@
 			"name": "Suggestion",
 			"rarity": "D",
 			"type": "A",
-			"requires": "Read Surface Master, Spirit threshold",
+			"requires": "Read Surface Master, Magic attribute threshold",
 			"effect": "A single simple command the target obeys",
 			"disposition": "retain",
 			"target": {
@@ -2146,7 +2146,7 @@
 			"name": "Life Link",
 			"rarity": "D",
 			"type": "P",
-			"requires": "Shared Vigour Master, Spirit threshold",
+			"requires": "Shared Vigour Master, Magic attribute threshold",
 			"effect": "Damage to a linked ally is partly taken by the hero instead",
 			"disposition": "retain",
 			"target": {
@@ -2373,7 +2373,7 @@
 			"name": "Reflect",
 			"rarity": "E",
 			"type": "A",
-			"requires": "Shield Sigil Expert, Spirit threshold",
+			"requires": "Shield Sigil Expert, Magic attribute threshold",
 			"effect": "Returns the next spell to its caster",
 			"disposition": "retain",
 			"target": {
@@ -2481,7 +2481,7 @@
 			"name": "Absorption",
 			"rarity": "D",
 			"type": "P",
-			"requires": "Reflect Master, Spirit threshold",
+			"requires": "Reflect Master, Magic attribute threshold",
 			"effect": "Damage absorbed by wards is converted into mana",
 			"disposition": "retain",
 			"target": {
@@ -3198,7 +3198,7 @@
 			"name": "Flame Jet",
 			"rarity": "D",
 			"type": "A",
-			"requires": "Fireball Expert, Spirit threshold",
+			"requires": "Fireball Expert, Magic attribute threshold",
 			"effect": "Sustained cone; channelled, drains while held",
 			"disposition": "rehome",
 			"target": {
@@ -3546,7 +3546,7 @@
 			"name": "Floating Blades",
 			"rarity": "D",
 			"type": "P",
-			"requires": "Iron Bindings Master, Spirit threshold",
+			"requires": "Iron Bindings Master, Magic attribute threshold",
 			"effect": "Several blades orbit the hero, striking automatically",
 			"disposition": "delete",
 			"rationale": "Metal affinity removed by accepted four-base model"
@@ -3870,7 +3870,7 @@
 			"name": "Deep Cold",
 			"rarity": "D",
 			"type": "A",
-			"requires": "Cold Touch Master, Spirit threshold",
+			"requires": "Cold Touch Master, Magic attribute threshold",
 			"effect": "Heavy Chill escalating toward Freeze",
 			"disposition": "rehome",
 			"target": {
@@ -4773,7 +4773,7 @@
 			"name": "Ghost Step",
 			"rarity": "C",
 			"type": "St",
-			"requires": "Silent Step Master, Spirit threshold",
+			"requires": "Silent Step Master, Magic attribute threshold",
 			"effect": "Continuous evasion bonus; allows re-entering stealth mid-combat",
 			"disposition": "rehome",
 			"target": {
@@ -6028,7 +6028,7 @@
 			"name": "Still Water Stance",
 			"rarity": "C",
 			"type": "St",
-			"requires": "Spirit threshold, Parry Master",
+			"requires": "Magic attribute threshold, Parry Master",
 			"effect": "Automatic parry chance against each opponent's first attack",
 			"disposition": "rehome",
 			"target": {
@@ -7672,7 +7672,7 @@
 			"name": "Focused Strike",
 			"rarity": "D",
 			"type": "A",
-			"requires": "Combination Master, Spirit threshold",
+			"requires": "Combination Master, Magic attribute threshold",
 			"effect": "Damage passes through armour and barriers entirely",
 			"disposition": "rehome",
 			"target": {
@@ -8700,7 +8700,7 @@
 			"name": "Blink Step",
 			"rarity": "D",
 			"type": "A",
-			"requires": "Spirit threshold, Dash Master",
+			"requires": "Magic attribute threshold, Dash Master",
 			"effect": "Short teleport; ignores intervening space",
 			"disposition": "rehome",
 			"target": {
@@ -9230,7 +9230,7 @@
 			"name": "Aegis",
 			"rarity": "D",
 			"type": "A",
-			"requires": "Interpose Master, Spirit threshold",
+			"requires": "Interpose Master, Magic attribute threshold",
 			"effect": "Redirects a portion of allied damage to the hero for a duration",
 			"disposition": "rehome",
 			"target": {

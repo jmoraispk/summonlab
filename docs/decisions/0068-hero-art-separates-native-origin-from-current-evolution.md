@@ -28,7 +28,7 @@ does not map cleanly to the accepted mechanics.
 - Physical traits create probabilistic cues for starting physical attributes. Every valid attribute
   and aptitude combination keeps nonzero probability; extreme contradictions are very rare rather
   than mechanically impossible.
-- Intellect, Spirit, Dexterity, and other less directly bodily traits use concrete pose, clothing,
+- Intellect, Magic, Dexterity, and other less directly bodily traits use concrete pose, clothing,
   grooming, life-history, and small-effect cues. These are fallible proxies, never phenotype or
   moral judgments and never exact-stat disclosure.
 - New hero content uses only Attribute, Family, Learning mode, Variety, and Affinity aptitudes. The

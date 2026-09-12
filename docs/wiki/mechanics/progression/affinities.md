@@ -21,7 +21,7 @@ This produces two independent multipliers on any single action. Attributes decid
 | Fire | Strength | Expansion, force |
 | Earth | Vitality | Stability, endurance |
 | Wind | Agility | Motion, displacement |
-| Water | Spirit | Depth, patience, flow |
+| Water | Magic | Depth, patience, flow |
 
 **Dexterity and Intellect are nudged by no affinity.** These are the two learned attributes — precision and comprehension — and neither is elemental. A scholar and a brute may hold the same element, and a hero cannot become more accurate by burning brighter. Leaving both outside the elemental system keeps skills the primary lever, which is the point.
 

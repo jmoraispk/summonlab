@@ -94,7 +94,7 @@ only in migration provenance and does not publish a second current skill.
 
 ## Source authority and remaining decisions
 
-- Strength, Vitality, Agility, Dexterity, Intellect, and Spirit remain the authoritative attribute
+- Strength, Vitality, Agility, Dexterity, Intellect, and Magic remain the authoritative attribute
   vocabulary. Executable thresholds must migrate together rather than mix identifiers.
 - Fire, Earth, Wind, and Water are the active base affinities. Element statuses and rank numerics
   still require combat integration.

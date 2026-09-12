@@ -22,7 +22,7 @@ Shield owns shield handling, blocking, interception, formation protection, and a
 | 9 | **Shield Throw** | — | E | A | Dexterity threshold, Shield Bash Master | Thrown shield ricochets between targets and returns |
 | 10 | **Wall Stance** | — | D | St | Brace Master, Vitality threshold | Heavy mitigation while held; movement is very slow |
 | 11 | **Shield Charge** | — | D | A | Shield Push Master, Strength threshold | Charge forward, knocking down everything in the path |
-| 12 | **Aegis** | — | D | A | Interpose Master, Spirit threshold | Redirects a portion of allied damage to the hero for a duration |
+| 12 | **Aegis** | — | D | A | Interpose Master, Magic attribute threshold | Redirects a portion of allied damage to the hero for a duration |
 | 13 | **Tower Form** | — | D | P | Wall Stance Expert | Shield coverage extends to cover the entire body |
 | 14 | **Unyielding** | — | C | P | Wall Stance Master, 25,000 blocks | Blocking never depletes poise; blocks cannot be broken by ordinary force |
 | 15 | **Retaliation Ward** | — | C | St | Deflect Master | Blocked attacks damage the attacker |

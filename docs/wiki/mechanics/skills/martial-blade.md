@@ -31,7 +31,7 @@ Blade owns cutting, thrusting, and coordinated blade-handling techniques. Equipm
 | 18 | **Counter Flow** | Sword | D | P | Riposte Master | Successful parries automatically riposte at reduced damage |
 | 19 | **Rising Moon** | Sword | C | A | Crescent Sweep Expert, Blade Dance Intermediate | Upward cut that launches and staggers; extends into an air chain |
 | 20 | **Thousand Cuts** | Sword | C | A | Blade Dance Expert, Agility threshold | Rapid multi-hit; hit count scales with Agility |
-| 21 | **Still Water Stance** | Sword | C | St | Spirit threshold, Parry Master | Automatic parry chance against each opponent's first attack |
+| 21 | **Still Water Stance** | Sword | C | St | Magic attribute threshold, Parry Master | Automatic parry chance against each opponent's first attack |
 | 22 | **Heaven's Fall** | Sword | C | A | Overhead Chop Master, Strength threshold | Leaping overhead strike; area stagger on landing |
 | 23 | **Severing Intent** | Sword | B | A | Drawing Cut Master, 50,000 swings, defeated a named opponent | Ignores mitigation entirely. Long cooldown. |
 | 24 | **Mirrored Edge** | Sword | B | St | Still Water Master, mentor holding the skill | Parried attacks are returned at the attacker |
@@ -59,7 +59,7 @@ Blade owns cutting, thrusting, and coordinated blade-handling techniques. Equipm
 | 46 | **Blind Spot** | Dagger | D | P | Opening Master, 500 unaware kills | Greatly increased damage against anything that has not yet acted |
 | 47 | **Windmill** | Dagger | C | A | Twin Fangs Expert, Agility threshold | Spinning area attack; hit count scales with attack speed |
 | 48 | **Hundred Needles** | Dagger | C | A | Blade Throw Master | A volley of thrown blades across a cone |
-| 49 | **Ghost Step** | Dagger | C | St | Silent Step Master, Spirit threshold | Continuous evasion bonus; allows re-entering stealth mid-combat |
+| 49 | **Ghost Step** | Dagger | C | St | Silent Step Master, Magic attribute threshold | Continuous evasion bonus; allows re-entering stealth mid-combat |
 | 50 | **Arterial Strike** | Dagger | C | A | Bleeding Edge Master, Called Shot Expert | A bleed that cannot be cleansed by ordinary means |
 | 51 | **Shadow Sever** | Dagger | B | A | Fleeting Step Master, Bleeding Edge Master | Strikes from concealment; guaranteed critical, refreshes concealment |
 | 52 | **Nightfall Flurry** | Dagger | B | A | Windmill Master, Twin Fangs Master | An unbroken chain of strikes; each hit shortens the next |

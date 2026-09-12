@@ -194,7 +194,7 @@ affinities, for ten total. Unaligned is the absence of affinity, not an eleventh
 
 - [ ] **Step 3: Apply the Part 1 and Part 3 migration notes**
 
-Verify Part 1 lists Strength, Vitality, Agility, Dexterity, Intellect, and Spirit and contains no
+Verify Part 1 lists Strength, Vitality, Agility, Dexterity, Intellect, and Magic and contains no
 attribute named with the retired noun. In Part 3, use this current requirement:
 
 ```markdown

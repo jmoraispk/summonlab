@@ -191,7 +191,7 @@ locking a hero to a combat class.
 
 ## Capability is suggested, not diagrammed
 
-The accepted attributes remain Strength, Vitality, Agility, Dexterity, Intellect, and Spirit. The
+The accepted attributes remain Strength, Vitality, Agility, Dexterity, Intellect, and Magic. The
 image should use concrete, drawable evidence rather than abstract claims such as "has fine motor
 habits."
 
@@ -202,7 +202,7 @@ habits."
 | Agility | low visual inertia, mobile stance, free hems, close sleeves, long or coiled movement lines | thinness always means fast |
 | Dexterity | precise closures, controlled hand pose when reliably rendered, meticulous wrapping or repair, uncluttered hand silhouette | face shape or social class proves precision |
 | Intellect | studied or observant expression, organized clothing, scholarly/student/medical/craft history cues, notes or small personal effects when composition permits | ethnicity, beauty, skull shape, or expensive clothing proves intelligence |
-| Spirit | composure, deliberate stillness, centered gaze, ritual or contemplative history cues, disciplined visual rhythm | age, religion, quietness, or affinity proves Spirit |
+| Magic | composure, deliberate stillness, centered gaze, ritual or contemplative history cues, disciplined visual rhythm | age, religion, quietness, or affinity proves Magic |
 
 These are weighted proxies. A scholar may have modest Intellect, a new medical student may be
 brilliant or overwhelmed, and a physically imposing hero may also be highly intellectual. The cue

@@ -30,8 +30,8 @@ versioned combat mode a release uses; players cannot change combat rules.
 
 ## Goals
 
-1. Make `Strength`, `Vitality`, `Agility`, and `Spirit` the canonical visible attributes, with
-   `STR`, `VIT`, `AGI`, and `SPI` available as compact character-sheet labels.
+1. Make `Strength`, `Vitality`, `Agility`, and `Magic` the canonical visible attributes, with
+   `STR`, `VIT`, `AGI`, and `MAG` available as compact character-sheet labels.
 2. Give each attribute a narrow, combat-first role without creating a universal best stat.
 3. Move learned precision, resistance, morale, and learning differences to their proper systems.
 4. Keep Health and Mana as the only universal resource bars.
@@ -57,15 +57,19 @@ versioned combat mode a release uses; players cannot change combat rules.
 | **Strength** | physical damage; carrying capacity; equipment-load tolerance; explicit heavy-equipment requirements | accuracy; critical rate; general mitigation; action cadence |
 | **Vitality** | maximum Health; modest natural Health regeneration | armour mitigation; poise; broad physical resistance; status immunity |
 | **Agility** | readiness accumulation; movement capability; evasion; a bounded relative-speed contribution to hit contests | learned accuracy; critical rate; unrestricted extra actions |
-| **Spirit** | magical damage; maximum Mana; modest saturating Mana regeneration | morale; learning rate; control duration; mental resistance; decision quality |
+| **Magic** | magical damage; maximum Mana; modest saturating Mana regeneration | morale; learning rate; control duration; mental resistance; decision quality |
 
 The full names are canonical in prose and data contracts and remain the default in explanations,
 headings, summaries, tutorials, and ordinary interface copy. Dense character-sheet stat cells may
-display `STR`, `VIT`, `AGI`, and `SPI` to save space while retaining the corresponding full names as
+display `STR`, `VIT`, `AGI`, and `MAG` to save space while retaining the corresponding full names as
 accessible labels and hover expansions. The lowercase `might` key survives only inside frozen
 legacy schemas, replay state, and their explicit compatibility projections.
 
-The earlier six-attribute set—`Strength / Vitality / Agility / Dexterity / Intellect / Spirit`—is
+`Magic` also names the top-level skill domain. When the context is not an attribute list or
+character sheet, use `Magic attribute` for the stat and `Magic domain` or `magical skills` for the
+skill taxonomy.
+
+The earlier six-attribute set—`Strength / Vitality / Agility / Dexterity / Intellect / Magic`—is
 retired as a set. New canonical content uses only the four attributes above. Historical schema
 fields remain readable under their original rules.
 
@@ -82,7 +86,7 @@ cadences while physical damage continues to scale from Strength.
 
 ### Why Intellect is removed
 
-Magical output moves to Spirit. Lore, appraisal, analysis, recipes, and identification move to
+Magical output moves to Magic. Lore, appraisal, analysis, recipes, and identification move to
 their learned skill families. Model reasoning quality is never varied by an intelligence stat.
 
 ## Intrinsic and effective attributes
@@ -120,14 +124,14 @@ recovery is meaningfully faster than combat recovery. Natural combat regeneratio
 The balance harness must reject any curve where passive regeneration can outpace sustained peer
 damage or create indefinite combat without an explicit defensive engine.
 
-Spirit increases magical damage and maximum Mana. It may make a modest, saturating contribution to
+Magic increases magical damage and maximum Mana. It may make a modest, saturating contribution to
 Mana regeneration, but equipment, stances, passives, and skill effects remain the stronger ways to
 specialize in regeneration. Low-cost martial skills use Mana without forcing ordinary martial
-heroes to make Spirit a primary investment.
+heroes to make Magic a primary investment.
 
 ## Learning differences outside the attribute sheet
 
-Learning does not scale from Spirit. Practice gain composes several explicit influences:
+Learning does not scale from Magic. Practice gain composes several explicit influences:
 
 ```text
 base practice evidence
@@ -162,7 +166,7 @@ The four base affinities retain a small thematic association:
 | Fire | Strength |
 | Earth | Vitality |
 | Wind | Agility |
-| Water | Spirit |
+| Water | Magic |
 
 The first tuning candidate caps the affinity nudge at ten percent of the matching attribute's
 contribution, not ten percent final damage or durability. The harness must demonstrate credible
@@ -171,7 +175,7 @@ Fire casters, Water martial heroes, and other off-association builds before prom
 ## Damage and defence
 
 The initial target retains physical and magical action types. Strength scales physical magnitude;
-Spirit scales magical magnitude. Skill-specific base effect, compatible equipment, affinity, and
+Magic scales magical magnitude. Skill-specific base effect, compatible equipment, affinity, and
 the defender's applicable mitigation complete the action calculation.
 
 Vitality does not supply universal mitigation. General physical mitigation belongs to armour:
@@ -314,7 +318,7 @@ four-attribute state consumed by an active legacy runner uses an explicit compat
 ```text
 legacy might   <- Strength
 legacy finesse <- Agility
-legacy insight <- Spirit
+legacy insight <- Magic
 legacy resolve <- Vitality
 ```
 

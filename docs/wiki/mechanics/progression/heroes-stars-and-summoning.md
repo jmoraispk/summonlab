@@ -62,7 +62,7 @@ at the midpoint, with about two-thirds of summons in the middle third. Thus most
 starts below a low 2★, while every band contains its own exceptional rolls.
 
 Distribution among individual attributes should favor aptitude areas. An unusually high starting
-Spirit, for example, hints at a Spirit or affinity aptitude before appraisal.
+Magic, for example, hints at a Magic or affinity aptitude before appraisal.
 
 ## Summoning channels
 
