@@ -45,13 +45,12 @@ describe('premium-only hero presentation boundary', () => {
 			const source = readFileSync(path, 'utf8');
 			return retiredPaths.some((retiredPath) => source.includes(`/${retiredPath}`));
 		});
-		const onboarding = readFileSync(
-			resolve(sourceRoot, 'lib/components/campaign/SingletonOnboarding.svelte'),
+		const villageViewport = readFileSync(
+			resolve(sourceRoot, 'lib/components/city/CityVillageViewport.svelte'),
 			'utf8'
 		);
 
 		expect(staleLinks).toEqual([]);
-		expect(onboarding).toContain('tab-art-pending');
-		expect(onboarding).toContain('portrait pending');
+		expect(villageViewport).toContain('Resident art unavailable');
 	});
 });

@@ -18,6 +18,6 @@ export const load: PageServerLoad = async ({ params }) => {
 		campaign,
 		mode
 	});
-	if (page.stage !== 'city' && mode !== 'village') redirect(307, '/village');
+	if (page.city?.introduction.stage !== 'complete' && mode !== 'village') redirect(307, '/village');
 	return page;
 };

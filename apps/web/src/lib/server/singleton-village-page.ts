@@ -17,38 +17,11 @@ import { projectCityView } from './city';
 import { projectEquipmentWorkshop } from './equipment-runtime';
 import { runtimePortraitFor } from './runtime-portraits';
 
-export type SingletonVillageStage = 'onboarding' | 'journey' | 'city';
-
-export function selectSingletonVillageStage(input: {
-	readonly onboardingStep: number;
-	readonly arrived: boolean;
-}): SingletonVillageStage {
-	if (input.onboardingStep < 3) return 'onboarding';
-	return input.arrived ? 'city' : 'journey';
-}
-
-async function loadOnboardingPage(databaseUrl: string, campaign: CampaignRun) {
-	const view = await campaignExperienceView(databaseUrl, campaign.runId).catch(() => null);
-	if (!view) error(404, 'This chronicle could not be found. Is the local database running?');
-	if (view.campaign.lifecycle !== 'active') error(409, 'This chronicle has been superseded.');
-	return {
-		view,
-		heroPortraits: view.heroes.map((hero) => ({
-			manifestHash: hero.draft.manifestHash,
-			summon: runtimePortraitFor(hero.draft.manifestHash, hero.draft.manifest.artKey, 'summon'),
-			roster: runtimePortraitFor(hero.draft.manifestHash, hero.draft.manifest.artKey, 'roster')
-		}))
-	};
-}
-
 async function loadCampaignPage(databaseUrl: string, campaign: CampaignRun, mode: CityMode) {
 	const snapshot = await getProofRun(databaseUrl, campaign.runId).catch(() => null);
 	if (!snapshot) error(404, 'This proof run could not be found. Is the local database running?');
 	let engineSnapshot = await getEngineSnapshot(databaseUrl, campaign.runId).catch(() => null);
 	const equipmentHistory = engineSnapshot?.state.schemaVersion === 24;
-	if (!snapshot.destination && !equipmentHistory) {
-		error(409, 'This hero has not made a first choice yet.');
-	}
 	let clock = await getSimulationClock(databaseUrl, campaign.runId).catch(() => null);
 	if (snapshot.arrived || equipmentHistory) {
 		if (clock && clock.backlogGameMinutes >= 1) {
@@ -70,7 +43,7 @@ async function loadCampaignPage(databaseUrl: string, campaign: CampaignRun, mode
 			? projectEquipmentWorkshop(engineSnapshot, snapshot.manifest.characterId)
 			: null;
 	const campaignView = await campaignExperienceView(databaseUrl, campaign.runId).catch(() => null);
-	if (snapshot.arrived && engineSnapshot?.state.schemaVersion === 13) {
+	if (engineSnapshot?.state.schemaVersion === 13) {
 		if (!presentation || !campaignView) {
 			error(503, 'The authoritative City projection is temporarily unavailable.');
 		}
@@ -124,7 +97,7 @@ async function loadCampaignPage(databaseUrl: string, campaign: CampaignRun, mode
 		: [];
 	const cityResidents: readonly CityResidentSource[] =
 		campaignView && cityState
-			? campaignView.heroes.map((hero) => {
+			? campaignView.heroes.slice(0, campaign.summonedHeroCount).map((hero) => {
 					const heroId = hero.draft.manifest.characterId;
 					const stateHero = cityState.heroes[heroId];
 					return {
@@ -189,35 +162,12 @@ async function loadCampaignPage(databaseUrl: string, campaign: CampaignRun, mode
 	};
 }
 
-export type OnboardingPageData = Awaited<ReturnType<typeof loadOnboardingPage>>;
 export type CampaignPageData = Awaited<ReturnType<typeof loadCampaignPage>>;
-export type SingletonVillagePageData =
-	| { readonly stage: 'onboarding'; readonly onboarding: OnboardingPageData }
-	| {
-			readonly stage: 'journey' | 'city';
-			readonly campaign: CampaignPageData;
-	  };
 
 export async function loadSingletonVillagePage(input: {
 	readonly databaseUrl: string;
 	readonly campaign: CampaignRun;
 	readonly mode: CityMode;
-}): Promise<SingletonVillagePageData> {
-	if (input.campaign.onboardingStep < 3) {
-		return {
-			stage: 'onboarding',
-			onboarding: await loadOnboardingPage(input.databaseUrl, input.campaign)
-		};
-	}
-
-	const campaign = await loadCampaignPage(input.databaseUrl, input.campaign, input.mode);
-	const stage = selectSingletonVillageStage({
-		onboardingStep: input.campaign.onboardingStep,
-		arrived: campaign.snapshot.arrived
-	});
-	if (stage === 'onboarding') error(500, 'The Village stage became inconsistent while loading.');
-	return {
-		stage,
-		campaign
-	};
+}): Promise<CampaignPageData> {
+	return loadCampaignPage(input.databaseUrl, input.campaign, input.mode);
 }

@@ -15,7 +15,8 @@ describe('City navigation', () => {
 
 		const canonicalSource = readFileSync(canonicalRoute, 'utf8');
 		expect(canonicalSource).toContain('SingletonCampaign');
-		expect(canonicalSource).toContain('SingletonOnboarding');
+		expect(canonicalSource).not.toContain('SingletonOnboarding');
+		expect(canonicalSource).not.toContain('data.stage');
 		expect(existsSync(`${repositoryRoot}/apps/web/src/routes/play/[runId]/+page.svelte`)).toBe(
 			false
 		);
