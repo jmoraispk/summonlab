@@ -19,6 +19,7 @@ export const MODERN_EVENT_TYPES = [
 	'hero.damaged',
 	'hero.destination.selected',
 	'hero.died',
+	'hero.experience.applied',
 	'hero.forging.started',
 	'hero.item.equipped',
 	'hero.routine.started',

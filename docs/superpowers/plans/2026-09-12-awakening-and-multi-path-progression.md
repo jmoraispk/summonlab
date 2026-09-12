@@ -450,7 +450,7 @@ git commit -m "feat(engine): add v27 progression state"
 - Consumes: `ExperienceClaim`, `HeroProgressionV2`, `ProgressionRules`, and capability-profile attributes.
 - Produces: `experienceThresholdForLevel(level, rules)`, `applyExperienceClaim(input)`, `hero.experience.applied` payloads, and one reusable progression reducer.
 
-- [ ] **Step 1: Write failing multi-level and immutability tests**
+- [x] **Step 1: Write failing multi-level and immutability tests**
 
 ```ts
 it('grants stars points for every crossed level', () => {
@@ -468,13 +468,13 @@ it('grants stars points for every crossed level', () => {
 
 Also test levels `1/99/100/199/200/899/900/999`, one- through seven-star grants, XP at level 999, zero/negative rejection, exact receipt bindings, and identical input producing identical output.
 
-- [ ] **Step 2: Run the experience test and verify red**
+- [x] **Step 2: Run the experience test and verify red**
 
 Run: `pnpm --filter @summonlab/engine test -- domains/progression/experience.spec.ts`
 
 Expected: FAIL because the experience owner does not exist.
 
-- [ ] **Step 3: Implement one level calculation path**
+- [x] **Step 3: Implement one level calculation path**
 
 ```ts
 export function experienceThresholdForLevel(level: number, rules: ProgressionRules): number {
@@ -488,26 +488,26 @@ export function levelForExperience(experience: number, rules: ProgressionRules):
 
 `applyExperienceClaim` adds XP, derives the capped level, enumerates every crossed level in ascending order, grants `levelsCrossed.length * progression.stars`, preserves `stars`, and emits one strict receipt. Experience remains monotonic after level 999 even though no further level or points are granted.
 
-- [ ] **Step 4: Reconcile resources without a free refill**
+- [x] **Step 4: Reconcile resources without a free refill**
 
 Export `reconcileHealthAfterProgression({ health, oldMaximum, newMaximum })`. It returns unchanged current Health when the maximum rises and `Math.min(health, newMaximum)` when a rules migration lowers it. Level crossing alone never heals.
 
-- [ ] **Step 5: Register the event and reducer**
+- [x] **Step 5: Register the event and reducer**
 
 Add a v27-only `hero.experience.applied` event whose payload contains the claim, receipt, progression before/after, maximum Health before/after, and current Health after reconciliation. During replay, recompute the outcome from the bound v1 rules and reject any payload mismatch with `ReplayIntegrityError`.
 
-- [ ] **Step 6: Prove there is no star mutation path**
+- [x] **Step 6: Prove there is no star mutation path**
 
 Add a test that enumerates the command registry and progression reducers, applies every progression command to a fixture, and asserts `after.progression.stars === before.progression.stars`. Search production code for assignment to `.stars` outside bootstrap and compatibility projections.
 
-- [ ] **Step 7: Run focused verification**
+- [x] **Step 7: Run focused verification**
 
 ```bash
 pnpm --filter @summonlab/engine test -- domains/progression/experience.spec.ts orchestration/registries.spec.ts
 pnpm --filter @summonlab/engine typecheck
 ```
 
-- [ ] **Step 8: Commit**
+- [x] **Step 8: Commit**
 
 ```bash
 git add packages/contracts/src/event.ts packages/engine/src/domains/progression packages/engine/src/orchestration packages/engine/src/index.ts

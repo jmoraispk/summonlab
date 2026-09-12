@@ -55,6 +55,14 @@ export {
 	type CraftExperienceInput
 } from './domains/progression/math.js';
 export {
+	applyExperienceClaim,
+	experienceThresholdForLevel,
+	levelForExperience,
+	reconcileHealthAfterProgression,
+	type ApplyExperienceClaimInput,
+	type ExperienceClaimOutcome
+} from './domains/progression/experience.js';
+export {
 	adaptV26LegacyCombatOutcome,
 	transitionCombatResultClaims,
 	type CombatClaimTransition,

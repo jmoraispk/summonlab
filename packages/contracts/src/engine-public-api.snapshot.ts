@@ -119,6 +119,8 @@ export const ENGINE_CONTRACT_RUNTIME_EXPORTS = [
 	'HabitStateSchema',
 	'HeroBuildingAssignmentSchema',
 	'HeroCombatTrainingV1Schema',
+	'HeroExperienceAppliedEventSchema',
+	'HeroExperienceAppliedPayloadSchema',
 	'HeroLifeStateSchema',
 	'HeroProgressionSchema',
 	'HeroProgressionV25Schema',

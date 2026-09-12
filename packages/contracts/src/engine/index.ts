@@ -251,5 +251,6 @@ export {
 } from '../progression.js';
 
 export * from './game-state.js';
+export * from './progression-event.js';
 export * from './commands.js';
 export * from './runtime.js';
