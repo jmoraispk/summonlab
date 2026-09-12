@@ -11,7 +11,8 @@ Summonlab mechanics or implementation instructions. References to the unsupplied
 project links. See the parent
 [attribute-system research entry](../attribute-systems.md#overgeared-satisfy), the companion
 [equipment catalogue](equipment-catalogue.md), and the companion
-[equipment mechanics reference](equipment-mechanics.md).
+[equipment mechanics reference](equipment-mechanics.md). The more exhaustive supplied item sample
+is preserved in [item property sheets](item-properties.md).
 
 The damage equation as Overgeared uses it, worked through with numbers, followed
 by notes on adapting it to Summonlab's tick-based engine.

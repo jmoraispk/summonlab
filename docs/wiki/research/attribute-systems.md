@@ -113,6 +113,8 @@ establishing whether each term is a separate statistic.
   distribution, and verified named-item sample.
 - [Equipment mechanics](overgeared/equipment-mechanics.md) — a property taxonomy and worked item
   sheets showing how equipment expresses power and trade-offs.
+- [Item property sheets](overgeared/item-properties.md) — the supplied 44-item property survey and
+  its cross-item vocabulary of numeric, conditional, probabilistic, gated, and drawback mechanics.
 
 These pages preserve the supplied analyses as secondary research. Numerical reconstructions,
 interpretations, adaptation suggestions, and phrases such as “worth adopting” remain source claims;

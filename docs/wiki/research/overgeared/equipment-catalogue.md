@@ -8,7 +8,8 @@ This component page preserves the supplied catalogue as research evidence. Its i
 design observations are claims from that source, not accepted Summonlab mechanics or implementation
 instructions. See the parent
 [attribute-system research entry](../attribute-systems.md#overgeared-satisfy) and the companion
-[equipment mechanics reference](equipment-mechanics.md).
+[equipment mechanics reference](equipment-mechanics.md). See also the supplied
+[item property sheets](item-properties.md) for the broader 44-item property sample.
 
 The inventory side of the reference. Structure, counts, and every named item
 verified during research.
@@ -21,7 +22,8 @@ properties could be verified; names are not invented to pad the list. Roughly 50
 of the ~322 catalogued equipment items appear here. Where a property could not be
 confirmed it is marked *(unconfirmed)* rather than guessed.
 
-Companion page: [Equipment mechanics](equipment-mechanics.md) for how these properties work.
+Companion pages: [Equipment mechanics](equipment-mechanics.md) for how these properties work and
+[item property sheets](item-properties.md) for the broader verified-property sample.
 
 ---
 

@@ -93,6 +93,16 @@
       "spoilerScope": "internal"
     },
     {
+      "wikiId": "research.overgeared.item-properties",
+      "path": "docs/wiki/research/overgeared/item-properties.md",
+      "pageType": "research",
+      "owner": "equipment",
+      "designStatus": "seed",
+      "implementationStatus": "none",
+      "visualStatus": "none",
+      "spoilerScope": "internal"
+    },
+    {
       "wikiId": "mechanics.rewards-engagement",
       "path": "docs/wiki/mechanics/rewards-and-engagement.md",
       "pageType": "mechanic",

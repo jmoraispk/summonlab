@@ -8,15 +8,17 @@ This component page preserves the supplied mechanics analysis as research eviden
 interpretations and design observations are claims from that source, not accepted Summonlab
 mechanics or implementation instructions. See the parent
 [attribute-system research entry](../attribute-systems.md#overgeared-satisfy) and the companion
-[equipment catalogue](equipment-catalogue.md).
+[equipment catalogue](equipment-catalogue.md). See also the supplied
+[item property sheets](item-properties.md) for the broader 44-item property sample.
 
 How Overgeared equipment works: the property taxonomy, and worked item sheets
 illustrating each part of it. Numbers come from the Overgeared wiki and cited
 chapter snippets; where a figure is ambiguous in the source it is marked
 *(uncertain)*.
 
-Companion page: [Equipment catalogue](equipment-catalogue.md) for the full inventory, slot counts,
-and rating distribution.
+Companion pages: [Equipment catalogue](equipment-catalogue.md) for the full inventory, slot counts,
+and rating distribution, and [item property sheets](item-properties.md) for the broader
+verified-property sample.
 
 Reference gathered for Summonlab design comparison, September 2026.
 
