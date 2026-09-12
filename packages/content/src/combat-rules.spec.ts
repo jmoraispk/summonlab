@@ -18,7 +18,11 @@ describe('combat-rules-v1 content', () => {
 				combatRegenerationDelayTicks: 50,
 				combatRecoveryBasisPoints: 2_000
 			},
-			mana: { baseMaximum: 40, perSpirit: 2 },
+			damage: {
+				physicalBasisPointsPerStrength: 100,
+				magicalBasisPointsPerMagic: 100
+			},
+			mana: { baseMaximum: 40, perMagic: 2 },
 			armour: { curveConstant: 100, maximumGeneralReductionBasisPoints: 7_499 },
 			resistance: { capBasisPoints: 7_500 },
 			learning: {

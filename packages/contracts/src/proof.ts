@@ -148,10 +148,10 @@ export const PublicProofRunSnapshotV2Schema = z
 				profileVersion: z.literal('character-capability-v1'),
 				attributes: z
 					.object({
-						might: z.number().int().min(1).max(100),
-						vitality: z.number().int().min(1).max(100),
+						strength: z.number().int().min(1).max(100),
 						agility: z.number().int().min(1).max(100),
-						spirit: z.number().int().min(1).max(100)
+						vitality: z.number().int().min(1).max(100),
+						magic: z.number().int().min(1).max(100)
 					})
 					.strict()
 			})

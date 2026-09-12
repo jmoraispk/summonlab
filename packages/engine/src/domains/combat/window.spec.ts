@@ -44,7 +44,7 @@ function combatant(
 			mana: { current: teamId === 'enemy' ? 4 : 30, maximum: 40 }
 		},
 		lastDamagedAtTick: null,
-		attributes: { might: 20, vitality: 20, agility: 20, spirit: 20 },
+		attributes: { strength: 20, vitality: 20, agility: 20, magic: 20 },
 		armour: teamId === 'enemy' ? 8 : 4,
 		resistances: { cut: 500 },
 		readiness: { value: readiness, exactNumerator: readiness, recoveryUntilTick: 0 },

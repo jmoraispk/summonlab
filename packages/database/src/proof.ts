@@ -130,9 +130,9 @@ function engineMindForDraft(draft: CharacterDraft | CharacterDraftV2): Character
 	return CharacterMindSchema.parse({
 		...draft.mind,
 		aptitudes: {
-			might: Math.ceil(attributes.might / 10),
+			might: Math.ceil(attributes.strength / 10),
 			finesse: Math.ceil(attributes.agility / 10),
-			insight: Math.ceil(attributes.spirit / 10),
+			insight: Math.ceil(attributes.magic / 10),
 			resolve: Math.ceil(attributes.vitality / 10)
 		}
 	});

@@ -93,7 +93,7 @@ async function capabilityState(key: string): Promise<{
 					maxMana: 140,
 					capabilityProfile: {
 						...hero.capabilityProfile,
-						attributes: { might: 20, vitality: 30, agility: 40, spirit: 50 }
+						attributes: { strength: 20, vitality: 30, agility: 40, magic: 50 }
 					}
 				}
 			}
@@ -237,10 +237,10 @@ describe('engine-v25 intrinsic attribute progression', () => {
 		});
 		expect(legalActions(completed.state, fixture.heroId).map((action) => action.actionId)).toEqual(
 			expect.arrayContaining([
-				'hero.allocate.attribute.might',
+				'hero.allocate.attribute.strength',
 				'hero.allocate.attribute.vitality',
 				'hero.allocate.attribute.agility',
-				'hero.allocate.attribute.spirit'
+				'hero.allocate.attribute.magic'
 			])
 		);
 	});
@@ -254,25 +254,25 @@ describe('engine-v25 intrinsic attribute progression', () => {
 			attributeGrowthReceipts: []
 		});
 		const mightModifier = AttributeModifierSchema.parse({
-			modifierId: deterministicUuid('progression:temporary-might'),
-			attribute: 'might',
+			modifierId: deterministicUuid('progression:temporary-strength'),
+			attribute: 'strength',
 			scope: 'physical-damage',
 			stackingRule: 'additive-flat',
 			value: 50,
 			cap: 50,
 			duration: { kind: 'action' },
 			source: {
-				receiptId: deterministicUuid('progression:temporary-might:source'),
+				receiptId: deterministicUuid('progression:temporary-strength:source'),
 				sourceKind: 'status',
-				sourceId: 'status:test-might'
+				sourceId: 'status:test-strength'
 			},
 			rulesVersion: 'combat-rules-v1'
 		});
 		expect(effectiveAttribute(20, [mightModifier], 'physical-damage', COMBAT_RULES_V1)).toBe(70);
 
-		const allocateMight = command(ready, fixture.heroId, 'allocate-might', {
+		const allocateMight = command(ready, fixture.heroId, 'allocate-strength', {
 			commandType: 'hero.allocate.attribute',
-			attribute: 'might'
+			attribute: 'strength'
 		});
 		const first = applyCommand(ready, allocateMight);
 		if (first.state.schemaVersion !== 25) throw new Error('Expected engine-v25 state');
@@ -282,7 +282,7 @@ describe('engine-v25 intrinsic attribute progression', () => {
 		expect(firstReceipt).toStrictEqual({
 			receiptId: deterministicUuid(`${first.events[0]!.eventId}:attribute-growth`),
 			heroId: fixture.heroId,
-			attribute: 'might',
+			attribute: 'strength',
 			beforeIntrinsicValue: 20,
 			afterIntrinsicValue: 21,
 			spentPoints: 1,
@@ -295,7 +295,7 @@ describe('engine-v25 intrinsic attribute progression', () => {
 			unspentAttributePoints: 1,
 			attributeGrowthReceipts: [firstReceipt]
 		});
-		expect(first.state.heroes[fixture.heroId]!.capabilityProfile.attributes.might).toBe(20);
+		expect(first.state.heroes[fixture.heroId]!.capabilityProfile.attributes.strength).toBe(20);
 
 		const allocateVitality = command(first.state, fixture.heroId, 'allocate-vitality', {
 			commandType: 'hero.allocate.attribute',
@@ -329,9 +329,9 @@ describe('engine-v25 intrinsic attribute progression', () => {
 		});
 		const allocated = applyCommand(
 			ready,
-			command(ready, fixture.heroId, 'canonical-might', {
+			command(ready, fixture.heroId, 'canonical-strength', {
 				commandType: 'hero.allocate.attribute',
-				attribute: 'might'
+				attribute: 'strength'
 			})
 		);
 		if (allocated.state.schemaVersion !== 25) throw new Error('Expected engine-v25 state');
@@ -343,7 +343,7 @@ describe('engine-v25 intrinsic attribute progression', () => {
 				hero.progression.attributeGrowthReceipts,
 				COMBAT_RULES_V1
 			)
-		).toStrictEqual({ might: 21, vitality: 30, agility: 40, spirit: 50 });
+		).toStrictEqual({ strength: 21, vitality: 30, agility: 40, magic: 50 });
 	});
 
 	it('rejects stale, insufficient, terminal, capped, and invalid allocations', async () => {
@@ -351,7 +351,7 @@ describe('engine-v25 intrinsic attribute progression', () => {
 		const stale = {
 			...command(fixture.state, fixture.heroId, 'stale', {
 				commandType: 'hero.allocate.attribute',
-				attribute: 'might'
+				attribute: 'strength'
 			}),
 			expectedVersion: fixture.state.version + 1
 		};
@@ -361,7 +361,7 @@ describe('engine-v25 intrinsic attribute progression', () => {
 				fixture.state,
 				command(fixture.state, fixture.heroId, 'insufficient', {
 					commandType: 'hero.allocate.attribute',
-					attribute: 'might'
+					attribute: 'strength'
 				})
 			)
 		).toThrow(IllegalActionError);
@@ -381,20 +381,20 @@ describe('engine-v25 intrinsic attribute progression', () => {
 					...hero,
 					capabilityProfile: {
 						...hero.capabilityProfile,
-						attributes: { ...hero.capabilityProfile.attributes, might: 100 }
+						attributes: { ...hero.capabilityProfile.attributes, strength: 100 }
 					}
 				}
 			}
 		});
 		expect(legalActions(capped, fixture.heroId).map((action) => action.actionId)).not.toContain(
-			'hero.allocate.attribute.might'
+			'hero.allocate.attribute.strength'
 		);
 		expect(() =>
 			applyCommand(
 				capped,
 				command(capped, fixture.heroId, 'capped', {
 					commandType: 'hero.allocate.attribute',
-					attribute: 'might'
+					attribute: 'strength'
 				})
 			)
 		).toThrow(IllegalActionError);
@@ -426,7 +426,7 @@ describe('engine-v25 intrinsic attribute progression', () => {
 				dead,
 				command(dead, fixture.heroId, 'dead', {
 					commandType: 'hero.allocate.attribute',
-					attribute: 'might'
+					attribute: 'strength'
 				})
 			)
 		).toThrow(IllegalActionError);
@@ -435,7 +435,7 @@ describe('engine-v25 intrinsic attribute progression', () => {
 			EngineCommandSchema.safeParse({
 				...command(pointReady, fixture.heroId, 'invalid-attribute', {
 					commandType: 'hero.allocate.attribute',
-					attribute: 'might'
+					attribute: 'strength'
 				}),
 				attribute: 'dexterity'
 			}).success
@@ -450,9 +450,9 @@ describe('engine-v26 intrinsic attribute progression', () => {
 		const badReceipt = {
 			receiptId: deterministicUuid('bad-receipt-chain:receipt'),
 			heroId: v25.heroId,
-			attribute: 'might' as const,
-			beforeIntrinsicValue: v25Hero.capabilityProfile.attributes.might + 1,
-			afterIntrinsicValue: v25Hero.capabilityProfile.attributes.might + 2,
+			attribute: 'strength' as const,
+			beforeIntrinsicValue: v25Hero.capabilityProfile.attributes.strength + 1,
+			afterIntrinsicValue: v25Hero.capabilityProfile.attributes.strength + 2,
 			spentPoints: 1,
 			sourceLevel: 2,
 			rulesVersion: 'combat-rules-v1' as const,
@@ -582,7 +582,7 @@ describe('engine-v26 intrinsic attribute progression', () => {
 					...hero,
 					capabilityProfile: {
 						...hero.capabilityProfile,
-						attributes: { ...hero.capabilityProfile.attributes, might: 45 }
+						attributes: { ...hero.capabilityProfile.attributes, strength: 45 }
 					},
 					combatTraining: {
 						...hero.combatTraining,

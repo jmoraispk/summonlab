@@ -23,9 +23,9 @@ export function legacyCapabilityProjection(
 ): CharacterMind['aptitudes'] {
 	const attributes = CombatAttributesSchema.parse(attributesInput);
 	return {
-		might: legacyScale(attributes.might),
+		might: legacyScale(attributes.strength),
 		finesse: legacyScale(attributes.agility),
-		insight: legacyScale(attributes.spirit),
+		insight: legacyScale(attributes.magic),
 		resolve: legacyScale(attributes.vitality)
 	};
 }

@@ -189,7 +189,7 @@ const V24_COMBAT_REPLAY_FINAL_STATE_FIXTURE = JSON.parse(
 
 const V25_CAPABILITY_PROFILE = {
 	profileVersion: 'character-capability-v1' as const,
-	attributes: { might: 41, vitality: 52, agility: 63, spirit: 74 },
+	attributes: { strength: 41, agility: 63, vitality: 52, magic: 74 },
 	learning: {
 		cognitiveLearningScore: 55,
 		domainAptitudes: { martial: 61, magical: 62, crafting: 63, survival: 64, social: 65 }
@@ -306,7 +306,7 @@ function v26ReadinessStateFromV24Fixture() {
 					mana: { current: 50, maximum: 50 }
 				},
 				lastDamagedAtTick: null,
-				attributes: { might: 41, vitality: 52, agility: 63, spirit: 74 },
+				attributes: { strength: 41, agility: 63, vitality: 52, magic: 74 },
 				armour: 0,
 				resistances: {},
 				readiness: { value: 0, exactNumerator: 0, recoveryUntilTick: 0 },
@@ -1008,7 +1008,7 @@ describe('engine contracts compatibility', () => {
 				commandType: 'hero.equip.item',
 				itemId: '50000000-0000-4000-8000-000000000010'
 			},
-			{ ...commandBase, commandType: 'hero.allocate.attribute', attribute: 'might' },
+			{ ...commandBase, commandType: 'hero.allocate.attribute', attribute: 'strength' },
 			{
 				...commandBase,
 				commandType: 'hero.start.forging',

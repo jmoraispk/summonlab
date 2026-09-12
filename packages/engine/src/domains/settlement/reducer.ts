@@ -1086,7 +1086,7 @@ function reduceSettlementEvent(
 				? maximumHealth(receipt.afterIntrinsicValue, COMBAT_RULES_V1)
 				: hero.maxHealth;
 		const maxMana =
-			receipt.attribute === 'spirit'
+			receipt.attribute === 'magic'
 				? maximumMana(receipt.afterIntrinsicValue, COMBAT_RULES_V1)
 				: hero.maxMana;
 		return parseModernState(state, {

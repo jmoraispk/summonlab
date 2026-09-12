@@ -68,8 +68,8 @@ describe('approved summonable hero pool', () => {
 		expect(left.mind).not.toHaveProperty('aptitudes');
 		expect(Object.keys(left.capabilityProfile.attributes).sort()).toEqual([
 			'agility',
-			'might',
-			'spirit',
+			'magic',
+			'strength',
 			'vitality'
 		]);
 		expect(

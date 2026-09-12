@@ -18,7 +18,7 @@ describe('mission report public projection', () => {
 							},
 							capabilityProfile: {
 								profileVersion: 'character-capability-v1',
-								attributes: { might: 21, vitality: 32, agility: 43, spirit: 54 },
+								attributes: { strength: 21, agility: 43, vitality: 32, magic: 54 },
 								learning: {
 									cognitiveLearningScore: 87,
 									domainAptitudes: { martial: 60 }
@@ -40,7 +40,7 @@ describe('mission report public projection', () => {
 		expect(serialized).not.toContain('dailyHabit');
 		expect(projected.snapshot.state.heroes.hero).toMatchObject({
 			capabilityProfile: {
-				attributes: { might: 21, vitality: 32, agility: 43, spirit: 54 }
+				attributes: { strength: 21, agility: 43, vitality: 32, magic: 54 }
 			}
 		});
 	});

@@ -248,12 +248,12 @@ function regenerateAndAccumulate(state: ReadinessCombatStateV1, rules: CombatRul
 			Math.floor(combatant.attributes.vitality / rules.health.safeRestRegenerationVitalityDivisor)
 		);
 		const manaSaturationDenominator = safeAdd(
-			combatant.attributes.spirit,
+			combatant.attributes.magic,
 			rules.mana.regenerationSaturationConstant
 		);
 		const manaBonusNumerator = safeMultiply(
-			rules.mana.regenerationSpiritBonus,
-			combatant.attributes.spirit
+			rules.mana.regenerationMagicBonus,
+			combatant.attributes.magic
 		);
 		if (
 			healthRecoveryBase === null ||
@@ -282,7 +282,7 @@ function regenerateAndAccumulate(state: ReadinessCombatStateV1, rules: CombatRul
 		}
 		if (regenerationPulse) {
 			const manaRecovery = manaRegeneration(
-				combatant.attributes.spirit,
+				combatant.attributes.magic,
 				{ mode: 'combat', downed: false, ticksSinceDamage, injuryRepair: false },
 				rules
 			);

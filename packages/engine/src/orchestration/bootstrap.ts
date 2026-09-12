@@ -144,10 +144,10 @@ export function capabilityProfileFromLegacyMind(
 	return CharacterCapabilityProfileV1Schema.parse({
 		profileVersion: 'character-capability-v1',
 		attributes: {
-			might: mind.aptitudes.might * 10,
-			vitality: mind.aptitudes.resolve * 10,
+			strength: mind.aptitudes.might * 10,
 			agility: mind.aptitudes.finesse * 10,
-			spirit: mind.aptitudes.insight * 10
+			vitality: mind.aptitudes.resolve * 10,
+			magic: mind.aptitudes.insight * 10
 		},
 		learning: deterministicLegacyLearningProfile(mind)
 	});
@@ -432,7 +432,7 @@ export function createBootstrapEngine(input: BootstrapEngineInput): BootstrapEng
 					? maximumHealth(capabilityProfile.attributes.vitality, COMBAT_RULES_V1)
 					: 100;
 				const maxMana = capabilityProfile
-					? maximumMana(capabilityProfile.attributes.spirit, COMBAT_RULES_V1)
+					? maximumMana(capabilityProfile.attributes.magic, COMBAT_RULES_V1)
 					: null;
 				return [
 					hero.heroId,

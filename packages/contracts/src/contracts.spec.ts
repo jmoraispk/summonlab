@@ -74,7 +74,7 @@ function validCharacterManifest(adultAge = 25) {
 describe('foundation contracts', () => {
 	it('exports the four canonical combat attributes from the root contract entry point', () => {
 		expect(
-			CombatAttributesSchema.safeParse({ might: 1, vitality: 1, agility: 1, spirit: 1 }).success
+			CombatAttributesSchema.safeParse({ strength: 1, agility: 1, vitality: 1, magic: 1 }).success
 		).toBe(true);
 	});
 
@@ -100,7 +100,7 @@ describe('foundation contracts', () => {
 		};
 		const capabilityProfile = {
 			profileVersion: 'character-capability-v1' as const,
-			attributes: { might: 51, vitality: 52, agility: 53, spirit: 54 },
+			attributes: { strength: 51, agility: 53, vitality: 52, magic: 54 },
 			learning: {
 				cognitiveLearningScore: 55,
 				domainAptitudes: {

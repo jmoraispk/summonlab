@@ -227,25 +227,25 @@ describe('versioned replay vectors', () => {
 		});
 		expect(replay.result.claims.some((claim) => claim.claimType === 'recovery')).toBe(true);
 		expect(replay.windowHashes).toStrictEqual([
-			'0d709e7da677a272c4368ded3bccb7cd45255c52a12f28aca2d7aace95efc2de',
-			'13f053589cd3bc05c6a858ae3d9005f1e3c2848305b793d6075f607c943028f4'
+			'c2005096eda3bac822580340dd65b62308bb5a906c3cb8fc4cf5bdb570bdaf68',
+			'336c460663fd7f905b6391dae33195f936eff747edfa592bcdf82c47250dd948'
 		]);
 		expect(replay.batchHashes).toStrictEqual([
-			'c342f867f447eaa33cea8d374c2081909c72971b557b75ebc82a78d80574b16e',
-			'585bf0882d6eb7a1d6c04292ba07808740cb1b128ee500beee7a01d07131c0bf'
+			'c9ad5bef50b1dbc3c36cdf046a06e1d7fcb84491b9de33e55aff3b846a872d7c',
+			'b73d5f6e90b9337a1ae6e4df9872a2448d560b943df5d0cc4086dddf61795716'
 		]);
 		expect(replay.resolvedEventHashes).toStrictEqual([
-			'9e8360c05d30b85bfcee30e127e6a01cf164d64c3c1feedba7a70cb1f81e9137',
-			'261ec3b91b6e8b409a43f54c9f91f77d8798c804be0f1648ba7e11caa162924e'
+			'0d7d2e5729aa1837b323f1adee027ea8ed34e3a0f616a88d60c088957d3464d6',
+			'7ba45d6a8f1c2e4a60bb1278fad3603cca95377de486445a30ba53f2c05c0bb6'
 		]);
 		expect(replay.stateHashes).toStrictEqual([
-			'db93c5e2239b74f7748f4a969bf3e3437970e47c6c036fc30364e4730b43ef3c',
-			'aea86d6d7655ba822e9e9b461436bd0d05930983071e4f3500016ef742b07c1a',
-			'630e91f912fd73d9e65f1d0ebb6764b1c92964ab2288d609ee616f2842cb4059',
-			'efc402559133427a246a4c8efd2ca87997343fae974f8f25621bf7a368e67ebb'
+			'70d527ce26d2c8058c83de3fdf68a8079d0da623312652fcf1430d67083c331d',
+			'1161d2d05f97f6d231f19ba30394ce0d578790a50b406035b2bdd1855f1bba6f',
+			'e5551e35d97b4884bfa94637ccc4635200ceb1b80984e63f3974ec401e1921eb',
+			'8b1244d8c6c2bdc35ef0914bc5790756df1cf0b7e3d8462309869dc917a3e0c2'
 		]);
 		expect(hashCanonical(replay.result)).toBe(
-			'dc599786a23e8fc9a8a8b73e9af6a0619f443dd93be201d704cbc22a379526b5'
+			'604fbe2dbf19f0d52aa7b4710f526ee1e4539fdf8c5b8f4e1793202c564e92be'
 		);
 	});
 });

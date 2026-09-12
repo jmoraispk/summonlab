@@ -66,7 +66,7 @@ function equipment(
 	definitionId: string,
 	familyTags: CombatEquipmentProfile['familyTags'],
 	load = 10,
-	minimumMight: number | null = null,
+	minimumStrength: number | null = null,
 	proficiencyTags: CombatEquipmentProfile['requirements']['proficiencyTags'] = []
 ): CombatEquipmentProfile {
 	return {
@@ -74,7 +74,7 @@ function equipment(
 		definitionId,
 		familyTags,
 		load,
-		requirements: { minimumMight, proficiencyTags },
+		requirements: { minimumStrength, proficiencyTags },
 		resistanceGrants: []
 	};
 }
@@ -381,8 +381,8 @@ describe('combat legal actions', () => {
 
 	it('requires one family to intersect equipment, skill delivery, and trained tags', () => {
 		const common = {
-			intrinsicMight: 60,
-			effectiveLoadMight: 60,
+			intrinsicStrength: 60,
+			effectiveLoadStrength: 60,
 			proficiencyTags: [],
 			skills: [skill]
 		} as const;
@@ -412,8 +412,8 @@ describe('combat legal actions', () => {
 	it('unlocks a related family only after explicit family familiarization, regardless of item ID', () => {
 		const twoHandedBlade = equipment('equipment-steel-greatsword', ['two-handed-blade']);
 		const common = {
-			intrinsicMight: 60,
-			effectiveLoadMight: 60,
+			intrinsicStrength: 60,
+			effectiveLoadStrength: 60,
 			proficiencyTags: [] as const,
 			equipment: [twoHandedBlade],
 			skills: [skill]
@@ -442,8 +442,8 @@ describe('combat legal actions', () => {
 
 	it('uses authored per-skill mastery progression without improving unrelated axes', () => {
 		const [action] = legalCombatSkillActions({
-			intrinsicMight: 60,
-			effectiveLoadMight: 60,
+			intrinsicStrength: 60,
+			effectiveLoadStrength: 60,
 			proficiencyTags: [],
 			equipment: [equipment('equipment-bronze-sword', ['one-handed-blade'])],
 			skills: [skill],
@@ -470,59 +470,59 @@ describe('combat legal actions', () => {
 		]);
 		expect(
 			evaluateCombatLoadout({
-				intrinsicMight: 40,
-				effectiveLoadMight: 60,
+				intrinsicStrength: 40,
+				effectiveLoadStrength: 60,
 				proficiencyTags: [],
 				equipment: [heavyArmour]
 			})
 		).toStrictEqual({
 			eligible: false,
 			totalLoad: 28,
-			mightLoadTolerance: 60,
+			strengthLoadTolerance: 60,
 			reasons: [
-				'equipment-iron-heavy-armour-torso:minimum-might',
+				'equipment-iron-heavy-armour-torso:minimum-strength',
 				'equipment-iron-heavy-armour-torso:missing-armour-training'
 			]
 		});
 		expect(
 			evaluateCombatLoadout({
-				intrinsicMight: 45,
-				effectiveLoadMight: 45,
+				intrinsicStrength: 45,
+				effectiveLoadStrength: 45,
 				proficiencyTags: ['armour-training'],
 				equipment: [heavyArmour, equipment('equipment-bronze-axe', [], 20)]
 			})
-		).toMatchObject({ eligible: false, totalLoad: 48, mightLoadTolerance: 45 });
+		).toMatchObject({ eligible: false, totalLoad: 48, strengthLoadTolerance: 45 });
 		expect(
 			evaluateCombatLoadout({
-				intrinsicMight: 60,
-				effectiveLoadMight: 60,
+				intrinsicStrength: 60,
+				effectiveLoadStrength: 60,
 				proficiencyTags: ['armour-training'],
 				equipment: [heavyArmour]
 			})
-		).toStrictEqual({ eligible: true, totalLoad: 28, mightLoadTolerance: 60, reasons: [] });
+		).toStrictEqual({ eligible: true, totalLoad: 28, strengthLoadTolerance: 60, reasons: [] });
 	});
 
-	it('lets scoped effective Might raise load tolerance without satisfying intrinsic requirements', () => {
+	it('lets scoped effective Strength raise load tolerance without satisfying intrinsic requirements', () => {
 		const loadOnly = equipment('equipment-iron-shield', ['shield'], 50);
 		expect(
 			evaluateCombatLoadout({
-				intrinsicMight: 40,
-				effectiveLoadMight: 60,
+				intrinsicStrength: 40,
+				effectiveLoadStrength: 60,
 				proficiencyTags: [],
 				equipment: [loadOnly]
 			})
-		).toStrictEqual({ eligible: true, totalLoad: 50, mightLoadTolerance: 60, reasons: [] });
+		).toStrictEqual({ eligible: true, totalLoad: 50, strengthLoadTolerance: 60, reasons: [] });
 		const intrinsicallyGated = equipment('equipment-iron-heavy-armour-torso', [], 28, 45);
 		expect(
 			evaluateCombatLoadout({
-				intrinsicMight: 40,
-				effectiveLoadMight: 60,
+				intrinsicStrength: 40,
+				effectiveLoadStrength: 60,
 				proficiencyTags: [],
 				equipment: [intrinsicallyGated]
 			})
 		).toMatchObject({
 			eligible: false,
-			reasons: ['equipment-iron-heavy-armour-torso:minimum-might']
+			reasons: ['equipment-iron-heavy-armour-torso:minimum-strength']
 		});
 	});
 });

@@ -28,8 +28,8 @@ function validRules() {
 			modifierStackingOrder: ['additive-flat', 'additive-basis-points'] as const
 		},
 		damage: {
-			physicalBasisPointsPerMight: 100,
-			magicalBasisPointsPerSpirit: 100
+			physicalBasisPointsPerStrength: 100,
+			magicalBasisPointsPerMagic: 100
 		},
 		health: {
 			baseMaximum: 100,
@@ -42,9 +42,9 @@ function validRules() {
 		},
 		mana: {
 			baseMaximum: 40,
-			perSpirit: 2,
+			perMagic: 2,
 			regenerationBase: 2,
-			regenerationSpiritBonus: 8,
+			regenerationMagicBonus: 8,
 			regenerationSaturationConstant: 50,
 			combatRecoveryBasisPoints: 5_000
 		},
@@ -139,7 +139,7 @@ describe('combat rules contracts', () => {
 	it('requires every scoped modifier to carry typed source, stacking, cap, duration, and rules evidence', () => {
 		const parsed = AttributeModifierSchema.parse({
 			modifierId: '10000000-0000-4000-8000-000000000002',
-			attribute: 'might',
+			attribute: 'strength',
 			scope: 'physical-damage',
 			stackingRule: 'additive-flat',
 			value: 5,

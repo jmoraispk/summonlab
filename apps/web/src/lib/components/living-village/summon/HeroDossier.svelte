@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { attributeDisplayName, orderCharacterSheetAttributes } from '../attribute-display';
 	import PortalGlyph from './PortalGlyph.svelte';
 	import MechanicIcon from './MechanicIcon.svelte';
 
@@ -23,17 +24,13 @@
 	};
 
 	let { hero, onclose }: { hero: Hero; onclose: () => void } = $props();
-	const bodyNames = new Set(['Might', 'Vitality', 'Agility']);
 	const aptitudeClassLabels = {
 		martial: 'Martial',
 		magic: 'Magical',
 		crafting: 'Craft & life'
 	} as const;
-	const bodyAttributes = $derived(
-		hero.attributes.filter((attribute) => bodyNames.has(attribute.name))
-	);
-	const mindAttributes = $derived(
-		hero.attributes.filter((attribute) => !bodyNames.has(attribute.name))
+	const orderedAttributes = $derived(
+		orderCharacterSheetAttributes(hero.attributes, (attribute) => attribute.name)
 	);
 
 	function handleKeydown(event: KeyboardEvent) {
@@ -77,39 +74,14 @@
 				<h3 id="attribute-title">Attributes</h3>
 				<span>Current readiness</span>
 			</div>
-			<div class="attribute-domains">
-				<article data-testid="body-attributes">
-					<header>
-						<MechanicIcon kind="body" size={18} /><span
-							><strong>Body</strong><small>Force, endurance &amp; motion</small></span
-						>
-					</header>
-					<div class="attribute-grid">
-						{#each bodyAttributes as attribute (attribute.name)}
-							<div data-testid="hero-attribute">
-								<span>{attribute.name}</span><strong>{attribute.value}</strong><i
-									><b style:width={`${attribute.value}%`}></b></i
-								>
-							</div>
-						{/each}
+			<div class="attribute-grid" data-testid="attribute-grid">
+				{#each orderedAttributes as attribute (attribute.name)}
+					<div data-testid="hero-attribute">
+						<span title={attribute.name} aria-label={attribute.name}
+							>{attributeDisplayName(attribute.name)}</span
+						><strong>{attribute.value}</strong><i><b style:width={`${attribute.value}%`}></b></i>
 					</div>
-				</article>
-				<article data-testid="mind-attributes">
-					<header>
-						<MechanicIcon kind="mind" size={18} /><span
-							><strong>Mind</strong><small>Control, thought &amp; spirit</small></span
-						>
-					</header>
-					<div class="attribute-grid">
-						{#each mindAttributes as attribute (attribute.name)}
-							<div data-testid="hero-attribute">
-								<span>{attribute.name}</span><strong>{attribute.value}</strong><i
-									><b style:width={`${attribute.value}%`}></b></i
-								>
-							</div>
-						{/each}
-					</div>
-				</article>
+				{/each}
 			</div>
 		</section>
 
@@ -337,43 +309,14 @@
 		letter-spacing: 0.12em;
 		text-transform: uppercase;
 	}
-	.attribute-domains {
+	.attribute-grid {
 		display: grid;
-		grid-template-columns: 1fr 1fr;
+		grid-template-columns: repeat(4, minmax(0, 1fr));
 		gap: 10px;
-	}
-	.attribute-domains article {
 		padding: 13px;
 		border: 1px solid #d9e7e119;
 		border-radius: 11px;
 		background: #ffffff05;
-	}
-	.attribute-domains article > header {
-		display: flex;
-		gap: 8px;
-		align-items: center;
-		margin-bottom: 12px;
-		color: #9fd4c8;
-	}
-	.attribute-domains article > header span {
-		display: grid;
-		gap: 1px;
-	}
-	.attribute-domains article > header strong {
-		color: #dfe8e4;
-		font:
-			500 0.8rem Georgia,
-			serif;
-	}
-	.attribute-domains article > header small {
-		color: #65766f;
-		font-size: 0.48rem;
-		letter-spacing: 0.08em;
-		text-transform: uppercase;
-	}
-	.attribute-grid {
-		display: grid;
-		gap: 10px;
 	}
 	.attribute-grid > div {
 		display: grid;
@@ -471,8 +414,8 @@
 		.details {
 			padding: 25px 20px 28px;
 		}
-		.attribute-domains {
-			grid-template-columns: 1fr;
+		.attribute-grid {
+			grid-template-columns: repeat(2, minmax(0, 1fr));
 		}
 		dl {
 			grid-template-columns: 1fr;

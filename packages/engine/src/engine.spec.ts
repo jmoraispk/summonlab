@@ -197,7 +197,7 @@ function v2Draft(heroId: string) {
 		},
 		capabilityProfile: {
 			profileVersion: 'character-capability-v1',
-			attributes: { might: 81, vitality: 62, agility: 43, spirit: 24 },
+			attributes: { strength: 81, agility: 43, vitality: 62, magic: 24 },
 			learning: {
 				cognitiveLearningScore: 35,
 				domainAptitudes: { martial: 46, magical: 57, crafting: 68, survival: 79, social: 90 }
@@ -321,7 +321,7 @@ describe('deterministic engine', () => {
 
 		expect(profile).toStrictEqual({
 			profileVersion: 'character-capability-v1',
-			attributes: { might: 10, vitality: 40, agility: 20, spirit: 30 },
+			attributes: { strength: 10, agility: 20, vitality: 40, magic: 30 },
 			learning: {
 				cognitiveLearningScore: 20,
 				domainAptitudes: { martial: 78, magical: 81, crafting: 46, survival: 96, social: 27 }

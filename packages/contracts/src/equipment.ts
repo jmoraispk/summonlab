@@ -117,7 +117,7 @@ export const CombatEquipmentProfileSchema = z
 		load: z.number().int().positive().max(1_000),
 		requirements: z
 			.object({
-				minimumMight: z.number().int().min(1).max(100).nullable(),
+				minimumStrength: z.number().int().min(1).max(100).nullable(),
 				proficiencyTags: z
 					.array(EquipmentProficiencyTagSchema)
 					.max(EquipmentProficiencyTagSchema.options.length)

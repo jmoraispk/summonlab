@@ -180,8 +180,8 @@ export const CombatRulesV1Schema = z
 			.strict(),
 		damage: z
 			.object({
-				physicalBasisPointsPerMight: z.number().int().nonnegative().max(10_000),
-				magicalBasisPointsPerSpirit: z.number().int().nonnegative().max(10_000)
+				physicalBasisPointsPerStrength: z.number().int().nonnegative().max(10_000),
+				magicalBasisPointsPerMagic: z.number().int().nonnegative().max(10_000)
 			})
 			.strict(),
 		health: z
@@ -198,9 +198,9 @@ export const CombatRulesV1Schema = z
 		mana: z
 			.object({
 				baseMaximum: z.number().int().positive(),
-				perSpirit: z.number().int().nonnegative(),
+				perMagic: z.number().int().nonnegative(),
 				regenerationBase: z.number().int().nonnegative(),
-				regenerationSpiritBonus: z.number().int().nonnegative(),
+				regenerationMagicBonus: z.number().int().nonnegative(),
 				regenerationSaturationConstant: z.number().int().positive(),
 				combatRecoveryBasisPoints: BasisPointsSchema
 			})

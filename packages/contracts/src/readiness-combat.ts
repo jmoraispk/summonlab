@@ -18,9 +18,9 @@ export const CombatChoiceBatchVersionSchema = z.literal('combat-choice-batch-v1'
 export const CombatResultVersionSchema = z.literal('combat-result-v1');
 
 const LEGACY_AND_READINESS_V1_CONTENT_HASH =
-	'1abef40c18eb97d4c1694c674f9b4917f286053e6d810d5b4282760f2ab4c2a7';
+	'659a89f61dcd9ebc7ca561a78ce5a405f81dbf8740246c7a18e7df697b862489';
 const READINESS_V2_CONTENT_HASH =
-	'e78ed494f1ac78f6b0efca0574248425a1bb1148d54fd39161db600964e8919e';
+	'713a146cc6e5198fc208e0e5cc35bb67023ef9002e37a364dda71905b025eedd';
 
 const TickSchema = z.number().int().nonnegative().max(Number.MAX_SAFE_INTEGER);
 const BoundedTextSchema = z.string().trim().min(1).max(300);

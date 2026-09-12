@@ -114,8 +114,8 @@ export function authorCombatLegalActions(
 }
 
 export type CombatLoadoutInput = Readonly<{
-	intrinsicMight: number;
-	effectiveLoadMight: number;
+	intrinsicStrength: number;
+	effectiveLoadStrength: number;
 	proficiencyTags: readonly EquipmentProficiencyTag[];
 	equipment: readonly CombatEquipmentProfile[];
 }>;
@@ -123,7 +123,7 @@ export type CombatLoadoutInput = Readonly<{
 export type CombatLoadoutEvaluation = Readonly<{
 	eligible: boolean;
 	totalLoad: number;
-	mightLoadTolerance: number;
+	strengthLoadTolerance: number;
 	reasons: readonly string[];
 }>;
 
@@ -143,34 +143,34 @@ export type CombatSkillActionInput = CombatLoadoutInput &
 		learnedSkills: readonly LearnedCombatSkillState[];
 	}>;
 
-function requireIntrinsicMight(might: number): number {
-	if (!Number.isInteger(might) || might < 1 || might > 100) {
-		throw new Error('Intrinsic Might must be an integer from 1 through 100');
+function requireIntrinsicStrength(strength: number): number {
+	if (!Number.isInteger(strength) || strength < 1 || strength > 100) {
+		throw new Error('Intrinsic Strength must be an integer from 1 through 100');
 	}
-	return might;
+	return strength;
 }
 
-export function mightLoadTolerance(effectiveLoadMight: number): number {
-	if (!Number.isInteger(effectiveLoadMight) || effectiveLoadMight < 0) {
-		throw new Error('Effective equipment-load Might must be a nonnegative integer');
+export function strengthLoadTolerance(effectiveLoadStrength: number): number {
+	if (!Number.isInteger(effectiveLoadStrength) || effectiveLoadStrength < 0) {
+		throw new Error('Effective equipment-load Strength must be a nonnegative integer');
 	}
-	return effectiveLoadMight;
+	return effectiveLoadStrength;
 }
 
 export function evaluateCombatLoadout(input: CombatLoadoutInput): CombatLoadoutEvaluation {
-	const intrinsicMight = requireIntrinsicMight(input.intrinsicMight);
+	const intrinsicStrength = requireIntrinsicStrength(input.intrinsicStrength);
 	const equipment = input.equipment.map((profile) => CombatEquipmentProfileSchema.parse(profile));
 	const proficiencyTags = new Set(input.proficiencyTags);
 	const totalLoad = equipment.reduce((total, profile) => total + profile.load, 0);
-	const tolerance = mightLoadTolerance(input.effectiveLoadMight);
+	const tolerance = strengthLoadTolerance(input.effectiveLoadStrength);
 	const reasons: string[] = [];
 
 	for (const profile of equipment) {
 		if (
-			profile.requirements.minimumMight !== null &&
-			intrinsicMight < profile.requirements.minimumMight
+			profile.requirements.minimumStrength !== null &&
+			intrinsicStrength < profile.requirements.minimumStrength
 		) {
-			reasons.push(`${profile.definitionId}:minimum-might`);
+			reasons.push(`${profile.definitionId}:minimum-strength`);
 		}
 		for (const proficiency of profile.requirements.proficiencyTags) {
 			if (!proficiencyTags.has(proficiency)) {
@@ -178,12 +178,12 @@ export function evaluateCombatLoadout(input: CombatLoadoutInput): CombatLoadoutE
 			}
 		}
 	}
-	if (totalLoad > tolerance) reasons.push('loadout:over-might-tolerance');
+	if (totalLoad > tolerance) reasons.push('loadout:over-strength-tolerance');
 
 	return Object.freeze({
 		eligible: reasons.length === 0,
 		totalLoad,
-		mightLoadTolerance: tolerance,
+		strengthLoadTolerance: tolerance,
 		reasons: Object.freeze(reasons)
 	});
 }

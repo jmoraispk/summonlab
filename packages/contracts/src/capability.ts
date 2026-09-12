@@ -1,13 +1,13 @@
 import { z } from 'zod';
 
-export const CombatAttributeNameSchema = z.enum(['might', 'vitality', 'agility', 'spirit']);
+export const CombatAttributeNameSchema = z.enum(['strength', 'agility', 'vitality', 'magic']);
 
 export const CombatAttributesSchema = z
 	.object({
-		might: z.number().int().min(1).max(100),
-		vitality: z.number().int().min(1).max(100),
+		strength: z.number().int().min(1).max(100),
 		agility: z.number().int().min(1).max(100),
-		spirit: z.number().int().min(1).max(100)
+		vitality: z.number().int().min(1).max(100),
+		magic: z.number().int().min(1).max(100)
 	})
 	.strict();
 

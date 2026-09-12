@@ -57,16 +57,16 @@ describe('equipment content catalog', () => {
 		]);
 	});
 
-	it('authors load, heavy Might requirements, armour training, and named resistance grants', () => {
+	it('authors load, heavy Strength requirements, armour training, and named resistance grants', () => {
 		const heavyWeapon = COMBAT_EQUIPMENT_PROFILES_BY_ID['equipment-bronze-axe'];
 		const heavyArmour = COMBAT_EQUIPMENT_PROFILES_BY_ID['equipment-iron-heavy-armour-torso'];
 		expect(heavyWeapon).toMatchObject({
 			load: 20,
-			requirements: { minimumMight: 35, proficiencyTags: [] }
+			requirements: { minimumStrength: 35, proficiencyTags: [] }
 		});
 		expect(heavyArmour).toMatchObject({
 			load: 28,
-			requirements: { minimumMight: 45, proficiencyTags: ['armour-training'] }
+			requirements: { minimumStrength: 45, proficiencyTags: ['armour-training'] }
 		});
 		expect(heavyArmour?.resistanceGrants).toEqual(
 			expect.arrayContaining([
@@ -131,7 +131,7 @@ describe('equipment content catalog', () => {
 							...profile,
 							requirements: {
 								...profile.requirements,
-								minimumMight: profile.requirements.minimumMight! + 1
+								minimumStrength: profile.requirements.minimumStrength! + 1
 							}
 						}
 					: profile

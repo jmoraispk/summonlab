@@ -142,10 +142,10 @@ export function deriveCharacterCapabilityProfile(
 	return CharacterCapabilityProfileV1Schema.parse({
 		profileVersion: 'character-capability-v1',
 		attributes: {
-			might: scoreForCapabilityLabel(capabilityKey, 'combat-attribute:might:v1', 1, 100),
-			vitality: scoreForCapabilityLabel(capabilityKey, 'combat-attribute:vitality:v1', 1, 100),
+			strength: scoreForCapabilityLabel(capabilityKey, 'combat-attribute:strength:v1', 1, 100),
 			agility: scoreForCapabilityLabel(capabilityKey, 'combat-attribute:agility:v1', 1, 100),
-			spirit: scoreForCapabilityLabel(capabilityKey, 'combat-attribute:spirit:v1', 1, 100)
+			vitality: scoreForCapabilityLabel(capabilityKey, 'combat-attribute:vitality:v1', 1, 100),
+			magic: scoreForCapabilityLabel(capabilityKey, 'combat-attribute:magic:v1', 1, 100)
 		},
 		learning: {
 			cognitiveLearningScore: scoreForCapabilityLabel(

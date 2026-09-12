@@ -118,7 +118,7 @@ function fighter(
 			mana: { current: options.mana ?? 20, maximum: 100 }
 		},
 		lastDamagedAtTick: null,
-		attributes: { might: 20, vitality: 20, agility: options.agility ?? 20, spirit: 20 },
+		attributes: { strength: 20, vitality: 20, agility: options.agility ?? 20, magic: 20 },
 		armour: teamId === 'enemy' ? 100 : 0,
 		resistances: teamId === 'enemy' ? { cut: 2_000, burn: 7_500 } : {},
 		readiness: {

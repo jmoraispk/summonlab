@@ -254,7 +254,7 @@ function combatSkillTemplate(
 type HeroReadinessProjection = Readonly<{
 	intrinsic: CombatAttributes;
 	attributes: CombatAttributes;
-	effectiveLoadMight: number;
+	effectiveLoadStrength: number;
 	maximumHealth: number;
 	maximumMana: number;
 	equipment: readonly Readonly<{
@@ -293,10 +293,10 @@ function heroReadinessProjection(
 		COMBAT_RULES_V1
 	);
 	const attributes = {
-		might: effectiveAttribute(intrinsic.might, [], 'physical-damage', COMBAT_RULES_V1),
-		vitality: effectiveAttribute(intrinsic.vitality, [], 'maximum-health', COMBAT_RULES_V1),
+		strength: effectiveAttribute(intrinsic.strength, [], 'physical-damage', COMBAT_RULES_V1),
 		agility: effectiveAttribute(intrinsic.agility, [], 'readiness', COMBAT_RULES_V1),
-		spirit: effectiveAttribute(intrinsic.spirit, [], 'magical-damage', COMBAT_RULES_V1)
+		vitality: effectiveAttribute(intrinsic.vitality, [], 'maximum-health', COMBAT_RULES_V1),
+		magic: effectiveAttribute(intrinsic.magic, [], 'magical-damage', COMBAT_RULES_V1)
 	};
 	const equipment = equippedCombatProfiles(state, heroId);
 	const resistanceReceipts = resistanceGrantReceiptsFromAuthoredSources(
@@ -307,10 +307,15 @@ function heroReadinessProjection(
 	return {
 		intrinsic,
 		attributes,
-		effectiveLoadMight: effectiveAttribute(intrinsic.might, [], 'equipment-load', COMBAT_RULES_V1),
+		effectiveLoadStrength: effectiveAttribute(
+			intrinsic.strength,
+			[],
+			'equipment-load',
+			COMBAT_RULES_V1
+		),
 		maximumHealth: maximumHealth(attributes.vitality, COMBAT_RULES_V1),
 		maximumMana: maximumMana(
-			effectiveAttribute(intrinsic.spirit, [], 'maximum-mana', COMBAT_RULES_V1),
+			effectiveAttribute(intrinsic.magic, [], 'maximum-mana', COMBAT_RULES_V1),
 			COMBAT_RULES_V1
 		),
 		equipment,
@@ -331,8 +336,8 @@ function heroActionCatalog(
 	const hero = state.heroes[heroId]!;
 	const projection = heroReadinessProjection(state, heroId);
 	const skills = legalCombatSkillActions({
-		intrinsicMight: projection.intrinsic.might,
-		effectiveLoadMight: projection.effectiveLoadMight,
+		intrinsicStrength: projection.intrinsic.strength,
+		effectiveLoadStrength: projection.effectiveLoadStrength,
 		proficiencyTags: hero.combatTraining.proficiencyTags,
 		equipment: projection.equipment.map(({ profile }) => profile),
 		skills: COMBAT_SKILL_CATALOG.skills,
@@ -458,7 +463,7 @@ export function createMissionReadinessState(
 						},
 						lastDamagedAtTick: null,
 						attributes: isMaster
-							? { might: 20, vitality: 20, agility: 20, spirit: 20 }
+							? { strength: 20, agility: 20, vitality: 20, magic: 20 }
 							: projection!.attributes,
 						armour: 0,
 						resistances: projection?.resistances ?? {},
@@ -491,7 +496,7 @@ export function createMissionReadinessState(
 							mana: { current: 1, maximum: 1 }
 						},
 						lastDamagedAtTick: null,
-						attributes: { might: 20, vitality: 20, agility: 20, spirit: 20 },
+						attributes: { strength: 20, agility: 20, vitality: 20, magic: 20 },
 						armour: 0,
 						resistances: {},
 						readiness: { value: 0, exactNumerator: 0, recoveryUntilTick: 0 },

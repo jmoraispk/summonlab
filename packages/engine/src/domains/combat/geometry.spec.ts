@@ -19,7 +19,7 @@ function spatialState(input: {
 		facing: 'east',
 		resources: { health: { current: 10, maximum: 10 }, mana: { current: 0, maximum: 0 } },
 		lastDamagedAtTick: null,
-		attributes: { might: 1, vitality: 1, agility: 1, spirit: 1 },
+		attributes: { strength: 1, vitality: 1, agility: 1, magic: 1 },
 		armour: 0,
 		resistances: {},
 		readiness: { value: 0, exactNumerator: 0, recoveryUntilTick: 0 },

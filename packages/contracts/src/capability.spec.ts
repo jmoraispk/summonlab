@@ -5,6 +5,7 @@ import { describe, expect, it } from 'vitest';
 import {
 	CharacterCapabilityProfileV1Schema,
 	CharacterLearningProfileSchema,
+	CombatAttributeNameSchema,
 	CombatAttributesSchema
 } from './capability.js';
 import {
@@ -29,7 +30,7 @@ function withoutKey<T extends object, K extends keyof T>(value: T, key: K): Omit
 function capabilityProfile() {
 	return {
 		profileVersion: 'character-capability-v1' as const,
-		attributes: { might: 51, vitality: 52, agility: 53, spirit: 54 },
+		attributes: { strength: 51, agility: 53, vitality: 52, magic: 54 },
 		learning: {
 			cognitiveLearningScore: 55,
 			domainAptitudes: {
@@ -153,13 +154,25 @@ function v2ProofRunSnapshot() {
 }
 
 describe('character capability contracts', () => {
+	it('uses the canonical STR, AGI, VIT, MAG attribute vocabulary', () => {
+		expect(CombatAttributeNameSchema.options).toStrictEqual([
+			'strength',
+			'agility',
+			'vitality',
+			'magic'
+		]);
+		expect(
+			CombatAttributesSchema.safeParse({ might: 51, agility: 53, vitality: 52, spirit: 54 }).success
+		).toBe(false);
+	});
+
 	it('requires exactly four bounded integer combat attributes', () => {
 		expect(CombatAttributesSchema.safeParse(capabilityProfile().attributes).success).toBe(true);
 		expect(
-			CombatAttributesSchema.safeParse({ ...capabilityProfile().attributes, might: 0 }).success
+			CombatAttributesSchema.safeParse({ ...capabilityProfile().attributes, strength: 0 }).success
 		).toBe(false);
 		expect(
-			CombatAttributesSchema.safeParse({ ...capabilityProfile().attributes, spirit: 101 }).success
+			CombatAttributesSchema.safeParse({ ...capabilityProfile().attributes, magic: 101 }).success
 		).toBe(false);
 		expect(
 			CombatAttributesSchema.safeParse({ ...capabilityProfile().attributes, agility: 1.5 }).success

@@ -3,6 +3,8 @@ export type VillageFacilityId = 'gate' | 'court' | 'tower' | 'forge' | 'kitchen'
 export type VillageHeroId =
 	'dara-zev' | 'mara-vey' | 'jori-daro' | 'kira-toren' | 'iven-orra' | 'remy-nahl';
 
+export type VillageHeroAttribute = 'Strength' | 'Agility' | 'Vitality' | 'Magic';
+
 export type VillagePoint = {
 	x: number;
 	y: number;
@@ -31,7 +33,7 @@ export type VillageHero = {
 	portrait: string;
 	portraitAlt: string;
 	position: VillagePoint;
-	attributes: readonly { label: string; value: number }[];
+	attributes: readonly { label: VillageHeroAttribute; value: number }[];
 	skills: readonly string[];
 	equipment: readonly string[];
 };

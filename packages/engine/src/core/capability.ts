@@ -18,13 +18,13 @@ import {
 const BASIS_POINTS = 10_000;
 
 const SCOPE_ATTRIBUTE = {
-	'physical-damage': 'might',
-	'magical-damage': 'spirit',
+	'physical-damage': 'strength',
+	'magical-damage': 'magic',
 	'maximum-health': 'vitality',
 	'health-regeneration': 'vitality',
-	'maximum-mana': 'spirit',
-	'mana-regeneration': 'spirit',
-	'equipment-load': 'might',
+	'maximum-mana': 'magic',
+	'mana-regeneration': 'magic',
+	'equipment-load': 'strength',
 	readiness: 'agility',
 	movement: 'agility',
 	evasion: 'agility'
@@ -131,8 +131,7 @@ export function maximumHealth(vitality: number, rules: CombatRulesV1): number {
 	return rules.health.baseMaximum + vitality * rules.health.perVitality;
 }
 
-export function maximumMana(spirit: number, rules: CombatRulesV1): number {
-	if (!Number.isInteger(spirit) || spirit < 0)
-		throw new Error('Spirit must be a nonnegative integer');
-	return rules.mana.baseMaximum + spirit * rules.mana.perSpirit;
+export function maximumMana(magic: number, rules: CombatRulesV1): number {
+	if (!Number.isInteger(magic) || magic < 0) throw new Error('Magic must be a nonnegative integer');
+	return rules.mana.baseMaximum + magic * rules.mana.perMagic;
 }

@@ -1233,18 +1233,18 @@ type GeneratedCharacterDraft = CharacterDraft | CharacterDraftV2;
 
 function scriptedScores(draft: GeneratedCharacterDraft, directive: string) {
 	const { mind } = draft;
-	let might: number;
+	let strength: number;
 	let resolve: number;
 	if ('capabilityProfile' in draft) {
-		might = Math.ceil(draft.capabilityProfile.attributes.might / 10);
+		strength = Math.ceil(draft.capabilityProfile.attributes.strength / 10);
 		resolve = Math.ceil(draft.capabilityProfile.attributes.vitality / 10);
 	} else {
-		might = draft.mind.aptitudes.might;
+		strength = draft.mind.aptitudes.might;
 		resolve = draft.mind.aptitudes.resolve;
 	}
 	let kitchen = Math.round((mind.personality.agreeableness + mind.personality.extraversion) / 12);
 	let trainingGround = Math.round(
-		(mind.personality.conscientiousness + might * 8 + resolve * 7) / 16
+		(mind.personality.conscientiousness + strength * 8 + resolve * 7) / 16
 	);
 	if (['belonging', 'mercy'].includes(mind.primaryValue)) kitchen += 14;
 	if (['connect', 'protect'].includes(mind.primaryDrive)) kitchen += 10;

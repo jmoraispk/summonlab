@@ -100,14 +100,14 @@ describe('summon proof persistence', () => {
 			recipeFromSeed(`proof-private-audit-${randomUUID()}`),
 			{ capabilityEntropy }
 		);
-		const might = draft.capabilityProfile.attributes.might;
+		const strength = draft.capabilityProfile.attributes.strength;
 		const mismatched = {
 			...draft,
 			capabilityProfile: {
 				...draft.capabilityProfile,
 				attributes: {
 					...draft.capabilityProfile.attributes,
-					might: might === 100 ? 99 : might + 1
+					strength: strength === 100 ? 99 : strength + 1
 				}
 			}
 		};

@@ -19,8 +19,8 @@ export const COMBAT_RULES_V1: CombatRulesV1 = deepFreeze(
 			modifierStackingOrder: ['additive-flat', 'additive-basis-points']
 		},
 		damage: {
-			physicalBasisPointsPerMight: 100,
-			magicalBasisPointsPerSpirit: 100
+			physicalBasisPointsPerStrength: 100,
+			magicalBasisPointsPerMagic: 100
 		},
 		health: {
 			baseMaximum: 100,
@@ -33,9 +33,9 @@ export const COMBAT_RULES_V1: CombatRulesV1 = deepFreeze(
 		},
 		mana: {
 			baseMaximum: 40,
-			perSpirit: 2,
+			perMagic: 2,
 			regenerationBase: 2,
-			regenerationSpiritBonus: 8,
+			regenerationMagicBonus: 8,
 			regenerationSaturationConstant: 50,
 			combatRecoveryBasisPoints: 5_000
 		},

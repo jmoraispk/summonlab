@@ -414,11 +414,12 @@ function calculateDamage(
 		authority.coefficientBasisPoints,
 		'Authored damage coefficient'
 	);
-	const attribute = channel === 'physical' ? attacker.attributes.might : attacker.attributes.spirit;
+	const attribute =
+		channel === 'physical' ? attacker.attributes.strength : attacker.attributes.magic;
 	const perAttribute =
 		channel === 'physical'
-			? rules.damage.physicalBasisPointsPerMight
-			: rules.damage.magicalBasisPointsPerSpirit;
+			? rules.damage.physicalBasisPointsPerStrength
+			: rules.damage.magicalBasisPointsPerMagic;
 	const attributeScaledMagnitude = scaleHalfUp(
 		authoredMagnitude,
 		BASIS_POINTS + attribute * perAttribute,

@@ -1861,10 +1861,10 @@ function readinessReplayCombatant(
 	teamId: 'party' | 'enemy',
 	position: { readonly x: number; readonly y: number },
 	attributes: {
-		readonly might: number;
-		readonly vitality: number;
+		readonly strength: number;
 		readonly agility: number;
-		readonly spirit: number;
+		readonly vitality: number;
+		readonly magic: number;
 	}
 ) {
 	return {
@@ -1893,26 +1893,26 @@ function readinessReplayInitialState(): ReadinessCombatStateV1 {
 			ids.heroA,
 			'party',
 			{ x: 0, y: 1 },
-			{ might: 1, vitality: 20, agility: 100, spirit: 20 }
+			{ strength: 1, agility: 100, vitality: 20, magic: 20 }
 		),
 		[ids.heroB]: readinessReplayCombatant(
 			ids.heroB,
 			'party',
 			{ x: 4, y: 1 },
-			{ might: 100, vitality: 20, agility: 100, spirit: 20 }
+			{ strength: 100, agility: 100, vitality: 20, magic: 20 }
 		),
 		[ids.heroC]: readinessReplayCombatant(
 			ids.heroC,
 			'party',
 			{ x: 0, y: 2 },
-			{ might: 20, vitality: 20, agility: 100, spirit: 20 }
+			{ strength: 20, agility: 100, vitality: 20, magic: 20 }
 		),
 		[ids.monster]: {
 			...readinessReplayCombatant(
 				ids.monster,
 				'enemy',
 				{ x: 4, y: 2 },
-				{ might: 100, vitality: 20, agility: 100, spirit: 20 }
+				{ strength: 100, agility: 100, vitality: 20, magic: 20 }
 			),
 			conditions: [
 				{
@@ -1928,7 +1928,7 @@ function readinessReplayInitialState(): ReadinessCombatStateV1 {
 			ids.monsterReserve,
 			'enemy',
 			{ x: 4, y: 0 },
-			{ might: 20, vitality: 20, agility: 100, spirit: 20 }
+			{ strength: 20, agility: 100, vitality: 20, magic: 20 }
 		)
 	};
 	const actionTemplates: Readonly<Record<string, readonly CombatLegalActionTemplate[]>> = {

@@ -165,7 +165,7 @@ function readinessV26Fixture(deployed: EngineGameStateV25): {
 		facing: teamId === 'party' ? ('east' as const) : ('west' as const),
 		resources: { health: { current: 100, maximum: 100 }, mana: { current: 20, maximum: 20 } },
 		lastDamagedAtTick: null,
-		attributes: { might: 20, vitality: 20, agility: 20, spirit: 20 },
+		attributes: { strength: 20, agility: 20, vitality: 20, magic: 20 },
 		armour: 0,
 		resistances: {},
 		readiness: { value: readiness, exactNumerator: readiness, recoveryUntilTick: 0 },
@@ -416,7 +416,7 @@ describe('mission runtime ownership', () => {
 								...initial.heroes[heroId]!.capabilityProfile,
 								attributes: {
 									...initial.heroes[heroId]!.capabilityProfile.attributes,
-									might: 20
+									strength: 20
 								}
 							}
 						}
@@ -1230,17 +1230,17 @@ describe('mission runtime ownership', () => {
 			{
 				commandType: 'mission.advance.automatic',
 				eventType: 'mission.round.resolved',
-				eventHash: '266c7b6b111ee64e41062037c0632dbac763d2650ca8eccd860827ee6ff9c96e'
+				eventHash: '47fe9e0a14162afd31b4414a565fb506f5618812340d397f5986b50ebbeb1a3d'
 			},
 			{
 				commandType: 'mission.apply.combat-choice-batch',
 				eventType: 'mission.combat.choice-batch.applied',
-				eventHash: '43322fba75a137833cb140ae5f40ada4e9ba07578a1b21ab7e8834bf24b47bf2'
+				eventHash: '626ca390911e5a30683f26a1b4b21d78a810928aff18dc52f30667c349073547'
 			},
 			{
 				commandType: 'mission.commit.readiness-terminal',
 				eventType: 'mission.combat.readiness.terminal.committed',
-				eventHash: 'ed7acb68bc3f5aff97d9770aed50c4a84e8d6ee5c0e76770871b4fb341fe2827'
+				eventHash: 'c6d070d031355385159d2588f82da3e8fc1a613768cc230da0efbf9500117dc2'
 			},
 			{
 				commandType: 'mission.open.extraction',

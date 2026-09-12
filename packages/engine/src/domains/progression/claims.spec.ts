@@ -58,7 +58,7 @@ function combatant(
 			mana: { current: 5, maximum: 20 }
 		},
 		lastDamagedAtTick: health < 100 ? 3 : null,
-		attributes: { might: 20, vitality: 20, agility: 20, spirit: 20 },
+		attributes: { strength: 20, vitality: 20, agility: 20, magic: 20 },
 		armour: 0,
 		resistances: {},
 		readiness: { value: 0, exactNumerator: 0, recoveryUntilTick: 0 },

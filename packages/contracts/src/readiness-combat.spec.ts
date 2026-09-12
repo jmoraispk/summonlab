@@ -35,7 +35,7 @@ const HASH = {
 	view: '3'.repeat(64),
 	legal: '4'.repeat(64),
 	batch: '5'.repeat(64),
-	content: '1abef40c18eb97d4c1694c674f9b4917f286053e6d810d5b4282760f2ab4c2a7',
+	content: '659a89f61dcd9ebc7ca561a78ce5a405f81dbf8740246c7a18e7df697b862489',
 	trace: '7'.repeat(64)
 } as const;
 
@@ -50,7 +50,7 @@ const hero = {
 		mana: { current: 40, maximum: 50 }
 	},
 	lastDamagedAtTick: 2,
-	attributes: { might: 20, vitality: 20, agility: 20, spirit: 20 },
+	attributes: { strength: 20, vitality: 20, agility: 20, magic: 20 },
 	armour: 10,
 	resistances: { cut: 500 },
 	readiness: {
@@ -825,7 +825,7 @@ describe('readiness combat contracts', () => {
 			attemptId: ID.attempt,
 			modeId: 'agent-readiness-v1',
 			rulesVersion: 'agent-readiness-rules-v2',
-			contentHash: 'e78ed494f1ac78f6b0efca0574248425a1bb1148d54fd39161db600964e8919e',
+			contentHash: '713a146cc6e5198fc208e0e5cc35bb67023ef9002e37a364dda71905b025eedd',
 			outcome: 'victory',
 			endedAtTick: 20,
 			finalCombatants: {

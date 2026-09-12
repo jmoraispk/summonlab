@@ -96,7 +96,7 @@ function equipmentStateV25(): EngineGameStateV25 {
 				},
 				capabilityProfile: {
 					profileVersion: 'character-capability-v1',
-					attributes: { might: 10, vitality: 40, agility: 20, spirit: 30 },
+					attributes: { strength: 10, vitality: 40, agility: 20, magic: 30 },
 					learning: {
 						cognitiveLearningScore: 51,
 						domainAptitudes: {

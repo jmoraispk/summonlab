@@ -44,8 +44,8 @@ export function attributeScaledMagnitude(
 	assertNonnegativeInteger(baseMagnitude, 'Base magnitude');
 	const contribution =
 		channel === 'physical'
-			? attributes.might * rules.damage.physicalBasisPointsPerMight
-			: attributes.spirit * rules.damage.magicalBasisPointsPerSpirit;
+			? attributes.strength * rules.damage.physicalBasisPointsPerStrength
+			: attributes.magic * rules.damage.magicalBasisPointsPerMagic;
 	return scaleByBasisPoints(baseMagnitude, BASIS_POINTS + contribution);
 }
 
@@ -73,18 +73,18 @@ export function healthRegeneration(
 }
 
 export function manaRegeneration(
-	spirit: number,
+	magic: number,
 	contextInput: RegenerationContext,
 	rules: CombatRulesV1
 ): number {
-	assertNonnegativeInteger(spirit, 'Spirit');
+	assertNonnegativeInteger(magic, 'Magic');
 	const context = RegenerationContextSchema.parse(contextInput);
 	if (context.downed || context.injuryRepair) return 0;
-	const spiritBonus = divideHalfUp(
-		BigInt(rules.mana.regenerationSpiritBonus) * BigInt(spirit),
-		BigInt(spirit + rules.mana.regenerationSaturationConstant)
+	const magicBonus = divideHalfUp(
+		BigInt(rules.mana.regenerationMagicBonus) * BigInt(magic),
+		BigInt(magic + rules.mana.regenerationSaturationConstant)
 	);
-	const recovery = rules.mana.regenerationBase + spiritBonus;
+	const recovery = rules.mana.regenerationBase + magicBonus;
 	return context.mode === 'combat'
 		? scaleByBasisPoints(recovery, rules.mana.combatRecoveryBasisPoints)
 		: recovery;

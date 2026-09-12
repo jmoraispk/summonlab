@@ -98,10 +98,10 @@ describe('legacy automatic combat', () => {
 
 	it('projects each canonical attribute onto only its agreed legacy aptitude with half-up clamps', () => {
 		expect(
-			legacyCapabilityProjection({ might: 1, vitality: 5, agility: 6, spirit: 95 })
+			legacyCapabilityProjection({ strength: 1, agility: 6, vitality: 5, magic: 95 })
 		).toStrictEqual({ might: 1, finesse: 1, insight: 10, resolve: 1 });
 		expect(
-			legacyCapabilityProjection({ might: 94, vitality: 100, agility: 55, spirit: 45 })
+			legacyCapabilityProjection({ strength: 94, agility: 55, vitality: 100, magic: 45 })
 		).toStrictEqual({ might: 9, finesse: 6, insight: 5, resolve: 10 });
 	});
 

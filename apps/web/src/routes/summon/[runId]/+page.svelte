@@ -499,10 +499,10 @@
 					<span>personality private</span>
 					<span>learning profile private</span>
 					{#if 'characterSchemaVersion' in snapshot}
-						<span>Might {snapshot.capabilityProfile.attributes.might}</span>
-						<span>Vitality {snapshot.capabilityProfile.attributes.vitality}</span>
-						<span>Agility {snapshot.capabilityProfile.attributes.agility}</span>
-						<span>Spirit {snapshot.capabilityProfile.attributes.spirit}</span>
+						<span>STR {snapshot.capabilityProfile.attributes.strength}</span>
+						<span>AGI {snapshot.capabilityProfile.attributes.agility}</span>
+						<span>VIT {snapshot.capabilityProfile.attributes.vitality}</span>
+						<span>MAG {snapshot.capabilityProfile.attributes.magic}</span>
 					{/if}
 				</div>
 				<blockquote>{snapshot.firstObservation}</blockquote>

@@ -170,7 +170,7 @@ function fighter(
 		facing: combatantId === ID.target ? ('west' as const) : ('east' as const),
 		resources: { health: { current: health, maximum: 100 }, mana: { current: 20, maximum: 20 } },
 		lastDamagedAtTick: null,
-		attributes: { might: 20, vitality: 20, agility: 20, spirit: 20 },
+		attributes: { strength: 20, vitality: 20, agility: 20, magic: 20 },
 		armour: 0,
 		resistances: {},
 		readiness: {

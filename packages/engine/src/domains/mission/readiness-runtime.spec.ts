@@ -163,7 +163,7 @@ describe('mission readiness construction', () => {
 					...hero,
 					capabilityProfile: {
 						...hero.capabilityProfile,
-						attributes: { might: 44, vitality: 30, agility: 40, spirit: 50 }
+						attributes: { strength: 44, vitality: 30, agility: 40, magic: 50 }
 					},
 					progression: {
 						...hero.progression,
@@ -171,15 +171,15 @@ describe('mission readiness construction', () => {
 						experience: 10,
 						attributeGrowthReceipts: [
 							{
-								receiptId: deterministicUuid('readiness-runtime:might-growth'),
+								receiptId: deterministicUuid('readiness-runtime:strength-growth'),
 								heroId: fixture.heroId,
-								attribute: 'might' as const,
+								attribute: 'strength' as const,
 								beforeIntrinsicValue: 44,
 								afterIntrinsicValue: 45,
 								spentPoints: 1,
 								sourceLevel: 2,
 								rulesVersion: 'combat-rules-v1' as const,
-								commandId: deterministicUuid('readiness-runtime:might-growth-command'),
+								commandId: deterministicUuid('readiness-runtime:strength-growth-command'),
 								gameTime: fixture.state.simulatedAt
 							}
 						],
@@ -218,10 +218,10 @@ describe('mission readiness construction', () => {
 		const templates = readiness.actorContexts[fixture.heroId]!.legalActionTemplates;
 
 		expect(combatant.attributes).toStrictEqual({
-			might: 45,
+			strength: 45,
 			vitality: 30,
 			agility: 40,
-			spirit: 50
+			magic: 50
 		});
 		expect(combatant.resources).toStrictEqual({
 			health: { current: 220, maximum: 220 },
@@ -325,7 +325,7 @@ describe('mission readiness construction', () => {
 		const configured = structuredClone(fixture.state) as EngineGameStateV26;
 		for (const [index, heroId] of fixture.heroIds.entries()) {
 			const hero = configured.heroes[heroId]!;
-			hero.capabilityProfile.attributes.might = 50;
+			hero.capabilityProfile.attributes.strength = 50;
 			const bow = equippedItem(heroId, 'equipment-ash-bow', `fallback-bow-${index}`);
 			if (hero.equipment.mainHand) {
 				configured.items[hero.equipment.mainHand] = {

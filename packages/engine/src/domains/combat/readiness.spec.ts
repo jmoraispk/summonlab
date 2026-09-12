@@ -52,7 +52,7 @@ function combatant(
 		readiness?: number;
 		agility?: number;
 		vitality?: number;
-		spirit?: number;
+		magic?: number;
 		health?: number;
 		mana?: number;
 		lastDamagedAtTick?: number | null;
@@ -73,10 +73,10 @@ function combatant(
 		},
 		lastDamagedAtTick: input.lastDamagedAtTick ?? null,
 		attributes: {
-			might: 20,
+			strength: 20,
 			vitality: input.vitality ?? 20,
 			agility: input.agility ?? 1,
-			spirit: input.spirit ?? 20
+			magic: input.magic ?? 20
 		},
 		armour: 0,
 		resistances: {},

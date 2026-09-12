@@ -26,7 +26,7 @@ export const AGENT_READINESS_CONTENT_BINDING_V2 = deepFreeze({
 			contentHash: MONSTER_READINESS_ACTIONS_V2_CONTENT_HASH
 		}
 	] satisfies readonly CombatContentComponentBinding[],
-	contentHash: 'e78ed494f1ac78f6b0efca0574248425a1bb1148d54fd39161db600964e8919e'
+	contentHash: '713a146cc6e5198fc208e0e5cc35bb67023ef9002e37a364dda71905b025eedd'
 });
 
 let verifiedBinding: Promise<typeof AGENT_READINESS_CONTENT_BINDING_V2> | undefined;

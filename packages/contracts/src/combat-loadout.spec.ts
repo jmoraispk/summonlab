@@ -19,7 +19,7 @@ const swordProfile = {
 	definitionId: 'equipment-bronze-sword',
 	familyTags: ['one-handed-blade'],
 	load: 12,
-	requirements: { minimumMight: null, proficiencyTags: [] },
+	requirements: { minimumStrength: null, proficiencyTags: [] },
 	resistanceGrants: []
 } as const;
 
@@ -44,14 +44,14 @@ describe('combat loadout contracts', () => {
 		).not.toHaveProperty('equipmentItemId');
 	});
 
-	it('keeps load and explicit Might or armour-training requirements separate from Vitality', () => {
+	it('keeps load and explicit Strength or armour-training requirements separate from Vitality', () => {
 		expect(CombatEquipmentProfileSchema.parse(swordProfile)).toStrictEqual(swordProfile);
 		const heavyArmour = {
 			...swordProfile,
 			definitionId: 'equipment-iron-heavy-armour-torso',
 			familyTags: [],
 			load: 28,
-			requirements: { minimumMight: 45, proficiencyTags: ['armour-training'] },
+			requirements: { minimumStrength: 45, proficiencyTags: ['armour-training'] },
 			resistanceGrants: [{ tag: 'cut', basisPoints: 800, capBasisPoints: 1_500 }]
 		} as const;
 		expect(CombatEquipmentProfileSchema.parse(heavyArmour)).toStrictEqual(heavyArmour);

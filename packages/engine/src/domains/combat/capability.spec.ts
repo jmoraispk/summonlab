@@ -22,7 +22,7 @@ import {
 
 const PROFILE: CharacterCapabilityProfileV1 = {
 	profileVersion: 'character-capability-v1',
-	attributes: { might: 20, vitality: 30, agility: 40, spirit: 50 },
+	attributes: { strength: 20, agility: 40, vitality: 30, magic: 50 },
 	learning: {
 		cognitiveLearningScore: 100,
 		domainAptitudes: { martial: 25, magical: 50, crafting: 75, survival: 40, social: 60 }
@@ -40,7 +40,7 @@ const NEUTRAL_LEARNING_CONTEXT = {
 
 function modifier(
 	modifierId: string,
-	attribute: 'might' | 'vitality' | 'agility' | 'spirit',
+	attribute: 'strength' | 'vitality' | 'agility' | 'magic',
 	scope: 'physical-damage' | 'magical-damage',
 	stackingRule: 'additive-flat' | 'additive-basis-points',
 	value: number
@@ -85,7 +85,7 @@ describe('four-attribute combat capability math', () => {
 				receiptId: '20000000-0000-4000-8000-000000000001',
 				sourceKind: 'level-allocation',
 				sourceId: 'level:2',
-				attribute: 'might',
+				attribute: 'strength',
 				points: 3,
 				rulesVersion: 'combat-rules-v1'
 			}),
@@ -100,40 +100,45 @@ describe('four-attribute combat capability math', () => {
 		];
 
 		expect(intrinsicAttributes(PROFILE, receipts, COMBAT_RULES_V1)).toStrictEqual({
-			might: 23,
+			strength: 23,
 			vitality: 35,
 			agility: 40,
-			spirit: 50
+			magic: 50
 		});
-		expect(PROFILE.attributes).toStrictEqual({ might: 20, vitality: 30, agility: 40, spirit: 50 });
+		expect(PROFILE.attributes).toStrictEqual({
+			strength: 20,
+			vitality: 30,
+			agility: 40,
+			magic: 50
+		});
 	});
 
 	it('filters modifiers by both typed scope and owning attribute, then stacks flat before basis points', () => {
 		const modifiers = [
 			modifier(
 				'20000000-0000-4000-8000-000000000003',
-				'might',
+				'strength',
 				'physical-damage',
 				'additive-basis-points',
 				2_000
 			),
 			modifier(
 				'20000000-0000-4000-8000-000000000004',
-				'might',
+				'strength',
 				'physical-damage',
 				'additive-flat',
 				5
 			),
 			modifier(
 				'20000000-0000-4000-8000-000000000005',
-				'spirit',
+				'magic',
 				'physical-damage',
 				'additive-flat',
 				100
 			),
 			modifier(
 				'20000000-0000-4000-8000-000000000006',
-				'might',
+				'strength',
 				'magical-damage',
 				'additive-flat',
 				100
@@ -152,7 +157,7 @@ describe('four-attribute combat capability math', () => {
 		).toBe(29);
 	});
 
-	it('uses Might only for physical magnitude and Spirit only for magical magnitude', () => {
+	it('uses Strength only for physical magnitude and Magic only for magical magnitude', () => {
 		expect(attributeScaledMagnitude(100, 'physical', PROFILE.attributes, COMBAT_RULES_V1)).toBe(
 			120
 		);
@@ -160,7 +165,7 @@ describe('four-attribute combat capability math', () => {
 			attributeScaledMagnitude(
 				100,
 				'physical',
-				{ ...PROFILE.attributes, agility: 100, spirit: 100 },
+				{ ...PROFILE.attributes, agility: 100, magic: 100 },
 				COMBAT_RULES_V1
 			)
 		).toBe(120);
@@ -169,7 +174,7 @@ describe('four-attribute combat capability math', () => {
 			attributeScaledMagnitude(
 				100,
 				'magical',
-				{ ...PROFILE.attributes, might: 100, vitality: 100 },
+				{ ...PROFILE.attributes, strength: 100, vitality: 100 },
 				COMBAT_RULES_V1
 			)
 		).toBe(150);
@@ -200,7 +205,7 @@ describe('four-attribute combat capability math', () => {
 		}
 	});
 
-	it('derives Mana and modest saturating regeneration only from Spirit', () => {
+	it('derives Mana and modest saturating regeneration only from Magic', () => {
 		expect(maximumMana(50, COMBAT_RULES_V1)).toBe(140);
 		expect(
 			manaRegeneration(
