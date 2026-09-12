@@ -4,6 +4,7 @@ import {
 	EngineGameStateV27Schema,
 	HeroProgressionV2Schema,
 	HeroExperienceAppliedPayloadSchema,
+	HeroAttributeGrowthAppliedPayloadSchema,
 	ProgressionRulesBindingSchema,
 	type ExperienceClaim,
 	type ExperienceReceipt,
@@ -22,6 +23,7 @@ import type { EngineEventReducer } from '../../core/types.js';
 import { ReplayIntegrityError } from '../../errors.js';
 import { deterministicUuid, hashCanonical } from '../../hash.js';
 import { intrinsicAttributes, maximumHealth } from './math.js';
+import { applyAttributeGrowthClaim } from './attributes.js';
 
 export function experienceThresholdForLevel(level: number, rules: ProgressionRulesV1): number {
 	if (!Number.isInteger(level) || level < 1 || level > rules.levelCap) {
@@ -164,10 +166,50 @@ function reduceExperienceApplied(
 
 export const progressionEventReducer: EngineEventReducer = {
 	ownerId: 'progression',
-	eventTypes: ['hero.experience.applied'],
+	eventTypes: ['hero.attribute.growth.applied', 'hero.experience.applied'],
 	reduce(state, event) {
 		if (state.schemaVersion !== 27) {
 			throw new ReplayIntegrityError('Progression event requires engine-v27', event.sequence);
+		}
+		if (event.eventType === 'hero.attribute.growth.applied') {
+			const payload = HeroAttributeGrowthAppliedPayloadSchema.parse(event.payload);
+			const hero = state.heroes[payload.heroId];
+			if (
+				!hero ||
+				event.actorId !== hero.heroId ||
+				payload.claim.sourceEventId !== event.eventId ||
+				hashCanonical(payload.progressionBefore) !== hashCanonical(hero.progression)
+			) {
+				throw new ReplayIntegrityError(
+					'Attribute growth event precondition diverged',
+					event.sequence
+				);
+			}
+			const outcome = applyAttributeGrowthClaim({
+				hero,
+				claim: payload.claim,
+				rules: PROGRESSION_RULES_V1,
+				rulesBinding: PROGRESSION_RULES_V1_BINDING,
+				occurredAt: event.gameTime
+			});
+			if (
+				hashCanonical(payload.receipt) !== hashCanonical(outcome.receipt) ||
+				hashCanonical(payload.progressionAfter) !== hashCanonical(outcome.hero.progression) ||
+				payload.healthAfter !== outcome.hero.health ||
+				payload.maximumHealthAfter !== outcome.hero.maxHealth ||
+				payload.manaAfter !== outcome.hero.mana ||
+				payload.maximumManaAfter !== outcome.hero.maxMana ||
+				payload.nextVersion !== state.version + 1
+			) {
+				throw new ReplayIntegrityError('Attribute growth event outcome diverged', event.sequence);
+			}
+			return EngineGameStateV27Schema.parse({
+				...state,
+				version: payload.nextVersion,
+				eventCursor: event.sequence,
+				entropyCursor: event.seedCursor,
+				heroes: { ...state.heroes, [hero.heroId]: { ...hero, ...outcome.hero } }
+			});
 		}
 		return reduceExperienceApplied(state, event);
 	}

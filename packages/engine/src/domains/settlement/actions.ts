@@ -456,7 +456,26 @@ function masterSettlementActions(
 function heroSettlementActions(state: EngineGameStateModern, actorId: string): LegalAction[] {
 	const hero = state.heroes[actorId];
 	let allocationActions: LegalAction[] = [];
-	if (state.schemaVersion === 25 || state.schemaVersion === 26) {
+	if (state.schemaVersion === 27) {
+		const progressionHero = state.heroes[actorId];
+		if (
+			progressionHero?.lifeState === 'active' &&
+			progressionHero.progression.unallocatedAttributePoints > 0
+		) {
+			allocationActions = CombatAttributeNameSchema.options.map((attribute) =>
+				action({
+					actionId: `hero.allocate.attribute.${attribute}`,
+					actorId,
+					kind: 'train',
+					label: `Increase ${attribute}`,
+					description: `Spend unallocated level points to permanently increase intrinsic ${attribute}.`,
+					targetIds: [],
+					resourceCosts: {},
+					tags: ['progression', 'attribute', 'intrinsic', attribute]
+				})
+			);
+		}
+	} else if (state.schemaVersion === 25 || state.schemaVersion === 26) {
 		const capabilityHero = state.heroes[actorId];
 		if (
 			capabilityHero?.lifeState === 'active' &&

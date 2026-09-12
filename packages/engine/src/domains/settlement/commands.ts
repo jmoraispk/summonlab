@@ -12,7 +12,11 @@ import {
 	type EntropyDraw,
 	type RewardDelta
 } from '@summonlab/contracts';
-import { COMBAT_RULES_V1 } from '@summonlab/content';
+import {
+	COMBAT_RULES_V1,
+	PROGRESSION_RULES_V1,
+	PROGRESSION_RULES_V1_BINDING
+} from '@summonlab/content';
 import { z } from 'zod';
 
 import { settlementForState, verifiedEquipmentDefinition } from '../../core/content-bindings.js';
@@ -28,6 +32,7 @@ import {
 import { createEntropyCursor, drawInteger } from '../../entropy.js';
 import { IllegalActionError, StaleStateVersionError } from '../../errors.js';
 import { deterministicUuid } from '../../hash.js';
+import { applyAttributeGrowthClaim } from '../progression/attributes.js';
 import { addGameMinutes, addGameSeconds, compareGameTime, gameMinutesBetween } from '../../time.js';
 import { settlementLegalActions } from './actions.js';
 import {
@@ -423,7 +428,12 @@ function assertSettlementCommandLegal(
 		}
 	}
 	if (command.commandType === 'hero.equip.item') {
-		if (state.schemaVersion === 24 || state.schemaVersion === 25 || state.schemaVersion === 26) {
+		if (
+			state.schemaVersion === 24 ||
+			state.schemaVersion === 25 ||
+			state.schemaVersion === 26 ||
+			state.schemaVersion === 27
+		) {
 			try {
 				equipEquipmentItem(state, {
 					heroId: command.actorId,
@@ -438,6 +448,18 @@ function assertSettlementCommandLegal(
 		}
 	}
 	if (command.commandType === 'hero.allocate.attribute') {
+		if (state.schemaVersion === 27) {
+			const hero = state.heroes[command.actorId];
+			const amount = command.amount ?? 1;
+			if (
+				!hero ||
+				hero.lifeState !== 'active' ||
+				hero.progression.unallocatedAttributePoints < amount
+			) {
+				throw new IllegalActionError(required, actionIds);
+			}
+			return;
+		}
 		if (
 			(state.schemaVersion !== 25 && state.schemaVersion !== 26) ||
 			state.heroes[command.actorId]?.lifeState !== 'active' ||
@@ -1167,6 +1189,45 @@ function buildModernSettlementEvent(
 		});
 	}
 	if (command.commandType === 'hero.allocate.attribute') {
+		if (state.schemaVersion === 27) {
+			const hero = state.heroes[command.actorId];
+			if (!hero) throw new IllegalActionError(command.commandType);
+			const base = eventBase(state, command, 'hero.attribute.growth.applied');
+			const claim = {
+				claimId: deterministicUuid(`${base.eventId}:attribute-growth-claim`),
+				heroId: hero.heroId,
+				sourceEventId: base.eventId,
+				attribute: command.attribute,
+				amount: command.amount ?? 1,
+				sourceKind: 'allocation' as const
+			};
+			const outcome = applyAttributeGrowthClaim({
+				hero,
+				claim,
+				rules: PROGRESSION_RULES_V1,
+				rulesBinding: PROGRESSION_RULES_V1_BINDING,
+				occurredAt: state.simulatedAt
+			});
+			return AuthoritativeEventSchema.parse({
+				...base,
+				seedCursor: state.entropyCursor,
+				payload: {
+					heroId: hero.heroId,
+					claim,
+					receipt: outcome.receipt,
+					progressionBefore: hero.progression,
+					progressionAfter: outcome.hero.progression,
+					healthAfter: outcome.hero.health,
+					maximumHealthAfter: outcome.hero.maxHealth,
+					manaAfter: outcome.hero.mana,
+					maximumManaAfter: outcome.hero.maxMana,
+					nextVersion: state.version + 1,
+					...emptyMetadata(
+						`The hero permanently increased intrinsic ${command.attribute} by ${claim.amount} point${claim.amount === 1 ? '' : 's'}.`
+					)
+				}
+			});
+		}
 		if (state.schemaVersion !== 25 && state.schemaVersion !== 26) {
 			throw new IllegalActionError(command.commandType);
 		}

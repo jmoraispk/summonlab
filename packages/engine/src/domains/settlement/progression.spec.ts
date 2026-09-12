@@ -6,10 +6,12 @@ import {
 	EngineGameStateV24Schema,
 	EngineGameStateV25Schema,
 	EngineGameStateV26Schema,
+	EngineGameStateV27Schema,
 	type ActionSource,
 	type EngineCommand,
 	type EngineGameStateV25,
-	type EngineGameStateV26
+	type EngineGameStateV26,
+	type EngineGameStateV27
 } from '@summonlab/contracts';
 import { COMBAT_RULES_V1 } from '@summonlab/content';
 import { describe, expect, it } from 'vitest';
@@ -38,7 +40,7 @@ function systemSource(): ActionSource {
 }
 
 function command(
-	state: EngineGameStateV25 | EngineGameStateV26,
+	state: EngineGameStateV25 | EngineGameStateV26 | EngineGameStateV27,
 	actorId: string,
 	key: string,
 	body: object,
@@ -68,7 +70,8 @@ async function capabilityState(key: string): Promise<{
 	const bootstrap = createBootstrapEngine({
 		runId: deterministicUuid(`progression:${key}:run`),
 		seed: `progression:${key}:seed`,
-		draft
+		draft,
+		developmentEngineVersion: 25
 	});
 	if (bootstrap.snapshot.state.schemaVersion !== 25) {
 		throw new Error('Expected engine-v25 capability state');
@@ -115,7 +118,8 @@ async function readinessFixtureForEquipmentCommand(): Promise<{
 		runId: deterministicUuid('v26-equipment-command:run'),
 		seed: 'v26-equipment-command:seed',
 		draft,
-		combatMode: 'agent-readiness-v1'
+		combatMode: 'agent-readiness-v1',
+		developmentEngineVersion: 26
 	}).snapshot.state;
 	if (initial.schemaVersion !== 26) throw new Error('Expected engine-v26 state');
 	const heroId = draft.manifest.characterId;
@@ -481,7 +485,8 @@ describe('engine-v26 intrinsic attribute progression', () => {
 			runId: deterministicUuid('bad-receipt-chain:v26-run'),
 			seed: 'bad-receipt-chain:v26-seed',
 			draft,
-			combatMode: 'agent-readiness-v1'
+			combatMode: 'agent-readiness-v1',
+			developmentEngineVersion: 26
 		}).snapshot.state;
 		if (v26.schemaVersion !== 26) throw new Error('Expected engine-v26 state');
 		const v26Hero = v26.heroes[draft.manifest.characterId]!;
@@ -514,7 +519,8 @@ describe('engine-v26 intrinsic attribute progression', () => {
 			runId: deterministicUuid('progression:v26-allocation:run'),
 			seed: 'progression:v26-allocation:seed',
 			draft,
-			combatMode: 'agent-readiness-v1'
+			combatMode: 'agent-readiness-v1',
+			developmentEngineVersion: 26
 		}).snapshot.state;
 		if (initial.schemaVersion !== 26) throw new Error('Expected engine-v26 state');
 		const heroId = draft.manifest.characterId;
@@ -606,6 +612,53 @@ describe('engine-v26 intrinsic attribute progression', () => {
 		if (applied.state.schemaVersion !== 26) throw new Error('Expected engine-v26 state');
 		expect(applied.state.heroes[fixture.heroId]!.equipment.torso).toBe(fixture.torso.itemId);
 		expect(applied.state.items[fixture.torso.itemId]!.equippedById).toBe(fixture.heroId);
+	});
+});
+
+describe('engine-v27 typed intrinsic growth', () => {
+	it('applies a multi-point allocation through the authoritative command and receipt', async () => {
+		const legacyDraft = listSummonableHeroDrafts()[0];
+		if (!legacyDraft) throw new Error('Expected an approved summonable draft');
+		const draft = await generateSummonableCharacterDraft(legacyDraft.recipe, {
+			capabilityEntropy: '8'.repeat(64)
+		});
+		const bootstrapped = createBootstrapEngine({
+			runId: deterministicUuid('progression:v27-allocation:run'),
+			seed: 'progression:v27-allocation:seed',
+			draft
+		}).snapshot.state;
+		if (bootstrapped.schemaVersion !== 27) throw new Error('Expected engine-v27 state');
+		const heroId = draft.manifest.characterId;
+		const hero = bootstrapped.heroes[heroId]!;
+		const ready = EngineGameStateV27Schema.parse({
+			...bootstrapped,
+			heroes: {
+				...bootstrapped.heroes,
+				[heroId]: {
+					...hero,
+					progression: { ...hero.progression, unallocatedAttributePoints: 3 }
+				}
+			}
+		});
+		const applied = applyCommand(
+			ready,
+			command(ready, heroId, 'v27-allocate-strength', {
+				commandType: 'hero.allocate.attribute',
+				attribute: 'strength',
+				amount: 3
+			})
+		);
+		if (applied.state.schemaVersion !== 27) throw new Error('Expected engine-v27 state');
+		expect(applied.events[0]).toMatchObject({ eventType: 'hero.attribute.growth.applied' });
+		expect(applied.events[0]!.payload.receipt).toMatchObject({
+			pointsSpent: 3,
+			intrinsicBefore: hero.capabilityProfile.attributes.strength,
+			intrinsicAfter: hero.capabilityProfile.attributes.strength + 3
+		});
+		expect(applied.state.heroes[heroId]!.progression).toMatchObject({
+			unallocatedAttributePoints: 0,
+			permanentGrowth: { strength: 3 }
+		});
 	});
 });
 

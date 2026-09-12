@@ -14,6 +14,7 @@ export const MODERN_EVENT_TYPES = [
 	'hero.activity.started',
 	'hero.arrived',
 	'hero.assignment.changed',
+	'hero.attribute.growth.applied',
 	'hero.attribute.allocated',
 	'hero.daily.plan.created',
 	'hero.damaged',

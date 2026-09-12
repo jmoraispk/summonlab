@@ -75,7 +75,7 @@ import {
 import { createStoryPatchCheckpoint } from '../domains/story/runtime.js';
 import { deterministicUuid, EMPTY_STATE_HASH, hashCanonical } from '../hash.js';
 import { adaptLegacyEquipmentItem } from '../domains/settlement/equipment.js';
-import { maximumMana } from '../domains/combat/capability.js';
+import { maximumHealth as legacyMaximumHealth, maximumMana } from '../domains/combat/capability.js';
 import { maximumHealth as progressionMaximumHealth } from '../domains/progression/math.js';
 
 const DEFAULT_CHARACTER_MIND = CharacterMindSchema.parse({
@@ -241,7 +241,12 @@ export function createBootstrapEngine(input: BootstrapEngineInput): BootstrapEng
 	const equipmentDevelopmentScenario = input.developmentEquipmentScenario?.enabled === true;
 	const capabilityEngineState =
 		'draft' in input && !developmentMissionScenario && !equipmentDevelopmentScenario;
-	const currentCombatEngineState = capabilityEngineState && input.combatMode !== undefined;
+	if (input.developmentEngineVersion !== undefined && !capabilityEngineState) {
+		throw new Error('Development engine version requires a capability bootstrap');
+	}
+	const capabilitySchemaVersion = capabilityEngineState
+		? (input.developmentEngineVersion ?? 27)
+		: null;
 	const forgeReady = input.developmentEquipmentScenario?.forgeReady === true;
 	if (input.additionalHeroes && developmentMissionScenario?.additionalHeroes) {
 		throw new Error('Additional heroes must use one bootstrap boundary');
@@ -328,34 +333,39 @@ export function createBootstrapEngine(input: BootstrapEngineInput): BootstrapEng
 			input.developmentEquipmentScenario?.materialLots?.[materialId] ?? 0
 		])
 	);
-	const stateSchema = capabilityEngineState
-		? EngineGameStateV27Schema
-		: firstBandArchiveDevelopmentScenario
-			? equipmentDevelopmentScenario
-				? EngineGameStateV24Schema
-				: EngineGameStateV23Schema
-			: synthesisDevelopmentScenario
-				? EngineGameStateV22Schema
-				: storyPatchDevelopmentScenario
-					? EngineGameStateV21Schema
-					: masterFallbackDevelopmentScenario
-						? EngineGameStateV20Schema
-						: masterTimingDevelopmentScenario
-							? EngineGameStateV19Schema
-							: attemptAftermathDevelopmentScenario
-								? EngineGameStateV18Schema
-								: masterPermadeathDevelopmentScenario
-									? EngineGameStateV17Schema
-									: aftermathDevelopmentScenario
-										? EngineGameStateV16Schema
-										: portalDevelopmentScenario
-											? EngineGameStateV15Schema
-											: developmentMissionScenario
-												? EngineGameStateV14Schema
-												: EngineGameStateV13Schema;
+	const stateSchema =
+		capabilitySchemaVersion === 27
+			? EngineGameStateV27Schema
+			: capabilitySchemaVersion === 26
+				? EngineGameStateV26Schema
+				: capabilitySchemaVersion === 25
+					? EngineGameStateV25Schema
+					: firstBandArchiveDevelopmentScenario
+						? equipmentDevelopmentScenario
+							? EngineGameStateV24Schema
+							: EngineGameStateV23Schema
+						: synthesisDevelopmentScenario
+							? EngineGameStateV22Schema
+							: storyPatchDevelopmentScenario
+								? EngineGameStateV21Schema
+								: masterFallbackDevelopmentScenario
+									? EngineGameStateV20Schema
+									: masterTimingDevelopmentScenario
+										? EngineGameStateV19Schema
+										: attemptAftermathDevelopmentScenario
+											? EngineGameStateV18Schema
+											: masterPermadeathDevelopmentScenario
+												? EngineGameStateV17Schema
+												: aftermathDevelopmentScenario
+													? EngineGameStateV16Schema
+													: portalDevelopmentScenario
+														? EngineGameStateV15Schema
+														: developmentMissionScenario
+															? EngineGameStateV14Schema
+															: EngineGameStateV13Schema;
 	const state = stateSchema.parse({
-		schemaVersion: capabilityEngineState
-			? 27
+		schemaVersion: capabilitySchemaVersion
+			? capabilitySchemaVersion
 			: equipmentDevelopmentScenario
 				? 24
 				: firstBandArchiveDevelopmentScenario
@@ -381,31 +391,36 @@ export function createBootstrapEngine(input: BootstrapEngineInput): BootstrapEng
 														: 13,
 		runId: input.runId,
 		seed: input.seed,
-		contentVersion: capabilityEngineState
-			? PROGRESSION_ENGINE_CONTENT_VERSION
-			: equipmentDevelopmentScenario
-				? EQUIPMENT_ENGINE_CONTENT_VERSION
-				: firstBandArchiveDevelopmentScenario
-					? FIRST_BAND_ARCHIVE_ENGINE_CONTENT_VERSION
-					: synthesisDevelopmentScenario
-						? SYNTHESIS_ENGINE_CONTENT_VERSION
-						: storyPatchDevelopmentScenario
-							? STORY_PATCH_ENGINE_CONTENT_VERSION
-							: masterFallbackDevelopmentScenario
-								? MASTER_FALLBACK_ENGINE_CONTENT_VERSION
-								: masterTimingDevelopmentScenario
-									? MASTER_TIMING_ENGINE_CONTENT_VERSION
-									: attemptAftermathDevelopmentScenario
-										? ATTEMPT_AFTERMATH_ENGINE_CONTENT_VERSION
-										: masterPermadeathDevelopmentScenario
-											? MASTER_PERMADEATH_ENGINE_CONTENT_VERSION
-											: aftermathDevelopmentScenario
-												? MISSION_AFTERMATH_ENGINE_CONTENT_VERSION
-												: portalDevelopmentScenario
-													? PORTAL_ENGINE_CONTENT_VERSION
-													: developmentMissionScenario
-														? MISSION_EVIDENCE_ENGINE_CONTENT_VERSION
-														: ENGINE_CONTENT_VERSION,
+		contentVersion:
+			capabilitySchemaVersion === 27
+				? PROGRESSION_ENGINE_CONTENT_VERSION
+				: capabilitySchemaVersion === 26
+					? READINESS_COMBAT_ENGINE_CONTENT_VERSION
+					: capabilitySchemaVersion === 25
+						? CAPABILITY_ENGINE_CONTENT_VERSION
+						: equipmentDevelopmentScenario
+							? EQUIPMENT_ENGINE_CONTENT_VERSION
+							: firstBandArchiveDevelopmentScenario
+								? FIRST_BAND_ARCHIVE_ENGINE_CONTENT_VERSION
+								: synthesisDevelopmentScenario
+									? SYNTHESIS_ENGINE_CONTENT_VERSION
+									: storyPatchDevelopmentScenario
+										? STORY_PATCH_ENGINE_CONTENT_VERSION
+										: masterFallbackDevelopmentScenario
+											? MASTER_FALLBACK_ENGINE_CONTENT_VERSION
+											: masterTimingDevelopmentScenario
+												? MASTER_TIMING_ENGINE_CONTENT_VERSION
+												: attemptAftermathDevelopmentScenario
+													? ATTEMPT_AFTERMATH_ENGINE_CONTENT_VERSION
+													: masterPermadeathDevelopmentScenario
+														? MASTER_PERMADEATH_ENGINE_CONTENT_VERSION
+														: aftermathDevelopmentScenario
+															? MISSION_AFTERMATH_ENGINE_CONTENT_VERSION
+															: portalDevelopmentScenario
+																? PORTAL_ENGINE_CONTENT_VERSION
+																: developmentMissionScenario
+																	? MISSION_EVIDENCE_ENGINE_CONTENT_VERSION
+																	: ENGINE_CONTENT_VERSION,
 		status: 'active',
 		version: 0,
 		eventCursor: 1,
@@ -428,7 +443,13 @@ export function createBootstrapEngine(input: BootstrapEngineInput): BootstrapEng
 					throw new Error('Capability engine heroes require a capability profile');
 				}
 				const maxHealth = capabilityProfile
-					? progressionMaximumHealth(capabilityProfile.attributes.vitality, 1, PROGRESSION_RULES_V1)
+					? capabilitySchemaVersion === 27
+						? progressionMaximumHealth(
+								capabilityProfile.attributes.vitality,
+								1,
+								PROGRESSION_RULES_V1
+							)
+						: legacyMaximumHealth(capabilityProfile.attributes.vitality, COMBAT_RULES_V1)
 					: 100;
 				const maxMana = capabilityProfile
 					? maximumMana(capabilityProfile.attributes.magic, COMBAT_RULES_V1)
@@ -449,24 +470,34 @@ export function createBootstrapEngine(input: BootstrapEngineInput): BootstrapEng
 						manifestHash: hero.manifestHash,
 						needs: { hunger: 20, fatigue: 15 },
 						injuries: [],
-						progression: capabilityEngineState
-							? {
-									progressionVersion: 'hero-progression-v2',
-									stars: hero.rarityStars ?? 1,
-									level: 1,
-									experience: 0,
-									unallocatedAttributePoints: 0,
-									permanentGrowth: { strength: 0, agility: 0, vitality: 0, magic: 0 },
-									evidenceCounts: { combat: {}, crafting: {} },
-									skills: { swordFighting: { rank: 0, experience: 0 } }
-								}
-							: {
-									stars: hero.rarityStars ?? 1,
-									level: 1,
-									experience: 0,
-									skills: { swordFighting: { rank: 0, experience: 0 } }
-								},
-						...(capabilityEngineState
+						progression:
+							capabilitySchemaVersion === 27
+								? {
+										progressionVersion: 'hero-progression-v2',
+										stars: hero.rarityStars ?? 1,
+										level: 1,
+										experience: 0,
+										unallocatedAttributePoints: 0,
+										permanentGrowth: { strength: 0, agility: 0, vitality: 0, magic: 0 },
+										evidenceCounts: { combat: {}, crafting: {} },
+										skills: { swordFighting: { rank: 0, experience: 0 } }
+									}
+								: capabilityEngineState
+									? {
+											stars: hero.rarityStars ?? 1,
+											level: 1,
+											experience: 0,
+											unspentAttributePoints: 0,
+											attributeGrowthReceipts: [],
+											skills: { swordFighting: { rank: 0, experience: 0 } }
+										}
+									: {
+											stars: hero.rarityStars ?? 1,
+											level: 1,
+											experience: 0,
+											skills: { swordFighting: { rank: 0, experience: 0 } }
+										},
+						...(capabilitySchemaVersion === 26 || capabilitySchemaVersion === 27
 							? {
 									combatTraining: {
 										schemaVersion: 'hero-combat-training-v1',
@@ -713,7 +744,7 @@ export function createBootstrapEngine(input: BootstrapEngineInput): BootstrapEng
 			? { synthesis: { contentVersion: 'synthesis-v1', receipts: {}, rumors: {} } }
 			: {}),
 		...(firstBandArchiveState ? { firstBandArchive: createSealedFirstBandArchive() } : {}),
-		...(capabilityEngineState ? { progressionRules: PROGRESSION_RULES_V1_BINDING } : {})
+		...(capabilitySchemaVersion === 27 ? { progressionRules: PROGRESSION_RULES_V1_BINDING } : {})
 	});
 	const stateHash = hashParsedGameState(state);
 	const rewardDeltas = resourceLedger.map((entry): RewardDelta => ({

@@ -267,7 +267,8 @@ export const EquipItemCommandSchema = EngineCommandBaseSchema.extend({
 
 export const AllocateHeroAttributeCommandSchema = EngineCommandBaseSchema.extend({
 	commandType: z.literal('hero.allocate.attribute'),
-	attribute: CombatAttributeNameSchema
+	attribute: CombatAttributeNameSchema,
+	amount: z.number().int().positive().max(999).optional()
 }).strict();
 
 export const StartForgingCommandSchema = EngineCommandBaseSchema.extend({

@@ -532,7 +532,7 @@ git commit -m "feat(progression): grant immutable-star level points"
 - Consumes: `AttributeGrowthClaim`, v27 state, `intrinsicAttributes`, and `maximumHealth`.
 - Produces: `hero.allocate.attribute`, internal `applyAttributeGrowthClaim`, and replayable `hero.attribute.growth.applied` receipts.
 
-- [ ] **Step 1: Write failing allocation and direct-growth tests**
+- [x] **Step 1: Write failing allocation and direct-growth tests**
 
 Test each canonical attribute in `strength`, `agility`, `vitality`, `magic` order; allocation amounts greater than one; insufficient unallocated points; terminal heroes; stale commands; training/achievement/consumable/cultivation claims; and receipt before/after values.
 
@@ -549,13 +549,13 @@ it('spends points and keeps Vitality Health unfilled', () => {
 });
 ```
 
-- [ ] **Step 2: Run the attribute test and verify red**
+- [x] **Step 2: Run the attribute test and verify red**
 
 Run: `pnpm --filter @summonlab/engine test -- domains/progression/attributes.spec.ts`
 
 Expected: FAIL because the claim applier and allocation command do not exist.
 
-- [ ] **Step 3: Add the strict allocation command**
+- [x] **Step 3: Add the strict allocation command**
 
 ```ts
 export const AllocateAttributeCommandSchema = EngineCommandBaseSchema.extend({
@@ -567,19 +567,19 @@ export const AllocateAttributeCommandSchema = EngineCommandBaseSchema.extend({
 
 Only a living v27 hero with enough unallocated points may allocate. The command becomes a typed allocation claim; it cannot write capability profile, rates, Health, or progression state directly.
 
-- [ ] **Step 4: Implement one growth applier**
+- [x] **Step 4: Implement one growth applier**
 
 Compute intrinsic attributes from generated base plus cumulative `permanentGrowth`. Allocation subtracts `amount` from unallocated points; other accepted sources leave the pool unchanged. Add `amount` to only the selected permanent-growth key, recompute derived maxima at the current tier, keep current Health unchanged unless clamping is required, and emit one before/after receipt.
 
-- [ ] **Step 5: Register replay validation and legal actions**
+- [x] **Step 5: Register replay validation and legal actions**
 
 Expose four compact legal actions in sheet order when points are available. Rebuild each growth outcome from its claim and rules binding during replay and reject forged attribute, amount, source, or before/after values.
 
-- [ ] **Step 6: Verify all point vintages use the current tier**
+- [x] **Step 6: Verify all point vintages use the current tier**
 
 Construct one hero whose Strength consists of generated base, level allocation, training, achievement, consumable, and cultivation points. Assert `attributePowerMilli(totalStrength, 900, rules)` applies `5_000` to the total rather than tracking per-source conversion rates.
 
-- [ ] **Step 7: Run focused verification**
+- [x] **Step 7: Run focused verification**
 
 ```bash
 pnpm --filter @summonlab/contracts test -- progression.spec.ts
@@ -587,7 +587,7 @@ pnpm --filter @summonlab/engine test -- domains/progression/attributes.spec.ts o
 pnpm --filter @summonlab/engine typecheck
 ```
 
-- [ ] **Step 8: Commit**
+- [x] **Step 8: Commit**
 
 ```bash
 git add packages/contracts/src/engine/commands.ts packages/contracts/src/event.ts packages/engine/src/domains/progression packages/engine/src/orchestration

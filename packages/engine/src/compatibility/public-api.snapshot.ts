@@ -44,6 +44,7 @@ export const ENGINE_PUBLIC_RUNTIME_EXPORTS = [
 	'addGameSeconds',
 	'advanceUntilDecision',
 	'advanceUntilReadyCohort',
+	'applyAttributeGrowthClaim',
 	'applyCatchUpPolicy',
 	'applyCombatChoiceBatch',
 	'applyCommand',

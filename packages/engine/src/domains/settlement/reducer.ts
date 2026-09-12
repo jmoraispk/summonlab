@@ -1013,7 +1013,12 @@ function reduceSettlementEvent(
 	}
 	if (event.eventType === 'hero.item.equipped') {
 		const payload = ItemEquippedPayloadSchema.parse(event.payload);
-		if (state.schemaVersion === 24 || state.schemaVersion === 25 || state.schemaVersion === 26) {
+		if (
+			state.schemaVersion === 24 ||
+			state.schemaVersion === 25 ||
+			state.schemaVersion === 26 ||
+			state.schemaVersion === 27
+		) {
 			const equipped = equipEquipmentItem(state, {
 				heroId: payload.heroId,
 				itemId: payload.itemId,

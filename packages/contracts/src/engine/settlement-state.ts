@@ -608,6 +608,10 @@ export const EngineHeroStateV26Schema = z
 export const EngineHeroStateV27Schema = z
 	.object({
 		...EngineHeroStateV25BaseSchema.shape,
+		health: z.number().int().nonnegative().max(Number.MAX_SAFE_INTEGER),
+		maxHealth: z.number().int().positive().max(Number.MAX_SAFE_INTEGER),
+		mana: z.number().int().nonnegative().max(Number.MAX_SAFE_INTEGER),
+		maxMana: z.number().int().positive().max(Number.MAX_SAFE_INTEGER),
 		progression: HeroProgressionV2Schema,
 		combatTraining: HeroCombatTrainingV1Schema
 	})

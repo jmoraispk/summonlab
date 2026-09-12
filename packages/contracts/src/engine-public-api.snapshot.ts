@@ -117,6 +117,8 @@ export const ENGINE_CONTRACT_RUNTIME_EXPORTS = [
 	'FirstEmberRequestSchema',
 	'FirstEmberStateSchema',
 	'HabitStateSchema',
+	'HeroAttributeGrowthAppliedEventSchema',
+	'HeroAttributeGrowthAppliedPayloadSchema',
 	'HeroBuildingAssignmentSchema',
 	'HeroCombatTrainingV1Schema',
 	'HeroExperienceAppliedEventSchema',

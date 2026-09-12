@@ -99,6 +99,8 @@ interface BootstrapEngineInputBase {
 	readonly simulatedAt?: string;
 	/** Explicit current-run creation binding; attempts still bind the live operator value separately. */
 	readonly combatMode?: CombatModeId;
+	/** Compatibility-fixture binding; ordinary capability bootstraps select engine-v27. */
+	readonly developmentEngineVersion?: 25 | 26 | 27;
 }
 
 interface BootstrapLegacyHeroInput {

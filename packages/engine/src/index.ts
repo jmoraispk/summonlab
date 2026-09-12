@@ -63,6 +63,12 @@ export {
 	type ExperienceClaimOutcome
 } from './domains/progression/experience.js';
 export {
+	applyAttributeGrowthClaim,
+	type ApplyAttributeGrowthClaimInput,
+	type AttributeGrowthClaimOutcome,
+	type ProgressionHero
+} from './domains/progression/attributes.js';
+export {
 	adaptV26LegacyCombatOutcome,
 	transitionCombatResultClaims,
 	type CombatClaimTransition,
