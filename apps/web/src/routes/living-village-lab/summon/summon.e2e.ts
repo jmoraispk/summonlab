@@ -126,11 +126,11 @@ test('portal connects spending, reveal controls, arrival history, and hero dossi
 	await expect(dossier).toContainText('Attributes');
 	await expect(dossier).toContainText('Personality');
 	await expect(dossier.getByTitle('Strength')).toHaveText('STR');
-	await expect(dossier).toContainText('Vitality');
-	await expect(dossier).toContainText('Agility');
+	await expect(dossier.getByTitle('Vitality')).toHaveText('VIT');
+	await expect(dossier.getByTitle('Agility')).toHaveText('AGI');
 	await expect(dossier).toContainText('Dexterity');
 	await expect(dossier).toContainText('Intellect');
-	await expect(dossier).toContainText('Spirit');
+	await expect(dossier.getByTitle('Spirit')).toHaveText('SPI');
 	await expect(dossier.getByTestId('hero-attribute')).toHaveCount(6);
 	await expect(dossier.getByTestId('body-attributes').getByTestId('hero-attribute')).toHaveCount(3);
 	await expect(dossier.getByTestId('mind-attributes').getByTestId('hero-attribute')).toHaveCount(3);

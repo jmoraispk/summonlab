@@ -31,7 +31,7 @@ versioned combat mode a release uses; players cannot change combat rules.
 ## Goals
 
 1. Make `Strength`, `Vitality`, `Agility`, and `Spirit` the canonical visible attributes, with
-   `Strength` abbreviated as `STR` on character sheets.
+   `STR`, `VIT`, `AGI`, and `SPI` available as compact character-sheet labels.
 2. Give each attribute a narrow, combat-first role without creating a universal best stat.
 3. Move learned precision, resistance, morale, and learning differences to their proper systems.
 4. Keep Health and Mana as the only universal resource bars.
@@ -59,9 +59,11 @@ versioned combat mode a release uses; players cannot change combat rules.
 | **Agility** | readiness accumulation; movement capability; evasion; a bounded relative-speed contribution to hit contests | learned accuracy; critical rate; unrestricted extra actions |
 | **Spirit** | magical damage; maximum Mana; modest saturating Mana regeneration | morale; learning rate; control duration; mental resistance; decision quality |
 
-`Strength` is the canonical name in prose and data contracts. Compact character sheets display
-`STR` while retaining `Strength` as the accessible label. The lowercase `might` key survives only
-inside frozen legacy schemas, replay state, and their explicit compatibility projections.
+The full names are canonical in prose and data contracts and remain the default in explanations,
+headings, summaries, tutorials, and ordinary interface copy. Dense character-sheet stat cells may
+display `STR`, `VIT`, `AGI`, and `SPI` to save space while retaining the corresponding full names as
+accessible labels and hover expansions. The lowercase `might` key survives only inside frozen
+legacy schemas, replay state, and their explicit compatibility projections.
 
 The earlier six-attribute set—`Strength / Vitality / Agility / Dexterity / Intellect / Spirit`—is
 retired as a set. New canonical content uses only the four attributes above. Historical schema

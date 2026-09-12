@@ -1,3 +1,10 @@
+const characterSheetAbbreviations: Readonly<Record<string, string>> = {
+	Strength: 'STR',
+	Vitality: 'VIT',
+	Agility: 'AGI',
+	Spirit: 'SPI'
+};
+
 export function attributeDisplayName(name: string): string {
-	return name === 'Strength' ? 'STR' : name;
+	return characterSheetAbbreviations[name] ?? name;
 }

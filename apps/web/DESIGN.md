@@ -338,9 +338,11 @@ compatibility, not progression or ownership.
 ### Attribute presentation
 
 The canonical combat attributes are Strength, Vitality, Agility, and Spirit. Prose and data
-contracts use the full names. Compact character sheets render Strength as `STR`, retain `Strength`
-as the accessible label and hover expansion, and never expose the frozen legacy `might` key as a
-current player-facing name.
+contracts use the full names. Full names are also the default in headings, explanations, summaries,
+tutorials, and other ordinary interface copy. Dense character-sheet stat cells may shorten the four
+names to `STR`, `VIT`, `AGI`, and `SPI`; every abbreviation retains its full name as the accessible
+label and hover expansion. Never expose the frozen legacy `might` key as a current player-facing
+name.
 
 ## Do's and Don'ts
 

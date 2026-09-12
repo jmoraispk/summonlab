@@ -94,28 +94,33 @@ establishing whether each term is a separate statistic.
 - **Captured:** 2026-09-12
 - **Material:** three user-supplied screenshots concerning the stat system in the *Overgeared*
   manhwa's game, Satisfy. One is a six-year-old r/Overgeared question and community reply; two are
-  synthesized summaries displaying source chips without preserving the underlying URLs.
-- **Attribution confidence:** mixed, unverified secondary material. The community reply is an
-  anecdotal interpretation, while the synthesized summaries cannot be traced to their cited pages
-  from the captures alone.
+  synthesized summaries displaying source chips. This entry now also uses the community-maintained
+  Overgeared Wiki pages for [Strength](https://overgeared.fandom.com/wiki/Strength),
+  [Agility](https://overgeared.fandom.com/wiki/Agility),
+  [Stamina](https://overgeared.fandom.com/wiki/Stamina_%28Stat%29), and
+  [Intelligence](https://overgeared.fandom.com/wiki/Intelligence).
+- **Attribution confidence:** mixed secondary material. The linked wiki pages cite novel chapters,
+  but they are community-authored and explicitly marked as needing more information or detail. The
+  Reddit reply remains anecdotal, and the synthesized summaries remain secondary interpretations.
 - **Interpretation rule:** the sections below preserve agreement and disagreement between the
   captures. Exact formulas and story claims are research leads, not verified rules.
 
 ### Reported primary system
 
-The synthesized summary identifies four freely allocated primary combat stats and says their
-returns change every 100 levels through Stat Awakening.
+The linked pages and synthesized summary identify four basic stats. Strength's page documents Stat
+Awakening every 100 levels, while the Stamina and Intelligence pages also list different per-point
+returns across awakening tiers.
 
 | Reported attribute | Territory assigned by the source |
 | --- | --- |
-| Strength | Physical attack power, maximum Health contribution, and carrying limits |
-| Stamina | Physical defence, maximum Health, and physical endurance |
-| Agility | Movement speed, attack speed, dodge rate, and physical accuracy; may become a primary damage route for swift classes |
-| Intelligence | Magical attack power, maximum Mana, and magic resistance |
+| Strength | Physical attack power, Health contribution, and carrying or weight limits |
+| Stamina | Health and defence; the wiki distinguishes the persistent stat from a consumable stamina resource while noting translation ambiguity between stamina and vitality |
+| Agility | One of the four basic stats; the wiki explicitly documents attack-speed and maximum-movement-speed thresholds |
+| Intelligence | Maximum Mana, magic power, and enough magical understanding to cast learned spells |
 
-The summary gives example pre- and post-awakening conversions for Strength and Stamina. Because the
-screenshots do not preserve their linked sources, the exact numbers are intentionally omitted here
-until they can be checked against a primary or attributable reference.
+The wiki pages provide chapter-referenced example conversions, but also flag changed or inconsistent
+formulas. The important research signal here is therefore the territory each stat owns rather than
+any one numeric coefficient.
 
 ### Dexterity as a special production stat
 
@@ -150,12 +155,18 @@ later story mechanics, or an inaccurate source. This notebook leaves the conflic
 
 ### Comparison with Summonlab's four-attribute direction
 
+At the high-level fantasy and responsibility level, the two systems match remarkably well:
+Summonlab's Strength, Vitality, Agility, and magic-facing Spirit correspond closely to Overgeared's
+Strength, Stamina, Agility, and Intelligence. The difference is primarily in the mechanics and in
+where each system draws its ownership boundaries, rather than in the fundamental role of the four
+attributes.
+
 | Overgeared territory | Closest Summonlab owner | Research signal |
 | --- | --- | --- |
-| Strength | Strength plus Vitality | Overgeared appears to couple physical output, Health, and carrying; Summonlab separates Health into Vitality to reduce the value concentrated in Strength |
-| Stamina | Vitality plus condition/recovery rules | The capture uses Stamina as a persistent defensive stat, not clearly as a spendable action bar; its overlap with Vitality is stronger than with a universal stamina resource |
-| Agility | Agility plus skill/class rules | Speed, evasion, accuracy, and conditional damage show how one stat can accumulate both reliability and throughput; the disagreement between sources reinforces the need for explicit level and class scopes |
-| Intelligence | Spirit plus learned skills and named resistance | Magical output and Mana map toward Spirit, while Summonlab keeps knowledge and blanket resistance outside the base combat attribute |
+| Strength | Strength plus Vitality | Both give Strength physical output and carrying territory; Overgeared also grants Health, which Summonlab assigns to Vitality |
+| Stamina | Vitality plus armour and recovery rules | Both express bodily durability through Health; Overgeared's stat also raises defence, while Summonlab keeps general mitigation on armour and gives Vitality modest recovery |
+| Agility | Agility plus action rules | Both own swiftness and movement. Overgeared exposes attack- and movement-speed thresholds; Summonlab expresses the same fantasy through readiness, movement capability, evasion, and bounded hit-contest influence |
+| Intelligence | Spirit plus learned skills | Both own magical output and Mana capacity. Summonlab calls the combat-facing attribute Spirit and keeps knowledge, spell understanding, and learning in practiced skills rather than the base stat |
 | Special Dexterity | Craft mastery or a production-specific capability | The example supports precision as something unlocked and raised through relevant practice rather than a universal freely allocated base stat |
 
 ### What this example contributes
