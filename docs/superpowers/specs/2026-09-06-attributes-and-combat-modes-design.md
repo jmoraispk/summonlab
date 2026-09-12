@@ -9,6 +9,14 @@ Implementation plans:
 - `docs/superpowers/plans/2026-09-06-four-attribute-legacy-combat.md`
 - `docs/superpowers/plans/2026-09-06-agent-readiness-combat.md`
 
+Progression amendment under owner review:
+
+- [Awakening and Multi-Path Progression](2026-09-12-awakening-and-multi-path-progression-design.md)
+
+Once accepted, that amendment supersedes this document's one-point-per-level candidate, level-99
+benchmark ceiling, and any inherited kill-only experience or mutable-star assumptions. The four
+attribute ownership boundaries and versioned combat architecture remain unchanged.
+
 ## Purpose
 
 Replace the six-attribute proposal with a smaller combat-first capability model, revise the target
