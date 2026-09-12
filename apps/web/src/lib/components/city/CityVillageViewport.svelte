@@ -21,12 +21,14 @@
 		view,
 		onIntent = async () => undefined,
 		pendingIntent = null,
-		intentError = null
+		intentError = null,
+		onOpenSummoningHouse
 	}: {
 		view: CityViewModel;
 		onIntent?: (intent: CityIntent) => void | Promise<void>;
 		pendingIntent?: CityIntent | null;
 		intentError?: string | null;
+		onOpenSummoningHouse?: () => void;
 	} = $props();
 
 	let viewport: HTMLElement;
@@ -133,6 +135,7 @@
 	function selectFacility(facility: CityFacility): void {
 		selectedFacilityId = facility.facilityId;
 		announcement = `${facility.label} selected.`;
+		if (facility.facilityId === 'summoning-circle') onOpenSummoningHouse?.();
 	}
 
 	function heroButtonId(heroId: string): string {
@@ -321,7 +324,9 @@
 							data-testid="city-facility"
 							style={hotspotStyle(facility)}
 							aria-pressed={selectedFacilityId === facility.facilityId}
-							aria-label={`Inspect ${facility.label}`}
+							aria-label={facility.facilityId === 'summoning-circle'
+								? 'Enter Summoning House'
+								: `Inspect ${facility.label}`}
 							onclick={() => selectFacility(facility)}
 						>
 						</button>
@@ -356,7 +361,12 @@
 								/>
 							</button>
 						{:else}
-							<span class="missing-art">Resident art unavailable</span>
+							<span
+								class="missing-art"
+								data-testid="city-scene-resident"
+								data-availability={resident?.readiness ?? 'unavailable'}
+								>Resident art unavailable</span
+							>
 						{/if}
 					</div>
 				{/each}

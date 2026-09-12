@@ -1,5 +1,5 @@
 <script lang="ts">
-	import PortalGlyph from './PortalGlyph.svelte';
+	import PortalGlyph from '$lib/components/summoning/PortalGlyph.svelte';
 
 	type Direction = 'gate' | 'constellation' | 'identity';
 	type RateRow = { band: string; value: string; note: string };

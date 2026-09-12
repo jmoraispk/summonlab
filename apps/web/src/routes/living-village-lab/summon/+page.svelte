@@ -1,6 +1,6 @@
 <script lang="ts">
 	import LabBackLink from '$lib/components/living-village/LabBackLink.svelte';
-	import PortalGlyph from '$lib/components/living-village/summon/PortalGlyph.svelte';
+	import PortalGlyph from '$lib/components/summoning/PortalGlyph.svelte';
 	import RatesPanel from '$lib/components/living-village/summon/RatesPanel.svelte';
 	import RevealStage from '$lib/components/living-village/summon/RevealStage.svelte';
 	import {

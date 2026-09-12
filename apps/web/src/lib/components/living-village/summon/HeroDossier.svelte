@@ -1,6 +1,6 @@
 <script lang="ts">
-	import PortalGlyph from './PortalGlyph.svelte';
-	import MechanicIcon from './MechanicIcon.svelte';
+	import PortalGlyph from '$lib/components/summoning/PortalGlyph.svelte';
+	import MechanicIcon from '$lib/components/summoning/MechanicIcon.svelte';
 
 	type Hero = {
 		name: string;

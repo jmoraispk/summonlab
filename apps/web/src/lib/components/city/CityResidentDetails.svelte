@@ -67,6 +67,8 @@
 
 <style>
 	.drawer {
+		position: relative;
+		z-index: 90;
 		min-width: 0;
 		padding: 1.15rem;
 		border: 1px solid rgba(228, 203, 157, 0.2);

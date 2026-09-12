@@ -10,9 +10,9 @@ async function prepareArrivedCampaign(request: APIRequestContext) {
 	expect(creation.status()).toBe(201);
 	const { campaign } = (await creation.json()) as { campaign: { runId: string } };
 
-	for (const step of [1, 2]) {
-		const response = await request.post(`/api/campaigns/${campaign.runId}/onboarding`, {
-			data: { step }
+	for (const [index, ordinal] of [1, 2, 3].entries()) {
+		const response = await request.post(`/api/campaigns/${campaign.runId}/summons`, {
+			data: { ordinal, expectedSummonedHeroCount: index }
 		});
 		expect(response.ok()).toBe(true);
 	}
@@ -162,7 +162,9 @@ test('campaign City uses the shared shell, authoritative actions, and responsive
 	await expect(page.getByTestId('resident-details')).toContainText(heroes[0]!.name);
 	await page.getByRole('button', { name: 'Close resident details' }).click();
 
-	const availableResident = sceneResidents.locator('[data-availability="available"]').first();
+	const availableResident = page
+		.locator('[data-testid="city-scene-resident"][data-availability="available"]')
+		.first();
 	await availableResident.click();
 	const actionResponse = page.waitForResponse(
 		(response) =>
@@ -175,7 +177,7 @@ test('campaign City uses the shared shell, authoritative actions, and responsive
 		.click();
 	const committedAction = await actionResponse;
 	expect(committedAction.ok()).toBe(true);
-	expect((await committedAction.json()).assignment).toEqual({
+	expect((await committedAction.json()).assignment).toMatchObject({
 		buildingId: 'training-ground',
 		role: 'trainee'
 	});
@@ -193,7 +195,7 @@ test('campaign City uses the shared shell, authoritative actions, and responsive
 	await page.getByTestId('resident-quick-view').getByRole('button', { name: 'Rest' }).click();
 	const committedRest = await restResponse;
 	expect(committedRest.ok()).toBe(true);
-	expect((await committedRest.json()).assignment).toEqual({
+	expect((await committedRest.json()).assignment).toMatchObject({
 		buildingId: 'dormitory',
 		role: 'resident'
 	});

@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import HeroDossier from './HeroDossier.svelte';
-	import MechanicIcon from './MechanicIcon.svelte';
-	import PortalCanvas from './PortalCanvas.svelte';
+	import MechanicIcon from '$lib/components/summoning/MechanicIcon.svelte';
+	import PortalCanvas from '$lib/components/summoning/PortalCanvas.svelte';
 	import ResultPresentation from './ResultPresentation.svelte';
 
 	type Direction = 'gate' | 'constellation' | 'identity';
