@@ -159,7 +159,7 @@ point per level. If persisted six-stat allocations require a compatibility conve
 of the old total is the initial migration hypothesis rather than a new-growth rule. Promotion of
 either budget requires benchmark simulation at levels 10, 40, 70, and 99.
 
-The four base affinities retain a small thematic association:
+The four base affinities may retain a small thematic association as an initial tuning candidate:
 
 | Affinity | Matching attribute |
 | --- | --- |
@@ -168,9 +168,11 @@ The four base affinities retain a small thematic association:
 | Wind | Agility |
 | Water | Magic |
 
-The first tuning candidate caps the affinity nudge at ten percent of the matching attribute's
-contribution, not ten percent final damage or durability. The harness must demonstrate credible
-Fire casters, Water martial heroes, and other off-association builds before promotion.
+This association is deliberately mild and non-structural. It may be rebalanced, remapped, or
+removed without migrating the four-attribute model or redefining an affinity. The first tuning
+candidate caps the affinity nudge at ten percent of the matching attribute's contribution, not ten
+percent final damage or durability. The harness must demonstrate credible Fire casters, Water
+martial heroes, and other off-association builds before promotion.
 
 ## Damage and defence
 

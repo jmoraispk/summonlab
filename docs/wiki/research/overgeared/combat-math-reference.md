@@ -1,0 +1,586 @@
+# Combat Math Reference — The Overgeared Model
+
+Wiki ID: `research.overgeared.combat-math-reference`
+
+Research status: **user-supplied secondary synthesis; not Summonlab canon**.
+
+This component page preserves the supplied reconstruction as research evidence. Its formulas,
+adaptation notes, recommendations, and open items are claims from that source, not accepted
+Summonlab mechanics or implementation instructions. See the parent
+[attribute-system research entry](../attribute-systems.md#overgeared-satisfy), the companion
+[equipment catalogue](equipment-catalogue.md), and the companion
+[equipment mechanics reference](equipment-mechanics.md).
+
+The damage equation as Overgeared uses it, worked through with numbers, followed
+by notes on adapting it to Summonlab's tick-based engine.
+
+The novel never published a complete formula. What follows reconstructs the model
+from stated per-point coefficients and stated skill multipliers. The *shape* is
+reliable. The constants are illustrative and should be tuned. Where the source
+contradicts itself, it is flagged.
+
+---
+
+## 1. The four stats
+
+Satisfy has four allocatable stats: **Strength, Stamina, Agility, Intelligence**.
+A level 1 character starts with 6 strength, 7 stamina, 4 agility, and 5
+intelligence. Points are spent freely on level-up. The four main stats grow with
+levels at thresholds of 100, 200, 300 and so on.
+
+Everything else — Dexterity, Persistence, Composure, Indomitable, Dignity,
+Insight, Courage, Political Power, Good Luck, Willpower, Deity — is a **special
+stat** that cannot receive free points.
+
+### Awakenings — how the ladder works
+
+Every 100 levels a character undergoes a **stat awakening**. Nothing about the
+equations changes. Only the *conversion rate* from a stat point to its derived
+values steps up, and the effect is described as larger at each higher tier.
+
+The wiki's own caveat matters: chapters 136 and 229 gave one table through the
+fourth awakening; chapters 292, 295 and 849 give different third- and
+fourth-awakening figures; the author appears to have revised the formula around
+chapter 300, and revised the third awakening again at chapter 959. Tiers marked
+*unknown* below were never published cleanly, not omitted here.
+
+### Strength → attack power, health, carry weight
+
+| Tier | Trigger | Attack power / pt | Health / pt | Weight limit / pt |
+|---|---|---|---|---|
+| Base | Level 1–99 | 0.1 | 3 | +20 |
+| 1st awakening | Level 100 | 0.2 | 6 | +40 |
+| 2nd awakening | Level 200 | *unknown* | *unknown* | *unknown* |
+| 3rd awakening | Level 300 | 0.7 | 7 | +50 |
+| 4th awakening | Level 400 | *unknown* | *unknown* | *unknown* |
+
+*Conflicts:* the third-awakening attack-power figure was 0.6 in chapters 295 and
+849 before being revised to 0.7 at chapter 959. A separate chapter gives 0.8
+attack power and 9 health per point, presumably a higher tier. Treat the exact
+numbers as unstable and the ladder as real.
+
+**Shape of the curve:** attack power multiplies 7× from base to third awakening,
+while health only multiplies 2.3× and carry weight 2.5×. The awakening ladder is
+overwhelmingly an *offence* escalator. Defensive scaling is left to Stamina.
+
+### Stamina → health, defense, recovery
+
+| Tier | Trigger | Health / pt | Defense / pt | Health regen / 100 pts |
+|---|---|---|---|---|
+| Base | Level 1–99 | *unknown* | *unknown* | 2 |
+| 1st awakening | Level 100 | *unknown* | *unknown* | 2 |
+| Documented tier | *(tier not specified in source)* | 30 | 1.2 | 2 |
+| Later awakenings | Level 200+ | *unknown* | *unknown* | 2 |
+
+A class emphasising defense invests more in stamina. The wiki notes that the
+early status windows in chapters 3 and 15 are mutually inconsistent, so the base
+tier could not be solved.
+
+**The regeneration row is the important one.** Health Recovery Rate derives from
+stamina at 2 points per 100 stamina, and that base value does **not** rise from a
+stat awakening, nor from any "all stats +N" effect. It can only be raised through
+items and skills.
+
+That is a deliberate carve-out: regeneration is excluded from the stat-inflation
+spiral entirely, so it stays a gear-and-skill dimension forever. Worth stealing
+outright.
+
+Stamina is also a **resource** (fatigue), spent on chopping, climbing, mining and
+similar labour, recovered by resting. A character can die of exhaustion at zero.
+
+### Agility → action frequency, evasion, movement
+
+| Tier | Trigger | Interval improvement / 1,000 pts | Hard cap |
+|---|---|---|---|
+| All documented tiers | — | 0.1 seconds | 6 basic attacks per second |
+
+No awakening table was ever published for Agility. What is stated is a single
+linear rule that holds across the observed range: every 1,000 agility improves
+the general attack interval by 0.1 seconds. At 2,876 agility the base interval is
+0.8s; at 3,000 agility it is 0.7s. Working backwards, the implied zero-agility
+interval is roughly 1.08s.
+
+Basic attacks are hard-capped at six per second (a 0.167s interval) regardless of
+stats or buffs — a system limit that cannot be exceeded by any combination of
+stat, magic or gear.
+
+Agility does not contribute to attack power at normal levels.
+
+Crit is not an attribute. **Bow Mastery raises critical hit probability in
+proportion to agility** while a bow is equipped. Sword Mastery does not. The same
+attribute produces different derived stats depending on which mastery holds it.
+
+### Intelligence → mana pool, magic power, spell access
+
+| Tier | Trigger | Mana / pt | Magic power / pt |
+|---|---|---|---|
+| Base | Level 1–99 | 3 | *unknown* |
+| 1st awakening | Level 100 | *unknown* | *unknown* |
+| 2nd awakening | Level 200 | 6 | *unknown* |
+| 3rd awakening | Level 300 | 6 *(unchanged)* | *unknown* |
+
+**Intelligence is the one stat whose ladder visibly plateaus.** The second and
+third awakenings give the same mana per point. Where Strength keeps escalating,
+the mana pool stops — which is consistent with magicians being told to grow their
+Mana Core instead once the stat stops paying.
+
+Two mechanics beyond the pool:
+
+**A spell will not cast if intelligence is too low.** Not a damage penalty, not a
+failure chance — the magic simply does not fire, because the mind cannot hold the
+magic formula. Intelligence is a hard gate on spell *access*, separate from spell
+*power*.
+
+**The Mana Core is a second axis.** Expanding it raises total mana, purity of
+mana, magic damage, casting speed, and the rating of spells that can be learned.
+Expansion runs from untrained through four stages, and spell ratings roughly
+correspond to the stages. A magician progresses on intelligence *and* on core
+expansion — two independent tracks feeding one role.
+
+It is rare for a third-awakening character to exceed 1,000 intelligence unless
+they are a magician or a scholar. The stat is genuinely specialised.
+
+### Special stats feed the same pools — and awaken differently
+
+| Tier | Trigger | Attack power / pt | Defense / pt |
+|---|---|---|---|
+| Base | — | 0.1 | 0.1 |
+| Enhanced | **Courage reaches 1,200 points** | 0.2 | 0.2 |
+
+Courage is the clearest published special-stat table, and note the trigger: it
+awakens on **the stat's own value**, not on character level. Two different
+awakening mechanisms coexist in the same system — level-gated for the four
+primaries, threshold-gated for the special stats.
+
+Threshold-gated is the better mechanic for Summonlab. It rewards commitment to a
+stat rather than the passage of time, and it cannot silently invalidate a build
+the way a level threshold can, because the player chooses when to cross it.
+
+Courage is explicitly framed as a way for a non-combat class to overcome its
+weakness, and as modest compared to an awakened Strength or Stamina stat.
+
+So the hidden layer is not cosmetic — it contributes to the same attack power and
+defense totals as the allocatable stats, just at a worse rate, accumulated
+through deeds instead of points.
+
+### Sanity check against a real status window
+
+At level 412, Grid shows Strength 3,850, Stamina 2,422, Agility 3,900,
+Intelligence 2,896, Dexterity 5,742, with Health 330,682 and Mana 70,020.
+
+Run the published coefficients: stamina at 30 health per point gives ~72,700, and
+strength at 7 per point adds ~27,000 — roughly 100,000 against an actual 330,682.
+Intelligence at 6 mana per point gives ~17,400 against an actual 70,020.
+
+**The documented rates do not reconstruct the late-game numbers.** The awakening
+ladder clearly continues past what the wiki records, and titles and gear
+contribute heavily. Use the coefficients for shape, never for balance.
+
+### Resources
+
+Health, stamina and mana are standard and available to everyone. Special
+resources — Fighting Energy, Sword Energy, Qi and similar — must be unlocked and
+are class-restricted. Skills that run on a specific resource are noted as
+substantially stronger than skills of comparable tier running on a standard one.
+
+That is a clean way to express class power without touching the attribute sheet:
+**the resource is the class budget.**
+
+---
+
+## 2. The equation
+
+Every term gets its own name. Nothing is reassigned, so each line can be read
+once, top to bottom.
+
+### Variable glossary
+
+| Variable | Meaning | Source |
+|---|---|---|
+| `STR`, `AGI`, `VIT`, `MANA` | The hero's attribute values | Allocation + gear + titles |
+| `str_rate` | Attack power gained per Strength point at the current awakening tier | Awakening table |
+| `ATK_attr` | Attack power contributed by attributes | `STR × str_rate` |
+| `ATK_special` | Attack power contributed by special / hidden stats | `Σ (stat × its own rate)` |
+| `ATK_gear` | Flat attack power printed on weapon and armour | Item blocks |
+| `ATK_base` | Everything additive, before any multiplier | Sum of the three above |
+| `MOD_atk` | Combined percentage multiplier on attack power | `1 + Σ (mastery%, buff%, item%)` |
+| `ATK_total` | **Final attack power.** The number a skill multiplies | `ATK_base × MOD_atk` |
+| `SKILL_pct` | The skill's stated percentage of attack power | Skill block |
+| `DMG_flat` | Flat per-attack damage added *after* multipliers | Item options |
+| `DMG_raw` | Damage before the target is considered | — |
+| `DEF_target` | Target's defense stat plus class resistance | Target sheet |
+| `K` | Tuning constant setting how much defense is "a lot" | Chosen by designer |
+| `MIT` | Mitigation multiplier, between 0 and 1 | `K ÷ (K + DEF_target)` |
+| `CRIT_mult` | Critical multiplier, or 1 on a normal hit | Crit tables |
+| `DMG_final` | Damage actually dealt by one hit | — |
+| `INT_base` | Attack interval in seconds from Agility alone | Agility rule |
+| `MOD_speed` | Combined attack-speed multiplier from gear and buffs | `1 + Σ speed%` |
+| `INT_actual` | Attack interval after gear, floored by the system cap | — |
+| `DPS` | Damage per second | `DMG_final ÷ INT_actual` |
+
+### The equations
+
+**Attack power — built once, never overwritten:**
+
+```
+ATK_attr    = STR × str_rate
+ATK_special = Σ (special_stat × special_rate)
+ATK_gear    = Σ (weapon_AP + flat_item_AP)
+
+ATK_base    = ATK_attr + ATK_special + ATK_gear
+MOD_atk     = 1 + Σ (mastery_pct + buff_pct + item_pct)
+
+ATK_total   = ATK_base × MOD_atk
+```
+
+**One hit:**
+
+```
+DMG_raw     = (ATK_total × SKILL_pct) + DMG_flat
+MIT         = K ÷ (K + DEF_target)
+DMG_final   = DMG_raw × MIT × CRIT_mult
+```
+
+**Throughput:**
+
+```
+INT_base    = 1.08 − (AGI ÷ 1000) × 0.1
+MOD_speed   = 1 + Σ attack_speed_pct
+INT_actual  = max( INT_base ÷ MOD_speed , 0.167 )
+
+DPS         = DMG_final ÷ INT_actual
+```
+
+The `0.167` floor is the six-attacks-per-second system cap. The `1.08` is derived
+from the two published data points, not stated directly.
+
+### Notes on three terms
+
+**`SKILL_pct` is the largest term in the system.**
+
+| Skill class | `SKILL_pct` |
+|---|---|
+| First-advancement AOE | 50–70% |
+| AOE above level 200 | 70–90% |
+| Legendary AOE | above 100% |
+| Grid's "Kill" finisher | **1,500%** |
+
+Low-rated skills instead deal **fixed damage** — they ignore `ATK_total`
+entirely and output a constant. The higher a skill's rating, the less often its
+damage is fixed. A weak skill therefore has a hard ceiling by construction and
+cannot be rescued by a strong hero.
+
+**`DMG_flat` sits outside the multiplier chain,** which is why it needs its own
+name. It is added after `MOD_atk` and after `SKILL_pct`, so its value depends
+entirely on how often you swing rather than how hard.
+
+**`MIT` has diminishing returns by construction.** A 50% damage-reduction effect
+composes with `MIT` rather than replacing it, which is why such effects do more
+than halve incoming damage. Defense penetration reduces `DEF_target` before `MIT`
+is computed, so it is worth disproportionately more against high-defense targets.
+
+---
+
+## 3. Worked examples
+
+Constants used: `str_rate = 0.7` (third awakening), `K = 1000`, `CRIT_mult = 1`.
+
+**Hero:** `STR 1,000` · `VIT/Stamina 400` · `AGI 2,000` · Advanced Sword Mastery (+8%)
+**Weapon:** greatsword, 400 AP
+**Armour:** +100 flat AP
+**Target:** `DEF_target = 500`
+
+### Example A — one basic attack
+
+```
+ATK_attr    = 1,000 × 0.7              =   700
+ATK_special = 0                        =     0
+ATK_gear    = 400 + 100                =   500
+                                         ─────
+ATK_base                               = 1,200
+MOD_atk     = 1 + 0.08                 =  1.08
+ATK_total   = 1,200 × 1.08             = 1,296
+
+SKILL_pct   = 100%  (basic attack)
+DMG_flat    = 0
+DMG_raw     = 1,296 × 1.00 + 0         = 1,296
+
+MIT         = 1000 ÷ (1000 + 500)      = 0.667
+DMG_final   = 1,296 × 0.667 × 1        =   864
+
+INT_base    = 1.08 − (2000÷1000)×0.1   =  0.88s
+MOD_speed   = 1
+INT_actual  = 0.88s
+DPS         = 864 ÷ 0.88               =   982
+```
+
+Defensively, from the same sheet: health = `400 × 30` + `1,000 × 7` = **19,000**.
+Defense = `400 × 1.2` = **480**. Health regeneration = `(400 ÷ 100) × 2` = **8/sec**,
+and raising Stamina further will not improve that rate.
+
+### Example B — the same hero, different skills
+
+Only `SKILL_pct` changes. `ATK_total` is computed once and reused.
+
+| Skill | `SKILL_pct` | `DMG_raw` | `DMG_final` |
+|---|---|---|---|
+| Basic attack | 100% | 1,296 | 864 |
+| Mid-tier AOE | 70% | 907 | 605 *(per target)* |
+| Legendary AOE | 120% | 1,555 | 1,037 *(per target)* |
+| Kill finisher | 1,500% | 19,440 | **12,960** |
+
+Against three targets the mid-tier AOE delivers `605 × 3 = 1,815` — more than
+double a basic attack, at no resource cost. The finisher is 15× a basic attack
+but costs 1,200 mana and half the hero's remaining stamina.
+
+**Encounter shape decides which skill wins, not skill tier.**
+
+### Example C — why attack-speed gear is not comparable to attack-power gear
+
+Two upgrades competing for the same slot.
+
+**Upgrade 1 — weapon with +200 AP.** Changes `ATK_gear`:
+
+```
+ATK_gear    = 600 + 100                =   700
+ATK_base                               = 1,400
+ATK_total   = 1,400 × 1.08             = 1,512
+DMG_final   = 1,512 × 0.667            = 1,008
+INT_actual  = 0.88s
+DPS         = 1,008 ÷ 0.88             = 1,145      (+16.6%)
+```
+
+**Upgrade 2 — gloves that halve the interval.** Changes only `MOD_speed`:
+
+```
+ATK_total   unchanged                  = 1,296
+DMG_final   unchanged                  =   864
+MOD_speed   = 2.0
+INT_actual  = 0.88 ÷ 2.0               =  0.44s
+DPS         = 864 ÷ 0.44               = 1,964      (+100%)
+```
+
+Same slot, six times the gain. **`ATK_gear` is additive; `MOD_speed` is
+multiplicative on the whole chain.** Anything touching `MOD_speed` belongs to a
+separate budget class from anything touching `ATK_gear`.
+
+This is also the full argument for keeping Agility out of `ATK_attr`. Agility
+already divides into `DPS` through `INT_actual`. If it also fed `ATK_total`, it
+would appear twice in the same expression and every build would raise it first.
+
+### Example D — a real legendary weapon, fully decomposed
+
+The Sword of Self-transcendence is the most completely published item block in
+the series, and it touches five different variables at once:
+
+| Item line | Variable affected |
+|---|---|
+| Attack power 356 | `ATK_gear` |
+| Attack speed +6% | `MOD_speed` |
+| Accuracy +10% | hit chance *(outside this equation)* |
+| Attack and defense rate +10% | `MOD_atk` |
+| +200 damage per attack | `DMG_flat` |
+| Grants *Perfect State of Self-transcendence* | skill grant |
+
+```
+ATK_attr    = 1,000 × 0.7              =   700
+ATK_gear    = 356 + 100                =   456
+ATK_base                               = 1,156
+MOD_atk     = 1 + 0.08 + 0.10          =  1.18
+ATK_total   = 1,156 × 1.18             = 1,364
+
+DMG_flat    = 200
+DMG_raw     = 1,364 × 1.00 + 200       = 1,564
+DMG_final   = 1,564 × 0.667            = 1,043
+
+MOD_speed   = 1.06
+INT_actual  = 0.88 ÷ 1.06              =  0.83s
+DPS         = 1,043 ÷ 0.83             = 1,257
+```
+
+Two things to notice.
+
+**`DMG_flat` is 13% of this hit but would be 40%+ on a dagger.** Because it lands
+after every multiplier, its relative value scales inversely with `ATK_total` and
+directly with attack frequency. Flat per-hit damage on a fast weapon is a
+different item than the same line on a slow one. Either exclude `DMG_flat` from
+the affix table or price it against `INT_actual`.
+
+**The granted skill's cost is behavioural, not numeric.** All stats double for two
+minutes with immunity to every abnormal condition — and the wearer cannot be
+controlled for the duration. No mana price could have balanced a `× 2` on every
+attribute; a loss-of-control price can.
+
+### Example E — the conditional layer, which touches none of these variables
+
+Iyarugt's options key off events the engine already tracks:
+
+- Critical strike → bleeding for 3s, damage proportional to `ATK_total`
+- 3 combos → bleed maximises, damage to target +200% for 1 second
+- 5 combos → target's thinking destroyed for 0.3s, opening a linked skill
+- On growth → bleed extends to 5s, window becomes +300% for 2s
+
+None of that appears in `ATK_base`, `MOD_atk`, or `SKILL_pct`. It is a separate
+layer keyed on crit and combo count, and it costs nothing in the core math.
+**This is where weapon identity should live.**
+
+---
+
+## 4. How ranger and assassin identity is produced without Dexterity
+
+Dexterity exists in Satisfy but is unallocatable. Class identity comes from three
+places instead.
+
+**1. Stat *ratio* requirements on weapons.**
+
+| Weapon | Level | Strength | Agility | Mastery |
+|---|---|---|---|---|
+| Dagger of Bewitchment | 100 | 30 | 200 | Intermediate Dagger |
+| Ideal Dagger | 180 | — | 450 | Advanced Dagger |
+| Sword of Self-transcendence | 160 | 950 | — | Advanced Sword lv2 |
+| Gale Spear | 240 | 750 | 400 | Advanced Spear lv2 |
+| Thunder Bow | 300 | — | 2,000 | Advanced Bow lv5 |
+| Failure (greatsword) | 300 | 5,000 | — | Advanced Sword lv8 |
+
+A greatsword demands 5,000 Strength; a dagger demands 30. No separate finesse
+attribute is needed to express that.
+
+**2. Weapon mastery rank is the real gate.** Every weapon requires a named mastery
+at a specific rank — "Advanced Bow Mastery level 5," "Advanced Sword Mastery
+level 8." The mastery is the class.
+
+Summonlab already has this. The Martial domain's skills are ranked, so a weapon
+can read `requires: Archery, Advanced 5` with no new system at all. That single
+line does more identity work than a fifth attribute would, and it costs nothing
+in monster stat blocks or affix tables. It also gives gear a second progression
+axis that is *earned through use* rather than allocated — which is the part of
+the Overgeared hidden-stat layer that is worth keeping once the legendary-class
+crafting loop is discarded.
+
+**3. Masteries convert attributes differently.** Bow Mastery grants +4% attack
+power and hit rate and turns agility into crit chance. Sword Mastery raises
+attack power and attack speed. A generalist Weapons Mastery works with any weapon
+but gives less than a specialist at equal investment.
+
+**The one exception worth knowing:** Mjolnir – Human World Version requires level
+350+, 3,000+ strength and **3,500+ dexterity**, and the wiki explains this
+directly — the design was optimised for Grid himself, who has enormous dexterity
+from crafting achievements. It is a deliberately unbuildable requirement, closer
+to a name-lock than a stat gate. The rule holds: dexterity does not gate
+obtainable gear.
+
+**Conclusion for Summonlab.** Dexterity is not needed for ranger/assassin
+identity. Proficiency rank plus asymmetric stat floors plus mastery-specific
+conversions do the whole job — and accuracy and crit are already on the skill
+track, which is exactly the mechanism this relies on.
+
+- **Assassin** — dagger mastery, negligible strength floor, options built around
+  setup (a 3-second no-resist window) and burst (doubled agility for 60s)
+- **Ranger** — bow mastery, agility→crit conversion, options built around
+  sustained fire (ramping firing speed capped at +50%) and per-shot resource cost
+
+Different mastery, different option pool, different stat floor. Four attributes.
+
+---
+
+## 5. Adapting to Summonlab
+
+### Direct translations
+
+| Overgeared | Summonlab |
+|---|---|
+| Strength → attack power | Strength → attack power, same linear conversion |
+| Stamina → health + defense | Vitality → health + mitigation |
+| Intelligence → mana pool + magic power | Mana → mana pool + magical damage |
+| Agility → attack interval | Agility → action points per tick |
+| Basic attack cap of 6/sec | Hard cap on actions per tick |
+| Skill multiplier | Skill grade × rank |
+| Fixed-damage low-tier skills | Already aligned: low-grade skills need a ceiling |
+| Weapon mastery rank gating | Already aligned: proficiency track gates equipment |
+| Defense curve `K/(K+D)` | Vitality-derived mitigation, same curve |
+| Special resources as class budget | Maps onto the Martial / Magical / Craft domains |
+
+### Mechanics worth adopting directly
+
+**Regeneration excluded from stat scaling.** Health Recovery Rate derives from
+Stamina but does not benefit from awakenings or "all stats +N" effects. Porting
+this means Vitality gives the pool while regeneration stays a gear-and-skill
+dimension — which keeps healing relevant across the whole tower climb instead of
+being trivialised by late-game stat inflation.
+
+**Spell access as a hard gate, not a penalty.** A spell whose Mana requirement is
+unmet does not fire at all. Cleaner than a scaling failure chance, and it makes
+the attribute floor legible.
+
+**Two axes for casters.** Intelligence plus Mana Core expansion. The equivalent
+would be Mana as the attribute and a separate cultivation-style core depth that
+gates which skill grades a hero can learn. Fits the xianxia framing exactly.
+
+**Conditional option layers.** Iyarugt's combo-keyed effects cost nothing in the
+core equation. Most weapon identity should live here.
+
+**Flat post-multiplier damage as its own budget class.** The +200 per attack on
+the Sword of Self-transcendence behaves completely differently on a fast weapon
+than a slow one. Either exclude it or price it against attack interval.
+
+### Changes required
+
+**No stamina.** The Kill finisher's cost model doesn't port. Substitute a poise
+cost or a long cooldown — the intent is that a finisher must be paid for with
+something other than mana, so a high-mana hero can't spam it. Note also that
+Overgeared uses Stamina for *both* the health/defense stat and the labour
+resource; Summonlab's Vitality takes the stat role and has no labour resource, so
+gathering and crafting need a different pacing limiter (time, or settlement
+capacity).
+
+**Ticks, not seconds.** `dps` becomes damage per tick and the interval becomes
+action points accumulated per tick. Example C survives intact: anything granting
+extra actions per tick is multiplicative and needs its own budget.
+
+**Weapon scaling channel replaces the Dexterity question.** A bow reads
+`scaling: STR` with a low coefficient and a high crit conversion via Archery
+rank; a greatsword reads `scaling: STR` with a high coefficient and no crit
+conversion. One field on the weapon, one conversion table on the proficiency
+track.
+
+**Gear budget.** Overgeared is deliberately gear-skewed — the premise is that
+items substitute for level, and item-above-requirement penalties are mild
+(roughly a 20% ability drop for rare, 30% for epic, with half of item effects
+applied). That skew is wrong where attachment is to a specific procedural hero.
+Suggested split: gear contributes flat attack power additively and owns most
+*option* variety; the attribute and skill layers own the multipliers. Craft
+classes then matter through option quality and through the rationed
+interval-affecting items, not through raw damage share.
+
+### Open items
+
+- Choose `K` for the defense curve
+- Decide whether weapon attack power is a point value or a range — the range
+  version gives per-hit variance without a global randomness term and reads well
+  in a tick log
+- Decide the budget class for action-economy gear and how rare it is
+- Decide whether flat post-multiplier damage exists at all
+- Decide whether special resources (a Martial energy gauge, say) are adopted as
+  the class-power budget
+
+### Documented but not adopted: stat awakenings
+
+Full per-stat tables are in §1. In summary: `str_rate` moves 0.1 → 0.2 → 0.7
+across the documented tiers while health per point moves only 3 → 6 → 7, the mana
+rate plateaus at 6 from the second awakening onward, and Agility has no published
+ladder at all.
+
+Note also that the special stats use a **different trigger**: Courage awakens when
+the stat itself reaches 1,200 points, not at a character level. Threshold-gating
+is the better of the two mechanisms — the player chooses when to cross it, so it
+cannot silently invalidate a build.
+
+**The appeal:** the equation never changes shape, only a constant, so the event is
+enormous without adding complexity. Crossing a threshold becomes an occasion.
+
+**The risks:** a build optimal before the threshold can be wrong after it with no
+warning; the author revised these coefficients repeatedly across chapters; and as
+shown in §1, the published ladder does not reconstruct the late-game totals,
+which means the real curve kept escalating past the documented tiers. If adopted,
+the rate table must be visible to the player *before* the threshold is crossed,
+and the ladder must terminate at a known tier.

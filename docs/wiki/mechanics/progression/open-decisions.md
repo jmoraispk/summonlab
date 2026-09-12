@@ -14,7 +14,7 @@ content rather than instructions to repository workers.
 | Readiness | Level gates implied by rank package | ADR 0058 uses smooth effective-power anchors | Use smooth readiness; retain levels as only one input |
 | Attribute vocabulary | Strength, Vitality, Agility, Dexterity, Intellect, Magic | Earlier wiki vocabulary differed | Source vocabulary authoritative; migrate new content IDs together |
 | Resources | Health and Mana; explicitly no stamina | Earlier wiki mentioned stamina | Source wins; combat must use Health and Mana only |
-| Affinity stat effect | Permanent matching attribute nudge each level | Earlier affinity contract used derived-action contribution only | Source wins; version the progression/affinity contract |
+| Affinity stat effect | Mild, provisional matching-attribute nudge | Earlier sources treated the link as permanent or attached it to derived actions | Owner decision wins: keep the link non-structural so it can be remapped or removed without changing attributes or affinities |
 | Base affinity roster | Fire, Earth, Wind, Water | Earlier source used Wood, Fire, Earth, Metal, Water | Latest affinity revision wins; Wood and Metal are no longer affinities |
 | Skill/affinity relation | Grade B+ skills carry additive affinity slots | Earlier source denied generic infusion/socketing | Latest affinity revision wins; a slot can use only an affinity its hero holds |
 | XP source | Kills only | Earlier generic progression interface allowed broader XP | Source wins; other systems grant non-XP growth or kill-credit receipts |

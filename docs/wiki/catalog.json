@@ -63,6 +63,36 @@
       "spoilerScope": "internal"
     },
     {
+      "wikiId": "research.overgeared.combat-math-reference",
+      "path": "docs/wiki/research/overgeared/combat-math-reference.md",
+      "pageType": "research",
+      "owner": "progression",
+      "designStatus": "seed",
+      "implementationStatus": "none",
+      "visualStatus": "none",
+      "spoilerScope": "internal"
+    },
+    {
+      "wikiId": "research.overgeared.equipment-catalogue",
+      "path": "docs/wiki/research/overgeared/equipment-catalogue.md",
+      "pageType": "research",
+      "owner": "equipment",
+      "designStatus": "seed",
+      "implementationStatus": "none",
+      "visualStatus": "none",
+      "spoilerScope": "internal"
+    },
+    {
+      "wikiId": "research.overgeared.equipment-mechanics",
+      "path": "docs/wiki/research/overgeared/equipment-mechanics.md",
+      "pageType": "research",
+      "owner": "equipment",
+      "designStatus": "seed",
+      "implementationStatus": "none",
+      "visualStatus": "none",
+      "spoilerScope": "internal"
+    },
+    {
       "wikiId": "mechanics.rewards-engagement",
       "path": "docs/wiki/mechanics/rewards-and-engagement.md",
       "pageType": "mechanic",

@@ -105,6 +105,19 @@ establishing whether each term is a separate statistic.
 - **Interpretation rule:** the sections below preserve agreement and disagreement between the
   captures. Exact formulas and story claims are research leads, not verified rules.
 
+### Component research pages
+
+- [Combat math reference](overgeared/combat-math-reference.md) — a reconstructed damage model,
+  worked examples, and notes on four-stat class identity.
+- [Equipment catalogue](overgeared/equipment-catalogue.md) — the supplied category counts, rating
+  distribution, and verified named-item sample.
+- [Equipment mechanics](overgeared/equipment-mechanics.md) — a property taxonomy and worked item
+  sheets showing how equipment expresses power and trade-offs.
+
+These pages preserve the supplied analyses as secondary research. Numerical reconstructions,
+interpretations, adaptation suggestions, and phrases such as “worth adopting” remain source claims;
+they do not become Summonlab decisions merely by being recorded here.
+
 ### Reported primary system
 
 The linked pages and synthesized summary identify four basic stats. Strength's page documents Stat

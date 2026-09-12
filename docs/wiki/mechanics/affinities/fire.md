@@ -6,7 +6,8 @@ Wiki ID: `affinity.fire`
 
 **Status:** **Burn** — damage over time; intensity stacks rather than duration.
 
-**Attribute nudge:** Strength on level-up.
+**Provisional attribute nudge:** A small Strength bonus on level-up. This mild association may be
+changed or removed without changing Fire's identity.
 
 **Material language:** Vermilion embers, localized heat distortion, material glow, smoke, ash, and
 cooling residue.

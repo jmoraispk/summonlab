@@ -6,7 +6,8 @@ Wiki ID: `affinity.earth`
 
 **Status:** **Weight** — reduces poise and action speed; increases stagger taken.
 
-**Attribute nudge:** Vitality on level-up.
+**Provisional attribute nudge:** A small Vitality bonus on level-up. This mild association may be
+changed or removed without changing Earth's identity.
 
 **Material language:** Ochre-brown stone stress, displaced dust, and pressure.
 

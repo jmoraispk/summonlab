@@ -12,9 +12,9 @@ Skills may be *authored* around an element — a fire technique from a fire scho
 
 **Affinity rank** is the affinity track's only measure. It runs 0 through V, rises through use, element-aligned training, leyline nodes and absorbed monster cores, and governs proc chance, status potency, environmental interaction, and dual-affinity stability. It is never raised by hero level and it never appears on the attribute sheet.
 
-This produces two independent multipliers on any single action. Attributes decide how hard, how fast, and how precisely it lands. Affinity rank decides what element it carries and whether that element does anything at all. A Fire caster with high Intellect and low affinity rank hits hard, with fire-coloured damage that rarely burns; reverse the two and the strikes land softly, but everything catches.
+This produces two independent multipliers on any single action. Attributes decide how hard, how fast, and how precisely it lands. Affinity rank decides what element it carries and whether that element does anything at all. A Fire caster with high Magic and low affinity rank hits hard, with fire-coloured damage that rarely burns; reverse the two and the strikes land softly, but everything catches.
 
-**The single coupling to attributes.** On level-up, a hero receives a modest attribute bonus matching their affinity. Flavour, not structure — it nudges a build, it does not define one.
+**The provisional coupling to attributes.** On level-up, a hero may receive a small attribute bonus matching their affinity. This is a mild thematic nudge, not an affinity's identity or a meaningful source of build power. The mapping and the bonus may be changed or removed later without changing the core attribute or affinity systems.
 
 | Affinity | Attribute nudged | Reason |
 |---|---|---|
@@ -23,9 +23,9 @@ This produces two independent multipliers on any single action. Attributes decid
 | Wind | Agility | Motion, displacement |
 | Water | Magic | Depth, patience, flow |
 
-**Dexterity and Intellect are nudged by no affinity.** These are the two learned attributes — precision and comprehension — and neither is elemental. A scholar and a brute may hold the same element, and a hero cannot become more accurate by burning brighter. Leaving both outside the elemental system keeps skills the primary lever, which is the point.
+Affinity does not own attribute growth. Training, equipment, and the character's other progression remain the primary levers, so a scholar and a brute may hold the same element without converging on the same build.
 
-Dual affinities do not nudge attributes at all. Their reward is elemental, not statistical.
+Dual affinities do not add another attribute nudge. Their reward is elemental, not statistical.
 
 ## 2.2 The four affinities
 
