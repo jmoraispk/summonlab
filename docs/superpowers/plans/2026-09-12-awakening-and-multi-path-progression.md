@@ -262,7 +262,7 @@ git commit -m "feat(contracts): define versioned hero progression"
 - Consumes: `ProgressionRulesBindingSchema` and canonical four-attribute types from Task 1 and v26.
 - Produces: `PROGRESSION_RULES_V1`, `awakeningTier(level)`, `intrinsicAttributes(profile, growth)`, `attributePowerMilli(attribute, level, rules)`, `maximumHealth(vitality, level, rules)`, `craftExperience(input, rules)`, and `combatExperience(input, rules)`.
 
-- [ ] **Step 1: Write failing table and boundary tests**
+- [x] **Step 1: Write failing table and boundary tests**
 
 ```ts
 it.each([
@@ -281,13 +281,13 @@ it.each([
 
 Also test that flat gear power and ratio-stat helpers receive no awakening argument, and that changing only a supplied rules table changes the result without changing state shape.
 
-- [ ] **Step 2: Run the math tests and verify red**
+- [x] **Step 2: Run the math tests and verify red**
 
 Run: `pnpm --filter @summonlab/engine test -- domains/progression/math.spec.ts`
 
 Expected: FAIL because the progression rules and math module do not exist.
 
-- [ ] **Step 3: Add the content-hashed v1 rules artifact**
+- [x] **Step 3: Add the content-hashed v1 rules artifact**
 
 Store Power as thousandths so `1.2` is `1_200` and Health as whole points. Include the current `10 XP` per level behavior as an initial calibration value, not a schema constant.
 
@@ -318,7 +318,7 @@ export const PROGRESSION_RULES_V1 = Object.freeze({
 
 Create the content hash from canonical JSON and export one `ProgressionRulesBinding` containing `progression-rules-v1` and that hash. A future nerf publishes `progression-rules-v2`; it never edits v1 in place.
 
-- [ ] **Step 4: Implement pure fixed-point math**
+- [x] **Step 4: Implement pure fixed-point math**
 
 ```ts
 export function awakeningTier(level: number): number {
@@ -337,11 +337,11 @@ export function maximumHealth(vitality: number, level: number, rules: Progressio
 
 Implement `multiplyBasisPoints(value, bps)` with integer half-up rounding. Apply craft factors in the documented order: difficulty base → ingredient rarity → quality → first-success bonus → repetition decay → minimum floor. Apply combat factors as difficulty base plus objective bonus, then first-clear bonus → repetition decay → minimum floor.
 
-- [ ] **Step 5: Prove monotonic and authored-table behavior**
+- [x] **Step 5: Prove monotonic and authored-table behavior**
 
 Run property loops across all levels `1..999`, all seven difficulty/rarity bands, and representative intrinsic values. Assert higher difficulty or rarity never decreases an otherwise identical reward and tier 9 contributes exactly five times tier 0.
 
-- [ ] **Step 6: Run focused verification**
+- [x] **Step 6: Run focused verification**
 
 ```bash
 pnpm --filter @summonlab/content test -- progression-rules.spec.ts
@@ -350,7 +350,7 @@ pnpm --filter @summonlab/content typecheck
 pnpm --filter @summonlab/engine typecheck
 ```
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add packages/content/src packages/engine/src/domains/progression packages/engine/src/index.ts

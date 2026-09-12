@@ -46,6 +46,15 @@ export {
 	type CombatProgressionClaimProjection
 } from './domains/progression/claims.js';
 export {
+	attributePowerMilli,
+	awakeningTier,
+	combatExperience,
+	craftExperience,
+	multiplyBasisPoints,
+	type CombatExperienceInput,
+	type CraftExperienceInput
+} from './domains/progression/math.js';
+export {
 	adaptV26LegacyCombatOutcome,
 	transitionCombatResultClaims,
 	type CombatClaimTransition,
