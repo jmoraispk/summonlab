@@ -14,12 +14,15 @@
 	const orderedAttributes = $derived(
 		orderCharacterSheetAttributes(hero.attributes, (attribute) => attribute.label)
 	);
+	const awakeningTier = $derived(Math.floor(hero.level / 100));
 </script>
 
 <aside class="drawer" aria-labelledby="hero-drawer-heading" data-testid="hero-drawer">
 	<header>
 		<div>
-			<p>Resident record · Level {hero.level}</p>
+			<p>
+				Resident record · Level {hero.level} · {hero.stars}★ immutable · Awakening {awakeningTier}
+			</p>
 			<h2 id="hero-drawer-heading">{hero.name}</h2>
 		</div>
 		<button type="button" aria-label="Close hero details" onclick={onClose}>×</button>
@@ -36,7 +39,7 @@
 	</div>
 
 	<section aria-labelledby="attributes-heading">
-		<h3 id="attributes-heading">Attributes</h3>
+		<h3 id="attributes-heading">Attributes · {hero.unallocatedAttributePoints} pts available</h3>
 		<div class="attributes">
 			{#each orderedAttributes as attribute (attribute.label)}
 				<div>

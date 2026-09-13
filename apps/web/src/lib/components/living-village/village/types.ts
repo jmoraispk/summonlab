@@ -27,6 +27,8 @@ export type VillageHero = {
 	id: VillageHeroId;
 	name: string;
 	level: number;
+	stars: number;
+	unallocatedAttributePoints: number;
 	health: { current: number; maximum: number };
 	activity: string;
 	partyStatus: string;

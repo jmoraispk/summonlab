@@ -10,6 +10,8 @@
 		affinityIcon: 'ember' | 'tide' | 'gale' | 'grove';
 		calling: string;
 		stars: number;
+		level?: number;
+		unallocatedAttributePoints?: number;
 		image: string;
 		attributes: readonly { name: string; value: number }[];
 		personality: {
@@ -32,6 +34,8 @@
 	const orderedAttributes = $derived(
 		orderCharacterSheetAttributes(hero.attributes, (attribute) => attribute.name)
 	);
+	const level = $derived(hero.level ?? 1);
+	const awakeningTier = $derived(Math.floor(level / 100));
 
 	function handleKeydown(event: KeyboardEvent) {
 		if (event.key === 'Escape') onclose();
@@ -72,7 +76,10 @@
 		<section class="attributes" aria-labelledby="attribute-title">
 			<div class="section-title">
 				<h3 id="attribute-title">Attributes</h3>
-				<span>Current readiness</span>
+				<span
+					>Level {level} · {hero.stars}★ immutable · awakening {awakeningTier} · {hero.unallocatedAttributePoints ??
+						0} pts</span
+				>
 			</div>
 			<div class="attribute-grid" data-testid="attribute-grid">
 				{#each orderedAttributes as attribute (attribute.name)}

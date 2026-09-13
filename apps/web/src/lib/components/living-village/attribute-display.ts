@@ -5,6 +5,13 @@ const characterSheetAbbreviations: Readonly<Record<string, string>> = {
 	Magic: 'MAG'
 };
 
+const characterSheetFullNames: Readonly<Record<string, string>> = {
+	STR: 'Strength',
+	AGI: 'Agility',
+	VIT: 'Vitality',
+	MAG: 'Magic'
+};
+
 const characterSheetOrder: Readonly<Record<string, number>> = {
 	Strength: 0,
 	Agility: 1,
@@ -14,6 +21,10 @@ const characterSheetOrder: Readonly<Record<string, number>> = {
 
 export function attributeDisplayName(name: string): string {
 	return characterSheetAbbreviations[name] ?? name;
+}
+
+export function attributeFullName(name: string): string {
+	return characterSheetFullNames[name] ?? name;
 }
 
 export function orderCharacterSheetAttributes<T>(

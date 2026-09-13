@@ -85,7 +85,10 @@ export const POST: RequestHandler = async ({ params, request }) => {
 						targetHeroId: parsed.data.targetHeroId
 					});
 		const committed = await commitEngineCommand(config.databaseUrl, command);
-		if (committed.snapshot.state.schemaVersion !== 22) {
+		if (
+			committed.snapshot.state.schemaVersion !== 22 &&
+			committed.snapshot.state.schemaVersion !== 27
+		) {
 			throw new Error('Synthesis commit changed the engine schema.');
 		}
 		return json({

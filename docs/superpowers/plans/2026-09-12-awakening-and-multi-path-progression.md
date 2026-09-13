@@ -815,11 +815,11 @@ git commit -m "feat(progression): award evidence-based combat experience"
 - Consumes: v27 public state, rules binding, pure tier/rate helpers, and existing canonical attribute-display ordering.
 - Produces: `presentHeroProgression(hero, rules)` with level, stars, XP, tier, unallocated points, intrinsic attributes, and per-point conversions.
 
-- [ ] **Step 1: Write failing presentation tests**
+- [x] **Step 1: Write failing presentation tests**
 
 Assert sheet order `STR`, `AGI`, `VIT`, `MAG`; accessible full names; level 99 versus 100 rate labels; tier 9 `×5`; and no `current stars`, `promotion`, `Body`, or `Mind` labels.
 
-- [ ] **Step 2: Run presentation tests and verify red**
+- [x] **Step 2: Run presentation tests and verify red**
 
 ```bash
 pnpm --filter @summonlab/web test -- src/lib/progression-presentation.spec.ts src/lib/components/living-village/attribute-display.spec.ts
@@ -827,7 +827,7 @@ pnpm --filter @summonlab/web test -- src/lib/progression-presentation.spec.ts sr
 
 Expected: FAIL because the v27 progression projection does not exist.
 
-- [ ] **Step 3: Implement one server-safe projection**
+- [x] **Step 3: Implement one server-safe projection**
 
 ```ts
 export type HeroProgressionPresentation = Readonly<{
@@ -850,22 +850,22 @@ export type HeroProgressionPresentation = Readonly<{
 
 Do not send hidden learning profiles, claim internals, content hashes, or historical compatibility attributes to presentation components.
 
-- [ ] **Step 4: Update compact character sheets**
+- [x] **Step 4: Update compact character sheets**
 
 Render the four attributes in one row or a responsive 2×2 grid. Use abbreviations in the cells and full names in `aria-label`/title text. Show level, immutable star rating, awakening tier, and unallocated-point count without introducing star-upgrade affordances.
 
-- [ ] **Step 5: Update replay and synthesis projections**
+- [x] **Step 5: Update replay and synthesis projections**
 
 Display v27 level and awakening details while retaining existing v22-v26 branches. Synthesis may grant XP but must never alter or describe stars as upgradeable.
 
-- [ ] **Step 6: Run focused verification**
+- [x] **Step 6: Run focused verification**
 
 ```bash
 pnpm --filter @summonlab/web test -- src/lib/progression-presentation.spec.ts src/lib/components/living-village/attribute-display.spec.ts
 pnpm --filter @summonlab/web typecheck
 ```
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add apps/web/src/lib apps/web/src/routes/replay apps/web/src/routes/synthesis

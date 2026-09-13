@@ -10,6 +10,8 @@
 		FirstEmberFacility,
 		FirstEmberRationale
 	} from '@summonlab/contracts';
+	import { PROGRESSION_RULES_V1 } from '@summonlab/content';
+	import { presentHeroProgression } from '$lib/progression-presentation';
 
 	let { data } = $props();
 	// svelte-ignore state_referenced_locally
@@ -112,6 +114,11 @@
 			: null
 	);
 	const survivalHero = $derived(hero && 'progression' in hero ? hero : null);
+	const v27Progression = $derived(
+		engineState.schemaVersion === 27 && hero
+			? presentHeroProgression(engineState.heroes[hero.heroId]!, PROGRESSION_RULES_V1)
+			: null
+	);
 	const travelHero = $derived(
 		(engineState.schemaVersion === 3 ||
 			engineState.schemaVersion === 4 ||
@@ -588,12 +595,39 @@
 					</div>
 				{/if}
 				<div class="survival-stats">
-					<div><span>Rarity</span><strong>{survivalHero.progression.stars}★</strong></div>
+					<div><span>Immutable stars</span><strong>{survivalHero.progression.stars}★</strong></div>
 					<div>
 						<span>Level / XP</span><strong data-testid="hero-xp"
 							>{survivalHero.progression.level} / {survivalHero.progression.experience}</strong
 						>
 					</div>
+					{#if v27Progression}
+						<div>
+							<span>Awakening</span><strong>Tier {v27Progression.awakeningTier}</strong>
+						</div>
+						<div>
+							<span>Available points</span><strong
+								>{v27Progression.unallocatedAttributePoints}</strong
+							>
+						</div>
+						<div>
+							<span>Power conversion</span><strong
+								>{v27Progression.powerPerStrengthMilli / 1000} per STR / MAG</strong
+							>
+						</div>
+						<div>
+							<span>Health conversion</span><strong
+								>{v27Progression.healthPerVitality} per VIT</strong
+							>
+						</div>
+						{#each v27Progression.attributes as attribute (attribute.key)}
+							<div>
+								<span title={attribute.fullName} aria-label={attribute.fullName}
+									>{attribute.abbreviation}</span
+								><strong>{attribute.value}</strong>
+							</div>
+						{/each}
+					{/if}
 					<div>
 						<span>Sword skill</span><strong
 							>{survivalHero.progression.skills.swordFighting.rank} / {survivalHero.progression
