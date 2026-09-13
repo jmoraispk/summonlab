@@ -28,13 +28,13 @@ item requirements, not the hero's Domain.
 
 | Armour class | Load by Head / Torso / Legs / Boots | Requirement | Named resistance per piece |
 | --- | --- | --- | --- |
-| **Heavy Armour** | `12 / 28 / 22 / 10` | intrinsic Might 45 and `armour-training` | Cut 800 bp (authored cap 1,500); Impact 600 bp (authored cap 1,200) |
+| **Heavy Armour** | `12 / 28 / 22 / 10` | intrinsic Strength 45 and `armour-training` | Cut 800 bp (authored cap 1,500); Impact 600 bp (authored cap 1,200) |
 | **Light Armour** | `6 / 14 / 11 / 5` | none | Pierce 400 bp (authored cap 1,000) |
 | **Robes** | `2 / 4 / 3 / 2` | none | Arcane 300 bp (authored cap 900) |
 
 When the pure evaluator is called, total equipped load is compared with scoped effective
-equipment-load Might. Explicit item requirements read intrinsic Might, so a temporary load bonus
-cannot satisfy Heavy Armour's Might gate. Vitality is never an armour requirement. Readiness combat
+equipment-load Strength. Explicit item requirements read intrinsic Strength, so a temporary load bonus
+cannot satisfy Heavy Armour's Strength gate. Vitality is never an armour requirement. Readiness combat
 enforces this boundary; the frozen legacy runner continues to use its own compatibility behavior.
 
 Equipment, passive-skill, and physiology grants become deterministic typed resistance receipts.

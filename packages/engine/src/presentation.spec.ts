@@ -151,7 +151,8 @@ describe('settlement presentation projection', () => {
 		const bootstrap = createBootstrapEngine({
 			runId: deterministicUuid('presentation-v25-run'),
 			seed: 'presentation-v25-engine',
-			draft
+			draft,
+			developmentEngineVersion: 25
 		});
 		const presentation = projectSettlementPresentation(
 			bootstrap.snapshot,

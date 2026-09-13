@@ -35,6 +35,7 @@ async function readinessFixture(additionalHero = false): Promise<{
 		seed: 'readiness-runtime:seed',
 		draft,
 		combatMode: 'agent-readiness-v1',
+		developmentEngineVersion: 26,
 		...(secondDraft ? { additionalHeroes: [{ draft: secondDraft }] } : {})
 	}).snapshot.state;
 	if (state.schemaVersion !== 26) throw new Error('Expected engine-v26 state');

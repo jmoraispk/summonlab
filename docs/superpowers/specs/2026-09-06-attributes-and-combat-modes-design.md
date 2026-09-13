@@ -4,6 +4,13 @@ Status: **accepted and implemented; both modes are operator-controlled and legac
 
 Date: 2026-09-06
 
+> **Superseded progression note (2026-09-12):**
+> [ADR 0073](../../decisions/0073-awakening-and-multi-path-progression.md) corrects the current
+> attribute names to Strength and Magic and replaces the prototype `1..100` intrinsic band,
+> one-point-per-level rule, level-99 horizon, and `4 Health per Vitality` rate for engine-v27.
+> Historical v25/v26 replay remains frozen. Engine-v27 adapters for both combat modes consume the
+> shared progression owner.
+
 Implementation plans:
 
 - [Four-attribute legacy combat foundation](../plans/2026-09-06-four-attribute-legacy-combat.md)
@@ -40,7 +47,7 @@ versioned combat mode a release uses; players cannot change combat rules.
 
 ## Goals
 
-1. Make `Might`, `Vitality`, `Agility`, and `Spirit` the canonical visible attributes.
+1. Make `Strength`, `Agility`, `Vitality`, and `Magic` the canonical visible attributes.
 2. Give each attribute a narrow, combat-first role without creating a universal best stat.
 3. Move learned precision, resistance, morale, and learning differences to their proper systems.
 4. Keep Health and Mana as the only universal resource bars.
@@ -63,10 +70,10 @@ versioned combat mode a release uses; players cannot change combat rules.
 
 | Attribute | Owns | Does not own |
 | --- | --- | --- |
-| **Might** | physical damage; carrying capacity; equipment-load tolerance; explicit heavy-equipment requirements | accuracy; critical rate; general mitigation; action cadence |
+| **Strength** | physical damage; carrying capacity; equipment-load tolerance; explicit heavy-equipment requirements | accuracy; critical rate; general mitigation; action cadence |
 | **Vitality** | maximum Health; modest natural Health regeneration | armour mitigation; poise; broad physical resistance; status immunity |
 | **Agility** | readiness accumulation; movement capability; evasion; a bounded relative-speed contribution to hit contests | learned accuracy; critical rate; unrestricted extra actions |
-| **Spirit** | magical damage; maximum Mana; modest saturating Mana regeneration | morale; learning rate; control duration; mental resistance; decision quality |
+| **Magic** | magical damage; maximum Mana; modest saturating Mana regeneration | morale; learning rate; control duration; mental resistance; decision quality |
 
 The old `Might / Vitality / Agility / Dexterity / Intellect / Spirit` vocabulary is retired for new
 canonical content. Historical schema fields remain readable under their original rules.
@@ -80,11 +87,11 @@ accuracy stat.
 
 Equipment character replaces finesse scaling. Daggers, swords, bows, and heavy weapons combine
 physical coefficient, delivery restrictions, properties, and recovery cost to produce different
-cadences while physical damage continues to scale from Might.
+cadences while physical damage continues to scale from Strength.
 
 ### Why Intellect is removed
 
-Magical output moves to Spirit. Lore, appraisal, analysis, recipes, and identification move to
+Magical output moves to Magic. Lore, appraisal, analysis, recipes, and identification move to
 their learned skill families. Model reasoning quality is never varied by an intelligence stat.
 
 ## Intrinsic and effective attributes
@@ -128,14 +135,14 @@ binding and qualification evidence.
 The balance harness must reject any curve where passive regeneration can outpace sustained peer
 damage or create indefinite combat without an explicit defensive engine.
 
-Spirit increases magical damage and maximum Mana. It may make a modest, saturating contribution to
+Magic increases magical damage and maximum Mana. It may make a modest, saturating contribution to
 Mana regeneration, but equipment, stances, passives, and skill effects remain the stronger ways to
 specialize in regeneration. Low-cost martial skills use Mana without forcing ordinary martial
-heroes to make Spirit a primary investment.
+heroes to make Magic a primary investment.
 
 ## Learning differences outside the attribute sheet
 
-Learning does not scale from Spirit. Practice gain composes several explicit influences:
+Learning does not scale from Magic. Practice gain composes several explicit influences:
 
 ```text
 base practice evidence
@@ -167,10 +174,10 @@ The four base affinities retain a small thematic association:
 
 | Affinity | Matching attribute |
 | --- | --- |
-| Fire | Might |
+| Fire | Strength |
 | Earth | Vitality |
 | Wind | Agility |
-| Water | Spirit |
+| Water | Magic |
 
 The first tuning candidate caps the affinity nudge at ten percent of the matching attribute's
 contribution, not ten percent final damage or durability. The harness must demonstrate credible
@@ -178,8 +185,8 @@ Fire casters, Water martial heroes, and other off-association builds before prom
 
 ## Damage and defence
 
-The initial target retains physical and magical action types. Might scales physical magnitude;
-Spirit scales magical magnitude. Skill-specific base effect, compatible equipment, affinity, and
+The initial target retains physical and magical action types. Strength scales physical magnitude;
+Magic scales magical magnitude. Skill-specific base effect, compatible equipment, affinity, and
 the defender's applicable mitigation complete the action calculation.
 
 Vitality does not supply universal mitigation. General physical mitigation belongs to armour:
@@ -199,7 +206,7 @@ and cap. No base attribute grants blanket physical or mental resistance.
 ### Armour eligibility
 
 Vitality is not an armour requirement because that would combine Health, regeneration, and access
-to mitigation in one investment. Might supplies load tolerance and may satisfy an explicit heavy
+to mitigation in one investment. Strength supplies load tolerance and may satisfy an explicit heavy
 equipment requirement. Armour Training supplies learned proficiency. Items may add other authored
 requirements without making Vitality the universal tank gate.
 
@@ -326,9 +333,9 @@ Historical attempts retain their stored legacy aptitude fields and original rule
 four-attribute state consumed by an active legacy runner uses an explicit compatibility projection:
 
 ```text
-legacy might   <- Might
+legacy might   <- Strength
 legacy finesse <- Agility
-legacy insight <- Spirit
+legacy insight <- Magic
 legacy resolve <- Vitality
 ```
 

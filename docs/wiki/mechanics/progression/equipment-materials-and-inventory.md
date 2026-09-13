@@ -26,8 +26,8 @@ rather than parallel item catalogs. The canonical Equipment forms live in the
 ## Weight
 
 Every equipment piece has weight, linking gear to attributes. The imported source drove weight
-tolerance with Might supported by Vitality and used an undefined Initiative penalty. ADR 0072
-supersedes both points: Might alone owns load tolerance, Vitality grants no equipment eligibility,
+tolerance with Strength supported by Vitality and used an undefined Initiative penalty. ADR 0072
+supersedes both points: Strength alone owns load tolerance, Vitality grants no equipment eligibility,
 and readiness combat has no independent Initiative stat.
 
 | Load | Proposed effect |
@@ -117,11 +117,11 @@ pressures a strike team to grow into a settlement. It is explicitly an unfinishe
 
 | Type | Form | Capacity | Availability |
 | --- | --- | --- | --- |
-| Spatial | Backpack, pouch, satchel | Limited by volume and Might-driven carry capacity | Common |
+| Spatial | Backpack, pouch, satchel | Limited by volume and Strength-driven carry capacity | Common |
 | Dimensional | Ring, bracelet, pocket space | Much larger and weight-independent | Rare reward |
 
 Real per-hero capacity creates legitimate gathering and hauling roles, especially for heroes with
-Gathering, high Might, or dimensional storage.
+Gathering, high Strength, or dimensional storage.
 
 ## Living Village subset
 

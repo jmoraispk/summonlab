@@ -4,11 +4,15 @@
 
 **Date:** 2026-09-06
 
+> **Current-name correction:** Before the unreleased v25/v26 contracts were integrated, Might was
+> renamed Strength and Spirit was renamed Magic. ADR 0073 supersedes this decision's prototype
+> progression rates and limits while preserving its combat-mode boundary.
+
 ## Context
 
 The prior progression proposal placed physical power, durability, speed, precision, magical output,
 learning, morale, control, and resistance across six attributes. Several attributes then owned too
-many unrelated outcomes: Vitality combined Health and mitigation, Spirit combined magic with morale
+many unrelated outcomes: Vitality combined Health and mitigation, Magic combined magic with morale
 and control, and learned accuracy or comprehension appeared as innate combat stats. Universal poise
 also created a second durability bar without a clear need.
 
@@ -22,15 +26,15 @@ become a player preference or silently mutate as the new mode is developed.
 
 ### Four combat-first attributes
 
-New `character-v2` state uses four visible intrinsic attributes on a `1..100`
+The original `character-v2` prototype used four visible intrinsic attributes on a `1..100`
 scale:
 
 | Attribute | Owns | Explicit exclusions |
 | --- | --- | --- |
-| Might | physical magnitude, carrying, equipment-load tolerance, authored heavy-item requirements | accuracy, critical chance, general mitigation, action cadence |
+| Strength | physical magnitude, carrying, equipment-load tolerance, authored heavy-item requirements | accuracy, critical chance, general mitigation, action cadence |
 | Vitality | maximum Health, modest natural Health regeneration | armour mitigation, blanket resistance, poise, armour eligibility |
 | Agility | readiness, movement, evasion, bounded relative speed in hit contests | learned accuracy, critical chance, unrestricted extra actions |
-| Spirit | magical magnitude, maximum Mana, modest saturating Mana regeneration | morale, learning, control duration, mental resistance, decision quality |
+| Magic | magical magnitude, maximum Mana, modest saturating Mana regeneration | morale, learning, control duration, mental resistance, decision quality |
 
 Dexterity and Intellect are retired as attributes for new canonical mechanics. Learned precision,
 knowledge, analysis, crafting quality, and identification belong to skills, practice, evidence, and
@@ -117,9 +121,9 @@ New four-attribute heroes can enter `legacy-auto-v1` only through this mode-loca
 projection:
 
 ```text
-legacy might   <- Might
+legacy might   <- Strength
 legacy finesse <- Agility
-legacy insight <- Spirit
+legacy insight <- Magic
 legacy resolve <- Vitality
 ```
 
@@ -173,7 +177,7 @@ old aptitudes in new canonical mechanics.
 ## Supersession
 
 This decision supersedes ADR 0063 and the linked wiki pages only where they present the six-attribute
-vocabulary, Vitality mitigation/poise, Spirit morale/control/learning, Vitality-supported armour
+vocabulary, Vitality mitigation/poise, Magic morale/control/learning, Vitality-supported armour
 eligibility, or player-selectable combat policy as current canon. ADR 0063's source-precedence rule
 and unrelated progression decisions remain accepted. Historical executable versions remain valid
 regardless of prose supersession.

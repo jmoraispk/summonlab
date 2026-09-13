@@ -101,7 +101,8 @@ describe('operator-bound mission combat', () => {
 			runId: deterministicUuid('web-readiness-mission-route-run'),
 			seed: 'web-readiness-mission-route-engine',
 			draft,
-			combatMode: 'agent-readiness-v1'
+			combatMode: 'agent-readiness-v1',
+			developmentEngineVersion: 26
 		}).snapshot;
 	});
 

@@ -6,12 +6,26 @@ This system owns the core capability loop: acquire heroes, develop attributes an
 equipment, resolve combat, and translate validated outcomes into growth and motivating rewards. Its
 internal bounded contexts stay separate even though the player experiences them as one loop.
 
+## Engine-v27 progression owner
+
+Current heroes share levels `1..999` and one XP track across meaningful combat and completed
+crafting. Their immutable `1★..7★` rating grants that many unallocated attribute points per crossed
+level. Awakenings at levels 100 through 900 apply the current table row to the complete applicable
+Strength, Magic, or Vitality value, including typed non-level growth.
+
+Character sheets use `STR`, `AGI`, `VIT`, `MAG` in that order, with full names in normal prose and
+accessible labels. Flat equipment and ratio mechanics do not awaken. Forging uses the shared
+production-completion evidence contract; cooking can adopt it without creating another level track.
+Both combat modes' v27 adapters submit resolved contribution facts to this owner, while historical
+v25/v26 state remains frozen. The rules table can be nerfed under a new hash without migrating hero
+state. See [progression](../mechanics/progression/README.md) and
+[ADR 0073](../../decisions/0073-awakening-and-multi-path-progression.md).
+
 ## Living Village
 
 - one Normal summoning channel and enough introductory access to form one party;
-- 1★ levels 1–10 with the accepted future cap table preserved in schema;
-- four visible combat attributes and the explicit Unaligned affinity state; 1★ heroes cannot
-  awaken an affinity;
+- immutable 1★ levels 1–10 using the shared level-999 schema;
+- four visible combat attributes and the explicit Unaligned affinity state;
 - 8–12 runtime skills from the complete compendium;
 - 12–20 runtime equipment definitions across weapon, armour, and accessory;
 - direct attribute or owned-skill training;
@@ -27,9 +41,9 @@ procedural generators remain available for authoring and compatibility, but they
 the player summon result.
 
 The release matrix decides whether the initial gem claim and Special access are active or only
-represented by a placeholder. Advanced summoning, pity, promotion, complete mastery ladders,
-merging, crafting, item sets, permanent injuries, death, and synthesis remain documented but
-inactive.
+represented by a placeholder. Advanced summoning, pity, complete mastery ladders, merging, cooking,
+item sets, permanent injuries, death, and synthesis remain documented but inactive. Star promotion
+does not exist in current progression; forging completion can already award shared hero XP.
 
 Detailed source material:
 
@@ -114,9 +128,9 @@ The runner isolates the frozen historical resolver behind a v24-shaped boundary.
 heroes receive a mode-local compatibility projection with integer half-up scaling and clamping:
 
 ```text
-legacy might   <- Might
+legacy might   <- Strength
 legacy finesse <- Agility
-legacy insight <- Spirit
+legacy insight <- Magic
 legacy resolve <- Vitality
 ```
 
@@ -370,7 +384,8 @@ affinity use must be authored explicitly. Engine-v26 implements both the four-at
 and operator-controlled readiness timing, intent, deterministic arbitration, and common result
 contracts. Readiness V2 also includes executable deterministic damaging hostile strikes. Production armour
 magnitudes, magical active skills, broad hostile policy variety and balance, permanent injury/death
-promotion, free-roaming gathering, and model narration remain unshipped.
+promotion, free-roaming gathering, and model narration remain unshipped. Engine-v27 layers the
+shared progression owner over both mode adapters without changing their operator-owned boundary.
 
 ### Accepted combat presentation direction
 

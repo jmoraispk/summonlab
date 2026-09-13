@@ -6,7 +6,7 @@ Design status: **accepted visual-generation direction; 200-hero summon roster ap
 
 This page governs hero identity generation beyond the fixed Living Village prototype roster. It
 connects physical variation, the four combat attributes, a separate hidden learning profile,
-personality, history, wardrobe, native stars, and current-star evolution without pretending that an
+personality, history, wardrobe, immutable stars, and earned evolution without pretending that an
 image model is a deterministic procedural human renderer.
 
 ## Accepted rendering register
@@ -59,8 +59,8 @@ regeneration. Candidate PNGs remain production evidence. The v2 runtime manifest
 `apps/web/static/runtime/summonable-heroes-v1/manifest.json`; its WebP derivatives are bound to the
 exact character-manifest hash and loaded in a lazy bundle for that hero.
 
-Only these base 1★ forms are approved here. Their 2★–7★ current-star art remains future evolution
-production and must preserve the identity rules below.
+Only these immutable 1★ forms are approved here. Later level/awakening art remains future evolution
+production and must preserve the identity rules below without changing their star rating.
 
 ### Combat chibi derivative
 
@@ -127,7 +127,7 @@ identity anchors + coherent physical profile
         +------> independent personality and history
         |
         v
-wardrobe DNA + native/current-star presentation + affinity state
+wardrobe DNA + immutable-star presentation + earned progression + affinity state
         |
         v
 candidate full-body renders -> approved anchor -> derived small-scale views
@@ -189,15 +189,15 @@ locking a hero to a combat class.
 
 ## Capability is suggested, not diagrammed
 
-The accepted visible combat attributes are Might, Vitality, Agility, and Spirit. The image should
+The accepted visible combat attributes are Strength, Agility, Vitality, and Magic. The image should
 use concrete, drawable evidence rather than turning a score into physiognomy.
 
 | Attribute | Useful candidate cues | Cues that must not become a rule |
 | --- | --- | --- |
-| Might | frame and muscle distribution, stable leverage, garment fit across shoulders or legs, forceful stance | large body always means high Might |
+| Strength | frame and muscle distribution, stable leverage, garment fit across shoulders or legs, forceful stance | large body always means high Strength |
 | Vitality | robust conditioning, grounded balance, durable bearing, recovery-ready clothing construction | body fat, age, scars, or attractiveness prove Vitality |
 | Agility | low visual inertia, mobile stance, free hems, close sleeves, long or coiled movement lines | thinness always means fast |
-| Spirit | authored magical practice cues, a focus, ritual wear, or controlled magical residue when the brief permits it | religion, quietness, composure, morality, or affinity proves Spirit |
+| Magic | authored magical practice cues, a focus, ritual wear, or controlled magical residue when the brief permits it | religion, quietness, composure, morality, or affinity proves Magic |
 
 Learned precision, knowledge, scholarship, medicine, and craft may still appear through clothing,
 tools, repairs, notes, and lived history. They are skill and experience cues, not extra attributes or
@@ -256,10 +256,11 @@ visual vocabulary rather than a remembered hometown, family, profession, or deed
 kept, expand its kernel into voice, values, drives, fears, and other authored material; the hero's
 actual biography, relationships, habits, and remembered history grow through play.
 
-## Native stars and current stars are different visual axes
+## Immutable stars and earned visual evolution
 
-A hero has both a native-star origin and a current-star evolution state. A native 1★ can eventually
-become 5★ and then 7★, so rank art cannot be a collection of unrelated redraws.
+A hero has one immutable star rating. A 1★ hero remains 1★ through level 999, so later visual
+development comes from lived history, awakenings, equipment, and authored transformation rather
+than a current-star evolution state.
 
 ### Native-star distinction
 
@@ -269,30 +270,30 @@ layering, or a particularly memorable contrast. This is not better anatomy, grea
 expensive-looking culture, or higher rendering quality. Every hero receives intentional art; higher
 native stars receive a less common starting composition and a stronger initial capability presence.
 
-### Current-star evolution
+### Earned evolution
 
-Current stars control earned visual development. Promotion can change posture, confidence, garment
-refinement, personal marks, silhouette emphasis, affinity expression, and the scale of one signature
-motif. The drawing must visibly evolve; applying a new frame to the identical body artwork is not a
-complete promotion treatment.
+Earned development can change posture, confidence, garment refinement, personal marks, silhouette
+emphasis, affinity expression, and the scale of one signature motif. The drawing must visibly
+evolve; changing only a rarity frame is not a complete progression treatment.
 
 The identity lock preserves face structure, body proportions, recognition anchors, wardrobe DNA,
 and core palette relationships across every state. Later art should look like the same person after
 lived development, not a replacement character.
 
-A nurtured 1★ reaching 5★ may become just as visually singular as a native 5★, but through earned
-history and accumulated personal details. A native 5★ begins with a rare, resolved design. At the
-same current rank, origin should not be readable as a simple quality hierarchy or expose a hidden
-mechanical label to an opponent.
+A nurtured 1★ at late progression may become just as visually singular as a 5★ origin, but through
+earned history and accumulated personal details. A 5★ hero begins with a rare, resolved design.
+Neither rating should read as a simple quality hierarchy or expose an exact mechanical label to an
+opponent.
 
 ## Evolution packet
 
 Production ultimately preserves, per hero:
 
 1. one immutable identity manifest and approved high-resolution anchor;
-2. native-star and current-star fields kept separately;
-3. a current-rank evolution brief for 1★ through 7★, even though only 1★ through 5★ are summonable;
-4. a continuity sheet comparing at least 1★, 3★, 5★, and 7★ before all seven states are produced;
+2. one immutable star-rating field;
+3. authored evolution briefs for selected level, awakening, history, and transformation milestones;
+4. a continuity sheet comparing at least four representative progression states before a full set
+   is produced;
 5. exact prompts, references, candidate hashes, review decisions, and approved source hashes;
 6. roster and combat-scale derivatives checked against the same recognition anchors.
 
@@ -301,8 +302,9 @@ body, accessory, and tattoo variation. A wave may carry forward explicitly reque
 preselection references must be regenerated in the current rendering register and labeled
 separately from new or reinterpreted candidates. Once a pair receives an explicit Keep, its accepted
 sides should be preserved rather than gratuitously regenerated. The strongest identities then
-receive 1★, 3★, 5★, and 7★ evolution studies so the team can judge both initial variety and
-continuity before producing a large roster.
+receive representative level/awakening evolution studies so the team can judge both initial variety
+and continuity before producing a large roster. Those studies are progression milestones, not star
+upgrades.
 
 After a reviewed wave, explicit Keep decisions survive into the next pair review. Correct only the
 failed side of a surviving pair when possible: the wave-002 carry-forward retained Ochre Braid and

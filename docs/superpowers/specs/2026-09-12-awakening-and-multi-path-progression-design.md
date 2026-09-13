@@ -1,6 +1,6 @@
 # Awakening and Multi-Path Progression Design
 
-Status: **accepted; implementation planned**
+Status: **accepted; implementation complete**
 
 Date: 2026-09-12
 
@@ -11,6 +11,11 @@ Related design:
 Implementation plan:
 
 - [Awakening and Multi-Path Progression](../plans/2026-09-12-awakening-and-multi-path-progression.md)
+
+Decision and evidence:
+
+- [ADR 0073](../../decisions/0073-awakening-and-multi-path-progression.md)
+- [Deterministic balance artifact](../../evidence/progression-balance-v1.json)
 
 ## Purpose
 
@@ -48,7 +53,7 @@ the exact per-point conversions without requiring the player to reconstruct a hi
 - A final Mana-per-Magic awakening table.
 - Final equipment budgets or the exact hero-to-gear power ratio at every awakening.
 - Retrofitting historical characters, events, or replays with new levels, stars, or conversions.
-- Implementing the design before a separate implementation plan is reviewed.
+- Retrofitting the completed implementation into historical engine versions.
 
 ## Levels and immutable stars
 

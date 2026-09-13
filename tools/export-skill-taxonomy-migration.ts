@@ -591,13 +591,22 @@ function mapRow(row: LegacySkillRow): SkillMigrationRecord {
 	};
 }
 
+function canonicalizeAttributeRequires(record: SkillMigrationRecord): SkillMigrationRecord {
+	if (!record.target) return record;
+	const requires = (record.replacementRequires ?? record.requires)
+		.replace(/\bMight\b/gu, 'Strength')
+		.replace(/\bSpirit\b/gu, 'Magic');
+	if (requires === (record.replacementRequires ?? record.requires)) return record;
+	return { ...record, replacementRequires: requires };
+}
+
 function buildLedger(rows: readonly LegacySkillRow[]): SkillMigrationLedger {
 	if (rows.length !== 520) throw new Error(`Expected 520 legacy skill rows, found ${rows.length}`);
 	return {
 		schemaVersion: 'summonlab-skill-taxonomy-migration-v2',
 		sourceInventorySha256: LEGACY_SKILL_INVENTORY_V1_SHA256,
 		sourceRowCount: 520,
-		records: rows.map(mapRow)
+		records: rows.map(mapRow).map(canonicalizeAttributeRequires)
 	};
 }
 

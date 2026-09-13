@@ -23,7 +23,8 @@ async function fixture() {
 	const state = createBootstrapEngine({
 		runId: deterministicUuid('mission-readiness-v25-run'),
 		seed: 'mission-readiness-v25-engine',
-		draft
+		draft,
+		developmentEngineVersion: 25
 	}).snapshot.state;
 	if (state.schemaVersion !== 25) throw new Error('Expected engine-v25 fixture');
 	return { state, heroId: draft.manifest.characterId };

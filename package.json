@@ -100,6 +100,8 @@
 		"validate:equipment-content-bindings": "tsx tools/validate-equipment-content-bindings.ts",
 		"export:combat-balance": "tsx tools/combat-balance-harness.ts --write",
 		"validate:combat-balance": "tsx tools/combat-balance-harness.ts --check",
+		"export:progression-balance": "tsx tools/progression-balance-harness.ts --write",
+		"validate:progression-balance": "tsx tools/progression-balance-harness.ts --check",
 		"export:equipment-integration-report": "tsx tools/export-equipment-integration-report.ts",
 		"validate:equipment-integration-report": "tsx tools/export-equipment-integration-report.ts --check",
 		"export:player-visuals": "tsx tools/export-player-visuals.ts",

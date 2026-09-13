@@ -1063,7 +1063,8 @@
 				"domain": "Craft",
 				"family": "Gathering",
 				"skill": "Bulk Carry"
-			}
+			},
+			"replacementRequires": "Strength threshold, 5,000 gathers"
 		},
 		{
 			"sourceId": "craft-and-life.md#gathering:8",
@@ -1551,7 +1552,8 @@
 				"domain": "Magical",
 				"family": "Enchantment",
 				"skill": "Empowerment"
-			}
+			},
+			"replacementRequires": "Greater Blessing Master, Magic threshold"
 		},
 		{
 			"sourceId": "magical-disciplines.md#enchantment:11",
@@ -1711,7 +1713,8 @@
 				"domain": "Magical",
 				"family": "Mind",
 				"skill": "Presence"
-			}
+			},
+			"replacementRequires": "Magic threshold"
 		},
 		{
 			"sourceId": "magical-disciplines.md#mind:2",
@@ -1847,7 +1850,8 @@
 				"domain": "Magical",
 				"family": "Mind",
 				"skill": "Suggestion"
-			}
+			},
+			"replacementRequires": "Read Surface Master, Magic threshold"
 		},
 		{
 			"sourceId": "magical-disciplines.md#mind:10",
@@ -2153,7 +2157,8 @@
 				"domain": "Magical",
 				"family": "Restoration",
 				"skill": "Life Link"
-			}
+			},
+			"replacementRequires": "Shared Vigour Master, Magic threshold"
 		},
 		{
 			"sourceId": "magical-disciplines.md#restoration:11",
@@ -2380,7 +2385,8 @@
 				"domain": "Magical",
 				"family": "Ward",
 				"skill": "Reflect"
-			}
+			},
+			"replacementRequires": "Shield Sigil Expert, Magic threshold"
 		},
 		{
 			"sourceId": "magical-disciplines.md#ward:7",
@@ -2488,7 +2494,8 @@
 				"domain": "Magical",
 				"family": "Ward",
 				"skill": "Absorption"
-			}
+			},
+			"replacementRequires": "Reflect Master, Magic threshold"
 		},
 		{
 			"sourceId": "magical-disciplines.md#ward:13",
@@ -2797,7 +2804,8 @@
 						"value": "Earth"
 					}
 				]
-			}
+			},
+			"replacementRequires": "Spike Field Master, Strength threshold"
 		},
 		{
 			"sourceId": "magical-evocation.md#evocation-earth:10",
@@ -3211,7 +3219,8 @@
 						"value": "Fire"
 					}
 				]
-			}
+			},
+			"replacementRequires": "Fireball Expert, Magic threshold"
 		},
 		{
 			"sourceId": "magical-evocation.md#evocation-fire:10",
@@ -3883,7 +3892,8 @@
 						"value": "Water"
 					}
 				]
-			}
+			},
+			"replacementRequires": "Cold Touch Master, Magic threshold"
 		},
 		{
 			"sourceId": "magical-evocation.md#evocation-water:11",
@@ -4786,7 +4796,8 @@
 						"value": "Dagger"
 					}
 				]
-			}
+			},
+			"replacementRequires": "Silent Step Master, Magic threshold"
 		},
 		{
 			"sourceId": "martial-blade.md#dagger:22",
@@ -4970,7 +4981,8 @@
 						"value": "Greatsword"
 					}
 				]
-			}
+			},
+			"replacementRequires": "Strength threshold, hold a greatsword"
 		},
 		{
 			"sourceId": "martial-blade.md#greatsword:2",
@@ -5108,7 +5120,8 @@
 						"value": "Greatsword"
 					}
 				]
-			}
+			},
+			"replacementRequires": "Strength threshold, 5,000 swings"
 		},
 		{
 			"sourceId": "martial-blade.md#greatsword:8",
@@ -5154,7 +5167,8 @@
 						"value": "Greatsword"
 					}
 				]
-			}
+			},
+			"replacementRequires": "Wide Arc Expert, Strength threshold"
 		},
 		{
 			"sourceId": "martial-blade.md#greatsword:10",
@@ -5246,7 +5260,8 @@
 						"value": "Greatsword"
 					}
 				]
-			}
+			},
+			"replacementRequires": "Ground Slam Master, Strength threshold"
 		},
 		{
 			"sourceId": "martial-blade.md#greatsword:14",
@@ -5742,7 +5757,8 @@
 						"value": "Sword"
 					}
 				]
-			}
+			},
+			"replacementRequires": "Strength threshold, Measured Cut Intermediate"
 		},
 		{
 			"sourceId": "martial-blade.md#sword:9",
@@ -5834,7 +5850,8 @@
 						"value": "Sword"
 					}
 				]
-			}
+			},
+			"replacementRequires": "Overhead Chop Expert, Strength threshold"
 		},
 		{
 			"sourceId": "martial-blade.md#sword:13",
@@ -5949,7 +5966,8 @@
 						"value": "Sword"
 					}
 				]
-			}
+			},
+			"replacementRequires": "Half-Sword Expert, Strength threshold"
 		},
 		{
 			"sourceId": "martial-blade.md#sword:18",
@@ -6041,7 +6059,8 @@
 						"value": "Sword"
 					}
 				]
-			}
+			},
+			"replacementRequires": "Magic threshold, Parry Master"
 		},
 		{
 			"sourceId": "martial-blade.md#sword:22",
@@ -6064,7 +6083,8 @@
 						"value": "Sword"
 					}
 				]
-			}
+			},
+			"replacementRequires": "Overhead Chop Master, Strength threshold"
 		},
 		{
 			"sourceId": "martial-blade.md#sword:23",
@@ -6382,7 +6402,8 @@
 						"value": "Halberd"
 					}
 				]
-			}
+			},
+			"replacementRequires": "Chop Master, Strength threshold"
 		},
 		{
 			"sourceId": "martial-haft-and-fist.md#axe:9",
@@ -6539,7 +6560,8 @@
 				"domain": "Martial",
 				"family": "Body",
 				"skill": "Wrestling"
-			}
+			},
+			"replacementRequires": "Strength threshold"
 		},
 		{
 			"sourceId": "martial-haft-and-fist.md#grappling:2",
@@ -6624,7 +6646,8 @@
 				"domain": "Martial",
 				"family": "Body",
 				"skill": "Throw"
-			}
+			},
+			"replacementRequires": "Grab Expert, Strength threshold"
 		},
 		{
 			"sourceId": "martial-haft-and-fist.md#grappling:7",
@@ -6675,7 +6698,8 @@
 				"domain": "Martial",
 				"family": "Body",
 				"skill": "Suplex"
-			}
+			},
+			"replacementRequires": "Throw Master, Strength threshold"
 		},
 		{
 			"sourceId": "martial-haft-and-fist.md#grappling:10",
@@ -6709,7 +6733,8 @@
 				"domain": "Martial",
 				"family": "Body",
 				"skill": "Giant Toss"
-			}
+			},
+			"replacementRequires": "Suplex Master, Strength threshold"
 		},
 		{
 			"sourceId": "martial-haft-and-fist.md#grappling:12",
@@ -6751,7 +6776,7 @@
 					}
 				]
 			},
-			"replacementRequires": "Might threshold, hold a polehammer",
+			"replacementRequires": "Strength threshold, hold a polehammer",
 			"replacementEffect": "Damage and poise-damage bonus with polehammers. **Foundation.**"
 		},
 		{
@@ -6893,7 +6918,8 @@
 						"value": "Polehammer"
 					}
 				]
-			}
+			},
+			"replacementRequires": "Heavy Footing Master, Strength threshold"
 		},
 		{
 			"sourceId": "martial-haft-and-fist.md#hammer:8",
@@ -7213,7 +7239,8 @@
 						"value": "Halberd"
 					}
 				]
-			}
+			},
+			"replacementRequires": "Strength threshold, Straight Thrust Expert"
 		},
 		{
 			"sourceId": "martial-haft-and-fist.md#spear:8",
@@ -7363,7 +7390,8 @@
 						"value": "Spear"
 					}
 				]
-			}
+			},
+			"replacementRequires": "Serpent's Tongue Master, Strength threshold"
 		},
 		{
 			"sourceId": "martial-haft-and-fist.md#spear:14",
@@ -7685,7 +7713,8 @@
 						"value": "Unarmed"
 					}
 				]
-			}
+			},
+			"replacementRequires": "Combination Master, Magic threshold"
 		},
 		{
 			"sourceId": "martial-haft-and-fist.md#unarmed:12",
@@ -7984,7 +8013,8 @@
 						"value": "Bow"
 					}
 				]
-			}
+			},
+			"replacementRequires": "Strength threshold, 5,000 shots"
 		},
 		{
 			"sourceId": "martial-hunt-guard-motion.md#bow:7",
@@ -8445,7 +8475,8 @@
 						"value": "Crossbow"
 					}
 				]
-			}
+			},
+			"replacementRequires": "Braced Shot Master, Strength threshold"
 		},
 		{
 			"sourceId": "martial-hunt-guard-motion.md#crossbow:9",
@@ -8707,7 +8738,8 @@
 				"domain": "Martial",
 				"family": "Body",
 				"skill": "Blink Step"
-			}
+			},
+			"replacementRequires": "Magic threshold, Dash Master"
 		},
 		{
 			"sourceId": "martial-hunt-guard-motion.md#motion:11",
@@ -9135,7 +9167,8 @@
 				"domain": "Martial",
 				"family": "Shield",
 				"skill": "Shield Push"
-			}
+			},
+			"replacementRequires": "Shield Bash Expert, Strength threshold"
 		},
 		{
 			"sourceId": "martial-hunt-guard-motion.md#shield:7",
@@ -9220,7 +9253,8 @@
 				"domain": "Martial",
 				"family": "Shield",
 				"skill": "Shield Charge"
-			}
+			},
+			"replacementRequires": "Shield Push Master, Strength threshold"
 		},
 		{
 			"sourceId": "martial-hunt-guard-motion.md#shield:12",
@@ -9237,7 +9271,8 @@
 				"domain": "Martial",
 				"family": "Shield",
 				"skill": "Aegis"
-			}
+			},
+			"replacementRequires": "Interpose Master, Magic threshold"
 		},
 		{
 			"sourceId": "martial-hunt-guard-motion.md#shield:13",

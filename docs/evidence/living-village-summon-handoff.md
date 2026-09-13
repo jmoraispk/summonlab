@@ -39,9 +39,9 @@ Implementation branch: `codex/lv-summon-screen`
 - Five sequential singles and an eleven-result batch remain in a clickable recent-arrivals strip.
   Every receipt slot starts with a rarity-colored `NEW` marker, opens an in-place identity dossier,
   and clears independently even when two slots reference the same fixed person.
-- Dossiers use the wiki's accepted six attributes—Might, Vitality, Agility, Dexterity, Intellect,
-  and Spirit—and split them visually into Body (Might, Vitality, Agility) on the left and Mind
-  (Dexterity, Intellect, Spirit) on the right. Personality remains separate as traits, value, drive,
+- Dossiers use one unified four-attribute grid in `STR`, `AGI`, `VIT`, `MAG` order, with accessible
+  full names Strength, Agility, Vitality, and Magic. There is no Body/Mind classification.
+  Personality remains separate as traits, value, drive,
   social style, stress response, and leadership/risk tendency.
 - Elemental affinities now have explicit Ember, Tide, Gale, or Grove icons. Aptitudes have icon-led
   route-local Martial, Magical, or Craft & Life classes, using sword, arcane, and hammer marks.
@@ -64,9 +64,9 @@ open. The dossier bars are therefore route-local readiness estimates, and one qu
 line remains in Rates and the purchase column. This is the minimum disclosure needed to avoid
 presenting prototype economics as canon.
 
-The Body/Mind grouping and icon mapping are presentation proposals in this route. The wiki
-establishes the six-attribute vocabulary and the Martial, Magical, and Craft & Life skill sectors;
-it does not assign these route-local aptitude families to the six people as production state.
+The unified `STR`, `AGI`, `VIT`, `MAG` grid is the current presentation contract. The wiki also
+establishes the Martial, Magical, and Craft & Life skill sectors; it does not assign these
+route-local aptitude families to the six people as production state.
 
 The wiki preserves all 520 imported draft rows in the immutable legacy inventory and reconciles them
 to a 492-skill active target; the Living Village still proposes only a twelve-skill runtime subset.
@@ -115,9 +115,9 @@ readable rate surfaces, side-by-side visible-cost actions, absence of player-fac
 three animations, frame-before-portrait ordering, skip/replay, reduced motion including
 the result child, five sequential arrivals, natural-3★ reset, the `10 + 1` message, exact `5 / 5 /
 1` desktop geometry, eleven visible star badges, connected currency and live guarantee movement,
-independent unread clearing for duplicate slots, distinct 1★/2★ presentation, Body/Mind
-positioning, the three/three Body/Mind split with Dexterity on Mind, all six canonical attribute
-names, elemental affinity icons, canonical aptitude-family labels, all three aptitude-class icons,
+independent unread clearing for duplicate slots, distinct 1★/2★ presentation, unified four-stat
+ordering with accessible full names, elemental affinity icons, canonical aptitude-family labels,
+all three aptitude-class icons,
 and five bounded 390 × 844 animation checkpoints.
 
 ## Validation record
@@ -196,7 +196,7 @@ type SummonHeroSummary = {
 	calling: string;
 	affinity: { label: string; icon: 'ember' | 'tide' | 'gale' | 'grove' };
 	attributes: Array<{
-		attribute: 'Might' | 'Vitality' | 'Agility' | 'Dexterity' | 'Intellect' | 'Spirit';
+		attribute: 'Strength' | 'Agility' | 'Vitality' | 'Magic';
 		value: number;
 		scaleVersion: string;
 	}>;

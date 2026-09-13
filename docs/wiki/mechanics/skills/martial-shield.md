@@ -21,13 +21,13 @@ Shield owns shield handling, blocking, interception, formation protection, and a
 | 3 | **Shield Bash** | — | F | A | Shield Use Novice | Blunt strike; interrupts and dazes briefly |
 | 4 | **Brace** | — | F | P | Shield Use Intermediate | Cannot be pushed or knocked down while blocking |
 | 5 | **Cover** | — | F | A | Raise Shield Intermediate | Blocks projectiles for the hero and anyone directly behind |
-| 6 | **Shield Push** | — | E | A | Shield Bash Expert, Might threshold | Drives a target back and out of position |
+| 6 | **Shield Push** | — | E | A | Shield Bash Expert, Strength threshold | Drives a target back and out of position |
 | 7 | **Deflect** | — | E | A | Raise Shield Expert, Parry Intermediate | Redirects a blocked projectile back at its source |
 | 8 | **Interpose** | — | E | A | Cover Expert | Step into an attack aimed at an ally and take it instead |
 | 9 | **Shield Throw** | — | E | A | Dexterity threshold, Shield Bash Master | Thrown shield ricochets between targets and returns |
 | 10 | **Wall Stance** | — | D | St | Brace Master, Vitality threshold | Heavy mitigation while held; movement is very slow |
-| 11 | **Shield Charge** | — | D | A | Shield Push Master, Might threshold | Charge forward, knocking down everything in the path |
-| 12 | **Aegis** | — | D | A | Interpose Master, Spirit threshold | Redirects a portion of allied damage to the hero for a duration |
+| 11 | **Shield Charge** | — | D | A | Shield Push Master, Strength threshold | Charge forward, knocking down everything in the path |
+| 12 | **Aegis** | — | D | A | Interpose Master, Magic threshold | Redirects a portion of allied damage to the hero for a duration |
 | 13 | **Tower Form** | — | D | P | Wall Stance Expert | Shield coverage extends to cover the entire body |
 | 14 | **Unyielding** | — | C | P | Wall Stance Master, 25,000 blocks | Blocking never depletes poise; blocks cannot be broken by ordinary force |
 | 15 | **Retaliation Ward** | — | C | St | Deflect Master | Blocked attacks damage the attacker |

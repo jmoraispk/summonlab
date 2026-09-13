@@ -59,7 +59,7 @@ function combatant(id: string, x: number, kind: 'master' | 'hero' | 'monster', r
 			mana: { current: 20, maximum: 20 }
 		},
 		lastDamagedAtTick: null,
-		attributes: { might: 10, vitality: 10, agility: 10, spirit: 10 },
+		attributes: { strength: 10, agility: 10, vitality: 10, magic: 10 },
 		armour: 0,
 		resistances: {},
 		readiness: { value: readiness, exactNumerator: readiness, recoveryUntilTick: 0 },

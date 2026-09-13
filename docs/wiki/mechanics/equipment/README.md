@@ -94,9 +94,9 @@ binds its hostile-action catalog. A mission attempt stores the resulting exact a
 consults a later operator default while it runs.
 
 - each equipped item contributes an integer load;
-- Might supplies effective equipment-load tolerance;
-- an explicit heavy item may require intrinsic Might;
-- Heavy Armour requires intrinsic Might 45 and `armour-training`;
+- Strength supplies effective equipment-load tolerance;
+- an explicit heavy item may require intrinsic Strength;
+- Heavy Armour requires intrinsic Strength 45 and `armour-training`;
 - no item has a Vitality requirement;
 - Sword and Dagger currently expose `one-handed-blade`, Bow exposes `bow`, Staff exposes
   `staff-focus`, and Shield exposes `shield` for skill delivery;
@@ -248,13 +248,13 @@ source promotion.
 The supplied vocabulary and rules win earlier conversational alternatives. Genuine internal gaps
 remain preserved rather than silently normalized:
 
-- Equipment uses the four combat attributes. Might alone owns load tolerance and explicit heavy-item
+- Equipment uses the four combat attributes. Strength alone owns load tolerance and explicit heavy-item
   requirements; learned Armour Training owns armour proficiency. Precision and crafting quality
   belong to learned skills rather than additional attributes.
 - A material supplies base rank. Item and material difficulty set the required Forging level;
   Standard work keeps the base rank, Fine work adds one rank, and Masterwork adds two, capped at S.
   The exact difficulty values and benefit table remain to be authored.
-- Weight tolerance uses scoped effective Might. A permanent Might gate reads intrinsic Might, and
+- Weight tolerance uses scoped effective Strength. A permanent Strength gate reads intrinsic Strength, and
   Vitality never grants equipment eligibility.
 - An item's rarity is fixed forever, while Living Metal grows with its wielder. Growth can be
   compatible with fixed rarity, but the mutable stats/properties need an explicit boundary.
@@ -269,7 +269,7 @@ remain preserved rather than silently normalized:
 - General armour magnitude, detailed weapon damage, magical active skills, penetration content,
   statuses, Mana effects, affinity application, and granted-skill effects remain later
   combat/content work. Readiness/evasion, named resistance receipts, family delivery tags, load,
-  Might requirements, and Armour Training are implemented for the readiness slice.
+  Strength requirements, and Armour Training are implemented for the readiness slice.
 - Monster materials taken from sapient peoples require source, consent, death, personhood, and
   social-consequence rules; a species label must never itself imply a harvestable enemy resource.
 - The source does not define acquisition: summon loadouts, tower drops, settlement stock, crafting,

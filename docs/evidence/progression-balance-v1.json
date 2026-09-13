@@ -1,0 +1,853 @@
+{
+	"evidenceVersion": "progression-balance-v1",
+	"status": "passed",
+	"bindings": {
+		"rulesVersion": "progression-rules-v1",
+		"rulesHash": "06fc61271c9c3254836c4f50f845624bea08731952957d0c1d6faf295e8744ce",
+		"stateSchema": "hero-progression-v2"
+	},
+	"seedSet": [
+		"awakening-boundaries-v1",
+		"multi-path-xp-v1",
+		"table-nerf-candidate-v1"
+	],
+	"fixtures": {
+		"levels": [
+			1,
+			99,
+			100,
+			199,
+			200,
+			499,
+			500,
+			899,
+			900,
+			999
+		],
+		"stars": [
+			1,
+			7
+		],
+		"paths": [
+			"combat",
+			"crafting"
+		]
+	},
+	"rateRows": [
+		{
+			"tier": 0,
+			"levels": "1-99",
+			"powerPerAttributeMilli": 1000,
+			"healthPerVitality": 5
+		},
+		{
+			"tier": 1,
+			"levels": "100-199",
+			"powerPerAttributeMilli": 1200,
+			"healthPerVitality": 6
+		},
+		{
+			"tier": 2,
+			"levels": "200-299",
+			"powerPerAttributeMilli": 1400,
+			"healthPerVitality": 7
+		},
+		{
+			"tier": 3,
+			"levels": "300-399",
+			"powerPerAttributeMilli": 1800,
+			"healthPerVitality": 9
+		},
+		{
+			"tier": 4,
+			"levels": "400-499",
+			"powerPerAttributeMilli": 2200,
+			"healthPerVitality": 11
+		},
+		{
+			"tier": 5,
+			"levels": "500-599",
+			"powerPerAttributeMilli": 2600,
+			"healthPerVitality": 13
+		},
+		{
+			"tier": 6,
+			"levels": "600-699",
+			"powerPerAttributeMilli": 3200,
+			"healthPerVitality": 16
+		},
+		{
+			"tier": 7,
+			"levels": "700-799",
+			"powerPerAttributeMilli": 3800,
+			"healthPerVitality": 19
+		},
+		{
+			"tier": 8,
+			"levels": "800-899",
+			"powerPerAttributeMilli": 4400,
+			"healthPerVitality": 22
+		},
+		{
+			"tier": 9,
+			"levels": "900-999",
+			"powerPerAttributeMilli": 5000,
+			"healthPerVitality": 25
+		}
+	],
+	"projections": [
+		{
+			"level": 1,
+			"stars": 1,
+			"path": "combat",
+			"awakeningTier": 0,
+			"nonLevelGrowth": 290,
+			"strength": 150,
+			"agility": 95,
+			"vitality": 108,
+			"magic": 32,
+			"physicalPowerMilli": 150000,
+			"magicalPowerMilli": 32000,
+			"maximumHealth": 540
+		},
+		{
+			"level": 1,
+			"stars": 1,
+			"path": "crafting",
+			"awakeningTier": 0,
+			"nonLevelGrowth": 300,
+			"strength": 55,
+			"agility": 138,
+			"vitality": 70,
+			"magic": 135,
+			"physicalPowerMilli": 55000,
+			"magicalPowerMilli": 135000,
+			"maximumHealth": 350
+		},
+		{
+			"level": 1,
+			"stars": 7,
+			"path": "combat",
+			"awakeningTier": 0,
+			"nonLevelGrowth": 290,
+			"strength": 150,
+			"agility": 95,
+			"vitality": 108,
+			"magic": 32,
+			"physicalPowerMilli": 150000,
+			"magicalPowerMilli": 32000,
+			"maximumHealth": 540
+		},
+		{
+			"level": 1,
+			"stars": 7,
+			"path": "crafting",
+			"awakeningTier": 0,
+			"nonLevelGrowth": 300,
+			"strength": 55,
+			"agility": 138,
+			"vitality": 70,
+			"magic": 135,
+			"physicalPowerMilli": 55000,
+			"magicalPowerMilli": 135000,
+			"maximumHealth": 350
+		},
+		{
+			"level": 99,
+			"stars": 1,
+			"path": "combat",
+			"awakeningTier": 0,
+			"nonLevelGrowth": 290,
+			"strength": 199,
+			"agility": 115,
+			"vitality": 137,
+			"magic": 32,
+			"physicalPowerMilli": 199000,
+			"magicalPowerMilli": 32000,
+			"maximumHealth": 685
+		},
+		{
+			"level": 99,
+			"stars": 1,
+			"path": "crafting",
+			"awakeningTier": 0,
+			"nonLevelGrowth": 300,
+			"strength": 66,
+			"agility": 177,
+			"vitality": 79,
+			"magic": 174,
+			"physicalPowerMilli": 66000,
+			"magicalPowerMilli": 174000,
+			"maximumHealth": 395
+		},
+		{
+			"level": 99,
+			"stars": 7,
+			"path": "combat",
+			"awakeningTier": 0,
+			"nonLevelGrowth": 290,
+			"strength": 493,
+			"agility": 233,
+			"vitality": 313,
+			"magic": 32,
+			"physicalPowerMilli": 493000,
+			"magicalPowerMilli": 32000,
+			"maximumHealth": 1565
+		},
+		{
+			"level": 99,
+			"stars": 7,
+			"path": "crafting",
+			"awakeningTier": 0,
+			"nonLevelGrowth": 300,
+			"strength": 125,
+			"agility": 412,
+			"vitality": 138,
+			"magic": 409,
+			"physicalPowerMilli": 125000,
+			"magicalPowerMilli": 409000,
+			"maximumHealth": 690
+		},
+		{
+			"level": 100,
+			"stars": 1,
+			"path": "combat",
+			"awakeningTier": 1,
+			"nonLevelGrowth": 290,
+			"strength": 199,
+			"agility": 116,
+			"vitality": 137,
+			"magic": 32,
+			"physicalPowerMilli": 238800,
+			"magicalPowerMilli": 38400,
+			"maximumHealth": 822
+		},
+		{
+			"level": 100,
+			"stars": 1,
+			"path": "crafting",
+			"awakeningTier": 1,
+			"nonLevelGrowth": 300,
+			"strength": 67,
+			"agility": 177,
+			"vitality": 79,
+			"magic": 174,
+			"physicalPowerMilli": 80400,
+			"magicalPowerMilli": 208800,
+			"maximumHealth": 474
+		},
+		{
+			"level": 100,
+			"stars": 7,
+			"path": "combat",
+			"awakeningTier": 1,
+			"nonLevelGrowth": 290,
+			"strength": 496,
+			"agility": 235,
+			"vitality": 315,
+			"magic": 32,
+			"physicalPowerMilli": 595200,
+			"magicalPowerMilli": 38400,
+			"maximumHealth": 1890
+		},
+		{
+			"level": 100,
+			"stars": 7,
+			"path": "crafting",
+			"awakeningTier": 1,
+			"nonLevelGrowth": 300,
+			"strength": 125,
+			"agility": 415,
+			"vitality": 139,
+			"magic": 412,
+			"physicalPowerMilli": 150000,
+			"magicalPowerMilli": 494400,
+			"maximumHealth": 834
+		},
+		{
+			"level": 199,
+			"stars": 1,
+			"path": "combat",
+			"awakeningTier": 1,
+			"nonLevelGrowth": 290,
+			"strength": 249,
+			"agility": 135,
+			"vitality": 167,
+			"magic": 32,
+			"physicalPowerMilli": 298800,
+			"magicalPowerMilli": 38400,
+			"maximumHealth": 1002
+		},
+		{
+			"level": 199,
+			"stars": 1,
+			"path": "crafting",
+			"awakeningTier": 1,
+			"nonLevelGrowth": 300,
+			"strength": 76,
+			"agility": 217,
+			"vitality": 89,
+			"magic": 214,
+			"physicalPowerMilli": 91200,
+			"magicalPowerMilli": 256800,
+			"maximumHealth": 534
+		},
+		{
+			"level": 199,
+			"stars": 7,
+			"path": "combat",
+			"awakeningTier": 1,
+			"nonLevelGrowth": 290,
+			"strength": 843,
+			"agility": 373,
+			"vitality": 523,
+			"magic": 32,
+			"physicalPowerMilli": 1011600,
+			"magicalPowerMilli": 38400,
+			"maximumHealth": 3138
+		},
+		{
+			"level": 199,
+			"stars": 7,
+			"path": "crafting",
+			"awakeningTier": 1,
+			"nonLevelGrowth": 300,
+			"strength": 195,
+			"agility": 692,
+			"vitality": 208,
+			"magic": 689,
+			"physicalPowerMilli": 234000,
+			"magicalPowerMilli": 826800,
+			"maximumHealth": 1248
+		},
+		{
+			"level": 200,
+			"stars": 1,
+			"path": "combat",
+			"awakeningTier": 2,
+			"nonLevelGrowth": 290,
+			"strength": 249,
+			"agility": 136,
+			"vitality": 167,
+			"magic": 32,
+			"physicalPowerMilli": 348600,
+			"magicalPowerMilli": 44800,
+			"maximumHealth": 1169
+		},
+		{
+			"level": 200,
+			"stars": 1,
+			"path": "crafting",
+			"awakeningTier": 2,
+			"nonLevelGrowth": 300,
+			"strength": 77,
+			"agility": 217,
+			"vitality": 89,
+			"magic": 214,
+			"physicalPowerMilli": 107800,
+			"magicalPowerMilli": 299600,
+			"maximumHealth": 623
+		},
+		{
+			"level": 200,
+			"stars": 7,
+			"path": "combat",
+			"awakeningTier": 2,
+			"nonLevelGrowth": 290,
+			"strength": 846,
+			"agility": 375,
+			"vitality": 525,
+			"magic": 32,
+			"physicalPowerMilli": 1184400,
+			"magicalPowerMilli": 44800,
+			"maximumHealth": 3675
+		},
+		{
+			"level": 200,
+			"stars": 7,
+			"path": "crafting",
+			"awakeningTier": 2,
+			"nonLevelGrowth": 300,
+			"strength": 195,
+			"agility": 695,
+			"vitality": 209,
+			"magic": 692,
+			"physicalPowerMilli": 273000,
+			"magicalPowerMilli": 968800,
+			"maximumHealth": 1463
+		},
+		{
+			"level": 499,
+			"stars": 1,
+			"path": "combat",
+			"awakeningTier": 4,
+			"nonLevelGrowth": 290,
+			"strength": 399,
+			"agility": 195,
+			"vitality": 257,
+			"magic": 32,
+			"physicalPowerMilli": 877800,
+			"magicalPowerMilli": 70400,
+			"maximumHealth": 2827
+		},
+		{
+			"level": 499,
+			"stars": 1,
+			"path": "crafting",
+			"awakeningTier": 4,
+			"nonLevelGrowth": 300,
+			"strength": 106,
+			"agility": 337,
+			"vitality": 119,
+			"magic": 334,
+			"physicalPowerMilli": 233200,
+			"magicalPowerMilli": 734800,
+			"maximumHealth": 1309
+		},
+		{
+			"level": 499,
+			"stars": 7,
+			"path": "combat",
+			"awakeningTier": 4,
+			"nonLevelGrowth": 290,
+			"strength": 1893,
+			"agility": 793,
+			"vitality": 1153,
+			"magic": 32,
+			"physicalPowerMilli": 4164600,
+			"magicalPowerMilli": 70400,
+			"maximumHealth": 12683
+		},
+		{
+			"level": 499,
+			"stars": 7,
+			"path": "crafting",
+			"awakeningTier": 4,
+			"nonLevelGrowth": 300,
+			"strength": 405,
+			"agility": 1532,
+			"vitality": 418,
+			"magic": 1529,
+			"physicalPowerMilli": 891000,
+			"magicalPowerMilli": 3363800,
+			"maximumHealth": 4598
+		},
+		{
+			"level": 500,
+			"stars": 1,
+			"path": "combat",
+			"awakeningTier": 5,
+			"nonLevelGrowth": 290,
+			"strength": 399,
+			"agility": 196,
+			"vitality": 257,
+			"magic": 32,
+			"physicalPowerMilli": 1037400,
+			"magicalPowerMilli": 83200,
+			"maximumHealth": 3341
+		},
+		{
+			"level": 500,
+			"stars": 1,
+			"path": "crafting",
+			"awakeningTier": 5,
+			"nonLevelGrowth": 300,
+			"strength": 107,
+			"agility": 337,
+			"vitality": 119,
+			"magic": 334,
+			"physicalPowerMilli": 278200,
+			"magicalPowerMilli": 868400,
+			"maximumHealth": 1547
+		},
+		{
+			"level": 500,
+			"stars": 7,
+			"path": "combat",
+			"awakeningTier": 5,
+			"nonLevelGrowth": 290,
+			"strength": 1896,
+			"agility": 795,
+			"vitality": 1155,
+			"magic": 32,
+			"physicalPowerMilli": 4929600,
+			"magicalPowerMilli": 83200,
+			"maximumHealth": 15015
+		},
+		{
+			"level": 500,
+			"stars": 7,
+			"path": "crafting",
+			"awakeningTier": 5,
+			"nonLevelGrowth": 300,
+			"strength": 405,
+			"agility": 1535,
+			"vitality": 419,
+			"magic": 1532,
+			"physicalPowerMilli": 1053000,
+			"magicalPowerMilli": 3983200,
+			"maximumHealth": 5447
+		},
+		{
+			"level": 899,
+			"stars": 1,
+			"path": "combat",
+			"awakeningTier": 8,
+			"nonLevelGrowth": 290,
+			"strength": 599,
+			"agility": 275,
+			"vitality": 377,
+			"magic": 32,
+			"physicalPowerMilli": 2635600,
+			"magicalPowerMilli": 140800,
+			"maximumHealth": 8294
+		},
+		{
+			"level": 899,
+			"stars": 1,
+			"path": "crafting",
+			"awakeningTier": 8,
+			"nonLevelGrowth": 300,
+			"strength": 146,
+			"agility": 497,
+			"vitality": 159,
+			"magic": 494,
+			"physicalPowerMilli": 642400,
+			"magicalPowerMilli": 2173600,
+			"maximumHealth": 3498
+		},
+		{
+			"level": 899,
+			"stars": 7,
+			"path": "combat",
+			"awakeningTier": 8,
+			"nonLevelGrowth": 290,
+			"strength": 3293,
+			"agility": 1353,
+			"vitality": 1993,
+			"magic": 32,
+			"physicalPowerMilli": 14489200,
+			"magicalPowerMilli": 140800,
+			"maximumHealth": 43846
+		},
+		{
+			"level": 899,
+			"stars": 7,
+			"path": "crafting",
+			"awakeningTier": 8,
+			"nonLevelGrowth": 300,
+			"strength": 685,
+			"agility": 2652,
+			"vitality": 698,
+			"magic": 2649,
+			"physicalPowerMilli": 3014000,
+			"magicalPowerMilli": 11655600,
+			"maximumHealth": 15356
+		},
+		{
+			"level": 900,
+			"stars": 1,
+			"path": "combat",
+			"awakeningTier": 9,
+			"nonLevelGrowth": 290,
+			"strength": 599,
+			"agility": 276,
+			"vitality": 377,
+			"magic": 32,
+			"physicalPowerMilli": 2995000,
+			"magicalPowerMilli": 160000,
+			"maximumHealth": 9425
+		},
+		{
+			"level": 900,
+			"stars": 1,
+			"path": "crafting",
+			"awakeningTier": 9,
+			"nonLevelGrowth": 300,
+			"strength": 147,
+			"agility": 497,
+			"vitality": 159,
+			"magic": 494,
+			"physicalPowerMilli": 735000,
+			"magicalPowerMilli": 2470000,
+			"maximumHealth": 3975
+		},
+		{
+			"level": 900,
+			"stars": 7,
+			"path": "combat",
+			"awakeningTier": 9,
+			"nonLevelGrowth": 290,
+			"strength": 3296,
+			"agility": 1355,
+			"vitality": 1995,
+			"magic": 32,
+			"physicalPowerMilli": 16480000,
+			"magicalPowerMilli": 160000,
+			"maximumHealth": 49875
+		},
+		{
+			"level": 900,
+			"stars": 7,
+			"path": "crafting",
+			"awakeningTier": 9,
+			"nonLevelGrowth": 300,
+			"strength": 685,
+			"agility": 2655,
+			"vitality": 699,
+			"magic": 2652,
+			"physicalPowerMilli": 3425000,
+			"magicalPowerMilli": 13260000,
+			"maximumHealth": 17475
+		},
+		{
+			"level": 999,
+			"stars": 1,
+			"path": "combat",
+			"awakeningTier": 9,
+			"nonLevelGrowth": 290,
+			"strength": 649,
+			"agility": 295,
+			"vitality": 407,
+			"magic": 32,
+			"physicalPowerMilli": 3245000,
+			"magicalPowerMilli": 160000,
+			"maximumHealth": 10175
+		},
+		{
+			"level": 999,
+			"stars": 1,
+			"path": "crafting",
+			"awakeningTier": 9,
+			"nonLevelGrowth": 300,
+			"strength": 156,
+			"agility": 537,
+			"vitality": 169,
+			"magic": 534,
+			"physicalPowerMilli": 780000,
+			"magicalPowerMilli": 2670000,
+			"maximumHealth": 4225
+		},
+		{
+			"level": 999,
+			"stars": 7,
+			"path": "combat",
+			"awakeningTier": 9,
+			"nonLevelGrowth": 290,
+			"strength": 3643,
+			"agility": 1493,
+			"vitality": 2203,
+			"magic": 32,
+			"physicalPowerMilli": 18215000,
+			"magicalPowerMilli": 160000,
+			"maximumHealth": 55075
+		},
+		{
+			"level": 999,
+			"stars": 7,
+			"path": "crafting",
+			"awakeningTier": 9,
+			"nonLevelGrowth": 300,
+			"strength": 755,
+			"agility": 2932,
+			"vitality": 768,
+			"magic": 2929,
+			"physicalPowerMilli": 3775000,
+			"magicalPowerMilli": 14645000,
+			"maximumHealth": 19200
+		}
+	],
+	"experience": {
+		"multiLevel": [
+			{
+				"stars": 1,
+				"levelsCrossed": [
+					100,
+					101,
+					102
+				],
+				"pointsGranted": 3,
+				"receipt": {
+					"receiptVersion": "experience-receipt-v1",
+					"receiptId": "8e6cd611-f0b2-4662-853c-6c8da1d3c66c",
+					"claim": {
+						"claimId": "3085c93a-afb2-4cfd-8a78-3523c8fc5835",
+						"heroId": "bc378b28-3ae2-44f3-aabe-7f42bb12bf0e",
+						"sourceEventId": "bab66a15-595e-4fef-994d-fa0c7afb5052",
+						"evidenceKey": "balance:multi-level",
+						"amount": 30,
+						"sourceKind": "authored"
+					},
+					"rules": {
+						"rulesVersion": "progression-rules-v1",
+						"contentHash": "06fc61271c9c3254836c4f50f845624bea08731952957d0c1d6faf295e8744ce"
+					},
+					"experienceBefore": 980,
+					"experienceAfter": 1010,
+					"levelBefore": 99,
+					"levelAfter": 102,
+					"levelsCrossed": [
+						100,
+						101,
+						102
+					],
+					"pointsGranted": 3,
+					"occurredAt": "2000-01-01T00:00:00.000Z"
+				}
+			},
+			{
+				"stars": 7,
+				"levelsCrossed": [
+					100,
+					101,
+					102
+				],
+				"pointsGranted": 21,
+				"receipt": {
+					"receiptVersion": "experience-receipt-v1",
+					"receiptId": "45145838-eb17-4630-90e1-66e62cd8d52d",
+					"claim": {
+						"claimId": "983f8a96-f03a-4fd1-aef6-7440cf3ee7c3",
+						"heroId": "93758d9f-fb3d-460d-a25a-58c4d547791b",
+						"sourceEventId": "24e7a98b-570c-4982-b647-1a0c97b3090f",
+						"evidenceKey": "balance:multi-level",
+						"amount": 30,
+						"sourceKind": "authored"
+					},
+					"rules": {
+						"rulesVersion": "progression-rules-v1",
+						"contentHash": "06fc61271c9c3254836c4f50f845624bea08731952957d0c1d6faf295e8744ce"
+					},
+					"experienceBefore": 980,
+					"experienceAfter": 1010,
+					"levelBefore": 99,
+					"levelAfter": 102,
+					"levelsCrossed": [
+						100,
+						101,
+						102
+					],
+					"pointsGranted": 21,
+					"occurredAt": "2000-01-01T00:00:00.000Z"
+				}
+			}
+		],
+		"crafting": {
+			"difficulty": [
+				4,
+				6,
+				9,
+				13,
+				18,
+				25,
+				35
+			],
+			"rarity": [
+				9,
+				10,
+				11,
+				12,
+				13,
+				14,
+				14
+			],
+			"quality": [
+				11,
+				14,
+				17
+			],
+			"novelty": {
+				"repeat": 11,
+				"firstSuccess": 17
+			},
+			"repetition": [
+				6,
+				3,
+				3,
+				2,
+				2,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1
+			]
+		},
+		"combat": {
+			"difficulty": [
+				4,
+				6,
+				9,
+				13,
+				18,
+				25,
+				35
+			],
+			"objective": [
+				5,
+				8,
+				12,
+				18,
+				25,
+				35,
+				49
+			],
+			"repetition": [
+				6,
+				3,
+				3,
+				2,
+				2,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1,
+				1
+			]
+		}
+	},
+	"nonAwakenedTerms": {
+		"tier0": {
+			"flatEquipmentPower": 37,
+			"accuracyBasisPoints": 8000,
+			"affinityContributionNudgeCapBasisPoints": 1000
+		},
+		"tier9": {
+			"flatEquipmentPower": 37,
+			"accuracyBasisPoints": 8000,
+			"affinityContributionNudgeCapBasisPoints": 1000
+		}
+	},
+	"candidateRateTable": {
+		"policy": "data-only nerf; issue a new rules version without changing stored hero state",
+		"stateSchema": "hero-progression-v2",
+		"powerPerAttributeMilli": [
+			1000,
+			1150,
+			1300,
+			1600,
+			1900,
+			2250,
+			2650,
+			3100,
+			3700,
+			4300
+		],
+		"healthPerVitality": [
+			5,
+			6,
+			7,
+			8,
+			10,
+			12,
+			14,
+			16,
+			19,
+			22
+		]
+	}
+}

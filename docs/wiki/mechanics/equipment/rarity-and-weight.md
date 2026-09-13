@@ -8,7 +8,7 @@ eligibility integration implemented**.
 Runtime-v1 implements only the Standard row: one normalized material lot creates a `+0` item whose
 final rank equals its material rank. Fine/Masterwork thresholds, benefits, quality visuals, weight
 penalties, and the property table below remain explicit design work rather than active mechanics.
-Engine-v26 implements integer item load, Might tolerance, and explicit requirements for readiness
+Engine-v26 implements integer item load, Strength tolerance, and explicit requirements for readiness
 combat.
 
 ## Material rank plus craftsmanship
@@ -53,8 +53,8 @@ supplement a build, not define one.
 ## Weight classes
 
 Weight is the link between equipment and attributes. The shipped pure evaluator considers a
-loadout eligible only when total equipped load does not exceed effective Might in the
-`equipment-load` scope. A permanent item requirement reads intrinsic Might instead. Vitality
+loadout eligible only when total equipped load does not exceed effective Strength in the
+`equipment-load` scope. A permanent item requirement reads intrinsic Strength instead. Vitality
 contributes to neither check and is never an armour gate.
 
 | Class | Typical equipment | Pure evaluator result if over tolerance |
@@ -73,7 +73,7 @@ The combat profile uses explicit per-item load rather than deriving load from th
 | Light Armour, Head / Torso / Legs / Boots | `6 / 14 / 11 / 5` |
 | Robes, Head / Torso / Legs / Boots | `2 / 4 / 3 / 2` |
 
-Current heavy-weight profiles require intrinsic Might 35; Heavy Armour requires intrinsic Might 45
+Current heavy-weight profiles require intrinsic Strength 35; Heavy Armour requires intrinsic Strength 45
 and `armour-training`. No production profile uses a Vitality requirement. The pure evaluator marks
 an over-tolerance loadout ineligible rather than calculating the movement, evasion, or readiness
 penalties described by earlier drafts. Readiness-state assembly enforces this check; the frozen

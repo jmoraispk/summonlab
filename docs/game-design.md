@@ -326,10 +326,10 @@ Stable traits should bias behavior without becoming hard-coded caricatures. Curr
 
 | Attribute | Covers | Example roles |
 | --- | --- | --- |
-| Might | Physical magnitude, carrying, equipment-load tolerance, authored heavy-item requirements | Physical combat and heavy equipment |
+| Strength | Physical magnitude, carrying, equipment-load tolerance, authored heavy-item requirements | Physical combat and heavy equipment |
 | Vitality | Maximum Health and modest natural Health regeneration | Durability and recovery |
 | Agility | Readiness, movement, evasion, bounded relative speed in hit contests | Mobility and defensive timing |
-| Spirit | Magical magnitude, maximum Mana, and modest saturating Mana regeneration | Magic and Mana economy |
+| Magic | Magical magnitude, maximum Mana, and modest saturating Mana regeneration | Magic and Mana economy |
 
 These four visible attributes do not own morale, personality, decision quality, learned accuracy,
 crafting quality, universal mitigation, or learning rate. There is no stamina or universal poise

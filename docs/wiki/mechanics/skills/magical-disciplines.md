@@ -22,13 +22,13 @@ Magical family. Defensive magic, barriers, and dispelling. `Attuned` skills take
 | 3 | **Cleanse** | — | F | A | Warding Novice | Removes one minor status effect |
 | 4 | **Elemental Guard** | Attuned | F | P | Warding Intermediate | Standing resistance to the hero's own element |
 | 5 | **Barrier** | — | E | A | Shield Sigil Expert, Rank II | A physical wall of force; blocks movement and projectiles |
-| 6 | **Reflect** | — | E | A | Shield Sigil Expert, Spirit threshold | Returns the next spell to its caster |
+| 6 | **Reflect** | — | E | A | Shield Sigil Expert, Magic threshold | Returns the next spell to its caster |
 | 7 | **Dispel** | — | E | A | Cleanse Expert, Intellect threshold | Removes an enemy buff or a persistent magical effect |
 | 8 | **Counter Sigil** | Attuned | E | P | Elemental Guard Master | Attackers of the overcome element take reflected damage |
 | 9 | **Aegis Field** | — | D | A | Barrier Master, Rank II | Area barrier protecting several allies |
 | 10 | **Null Zone** | — | D | A | Dispel Master, Rank II | Magic cannot be cast within the area |
 | 11 | **Layered Ward** | — | D | P | Shield Sigil Master, 10,000 casts | Wards stack rather than replacing one another |
-| 12 | **Absorption** | — | D | P | Reflect Master, Spirit threshold | Damage absorbed by wards is converted into mana |
+| 12 | **Absorption** | — | D | P | Reflect Master, Magic threshold | Damage absorbed by wards is converted into mana |
 | 13 | **Sanctuary** | — | C | St | Aegis Field Master, Rank III | Allies within the area take heavily reduced damage; the hero cannot move |
 | 14 | **Unbinding** | — | C | A | Null Zone Master, Rank III | Strips every magical effect from an area, friendly or otherwise |
 | 15 | **Mirror Ward** | — | C | P | Reflect Master, Layered Ward Expert | All reflected magic returns at increased potency |
@@ -53,7 +53,7 @@ Magical family. Buffs on self and others, and the imbuing of objects. Consumes c
 | 7 | **Armour Imbuing** | Attuned | E | C | Weapon Oil Expert | Grants armour temporary resistance and a retaliation effect |
 | 8 | **Component Craft** | — | E | C | Imbuing Expert, Alchemy prerequisite | Produces enchanting components rather than buying them |
 | 9 | **Sigil Binding** | — | D | C | Armour Imbuing Master, Forging prerequisite | Applies a permanent enchantment to an item with an open slot |
-| 10 | **Empowerment** | — | D | A | Greater Blessing Master, Spirit threshold | One ally's next skill is cast at greatly increased potency |
+| 10 | **Empowerment** | — | D | A | Greater Blessing Master, Magic threshold | One ally's next skill is cast at greatly increased potency |
 | 11 | **Sustained Weave** | — | D | P | Group Blessing Master, 10,000 casts | Buffs the hero applies last substantially longer |
 | 12 | **Elemental Attunement** | Attuned | D | A | Weapon Oil Master, Rank III | Grants an ally the hero's affinity temporarily at reduced affinity rank. |
 | 13 | **Greater Sigil** | — | C | C | Sigil Binding Master, Rank III | Applies enchantments no ordinary slot could hold |
@@ -80,7 +80,7 @@ Magical family. Healing, curing, revival. Deliberately scarce at high rarity —
 | 7 | **Shared Vigour** | — | E | A | Field Care Master | Transfers the hero's health to an ally |
 | 8 | **Mass Mending** | — | D | A | Regeneration Master, Rank II | Heals the whole party at reduced potency |
 | 9 | **Restore Limb** | — | D | A | Cure Master, Intellect threshold | Repairs crippling injuries and lasting wounds |
-| 10 | **Life Link** | — | D | P | Shared Vigour Master, Spirit threshold | Damage to a linked ally is partly taken by the hero instead |
+| 10 | **Life Link** | — | D | P | Shared Vigour Master, Magic threshold | Damage to a linked ally is partly taken by the hero instead |
 | 11 | **Sanctified Ground** | — | C | A | Mass Mending Master, Rank III | Persistent healing area |
 | 12 | **Second Life** | — | C | A | Life Link Master, Rank III | Revives a recently fallen ally at low health |
 | 13 | **Purity** | — | C | P | Restore Limb Master, 25,000 casts | All cures the hero applies also grant temporary immunity |
@@ -97,7 +97,7 @@ Magical family. Control, perception, illusion, deception. Rarity climbs fast —
 
 | # | Skill | Element | R | T | Requires | Effect |
 | ---: | --- | --- | :---: | :---: | --- | --- |
-| 1 | **Presence** | — | F | P | Spirit threshold | Small mental resistance; awareness of hostile intent. **Foundation.** |
+| 1 | **Presence** | — | F | P | Magic threshold | Small mental resistance; awareness of hostile intent. **Foundation.** |
 | 2 | **Distract** | — | F | A | Presence Novice | Briefly draws a single target's attention elsewhere |
 | 3 | **Read Surface** | — | F | A | Presence Novice | Reveals a target's immediate intent |
 | 4 | **Minor Illusion** | — | E | A | Presence Intermediate, Rank II | A small false image or sound |
@@ -105,7 +105,7 @@ Magical family. Control, perception, illusion, deception. Rarity climbs fast —
 | 6 | **Veil** | — | E | A | Minor Illusion Expert | Conceals the hero from ordinary sight |
 | 7 | **Confusion** | — | D | A | Fear Master, Intellect threshold | Target attacks randomly, including allies |
 | 8 | **False Terrain** | — | D | A | Minor Illusion Master, Rank II | An illusion large enough to redirect movement and formation |
-| 9 | **Suggestion** | — | D | A | Read Surface Master, Spirit threshold | A single simple command the target obeys |
+| 9 | **Suggestion** | — | D | A | Read Surface Master, Magic threshold | A single simple command the target obeys |
 | 10 | **Mental Fortress** | — | D | P | Presence Master, 10,000 casts | Immunity to fear, charm and confusion |
 | 11 | **Domination** | — | C | A | Suggestion Master, Rank III | Full control of one target for a short duration |
 | 12 | **Mass Illusion** | — | C | A | False Terrain Master, Rank III | The whole field appears other than it is |

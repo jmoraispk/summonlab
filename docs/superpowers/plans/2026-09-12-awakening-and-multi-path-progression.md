@@ -896,21 +896,21 @@ git commit -m "feat(web): present awakening progression"
 - Consumes: all v27 rules, reducers, receipts, projections, and replay fixtures.
 - Produces: byte-stable balance evidence, authoritative wiki copy, ADR 0073, and repository validation commands for the v27 rollout.
 
-- [ ] **Step 1: Write failing balance-harness tests**
+- [x] **Step 1: Write failing balance-harness tests**
 
 Cover Combat and Crafting heroes at levels `1, 99, 100, 199, 200, 499, 500, 899, 900, 999`; stars `1` and `7`; substantial non-level growth; every power/Health table row; multi-level XP; monotonic craft inputs; repetition floors; and flat gear/ratio values remaining unchanged.
 
-- [ ] **Step 2: Run the harness test and verify red**
+- [x] **Step 2: Run the harness test and verify red**
 
 Run: `pnpm vitest run tools/progression-balance-harness.spec.ts`
 
 Expected: FAIL because the harness and evidence artifact do not exist.
 
-- [ ] **Step 3: Implement deterministic evidence export**
+- [x] **Step 3: Implement deterministic evidence export**
 
 Add `pnpm export:progression-balance` for `--write` and `pnpm validate:progression-balance` for `--check`. Emit canonical JSON containing rules version/hash, seed set, exact rate rows, representative physical/magical/Health results, XP receipts, craft/combat comparisons, and a second candidate table showing that data-only rate changes require no state-schema change.
 
-- [ ] **Step 4: Generate and byte-check evidence**
+- [x] **Step 4: Generate and byte-check evidence**
 
 ```bash
 pnpm export:progression-balance
@@ -920,15 +920,15 @@ pnpm vitest run tools/progression-balance-harness.spec.ts
 
 Expected: the second command reports no diff and all invariant tests pass.
 
-- [ ] **Step 5: Converge the wiki and ADR**
+- [x] **Step 5: Converge the wiki and ADR**
 
 Document levels `1..999`, awakenings every 100 levels, immutable stars as points per level, no star upgrades, shared XP, combat/crafting macro paths, forging and cooking completion evidence, novelty/repetition behavior, all ten conversion rows, and the versioned table-nerf policy. Remove the old `1★=10` through `7★=99` cap table and star-stone/promotion instructions from new-rules pages while labeling historical material explicitly.
 
-- [ ] **Step 6: Reconcile predecessor plans and specs**
+- [x] **Step 6: Reconcile predecessor plans and specs**
 
 Mark the v25 plan's `4 Health per VIT`, level-99 balance ceiling, and one-point-per-level Task 6 as prototype behavior superseded by this completed v27 plan. Set the progression design status to `accepted; implementation complete`, and link this plan and ADR. Record that both v25 legacy combat and v26 readiness combat now consume the shared v27 progression owner.
 
-- [ ] **Step 7: Run full compatibility and repository verification**
+- [x] **Step 7: Run full compatibility and repository verification**
 
 ```bash
 pnpm validate:progression-balance
@@ -944,7 +944,12 @@ git diff --check
 
 Expected: every command exits `0`; v1-v24 replay vectors retain their exact hashes; corrected v25/v26 fixtures use only canonical attribute names; v27 fixtures use only the new bound rules.
 
-- [ ] **Step 8: Commit**
+Verification note: progression, content, engine, web, worker, typecheck, build, taxonomy, affinity,
+and diff gates passed. The repository-wide wiki validator and the full contracts command also
+reported pre-existing missing approved skill-art source files; their non-art portions passed and no
+missing binary was added to this progression change.
+
+- [x] **Step 8: Commit**
 
 ```bash
 git add tools/progression-balance-harness.ts tools/progression-balance-harness.spec.ts docs/evidence/progression-balance-v1.json package.json docs/wiki docs/decisions/0073-awakening-and-multi-path-progression.md docs/superpowers

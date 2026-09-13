@@ -148,8 +148,8 @@ git commit -m "feat(combat): assemble frozen actor decision views"
 - [ ] Add tests proving rolls are stable across object insertion order, unrelated actors, area-target ordering, and replay; changing purpose, actor, action instance, target, or local sequence must change the draw.
 - [ ] Implement purpose-key draws from `seed + attemptId + tick + actorId + actionInstanceId + optional targetId + purpose + local sequence`. Do not consume the legacy entropy cursor.
 - [ ] Implement hit resolution from skill accuracy/mastery versus defender evasion, a clamped relative-Agility modifier, and explicit flank/surround/unaware modifiers. Use separate `hit`, `critical`, `status`, and `target-fallback` purposes.
-- [ ] Resolve damage in this order: authored base/coefficient; Might for physical or Spirit for magical; bounded affinity contribution; critical/status multiplier; armour and penetration for general physical mitigation; matching named resistances; resource clamp; typed downing event.
-- [ ] Apply Vitality Health regeneration and Spirit Mana regeneration only during readiness advancement, respecting post-hit delay, caps, and downed state.
+- [ ] Resolve damage in this order: authored base/coefficient; Strength for physical or Magic for magical; bounded affinity contribution; critical/status multiplier; armour and penetration for general physical mitigation; matching named resistances; resource clamp; typed downing event.
+- [ ] Apply Vitality Health regeneration and Magic Mana regeneration only during readiness advancement, respecting post-hit delay, caps, and downed state.
 - [ ] Assert no model/provider data can supply damage, hit result, critical result, status, downing, loot, or death.
 - [ ] Verify:
 

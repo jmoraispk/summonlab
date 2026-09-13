@@ -537,7 +537,7 @@ describe('skill taxonomy migration inventory', () => {
 				skill: 'Polehammer Handling',
 				labels: [{ namespace: 'Equipment', value: 'Polehammer' }]
 			},
-			replacementRequires: 'Might threshold, hold a polehammer',
+			replacementRequires: 'Strength threshold, hold a polehammer',
 			replacementEffect: 'Damage and poise-damage bonus with polehammers. **Foundation.**'
 		});
 		expect(bySource.get('martial-haft-and-fist.md#hammer:9')).toMatchObject({
@@ -863,7 +863,7 @@ describe('target skill taxonomy', () => {
 			effect: 'Damage bonus with halberds; small armour-shred chance. **Foundation.**'
 		});
 		expect(rows.find((row) => row.name === 'Polehammer Handling')).toMatchObject({
-			requires: 'Might threshold, hold a polehammer',
+			requires: 'Strength threshold, hold a polehammer',
 			effect: 'Damage and poise-damage bonus with polehammers. **Foundation.**'
 		});
 	});

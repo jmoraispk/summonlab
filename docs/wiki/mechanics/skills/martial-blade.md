@@ -23,21 +23,21 @@ Blade owns cutting, thrusting, and coordinated blade-handling techniques. Equipm
 | 5 | **Cross Guard** | Sword | F | A | Swordsmanship Novice | Block with the blade; better than an empty hand, worse than a shield |
 | 6 | **Quick Draw** | Sword | F | P | Swordsmanship Intermediate | Weapon readies instantly; no opening penalty entering combat |
 | 7 | **Edge Care** | Sword | F | P | Swordsmanship Intermediate | Weapon condition holds longer; small accuracy bonus |
-| 8 | **Piercing Thrust** | Sword | E | A | Might threshold, Measured Cut Intermediate | Single-target; ignores part of armour |
+| 8 | **Piercing Thrust** | Sword | E | A | Strength threshold, Measured Cut Intermediate | Single-target; ignores part of armour |
 | 9 | **Feinting Cut** | Sword | E | A | Feint Intermediate, Measured Cut Intermediate | A cut that becomes a different cut mid-swing |
 | 10 | **Whirl Step** | Sword | E | A | Agility threshold, Horizontal Slash Intermediate | Spinning cut that repositions the hero behind the target |
 | 11 | **Edge Alignment** | Sword | E | P | 5,000 swings | Increased critical rate with swords |
-| 12 | **Half-Sword** | Sword | E | A | Overhead Chop Expert, Might threshold | Grip the blade for a short armour-splitting thrust at close range |
+| 12 | **Half-Sword** | Sword | E | A | Overhead Chop Expert, Strength threshold | Grip the blade for a short armour-splitting thrust at close range |
 | 13 | **Binding Cut** | Sword | E | A | Cross Guard Expert | Locks the target's weapon for a moment; sets up Disarm |
 | 14 | **Crescent Sweep** | Sword | D | A | Measured Cut Expert, 10,000 swings | A wide arc striking everything in front |
 | 15 | **Drawing Cut** | Sword | D | A | Dexterity threshold, Swordsmanship Expert, teacher | Enormous damage from a sheathed blade. Once per engagement. |
 | 16 | **Blade Dance** | Sword | D | St | Agility threshold, Crescent Sweep Intermediate | Attack speed up, mitigation down while held |
-| 17 | **Wind Slash** | Sword | D | A | Half-Sword Expert, Might threshold | A cut thrown as a ranged crescent of pressure |
+| 17 | **Wind Slash** | Sword | D | A | Half-Sword Expert, Strength threshold | A cut thrown as a ranged crescent of pressure |
 | 18 | **Counter Flow** | Sword | D | P | Riposte Master | Successful parries automatically riposte at reduced damage |
 | 19 | **Rising Moon** | Sword | C | A | Crescent Sweep Expert, Blade Dance Intermediate | Upward cut that launches and staggers; extends into an air chain |
 | 20 | **Thousand Cuts** | Sword | C | A | Blade Dance Expert, Agility threshold | Rapid multi-hit; hit count scales with Agility |
-| 21 | **Still Water Stance** | Sword | C | St | Spirit threshold, Parry Master | Automatic parry chance against each opponent's first attack |
-| 22 | **Heaven's Fall** | Sword | C | A | Overhead Chop Master, Might threshold | Leaping overhead strike; area stagger on landing |
+| 21 | **Still Water Stance** | Sword | C | St | Magic threshold, Parry Master | Automatic parry chance against each opponent's first attack |
+| 22 | **Heaven's Fall** | Sword | C | A | Overhead Chop Master, Strength threshold | Leaping overhead strike; area stagger on landing |
 | 23 | **Severing Intent** | Sword | B | A | Drawing Cut Master, 50,000 swings, defeated a named opponent | Ignores mitigation entirely. Long cooldown. |
 | 24 | **Mirrored Edge** | Sword | B | St | Still Water Master, mentor holding the skill | Parried attacks are returned at the attacker |
 | 25 | **Formless Blade** | Sword | B | P | Swordsmanship Master, Knifework Expert, Great Blade Expert, Two Blades Expert | Sword techniques function with any bladed weapon |
@@ -64,7 +64,7 @@ Blade owns cutting, thrusting, and coordinated blade-handling techniques. Equipm
 | 46 | **Blind Spot** | Dagger | D | P | Opening Master, 500 unaware kills | Greatly increased damage against anything that has not yet acted |
 | 47 | **Windmill** | Dagger | C | A | Twin Fangs Expert, Agility threshold | Spinning area attack; hit count scales with attack speed |
 | 48 | **Hundred Needles** | Dagger | C | A | Blade Throw Master | A volley of thrown blades across a cone |
-| 49 | **Ghost Step** | Dagger | C | St | Silent Step Master, Spirit threshold | Continuous evasion bonus; allows re-entering stealth mid-combat |
+| 49 | **Ghost Step** | Dagger | C | St | Silent Step Master, Magic threshold | Continuous evasion bonus; allows re-entering stealth mid-combat |
 | 50 | **Arterial Strike** | Dagger | C | A | Bleeding Edge Master, Called Shot Expert | A bleed that cannot be cleansed by ordinary means |
 | 51 | **Shadow Sever** | Dagger | B | A | Fleeting Step Master, Bleeding Edge Master | Strikes from concealment; guaranteed critical, refreshes concealment |
 | 52 | **Nightfall Flurry** | Dagger | B | A | Windmill Master, Twin Fangs Master | An unbroken chain of strikes; each hit shortens the next |
@@ -72,19 +72,19 @@ Blade owns cutting, thrusting, and coordinated blade-handling techniques. Equipm
 | 54 | **Assassin's Certainty** | Dagger | A | P | Shadow Sever Master, 1,000 executions | Any target below a health threshold dies to the next dagger strike |
 | 55 | **Severed Thread** | Dagger | A | A | Arterial Strike Master, rare catalyst | The target cannot be healed or revived for the duration |
 | 56 | **Thousand Silent Deaths** | Dagger | S | A | Assassin's Certainty Master, composite condition | Every enemy struck in the last several seconds takes the same wound at once |
-| 57 | **Great Blade** | Greatsword | F | P | Might threshold, hold a greatsword | Damage bonus with two-handed blades. **Foundation.** |
+| 57 | **Great Blade** | Greatsword | F | P | Strength threshold, hold a greatsword | Damage bonus with two-handed blades. **Foundation.** |
 | 58 | **Cleave** | Greatsword | F | A | Great Blade Novice | Wide swing hitting several adjacent targets |
 | 59 | **Guard Break** | Greatsword | F | A | Great Blade Novice | Heavy poise damage; shatters blocks |
 | 60 | **Shoulder Set** | Greatsword | F | P | Great Blade Intermediate | Cannot be staggered while winding up |
 | 61 | **Pommel Strike** | Greatsword | E | A | Great Blade Intermediate | Close-range blunt hit; brief daze |
 | 62 | **Wide Arc** | Greatsword | E | A | Cleave Expert | A full circular swing striking all around |
-| 63 | **Weight Shift** | Greatsword | E | P | Might threshold, 5,000 swings | Reduced wind-up on all greatsword skills |
+| 63 | **Weight Shift** | Greatsword | E | P | Strength threshold, 5,000 swings | Reduced wind-up on all greatsword skills |
 | 64 | **Ground Slam** | Greatsword | E | A | Guard Break Expert | Impact shockwave; knocks down light targets |
-| 65 | **Hewing Blow** | Greatsword | D | A | Wide Arc Expert, Might threshold | Damage scales with the target's remaining health |
+| 65 | **Hewing Blow** | Greatsword | D | A | Wide Arc Expert, Strength threshold | Damage scales with the target's remaining health |
 | 66 | **Momentum** | Greatsword | D | P | Weight Shift Master | Each consecutive hit increases the next one's damage |
 | 67 | **Bulwark Swing** | Greatsword | D | St | Shoulder Set Master | The blade sweeps aside projectiles while held |
 | 68 | **Executioner's Drop** | Greatsword | C | A | Hewing Blow Master, deed | Instantly kills a staggered target below a health threshold |
-| 69 | **Earthbreaker** | Greatsword | C | A | Ground Slam Master, Might threshold | Fissures the ground; lasting difficult terrain |
+| 69 | **Earthbreaker** | Greatsword | C | A | Ground Slam Master, Strength threshold | Fissures the ground; lasting difficult terrain |
 | 70 | **Unstoppable** | Greatsword | B | St | Momentum Master, Vitality threshold | Cannot be stopped, staggered or slowed while advancing |
 | 71 | **Mountain Cleaver** | Greatsword | B | A | Earthbreaker Master, rare catalyst | A single downward cut that splits terrain and formation alike |
 | 72 | **World Ender** | Greatsword | A | A | Mountain Cleaver Master, composite condition | One swing. Everything in a wide cone is removed. |

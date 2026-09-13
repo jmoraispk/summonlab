@@ -10,6 +10,13 @@
 
 **Spec:** `docs/superpowers/specs/2026-09-06-attributes-and-combat-modes-design.md`
 
+> **Historical prototype:** This completed v25 plan predates
+> [ADR 0073](../../decisions/0073-awakening-and-multi-path-progression.md). Its `4 Health per VIT`,
+> level-99 balance ceiling, one-point-per-level Task 6, `1..100` intrinsic band, and Might/Spirit
+> labels are superseded for engine-v27 by immutable-star growth, levels `1..999`, awakenings, and
+> Strength/Magic. Historical v25 execution and replay remain frozen; engine-v27 adapters for both
+> legacy and readiness combat consume the shared progression owner.
+
 ## Global constraints
 
 - Preserve all v1 character, proof, mission, event, and `engine-v1` through `engine-v24` schemas and hashes.

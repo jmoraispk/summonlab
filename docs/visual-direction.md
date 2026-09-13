@@ -148,21 +148,24 @@ Build a developer-facing Character Forge before producing a large cast. It must 
 
 Use four compact combat-attribute marks rather than a spreadsheet wall:
 
-- Might;
-- Vitality;
-- Agility;
-- Spirit.
+- Strength (`STR`);
+- Agility (`AGI`);
+- Vitality (`VIT`);
+- Magic (`MAG`).
 
 Personality, history, relationships, knowledge, morale, and current condition need their own visual
 language instead of more attribute marks. The hidden cognitive factor and domain aptitudes appear
 only through observed learning and mentor feedback, never as an IQ badge. Six-mark arrangements in
 older prototypes are historical direction superseded by the
 [four-attribute rules](wiki/mechanics/attributes.md) and
-[ADR 0072](decisions/0072-four-attributes-and-operator-owned-combat-modes.md).
+[ADR 0073](decisions/0073-awakening-and-multi-path-progression.md).
 
 Skills appear as practiced motions and tools: sword stance, bow draw, cooking rhythm, spell geometry, hammer technique, or teaching posture.
 
-Promotion at each ten-level threshold adds a visible resonance ring. Major promotions can alter silhouette, clothing integration, aura, or physiology. A `7★` hero should look like the accumulated result of a life, not merely a brighter `1★` portrait.
+Awakenings at each hundred-level threshold may add a restrained resonance cue. Major authored
+transformations can alter silhouette, clothing integration, aura, or physiology. Stars remain
+immutable; late-progression art should look like the accumulated result of a life, not merely a
+brighter rarity portrait.
 
 ## Synthesis presentation
 

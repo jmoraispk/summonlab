@@ -29,7 +29,7 @@ Water, and Earth preserve their imported ladders below.
 | 6 | **Cinder Trail** | Fire | E | A | Ignite Expert | Leaves burning ground along a path |
 | 7 | **Flame Shroud** | Fire | E | P | Warmth Expert, Rank II | A thin burning aura; retaliates against melee attackers |
 | 8 | **Great Fireball** | Fire | D | A | Fireball Expert, 5,000 casts | Larger, slower, heavier impact with a small blast |
-| 9 | **Flame Jet** | Fire | D | A | Fireball Expert, Spirit threshold | Sustained cone; channelled, drains while held |
+| 9 | **Flame Jet** | Fire | D | A | Fireball Expert, Magic threshold | Sustained cone; channelled, drains while held |
 | 10 | **Detonation** | Fire | D | A | Fireball Expert, Dexterity threshold | A targeted explosion placed at a point rather than thrown |
 | 11 | **Kindling** | Fire | D | P | Fireball Master | Casting Fire skills builds a charge that empowers the next one |
 | 12 | **Firestorm** | Fire | C | A | Flame Jet Master, Rank III | A rotating column of flame over an area; pulls and burns |
@@ -48,7 +48,7 @@ Water, and Earth preserve their imported ladders below.
 | 25 | **Water Whip** | Water | E | A | Flow Expert, Dexterity threshold | Reaching strike that can also pull or trip |
 | 26 | **Torrent** | Water | D | A | Pressure Lance Master | A sustained wave that pushes everything back |
 | 27 | **Drowning Grasp** | Water | D | A | Water Whip Master, Rank II | Encases a target's head; silences and suffocates |
-| 28 | **Deep Cold** | Water | D | A | Cold Touch Master, Spirit threshold | Heavy Chill escalating toward Freeze |
+| 28 | **Deep Cold** | Water | D | A | Cold Touch Master, Magic threshold | Heavy Chill escalating toward Freeze |
 | 29 | **Tide Sense** | Water | D | P | Flow Master, 10,000 casts | Water skills cost less and reach further near any water |
 | 30 | **Maelstrom** | Water | C | A | Torrent Master, Rank III | A rotating vortex that drags enemies inward |
 | 31 | **Glacier** | Water | C | A | Deep Cold Master, Rank III | Freezes an area solid; terrain and enemies alike |
@@ -65,7 +65,7 @@ Water, and Earth preserve their imported ladders below.
 | 42 | **Spike Field** | Earth | E | A | Stone Shard Expert | Stone spikes erupt across an area |
 | 43 | **Earthen Wall** | Earth | E | A | Stoneshape Expert | Raises a solid barrier from the ground |
 | 44 | **Crushing Weight** | Earth | D | A | Tremor Master, Rank II | Applies heavy Weight; target's poise collapses |
-| 45 | **Boulder Throw** | Earth | D | A | Spike Field Master, Might threshold | Hurls a mass of stone; area impact |
+| 45 | **Boulder Throw** | Earth | D | A | Spike Field Master, Strength threshold | Hurls a mass of stone; area impact |
 | 46 | **Fissure** | Earth | D | A | Earthen Wall Master | Splits the ground in a line; lasting difficult terrain |
 | 47 | **Unshakeable** | Earth | D | P | Stone Skin Master, 10,000 casts | Cannot be moved, displaced or knocked down |
 | 48 | **Mountain Rise** | Earth | C | A | Fissure Master, Rank III | Raises terrain; alters the entire field's geometry |

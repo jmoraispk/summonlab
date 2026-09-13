@@ -2,131 +2,79 @@
 
 Wiki ID: `mechanics.progression.attributes-training`
 
-Design status: **four-attribute growth and readiness-combat practice are implemented in
-`engine-v26`; idle schedules and broader training loops remain separate design work**.
+Design status: **implemented for `engine-v27`**.
 
-## Four combat-first attributes
+## The four attributes
 
-New characters use Might, Vitality, Agility, and Spirit on a `1..100` intrinsic scale.
-
-| Attribute | Primary territory | Failure without it |
+| Sheet | Full name | Primary territory |
 | --- | --- | --- |
-| **Might** | physical magnitude, carrying, equipment-load tolerance, explicit heavy-item requirements | a technique connects but lacks force or the loadout is unusable |
-| **Vitality** | maximum Health and modest natural Health recovery | mistakes consume a smaller Health reserve and take longer to recover from |
-| **Agility** | readiness, movement, evasion, bounded relative speed in hit contests | repositioning and avoidance are weaker |
-| **Spirit** | magical magnitude, maximum Mana, modest saturating Mana recovery | magical output and available technique resource are lower |
+| `STR` | **Strength** | Physical power, carrying/load tolerance, and explicit heavy-item requirements |
+| `AGI` | **Agility** | Readiness, movement, evasion, and bounded relative speed |
+| `VIT` | **Vitality** | Maximum Health and modest natural Health recovery |
+| `MAG` | **Magic** | Magical power, maximum Mana, and modest saturating Mana recovery |
 
-Attributes describe broad combat capability. Skill mastery describes learned execution. Personality,
-history, relationships, knowledge, morale, motivation, and current condition remain separate systems.
-The retired Dexterity/Intellect proposal is not used for new state. Universal poise, attribute-based
-mitigation, Spirit-based morale/control/learning, and Vitality armour requirements are also removed.
+This order is canonical on character sheets: `STR`, `AGI`, `VIT`, `MAG`. Full names remain normal
+prose. Dexterity is not a fifth primary attribute, and Spirit is not the magic attribute. There is
+no Body/Mind grouping.
 
-## Intrinsic growth and scoped modifiers
+Attributes describe broad capability. Skill mastery describes learned execution. Personality,
+knowledge, morality, relationships, decision quality, and the hidden bounded learning profile stay
+separate.
 
-```text
-generated capability + validated permanent receipts = intrinsic attribute
-intrinsic attribute + valid action-scoped modifiers = effective attribute
-```
-
-Every permanent change is append-only evidence. New `engine-v26` heroes begin at level 1 with zero
-unspent points. A transition from level `L` to `L+n` grants exactly `n` points. Allocation spends one
-point on one named attribute and records the hero, before/after intrinsic values, source level,
-command, rules version, and game time. It never rewrites the generated character profile.
-
-The initial rule is therefore **one freely allocated attribute point per level gained**. It is not a
-copy of an old six-stat budget. Each receipt must continue the prior intrinsic value exactly, and
-intrinsic attributes cannot exceed 100.
-
-Equipment, food, enchantments, conditions, statuses, skills, and physiology use a different typed
-modifier contract. Each modifier names its scope and duration. An equipment-load Might modifier,
-for example, can change load tolerance but cannot satisfy an item's intrinsic-Might requirement or
-increase physical damage.
-
-## Health and Mana
-
-Health and Mana are the only universal bars. `combat-rules-v1` currently derives:
+## Intrinsic growth
 
 ```text
-maximum Health = 100 + 4 × Vitality
-maximum Mana   = 40 + 2 × Spirit
+generated capability + typed permanent growth = intrinsic attribute
+intrinsic attribute + valid scoped modifiers = effective attribute
 ```
 
-Allocating Vitality or Spirit raises only the corresponding maximum; it does not heal or refill the
-current resource.
+Each gained level grants exactly the hero's immutable star rating in unallocated points. Direct
+growth can also come from typed allocation, training, achievement, consumable, or cultivation
+claims. All mutations are receipt-backed. An equipment-load modifier cannot silently change damage,
+and an effective modifier cannot satisfy an intrinsic requirement unless its scope explicitly says
+so.
 
-Natural Health recovery is deliberately modest:
+## Awakening conversions
 
-- safe-rest recovery is `2 + floor(Vitality / 10)` per recovery application;
-- combat recovery is one fifth of that safe-rest amount;
-- combat recovery pauses for 50 ticks after damage;
-- natural recovery is zero while Downed and cannot revive a hero;
-- it cannot repair an injury;
-- healing skills, consumables, and safe rest remain stronger recovery sources.
+Awakening tier is `floor(level / 100)`, bounded to tiers 0–9. The current tier applies to the full
+applicable attribute value, including old allocations and non-level growth.
 
-Mana recovery receives a small Spirit bonus that saturates rather than growing without bound.
-Combat Mana recovery is half the safe-rest value. It is also zero while Downed or when resolving
-injury repair. Equipment, stances, passives, and skill effects remain the stronger specialization
-levers.
+| Levels | Tier | Power per STR/MAG | Health per VIT | Relative power |
+| ---: | ---: | ---: | ---: | ---: |
+| 1–99 | 0 | 1.0 | 5 | ×1.0 |
+| 100–199 | 1 | 1.2 | 6 | ×1.2 |
+| 200–299 | 2 | 1.4 | 7 | ×1.4 |
+| 300–399 | 3 | 1.8 | 9 | ×1.8 |
+| 400–499 | 4 | 2.2 | 11 | ×2.2 |
+| 500–599 | 5 | 2.6 | 13 | ×2.6 |
+| 600–699 | 6 | 3.2 | 16 | ×3.2 |
+| 700–799 | 7 | 3.8 | 19 | ×3.8 |
+| 800–899 | 8 | 4.4 | 22 | ×4.4 |
+| 900–999 | 9 | 5.0 | 25 | ×5.0 |
 
-In readiness combat, both natural recovery calculations are applied only on the versioned
-100-tick pulse. The checked V2 qualification artifact measured this recovery-to-damage boundary
-with executable deterministic hostile attacks. That mechanical qualification supports operator
-evaluation; it does not by itself promote the mode or establish final balance.
+```text
+physical attribute power = effective STR × current power rate
+magical attribute power  = effective MAG × current power rate
+maximum Health           = capacity-scoped effective VIT × current Health rate
+```
 
-## Damage, defence, and accuracy
+An awakening recomputes maximum Health without refilling current Health. Armour, resistance,
+accuracy, evasion, critical chance, action cadence, movement ceilings, flat equipment power, skill
+mastery, affinity ratios, and explicitly flat skill effects do not receive this multiplier.
 
-- Might alone supplies base-attribute scaling for physical magnitude.
-- Spirit alone supplies base-attribute scaling for magical magnitude.
-- Armour supplies general reduction after penetration. The curve is monotonic and
-  `combat-rules-v1` caps it at 7,499 basis points, so armour alone never reaches 75% reduction.
-- Authored `cut`, `pierce`, `impact`, `burn`, `frost`, `shock`, and `arcane` resistance receipts
-  stack additively up to the 7,500-basis-point global cap.
-- Skill mastery owns authored accuracy and reliability steps. Readiness currently consumes mastery
-  accuracy; reliability remains reserved. Agility's production relative-speed term is bounded and
-  secondary.
-- Critical chance is never derived from a base attribute.
+These numbers are versioned balance data. They can be reduced later by publishing a new table and
+rules hash; the stored attributes and progression schema do not change.
 
-There is no universal poise. A boss, shield, stance, or skill may explicitly own a visible Break
-meter without creating a hidden resource on every combatant.
+## Training and learning
 
-## Learning profile
-
-The learning profile is generated independently from combat attributes and is hidden by default. It
-contains:
-
-- a bounded cognitive-learning score;
-- martial, magical, crafting, survival, and social domain aptitudes.
-
-For comprehension-heavy evidence only, the cognitive score maps to a `0.90..1.10` factor. Ordinary
-practice uses a neutral `1.00` cognitive factor. Domain aptitude maps separately to `0.80..1.20`,
-then teaching quality, facility quality, motivation, condition, variety, and repetition decay are
-applied before one final deterministic rounding step.
-
-This preserves a small, real general learning difference without pretending it is decision quality.
-The player sees outcomes and mentor observations, not an IQ number. Public character/proof
-projections omit the full learning profile, and future player-facing learning receipts must also
-redact the invertible cognitive factor.
-
-## Practice and idle progression
-
-`engine-v26` persists a separate combat-training record containing proficiency tags and each learned
-combat skill's mastery. Authenticated readiness results turn resolved skill use into idempotent
-practice claims. Applying those claims advances the matching per-skill mastery, capped at 100, and a
-later mission derives its legal action and authored accuracy step from the updated mastery. This is
-combat-earned practice, not an idle schedule.
-
-The capability contract still does not decide how heroes schedule their days, how much they are
-willing to practise, or what they accomplish while the player is away. Those “human” idle-gain
-rules require their own design: time, motivation, relationships, needs, facilities, teaching,
-variety, fatigue, and personal choice should matter without turning one hidden number into destiny.
-
-Until that design lands, do not treat a theoretical twelve-hour training assignment, passive slot,
-or repetition-yield curve as canonical runtime behavior.
+Training produces typed direct-growth or skill-practice evidence rather than pretending to be a
+level. The hidden learning profile remains bounded and separate from visible attributes. It can
+modestly affect validated comprehension-heavy practice but never intelligence, worth, access, or
+decision quality, and player projections omit it.
 
 ## References
 
 - [Attributes](../attributes.md)
-- [Affinities](affinities.md)
-- [Skill framework](../skills/framework.md)
-- [Equipment rarity and weight](../equipment/rarity-and-weight.md)
-- [Four-attribute implementation plan](../../../superpowers/plans/2026-09-06-four-attribute-legacy-combat.md)
+- [Experience and levels](experience-and-levels.md)
+- [Stars](stars.md)
+- [ADR 0073](../../../decisions/0073-awakening-and-multi-path-progression.md)

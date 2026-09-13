@@ -66,7 +66,8 @@ async function currentLegacyState(): Promise<EngineGameStateV26> {
 		runId: deterministicUuid('current-legacy-auto-run'),
 		seed: 'current-legacy-auto-engine-seed',
 		draft,
-		combatMode: 'legacy-auto-v1'
+		combatMode: 'legacy-auto-v1',
+		developmentEngineVersion: 26
 	});
 	return EngineGameStateV26Schema.parse(bootstrap.snapshot.state);
 }
@@ -83,7 +84,8 @@ async function capabilityState(): Promise<EngineGameStateV25> {
 	const bootstrap = createBootstrapEngine({
 		runId: deterministicUuid('legacy-auto-run'),
 		seed: 'legacy-auto-engine-seed',
-		draft
+		draft,
+		developmentEngineVersion: 25
 	});
 	if (bootstrap.snapshot.state.schemaVersion !== 25) throw new Error('Expected v25 state');
 	return bootstrap.snapshot.state;

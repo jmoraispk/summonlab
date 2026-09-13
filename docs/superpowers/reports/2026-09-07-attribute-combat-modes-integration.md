@@ -5,18 +5,22 @@ Date: 2026-09-07
 Status: **implemented and mechanically qualified for operator evaluation; legacy remains the beta
 default; owner promotion and full hostile balance remain outstanding**
 
+Current progression and naming are superseded by
+[ADR 0073](../../decisions/0073-awakening-and-multi-path-progression.md); the combat-mode
+qualification remains valid.
+
 ## Integrated outcome
 
 `engine-v26` closes the mechanical gap between the four-attribute character foundation and the
 agent-readiness resolver without changing historical V1–V25 rules or replay bytes.
 
-- Might, Vitality, Agility, and Spirit remain the only visible combat attributes.
+- Strength, Agility, Vitality, and Magic remain the only visible combat attributes.
 - Mission assembly derives intrinsic attributes from the generated capability plus the complete
   append-only growth-receipt chain, then applies only modifiers valid for the requested effective
   scope.
 - V26 heroes persist combat proficiency tags and per-skill mastery independently from attributes.
 - Readiness legal actions are derived from the exact equipped instances, combat equipment profiles,
-  load tolerance, intrinsic Might gates, Armour Training, skill delivery tags, trained delivery
+  load tolerance, intrinsic Strength gates, Armour Training, skill delivery tags, trained delivery
   tags, and current per-skill mastery step.
 - Equipped-item grants project named Cut, Pierce, Impact, Burn, Frost, Shock, and Arcane resistances
   in readiness combat. The typed receipt pipeline also reserves passive-skill and physiology sources

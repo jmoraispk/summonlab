@@ -103,7 +103,7 @@ only in migration provenance and does not publish a second current skill.
 
 ## Source authority and remaining decisions
 
-- Might, Vitality, Agility, and Spirit are the authoritative combat-attribute vocabulary. Imported
+- Strength, Agility, Vitality, and Magic are the authoritative combat-attribute vocabulary. Imported
   precision/comprehension thresholds require a later catalog migration to learned skill/evidence
   requirements; they must never become executable under their old names.
 - Fire, Earth, Wind, and Water are the active base affinities. Element statuses and rank numerics
