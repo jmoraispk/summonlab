@@ -58,7 +58,7 @@ export function combatModeAvailability(
 				message: 'Combat mode agent-readiness-v1 rules binding is unavailable'
 			};
 		}
-		return runtimeSchemaVersion === 26
+		return runtimeSchemaVersion === 26 || runtimeSchemaVersion === 27
 			? { status: 'available', modeId: parsed.modeId, message: null }
 			: {
 					status: 'not-yet-live',

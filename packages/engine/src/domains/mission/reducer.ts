@@ -14,6 +14,7 @@ import {
 	EngineGameStateV24Schema,
 	EngineGameStateV25Schema,
 	EngineGameStateV26Schema,
+	EngineGameStateV27Schema,
 	FirstBandArchiveStateSchema,
 	MasterControlStateSchema,
 	MasterControlStateV2Schema,
@@ -61,6 +62,10 @@ import {
 } from '../../core/combat-claims.js';
 import { ReplayIntegrityError } from '../../errors.js';
 import { deterministicUuid, hashCanonical } from '../../hash.js';
+import {
+	CombatExperienceOutcomeV1Schema,
+	buildCombatExperienceOutcomes
+} from '../progression/combat-experience.js';
 import { resolveMissionCombatTurn, resolveMissionTurn } from './combat.js';
 import { buildMissionEquipmentDrop, MissionEquipmentDropOutcomeSchema } from './equipment-drop.js';
 import {
@@ -440,6 +445,11 @@ const MissionLegacyAutomaticTurnResolvedPayloadV2Schema = EmptyMetadataSchema.ex
 	nextVersion: z.number().int().positive()
 }).strict();
 
+const MissionLegacyAutomaticTurnResolvedPayloadV3Schema =
+	MissionLegacyAutomaticTurnResolvedPayloadV2Schema.extend({
+		combatProgressionOutcomes: z.array(CombatExperienceOutcomeV1Schema)
+	}).strict();
+
 const MasterTimingChangedPayloadSchema = EmptyMetadataSchema.extend({
 	timing: z.enum(['wait', 'countdown', 'step', 'continuous']),
 	countdownSeconds: z.number().int().min(1).max(60),
@@ -558,6 +568,10 @@ const MissionTransitionPayloadV14Schema = EmptyMetadataSchema.extend({
 	heroIds: z.array(z.string().uuid()).max(7),
 	completedObjectiveIds: z.array(z.string()).max(20),
 	nextVersion: z.number().int().positive()
+}).strict();
+
+const MissionTransitionPayloadV15Schema = MissionTransitionPayloadV14Schema.extend({
+	combatProgressionOutcomes: z.array(CombatExperienceOutcomeV1Schema)
 }).strict();
 
 function reduceMissionEventInternal(
@@ -770,14 +784,18 @@ function reduceMissionEventInternal(
 		});
 	}
 	if (event.eventType === 'mission.round.resolved') {
-		if (state.schemaVersion === 26) {
+		if (state.schemaVersion === 26 || state.schemaVersion === 27) {
 			if (event.actorId !== state.master.masterId || event.gameTime !== state.simulatedAt) {
 				throw new ReplayIntegrityError(
 					'Current legacy mission round precondition failed',
 					event.sequence
 				);
 			}
-			const payload = MissionLegacyAutomaticTurnResolvedPayloadV2Schema.parse(event.payload);
+			const payload = (
+				state.schemaVersion === 27
+					? MissionLegacyAutomaticTurnResolvedPayloadV3Schema
+					: MissionLegacyAutomaticTurnResolvedPayloadV2Schema
+			).parse(event.payload);
 			if (payload.nextVersion !== state.version + 1) {
 				throw new ReplayIntegrityError(
 					'Current legacy mission round version diverged',
@@ -785,26 +803,59 @@ function reduceMissionEventInternal(
 				);
 			}
 			const expected = resolveMissionModeTurn(state, event.eventId);
+			const expectedCombatProgressionOutcomes =
+				state.schemaVersion === 27 &&
+				expected.mission.attempt !== null &&
+				!['preparing', 'deployed', 'resolving', 'extraction'].includes(
+					expected.mission.attempt.status
+				)
+					? buildCombatExperienceOutcomes(
+							{ ...state, mission: expected.mission } as Extract<
+								EngineGameState,
+								{ schemaVersion: 27 }
+							>,
+							event.eventId,
+							expected.mission.attempt.status === 'success'
+						)
+					: [];
 			if (
 				expected.entropyCursor !== event.seedCursor ||
 				hashCanonical(expected.choices) !== hashCanonical(payload.choices) ||
 				hashCanonical(expected.entropyDraws) !== hashCanonical(payload.entropyDraws) ||
 				hashCanonical(expected.round) !== hashCanonical(payload.round) ||
 				hashCanonical(expected.consequences) !== hashCanonical(payload.consequences) ||
-				hashCanonical(expected.mission) !== hashCanonical(payload.mission)
+				hashCanonical(expected.mission) !== hashCanonical(payload.mission) ||
+				(state.schemaVersion === 27 &&
+					hashCanonical(expectedCombatProgressionOutcomes) !==
+						hashCanonical(
+							'combatProgressionOutcomes' in payload ? payload.combatProgressionOutcomes : []
+						))
 			) {
 				throw new ReplayIntegrityError(
 					'Current legacy mission round payload diverged',
 					event.sequence
 				);
 			}
-			return EngineGameStateV26Schema.parse({
+			const heroes = { ...expected.heroes };
+			for (const outcome of expectedCombatProgressionOutcomes) {
+				const hero = heroes[outcome.evidence.heroId];
+				if (!hero) throw new ReplayIntegrityError('Combat XP hero disappeared', event.sequence);
+				heroes[outcome.evidence.heroId] = {
+					...hero,
+					progression: outcome.progressionAfter,
+					maxHealth: outcome.maxHealthAfter,
+					health: outcome.healthAfter
+				} as (typeof heroes)[string];
+			}
+			return (
+				state.schemaVersion === 27 ? EngineGameStateV27Schema : EngineGameStateV26Schema
+			).parse({
 				...state,
 				version: payload.nextVersion,
 				eventCursor: event.sequence,
 				entropyCursor: event.seedCursor,
 				mission: payload.mission,
-				heroes: expected.heroes,
+				heroes,
 				items: expected.items,
 				society: expected.society,
 				master: expected.master,
@@ -1204,7 +1255,7 @@ function reduceMissionEventInternal(
 			'mission.retreated'
 		].includes(event.eventType)
 	) {
-		if (state.schemaVersion === 26) {
+		if (state.schemaVersion === 26 || state.schemaVersion === 27) {
 			if (
 				event.actorId !== state.master.masterId ||
 				event.gameTime !== state.simulatedAt ||
@@ -1215,7 +1266,11 @@ function reduceMissionEventInternal(
 					event.sequence
 				);
 			}
-			const payload = MissionTransitionPayloadV14Schema.parse(event.payload);
+			const payload = (
+				state.schemaVersion === 27
+					? MissionTransitionPayloadV15Schema
+					: MissionTransitionPayloadV14Schema
+			).parse(event.payload);
 			if (payload.nextVersion !== state.version + 1) {
 				throw new ReplayIntegrityError(
 					'Current mission transition version diverged',
@@ -1251,7 +1306,19 @@ function reduceMissionEventInternal(
 								: payload.transition === 'extract'
 									? completeMissionExtraction(state)
 									: retreatMissionAttempt(state, appendPortalCargoLosses);
-			if (hashCanonical(expectedMission) !== hashCanonical(payload.mission)) {
+			const expectedCombatProgressionOutcomes =
+				state.schemaVersion === 27 &&
+				(payload.transition === 'extract' || payload.transition === 'retreat')
+					? buildCombatExperienceOutcomes(state, event.eventId, payload.transition === 'extract')
+					: [];
+			if (
+				hashCanonical(expectedMission) !== hashCanonical(payload.mission) ||
+				(state.schemaVersion === 27 &&
+					hashCanonical(expectedCombatProgressionOutcomes) !==
+						hashCanonical(
+							'combatProgressionOutcomes' in payload ? payload.combatProgressionOutcomes : []
+						))
+			) {
 				throw new ReplayIntegrityError(
 					'Current mission transition payload diverged',
 					event.sequence
@@ -1274,12 +1341,26 @@ function reduceMissionEventInternal(
 					event.sequence
 				);
 			}
-			return EngineGameStateV26Schema.parse({
+			const heroes = { ...state.heroes };
+			for (const outcome of expectedCombatProgressionOutcomes) {
+				const hero = heroes[outcome.evidence.heroId];
+				if (!hero) throw new ReplayIntegrityError('Combat XP hero disappeared', event.sequence);
+				heroes[outcome.evidence.heroId] = {
+					...hero,
+					progression: outcome.progressionAfter,
+					maxHealth: outcome.maxHealthAfter,
+					health: outcome.healthAfter
+				} as (typeof heroes)[string];
+			}
+			return (
+				state.schemaVersion === 27 ? EngineGameStateV27Schema : EngineGameStateV26Schema
+			).parse({
 				...state,
 				version: payload.nextVersion,
 				eventCursor: event.sequence,
 				entropyCursor: event.seedCursor,
-				mission: payload.mission
+				mission: payload.mission,
+				heroes
 			});
 		}
 		if (state.schemaVersion === 25) {

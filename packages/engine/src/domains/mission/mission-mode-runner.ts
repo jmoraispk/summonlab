@@ -1,6 +1,7 @@
 import type {
 	EngineGameStateV25,
 	EngineGameStateV26,
+	EngineGameStateV27,
 	MissionRunStateV9,
 	MissionRunStateV10
 } from '@summonlab/contracts';
@@ -16,16 +17,23 @@ import {
 	restoreCurrentLegacyMission
 } from './readiness-runtime.js';
 
-type MissionModeState = EngineGameStateV25 | EngineGameStateV26;
-export type CurrentLegacyAutoV1CombatResolution = Omit<LegacyAutoV1CombatResolution, 'mission'> & {
+type MissionModeState = EngineGameStateV25 | EngineGameStateV26 | EngineGameStateV27;
+export type CurrentLegacyAutoV1CombatResolution = Omit<
+	LegacyAutoV1CombatResolution,
+	'mission' | 'heroes'
+> & {
 	readonly mission: MissionRunStateV10;
+	readonly heroes: EngineGameStateV26['heroes'] | EngineGameStateV27['heroes'];
 };
 
 export function assertMissionModeAdvanceAvailable(state: MissionModeState): 'legacy-auto-v1' {
 	if (!state.mission.attempt || !['deployed', 'resolving'].includes(state.mission.attempt.status)) {
 		throw new IllegalActionError('mission.advance.automatic');
 	}
-	if (state.schemaVersion === 26 && state.mission.attempt.combatState.modeId !== 'legacy-auto-v1') {
+	if (
+		(state.schemaVersion === 26 || state.schemaVersion === 27) &&
+		state.mission.attempt.combatState.modeId !== 'legacy-auto-v1'
+	) {
 		throw new IllegalActionError('mission.advance.automatic');
 	}
 	const availability = combatModeAvailability(
@@ -53,16 +61,37 @@ export function resolveMissionModeTurn(
 				projectCurrentStateForLegacyResolver(state),
 				sourceEventId
 			);
+			const heroes =
+				state.schemaVersion === 27
+					? Object.fromEntries(
+							Object.entries(resolved.heroes).map(([heroId, hero]) => {
+								const current = state.heroes[heroId];
+								if (!current) throw new Error(`Legacy resolver returned unknown hero ${heroId}`);
+								return [
+									heroId,
+									{
+										...current,
+										health: hero.health,
+										mana: hero.mana,
+										lifeState: hero.lifeState,
+										injuries: hero.injuries,
+										location: hero.location,
+										locationNodeId: hero.locationNodeId
+									}
+								];
+							})
+						)
+					: Object.fromEntries(
+							Object.entries(resolved.heroes).map(([heroId, hero]) => {
+								const current = state.heroes[heroId];
+								if (!current) throw new Error(`Legacy resolver returned unknown hero ${heroId}`);
+								return [heroId, { ...hero, combatTraining: current.combatTraining }];
+							})
+						);
 			return {
 				...resolved,
 				mission: restoreCurrentLegacyMission(state, resolved.mission as MissionRunStateV9),
-				heroes: Object.fromEntries(
-					Object.entries(resolved.heroes).map(([heroId, hero]) => {
-						const current = state.heroes[heroId];
-						if (!current) throw new Error(`Legacy resolver returned unknown hero ${heroId}`);
-						return [heroId, { ...hero, combatTraining: current.combatTraining }];
-					})
-				)
+				heroes
 			};
 		}
 	}

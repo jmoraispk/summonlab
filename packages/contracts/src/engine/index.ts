@@ -236,6 +236,7 @@ export {
 export {
 	AttributeGrowthClaimSchema,
 	AttributeGrowthReceiptV2Schema,
+	CombatContributionEvidenceV1Schema,
 	ExperienceClaimSchema,
 	ExperienceReceiptSchema,
 	ExperienceSourceKindSchema,
@@ -246,6 +247,7 @@ export {
 	ProductionCompletionEvidenceV1Schema,
 	type AttributeGrowthClaim,
 	type AttributeGrowthReceiptV2,
+	type CombatContributionEvidenceV1,
 	type ExperienceClaim,
 	type ExperienceReceipt,
 	type ExperienceSourceKind,

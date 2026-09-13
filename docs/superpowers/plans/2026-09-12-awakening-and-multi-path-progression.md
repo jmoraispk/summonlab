@@ -746,17 +746,17 @@ git commit -m "feat(progression): grant completed crafting experience"
 - Consumes: common resolved combat effects, mission objective evidence, `combatExperience`, and `applyExperienceClaim`.
 - Produces: `CombatContributionEvidenceV1`, deterministic contributor claims, and terminal mission progression receipts reusable by both legacy and readiness combat.
 
-- [ ] **Step 1: Write failing contributor tests**
+- [x] **Step 1: Write failing contributor tests**
 
 Create fixtures where one hero damages, one protects/heals, and one advances the objective. Assert all mechanically relevant contributors receive deterministic claims; the last hitter receives no exclusive bonus. Assert an idle deployed hero, invalid evidence, and a trivial exhausted encounter receive no unbounded reward.
 
-- [ ] **Step 2: Run combat XP tests and verify red**
+- [x] **Step 2: Run combat XP tests and verify red**
 
 Run: `pnpm --filter @summonlab/engine test -- domains/progression/combat-experience.spec.ts`
 
 Expected: FAIL because combat contribution evidence does not exist.
 
-- [ ] **Step 3: Build contribution evidence from resolved facts**
+- [x] **Step 3: Build contribution evidence from resolved facts**
 
 ```ts
 export type CombatContributionEvidenceV1 = Readonly<{
@@ -774,22 +774,22 @@ export type CombatContributionEvidenceV1 = Readonly<{
 
 An eligible contributor must own at least one applied combat effect or objective evidence record. Superseded actions, narration, declared intent, presence alone, and last-hit identity do not qualify.
 
-- [ ] **Step 4: Apply claims at the terminal ownership boundary**
+- [x] **Step 4: Apply claims at the terminal ownership boundary**
 
 On success, failure, or retreat, sort evidence by hero ID, derive one claim per eligible hero, apply it through the shared progression owner, and append the receipts to the mission terminal event. Update each hero's combat evidence count atomically. A failure may retain legitimate contribution XP; invalid or absent evidence yields none.
 
-- [ ] **Step 5: Preserve mode independence**
+- [x] **Step 5: Preserve mode independence**
 
 Read only the common resolved-effect and objective-evidence contract. Add an exported `experienceClaimsForCombatResult` function that takes no mode-specific round or readiness-state fields, so both existing combat outcome adapters call it unchanged.
 
-- [ ] **Step 6: Run focused verification**
+- [x] **Step 6: Run focused verification**
 
 ```bash
 pnpm --filter @summonlab/engine test -- domains/progression/combat-experience.spec.ts domains/mission/mission-runtime.spec.ts
 pnpm --filter @summonlab/engine typecheck
 ```
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add packages/contracts/src/engine/mission-state.ts packages/engine/src/domains/progression packages/engine/src/domains/mission

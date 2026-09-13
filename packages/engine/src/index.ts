@@ -73,6 +73,7 @@ export {
 	productionEvidenceKey,
 	type ProductionHistory
 } from './domains/progression/production.js';
+export { experienceClaimsForCombatResult } from './domains/progression/combat-experience.js';
 export {
 	adaptV26LegacyCombatOutcome,
 	transitionCombatResultClaims,

@@ -11,6 +11,7 @@ import {
 	EngineGameStateV24Schema,
 	EngineGameStateV25Schema,
 	EngineGameStateV26Schema,
+	EngineGameStateV27Schema,
 	CombatChoiceBatchAppliedEventSchema,
 	ReadinessCombatTerminalCommittedEventSchema,
 	type AuthoritativeEvent,
@@ -21,6 +22,7 @@ import {
 	type EngineGameStateV24,
 	type EngineGameStateV25,
 	type EngineGameStateV26,
+	type EngineGameStateV27,
 	type EngineGameStateV16,
 	type EngineGameStateV17,
 	type EntropyDraw
@@ -341,7 +343,10 @@ function combatBatchCommand(
 	};
 }
 
-function readinessTerminalCommand(state: EngineGameStateV26, key: string): EngineCommand {
+function readinessTerminalCommand(
+	state: EngineGameStateV26 | EngineGameStateV27,
+	key: string
+): EngineCommand {
 	const commandId = deterministicUuid(`${state.runId}:${key}:${state.version}`);
 	return {
 		commandType: 'mission.commit.readiness-terminal',
@@ -401,7 +406,8 @@ describe('mission runtime ownership', () => {
 				runId: deterministicUuid(`v26-attempt-mode-binding-${modeId}`),
 				seed: `v26-attempt-mode-binding-${modeId}-seed`,
 				draft,
-				combatMode: modeId
+				combatMode: modeId,
+				developmentEngineVersion: 26
 			}).snapshot.state;
 			if (initial.schemaVersion !== 26) throw new Error('Expected current v26 run');
 			const heroId = Object.keys(initial.heroes)[0]!;
@@ -565,7 +571,8 @@ describe('mission runtime ownership', () => {
 			createBootstrapEngine({
 				runId: deterministicUuid('readiness-command-run'),
 				seed: 'readiness-command-engine',
-				draft
+				draft,
+				developmentEngineVersion: 25
 			}).snapshot.state
 		);
 		const heroId = Object.keys(initial.heroes)[0]!;
@@ -655,7 +662,8 @@ describe('mission runtime ownership', () => {
 			createBootstrapEngine({
 				runId: deterministicUuid('readiness-terminal-run'),
 				seed: 'readiness-terminal-engine',
-				draft
+				draft,
+				developmentEngineVersion: 25
 			}).snapshot.state
 		);
 		const heroId = Object.keys(initial.heroes)[0]!;
@@ -791,6 +799,53 @@ describe('mission runtime ownership', () => {
 			authorityHash: 'f'.repeat(64)
 		};
 		expect(() => reduceEvent(terminal, forgedCheckpoint)).toThrow(ReplayIntegrityError);
+
+		const v27Bootstrap = createBootstrapEngine({
+			runId: terminal.runId,
+			seed: 'readiness-terminal-engine',
+			draft
+		}).snapshot.state;
+		if (v27Bootstrap.schemaVersion !== 27) throw new Error('Expected v27 bootstrap');
+		const v27Terminal = EngineGameStateV27Schema.parse({
+			...terminal,
+			schemaVersion: 27,
+			contentVersion: 'engine-v27',
+			progressionRules: v27Bootstrap.progressionRules,
+			synthesis: v27Bootstrap.synthesis,
+			heroes: Object.fromEntries(
+				Object.entries(terminal.heroes).map(([id, current]) => [
+					id,
+					{
+						...current,
+						progression: v27Bootstrap.heroes[id]!.progression
+					}
+				])
+			)
+		});
+		const v27Combat = v27Terminal.mission.attempt!.combatState;
+		if (v27Combat.modeId !== 'agent-readiness-v1') throw new Error('Expected readiness state');
+		v27Combat.readinessState.outcomeEvidence.resolvedEvents[0]!.effects = [
+			{
+				kind: 'resource',
+				combatantId: enemy.combatantId,
+				resource: 'health',
+				before: 1,
+				after: 0,
+				delta: -1
+			}
+		];
+		const v27Applied = applyCommand(
+			EngineGameStateV27Schema.parse(v27Terminal),
+			readinessTerminalCommand(v27Terminal, 'v27-commit')
+		);
+		if (v27Applied.state.schemaVersion !== 27) throw new Error('Expected v27 applied state');
+		const v27Payload = v27Applied.events[0]!.payload as {
+			combatProgressionOutcomes: readonly { receipt: { claim: { amount: number } } }[];
+		};
+		expect(v27Payload.combatProgressionOutcomes).toHaveLength(1);
+		expect(v27Payload.combatProgressionOutcomes[0]!.receipt.claim.amount).toBeGreaterThan(0);
+		expect(v27Applied.state.heroes[heroId]!.progression.experience).toBeGreaterThan(0);
+		expect(reduceEvent(v27Terminal, v27Applied.events[0]!)).toStrictEqual(v27Applied.state);
 	});
 
 	it.each([
@@ -812,7 +867,8 @@ describe('mission runtime ownership', () => {
 				runId: deterministicUuid(`readiness-${disposition}-run`),
 				seed: `readiness-${disposition}-engine`,
 				draft,
-				combatMode: 'agent-readiness-v1'
+				combatMode: 'agent-readiness-v1',
+				developmentEngineVersion: 26
 			}).snapshot.state;
 			if (initial.schemaVersion !== 26) throw new Error('Expected v26 state');
 			const heroId = Object.keys(initial.heroes)[0]!;
@@ -917,7 +973,8 @@ describe('mission runtime ownership', () => {
 			createBootstrapEngine({
 				runId: deterministicUuid('mapping-v25-run'),
 				seed: 'mapping-v25-engine',
-				draft: draftV25
+				draft: draftV25,
+				developmentEngineVersion: 25
 			}).snapshot.state
 		);
 		const heroV25 = Object.keys(initialV25.heroes)[0]!;

@@ -20,6 +20,7 @@ export const ENGINE_CONTRACT_RUNTIME_EXPORTS = [
 	'CatchUpRequestSchema',
 	'ChooseDestinationCommandSchema',
 	'ClockSpeedSchema',
+	'CombatContributionEvidenceV1Schema',
 	'CombatModeBindingSchema',
 	'CombatModeIdSchema',
 	'CommitFirstEmberCommandSchema',

@@ -84,6 +84,7 @@ export const ENGINE_PUBLIC_RUNTIME_EXPORTS = [
 	'eventDeltas',
 	'eventSummary',
 	'experienceClaimForProduction',
+	'experienceClaimsForCombatResult',
 	'experienceThresholdForLevel',
 	'finalizeReadinessCombatOutcome',
 	'gameMinutesBetween',

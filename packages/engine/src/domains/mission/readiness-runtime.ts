@@ -6,6 +6,7 @@ import {
 	type CombatLegalActionTemplate,
 	type EngineGameStateV25,
 	type EngineGameStateV26,
+	type EngineGameStateV27,
 	type MissionRunStateV9,
 	type MissionRunStateV10,
 	type ReadinessCombatStateV1
@@ -19,7 +20,8 @@ import {
 	COMBAT_SKILL_CONFLICT_POLICIES_V1,
 	COMBAT_SKILLS_BY_ID,
 	MONSTER_READINESS_DUTY_ACTIONS_V1,
-	MONSTER_POLICY_CATALOG
+	MONSTER_POLICY_CATALOG,
+	PROGRESSION_RULES_V1
 } from '@summonlab/content';
 
 import { IllegalActionError } from '../../errors.js';
@@ -38,6 +40,12 @@ import {
 	legalCombatSkillActions,
 	type LegalCombatSkillAction
 } from '../../core/combat-legal-actions.js';
+import {
+	intrinsicAttributes as progressionIntrinsicAttributes,
+	maximumHealth as progressionMaximumHealth
+} from '../progression/math.js';
+
+type EngineReadinessState = EngineGameStateV26 | EngineGameStateV27;
 
 function initialOutcomeEvidence(
 	attemptId: string,
@@ -74,8 +82,8 @@ function initialOutcomeEvidence(
 }
 
 function projectedTurnState(
-	state: EngineGameStateV26,
-	attempt: NonNullable<EngineGameStateV26['mission']['attempt']>
+	state: EngineReadinessState,
+	attempt: NonNullable<EngineReadinessState['mission']['attempt']>
 ) {
 	if (attempt.combatState.modeId === 'legacy-auto-v1') return attempt.combatState.turnState;
 	const objectiveId = verifiedMissionContent(state.mission.binding.missionId).objectives.find(
@@ -121,7 +129,7 @@ function projectedTurnState(
 
 /** A compatibility boundary used only by the frozen legacy-v1 resolver. */
 export function projectCurrentStateForLegacyResolver(
-	state: EngineGameStateV26
+	state: EngineReadinessState
 ): EngineGameStateV25 {
 	const prior = state.mission.attempt;
 	return {
@@ -147,7 +155,7 @@ export function projectCurrentStateForLegacyResolver(
 }
 
 export function restoreCurrentLegacyMission(
-	state: EngineGameStateV26,
+	state: EngineReadinessState,
 	mission: MissionRunStateV9
 ): MissionRunStateV10 {
 	const currentAttempt = state.mission.attempt;
@@ -265,7 +273,7 @@ type HeroReadinessProjection = Readonly<{
 }>;
 
 function equippedCombatProfiles(
-	state: EngineGameStateV26,
+	state: EngineReadinessState,
 	heroId: string
 ): HeroReadinessProjection['equipment'] {
 	const hero = state.heroes[heroId]!;
@@ -283,15 +291,21 @@ function equippedCombatProfiles(
 }
 
 function heroReadinessProjection(
-	state: EngineGameStateV26,
+	state: EngineReadinessState,
 	heroId: string
 ): HeroReadinessProjection {
 	const hero = state.heroes[heroId]!;
-	const intrinsic = intrinsicAttributes(
-		hero.capabilityProfile,
-		hero.progression.attributeGrowthReceipts,
-		COMBAT_RULES_V1
-	);
+	const intrinsic =
+		state.schemaVersion === 27
+			? progressionIntrinsicAttributes(
+					state.heroes[heroId]!.capabilityProfile,
+					state.heroes[heroId]!.progression.permanentGrowth
+				)
+			: intrinsicAttributes(
+					state.heroes[heroId]!.capabilityProfile,
+					state.heroes[heroId]!.progression.attributeGrowthReceipts,
+					COMBAT_RULES_V1
+				);
 	const attributes = {
 		strength: effectiveAttribute(intrinsic.strength, [], 'physical-damage', COMBAT_RULES_V1),
 		agility: effectiveAttribute(intrinsic.agility, [], 'readiness', COMBAT_RULES_V1),
@@ -313,7 +327,14 @@ function heroReadinessProjection(
 			'equipment-load',
 			COMBAT_RULES_V1
 		),
-		maximumHealth: maximumHealth(attributes.vitality, COMBAT_RULES_V1),
+		maximumHealth:
+			state.schemaVersion === 27
+				? progressionMaximumHealth(
+						intrinsic.vitality,
+						state.heroes[heroId]!.progression.level,
+						PROGRESSION_RULES_V1
+					)
+				: maximumHealth(attributes.vitality, COMBAT_RULES_V1),
 		maximumMana: maximumMana(
 			effectiveAttribute(intrinsic.magic, [], 'maximum-mana', COMBAT_RULES_V1),
 			COMBAT_RULES_V1
@@ -329,7 +350,7 @@ function heroReadinessProjection(
 }
 
 function heroActionCatalog(
-	state: EngineGameStateV26,
+	state: EngineReadinessState,
 	heroId: string,
 	enemyIds: readonly string[]
 ): readonly CombatLegalActionTemplate[] {
@@ -418,7 +439,7 @@ function monsterActionCatalog(
 }
 
 export function createMissionReadinessState(
-	state: EngineGameStateV26,
+	state: EngineReadinessState,
 	attemptId: string,
 	heroIds: readonly string[],
 	missionId: string,

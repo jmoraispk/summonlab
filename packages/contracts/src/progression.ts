@@ -64,6 +64,31 @@ export const ProductionCompletionEvidenceV1Schema = z
 	})
 	.strict();
 
+export const CombatContributionEvidenceV1Schema = z
+	.object({
+		evidenceVersion: z.literal('combat-contribution-v1'),
+		attemptId: EntityIdSchema,
+		heroId: EntityIdSchema,
+		terminalEventId: EntityIdSchema,
+		encounterKey: z.string().min(1).max(160),
+		difficultyBand: z.number().int().min(1).max(7),
+		appliedEffectIds: z.array(EntityIdSchema).max(10_000),
+		objectiveEvidenceIds: z.array(EntityIdSchema).max(1_000),
+		firstClear: z.boolean(),
+		priorCompletions: z.number().int().nonnegative()
+	})
+	.strict()
+	.superRefine((evidence, context) => {
+		for (const [key, ids] of [
+			['appliedEffectIds', evidence.appliedEffectIds],
+			['objectiveEvidenceIds', evidence.objectiveEvidenceIds]
+		] as const) {
+			if (new Set(ids).size !== ids.length) {
+				context.addIssue({ code: 'custom', path: [key], message: `${key} must be unique` });
+			}
+		}
+	});
+
 const ExperienceClaimBaseSchema = z.object({
 	claimId: EntityIdSchema,
 	heroId: EntityIdSchema,
@@ -129,6 +154,7 @@ export const AttributeGrowthReceiptV2Schema = z
 
 export type AttributeGrowthClaim = z.infer<typeof AttributeGrowthClaimSchema>;
 export type AttributeGrowthReceiptV2 = z.infer<typeof AttributeGrowthReceiptV2Schema>;
+export type CombatContributionEvidenceV1 = z.infer<typeof CombatContributionEvidenceV1Schema>;
 export type ExperienceClaim = z.infer<typeof ExperienceClaimSchema>;
 export type ExperienceReceipt = z.infer<typeof ExperienceReceiptSchema>;
 export type ExperienceSourceKind = z.infer<typeof ExperienceSourceKindSchema>;

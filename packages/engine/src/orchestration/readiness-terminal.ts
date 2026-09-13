@@ -1,8 +1,10 @@
 import {
 	EngineGameStateV26Schema,
+	EngineGameStateV27Schema,
 	ResourceKeySchema,
 	type CombatResult,
 	type EngineGameStateV26,
+	type EngineGameStateV27,
 	type ReadinessCombatStateV1
 } from '@summonlab/contracts';
 import { COMBAT_RULES_V1 } from '@summonlab/content';
@@ -19,7 +21,9 @@ import type { EmitCombatOutcomeInput } from '../domains/combat/outcome.js';
 
 const BASIC_SWORD_SKILL_ID = 'combat-skill-basic-sword-strike';
 
-export function advanceReadinessToTerminal(state: EngineGameStateV26) {
+type EngineReadinessState = EngineGameStateV26 | EngineGameStateV27;
+
+export function advanceReadinessToTerminal(state: EngineReadinessState) {
 	const attempt = state.mission.attempt;
 	if (!attempt || attempt.combatState.modeId !== 'agent-readiness-v1') return null;
 	const advanced = advanceUntilReadyCohort(
@@ -31,7 +35,7 @@ export function advanceReadinessToTerminal(state: EngineGameStateV26) {
 }
 
 function terminalAttemptPatch(
-	state: EngineGameStateV26,
+	state: EngineReadinessState,
 	result: CombatResult,
 	completedObjectiveIds: readonly string[]
 ) {
@@ -66,14 +70,14 @@ function terminalAttemptPatch(
 	};
 }
 
-/** Applies the authenticated combat claim set and outer lifecycle in one V26 snapshot transition. */
+/** Applies the authenticated combat claim set and outer lifecycle in one snapshot transition. */
 export function finalizeReadinessMission(
-	state: EngineGameStateV26,
+	state: EngineReadinessState,
 	terminalState: ReadinessCombatStateV1,
 	eventId: string,
 	authority: EmitCombatOutcomeInput
 ): {
-	readonly state: EngineGameStateV26;
+	readonly state: EngineReadinessState;
 	readonly claimCheckpoint: ReturnType<typeof transitionCombatResultClaims>['checkpoint'];
 } {
 	const attempt = state.mission.attempt;
@@ -123,7 +127,7 @@ export function finalizeReadinessMission(
 		attempt.combatModeBinding
 	);
 
-	const heroes = { ...state.heroes };
+	const heroes: Record<string, EngineReadinessState['heroes'][string]> = { ...state.heroes };
 	for (const heroId of result.claimEvidence.partyHeroIds) {
 		const hero = heroes[heroId]!;
 		const projected = claimTransition.mission.combatants[heroId]!;
@@ -169,7 +173,7 @@ export function finalizeReadinessMission(
 								}
 							}
 						}
-		};
+		} as EngineReadinessState['heroes'][string];
 	}
 
 	const resources = { ...state.settlement.resources };
@@ -213,20 +217,22 @@ export function finalizeReadinessMission(
 
 	return {
 		claimCheckpoint: claimTransition.checkpoint,
-		state: EngineGameStateV26Schema.parse({
-			...state,
-			status: master.lifeState === 'dead' ? 'game_over' : state.status,
-			master,
-			heroes,
-			settlement: { ...state.settlement, resources, resourceLedger },
-			mission: {
-				...state.mission,
-				attempt: {
-					...attempt,
-					...terminalAttemptPatch(state, result, completedObjectiveIds),
-					combatState: { modeId: 'agent-readiness-v1', readinessState: terminalState }
+		state: (state.schemaVersion === 27 ? EngineGameStateV27Schema : EngineGameStateV26Schema).parse(
+			{
+				...state,
+				status: master.lifeState === 'dead' ? 'game_over' : state.status,
+				master,
+				heroes,
+				settlement: { ...state.settlement, resources, resourceLedger },
+				mission: {
+					...state.mission,
+					attempt: {
+						...attempt,
+						...terminalAttemptPatch(state, result, completedObjectiveIds),
+						combatState: { modeId: 'agent-readiness-v1', readinessState: terminalState }
+					}
 				}
 			}
-		})
+		)
 	};
 }

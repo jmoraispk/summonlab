@@ -18,6 +18,7 @@ import {
 	type EngineGameStateV24,
 	type EngineGameStateV25,
 	type EngineGameStateV26,
+	type EngineGameStateV27,
 	type LegalAction,
 	type MissionTurnChoice
 } from '@summonlab/contracts';
@@ -390,10 +391,11 @@ type MissionActionState =
 	| EngineGameStateV23
 	| EngineGameStateV24
 	| EngineGameStateV25
-	| EngineGameStateV26;
+	| EngineGameStateV26
+	| EngineGameStateV27;
 
 export function supportsMissionActions(state: EngineGameState): state is MissionActionState {
-	return [11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 23, 24, 25, 26].includes(state.schemaVersion);
+	return [11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 23, 24, 25, 26, 27].includes(state.schemaVersion);
 }
 
 export function missionLegalActions(

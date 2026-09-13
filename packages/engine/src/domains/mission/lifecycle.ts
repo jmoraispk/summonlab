@@ -28,6 +28,7 @@ import {
 	type EngineGameStateV24,
 	type EngineGameStateV25,
 	type EngineGameStateV26,
+	type EngineGameStateV27,
 	type EntropyDraw,
 	type MissionRunState,
 	type MissionRunStateV2,
@@ -96,7 +97,8 @@ export type MissionEngineState =
 	| EngineGameStateV23
 	| EngineGameStateV24
 	| EngineGameStateV25
-	| EngineGameStateV26;
+	| EngineGameStateV26
+	| EngineGameStateV27;
 export type MissionEngineRunState =
 	| MissionRunState
 	| MissionRunStateV2
@@ -113,7 +115,7 @@ export function parseMissionRunState(
 	state: MissionEngineState,
 	value: unknown
 ): MissionEngineRunState {
-	return state.schemaVersion === 26
+	return state.schemaVersion === 26 || state.schemaVersion === 27
 		? MissionRunStateV10Schema.parse(value)
 		: state.schemaVersion === 25
 			? MissionRunStateV9Schema.parse(value)
@@ -200,7 +202,7 @@ export function missionHeroReadiness(
 	if (hero.assignment !== null) return { heroId, ready: false, reason: 'assigned' };
 	if (
 		hero.location !== 'summoning-gate' ||
-		((state.schemaVersion === 25 || state.schemaVersion === 26) &&
+		((state.schemaVersion === 25 || state.schemaVersion === 26 || state.schemaVersion === 27) &&
 			hero.locationNodeId !== 'gate-dais')
 	) {
 		return { heroId, ready: false, reason: 'away-from-threshold' };
@@ -224,7 +226,8 @@ export function missionPreparationReadiness(
 		state.schemaVersion === 23 ||
 		state.schemaVersion === 24 ||
 		state.schemaVersion === 25 ||
-		state.schemaVersion === 26;
+		state.schemaVersion === 26 ||
+		state.schemaVersion === 27;
 	if (
 		(!supportsMissionSelection && missionId !== state.mission.binding.missionId) ||
 		(supportsMissionSelection && !state.mission.availableMissionIds.includes(missionId))
@@ -269,7 +272,7 @@ export function assertMissionPartyReady(
 }
 
 function prepareV26MissionAttempt(
-	state: EngineGameStateV26,
+	state: EngineGameStateV26 | EngineGameStateV27,
 	commandId: string,
 	heroIds: readonly string[],
 	missionId: string,
@@ -324,7 +327,7 @@ export function prepareMissionAttempt(
 	missionId = state.mission.binding.missionId,
 	combatModeBinding?: CombatModeBinding
 ): MissionEngineRunState {
-	if (state.schemaVersion === 26) {
+	if (state.schemaVersion === 26 || state.schemaVersion === 27) {
 		if (!combatModeBinding) throw new IllegalActionError('mission.prepare');
 		return prepareV26MissionAttempt(state, commandId, heroIds, missionId, combatModeBinding);
 	}
@@ -570,7 +573,7 @@ export function reviseMissionParty(
 	if (attempt?.status !== 'preparing') throw new IllegalActionError('mission.revise.party');
 	assertMissionPartyReady(state, heroIds);
 	const normalized = normalizedMissionHeroIds(heroIds);
-	if (state.schemaVersion === 26) {
+	if (state.schemaVersion === 26 || state.schemaVersion === 27) {
 		const currentAttempt = state.mission.attempt!;
 		if (currentAttempt.combatState.modeId === 'agent-readiness-v1') {
 			return MissionRunStateV10Schema.parse({
@@ -680,7 +683,7 @@ export function deployMissionAttempt(state: MissionEngineState): MissionDeployme
 	const attempt = state.mission.attempt;
 	if (attempt?.status !== 'preparing') throw new IllegalActionError('mission.deploy');
 	assertMissionPartyReady(state, attempt.party.heroIds);
-	if (state.schemaVersion === 26) {
+	if (state.schemaVersion === 26 || state.schemaVersion === 27) {
 		const currentAttempt = state.mission.attempt!;
 		if (currentAttempt.combatState.modeId === 'legacy-auto-v1') {
 			const deployed = deployMissionAttempt(projectCurrentStateForLegacyResolver(state));
