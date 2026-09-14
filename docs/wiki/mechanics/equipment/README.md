@@ -2,10 +2,12 @@
 
 Wiki ID: `mechanics.equipment`
 
-Design status: **owner-approved runtime-v1 foundation**. The canonical item classes and material
-relationships are intentionally smaller than the imported compendium. The first implementation
-ships the 140 Weapon, Armour-piece, Shield, and Staff definitions; detailed combat benefits,
-durability, Tool, Accessory, and later quality rules remain unresolved.
+Design status: **runtime-v1 catalog plus versioned `engine-v26` readiness integration for combat
+profiles and eligibility**. The canonical item classes and material
+relationships are intentionally smaller than the imported compendium. The implementation ships 140
+Weapon, Armour-piece, Shield, and Staff definitions and a separately hash-bound combat profile for
+each. General armour magnitudes, durability behavior, magical active skills, Tool, Accessory, and
+later quality rules remain unresolved.
 
 Equipment covers materials, weapons, armour, shields, casting focuses, tools, accessories, and
 sets. It is a companion to the progression and skill systems: equipment supplements a build,
@@ -27,8 +29,8 @@ supplies base rank, while craftsmanship may add zero, one, or two ranks, capped 
 - [Sets, enchantment, and bound equipment](sets.md)
 
 These owner-revised pages supersede the imported item's breadth while preserving unresolved rules
-honestly. Sections labeled runtime-v1 describe implemented behavior; remaining numerical and future
-class rules are still design material.
+honestly. Sections labeled runtime-v1 or engine-v26 describe implemented behavior; remaining
+numerical and future class rules are still design material.
 
 ## Craft output streams
 
@@ -79,9 +81,39 @@ forge or receive an authored-drop item
 - one bounded authored drop using the same definition catalog and item factory as Forging;
 - lazy card/detail visuals resolved from the separate Equipment runtime manifest.
 
-The engine stores durability fields, but wear, repair, detailed protection/damage effects,
-enchantment, sets, monster crafting, bound items, storage magic, field tools, Potions, and Food are
-outside this slice.
+### Engine-v26 readiness combat profiles
+
+Combat mechanics live in `combat-equipment-profiles-v1`, separate from the frozen
+`equipment-content-v1` definition/visual catalog. This preserves all existing IDs and the historical
+equipment hash while making load, requirements, delivery families, and named resistances auditable.
+`engine-v26` readiness-state assembly consumes the profile/evaluator result to enumerate legal skill
+actions and project named resistances from the exact equipped instances. `legacy-auto-v1` remains
+isolated behind its frozen compatibility projection. The aggregate combat-content binding includes
+the combat-skill and combat-equipment-profile catalog hashes; current readiness V2 additionally
+binds its hostile-action catalog. A mission attempt stores the resulting exact aggregate and never
+consults a later operator default while it runs.
+
+- each equipped item contributes an integer load;
+- Strength supplies effective equipment-load tolerance;
+- an explicit heavy item may require intrinsic Strength;
+- Heavy Armour requires intrinsic Strength 45 and `armour-training`;
+- no item has a Vitality requirement;
+- Sword and Dagger currently expose `one-handed-blade`, Bow exposes `bow`, Staff exposes
+  `staff-focus`, and Shield exposes `shield` for skill delivery;
+- Heavy Armour supplies authored Cut and Impact resistance grants, Light Armour supplies Pierce,
+  and Robes supply Arcane;
+- resistance grants become deterministic source receipts and combine only for matching damage tags;
+- optional Break meters must be authored by the content that owns them; there is no universal
+  poise resource.
+
+General physical mitigation belongs to armour points after penetration and is capped at 7,499
+basis points by `combat-rules-v1`. The current equipment profiles intentionally do **not** assign
+general armour-point magnitudes, so the benchmark armour values in the balance harness are promotion
+candidates rather than production item stats.
+
+The engine stores durability fields, but wear, repair, general armour magnitudes, magical active
+equipment effects, enchantment, sets, monster crafting, bound items, storage magic, field tools,
+Potions, and Food are outside this slice.
 
 ### Seeded demonstration pool
 
@@ -216,12 +248,14 @@ source promotion.
 The supplied vocabulary and rules win earlier conversational alternatives. Genuine internal gaps
 remain preserved rather than silently normalized:
 
-- Equipment uses the progression vocabulary for Dexterity, Vitality, Intellect, and affinity rank.
-  New runtime IDs must use the same current names.
+- Equipment uses the four combat attributes. Strength alone owns load tolerance and explicit heavy-item
+  requirements; learned Armour Training owns armour proficiency. Precision and crafting quality
+  belong to learned skills rather than additional attributes.
 - A material supplies base rank. Item and material difficulty set the required Forging level;
   Standard work keeps the base rank, Fine work adds one rank, and Masterwork adds two, capped at S.
   The exact difficulty values and benefit table remain to be authored.
-- Weight tolerance uses Might supported by Vitality as authored.
+- Weight tolerance uses scoped effective Strength. A permanent Strength gate reads intrinsic Strength, and
+  Vitality never grants equipment eligibility.
 - An item's rarity is fixed forever, while Living Metal grows with its wielder. Growth can be
   compatible with fixed rarity, but the mutable stats/properties need an explicit boundary.
 - Clarify whether material/monster is one source axis while enchantment and binding are independent
@@ -232,8 +266,10 @@ remain preserved rather than silently normalized:
 - The six-weapon hand model is accepted in prose: a two-handed item occupies both hands, Shield
   requires one free hand, and Dual Wield permits only one-handed Swords and Daggers. Exact combat
   tradeoffs remain open.
-- Damage, mitigation, poise, penetration, bleed, Rend, initiative, evasion, attack speed, mana,
-  affinity, and granted-skill effects await the combat and status contracts.
+- General armour magnitude, detailed weapon damage, magical active skills, penetration content,
+  statuses, Mana effects, affinity application, and granted-skill effects remain later
+  combat/content work. Readiness/evasion, named resistance receipts, family delivery tags, load,
+  Strength requirements, and Armour Training are implemented for the readiness slice.
 - Monster materials taken from sapient peoples require source, consent, death, personhood, and
   social-consequence rules; a species label must never itself imply a harvestable enemy resource.
 - The source does not define acquisition: summon loadouts, tower drops, settlement stock, crafting,

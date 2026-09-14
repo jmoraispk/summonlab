@@ -1,5 +1,8 @@
 export * from './affinity-review.js';
+export * from './capability.js';
 export * from './character.js';
+export * from './combat-rules.js';
+export * from './combat-skill.js';
 export * from './campaign.js';
 export * from './decision.js';
 export * from './decision-inspector.js';
@@ -16,6 +19,8 @@ export * from './later-pack-rules.js';
 export * from './mission.js';
 export * from './playtest.js';
 export * from './proof.js';
+export * from './progression.js';
+export * from './readiness-combat.js';
 export * from './presentation.js';
 export * from './run.js';
 export * from './settlement.js';

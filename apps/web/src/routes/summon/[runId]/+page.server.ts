@@ -5,6 +5,7 @@ import { createHeroDecisionPreview } from '@summonlab/policies';
 import { error } from '@sveltejs/kit';
 
 import { runtimePortraitFor } from '$lib/server/runtime-portraits';
+import { projectProofRunForPublic } from '$lib/server/proof-presentation';
 
 import type { PageServerLoad } from './$types';
 
@@ -49,7 +50,7 @@ export const load: PageServerLoad = async ({ params }) => {
 					: 'Ready for one manual, non-applying model call.'
 	};
 	return {
-		snapshot,
+		snapshot: projectProofRunForPublic(snapshot),
 		conversation,
 		decisionPreview,
 		modelPolicy,

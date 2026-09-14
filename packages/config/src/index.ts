@@ -27,6 +27,7 @@ const EnvironmentSchema = z
 			.string()
 			.url()
 			.default('postgresql://summonlab:summonlab@127.0.0.1:54329/summonlab'),
+		COMBAT_MODE: z.enum(['legacy-auto-v1', 'agent-readiness-v1']).default('legacy-auto-v1'),
 		POLICY_MODE: PolicyModeSchema.default('scripted'),
 		OPENAI_POLICY_MODEL: z.string().min(1).default('gpt-5-nano'),
 		OPENAI_POLICY_TIMEOUT_MS: z.coerce.number().int().min(1_000).max(120_000).default(30_000),
@@ -55,6 +56,7 @@ const EnvironmentSchema = z
 		decisionJobMaxReplans: value.DECISION_JOB_MAX_REPLANS,
 		logLevel: value.LOG_LEVEL,
 		databaseUrl: value.DATABASE_URL,
+		combatMode: value.COMBAT_MODE,
 		policyMode: value.POLICY_MODE,
 		policyModel: value.OPENAI_POLICY_MODEL,
 		policyTimeoutMs: value.OPENAI_POLICY_TIMEOUT_MS,

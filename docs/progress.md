@@ -420,6 +420,31 @@ the survivor's spoken line and habit gesture remain personality-shaped. Confirm 
 three witnesses hold the knowledge, then reload and verify the reveal, extraction event, content
 version, message commitment, and replay hash remain unchanged.
 
+## Cross-phase attribute and combat-mode integration checkpoint
+
+Status: **implementation and readiness V2 mechanical qualification integrated on 2026-09-07;
+final repository validation and owner review remain in progress**.
+
+This checkpoint records the current code boundary without promoting readiness or changing the beta
+default. Full detail is in the
+[attribute and combat modes integration report](superpowers/reports/2026-09-07-attribute-combat-modes-integration.md).
+
+| Area | Integrated result | Remaining gate |
+| --- | --- | --- |
+| V26 capability | Growth receipts determine intrinsic mission attributes; effective scopes remain typed; V26 persists proficiency tags and per-skill mastery | idle scheduling and broader training design remain separate |
+| Readiness combat | One-tick frozen cohorts, deterministic collision arbitration, purpose-keyed resolution, equipment/loadout legality, named resistances, mastery practice, and executable damaging V2 hostile strikes | broader hostile tactics and full product balance remain unfinished |
+| Durable intent | Full-cohort combat windows plus one `decision-job-v3` per actor bind attempt/tick/snapshot/view/legal hashes; exact fallbacks, leases, atomic stale attempt-ledger terminalization, and compare-and-swap application are database-owned | final repository validation remains with the coordinator |
+| Common outcome | Readiness and V26 legacy terminal paths emit exact-bound `combat-result-v1`, including `death`; V26 legacy records its cross-owner claim checkpoint atomically | no product promotion is implied |
+| Release ownership | `legacy-auto-v1` remains the operator-only beta default; readiness V2 is available only as an operator-selected evaluation mode; no player selector exists | explicit owner review and operator configuration change are required for promotion |
+
+The checked readiness evidence now binds `agent-readiness-rules-v2` and aggregate content hash
+`e78ed494f1ac78f6b0efca0574248425a1bb1148d54fd39161db600964e8919e`. Its SHA-256 is
+`6cf931fb87e8e986a18c7572b9d3399be0632cf5b11dc2d861978d95ca72a452`; 10,000 seeded trials,
+20,000 modeled provider failures, 40,000 applied fallback selections, and 400 complete encounters
+pass with zero safety/no-progress/regeneration-stalemate stops, nondeterminism, or unclassified
+cancellations. This is mechanical qualification for operator evaluation, not product promotion or
+proof of complete hostile balance. The legacy beta default remains unchanged.
+
 ## Phase 7 — synthesis, story, and vertical-slice finish
 
 Status: **in progress**. `FIN-001` through `FIN-006` and `FIN-009` are complete as of 2026-08-25;

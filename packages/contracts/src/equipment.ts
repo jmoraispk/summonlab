@@ -1,5 +1,8 @@
 import { z } from 'zod';
 
+import { ResistanceTagSchema } from './combat-rules.js';
+import { StateHashSchema } from './shared.js';
+
 export const EquipmentRankSchema = z.enum(['F', 'E', 'D', 'C', 'B', 'A', 'S']);
 
 export const EquipmentMaterialFamilySchema = z.enum([
@@ -67,9 +70,109 @@ export const EquipmentLoadoutSlotSchema = EquipmentDefinitionSlotSchema;
 export const EquipmentHandednessSchema = z.enum(['one-handed', 'two-handed', 'none']);
 export const EquipmentWeightClassSchema = z.enum(['light', 'medium', 'heavy']);
 
+export const EquipmentFamilyTagSchema = z.enum([
+	'unarmed',
+	'one-handed-blade',
+	'two-handed-blade',
+	'bow',
+	'staff-focus',
+	'shield'
+]);
+
+export const EquipmentProficiencyTagSchema = z.enum(['armour-training']);
+
+export const NamedResistanceGrantSchema = z
+	.object({
+		tag: ResistanceTagSchema,
+		basisPoints: z.number().int().positive().max(10_000),
+		capBasisPoints: z.number().int().positive().max(10_000)
+	})
+	.strict()
+	.superRefine((grant, context) => {
+		if (grant.basisPoints > grant.capBasisPoints) {
+			context.addIssue({
+				code: 'custom',
+				path: ['basisPoints'],
+				message: 'Authored resistance cannot exceed its authored cap'
+			});
+		}
+	});
+
+export const AuthoredBreakMeterSchema = z
+	.object({
+		maximum: z.number().int().positive(),
+		recoveryPerTick: z.number().int().nonnegative()
+	})
+	.strict();
+
 export const EquipmentDefinitionIdSchema = z
 	.string()
 	.regex(/^equipment-[a-z0-9]+(?:-[a-z0-9]+)*$/u);
+
+export const CombatEquipmentProfileSchema = z
+	.object({
+		schemaVersion: z.literal('combat-equipment-profile-v1'),
+		definitionId: EquipmentDefinitionIdSchema,
+		familyTags: z.array(EquipmentFamilyTagSchema).max(EquipmentFamilyTagSchema.options.length),
+		load: z.number().int().positive().max(1_000),
+		requirements: z
+			.object({
+				minimumStrength: z.number().int().min(1).max(100).nullable(),
+				proficiencyTags: z
+					.array(EquipmentProficiencyTagSchema)
+					.max(EquipmentProficiencyTagSchema.options.length)
+			})
+			.strict(),
+		resistanceGrants: z.array(NamedResistanceGrantSchema).max(ResistanceTagSchema.options.length),
+		breakMeter: AuthoredBreakMeterSchema.optional()
+	})
+	.strict()
+	.superRefine((profile, context) => {
+		if (new Set(profile.familyTags).size !== profile.familyTags.length) {
+			context.addIssue({
+				code: 'custom',
+				path: ['familyTags'],
+				message: 'Equipment family tags must be unique'
+			});
+		}
+		if (
+			new Set(profile.requirements.proficiencyTags).size !==
+			profile.requirements.proficiencyTags.length
+		) {
+			context.addIssue({
+				code: 'custom',
+				path: ['requirements', 'proficiencyTags'],
+				message: 'Equipment proficiency tags must be unique'
+			});
+		}
+		const resistanceTags = profile.resistanceGrants.map((grant) => grant.tag);
+		if (new Set(resistanceTags).size !== resistanceTags.length) {
+			context.addIssue({
+				code: 'custom',
+				path: ['resistanceGrants'],
+				message: 'Equipment resistance tags must be unique'
+			});
+		}
+	});
+
+export const CombatEquipmentProfileCatalogSchema = z
+	.object({
+		schemaVersion: z.literal('combat-equipment-profile-catalog-v1'),
+		contentVersion: z.literal('combat-equipment-profiles-v1'),
+		contentHash: StateHashSchema,
+		profiles: z.array(CombatEquipmentProfileSchema).length(140)
+	})
+	.strict()
+	.superRefine((catalog, context) => {
+		const definitionIds = catalog.profiles.map((profile) => profile.definitionId);
+		if (new Set(definitionIds).size !== definitionIds.length) {
+			context.addIssue({
+				code: 'custom',
+				path: ['profiles'],
+				message: 'Combat equipment profile definition IDs must be unique'
+			});
+		}
+	});
 
 const EQUIPMENT_MATERIAL_METADATA: Readonly<
 	Record<
@@ -285,6 +388,12 @@ export type EquipmentDefinitionSlot = z.infer<typeof EquipmentDefinitionSlotSche
 export type EquipmentLoadoutSlot = z.infer<typeof EquipmentLoadoutSlotSchema>;
 export type EquipmentHandedness = z.infer<typeof EquipmentHandednessSchema>;
 export type EquipmentWeightClass = z.infer<typeof EquipmentWeightClassSchema>;
+export type AuthoredBreakMeter = z.infer<typeof AuthoredBreakMeterSchema>;
+export type EquipmentFamilyTag = z.infer<typeof EquipmentFamilyTagSchema>;
+export type EquipmentProficiencyTag = z.infer<typeof EquipmentProficiencyTagSchema>;
+export type NamedResistanceGrant = z.infer<typeof NamedResistanceGrantSchema>;
+export type CombatEquipmentProfile = z.infer<typeof CombatEquipmentProfileSchema>;
+export type CombatEquipmentProfileCatalog = z.infer<typeof CombatEquipmentProfileCatalogSchema>;
 export type EquipmentDefinition = z.infer<typeof EquipmentDefinitionSchema>;
 export type EquipmentDefinitionCatalog = z.infer<typeof EquipmentDefinitionCatalogSchema>;
 export type EquipmentCraftsmanship = z.infer<typeof EquipmentCraftsmanshipSchema>;

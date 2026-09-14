@@ -93,6 +93,8 @@ export const heroes = [
 		id: 'dara-zev',
 		name: 'Dara Zev',
 		level: 8,
+		stars: 3,
+		unallocatedAttributePoints: 0,
 		health: { current: 146, maximum: 160 },
 		activity: 'Keeping gate watch',
 		partyStatus: 'Party I · Vanguard',
@@ -100,9 +102,10 @@ export const heroes = [
 		portraitAlt: 'Dara Zev approved identity portrait',
 		position: { x: 0.42, y: 0.38 },
 		attributes: [
-			{ label: 'Might', value: 18 },
-			{ label: 'Guard', value: 21 },
-			{ label: 'Focus', value: 12 }
+			{ label: 'Strength', value: 46 },
+			{ label: 'Agility', value: 78 },
+			{ label: 'Vitality', value: 52 },
+			{ label: 'Magic', value: 57 }
 		],
 		skills: ['Shield line', 'Stone stance', 'Rallying call'],
 		equipment: ['Ashwood shield', 'Iron scale', 'Wayfarer boots']
@@ -111,6 +114,8 @@ export const heroes = [
 		id: 'mara-vey',
 		name: 'Mara Vey',
 		level: 8,
+		stars: 4,
+		unallocatedAttributePoints: 0,
 		health: { current: 112, maximum: 124 },
 		activity: 'Mending field kit',
 		partyStatus: 'Party I · Support',
@@ -118,9 +123,10 @@ export const heroes = [
 		portraitAlt: 'Mara Vey approved identity portrait',
 		position: { x: 0.31, y: 0.51 },
 		attributes: [
-			{ label: 'Might', value: 11 },
-			{ label: 'Guard', value: 14 },
-			{ label: 'Focus', value: 22 }
+			{ label: 'Strength', value: 72 },
+			{ label: 'Agility', value: 58 },
+			{ label: 'Vitality', value: 82 },
+			{ label: 'Magic', value: 76 }
 		],
 		skills: ['Ember stitch', 'Field remedy', 'Kindled ward'],
 		equipment: ['Ember staff', 'Linen mantle', 'Remedy satchel']
@@ -129,6 +135,8 @@ export const heroes = [
 		id: 'jori-daro',
 		name: 'Jori Daro',
 		level: 7,
+		stars: 3,
+		unallocatedAttributePoints: 2,
 		health: { current: 118, maximum: 136 },
 		activity: 'Checking the perimeter',
 		partyStatus: 'Party I · Striker',
@@ -136,9 +144,10 @@ export const heroes = [
 		portraitAlt: 'Jori Daro approved identity portrait',
 		position: { x: 0.62, y: 0.43 },
 		attributes: [
-			{ label: 'Might', value: 20 },
-			{ label: 'Guard', value: 13 },
-			{ label: 'Focus', value: 16 }
+			{ label: 'Strength', value: 68 },
+			{ label: 'Agility', value: 49 },
+			{ label: 'Vitality', value: 77 },
+			{ label: 'Magic', value: 74 }
 		],
 		skills: ['Hook step', 'Twin cut', 'Trail sense'],
 		equipment: ['Paired falchions', 'Leather jack', 'Tower cord']
@@ -147,6 +156,8 @@ export const heroes = [
 		id: 'kira-toren',
 		name: 'Kira Toren',
 		level: 5,
+		stars: 4,
+		unallocatedAttributePoints: 1,
 		health: { current: 98, maximum: 108 },
 		activity: 'Sorting gate fragments',
 		partyStatus: 'Reserve · Available',
@@ -154,9 +165,10 @@ export const heroes = [
 		portraitAlt: 'Kira Toren fixed identity portrait',
 		position: { x: 0.54, y: 0.53 },
 		attributes: [
-			{ label: 'Might', value: 13 },
-			{ label: 'Guard', value: 12 },
-			{ label: 'Focus', value: 19 }
+			{ label: 'Strength', value: 55 },
+			{ label: 'Agility', value: 51 },
+			{ label: 'Vitality', value: 70 },
+			{ label: 'Magic', value: 73 }
 		],
 		skills: ['Prism spark', 'Quick study', 'Arc mark'],
 		equipment: ['Glass focus', 'Bluecoat', 'Copper charm']
@@ -165,6 +177,8 @@ export const heroes = [
 		id: 'iven-orra',
 		name: 'Iven Orra',
 		level: 6,
+		stars: 2,
+		unallocatedAttributePoints: 0,
 		health: { current: 132, maximum: 132 },
 		activity: 'Preparing court weights',
 		partyStatus: 'Reserve · Available',
@@ -172,9 +186,10 @@ export const heroes = [
 		portraitAlt: 'Iven Orra fixed identity portrait',
 		position: { x: 0.69, y: 0.58 },
 		attributes: [
-			{ label: 'Might', value: 21 },
-			{ label: 'Guard', value: 17 },
-			{ label: 'Focus', value: 10 }
+			{ label: 'Strength', value: 38 },
+			{ label: 'Agility', value: 57 },
+			{ label: 'Vitality', value: 48 },
+			{ label: 'Magic', value: 84 }
 		],
 		skills: ['Hammer drive', 'Brace', 'Measured breath'],
 		equipment: ['Stone maul', 'Padded coat', 'Grip wraps']
@@ -183,6 +198,8 @@ export const heroes = [
 		id: 'remy-nahl',
 		name: 'Remy Nahl',
 		level: 6,
+		stars: 3,
+		unallocatedAttributePoints: 3,
 		health: { current: 104, maximum: 116 },
 		activity: 'Cataloguing tower signs',
 		partyStatus: 'Reserve · Available',
@@ -190,9 +207,10 @@ export const heroes = [
 		portraitAlt: 'Remy Nahl fixed identity portrait',
 		position: { x: 0.4, y: 0.68 },
 		attributes: [
-			{ label: 'Might', value: 12 },
-			{ label: 'Guard', value: 15 },
-			{ label: 'Focus', value: 21 }
+			{ label: 'Strength', value: 62 },
+			{ label: 'Agility', value: 86 },
+			{ label: 'Vitality', value: 64 },
+			{ label: 'Magic', value: 69 }
 		],
 		skills: ['Far sight', 'Pinning shot', 'Field notes'],
 		equipment: ['Yew longbow', 'Travel cloak', 'Survey kit']

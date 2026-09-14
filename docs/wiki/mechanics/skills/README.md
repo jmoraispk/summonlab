@@ -2,15 +2,17 @@
 
 Wiki ID: `skills.index`
 
-Design status: **draft source import**. The consolidated taxonomy preserves the authored catalog
-through an auditable migration ledger, but its balance and runtime behavior are not yet accepted.
+Design status: **draft source import plus an implemented, separately hash-bound
+`combat-skills-v1` starter catalog**. The consolidated taxonomy preserves the authored catalog
+through an auditable migration ledger, but its broader balance and runtime behavior are not yet
+accepted.
 
 Skills define what a hero can do. Rarity describes a skill's fixed power and scarcity band;
 mastery describes one hero's realized command of that skill. The catalog spans combat, magic,
 craft, and life disciplines so a hero's value is not reducible to direct combat power.
 
 The canonical ownership path is **Domain → Family → Skill**. Every skill belongs to exactly one
-family, and that family owns aptitude and progression. Optional labels narrow compatibility or
+family, and that family owns its progression lineage. Optional labels narrow compatibility or
 affinity without creating another progression level.
 
 ## Reading the catalog
@@ -20,6 +22,13 @@ and **S** Legendary. `T` is type: **A**ctive, **P**assive, **St**ance, or **C**r
 
 `Requires` records the principal learning path. Requirements such as “threshold,” “deed,” “rare
 catalyst,” and “composite condition” are design shorthand, not executable predicates.
+
+Rows that retain Dexterity, Intellect, or poise wording are rendered from immutable
+imported/migration evidence, not active mechanics.
+[ADR 0072](../../../decisions/0072-four-attributes-and-operator-owned-combat-modes.md)
+supersedes those requirements: combat attributes may scale execution but do not gate learning; new
+definitions use learned mastery/evidence for precision or knowledge and explicit authored Break
+mechanics.
 
 The authored label namespaces are:
 
@@ -94,8 +103,9 @@ only in migration provenance and does not publish a second current skill.
 
 ## Source authority and remaining decisions
 
-- Might, Vitality, Agility, Dexterity, Intellect, and Spirit remain the authoritative attribute
-  vocabulary. Executable thresholds must migrate together rather than mix identifiers.
+- Strength, Agility, Vitality, and Magic are the authoritative combat-attribute vocabulary. Imported
+  precision/comprehension thresholds require a later catalog migration to learned skill/evidence
+  requirements; they must never become executable under their old names.
 - Fire, Earth, Wind, and Water are the active base affinities. Element statuses and rank numerics
   still require combat integration.
 - Affinity is a learning or compatibility requirement for magical definitions. Element labels
@@ -108,6 +118,11 @@ only in migration provenance and does not publish a second current skill.
   symmetry is not a reason to invent more content.
 
 ## Runtime work still required
+
+The current `combat-skills-v1` catalog ships only Basic Sword Strike and Basic Bow Shot. It binds
+each definition's delivery and damage tags plus authored mastery accuracy/reliability steps. Those
+catalog bytes and `combat-equipment-profiles-v1` contribute separate hashes to the aggregate combat
+binding stored on new attempts.
 
 The prose effects intentionally lack exact mana costs, cooldowns, ranges, target shapes, durations,
 scaling, status definitions, immunity rules, and boss exceptions. Absolutes such as “cannot,”

@@ -1,7 +1,13 @@
 import {
 	EngineGameStateV24Schema,
+	EngineGameStateV25Schema,
+	EngineGameStateV26Schema,
+	EngineGameStateV27Schema,
 	type EngineEquipmentItemStateV24,
 	type EngineGameStateV24,
+	type EngineGameStateV25,
+	type EngineGameStateV26,
+	type EngineGameStateV27,
 	type EquipmentLoadoutSlot
 } from '@summonlab/contracts';
 
@@ -30,6 +36,9 @@ export interface EquipEquipmentItemInput {
 	readonly itemId: string;
 	readonly targetSlot?: EquipmentLoadoutSlot;
 }
+
+type EquipmentGameState =
+	EngineGameStateV24 | EngineGameStateV25 | EngineGameStateV26 | EngineGameStateV27;
 
 export function equipmentItemDisplayName(
 	item: EngineGameStateV24['items'][string] | { readonly displayName: string }
@@ -70,8 +79,35 @@ function loadoutKey(
 export function equipEquipmentItem(
 	stateInput: EngineGameStateV24,
 	input: EquipEquipmentItemInput
-): EngineGameStateV24 {
-	const state = EngineGameStateV24Schema.parse(stateInput);
+): EngineGameStateV24;
+export function equipEquipmentItem(
+	stateInput: EngineGameStateV25,
+	input: EquipEquipmentItemInput
+): EngineGameStateV25;
+export function equipEquipmentItem(
+	stateInput: EngineGameStateV26,
+	input: EquipEquipmentItemInput
+): EngineGameStateV26;
+export function equipEquipmentItem(
+	stateInput: EngineGameStateV27,
+	input: EquipEquipmentItemInput
+): EngineGameStateV27;
+export function equipEquipmentItem(
+	stateInput: EquipmentGameState,
+	input: EquipEquipmentItemInput
+): EquipmentGameState;
+export function equipEquipmentItem(
+	stateInput: EquipmentGameState,
+	input: EquipEquipmentItemInput
+): EquipmentGameState {
+	const state =
+		stateInput.schemaVersion === 27
+			? EngineGameStateV27Schema.parse(stateInput)
+			: stateInput.schemaVersion === 26
+				? EngineGameStateV26Schema.parse(stateInput)
+				: stateInput.schemaVersion === 25
+					? EngineGameStateV25Schema.parse(stateInput)
+					: EngineGameStateV24Schema.parse(stateInput);
 	const hero = state.heroes[input.heroId];
 	const item = state.items[input.itemId];
 	if (!hero || !item || item.ownerId !== input.heroId) {
@@ -109,9 +145,16 @@ export function equipEquipmentItem(
 	equipment[loadoutKey(targetSlot)] = input.itemId;
 	items[input.itemId] = { ...item, equippedById: input.heroId };
 
-	return EngineGameStateV24Schema.parse({
+	const nextState = {
 		...state,
 		items,
 		heroes: { ...state.heroes, [input.heroId]: { ...hero, equipment } }
-	});
+	};
+	return state.schemaVersion === 27
+		? EngineGameStateV27Schema.parse(nextState)
+		: state.schemaVersion === 26
+			? EngineGameStateV26Schema.parse(nextState)
+			: state.schemaVersion === 25
+				? EngineGameStateV25Schema.parse(nextState)
+				: EngineGameStateV24Schema.parse(nextState);
 }

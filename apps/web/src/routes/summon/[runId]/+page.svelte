@@ -5,15 +5,17 @@
 		HeroConversationPresentation,
 		HeroDecisionPreview,
 		HeroPolicyResult,
-		ProofRunSnapshot
+		PublicProofRunSnapshot,
+		PublicProofRunSnapshotV2
 	} from '@summonlab/contracts';
 	import { onDestroy } from 'svelte';
 	import EventJournal from '$lib/components/EventJournal.svelte';
 	import HeroArtPlaceholder from '$lib/components/HeroArtPlaceholder.svelte';
 
 	let { data } = $props();
+	type PublicProofSnapshot = PublicProofRunSnapshot | PublicProofRunSnapshotV2;
 	// svelte-ignore state_referenced_locally
-	let snapshot = $state<ProofRunSnapshot>(data.snapshot);
+	let snapshot = $state<PublicProofSnapshot>(data.snapshot);
 	// svelte-ignore state_referenced_locally
 	let conversation = $state<HeroConversationPresentation | null>(data.conversation);
 	// svelte-ignore state_referenced_locally
@@ -26,8 +28,7 @@
 	let decisionJobError = $state('');
 	let queueingDecisionJob = $state(false);
 	let stage = $state(0);
-	// svelte-ignore state_referenced_locally
-	let directive = $state(snapshot.directive);
+	let directive = $state('');
 	let directiveScope = $state<'decision' | 'mission' | 'day' | 'until_revoked'>('decision');
 	let directiveSending = $state(false);
 	let directiveStatus = $state('');
@@ -295,7 +296,7 @@
 			decisionJob = current;
 			if (current.status === 'applied') {
 				const runResponse = await fetch(`/api/runs/${snapshot.runId}`);
-				if (runResponse.ok) snapshot = (await runResponse.json()) as ProofRunSnapshot;
+				if (runResponse.ok) snapshot = (await runResponse.json()) as PublicProofSnapshot;
 				stage = 4;
 				await refreshDecisionPacket();
 				return;
@@ -378,7 +379,7 @@
 				headers: { 'content-type': 'application/json' },
 				body: JSON.stringify({ directive: directive.trim(), trigger })
 			});
-			const result = (await response.json()) as ProofRunSnapshot & { message?: string };
+			const result = (await response.json()) as PublicProofSnapshot & { message?: string };
 			if (!response.ok) throw new Error(result.message ?? 'The decision could not be resolved.');
 			snapshot = result;
 			stage = 4;
@@ -468,7 +469,7 @@
 				<h1>A life waits<br />behind the seal.</h1>
 				<button type="button" onclick={beginReveal}>
 					<span>Break the seal</span>
-					<small>manifest hash {snapshot.manifestHash.slice(0, 12)}</small>
+					<small>public manifest hash {snapshot.publicManifestHash.slice(0, 12)}</small>
 				</button>
 			</div>
 		{/if}
@@ -477,13 +478,13 @@
 			<div class="system-callout">
 				<span>01</span>
 				<p>Recipe accepted</p>
-				<code>{snapshot.recipe.seed} / {snapshot.recipe.generationVersion}</code>
+				<code>public identity / hidden capability draw</code>
 			</div>
 		{:else if stage === 2}
 			<div class="system-callout">
 				<span>02</span>
 				<p>Identity made manifest</p>
-				<code>{snapshot.manifestHash}</code>
+				<code>{snapshot.publicManifestHash}</code>
 			</div>
 		{/if}
 
@@ -495,8 +496,14 @@
 				<div class="traits">
 					<span>{snapshot.manifest.adultAge} years</span>
 					<span>{snapshot.manifest.heightCm} cm</span>
-					<span>{snapshot.mind.primaryValue}</span>
-					<span>{snapshot.mind.dailyHabit.replaceAll('-', ' ')}</span>
+					<span>personality private</span>
+					<span>learning profile private</span>
+					{#if 'characterSchemaVersion' in snapshot}
+						<span>STR {snapshot.capabilityProfile.attributes.strength}</span>
+						<span>AGI {snapshot.capabilityProfile.attributes.agility}</span>
+						<span>VIT {snapshot.capabilityProfile.attributes.vitality}</span>
+						<span>MAG {snapshot.capabilityProfile.attributes.magic}</span>
+					{/if}
 				</div>
 				<blockquote>{snapshot.firstObservation}</blockquote>
 			</section>
@@ -978,7 +985,7 @@
 			<EventJournal events={snapshot.events} />
 			<aside>
 				<p>Replay identity</p>
-				<code>{snapshot.manifestHash}</code>
+				<code>{snapshot.publicManifestHash}</code>
 				<span>Same recipe → same manifest bytes, mind, and policy choice.</span>
 			</aside>
 		</section>

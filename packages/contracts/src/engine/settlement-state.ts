@@ -1,12 +1,16 @@
 import { z } from 'zod';
 
-import { CharacterMindSchema } from '../character.js';
+import { CharacterCapabilityProfileV1Schema } from '../capability.js';
+import { CharacterMindSchema, CharacterMindV2Schema } from '../character.js';
+import { LearnedCombatSkillStateSchema } from '../combat-skill.js';
 import {
 	EquipmentDefinitionIdSchema,
 	EquipmentMaterialIdSchema,
+	EquipmentProficiencyTagSchema,
 	EquipmentStandardRecipeDescriptorSchema
 } from '../equipment.js';
 import { SettlementRoutePlanSchema, SettlementSlugSchema } from '../settlement.js';
+import { HeroProgressionV2Schema } from '../progression.js';
 import {
 	ContentVersionSchema,
 	EntityIdSchema,
@@ -17,6 +21,7 @@ import {
 	EngineEquipmentLoadoutV24Schema,
 	EngineHeroStateV2Schema,
 	EngineZoneSchema,
+	HeroProgressionV25Schema,
 	ResourceBalancesSchema,
 	ResourceLedgerEntrySchema
 } from './base-state.js';
@@ -470,6 +475,154 @@ export const EngineHeroStateV24Schema = z
 		}
 	});
 
+const CapabilityResourceSchema = z.number().int().nonnegative().max(10_000);
+
+const EngineHeroStateV25BaseSchema = z
+	.object({
+		...EngineHeroStateV24Schema.shape,
+		health: CapabilityResourceSchema,
+		maxHealth: CapabilityResourceSchema.positive(),
+		mana: CapabilityResourceSchema,
+		maxMana: CapabilityResourceSchema.positive(),
+		mind: CharacterMindV2Schema,
+		capabilityProfile: CharacterCapabilityProfileV1Schema,
+		progression: HeroProgressionV25Schema
+	})
+	.strict();
+
+function validateEngineHeroStateV25(
+	hero: z.infer<typeof EngineHeroStateV25BaseSchema>,
+	context: z.RefinementCtx
+): void {
+	if (hero.habit.habit !== hero.mind.dailyHabit) {
+		context.addIssue({ code: 'custom', message: 'Habit state diverged from stable mind' });
+	}
+	if (hero.health > hero.maxHealth) {
+		context.addIssue({ code: 'custom', message: 'Hero health cannot exceed maxHealth' });
+	}
+	if (hero.mana > hero.maxMana) {
+		context.addIssue({ code: 'custom', message: 'Hero mana cannot exceed maxMana' });
+	}
+	if (hero.lifeState === 'active' && hero.health === 0) {
+		context.addIssue({ code: 'custom', message: 'An active hero must have health' });
+	}
+	if (hero.lifeState !== 'active' && hero.health !== 0) {
+		context.addIssue({ code: 'custom', message: 'A terminal hero must have zero health' });
+	}
+	if (hero.lifeState !== 'active' && hero.currentActivity !== null) {
+		context.addIssue({ code: 'custom', message: 'A terminal hero cannot have an activity' });
+	}
+	if (hero.lifeState !== 'active' && hero.currentTravel !== null) {
+		context.addIssue({ code: 'custom', message: 'A terminal hero cannot travel' });
+	}
+	if (hero.currentTravel && hero.currentTravel.fromNodeId !== hero.locationNodeId) {
+		context.addIssue({ code: 'custom', message: 'Travel must begin at the authoritative node' });
+	}
+	if (hero.lifeState !== 'active' && hero.assignment !== null) {
+		context.addIssue({ code: 'custom', message: 'A terminal hero cannot remain assigned' });
+	}
+	if (
+		[hero.currentActivity, hero.currentTravel, hero.currentRoutine, hero.currentForging].filter(
+			Boolean
+		).length > 1
+	) {
+		context.addIssue({ code: 'custom', message: 'A hero cannot perform concurrent work' });
+	}
+	if (hero.lifeState !== 'active' && hero.currentRoutine !== null) {
+		context.addIssue({ code: 'custom', message: 'A terminal hero cannot follow a routine' });
+	}
+	if (hero.lifeState !== 'active' && hero.currentForging !== null) {
+		context.addIssue({ code: 'custom', message: 'A terminal hero cannot forge equipment' });
+	}
+	if ('attributeGrowthReceipts' in hero.progression) {
+		const intrinsic = { ...hero.capabilityProfile.attributes };
+		for (const receipt of hero.progression.attributeGrowthReceipts) {
+			if (
+				receipt.heroId !== hero.heroId ||
+				receipt.beforeIntrinsicValue !== intrinsic[receipt.attribute]
+			) {
+				context.addIssue({
+					code: 'custom',
+					message: 'Attribute growth receipt chain diverged from intrinsic capability'
+				});
+				break;
+			}
+			intrinsic[receipt.attribute] = receipt.afterIntrinsicValue;
+		}
+	}
+	const activeEntries = hero.dailyPlan?.entries.filter((entry) => entry.status === 'active') ?? [];
+	if (hero.currentRoutine) {
+		const entry = activeEntries[0];
+		if (
+			activeEntries.length !== 1 ||
+			hero.dailyPlan?.planId !== hero.currentRoutine.planId ||
+			entry?.planEntryId !== hero.currentRoutine.planEntryId ||
+			entry?.kind !== hero.currentRoutine.kind
+		) {
+			context.addIssue({ code: 'custom', message: 'Current routine diverged from daily plan' });
+		}
+	} else if (activeEntries.length !== 0) {
+		context.addIssue({ code: 'custom', message: 'Daily plan has an orphaned active entry' });
+	}
+}
+
+export const EngineHeroStateV25Schema = EngineHeroStateV25BaseSchema.superRefine(
+	validateEngineHeroStateV25
+);
+
+export const HeroCombatTrainingV1Schema = z
+	.object({
+		schemaVersion: z.literal('hero-combat-training-v1'),
+		proficiencyTags: z.array(EquipmentProficiencyTagSchema),
+		learnedSkills: z.array(LearnedCombatSkillStateSchema)
+	})
+	.strict()
+	.superRefine((training, context) => {
+		if (new Set(training.proficiencyTags).size !== training.proficiencyTags.length) {
+			context.addIssue({
+				code: 'custom',
+				path: ['proficiencyTags'],
+				message: 'Hero combat proficiency tags must be unique'
+			});
+		}
+		if (
+			new Set(training.learnedSkills.map((skill) => skill.skillId)).size !==
+			training.learnedSkills.length
+		) {
+			context.addIssue({
+				code: 'custom',
+				path: ['learnedSkills'],
+				message: 'Hero learned combat skill IDs must be unique'
+			});
+		}
+	});
+
+export const EngineHeroStateV26Schema = z
+	.object({
+		...EngineHeroStateV25BaseSchema.shape,
+		combatTraining: HeroCombatTrainingV1Schema
+	})
+	.strict()
+	.superRefine(validateEngineHeroStateV25);
+
+export const EngineHeroStateV27Schema = z
+	.object({
+		...EngineHeroStateV25BaseSchema.shape,
+		health: z.number().int().nonnegative().max(Number.MAX_SAFE_INTEGER),
+		maxHealth: z.number().int().positive().max(Number.MAX_SAFE_INTEGER),
+		mana: z.number().int().nonnegative().max(Number.MAX_SAFE_INTEGER),
+		maxMana: z.number().int().positive().max(Number.MAX_SAFE_INTEGER),
+		progression: HeroProgressionV2Schema,
+		combatTraining: HeroCombatTrainingV1Schema
+	})
+	.strict()
+	.superRefine((hero, context) =>
+		validateEngineHeroStateV25(
+			hero as unknown as z.infer<typeof EngineHeroStateV25BaseSchema>,
+			context
+		)
+	);
+
 const materialLotShape = Object.fromEntries(
 	EquipmentMaterialIdSchema.options.map((materialId) => [
 		materialId,
@@ -494,5 +647,9 @@ export type FirstEmberState = z.infer<typeof FirstEmberStateSchema>;
 export type RoutineKind = z.infer<typeof RoutineKindSchema>;
 export type CurrentForging = z.infer<typeof CurrentForgingSchema>;
 export type EngineHeroStateV24 = z.infer<typeof EngineHeroStateV24Schema>;
+export type EngineHeroStateV25 = z.infer<typeof EngineHeroStateV25Schema>;
+export type EngineHeroStateV26 = z.infer<typeof EngineHeroStateV26Schema>;
+export type EngineHeroStateV27 = z.infer<typeof EngineHeroStateV27Schema>;
+export type HeroCombatTrainingV1 = z.infer<typeof HeroCombatTrainingV1Schema>;
 export type EngineSettlementStateV24 = z.infer<typeof EngineSettlementStateV24Schema>;
 export type EquipmentMaterialLotsV24 = z.infer<typeof EquipmentMaterialLotsV24Schema>;

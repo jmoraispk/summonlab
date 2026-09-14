@@ -6,11 +6,26 @@ This system owns the core capability loop: acquire heroes, develop attributes an
 equipment, resolve combat, and translate validated outcomes into growth and motivating rewards. Its
 internal bounded contexts stay separate even though the player experiences them as one loop.
 
+## Engine-v27 progression owner
+
+Current heroes share levels `1..999` and one XP track across meaningful combat and completed
+crafting. Their immutable `1★..7★` rating grants that many unallocated attribute points per crossed
+level. Awakenings at levels 100 through 900 apply the current table row to the complete applicable
+Strength, Magic, or Vitality value, including typed non-level growth.
+
+Character sheets use `STR`, `AGI`, `VIT`, `MAG` in that order, with full names in normal prose and
+accessible labels. Flat equipment and ratio mechanics do not awaken. Forging uses the shared
+production-completion evidence contract; cooking can adopt it without creating another level track.
+Both combat modes' v27 adapters submit resolved contribution facts to this owner, while historical
+v25/v26 state remains frozen. The rules table can be nerfed under a new hash without migrating hero
+state. See [progression](../mechanics/progression/README.md) and
+[ADR 0073](../../decisions/0073-awakening-and-multi-path-progression.md).
+
 ## Living Village
 
 - one Normal summoning channel and enough introductory access to form one party;
-- 1★ levels 1–10 with the accepted future cap table preserved in schema;
-- six attributes and the explicit Unaligned affinity state; 1★ heroes cannot awaken an affinity;
+- immutable 1★ levels 1–10 using the shared level-999 schema;
+- four visible combat attributes and the explicit Unaligned affinity state;
 - 8–12 runtime skills from the complete compendium;
 - 12–20 runtime equipment definitions across weapon, armour, and accessory;
 - direct attribute or owned-skill training;
@@ -26,9 +41,9 @@ procedural generators remain available for authoring and compatibility, but they
 the player summon result.
 
 The release matrix decides whether the initial gem claim and Special access are active or only
-represented by a placeholder. Advanced summoning, pity, promotion, complete mastery ladders,
-merging, crafting, item sets, permanent injuries, death, and synthesis remain documented but
-inactive.
+represented by a placeholder. Advanced summoning, pity, complete mastery ladders, merging, cooking,
+item sets, permanent injuries, death, and synthesis remain documented but inactive. Star promotion
+does not exist in current progression; forging completion can already award shared hero XP.
 
 Detailed source material:
 
@@ -40,12 +55,13 @@ Detailed source material:
 - [Rewards and engagement](../mechanics/rewards-and-engagement.md)
 - [Living Village release matrix](../roadmap/living-village-v1.md)
 
-## Target combat modes and party requirements
+## Target mission structures and party requirements
 
 Design status: **accepted direction; exact balance and unlock counts remain outside the current
 milestone**
 
-The complete game distinguishes two combat modes:
+The complete game distinguishes these mission structures. They are different from the versioned
+combat-resolution modes described below.
 
 ### Expeditions
 
@@ -73,25 +89,114 @@ own attempt, state, receipts, retreat decision, and rewards; one party's explora
 another party's combat state. Exploration evidence may prepare the player for the challenge, but it
 does not satisfy the requirement to complete all five challenge battles in sequence.
 
-These target modes do not silently change the narrower Living Village prototype below. That
+These mission structures do not silently change the narrower Living Village prototype below. That
 prototype continues to prove one-party reservation, repeated encounters, safety thresholds, and
 receipt handoff until shared contracts promote the broader design.
 
-## Combat design draft
+## Versioned combat resolution
 
-Design status: **supplied draft under owner review**
+Foundation status: **both `legacy-auto-v1` and `agent-readiness-v1` are implemented in
+`engine-v26`; release selection remains operator-only and legacy remains the beta default**.
+
+Combat mode is release configuration owned by the operator. It is not a player preference and no
+player API accepts it. Preparation stores a binding containing mode ID, mode-rules version,
+aggregate combat-content hash, and timestamp on the attempt. Changing the configured default affects
+future attempts only; the stored binding cannot change while an attempt is active.
+
+`COMBAT_MODE` accepts either versioned mode and defaults to `legacy-auto-v1`. This is deployment
+configuration, not a player-facing switch. Player request and route schemas accept neither a mode
+nor low-level combat choices, and the mode stored on an active attempt cannot change.
+
+The current exact tuples are `legacy-auto-v1` / `legacy-auto-rules-v1` /
+`1abef40c18eb97d4c1694c674f9b4917f286053e6d810d5b4282760f2ab4c2a7` and
+`agent-readiness-v1` / `agent-readiness-rules-v2` /
+`e78ed494f1ac78f6b0efca0574248425a1bb1148d54fd39161db600964e8919e`.
+
+| Mode | Release status | Choice source | Time and randomness |
+| --- | --- | --- | --- |
+| `legacy-auto-v1` | beta-safe operator default | seeded automatic policy; no hero-model calls | frozen legacy rounds, sequential entropy, 48-round safety boundary |
+| `agent-readiness-v1` | V2 implemented for operator evaluation; not the release default | one validated intent per ready actor, with deterministic provider fallback | one-tick readiness cohorts and purpose-keyed randomness |
+
+### Legacy automatic combat
+
+For a new v26 attempt the player can press **Continue battle**. That command advances automatic
+combat; the request cannot contain a combat mode, actor action, target, choices, or policy. A seeded
+policy selects one legal action for every party actor, and the engine records the policy ID plus
+packet, legal-action-set, and result hashes.
+
+The runner isolates the frozen historical resolver behind a v24-shaped boundary. New four-attribute
+heroes receive a mode-local compatibility projection with integer half-up scaling and clamping:
+
+```text
+legacy might   <- Strength
+legacy finesse <- Agility
+legacy insight <- Magic
+legacy resolve <- Vitality
+```
+
+The projection never appears on the character sheet and never rewrites persisted v1 or v24 state.
+Historical attempts continue using their original aptitudes, event bytes, entropy purposes, and
+state hashes. A behavior change requires another explicit mode/rules version.
+
+### Authority layers
 
 Combat separates three responsibilities that must not silently collapse into one another:
 
-| Layer | Responsibility | Deterministic | Living Village |
-| --- | --- | --- | --- |
-| Resolution | initiative, legal outcomes, damage, Mana, status, victory, defeat, and drop claims | yes, from a supplied seed | represented by a transparent route-local fixture |
-| Intent | choose one engine-enumerated legal action | the provider may vary; recorded choices make replay exact | scripted fixture choices only |
-| Narration | turn an already-resolved event trace into color | no mechanical authority | off; the trace must explain itself without a model |
+| Layer | Responsibility | Mechanical authority |
+| --- | --- | --- |
+| Intent provider | choose one engine-enumerated legal action, target/destination, and allowed fallback | none beyond the validated selection |
+| Combat Resolver | timing, arbitration, movement, hit, critical, damage, status, downing, and outcome | complete and deterministic |
+| Narration | present already-resolved events | none |
 
-The governing boundary is: **an intent provider is a player, never the referee**. It may choose one
-item from the legal-action list. It cannot construct an unvalidated effect, inspect hidden rolls,
-compute an outcome, or write state. Resolution alone emits the event trace and proposed claims.
+The governing boundary is: **an intent provider is never the referee**. The legacy provider is a
+seeded automatic policy; the readiness provider may be a hero agent. Neither can construct an
+effect, inspect hidden rolls, compute an outcome, or write state. Resolution alone emits the factual
+event trace and proposed claims.
+
+### Readiness stepping
+
+The readiness mode advances a deterministic simulation to
+the next tick on which one or more actors are ready, freeze one canonical snapshot for that cohort,
+derive a filtered view and legal-action set for each actor, collect their choices concurrently, and
+then apply one validated batch:
+
+```text
+advanceUntilDecision(state) -> DecisionWindow | CombatResult
+applyChoiceBatch(state, validated choices) -> state + events
+```
+
+All actors in tick `T` choose against the same pre-action truth. They do not see another actor's
+unresolved choice. Resolution orders collisions by exact readiness time, authored reaction priority,
+then a stable purpose-keyed tie-break; each later choice is revalidated and follows its authored
+fallback if an earlier move, flank, downing, or object claim invalidated it. No agent is re-queried
+during arbitration, and API latency never changes simulation time.
+
+The current evaluation binding is exactly `agent-readiness-rules-v2` with aggregate content hash
+`e78ed494f1ac78f6b0efca0574248425a1bb1148d54fd39161db600964e8919e`. That aggregate adds the
+immutable V2 hostile-action catalog to the combat skill and equipment-profile catalogs. Historical
+V1 readiness attempts remain loadable only with their exact V1 rules/content pair; the runtime never
+silently upgrades an active or replayed attempt.
+
+### Durable readiness decisions
+
+One durable combat window is stored for the complete ready cohort, together with its attempt ID,
+tick, snapshot hash, expected run version, and expected event cursor. Exactly one `decision-job-v3`
+record is stored per ready actor. Each result must match the window, attempt, tick, actor view,
+snapshot, legal-action set, action instance, target contract, and optional supplied fallback before
+it can join the batch.
+
+Workers may claim different actors concurrently and finish in any order. The window becomes ready
+only after every cohort member has a validated result. Provider timeout, malformed output,
+unavailability, and exhausted retries use the exact engine-precomputed first legal action, canonical
+target, and first allowed fallback; neither the worker nor another model invents a replacement.
+
+Window creation, job creation, lease transitions, full-cohort assembly, and one-event batch
+application are database-backed and retry-safe. Mutating paths lock the authoritative run before the
+window and jobs. If the run version or cursor has moved, the transaction atomically terminalizes the
+in-progress attempt ledger and records the whole window and its jobs as stale, then rejects the late
+completion; a retry observes that durable stale state instead of resurrecting old intent. Batch
+application uses a compare-and-swap boundary and returns the already-authenticated receipt on an
+exact idempotent retry.
 
 ### Power integrity and human realism
 
@@ -133,29 +238,103 @@ Fairness requirements follow from this boundary:
 
 Human realism changes **how power is expressed**, not whether power exists.
 
-The target production shape is a pure simulation:
+The readiness production shape keeps provider calls outside the resolver. An external
+coordinator receives a `DecisionWindow` from `advanceUntilDecision`, calls each ready actor's
+provider concurrently, validates and records the responses, and passes one choice batch to
+`applyChoiceBatch`. Replay bypasses providers and supplies the recorded batches directly.
+
+The master seed is an input. In `agent-readiness-v1`, individual rolls—including hit/miss and
+critical resolution—derive from the complete stable purpose-key identity rather
+than the position-dependent stream retained by historical legacy combat:
 
 ```text
-simulate(CombatSpec, ProviderBinding) -> CombatResult
+roll = hash(
+  master seed,
+  attempt ID,
+  tick / decision-window ID,
+  actor ID,
+  action-instance ID,
+  target ID when applicable,
+  purpose,
+  purpose-local sequence
+)
 ```
 
-The master seed is an input. Individual rolls derive from stable purpose keys rather than one
-position-dependent random stream:
+Purposes distinguish readiness ties, hit/miss, critical, status, target fallback, drop, and reward.
+Given the same frozen spec, seed, and choices, replay must produce the same receipt and trace.
+Changing one choice may change affected outcomes without reshuffling unrelated call sites. Shipped
+`legacy-auto-v1` does not use these purpose keys; it retains its frozen sequential entropy.
 
-```text
-roll = hash(masterSeed, encounterIndex, tick, actorId, purpose, sequence)
-```
+### Common result and consequences
 
-Purposes include initiative, hit, critical, status, drop, and reward. Given the same frozen spec,
-seed, and choices, replay must produce the same receipt and trace. Changing one choice may change
-affected outcomes without reshuffling unrelated call sites.
+Both mode runners emit `combat-result-v1` with final party and hostile combatants, final combat-local
+resources, harm/recovery evidence, skill-practice evidence, loot/extraction claims, decisive events,
+and replay hashes. Every result repeats the attempt's exact mode ID, rules version, and content hash.
+The schema rejects an unregistered tuple; result authentication and the claim transition reject a
+registered tuple that differs from the persisted attempt. Its outcome vocabulary includes victory,
+extraction, retreat, party downing, Master/hero death, authored deadline, and engine safety stop.
+
+Owning progression, inventory, expedition, and aftermath processes validate and commit the
+idempotent claims; combat does not directly grant durable rewards. The production V26 legacy path
+adapts its frozen terminal round into the same outer result, authenticates it against the persisted
+legacy binding, and records the result plus a complete cross-owner claim checkpoint atomically with
+that terminal event. A partial receipt set or replay without its checkpoint is rejected.
+
+Readiness combat makes Downed the zero-Health state. Safe victory or extraction removes Downed from a
+recovered hero and restores only the minimum safe Health needed to leave the state. A failed
+extraction may make an unrecovered hero permanently lost only through an explicit, traceable engine
+rule. These consequences are implemented for readiness combat without rewriting frozen legacy
+behavior.
+
+### Balance evidence boundary
+
+The committed combat-balance evidence validates immutable rules and content hashes across levels
+10, 40, 70, and 99 with 10,000 seeded trials per matchup. The 7,499-basis-point general-armour cap,
+four-attribute resource/scaling rules, named resistance cap, and versioned skill/equipment catalogs
+are production foundation.
+
+The harness's peer hit/evasion equation, relative-Agility conversion, attack cadence and variance,
+affinity matchup application, general armour-point fixture values, and magical-active substitute are
+explicitly hash-bound **benchmark candidates**. They prove that a coherent tuning set can pass the
+promotion gates; they do not become runtime mechanics merely because the evidence passes.
+
+The checked [agent-readiness qualification evidence](../../evidence/agent-readiness-v1.json) binds
+the current operator-evaluation tuple: `agent-readiness-rules-v2` hash
+`21d1dbf74dff606fda8b727566787579c9584234ea9aeee0a26ecbae80a8a80e` and aggregate content hash
+`e78ed494f1ac78f6b0efca0574248425a1bb1148d54fd39161db600964e8919e`. Its qualification-profile
+hash is `4a3a2858d1d5d9575e2aeb38a9cc5437e8e22b3795b32b2babacc9087bf8bac1`; its replay result hash is
+`dc599786a23e8fc9a8a8b73e9af6a0619f443dd93be201d704cbc22a379526b5`; and the artifact SHA-256 is
+`6cf931fb87e8e986a18c7572b9d3399be0632cf5b11dc2d861978d95ca72a452`.
+
+The artifact records 10,000 distinct deterministic trials, 20,000 modeled provider failures, and
+40,000 applied fallback selections across the primary and deterministic repeat resolver passes. All
+400 minimal authored encounters completed through 3,707 encounter resolver calls, with zero safety
+stops, no-progress stops, regeneration stalemates, nondeterministic replays, or unclassified
+cancellations. Aggregate applied damage was 5,117, incoming party damage was 844, passive Health
+recovery was 471, and recovery occurred in 172 encounters. Encounter p95 tick/event counts are level
+10 `991/31`, level 40 `635/21`, level 70 `398/14`, and level 99 `229/8`, all inside the configured
+million-tick/100,000-event safety budgets.
+
+The evidence also preserves the underlying `combat-rules-v1` hash
+`13b2b27b683e4b0023a2a2c2ee4926127437db3bbf1ace91776def69ef286eff`. V2 monsters receive an
+executable deterministic damaging strike against an eligible party target plus an authored Hold
+choice; their provider selects among those frozen legal actions. These mechanical gates qualify
+that exact V2 tuple for continued operator evaluation; they do not
+establish full hostile policy variety or product balance, authorize owner promotion, or change the
+legacy beta default. The independent legacy balance artifact remains unchanged at SHA-256
+`d0b2814acfdca17dcede952f7015a46399e5902b2834cf4607e87e37978eabac`.
+
+Qualification exposed one real defect: per-tick integer recovery erased low-level peer damage.
+Natural Health and Mana recovery in readiness combat now evaluates only on calibrated 100-tick
+(10-second) canonical pulses. Health still observes its post-damage delay, and downed actors remain
+inert. This is a measured current constant; changing it requires a new rules version and evidence.
 
 ### Explanatory trace
 
 The event log is a product surface, replay input, future narration input, and the player's account
 of why the party won or lost. A useful trace exposes:
 
-- initiative and action order;
+- readiness/action order (or legacy initiative where that historical mode uses it);
 - the chosen skill or basic action and target;
 - important Health and Mana deltas;
 - skill base, attribute scale, equipment term, affinity relationship, critical result, mitigation,
@@ -183,7 +362,7 @@ progressively. Expanded history restores uniform readable contrast, and event or
 without depending on opacity alone.
 
 Character-voice messages use a concise colored name prefix rather than a portrait thumbnail. This
-keeps the feed visually light, avoids repeating the initiative portraits, and leaves mechanical event
+keeps the feed visually light, avoids repeating the action-order portraits, and leaves mechanical event
 lines easy to scan.
 
 The supplied damage expression currently defines shape, not accepted constants:
@@ -197,13 +376,16 @@ damage = SkillBase
        x (1 - Mitigation)
 ```
 
-The broader draft includes tick-driven action accumulation, ten total affinities (four base and six
-dual), status applications, threat, poise, group formations, consumables, kill-sensitive drops,
-gathering, and permanent consequences. The accepted family consolidation keeps form tier,
-numerical level, and affinity rank as separate axes; any restriction on low-tier affinity use must
-be authored explicitly. Living Village implements only the explanatory seams needed by its
-presentation fixture. Permanent injury, death, recovery time, free-roaming gathering, agentic
-intent, and model narration remain off.
+The broader design includes tick-driven readiness, ten total affinities (four base and six dual),
+status applications, threat, authored Break mechanics, group formations, consumables,
+kill-sensitive drops, gathering, and permanent consequences. The accepted family consolidation
+keeps form tier, numerical level, and affinity rank as separate axes; any restriction on low-tier
+affinity use must be authored explicitly. Engine-v26 implements both the four-attribute legacy mode
+and operator-controlled readiness timing, intent, deterministic arbitration, and common result
+contracts. Readiness V2 also includes executable deterministic damaging hostile strikes. Production armour
+magnitudes, magical active skills, broad hostile policy variety and balance, permanent injury/death
+promotion, free-roaming gathering, and model narration remain unshipped. Engine-v27 layers the
+shared progression owner over both mode adapters without changing their operator-owned boundary.
 
 ### Accepted combat presentation direction
 

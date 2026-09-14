@@ -4,7 +4,8 @@
 		AuthoritativeEvent,
 		FirstEmberFacility,
 		FirstEmberRationale,
-		ProofRunSnapshot,
+		PublicProofRunSnapshot,
+		PublicProofRunSnapshotV2,
 		SettlementPresentation,
 		SimulationClock
 	} from '@summonlab/contracts';
@@ -23,8 +24,9 @@
 	import type { EquipmentWorkshopProjection } from '$lib/server/equipment-runtime';
 
 	let { data } = $props();
+	type PublicProofSnapshot = PublicProofRunSnapshot | PublicProofRunSnapshotV2;
 	// svelte-ignore state_referenced_locally
-	let snapshot = $state<ProofRunSnapshot>(data.snapshot);
+	let snapshot = $state<PublicProofSnapshot>(data.snapshot);
 	// svelte-ignore state_referenced_locally
 	let walking = $state(!data.equipment && !snapshot.arrived);
 	let journalOpen = $state(false);
@@ -131,7 +133,7 @@
 				headers: { 'content-type': 'application/json' },
 				body: '{}'
 			});
-			const result = (await response.json()) as ProofRunSnapshot & { message?: string };
+			const result = (await response.json()) as PublicProofSnapshot & { message?: string };
 			if (!response.ok) throw new Error(result.message ?? 'Arrival could not be recorded.');
 			snapshot = result;
 			walking = false;
@@ -324,9 +326,7 @@
 				<div class:in-transit={walking} class:at-destination={!walking} class="walker">
 					<div class="thought">
 						{walking
-							? snapshot.mind.dailyHabit === 'checks-exits'
-								? 'One gate. Two towers. Three exits.'
-								: `First: ${snapshot.destination === 'kitchen' ? 'names' : 'limits'}. Then answers.`
+							? `First: ${snapshot.destination === 'kitchen' ? 'names' : 'limits'}. Then answers.`
 							: snapshot.destination === 'kitchen'
 								? 'Listen before speaking.'
 								: 'Balance first. Then reach.'}
@@ -503,9 +503,9 @@
 			<div class="status-bars">
 				<div><span>Body</span><i><b style="width: 100%"></b></i><strong>100</strong></div>
 				<div>
-					<span>Resolve</span><i
-						><b style={`width: ${snapshot.mind.aptitudes.resolve * 10}%`}></b></i
-					><strong>{snapshot.mind.aptitudes.resolve}</strong>
+					<span>{data.resilience.label}</span><i
+						><b style={`width: ${data.resilience.percentage}%`}></b></i
+					><strong>{data.resilience.displayValue}</strong>
 				</div>
 				<div>
 					<span>Trust</span><i
@@ -517,7 +517,7 @@
 			</div>
 			<div class="proof-state">
 				<span>{walking ? 'In transit' : 'Persistent state updated'}</span>
-				<code>{snapshot.manifestHash.slice(0, 12)}</code>
+				<code>{snapshot.publicManifestHash.slice(0, 12)}</code>
 			</div>
 		</section>
 

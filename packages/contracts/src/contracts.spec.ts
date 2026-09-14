@@ -4,6 +4,8 @@ import { describe, expect, it } from 'vitest';
 
 import {
 	CharacterManifestSchema,
+	CharacterDraftV2Schema,
+	CombatAttributesSchema,
 	EquipmentRuntimeVisualAssetSchema,
 	EquipmentRuntimeVisualManifestSchema,
 	HealthResponseSchema,
@@ -12,6 +14,8 @@ import {
 	PlaytestAnalyticsEventSchema,
 	PlaytestAnalyticsReportSchema,
 	PlaytestConsentGrantRequestSchema,
+	ProofRunSnapshotV2Schema,
+	PublicProofRunSnapshotV2Schema,
 	PlayerVisualManifestSchema,
 	RecognitionReviewCreateRequestSchema,
 	RecognitionReviewListSchema,
@@ -68,6 +72,105 @@ function validCharacterManifest(adultAge = 25) {
 }
 
 describe('foundation contracts', () => {
+	it('exports the four canonical combat attributes from the root contract entry point', () => {
+		expect(
+			CombatAttributesSchema.safeParse({ strength: 1, agility: 1, vitality: 1, magic: 1 }).success
+		).toBe(true);
+	});
+
+	it('exports representative v2 character and proof contracts from the root contract entry point', () => {
+		const recipe = {
+			seed: 'capability-seed',
+			generationVersion: 'human-v1' as const,
+			cursors: { identity: 0, body: 0, features: 0, styling: 0, mind: 0, rarity: 0 }
+		};
+		const mind = {
+			personality: {
+				openness: 50,
+				conscientiousness: 50,
+				extraversion: 50,
+				agreeableness: 50,
+				emotionalVolatility: 50
+			},
+			primaryValue: 'duty' as const,
+			primaryDrive: 'protect' as const,
+			socialStyle: 'direct' as const,
+			stressResponse: 'prepare' as const,
+			dailyHabit: 'stretches-at-dawn' as const
+		};
+		const capabilityProfile = {
+			profileVersion: 'character-capability-v1' as const,
+			attributes: { strength: 51, agility: 53, vitality: 52, magic: 54 },
+			learning: {
+				cognitiveLearningScore: 55,
+				domainAptitudes: {
+					martial: 56,
+					magical: 57,
+					crafting: 58,
+					survival: 59,
+					social: 60
+				}
+			}
+		};
+		const draft = CharacterDraftV2Schema.parse({
+			recipe,
+			manifest: validCharacterManifest(),
+			mind,
+			capabilityProfile,
+			manifestHash: 'a'.repeat(64)
+		});
+		const internalProof = ProofRunSnapshotV2Schema.parse({
+			runId: randomUUID(),
+			characterSchemaVersion: 'character-v2',
+			storyEnvelopeId: 'first-ember-v1',
+			controlMode: 'autonomous',
+			directive: '',
+			recipe: draft.recipe,
+			manifest: draft.manifest,
+			mind: draft.mind,
+			capabilityProfile: draft.capabilityProfile,
+			manifestHash: draft.manifestHash,
+			firstObservation: 'A fire flickers in the distance.',
+			firstLine: null,
+			destination: null,
+			storyBranch: null,
+			arrived: false,
+			events: [],
+			createdAt: '2026-09-06T00:00:00.000Z'
+		});
+		const publicProof = PublicProofRunSnapshotV2Schema.parse({
+			runId: internalProof.runId,
+			characterSchemaVersion: internalProof.characterSchemaVersion,
+			storyEnvelopeId: internalProof.storyEnvelopeId,
+			controlMode: internalProof.controlMode,
+			manifest: {
+				characterId: internalProof.manifest.characterId,
+				displayName: internalProof.manifest.displayName,
+				rarityStars: internalProof.manifest.rarityStars,
+				adultAge: internalProof.manifest.adultAge,
+				heightCm: internalProof.manifest.heightCm,
+				bodyBuild: internalProof.manifest.bodyBuild,
+				voiceCadence: internalProof.manifest.voice.cadence,
+				posture: internalProof.manifest.posture,
+				artKey: internalProof.manifest.artKey
+			},
+			publicManifestHash: 'b'.repeat(64),
+			firstObservation: internalProof.firstObservation,
+			firstLine: internalProof.firstLine,
+			destination: internalProof.destination,
+			storyBranch: internalProof.storyBranch,
+			arrived: internalProof.arrived,
+			events: [],
+			createdAt: internalProof.createdAt,
+			capabilityProfile: {
+				profileVersion: internalProof.capabilityProfile.profileVersion,
+				attributes: internalProof.capabilityProfile.attributes
+			}
+		});
+
+		expect(publicProof.capabilityProfile).not.toHaveProperty('learning');
+	});
+
 	it('keeps playtest consent affirmative and analytics free of arbitrary text', () => {
 		expect(
 			PlaytestConsentGrantRequestSchema.safeParse({

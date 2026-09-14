@@ -239,16 +239,20 @@ describe('online wiki registry', () => {
 		expect(thrownRouteResult('creatures/monsters/not-a-monster')).toMatchObject({ status: 404 });
 	});
 
-	it('exposes the visual packet and supplied progression cap table', () => {
+	it('exposes the visual packet and current immutable-star progression', () => {
 		expect(
 			getWikiNavigation().some((entry) => entry.href === '/wiki/art/living-village-heroes')
 		).toBe(true);
 
-		const progression = getWikiPage('mechanics/progression');
-		expect(progression?.html).toContain('<td align="right">6★</td>');
-		expect(progression?.html).toContain('<td align="right">70</td>');
-		expect(progression?.html).toContain('<td align="right">7★</td>');
-		expect(progression?.html).toContain('<td align="right">99</td>');
+		const stars = getWikiPage('mechanics/progression/stars');
+		expect(stars?.html).toContain('<td align="right">6★</td>');
+		expect(stars?.html).toContain('<td align="right">6</td>');
+		expect(stars?.html).toContain('<td align="right">7★</td>');
+		expect(stars?.html).toContain('<td align="right">7</td>');
+
+		const attributes = getWikiPage('mechanics/progression/attributes-and-training');
+		expect(attributes?.html).toContain('<td align="right">900–999</td>');
+		expect(attributes?.html).toContain('<td align="right">5.0</td>');
 	});
 
 	it('provides folder hierarchy for collapsible navigation', () => {

@@ -2,77 +2,53 @@
 
 Wiki ID: `mechanics.attributes`
 
-Attributes are broad capabilities used by heroes and mechanically comparable creatures. They affect
-checks, learning, action outcomes, and derived projections; they do not determine intelligence,
-morality, obedience, social worth, personality, or the value of a life.
+Design status: **implemented for `character-v2` and `engine-v27`**. Historical schemas remain
+replayable under their original rules.
 
-## Authoritative shared vocabulary
+Attributes are visible combat capabilities. They do not determine intelligence, morality,
+obedience, personality, decision quality, social worth, or the value of a life.
 
-The supplied [progression design](progression/attributes-and-training.md) defines six attributes:
-`Might`, `Vitality`, `Agility`, `Dexterity`, `Intellect`, and `Spirit`. Under ADR 0063 this model
-supersedes the earlier `Might / Vigor / Agility / Focus / Insight / Presence` proposal. Historical
-engine content keeps its old IDs; new Living Village content must use or explicitly migrate to the
-authored vocabulary as one versioned change.
+## Canonical vocabulary
 
-| Attribute | Mechanical territory | Example use |
-| --- | --- | --- |
-| Might | force, leverage, carrying, melee power | lifting, mining, breaking guard |
-| Vitality | health, mitigation, poise, physical resistance | enduring harm and resisting bodily status |
-| Agility | speed, balance, reaction, evasion | moving first and escaping danger |
-| Dexterity | accuracy, control, weak-point execution, crafting precision | landing a shot or making a fine object |
-| Intellect | magical output, analysis, comprehension, learning | understanding a recipe or spell |
-| Spirit | mana, mental endurance, control stability, mental resistance | sustaining magic or resisting fear |
+| Sheet | Full name | Owns | Does not own |
+| --- | --- | --- | --- |
+| `STR` | **Strength** | Physical power, carrying/load tolerance, explicit heavy requirements | Accuracy, critical rate, mitigation, cadence |
+| `AGI` | **Agility** | Readiness, movement, evasion, bounded relative speed | Learned accuracy, unrestricted actions, critical rate |
+| `VIT` | **Vitality** | Maximum Health and modest natural recovery | Armour, resistance, immunity, equipment eligibility |
+| `MAG` | **Magic** | Magical power, maximum Mana, modest saturating Mana recovery | Morale, learning, control duration, decision quality |
 
-The earlier vocabulary remains partially represented by the current prototype engine. Exact numeric
-ranges, growth curves, and combat formulas still require progression-v2 implementation, but the
-names and mechanical territories above are no longer an open choice.
+The character-sheet order is `STR`, `AGI`, `VIT`, `MAG`; normal prose uses the full names. There is
+no Body/Mind split. Dexterity and Intellect are not primary attributes, and Magic replaces the
+earlier Spirit label because it describes the stat's purpose directly.
 
-## Attribute rules
+## Intrinsic, effective, and awakened values
 
-- Base attributes belong to progression/capability state and change only through typed growth.
-- Skills turn attributes into specific competence. High Might does not automatically grant sword
-  mastery; high Intellect does not grant knowledge the actor never observed.
-- Context selects the relevant attribute or combination. The same task must not silently change its
-  formula by UI surface.
-- Injuries, needs, equipment, environment, and affect modify derived checks through explicit
-  contributions. Affinity additionally supplies the authored permanent matching-attribute nudge at
-  level gain.
-- Every modifier names source, duration/scope, stacking rule, cap, and content version.
-- Player-facing readiness explains important contributions without pretending one total is the
-  whole person.
+Generated base values plus typed permanent growth form the intrinsic attributes. Only modifiers
+whose declared scope matches a calculation can create its effective input. Awakening then converts
+the applicable Strength, Magic, or Vitality value through the hero's current level tier.
+
+The ten current Power rates are `1.0, 1.2, 1.4, 1.8, 2.2, 2.6, 3.2, 3.8, 4.4, 5.0`; Health per
+Vitality is `5, 6, 7, 9, 11, 13, 16, 19, 22, 25`. See
+[Attributes and training](progression/attributes-and-training.md) for the complete table.
+
+Armour, named resistance, accuracy, evasion, critical probability, action cadence, flat equipment,
+and skill mastery remain separate. An awakening never refills current Health.
 
 ## Affinity interaction
 
-An affinity improves matching actions and contributes a modest permanent nudge to its matching
-attribute on level gain. The grant is explicit in the progression receipt; it is never a hidden
-projection-only bonus. See [Affinities](progression/affinities.md) for the canonical rules.
+Fire/Strength, Wind/Agility, Earth/Vitality, and Water/Magic are mild thematic associations. They do
+not grant attribute ownership or automatic growth. The current matching-affinity nudge is capped at
+10% of the matching attribute contribution and is deliberately separable; later rules may weaken or
+remove the relationship without changing attribute state.
 
-This distinction makes balance and identity clearer:
+## Learning and compatibility
 
-```text
-base attribute
-+ learned skill and mastery
-+ matching affinity expression and recorded level-grant nudge
-+ equipment/environment/party support
-- injury/fatigue/resistance
-= derived action check
-```
-
-## Monsters and heroes
-
-Heroes and monsters use the same meanings for comparable attributes. Creature physiology can expose
-different actions or scale, and deterministic monster policies can use fewer cognitive systems, but
-“strength,” “speed,” or “resistance” cannot mean unrelated things depending on which side acts.
-
-## Open questions
-
-- What numeric range should base attributes use?
-- Which checks combine two attributes, and how are ties explained?
-- How should size/physiology remain distinct from Might and Vitality?
-- Which modifiers should be visible exactly and which should use descriptive bands?
+The hidden bounded learning profile and domain aptitudes remain separate from visible attributes and
+are omitted from player-facing projections. New characters entering `legacy-auto-v1` use a
+mode-local compatibility projection; old stored fields and replay hashes are never rewritten.
 
 ## References
 
-- [Game-design attribute proposal](../../game-design.md#attributes-and-skills)
-- [Progression and skills architecture](../../system-architecture/systems/progression-and-skills.md)
-- [Every person can contribute](../principles/every-person-contributes.md)
+- [Progression](progression/README.md)
+- [ADR 0073](../../decisions/0073-awakening-and-multi-path-progression.md)
+- [Overgeared research](../research/attribute-systems/overgeared/README.md)

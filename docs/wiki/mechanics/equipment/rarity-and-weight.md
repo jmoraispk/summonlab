@@ -2,11 +2,14 @@
 
 Wiki ID: `mechanics.equipment.rarity-weight`
 
-Design status: **draft**.
+Design status: **runtime-v1 craftsmanship foundation; engine-v26 load profiles and readiness
+eligibility integration implemented**.
 
 Runtime-v1 implements only the Standard row: one normalized material lot creates a `+0` item whose
 final rank equals its material rank. Fine/Masterwork thresholds, benefits, quality visuals, weight
 penalties, and the property table below remain explicit design work rather than active mechanics.
+Engine-v26 implements integer item load, Strength tolerance, and explicit requirements for readiness
+combat.
 
 ## Material rank plus craftsmanship
 
@@ -49,25 +52,41 @@ supplement a build, not define one.
 
 ## Weight classes
 
-Weight is the link between equipment and attributes. A hero's weight tolerance is driven by Might,
-supported by Vitality in the source draft.
+Weight is the link between equipment and attributes. The shipped pure evaluator considers a
+loadout eligible only when total equipped load does not exceed effective Strength in the
+`equipment-load` scope. A permanent item requirement reads intrinsic Strength instead. Vitality
+contributes to neither check and is never an armour gate.
 
-| Class | Typical wearer | Penalty if over tolerance |
+| Class | Typical equipment | Pure evaluator result if over tolerance |
 | --- | --- | --- |
 | **Light** | Dagger, Robes, Accessory | Rarely an issue |
-| **Medium** | One-handed Weapon, Spear, Bow, Light Armour, Shield, Staff, Tool | Movement and evasion loss |
-| **Heavy** | Two-handed Sword, Axe, Mace, or Heavy Armour | Movement, evasion, attack speed and initiative loss |
-| **Very Heavy** | Exceptional named Equipment only | Severe penalties across all Agility-driven stats |
+| **Medium** | One-handed Weapon, Spear, Bow, Light Armour, Shield, Staff, Tool | loadout is ineligible |
+| **Heavy** | Heavy weapons or Heavy Armour | loadout is ineligible |
+
+The combat profile uses explicit per-item load rather than deriving load from the label at runtime:
+
+| Equipment | Load |
+| --- | ---: |
+| Sword / Dagger / Spear / Bow | `12 / 6 / 16 / 14` |
+| Axe / Mace / Shield / Staff | `20 / 20 / 16 / 14` |
+| Heavy Armour, Head / Torso / Legs / Boots | `12 / 28 / 22 / 10` |
+| Light Armour, Head / Torso / Legs / Boots | `6 / 14 / 11 / 5` |
+| Robes, Head / Torso / Legs / Boots | `2 / 4 / 3 / 2` |
+
+Current heavy-weight profiles require intrinsic Strength 35; Heavy Armour requires intrinsic Strength 45
+and `armour-training`. No production profile uses a Vitality requirement. The pure evaluator marks
+an over-tolerance loadout ineligible rather than calculating the movement, evasion, or readiness
+penalties described by earlier drafts. Readiness-state assembly enforces this check; the frozen
+`legacy-auto-v1` runner does not reject a loadout on this basis.
 
 **Weightless Craft** (Forging, Rare) lowers an item one weight class at the same protection level,
 which is one of the main reasons a roster wants a good armoursmith.
 
 ## Open implementation questions
 
-- Bind Dexterity, Vitality, and the abbreviated weapon attributes to the supplied shared attribute
-  vocabulary.
-- Define whether weight is per item, total loadout, carried inventory, or some combination.
-- Define exact tolerance, penalty curves, stacking, and how Weightless Craft affects reservations
-  and visuals.
+- Decide whether a later rules version replaces ineligibility with bounded movement, evasion, or
+  readiness penalties.
+- Define whether carried inventory contributes separately from equipped load.
+- Define how Weightless Craft changes explicit profile load, reservations, and visuals.
 - Define the shared item-difficulty and material-difficulty scales, the Forging margins for Fine and
   Masterwork, and the bounded benefit improvement for craftsmanship beyond S.

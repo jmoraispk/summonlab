@@ -4,6 +4,10 @@
 > The latest multi-system target, including the town-bound Master and revised rank caps, is in the
 > [shared system architecture](system-architecture/README.md). Conflicts require new versioned rules;
 > existing replay behavior remains unchanged.
+>
+> [ADR 0072](decisions/0072-four-attributes-and-operator-owned-combat-modes.md) is the current
+> authority for combat attributes and release combat modes. It supersedes older proposals in this
+> document wherever they conflict.
 
 ## Product thesis
 
@@ -138,10 +142,11 @@ The player can spend as much attention as desired. Micromanagement creates more 
 
 ### Mission harm and aftermath
 
-Mission guard is a short-lived tactical buffer, not health under another name. The impact that
-breaks a hero's remaining guard can wound them; every later exposed impact can do so again. Wounds,
-equipped-item wear, and death are resolved by the engine in the same authoritative round and remain
-part of the hero after the attempt ends.
+Health and Mana are the only universal resource bars. Mission protection comes from authored
+equipment, resistance, positioning, statuses, and skill effects; there is no universal mission
+guard or poise pool. A particular skill, shield, stance, or enemy may later own an explicit visible
+buffer or Break meter. Wounds, equipped-item wear, and death are resolved by the engine and remain
+part of the hero after the attempt ends when that mission rules version enables them.
 
 Aftermath follows physical presence. A wounded survivor remembers their own injury. Other surviving,
 co-located heroes may remember what they saw and revise their relationship with the Master; heroes
@@ -150,6 +155,15 @@ witness their own death. Damage and relationship magnitudes can be balanced, but
 location, witness, health, equipment, and permanence evidence must remain inspectable and replayable.
 
 Tower missions advance the campaign. Portal missions gather materials and expose optional worlds with different hazards, resources, cultures, and temporary rules.
+
+The current `engine-v26` beta default is operator-owned `legacy-auto-v1`: the player advances its
+automatic combat only with **Continue battle** and cannot submit actions, targets, policies, or a
+mode selection. `agent-readiness-v1` V2 is implemented for operator evaluation with per-hero tactical
+choice, one-tick frozen cohorts, deterministic collision arbitration, and executable damaging
+hostile actions.
+It is not player-selectable or promoted as the release default. Its checked V2 qualification
+artifact passes the mechanical operator-evaluation gates; broader hostile tactics, full product
+balance, and owner promotion remain outstanding.
 
 ### Master loop
 
@@ -308,18 +322,19 @@ Stable traits should bias behavior without becoming hard-coded caricatures. Curr
 
 ## Attributes and skills
 
-### Minimal attribute proposal
+### Canonical combat attributes
 
 | Attribute | Covers | Example roles |
 | --- | --- | --- |
-| Might | Force, lifting, melee power | Sword fighter, miner, builder |
-| Vigor | Health, stamina, resistance | Guardian, laborer, explorer |
-| Agility | Speed, coordination, precision | Archer, scout, craftsperson |
-| Focus | Mana control, concentration, technical execution | Mage, alchemist, smith |
-| Insight | Perception, learning, memory use, diagnosis | Researcher, healer, explorer |
-| Presence | Persuasion, leadership, performance, intimidation | Leader, negotiator, trainer |
+| Strength | Physical magnitude, carrying, equipment-load tolerance, authored heavy-item requirements | Physical combat and heavy equipment |
+| Vitality | Maximum Health and modest natural Health regeneration | Durability and recovery |
+| Agility | Readiness, movement, evasion, bounded relative speed in hit contests | Mobility and defensive timing |
+| Magic | Magical magnitude, maximum Mana, and modest saturating Mana regeneration | Magic and Mana economy |
 
-Insight must not make a model “smarter” or “dumber.” It changes game checks, learning speed, perception, and available information. The same policy still chooses for every hero.
+These four visible attributes do not own morale, personality, decision quality, learned accuracy,
+crafting quality, universal mitigation, or learning rate. There is no stamina or universal poise
+bar. Learned capability and hidden learning differences are separate systems, as detailed in the
+[attribute rules](wiki/mechanics/attributes.md).
 
 ### Skills
 
@@ -327,8 +342,9 @@ Skills are learned proficiencies such as sword fighting, bow fighting, shield us
 
 Anyone can learn any non-exclusive skill. Learning rate depends on:
 
-- attribute fit;
-- innate affinity;
+- a bounded hidden cognitive factor for comprehension-heavy evidence only;
+- the relevant independent domain aptitude;
+- innate affinity where the authored skill rules use it;
 - teacher skill and relationship;
 - facility and tool quality;
 - habit strength and practice consistency;
@@ -414,11 +430,13 @@ Secret synthesis is possible, but unexplained disappearances remain socially mea
 - Replays remain available after game over.
 - Meta-progression, if any, must not erase the meaning of death; it can unlock knowledge, starting options, or visual records rather than resurrecting the run.
 
-In missions, the Master uses the same guard-first physical consequence boundary as summoned heroes.
-The player controls the Master's legal move, inspection, defense, recovery, and attack choices;
-heroes remain autonomous. A fatal Master impact commits the attempt death and whole-run game over
-atomically. The interface must show predictable environmental hazards before commitment, remove all
-post-death controls, and preserve the sealed chronicle for inspection.
+In mission rules that support direct Master participation, the Master uses the same Health,
+protection, and physical-consequence boundary as summoned heroes. The player controls the Master's
+legal move, inspection, defense, recovery, and attack choices; heroes remain autonomous. This is
+future tactical-mode design, not a control surface in `legacy-auto-v1`. A fatal Master impact
+commits the attempt death and whole-run game over atomically. The interface must show predictable
+environmental hazards before commitment, remove all post-death controls, and preserve the sealed
+chronicle for inspection.
 
 Permadeath creates real stakes, but the first slice should measure whether frequent restarts teach the player or merely waste time.
 
@@ -455,7 +473,7 @@ Entries can be filtered by day, mission, floor, hero, or event type and expanded
 - `4×` continuous clock;
 - one daily plan call per hero;
 - deterministic habit execution and interruption;
-- six attributes and a small skill library;
+- four combat attributes and a small skill library;
 - tower floors 1–5 with one hidden path;
 - Wait, five-second Countdown, Step, and Continuous Master timing;
 - directed and seeded-random unattended Master policies;

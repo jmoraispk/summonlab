@@ -19,19 +19,25 @@ import {
 	MissionRunStateV5Schema,
 	MissionRunStateV6Schema,
 	MissionRunStateV7Schema,
-	MissionRunStateV8Schema
+	MissionRunStateV8Schema,
+	MissionRunStateV9Schema,
+	MissionRunStateV10Schema
 } from './mission-state.js';
 import {
 	EngineHeroStateV3Schema,
 	EngineHeroStateV4Schema,
 	EngineHeroStateV5Schema,
 	EngineHeroStateV24Schema,
+	EngineHeroStateV25Schema,
+	EngineHeroStateV26Schema,
+	EngineHeroStateV27Schema,
 	EngineSettlementStateSchema,
 	EngineSettlementStateV3Schema,
 	EngineSettlementStateV4Schema,
 	EngineSettlementStateV6Schema,
 	EngineSettlementStateV24Schema
 } from './settlement-state.js';
+import { ProgressionRulesBindingSchema } from '../progression.js';
 import { RunStatusSchema } from '../run.js';
 import {
 	SocietyStateSchema,
@@ -44,7 +50,8 @@ import { ContentVersionSchema, EntityIdSchema, IsoDateTimeSchema } from '../shar
 import {
 	FirstBandArchiveStateSchema,
 	RuntimeBandStoryStateSchema,
-	SynthesisStateSchema
+	SynthesisStateSchema,
+	SynthesisStateV2Schema
 } from './story-synthesis-state.js';
 
 export const EngineGameStateV1Schema = z
@@ -833,6 +840,38 @@ const EngineGameStateV24BaseSchema = z
 	})
 	.strict();
 
+const EngineGameStateV25BaseSchema = z
+	.object({
+		...EngineGameStateV24BaseSchema.shape,
+		schemaVersion: z.literal(25),
+		heroes: z.record(EntityIdSchema, EngineHeroStateV25Schema),
+		mission: MissionRunStateV9Schema
+	})
+	.strict();
+
+const EngineGameStateV26BaseSchema = z
+	.object({
+		...EngineGameStateV25BaseSchema.shape,
+		schemaVersion: z.literal(26),
+		heroes: z.record(EntityIdSchema, EngineHeroStateV26Schema),
+		mission: MissionRunStateV10Schema
+	})
+	.strict();
+
+const PROGRESSION_RULES_V1_CONTENT_HASH =
+	'06fc61271c9c3254836c4f50f845624bea08731952957d0c1d6faf295e8744ce';
+
+const EngineGameStateV27BaseSchema = z
+	.object({
+		...EngineGameStateV26BaseSchema.shape,
+		schemaVersion: z.literal(27),
+		contentVersion: z.literal('engine-v27'),
+		heroes: z.record(EntityIdSchema, EngineHeroStateV27Schema),
+		synthesis: SynthesisStateV2Schema,
+		progressionRules: ProgressionRulesBindingSchema
+	})
+	.strict();
+
 type CommunicationEngineValidationState =
 	| z.infer<typeof EngineGameStateV8BaseSchema>
 	| z.infer<typeof EngineGameStateV9BaseSchema>
@@ -1598,7 +1637,7 @@ export const EngineGameStateV24Schema = EngineGameStateV24BaseSchema.superRefine
 		);
 		const equippedItemIds = new Set<string>();
 		for (const hero of Object.values(state.heroes)) {
-			for (const itemId of Object.values(hero.equipment)) {
+			for (const itemId of Object.values(hero.equipment) as Array<string | null>) {
 				if (itemId === null) continue;
 				const item = state.items[itemId];
 				if (!item || item.ownerId !== hero.heroId || item.equippedById !== hero.heroId) {
@@ -1617,6 +1656,181 @@ export const EngineGameStateV24Schema = EngineGameStateV24BaseSchema.superRefine
 					message: 'Equipped v24 item must be linked by its hero loadout'
 				});
 			}
+		}
+	}
+);
+
+export const EngineGameStateV25Schema = EngineGameStateV25BaseSchema.superRefine(
+	(state, context) => {
+		const mainHandItemIds = new Set(
+			Object.values(state.heroes)
+				.map((hero) => hero.equipment.mainHand)
+				.filter((itemId): itemId is string => itemId !== null)
+		);
+		validateFirstBandArchiveEngineState(
+			{
+				...state,
+				mission: {
+					...state.mission,
+					aftermath: {
+						aftermathVersion: 'mission-aftermath-v3',
+						activeAttemptId: state.mission.aftermath.activeAttemptId,
+						consequences: state.mission.aftermath.consequences,
+						archives: state.mission.aftermath.archives.map((archive) => ({
+							attemptId: archive.attemptId,
+							ordinal: archive.ordinal,
+							binding: archive.binding,
+							outcome: archive.outcome,
+							preparedAt: archive.preparedAt,
+							deployedAt: archive.deployedAt,
+							endedAt: archive.endedAt,
+							finalRoundNumber: archive.finalRoundNumber,
+							consequences: archive.consequences
+						}))
+					},
+					attempt: state.mission.attempt
+						? Object.fromEntries(
+								Object.entries(state.mission.attempt).filter(([key]) => key !== 'combatModeBinding')
+							)
+						: null
+				},
+				heroes: Object.fromEntries(
+					Object.entries(state.heroes).map(([heroId, hero]) => [
+						heroId,
+						{ ...hero, equipment: { mainHand: hero.equipment.mainHand } }
+					])
+				),
+				items: Object.fromEntries(
+					Object.entries(state.items).map(([itemId, item]) => [
+						itemId,
+						{ ...item, equippedById: mainHandItemIds.has(itemId) ? item.equippedById : null }
+					])
+				)
+			} as unknown as z.infer<typeof EngineGameStateV23BaseSchema>,
+			context
+		);
+		const equippedItemIds = new Set<string>();
+		for (const hero of Object.values(state.heroes)) {
+			for (const itemId of Object.values(hero.equipment) as Array<string | null>) {
+				if (itemId === null) continue;
+				const item = state.items[itemId];
+				if (!item || item.ownerId !== hero.heroId || item.equippedById !== hero.heroId) {
+					context.addIssue({
+						code: 'custom',
+						message: 'Hero equipment must reference an owned v25 item'
+					});
+				}
+				equippedItemIds.add(itemId);
+			}
+		}
+		for (const item of Object.values(state.items)) {
+			if (item.equippedById !== null && !equippedItemIds.has(item.itemId)) {
+				context.addIssue({
+					code: 'custom',
+					message: 'Equipped v25 item must be linked by its hero loadout'
+				});
+			}
+		}
+	}
+);
+
+function validateEngineGameStateV26(
+	state:
+		z.infer<typeof EngineGameStateV26BaseSchema> | z.infer<typeof EngineGameStateV27BaseSchema>,
+	context: z.RefinementCtx
+): void {
+	const attempt = state.mission.attempt;
+	const mainHandItemIds = new Set(
+		Object.values(state.heroes)
+			.map((hero) => hero.equipment.mainHand)
+			.filter((itemId): itemId is string => itemId !== null)
+	);
+	validateFirstBandArchiveEngineState(
+		{
+			...state,
+			mission: {
+				...state.mission,
+				aftermath: {
+					aftermathVersion: 'mission-aftermath-v3',
+					activeAttemptId: state.mission.aftermath.activeAttemptId,
+					consequences: state.mission.aftermath.consequences,
+					archives: state.mission.aftermath.archives.map((archive) => ({
+						attemptId: archive.attemptId,
+						ordinal: archive.ordinal,
+						binding: archive.binding,
+						outcome: archive.outcome,
+						preparedAt: archive.preparedAt,
+						deployedAt: archive.deployedAt,
+						endedAt: archive.endedAt,
+						finalRoundNumber: archive.finalRoundNumber,
+						consequences: archive.consequences
+					}))
+				},
+				attempt: attempt
+					? Object.fromEntries(
+							Object.entries(attempt).filter(
+								([key]) => key !== 'combatModeBinding' && key !== 'combatState'
+							)
+						)
+					: null
+			},
+			heroes: Object.fromEntries(
+				Object.entries(state.heroes).map(([heroId, hero]) => [
+					heroId,
+					{ ...hero, equipment: { mainHand: hero.equipment.mainHand } }
+				])
+			),
+			items: Object.fromEntries(
+				Object.entries(state.items).map(([itemId, item]) => [
+					itemId,
+					{ ...item, equippedById: mainHandItemIds.has(itemId) ? item.equippedById : null }
+				])
+			)
+		} as unknown as z.infer<typeof EngineGameStateV23BaseSchema>,
+		context
+	);
+	for (const evidence of Object.values(state.mission.evidence)) {
+		if (evidence.holderActorId !== state.master.masterId && !state.heroes[evidence.holderActorId]) {
+			context.addIssue({ code: 'custom', message: 'Mission evidence holder must exist' });
+		}
+	}
+	const equippedItemIds = new Set<string>();
+	for (const hero of Object.values(state.heroes)) {
+		for (const itemId of Object.values(hero.equipment) as Array<string | null>) {
+			if (itemId === null) continue;
+			const item = state.items[itemId];
+			if (!item || item.ownerId !== hero.heroId || item.equippedById !== hero.heroId) {
+				context.addIssue({
+					code: 'custom',
+					message: 'Hero equipment must reference an owned v26 item'
+				});
+			}
+			equippedItemIds.add(itemId);
+		}
+	}
+	for (const item of Object.values(state.items)) {
+		if (item.equippedById !== null && !equippedItemIds.has(item.itemId)) {
+			context.addIssue({
+				code: 'custom',
+				message: 'Equipped v26 item must be linked by its hero loadout'
+			});
+		}
+	}
+}
+
+export const EngineGameStateV26Schema = EngineGameStateV26BaseSchema.superRefine(
+	validateEngineGameStateV26
+);
+
+export const EngineGameStateV27Schema = EngineGameStateV27BaseSchema.superRefine(
+	(state, context) => {
+		validateEngineGameStateV26(state, context);
+		if (state.progressionRules.contentHash !== PROGRESSION_RULES_V1_CONTENT_HASH) {
+			context.addIssue({
+				code: 'custom',
+				path: ['progressionRules', 'contentHash'],
+				message: 'Progression rules binding must match progression-rules-v1 content'
+			});
 		}
 	}
 );
@@ -1645,7 +1859,10 @@ export const EngineGameStateSchema = z.discriminatedUnion('schemaVersion', [
 	EngineGameStateV21Schema,
 	EngineGameStateV22Schema,
 	EngineGameStateV23Schema,
-	EngineGameStateV24Schema
+	EngineGameStateV24Schema,
+	EngineGameStateV25Schema,
+	EngineGameStateV26Schema,
+	EngineGameStateV27Schema
 ]);
 
 export type EngineGameState = z.infer<typeof EngineGameStateSchema>;
@@ -1673,3 +1890,6 @@ export type EngineGameStateV21 = z.infer<typeof EngineGameStateV21Schema>;
 export type EngineGameStateV22 = z.infer<typeof EngineGameStateV22Schema>;
 export type EngineGameStateV23 = z.infer<typeof EngineGameStateV23Schema>;
 export type EngineGameStateV24 = z.infer<typeof EngineGameStateV24Schema>;
+export type EngineGameStateV25 = z.infer<typeof EngineGameStateV25Schema>;
+export type EngineGameStateV26 = z.infer<typeof EngineGameStateV26Schema>;
+export type EngineGameStateV27 = z.infer<typeof EngineGameStateV27Schema>;

@@ -20,8 +20,13 @@ import {
 	EngineGameStateV22Schema,
 	EngineGameStateV23Schema,
 	EngineGameStateV24Schema,
+	EngineGameStateV25Schema,
+	EngineGameStateV27Schema,
+	ExperienceReceiptSchema,
 	HabitStateSchema,
 	HeroProgressionSchema,
+	HeroProgressionV25Schema,
+	HeroProgressionV2Schema,
 	InjurySchema,
 	NeedStateSchema,
 	RoutineResolutionSchema,
@@ -31,6 +36,7 @@ import {
 	type RewardDelta,
 	type RoutineKind
 } from '@summonlab/contracts';
+import { PROGRESSION_RULES_V1, PROGRESSION_RULES_V1_BINDING } from '@summonlab/content';
 import { z } from 'zod';
 
 import { RewardDeltasSchema } from '../../core/event-metadata.js';
@@ -39,6 +45,11 @@ import { ENGINE_EPOCH, hasFirstEmberState } from '../../core/versions.js';
 import { createEntropyCursor, drawInteger } from '../../entropy.js';
 import { IllegalActionError } from '../../errors.js';
 import { deterministicUuid } from '../../hash.js';
+import { applyExperienceClaim } from '../progression/experience.js';
+import {
+	intrinsicAttributes as progressionIntrinsicAttributes,
+	maximumHealth as progressionMaximumHealth
+} from '../progression/math.js';
 
 export const ItemUpdateSchema = z
 	.object({
@@ -61,6 +72,20 @@ export const ActivityOutcomeSchema = z
 		rewardDeltas: RewardDeltasSchema
 	})
 	.strict();
+
+const CapabilityHealthSchema = z.number().int().nonnegative().max(10_000);
+
+export const ActivityOutcomeV25Schema = ActivityOutcomeSchema.extend({
+	healthAfter: CapabilityHealthSchema,
+	progressionAfter: HeroProgressionV25Schema
+}).strict();
+
+export const ActivityOutcomeV27Schema = ActivityOutcomeSchema.extend({
+	healthAfter: z.number().int().nonnegative().max(Number.MAX_SAFE_INTEGER),
+	maxHealthAfter: z.number().int().positive().max(Number.MAX_SAFE_INTEGER),
+	progressionAfter: HeroProgressionV2Schema,
+	experienceReceipt: ExperienceReceiptSchema.nullable()
+}).strict();
 
 export const RoutineOutcomeSchema = z
 	.object({
@@ -86,6 +111,14 @@ export const RoutineOutcomeSchema = z
 		rewardDeltas: RewardDeltasSchema
 	})
 	.strict();
+
+export const RoutineOutcomeV25Schema = RoutineOutcomeSchema.extend({
+	healthAfter: CapabilityHealthSchema
+}).strict();
+
+export const RoutineOutcomeV27Schema = RoutineOutcomeSchema.extend({
+	healthAfter: z.number().int().nonnegative().max(Number.MAX_SAFE_INTEGER)
+}).strict();
 
 export function clamp(value: number, minimum = 0, maximum = 100): number {
 	return Math.min(maximum, Math.max(minimum, value));
@@ -125,7 +158,9 @@ export function currentRoutineFor(state: EngineGameState, heroId: string) {
 		state.schemaVersion === 21 ||
 		state.schemaVersion === 22 ||
 		state.schemaVersion === 23 ||
-		state.schemaVersion === 24
+		state.schemaVersion === 24 ||
+		state.schemaVersion === 25 ||
+		state.schemaVersion === 27
 		? (state.heroes[heroId]?.currentRoutine ?? null)
 		: null;
 }
@@ -211,45 +246,49 @@ export function resolveDailyRoutine(
 	heroId: string
 ): z.infer<typeof RoutineResolutionSchema> | null {
 	const state =
-		stateInput.schemaVersion === 24
-			? EngineGameStateV24Schema.parse(stateInput)
-			: stateInput.schemaVersion === 23
-				? EngineGameStateV23Schema.parse(stateInput)
-				: stateInput.schemaVersion === 22
-					? EngineGameStateV22Schema.parse(stateInput)
-					: stateInput.schemaVersion === 21
-						? EngineGameStateV21Schema.parse(stateInput)
-						: stateInput.schemaVersion === 20
-							? EngineGameStateV20Schema.parse(stateInput)
-							: stateInput.schemaVersion === 19
-								? EngineGameStateV19Schema.parse(stateInput)
-								: stateInput.schemaVersion === 18
-									? EngineGameStateV18Schema.parse(stateInput)
-									: stateInput.schemaVersion === 17
-										? EngineGameStateV17Schema.parse(stateInput)
-										: stateInput.schemaVersion === 16
-											? EngineGameStateV16Schema.parse(stateInput)
-											: stateInput.schemaVersion === 15
-												? EngineGameStateV15Schema.parse(stateInput)
-												: stateInput.schemaVersion === 14
-													? EngineGameStateV14Schema.parse(stateInput)
-													: stateInput.schemaVersion === 13
-														? EngineGameStateV13Schema.parse(stateInput)
-														: stateInput.schemaVersion === 12
-															? EngineGameStateV12Schema.parse(stateInput)
-															: stateInput.schemaVersion === 11
-																? EngineGameStateV11Schema.parse(stateInput)
-																: stateInput.schemaVersion === 10
-																	? EngineGameStateV10Schema.parse(stateInput)
-																	: stateInput.schemaVersion === 9
-																		? EngineGameStateV9Schema.parse(stateInput)
-																		: stateInput.schemaVersion === 8
-																			? EngineGameStateV8Schema.parse(stateInput)
-																			: stateInput.schemaVersion === 7
-																				? EngineGameStateV7Schema.parse(stateInput)
-																				: stateInput.schemaVersion === 6
-																					? EngineGameStateV6Schema.parse(stateInput)
-																					: EngineGameStateV5Schema.parse(stateInput);
+		stateInput.schemaVersion === 27
+			? EngineGameStateV27Schema.parse(stateInput)
+			: stateInput.schemaVersion === 25
+				? EngineGameStateV25Schema.parse(stateInput)
+				: stateInput.schemaVersion === 24
+					? EngineGameStateV24Schema.parse(stateInput)
+					: stateInput.schemaVersion === 23
+						? EngineGameStateV23Schema.parse(stateInput)
+						: stateInput.schemaVersion === 22
+							? EngineGameStateV22Schema.parse(stateInput)
+							: stateInput.schemaVersion === 21
+								? EngineGameStateV21Schema.parse(stateInput)
+								: stateInput.schemaVersion === 20
+									? EngineGameStateV20Schema.parse(stateInput)
+									: stateInput.schemaVersion === 19
+										? EngineGameStateV19Schema.parse(stateInput)
+										: stateInput.schemaVersion === 18
+											? EngineGameStateV18Schema.parse(stateInput)
+											: stateInput.schemaVersion === 17
+												? EngineGameStateV17Schema.parse(stateInput)
+												: stateInput.schemaVersion === 16
+													? EngineGameStateV16Schema.parse(stateInput)
+													: stateInput.schemaVersion === 15
+														? EngineGameStateV15Schema.parse(stateInput)
+														: stateInput.schemaVersion === 14
+															? EngineGameStateV14Schema.parse(stateInput)
+															: stateInput.schemaVersion === 13
+																? EngineGameStateV13Schema.parse(stateInput)
+																: stateInput.schemaVersion === 12
+																	? EngineGameStateV12Schema.parse(stateInput)
+																	: stateInput.schemaVersion === 11
+																		? EngineGameStateV11Schema.parse(stateInput)
+																		: stateInput.schemaVersion === 10
+																			? EngineGameStateV10Schema.parse(stateInput)
+																			: stateInput.schemaVersion === 9
+																				? EngineGameStateV9Schema.parse(stateInput)
+																				: stateInput.schemaVersion === 8
+																					? EngineGameStateV8Schema.parse(stateInput)
+																					: stateInput.schemaVersion === 7
+																						? EngineGameStateV7Schema.parse(stateInput)
+																						: stateInput.schemaVersion === 6
+																							? EngineGameStateV6Schema.parse(stateInput)
+																							: EngineGameStateV5Schema.parse(stateInput);
 	const hero = state.heroes[heroId];
 	if (!hero?.dailyPlan || hero.currentRoutine) return null;
 	const pending = hero.dailyPlan.entries.filter((entry) => entry.status === 'pending');
@@ -344,13 +383,32 @@ export function levelFor(experience: number, stars: number): number {
 	return Math.min(stars * 10, 1 + Math.floor(experience / 10));
 }
 
+export function attributePointsForLevelTransition(
+	unspentAttributePoints: number,
+	levelBefore: number,
+	levelAfter: number
+): number {
+	if (
+		![unspentAttributePoints, levelBefore, levelAfter].every(Number.isInteger) ||
+		unspentAttributePoints < 0 ||
+		levelBefore < 1 ||
+		levelAfter < levelBefore
+	) {
+		throw new Error('Attribute point grants require a nondecreasing integer level transition');
+	}
+	return unspentAttributePoints + (levelAfter - levelBefore);
+}
+
 export function buildActivityOutcome(
 	state: EngineGameStateModern,
 	heroId: string,
 	eventId: string,
 	entropyCursor: { seed: string; cursor: number }
 ): {
-	outcome: z.infer<typeof ActivityOutcomeSchema>;
+	outcome:
+		| z.infer<typeof ActivityOutcomeSchema>
+		| z.infer<typeof ActivityOutcomeV25Schema>
+		| z.infer<typeof ActivityOutcomeV27Schema>;
 	entropy: typeof entropyCursor;
 	draws: EntropyDraw[];
 } {
@@ -366,6 +424,8 @@ export function buildActivityOutcome(
 	let nextEntropy = entropyCursor;
 	const draws: EntropyDraw[] = [];
 	const deltas: RewardDelta[] = [];
+	let experienceReceipt: z.infer<typeof ExperienceReceiptSchema> | null = null;
+	let maxHealthAfter = hero.maxHealth;
 
 	if (activity.kind === 'train') {
 		const experienceBonus = firstEmberModifier(state, 'hero-experience');
@@ -375,17 +435,67 @@ export function buildActivityOutcome(
 		const skillBefore = hero.progression.skills.swordFighting.experience;
 		const skillAfter = skillBefore + 6 + skillBonus;
 		const experienceAfter = experienceBefore + 8 + experienceBonus;
-		progressionAfter = {
-			...hero.progression,
-			experience: experienceAfter,
-			level: levelFor(experienceAfter, hero.progression.stars),
-			skills: {
-				swordFighting: {
-					experience: skillAfter,
-					rank: Math.min(20, Math.floor(skillAfter / 5))
+		if (state.schemaVersion === 27) {
+			const progressionHero = state.heroes[heroId]!;
+			const claimOutcome = applyExperienceClaim({
+				progression: progressionHero.progression,
+				claim: {
+					claimId: deterministicUuid(`${eventId}:${heroId}:training-experience-claim`),
+					heroId,
+					sourceEventId: eventId,
+					evidenceKey: `training:${activity.scheduledEventId}`,
+					amount: 8 + experienceBonus,
+					sourceKind: 'training'
+				},
+				rules: PROGRESSION_RULES_V1,
+				rulesBinding: PROGRESSION_RULES_V1_BINDING,
+				occurredAt: activity.completesAt
+			});
+			experienceReceipt = claimOutcome.receipt;
+			progressionAfter = {
+				...claimOutcome.progression,
+				skills: {
+					swordFighting: {
+						experience: skillAfter,
+						rank: Math.min(20, Math.floor(skillAfter / 5))
+					}
 				}
-			}
-		};
+			};
+			const intrinsic = progressionIntrinsicAttributes(
+				progressionHero.capabilityProfile,
+				progressionHero.progression.permanentGrowth
+			);
+			maxHealthAfter = progressionMaximumHealth(
+				intrinsic.vitality,
+				claimOutcome.progression.level,
+				PROGRESSION_RULES_V1
+			);
+		} else {
+			const levelAfter = levelFor(experienceAfter, hero.progression.stars);
+			const capabilityProgression =
+				state.schemaVersion === 25 ? state.heroes[heroId]!.progression : null;
+			progressionAfter = {
+				...hero.progression,
+				experience: experienceAfter,
+				level: levelAfter,
+				...(capabilityProgression
+					? {
+							unspentAttributePoints: attributePointsForLevelTransition(
+								capabilityProgression.unspentAttributePoints,
+								levelBefore,
+								levelAfter
+							),
+							attributeGrowthReceipts: capabilityProgression.attributeGrowthReceipts
+						}
+					: {}),
+				skills: {
+					swordFighting: {
+						experience: skillAfter,
+						rank: Math.min(20, Math.floor(skillAfter / 5))
+					}
+				}
+			};
+		}
 		needsAfter = {
 			hunger: clamp(hero.needs.hunger + 10),
 			fatigue: clamp(hero.needs.fatigue + 15)
@@ -535,7 +645,12 @@ export function buildActivityOutcome(
 	}
 
 	return {
-		outcome: ActivityOutcomeSchema.parse({
+		outcome: (state.schemaVersion === 27
+			? ActivityOutcomeV27Schema
+			: state.schemaVersion === 25
+				? ActivityOutcomeV25Schema
+				: ActivityOutcomeSchema
+		).parse({
 			scheduledEventId: activity.scheduledEventId,
 			heroId,
 			activity: activity.kind,
@@ -544,6 +659,7 @@ export function buildActivityOutcome(
 			needsAfter,
 			injuriesAfter,
 			progressionAfter,
+			...(state.schemaVersion === 27 ? { maxHealthAfter, experienceReceipt } : {}),
 			itemUpdate,
 			rewardDeltas: deltas
 		}),
@@ -633,7 +749,13 @@ export function buildRoutineOutcome(state: EngineRoutineState, heroId: string) {
 		}
 	}
 
-	return RoutineOutcomeSchema.parse({
+	return (
+		state.schemaVersion === 27
+			? RoutineOutcomeV27Schema
+			: state.schemaVersion === 25
+				? RoutineOutcomeV25Schema
+				: RoutineOutcomeSchema
+	).parse({
 		scheduledEventId: routine.scheduledEventId,
 		heroId,
 		planId: routine.planId,

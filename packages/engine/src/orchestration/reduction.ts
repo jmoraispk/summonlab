@@ -16,6 +16,7 @@ import { missionEventReducer } from '../domains/mission/reducer.js';
 import { settlementEventReducer } from '../domains/settlement/reducer.js';
 import { storyEventReducer } from '../domains/story/reducer.js';
 import { synthesisEventReducer } from '../domains/synthesis/reducer.js';
+import { progressionEventReducer } from '../domains/progression/experience.js';
 import { ReplayIntegrityError } from '../errors.js';
 import { createEventRegistry } from './event-registry.js';
 import { firstBandMissionEventReducer } from './first-band-mission-reducer.js';
@@ -25,7 +26,8 @@ const eventRegistry = createEventRegistry([
 	missionEventReducer,
 	firstBandMissionEventReducer,
 	storyEventReducer,
-	synthesisEventReducer
+	synthesisEventReducer,
+	progressionEventReducer
 ]);
 
 const LegacyChoosePayloadSchema = z

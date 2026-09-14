@@ -6,6 +6,7 @@ describe('configuration', () => {
 	it('uses safe local defaults', () => {
 		const config = parseConfig({});
 
+		expect(config.combatMode).toBe('legacy-auto-v1');
 		expect(config.policyMode).toBe('scripted');
 		expect(config.workerPort).toBe(4174);
 		expect(config.simulationSpeed).toBe(4);
@@ -23,6 +24,14 @@ describe('configuration', () => {
 		expect(config.imageQuality).toBe('low');
 		expect(config.imageSize).toBe('1024x1536');
 		expect(config.imageTimeoutMs).toBe(120_000);
+	});
+
+	it('accepts both operator-owned combat modes while rejecting player-facing variants', () => {
+		expect(parseConfig({ COMBAT_MODE: 'legacy-auto-v1' }).combatMode).toBe('legacy-auto-v1');
+		expect(parseConfig({ COMBAT_MODE: 'agent-readiness-v1' }).combatMode).toBe(
+			'agent-readiness-v1'
+		);
+		expect(() => parseConfig({ COMBAT_MODE: 'player-choice' })).toThrow();
 	});
 
 	it('requires an explicit image flag while keeping provider settings configurable', () => {

@@ -9,6 +9,7 @@ import { storyCommandHandler } from '../domains/story/commands.js';
 import { storyEventReducer } from '../domains/story/reducer.js';
 import { synthesisCommandHandler } from '../domains/synthesis/commands.js';
 import { synthesisEventReducer } from '../domains/synthesis/reducer.js';
+import { progressionEventReducer } from '../domains/progression/experience.js';
 import { createCommandRegistry } from './command-registry.js';
 import { createEventRegistry } from './event-registry.js';
 import {
@@ -134,7 +135,8 @@ describe('modern engine ownership', () => {
 			missionEventReducer,
 			firstBandMissionEventReducer,
 			storyEventReducer,
-			synthesisEventReducer
+			synthesisEventReducer,
+			progressionEventReducer
 		]);
 
 		expect(registry.ownerIds).toStrictEqual([
@@ -142,7 +144,8 @@ describe('modern engine ownership', () => {
 			'mission',
 			'first-band-mission',
 			'story',
-			'synthesis'
+			'synthesis',
+			'progression'
 		]);
 		expect(new Set(registry.eventTypes).size).toBe(registry.eventTypes.length);
 		expect([...registry.eventTypes].sort()).toStrictEqual([...MODERN_EVENT_TYPES].sort());

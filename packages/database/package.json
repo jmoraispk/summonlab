@@ -13,12 +13,13 @@
 		"test:integration": "vitest run --config vitest.integration.config.ts"
 	},
 	"dependencies": {
+		"@summonlab/characters": "workspace:*",
 		"@summonlab/contracts": "workspace:*",
 		"@summonlab/config": "workspace:*",
 		"@summonlab/engine": "workspace:*",
 		"postgres": "^3.4.9"
 	},
 	"devDependencies": {
-		"@summonlab/characters": "workspace:*"
+		"@summonlab/content": "workspace:*"
 	}
 }

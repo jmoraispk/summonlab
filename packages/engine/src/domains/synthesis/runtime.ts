@@ -1,21 +1,35 @@
 import {
 	DailyPlanSchema,
 	EngineGameStateV22Schema,
+	EngineGameStateV27Schema,
 	HeroProgressionSchema,
 	SocietyStateV5Schema,
 	SynthesisReceiptSchema,
+	SynthesisReceiptV2Schema,
 	SynthesisRumorRecordSchema,
 	SynthesisStateSchema,
+	SynthesisStateV2Schema,
 	type EngineCommand,
 	type EngineGameStateV22,
+	type EngineGameStateV27,
 	type RewardDelta,
 	type SocietyStateV5,
 	type SynthesisReceipt,
+	type SynthesisReceiptV2,
 	type SynthesisRumorRecord
 } from '@summonlab/contracts';
+import { PROGRESSION_RULES_V1, PROGRESSION_RULES_V1_BINDING } from '@summonlab/content';
 
 import { IllegalActionError, ReplayIntegrityError } from '../../errors.js';
 import { deterministicUuid } from '../../hash.js';
+import { applyExperienceClaim } from '../progression/experience.js';
+import {
+	intrinsicAttributes as progressionIntrinsicAttributes,
+	maximumHealth as progressionMaximumHealth
+} from '../progression/math.js';
+
+export type SynthesisEngineState = EngineGameStateV22 | EngineGameStateV27;
+type SynthesisHero = SynthesisEngineState['heroes'][string];
 
 export type SynthesizeHeroCommand = Extract<
 	EngineCommand,
@@ -34,7 +48,7 @@ function clampSocial(value: number): number {
 	return clamp(value, -100, 100);
 }
 
-function heroCanHearCommunication(hero: EngineGameStateV22['heroes'][string]): boolean {
+function heroCanHearCommunication(hero: SynthesisHero): boolean {
 	return (
 		hero.lifeState === 'active' &&
 		hero.currentTravel === null &&
@@ -47,7 +61,7 @@ function levelFor(experience: number, stars: number): number {
 	return Math.min(stars * 10, 1 + Math.floor(experience / 10));
 }
 
-function skipUnfinishedPlan(hero: EngineGameStateV22['heroes'][string], resolvedAt: string) {
+function skipUnfinishedPlan(hero: SynthesisHero, resolvedAt: string) {
 	if (!hero.dailyPlan) return null;
 	return DailyPlanSchema.parse({
 		...hero.dailyPlan,
@@ -60,10 +74,10 @@ function skipUnfinishedPlan(hero: EngineGameStateV22['heroes'][string], resolved
 }
 
 function clearBuildingAssignment(
-	settlement: EngineGameStateV22['settlement'],
+	settlement: SynthesisEngineState['settlement'],
 	heroId: string,
 	buildingId: string
-): EngineGameStateV22['settlement'] {
+): SynthesisEngineState['settlement'] {
 	const building = settlement.buildings[buildingId];
 	if (!building) return settlement;
 	return {
@@ -78,7 +92,7 @@ function clearBuildingAssignment(
 	};
 }
 
-export function synthesisHeroIsReady(hero: EngineGameStateV22['heroes'][string]): boolean {
+export function synthesisHeroIsReady(hero: SynthesisHero): boolean {
 	return (
 		hero.lifeState === 'active' &&
 		hero.location === 'summoning-gate' &&
@@ -89,7 +103,7 @@ export function synthesisHeroIsReady(hero: EngineGameStateV22['heroes'][string])
 	);
 }
 
-export function synthesisCommitIsAvailable(state: EngineGameStateV22): boolean {
+export function synthesisCommitIsAvailable(state: SynthesisEngineState): boolean {
 	return (
 		Object.values(state.heroes).filter((hero) => synthesisHeroIsReady(hero)).length >= 2 &&
 		state.mission.attempt === null
@@ -97,7 +111,7 @@ export function synthesisCommitIsAvailable(state: EngineGameStateV22): boolean {
 }
 
 export function synthesisRumorIsAvailable(
-	state: EngineGameStateV22,
+	state: SynthesisEngineState,
 	command: ShareSynthesisRumorCommand
 ): boolean {
 	if (command.actorId === state.master.masterId) return false;
@@ -141,7 +155,7 @@ export function synthesisRumorIsAvailable(
 }
 
 function synthesisRelationshipDeltas(
-	hero: EngineGameStateV22['heroes'][string],
+	hero: SynthesisHero,
 	knowledge: 'participant' | 'witness' | 'absence'
 ) {
 	const conscience = Math.round((hero.mind.personality.agreeableness - 50) / 20);
@@ -180,7 +194,7 @@ function rumorRelationshipDeltas() {
 }
 
 function withSynthesisRelationshipEvidence(
-	state: EngineGameStateV22,
+	state: SynthesisEngineState,
 	society: SocietyStateV5,
 	heroId: string,
 	eventId: string,
@@ -208,18 +222,18 @@ function withSynthesisRelationshipEvidence(
 	};
 }
 
-export function synthesisEssenceExperience(hero: EngineGameStateV22['heroes'][string]): number {
+export function synthesisEssenceExperience(hero: SynthesisHero): number {
 	return 20 + hero.progression.stars * 15 + hero.progression.level * 5;
 }
 
 export function resolveSynthesis(
-	state: EngineGameStateV22,
+	state: SynthesisEngineState,
 	command: SynthesizeHeroCommand,
 	eventId: string,
 	eventSequence: number
 ): {
-	readonly state: EngineGameStateV22;
-	readonly receipt: SynthesisReceipt;
+	readonly state: SynthesisEngineState;
+	readonly receipt: SynthesisReceipt | SynthesisReceiptV2;
 	readonly canceledScheduledEventIds: readonly string[];
 	readonly rewardDeltas: readonly RewardDelta[];
 } {
@@ -229,11 +243,30 @@ export function resolveSynthesis(
 	const receiptId = deterministicUuid(`${eventId}:synthesis-receipt`);
 	const essenceExperience = synthesisEssenceExperience(source);
 	const recipientExperience = recipient.progression.experience + essenceExperience;
-	const recipientProgression = HeroProgressionSchema.parse({
-		...recipient.progression,
-		experience: recipientExperience,
-		level: levelFor(recipientExperience, recipient.progression.stars)
-	});
+	const progressionOutcome =
+		state.schemaVersion === 27
+			? applyExperienceClaim({
+					progression: state.heroes[recipient.heroId]!.progression,
+					claim: {
+						claimId: deterministicUuid(`${eventId}:${recipient.heroId}:synthesis-experience-claim`),
+						heroId: recipient.heroId,
+						sourceEventId: eventId,
+						evidenceKey: `synthesis:${source.heroId}`,
+						amount: essenceExperience,
+						sourceKind: 'synthesis'
+					},
+					rules: PROGRESSION_RULES_V1,
+					rulesBinding: PROGRESSION_RULES_V1_BINDING,
+					occurredAt: state.simulatedAt
+				})
+			: null;
+	const recipientProgression = progressionOutcome
+		? progressionOutcome.progression
+		: HeroProgressionSchema.parse({
+				...recipient.progression,
+				experience: recipientExperience,
+				level: levelFor(recipientExperience, recipient.progression.stars)
+			});
 	const observations = { ...state.society.observations };
 	const beliefs = { ...state.society.beliefs };
 	const relationships = { ...state.society.relationships };
@@ -312,8 +345,10 @@ export function resolveSynthesis(
 				relationshipDeltas
 			};
 		});
-	const receipt = SynthesisReceiptSchema.parse({
-		receiptVersion: 'synthesis-receipt-v1',
+	const receipt = (
+		state.schemaVersion === 27 ? SynthesisReceiptV2Schema : SynthesisReceiptSchema
+	).parse({
+		receiptVersion: state.schemaVersion === 27 ? 'synthesis-receipt-v2' : 'synthesis-receipt-v1',
 		receiptId,
 		sourceEventId: eventId,
 		masterId: state.master.masterId,
@@ -328,23 +363,28 @@ export function resolveSynthesis(
 		sourceProgression: source.progression,
 		recipientProgressionBefore: recipient.progression,
 		recipientProgressionAfter: recipientProgression,
+		...(progressionOutcome ? { experienceReceipt: progressionOutcome.receipt } : {}),
 		socialConsequences: consequences
 	});
 	const canceledScheduledEventIds = [
 		source.currentActivity?.scheduledEventId,
 		source.currentTravel?.scheduledEventId,
-		source.currentRoutine?.scheduledEventId
+		source.currentRoutine?.scheduledEventId,
+		'currentForging' in source ? source.currentForging?.scheduledEventId : null
 	].filter((id): id is string => Boolean(id));
 	const sourceHero = {
 		...source,
 		lifeState: 'synthesized' as const,
 		health: 0,
 		destination: null,
-		equipment: { mainHand: null },
+		equipment: Object.fromEntries(
+			Object.keys(source.equipment).map((slot) => [slot, null])
+		) as typeof source.equipment,
 		currentActivity: null,
 		currentTravel: null,
 		assignment: null,
 		currentRoutine: null,
+		...('currentForging' in source ? { currentForging: null } : {}),
 		dailyPlan: skipUnfinishedPlan(source, state.simulatedAt)
 	};
 	const settlement = source.assignment
@@ -364,18 +404,37 @@ export function resolveSynthesis(
 		beliefs,
 		relationships
 	});
-	const nextSynthesis = SynthesisStateSchema.parse({
+	const nextSynthesis = (
+		state.schemaVersion === 27 ? SynthesisStateV2Schema : SynthesisStateSchema
+	).parse({
 		...state.synthesis,
 		receipts: { ...state.synthesis.receipts, [receiptId]: receipt }
 	});
-	const nextState = EngineGameStateV22Schema.parse({
+	const recipientAfter =
+		state.schemaVersion === 27
+			? {
+					...state.heroes[recipient.heroId]!,
+					progression: recipientProgression,
+					maxHealth: progressionMaximumHealth(
+						progressionIntrinsicAttributes(
+							state.heroes[recipient.heroId]!.capabilityProfile,
+							state.heroes[recipient.heroId]!.progression.permanentGrowth
+						).vitality,
+						recipientProgression.level,
+						PROGRESSION_RULES_V1
+					)
+				}
+			: { ...recipient, progression: recipientProgression };
+	const nextState = (
+		state.schemaVersion === 27 ? EngineGameStateV27Schema : EngineGameStateV22Schema
+	).parse({
 		...state,
 		version: state.version + 1,
 		eventCursor: eventSequence,
 		heroes: {
 			...state.heroes,
 			[source.heroId]: sourceHero,
-			[recipient.heroId]: { ...recipient, progression: recipientProgression }
+			[recipient.heroId]: recipientAfter
 		},
 		items,
 		settlement,
@@ -430,12 +489,12 @@ export function resolveSynthesis(
 }
 
 export function resolveSynthesisRumor(
-	state: EngineGameStateV22,
+	state: SynthesisEngineState,
 	command: ShareSynthesisRumorCommand,
 	eventId: string,
 	eventSequence: number
 ): {
-	readonly state: EngineGameStateV22;
+	readonly state: SynthesisEngineState;
 	readonly rumor: SynthesisRumorRecord;
 	readonly rewardDeltas: readonly RewardDelta[];
 } {
@@ -528,7 +587,9 @@ export function resolveSynthesisRumor(
 		relationshipDeltas,
 		sharedAt: state.simulatedAt
 	});
-	const nextState = EngineGameStateV22Schema.parse({
+	const nextState = (
+		state.schemaVersion === 27 ? EngineGameStateV27Schema : EngineGameStateV22Schema
+	).parse({
 		...state,
 		version: state.version + 1,
 		eventCursor: eventSequence,

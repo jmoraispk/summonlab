@@ -18,6 +18,12 @@ const FORBIDDEN_PACKAGE_PATTERN =
 	/^@summonlab\/(?:database|worker|web|policies|evaluation)(?:\/|$)/u;
 const FORBIDDEN_RESOLVED_PATH_PATTERN =
 	/(?:^|\/)(?:database|worker|web|policies|evaluation)(?:\/|$)/u;
+const APPROVED_CROSS_DOMAIN_DEPENDENCIES = new Set([
+	'mission->progression',
+	'progression->combat',
+	'settlement->progression',
+	'synthesis->progression'
+]);
 
 const loadedConfig = ts.readConfigFile(ENGINE_TSCONFIG, ts.sys.readFile);
 if (loadedConfig.error) {
@@ -203,7 +209,12 @@ function boundaryViolations(importer: string, reference: ModuleReference): strin
 
 	const importerDomain = /^domains\/([^/]+)\//u.exec(importerPath)?.[1];
 	const importedDomain = /^domains\/([^/]+)\//u.exec(resolved)?.[1];
-	if (importerDomain && importedDomain && importerDomain !== importedDomain) {
+	if (
+		importerDomain &&
+		importedDomain &&
+		importerDomain !== importedDomain &&
+		!APPROVED_CROSS_DOMAIN_DEPENDENCIES.has(`${importerDomain}->${importedDomain}`)
+	) {
 		violations.push(`domain ${importerDomain} imports domain ${importedDomain}`);
 	}
 

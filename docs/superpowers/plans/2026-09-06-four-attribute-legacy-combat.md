@@ -10,6 +10,13 @@
 
 **Spec:** `docs/superpowers/specs/2026-09-06-attributes-and-combat-modes-design.md`
 
+> **Historical prototype:** This completed v25 plan predates
+> [ADR 0073](../../decisions/0073-awakening-and-multi-path-progression.md). Its `4 Health per VIT`,
+> level-99 balance ceiling, one-point-per-level Task 6, `1..100` intrinsic band, and Might/Spirit
+> labels are superseded for engine-v27 by immutable-star growth, levels `1..999`, awakenings, and
+> Strength/Magic. Historical v25 execution and replay remain frozen; engine-v27 adapters for both
+> legacy and readiness combat consume the shared progression owner.
+
 ## Global constraints
 
 - Preserve all v1 character, proof, mission, event, and `engine-v1` through `engine-v24` schemas and hashes.
@@ -370,12 +377,12 @@ git commit -m "feat(combat): make legacy mode operator controlled"
 - [ ] Write failing invariant tests for levels 10, 40, 70, and 99 across low/mid/high attribute spreads and Fire-caster, Water-martial, armoured, unarmoured, novice, trained, and mastered fixtures.
 - [ ] Simulate at least 10,000 seeded trials per matchup. Emit rates and percentile bands, not only averages.
 - [ ] Enforce these promotion gates: novice peer hit rate `65..70%`, trained peer `77..83%`, mastered peer `90..95%`; relative Agility changes peer hit chance by at most 10 percentage points; passive combat regeneration never matches sustained peer damage; off-affinity archetypes remain within 15% median completion time of their matched-affinity controls; armour reduction is monotonic and remains below 75% without an explicit resistance.
-- [ ] Add `pnpm export:combat-balance` (`--write`) and `pnpm validate:combat-balance` (`--check`). Generate the committed evidence JSON with rules/content hashes and seed set.
+- [ ] Add the directly runnable `tools/combat-balance-harness.ts` with `--write` and `--check` modes. Generate the committed evidence JSON with rules/content hashes and seed set while leaving the sealed root package manifest unchanged.
 - [ ] Run twice and confirm the second run is byte-identical:
 
 ```bash
-pnpm export:combat-balance
-pnpm validate:combat-balance
+pnpm exec tsx tools/combat-balance-harness.ts --write
+pnpm exec tsx tools/combat-balance-harness.ts --check
 pnpm vitest run tools/combat-balance-harness.spec.ts
 ```
 
@@ -416,7 +423,7 @@ git commit -m "test(combat): gate four-attribute balance"
 ```bash
 rg -n "Dexterity|Intellect|universal poise|player.*combat mode" docs/wiki docs/decisions/0072-four-attributes-and-operator-owned-combat-modes.md
 pnpm validate:wiki
-pnpm validate:combat-balance
+pnpm exec tsx tools/combat-balance-harness.ts --check
 pnpm --filter @summonlab/contracts test
 pnpm --filter @summonlab/engine test
 pnpm --filter @summonlab/web test

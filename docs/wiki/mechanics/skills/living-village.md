@@ -31,8 +31,9 @@ choices before IDs are accepted, but it should keep the 8–12 definition budget
 Every role package must satisfy its own learn conditions. Foundation skills start at Novice 1;
 dependent Common skills may then start at Novice 1 because that prerequisite is met. The Fire
 package requires Fire Rank I. The healer package requires an explicitly selected Rank-I affinity
-and the authored Intellect threshold. Other starter roles may be
-Unaligned. Summoning never waives a requirement merely because a package wants the skill.
+and whatever Restoration mastery, Knowledge, or practice evidence its future versioned definition
+authors. It does not use an intelligence attribute. Other starter roles may be Unaligned. Summoning
+never waives a requirement merely because a package wants the skill.
 
 ## Common-tier expansion pool
 

@@ -1,4 +1,5 @@
 import {
+	AttributeGrowthReceiptSchema,
 	CommunicativeActSchema,
 	CurrentForgingSchema,
 	CurrentRoutineSchema,
@@ -25,9 +26,11 @@ import {
 	type SocietyStateV3,
 	type SocietyStateV4
 } from '@summonlab/contracts';
+import { COMBAT_RULES_V1 } from '@summonlab/content';
 import { z } from 'zod';
 
 import { EmptyMetadataSchema } from '../../core/event-metadata.js';
+import { intrinsicAttributes, maximumHealth, maximumMana } from '../../core/capability.js';
 import { parseModernState } from '../../core/state.js';
 import type { EngineEventReducer, EngineGameStateModern } from '../../core/types.js';
 import {
@@ -43,7 +46,11 @@ import { earliestSettlementScheduledTime } from './commands.js';
 import { currentTravelFor } from './navigation.js';
 import {
 	ActivityOutcomeSchema,
+	ActivityOutcomeV25Schema,
+	ActivityOutcomeV27Schema,
 	RoutineOutcomeSchema,
+	RoutineOutcomeV25Schema,
+	RoutineOutcomeV27Schema,
 	buildRoutineOutcome,
 	createDailyPlan,
 	gameDayIndex,
@@ -64,6 +71,7 @@ import { equipEquipmentItem } from './equipment.js';
 import {
 	ForgingMaterialLotChangeSchema,
 	ForgingOutcomeSchema,
+	ForgingOutcomeV27Schema,
 	buildStandardForgingStart,
 	currentForgingFor,
 	forgingOutcomeMatches
@@ -120,6 +128,7 @@ export const ForgingStartedPayloadSchema = EmptyMetadataSchema.extend({
 export const TravelStartedPayloadSchema = EmptyMetadataSchema.extend({
 	heroId: z.string().uuid(),
 	travelId: z.string().uuid(),
+	requestContext: z.literal('mission-readiness').optional(),
 	fromNodeId: z.string(),
 	toNodeId: z.string(),
 	destinationZone: z.enum([
@@ -262,6 +271,17 @@ const SimulationAdvancedPayloadV24Schema = SimulationAdvancedPayloadV5Schema.ext
 	forgingOutcomes: z.array(ForgingOutcomeSchema)
 }).strict();
 
+const SimulationAdvancedPayloadV25Schema = SimulationAdvancedPayloadV5Schema.extend({
+	activityOutcomes: z.array(ActivityOutcomeV25Schema),
+	routineOutcomes: z.array(RoutineOutcomeV25Schema)
+}).strict();
+
+const SimulationAdvancedPayloadV27Schema = SimulationAdvancedPayloadV25Schema.extend({
+	activityOutcomes: z.array(ActivityOutcomeV27Schema),
+	routineOutcomes: z.array(RoutineOutcomeV27Schema),
+	forgingOutcomes: z.array(ForgingOutcomeV27Schema)
+}).strict();
+
 const SimulationClockSyncedPayloadSchema = EmptyMetadataSchema.extend({
 	targetGameTime: z.string().datetime(),
 	nextVersion: z.number().int().nonnegative()
@@ -275,6 +295,17 @@ const DamagePayloadSchema = EmptyMetadataSchema.extend({
 	healthBefore: z.number().int().min(0).max(100),
 	healthAfter: z.number().int().min(0).max(100),
 	injury: InjurySchema.nullable(),
+	nextVersion: z.number().int().nonnegative()
+}).strict();
+
+const DamagePayloadV25Schema = DamagePayloadSchema.extend({
+	healthBefore: z.number().int().min(0).max(10_000),
+	healthAfter: z.number().int().min(0).max(10_000)
+}).strict();
+
+const AttributeAllocatedPayloadSchema = EmptyMetadataSchema.extend({
+	heroId: z.string().uuid(),
+	attributeGrowthReceipt: AttributeGrowthReceiptSchema,
 	nextVersion: z.number().int().nonnegative()
 }).strict();
 
@@ -354,7 +385,8 @@ export const SETTLEMENT_EVENT_TYPES = [
 	'social.directive.issued',
 	'social.directive.replaced',
 	'social.directive.revoked',
-	'story.first.ember.recovered'
+	'story.first.ember.recovered',
+	'hero.attribute.allocated'
 ] as const;
 
 function reduceSettlementEvent(
@@ -935,8 +967,11 @@ function reduceSettlementEvent(
 		});
 	}
 	if (event.eventType === 'hero.forging.started') {
-		if (state.schemaVersion !== 24 || !event.commandId) {
-			throw new ReplayIntegrityError('Forging start requires engine-v24', event.sequence);
+		if ((state.schemaVersion !== 24 && state.schemaVersion !== 27) || !event.commandId) {
+			throw new ReplayIntegrityError(
+				'Forging start requires a forging-capable engine',
+				event.sequence
+			);
 		}
 		const payload = ForgingStartedPayloadSchema.parse(event.payload);
 		const hero = state.heroes[payload.heroId];
@@ -990,7 +1025,12 @@ function reduceSettlementEvent(
 	}
 	if (event.eventType === 'hero.item.equipped') {
 		const payload = ItemEquippedPayloadSchema.parse(event.payload);
-		if (state.schemaVersion === 24) {
+		if (
+			state.schemaVersion === 24 ||
+			state.schemaVersion === 25 ||
+			state.schemaVersion === 26 ||
+			state.schemaVersion === 27
+		) {
 			const equipped = equipEquipmentItem(state, {
 				heroId: payload.heroId,
 				itemId: payload.itemId,
@@ -1025,12 +1065,77 @@ function reduceSettlementEvent(
 			}
 		});
 	}
+	if (event.eventType === 'hero.attribute.allocated') {
+		if (state.schemaVersion !== 25 && state.schemaVersion !== 26) {
+			throw new ReplayIntegrityError(
+				'Attribute allocation requires engine-v25 or engine-v26',
+				event.sequence
+			);
+		}
+		const payload = AttributeAllocatedPayloadSchema.parse(event.payload);
+		const hero = state.heroes[payload.heroId];
+		const receipt = payload.attributeGrowthReceipt;
+		if (
+			!hero ||
+			hero.lifeState !== 'active' ||
+			event.actorId !== hero.heroId ||
+			event.gameTime !== state.simulatedAt ||
+			payload.nextVersion !== state.version + 1 ||
+			hero.progression.unspentAttributePoints < receipt.spentPoints ||
+			receipt.heroId !== hero.heroId ||
+			receipt.beforeIntrinsicValue !==
+				intrinsicAttributes(
+					hero.capabilityProfile,
+					hero.progression.attributeGrowthReceipts,
+					COMBAT_RULES_V1
+				)[receipt.attribute] ||
+			receipt.afterIntrinsicValue > COMBAT_RULES_V1.attributes.intrinsicMaximum ||
+			receipt.sourceLevel !== hero.progression.level ||
+			receipt.rulesVersion !== COMBAT_RULES_V1.rulesVersion ||
+			receipt.commandId !== event.commandId ||
+			receipt.gameTime !== state.simulatedAt ||
+			receipt.receiptId !== deterministicUuid(`${event.eventId}:attribute-growth`)
+		) {
+			throw new ReplayIntegrityError('Attribute allocation receipt diverged', event.sequence);
+		}
+		const maxHealth =
+			receipt.attribute === 'vitality'
+				? maximumHealth(receipt.afterIntrinsicValue, COMBAT_RULES_V1)
+				: hero.maxHealth;
+		const maxMana =
+			receipt.attribute === 'magic'
+				? maximumMana(receipt.afterIntrinsicValue, COMBAT_RULES_V1)
+				: hero.maxMana;
+		return parseModernState(state, {
+			...state,
+			version: payload.nextVersion,
+			eventCursor: event.sequence,
+			entropyCursor: event.seedCursor,
+			heroes: {
+				...state.heroes,
+				[hero.heroId]: {
+					...hero,
+					maxHealth,
+					maxMana,
+					progression: {
+						...hero.progression,
+						unspentAttributePoints: hero.progression.unspentAttributePoints - receipt.spentPoints,
+						attributeGrowthReceipts: [...hero.progression.attributeGrowthReceipts, receipt]
+					}
+				}
+			}
+		});
+	}
 	if (event.eventType === 'simulation.advanced') {
 		if (hasRoutineState(state)) {
 			const payload =
-				state.schemaVersion === 24
-					? SimulationAdvancedPayloadV24Schema.parse(event.payload)
-					: SimulationAdvancedPayloadV5Schema.parse(event.payload);
+				state.schemaVersion === 27
+					? SimulationAdvancedPayloadV27Schema.parse(event.payload)
+					: state.schemaVersion === 25
+						? SimulationAdvancedPayloadV25Schema.parse(event.payload)
+						: state.schemaVersion === 24
+							? SimulationAdvancedPayloadV24Schema.parse(event.payload)
+							: SimulationAdvancedPayloadV5Schema.parse(event.payload);
 			const heroes = { ...state.heroes };
 			const items = { ...state.items };
 			let settlement = state.settlement;
@@ -1050,13 +1155,14 @@ function reduceSettlementEvent(
 					needs: outcome.needsAfter,
 					injuries: outcome.injuriesAfter,
 					progression: outcome.progressionAfter,
+					...('maxHealthAfter' in outcome ? { maxHealth: outcome.maxHealthAfter } : {}),
 					currentActivity: null,
 					assignment: outcome.lifeStateAfter === 'active' ? hero.assignment : null,
 					dailyPlan:
 						outcome.lifeStateAfter === 'active'
 							? hero.dailyPlan
 							: skipUnfinishedPlan(hero, payload.targetGameTime)
-				};
+				} as (typeof heroes)[string];
 				if (outcome.lifeStateAfter !== 'active' && hero.assignment) {
 					settlement = clearBuildingAssignment(
 						settlement,
@@ -1132,8 +1238,11 @@ function reduceSettlementEvent(
 					currentRoutine: null
 				};
 			}
-			if (state.schemaVersion === 24) {
-				const forgingPayload = SimulationAdvancedPayloadV24Schema.parse(event.payload);
+			if (state.schemaVersion === 24 || state.schemaVersion === 27) {
+				const forgingPayload =
+					state.schemaVersion === 27
+						? SimulationAdvancedPayloadV27Schema.parse(event.payload)
+						: SimulationAdvancedPayloadV24Schema.parse(event.payload);
 				const dueForgingHeroIds = Object.values(state.heroes)
 					.filter(
 						(hero) =>
@@ -1152,7 +1261,8 @@ function reduceSettlementEvent(
 					forgingPayload.forgingOutcomes.length !== dueForgingHeroIds.length ||
 					forgingPayload.forgingOutcomes.some(
 						(outcome, index) =>
-							outcome.heroId !== dueForgingHeroIds[index] || !forgingOutcomeMatches(state, outcome)
+							outcome.heroId !== dueForgingHeroIds[index] ||
+							!forgingOutcomeMatches(state, outcome, event.eventId)
 					)
 				) {
 					throw new ReplayIntegrityError('Scheduled forging outcomes diverged', event.sequence);
@@ -1165,7 +1275,18 @@ function reduceSettlementEvent(
 					if (items[outcome.item.itemId]) {
 						throw new ReplayIntegrityError('Forged item already exists', event.sequence);
 					}
-					heroes[outcome.heroId] = { ...hero, currentForging: null };
+					const v27Outcome = ForgingOutcomeV27Schema.safeParse(outcome);
+					heroes[outcome.heroId] = {
+						...hero,
+						...(v27Outcome.success
+							? {
+									progression: v27Outcome.data.progressionAfter,
+									maxHealth: v27Outcome.data.maxHealthAfter,
+									health: v27Outcome.data.healthAfter
+								}
+							: {}),
+						currentForging: null
+					} as (typeof heroes)[string];
 					items[outcome.item.itemId] = outcome.item;
 				}
 			}
@@ -1291,6 +1412,12 @@ function reduceSettlementEvent(
 				settlement
 			});
 		}
+		if (state.schemaVersion === 26) {
+			throw new ReplayIntegrityError(
+				`Engine v${state.schemaVersion} simulation reducer is not yet supported`,
+				event.sequence
+			);
+		}
 		const payload = SimulationAdvancedPayloadSchema.parse(event.payload);
 		const heroes = { ...state.heroes };
 		const items = { ...state.items };
@@ -1329,7 +1456,9 @@ function reduceSettlementEvent(
 		});
 	}
 	if (['master.damaged', 'master.died', 'hero.damaged', 'hero.died'].includes(event.eventType)) {
-		const payload = DamagePayloadSchema.parse(event.payload);
+		const payload = (
+			state.schemaVersion === 25 ? DamagePayloadV25Schema : DamagePayloadSchema
+		).parse(event.payload);
 		if (payload.targetKind === 'master') {
 			if (state.master.health !== payload.healthBefore)
 				throw new ReplayIntegrityError('Master damage precondition failed', event.sequence);

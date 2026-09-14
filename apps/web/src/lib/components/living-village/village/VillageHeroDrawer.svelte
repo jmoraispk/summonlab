@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { attributeDisplayName, orderCharacterSheetAttributes } from '../attribute-display';
 	import type { VillageHero, VillageHeroRuntime } from './types';
 
 	let {
@@ -10,12 +11,18 @@
 		runtime: VillageHeroRuntime;
 		onClose: () => void;
 	} = $props();
+	const orderedAttributes = $derived(
+		orderCharacterSheetAttributes(hero.attributes, (attribute) => attribute.label)
+	);
+	const awakeningTier = $derived(Math.floor(hero.level / 100));
 </script>
 
 <aside class="drawer" aria-labelledby="hero-drawer-heading" data-testid="hero-drawer">
 	<header>
 		<div>
-			<p>Resident record · Level {hero.level}</p>
+			<p>
+				Resident record · Level {hero.level} · {hero.stars}★ immutable · Awakening {awakeningTier}
+			</p>
 			<h2 id="hero-drawer-heading">{hero.name}</h2>
 		</div>
 		<button type="button" aria-label="Close hero details" onclick={onClose}>×</button>
@@ -32,10 +39,14 @@
 	</div>
 
 	<section aria-labelledby="attributes-heading">
-		<h3 id="attributes-heading">Attributes</h3>
+		<h3 id="attributes-heading">Attributes · {hero.unallocatedAttributePoints} pts available</h3>
 		<div class="attributes">
-			{#each hero.attributes as attribute (attribute.label)}
-				<div><span>{attribute.label}</span><strong>{attribute.value}</strong></div>
+			{#each orderedAttributes as attribute (attribute.label)}
+				<div>
+					<span title={attribute.label} aria-label={attribute.label}
+						>{attributeDisplayName(attribute.label)}</span
+					><strong>{attribute.value}</strong>
+				</div>
 			{/each}
 		</div>
 	</section>
@@ -147,7 +158,7 @@
 
 	.attributes {
 		display: grid;
-		grid-template-columns: repeat(3, 1fr);
+		grid-template-columns: repeat(4, minmax(0, 1fr));
 		gap: 0.4rem;
 		margin-top: 0.55rem;
 	}
@@ -188,5 +199,11 @@
 		border: 1px solid rgba(238, 224, 198, 0.12);
 		color: rgba(245, 236, 221, 0.72);
 		font-size: 0.68rem;
+	}
+
+	@media (max-width: 720px) {
+		.attributes {
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+		}
 	}
 </style>

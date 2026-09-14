@@ -1,17 +1,29 @@
 import { createHash, randomUUID } from 'node:crypto';
 
 import {
+	deriveCharacterCapabilityProfile,
+	derivePrivateEngineSeed,
+	parseCapabilityEntropy
+} from '@summonlab/characters';
+import {
+	CharacterDraftSchema,
+	CharacterDraftV2Schema,
+	CharacterMindSchema,
 	EngineCommandSchema,
 	ProofRunSnapshotSchema,
+	ProofRunSnapshotV2Schema,
 	type CharacterDraft,
+	type CharacterDraftV2,
 	type ClockSpeed,
+	type CombatModeId,
 	type DecisionSource,
 	type EngineCommand,
 	type EquipmentMaterialId,
 	type FirstDestination,
 	type ProofControlMode,
 	type ProofEvent,
-	type ProofRunSnapshot
+	type ProofRunSnapshot,
+	type ProofRunSnapshotV2
 } from '@summonlab/contracts';
 import { deterministicUuid } from '@summonlab/engine';
 import postgres from 'postgres';
@@ -30,6 +42,8 @@ interface ProofRunRow {
 	recipe: unknown;
 	manifest: unknown;
 	mind: unknown;
+	capability_profile: unknown | null;
+	character_schema_version: string;
 	manifest_hash: string;
 	first_observation: string;
 	first_line: string | null;
@@ -60,13 +74,17 @@ export interface ResolvedFirstChoice {
 
 export interface CreateProofRunInput {
 	readonly runId: string;
-	readonly draft: CharacterDraft;
+	readonly draft: CharacterDraft | CharacterDraftV2;
+	/** Server-generated audit secret. Never returned by proof or engine read models. */
+	readonly capabilityEntropy?: string;
 	readonly engineSeed?: string;
 	readonly controlMode: ProofControlMode;
 	readonly directive: string;
 	readonly firstObservation: string;
 	readonly choice: ResolvedFirstChoice | null;
 	readonly clockSpeed?: ClockSpeed;
+	/** Current operator release value used only to select the new run's current engine schema. */
+	readonly combatMode?: CombatModeId;
 	readonly additionalHeroes?: readonly {
 		readonly heroId: string;
 		readonly manifestHash: string;
@@ -101,6 +119,23 @@ export interface CreateProofRunInput {
 
 function iso(value: Date | string): string {
 	return value instanceof Date ? value.toISOString() : new Date(value).toISOString();
+}
+
+type StoredProofRunSnapshot = ProofRunSnapshot | ProofRunSnapshotV2;
+const StoredCharacterDraftSchema = CharacterDraftSchema.or(CharacterDraftV2Schema);
+
+function engineMindForDraft(draft: CharacterDraft | CharacterDraftV2): CharacterDraft['mind'] {
+	if (!('capabilityProfile' in draft)) return draft.mind;
+	const { attributes } = draft.capabilityProfile;
+	return CharacterMindSchema.parse({
+		...draft.mind,
+		aptitudes: {
+			might: Math.ceil(attributes.strength / 10),
+			finesse: Math.ceil(attributes.agility / 10),
+			insight: Math.ceil(attributes.magic / 10),
+			resolve: Math.ceil(attributes.vitality / 10)
+		}
+	});
 }
 
 function eventHash(
@@ -269,7 +304,10 @@ async function insertEvent(
 	`;
 }
 
-async function loadWithSql(sql: postgres.Sql, runId: string): Promise<ProofRunSnapshot | null> {
+async function loadWithSql(
+	sql: postgres.Sql,
+	runId: string
+): Promise<StoredProofRunSnapshot | null> {
 	const runRows = await sql<ProofRunRow[]>`
 		select * from summonlab_proof_runs where run_id = ${runId}
 	`;
@@ -281,7 +319,7 @@ async function loadWithSql(sql: postgres.Sql, runId: string): Promise<ProofRunSn
 		where run_id = ${runId}
 		order by sequence asc
 	`;
-	return ProofRunSnapshotSchema.parse({
+	const snapshot = {
 		runId: row.run_id,
 		storyEnvelopeId: row.story_envelope_id,
 		controlMode: row.control_mode,
@@ -306,56 +344,110 @@ async function loadWithSql(sql: postgres.Sql, runId: string): Promise<ProofRunSn
 			createdAt: iso(event.created_at)
 		})),
 		createdAt: iso(row.created_at)
-	});
+	};
+	if (row.character_schema_version === 'character-v1') {
+		if (row.capability_profile !== null) {
+			throw new Error('character-v1 proof rows must not contain a capability profile');
+		}
+		return ProofRunSnapshotSchema.parse(snapshot);
+	}
+	if (row.character_schema_version === 'character-v2') {
+		if (row.capability_profile === null) {
+			throw new Error('character-v2 proof rows require a capability profile');
+		}
+		return ProofRunSnapshotV2Schema.parse({
+			...snapshot,
+			characterSchemaVersion: row.character_schema_version,
+			capabilityProfile: row.capability_profile
+		});
+	}
+	throw new Error(`Unsupported character schema version: ${row.character_schema_version}`);
 }
 
 export async function createProofRun(
 	databaseUrl: string,
 	input: CreateProofRunInput
-): Promise<ProofRunSnapshot> {
+): Promise<StoredProofRunSnapshot> {
+	const draft = StoredCharacterDraftSchema.parse(input.draft);
+	const isV2 = 'capabilityProfile' in draft;
+	const capabilityEntropy =
+		input.capabilityEntropy === undefined ? null : parseCapabilityEntropy(input.capabilityEntropy);
+	let effectiveEngineSeed: string;
+	if (isV2) {
+		if (capabilityEntropy === null) {
+			throw new Error('New v2 proof runs require private capability entropy');
+		}
+		const auditedProfile = deriveCharacterCapabilityProfile(draft.recipe, capabilityEntropy);
+		if (JSON.stringify(auditedProfile) !== JSON.stringify(draft.capabilityProfile)) {
+			throw new Error('Persisted capability profile does not match its private derivation inputs');
+		}
+		effectiveEngineSeed = derivePrivateEngineSeed(draft.recipe, capabilityEntropy);
+	} else {
+		if (capabilityEntropy !== null) {
+			throw new Error('Private capability entropy is valid only for v2 drafts');
+		}
+		effectiveEngineSeed = input.engineSeed ?? draft.recipe.seed;
+	}
+	const usesDevelopmentEngineBootstrap = Boolean(
+		input.developmentMissionScenario || input.developmentEquipmentScenario
+	);
 	const sql = postgres(databaseUrl, { max: 1 });
 	try {
 		await sql.begin(async (transaction) => {
 			await transaction`
 				insert into summonlab_proof_runs (
-					run_id, control_mode, directive, recipe, manifest, mind, manifest_hash,
+					run_id, control_mode, directive, recipe, manifest, mind, capability_profile,
+					character_schema_version, capability_entropy, manifest_hash,
 					first_observation, first_line, destination, story_branch
 				) values (
 					${input.runId}, ${input.controlMode}, ${input.directive},
-					${transaction.json(input.draft.recipe)}, ${transaction.json(input.draft.manifest)},
-					${transaction.json(input.draft.mind)}, ${input.draft.manifestHash},
+					${transaction.json(draft.recipe)}, ${transaction.json(draft.manifest)},
+					${transaction.json(draft.mind)},
+					${isV2 ? transaction.json(draft.capabilityProfile) : null},
+					${isV2 ? 'character-v2' : 'character-v1'}, ${capabilityEntropy},
+					${draft.manifestHash},
 					${input.firstObservation}, ${input.choice?.firstLine ?? null},
 					${input.choice?.destination ?? null}, ${input.choice?.storyBranch ?? null}
 				)
 			`;
-			const engine = await initializeEngineRun(transaction, {
-				runId: input.runId,
-				seed: input.engineSeed ?? input.draft.recipe.seed,
-				heroId: input.draft.manifest.characterId,
-				manifestHash: input.draft.manifestHash,
-				rarityStars: input.draft.manifest.rarityStars,
-				mind: input.draft.mind,
-				...(input.additionalHeroes ? { additionalHeroes: input.additionalHeroes } : {}),
-				...(input.developmentMissionScenario
-					? { developmentMissionScenario: input.developmentMissionScenario }
-					: {}),
-				...(input.developmentEquipmentScenario
-					? { developmentEquipmentScenario: input.developmentEquipmentScenario }
-					: {}),
-				...(input.clockSpeed === undefined ? {} : { clockSpeed: input.clockSpeed })
-			});
+			const engine =
+				isV2 && !usesDevelopmentEngineBootstrap
+					? await initializeEngineRun(transaction, {
+							runId: input.runId,
+							seed: effectiveEngineSeed,
+							draft,
+							...(input.additionalHeroes ? { additionalHeroes: input.additionalHeroes } : {}),
+							...(input.combatMode === undefined ? {} : { combatMode: input.combatMode }),
+							...(input.clockSpeed === undefined ? {} : { clockSpeed: input.clockSpeed })
+						})
+					: await initializeEngineRun(transaction, {
+							runId: input.runId,
+							seed: effectiveEngineSeed,
+							heroId: draft.manifest.characterId,
+							manifestHash: draft.manifestHash,
+							rarityStars: draft.manifest.rarityStars,
+							mind: engineMindForDraft(draft),
+							...(input.additionalHeroes ? { additionalHeroes: input.additionalHeroes } : {}),
+							...(input.developmentMissionScenario
+								? { developmentMissionScenario: input.developmentMissionScenario }
+								: {}),
+							...(input.developmentEquipmentScenario
+								? { developmentEquipmentScenario: input.developmentEquipmentScenario }
+								: {}),
+							...(input.clockSpeed === undefined ? {} : { clockSpeed: input.clockSpeed })
+						});
 			await insertEvent(
 				transaction,
 				eventValues(
 					input.runId,
 					1,
 					'hero.summoned',
-					`${input.draft.manifest.displayName} crossed the gate.`,
+					`${draft.manifest.displayName} crossed the gate.`,
 					'system',
 					{
-						characterId: input.draft.manifest.characterId,
-						manifestHash: input.draft.manifestHash,
-						rarityStars: input.draft.manifest.rarityStars
+						characterId: draft.manifest.characterId,
+						manifestHash: draft.manifestHash,
+						rarityStars: draft.manifest.rarityStars
 					}
 				)
 			);
@@ -370,7 +462,7 @@ export async function createProofRun(
 					transaction,
 					destinationCommand(
 						input.runId,
-						input.draft.manifest.characterId,
+						draft.manifest.characterId,
 						engine.state.version,
 						input.controlMode,
 						input.choice
@@ -459,7 +551,7 @@ export async function resolveProofDecision(
 	runId: string,
 	directive: string,
 	choice: ResolvedFirstChoice
-): Promise<ProofRunSnapshot | null> {
+): Promise<StoredProofRunSnapshot | null> {
 	const sql = postgres(databaseUrl, { max: 1 });
 	try {
 		await sql.begin(async (transaction) => {
@@ -530,7 +622,7 @@ export async function resolveProofDecision(
 export async function markProofArrival(
 	databaseUrl: string,
 	runId: string
-): Promise<ProofRunSnapshot | null> {
+): Promise<StoredProofRunSnapshot | null> {
 	const sql = postgres(databaseUrl, { max: 1 });
 	try {
 		await sql.begin(async (transaction) => {
@@ -559,7 +651,8 @@ export async function markProofArrival(
 				engine.state.schemaVersion === 10 ||
 				engine.state.schemaVersion === 11 ||
 				engine.state.schemaVersion === 12 ||
-				engine.state.schemaVersion === 13
+				engine.state.schemaVersion === 13 ||
+				engine.state.schemaVersion === 25
 			) {
 				const traveling = await commitEngineCommandInTransaction(
 					transaction,
@@ -608,7 +701,7 @@ export async function markProofArrival(
 export async function getProofRun(
 	databaseUrl: string,
 	runId: string
-): Promise<ProofRunSnapshot | null> {
+): Promise<StoredProofRunSnapshot | null> {
 	const sql = postgres(databaseUrl, { max: 1 });
 	try {
 		return await loadWithSql(sql, runId);

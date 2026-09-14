@@ -25,26 +25,29 @@ rather than parallel item catalogs. The canonical Equipment forms live in the
 
 ## Weight
 
-Every equipment piece has weight, linking gear to attributes. The source drives weight tolerance
-with Might, supported by Vitality.
+Every equipment piece has weight, linking gear to attributes. The imported source drove weight
+tolerance with Strength supported by Vitality and used an undefined Initiative penalty. ADR 0072
+supersedes both points: Strength alone owns load tolerance, Vitality grants no equipment eligibility,
+and readiness combat has no independent Initiative stat.
 
 | Load | Proposed effect |
 | --- | --- |
 | Within tolerance | No penalty |
 | Slightly over | Lower movement speed and evasion |
-| Substantially over | Also lower attack speed and initiative |
+| Substantially over | Historical proposal only; no current Initiative field |
 | Far over | Severe penalties across all Agility-derived stats |
 
-This makes heavy armor costly and gives Might value to nonphysical builds. A Spirit caster in plate
-is slow while one in robes is not. High Armorsmithing is proposed to reduce weight for equal
-protection, giving a settlement a reason to cultivate smiths.
+The implemented readiness evaluator instead marks an over-tolerance loadout ineligible. A later
+rules version may replace that boundary with explicit movement, evasion, or readiness penalties.
+High Armorsmithing may still reduce weight for equal protection, giving a settlement a reason to
+cultivate smiths.
 
 ## Equipment properties
 
 | Property | Frequency | Proposed role |
 | --- | --- | --- |
 | Offensive stats | Common on weapons | Damage, attack speed, penetration |
-| Defensive stats | Common on armor | Mitigation, poise, resistances |
+| Defensive stats | Common on armor | General mitigation and named resistances; authored Break effects only |
 | Health bonus | Common on armor | Default defensive benefit |
 | Attribute bonus | Rare | Supplement rather than define builds |
 | Enchantment slots | Uncommon+ | Filled by Enchantment skills |
@@ -114,11 +117,11 @@ pressures a strike team to grow into a settlement. It is explicitly an unfinishe
 
 | Type | Form | Capacity | Availability |
 | --- | --- | --- | --- |
-| Spatial | Backpack, pouch, satchel | Limited by volume and Might-driven carry capacity | Common |
+| Spatial | Backpack, pouch, satchel | Limited by volume and Strength-driven carry capacity | Common |
 | Dimensional | Ring, bracelet, pocket space | Much larger and weight-independent | Rare reward |
 
 Real per-hero capacity creates legitimate gathering and hauling roles, especially for heroes with
-Gathering, high Might, or dimensional storage.
+Gathering, high Strength, or dimensional storage.
 
 ## Living Village subset
 

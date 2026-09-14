@@ -1,13 +1,17 @@
 import {
+	EngineCommandSchema,
 	EngineGameStateV23Schema,
 	EngineGameStateV24Schema,
-	type EngineGameStateV24
+	EngineGameStateV25Schema,
+	type EngineGameStateV24,
+	type EngineGameStateV25
 } from '@summonlab/contracts';
 import { describe, expect, it } from 'vitest';
 
 import { parseGameState } from '../../core/state.js';
 import { createBootstrapEngine } from '../../orchestration/bootstrap.js';
 import { applyCommand } from '../../orchestration/apply-command.js';
+import { legalActions } from '../../orchestration/legal-actions.js';
 import { deterministicUuid, sha256Hex } from '../../hash.js';
 import {
 	LEGACY_EQUIPMENT_TEMPLATE_BINDINGS,
@@ -52,6 +56,61 @@ function withItem(
 			items: { ...state.items, [itemId]: item }
 		})
 	};
+}
+
+function equipmentStateV25(): EngineGameStateV25 {
+	const state = equipmentState();
+	const heroId = Object.keys(state.heroes)[0]!;
+	const hero = state.heroes[heroId]!;
+	return EngineGameStateV25Schema.parse({
+		...state,
+		schemaVersion: 25,
+		contentVersion: 'engine-v25',
+		mission: {
+			...state.mission,
+			aftermath: {
+				...state.mission.aftermath,
+				aftermathVersion: 'mission-aftermath-v4'
+			}
+		},
+		heroes: {
+			...state.heroes,
+			[heroId]: {
+				...hero,
+				progression: {
+					...hero.progression,
+					unspentAttributePoints: 0,
+					attributeGrowthReceipts: []
+				},
+				health: 260,
+				maxHealth: 260,
+				mana: 100,
+				maxMana: 100,
+				mind: {
+					personality: hero.mind.personality,
+					primaryValue: hero.mind.primaryValue,
+					primaryDrive: hero.mind.primaryDrive,
+					socialStyle: hero.mind.socialStyle,
+					stressResponse: hero.mind.stressResponse,
+					dailyHabit: hero.mind.dailyHabit
+				},
+				capabilityProfile: {
+					profileVersion: 'character-capability-v1',
+					attributes: { strength: 10, vitality: 40, agility: 20, magic: 30 },
+					learning: {
+						cognitiveLearningScore: 51,
+						domainAptitudes: {
+							martial: 52,
+							magical: 53,
+							crafting: 54,
+							survival: 55,
+							social: 56
+						}
+					}
+				}
+			}
+		}
+	});
 }
 
 describe('engine-v24 equipment state', () => {
@@ -323,5 +382,73 @@ describe('engine-v24 equipment state', () => {
 		if (result.state.schemaVersion !== 24) throw new Error('Expected v24 equip result');
 		expect(result.state.heroes[heroId]!.equipment.offHand).toBe(shield.itemId);
 		expect(result.state.heroes[heroId]!.equipment.mainHand).not.toBeNull();
+	});
+
+	it('dispatches a legal v25 equip action through the full loadout reducer', () => {
+		const base = equipmentStateV25();
+		const heroId = Object.keys(base.heroes)[0]!;
+		const shield = createEquipmentItem({
+			itemId: deterministicUuid('equipment-v25-command-shield'),
+			definitionId: 'equipment-bronze-shield',
+			ownerId: heroId,
+			craftsmanship: { label: 'standard', bonus: 0 },
+			origin: {
+				kind: 'dropped',
+				missionId: 'equipment-v25-fixture',
+				rewardId: 'equipment-v25-shield-reward',
+				sourceId: 'equipment-v25-source'
+			}
+		});
+		const ready = EngineGameStateV25Schema.parse({
+			...base,
+			items: { ...base.items, [shield.itemId]: shield },
+			heroes: {
+				...base.heroes,
+				[heroId]: {
+					...base.heroes[heroId]!,
+					destination: 'training-ground',
+					location: 'training-ground',
+					locationNodeId: 'training-ring',
+					firstArrivalCompleted: true
+				}
+			}
+		});
+		const equipAction = legalActions(ready, heroId).find(
+			(action) => action.actionId === `hero.equip.${shield.itemId}`
+		);
+		expect(equipAction).toBeDefined();
+		const command = EngineCommandSchema.parse({
+			commandId: deterministicUuid('equipment-v25-command'),
+			runId: ready.runId,
+			actorId: heroId,
+			expectedVersion: ready.version,
+			correlationId: deterministicUuid('equipment-v25-command-correlation'),
+			source: {
+				source: 'manual',
+				timing: 'step',
+				fallbackPolicy: null,
+				directiveIds: [],
+				decisionJobId: null
+			},
+			commandType: 'hero.equip.item',
+			itemId: equipAction!.targetIds[0]!
+		});
+
+		const result = applyCommand(ready, command);
+		const parsed = EngineGameStateV25Schema.parse(result.state);
+		expect(parsed.heroes[heroId]!.equipment).toMatchObject({
+			mainHand: ready.heroes[heroId]!.equipment.mainHand,
+			offHand: shield.itemId
+		});
+		expect(parsed.heroes[heroId]!.capabilityProfile).toStrictEqual(
+			ready.heroes[heroId]!.capabilityProfile
+		);
+		expect(parsed.heroes[heroId]!.mind).toStrictEqual(ready.heroes[heroId]!.mind);
+		expect(parsed.heroes[heroId]).toMatchObject({
+			health: 260,
+			maxHealth: 260,
+			mana: 100,
+			maxMana: 100
+		});
 	});
 });

@@ -1,7 +1,13 @@
+import { createHash } from 'node:crypto';
+
 import {
+	CharacterCapabilityProfileV1Schema,
+	CharacterDraftV2Schema,
 	CharacterGenerationRecipeSchema,
 	SummonableHeroCatalogSchema,
 	type CharacterDraft,
+	type CharacterDraftV2,
+	type CharacterCapabilityProfileV1,
 	type CharacterGenerationRecipe
 } from '@summonlab/contracts';
 
@@ -23,7 +29,7 @@ function hash32(value: string): number {
 	return hash >>> 0;
 }
 
-function selectionKey(recipe: CharacterGenerationRecipe): string {
+export function canonicalCharacterRecipeKey(recipe: CharacterGenerationRecipe): string {
 	return [
 		recipe.generationVersion,
 		recipe.seed,
@@ -34,6 +40,39 @@ function selectionKey(recipe: CharacterGenerationRecipe): string {
 		recipe.cursors.mind,
 		recipe.cursors.rarity
 	].join('\0');
+}
+
+const CAPABILITY_ENTROPY_PATTERN = /^[a-f0-9]{64}$/u;
+
+export function parseCapabilityEntropy(value: string): string {
+	if (!CAPABILITY_ENTROPY_PATTERN.test(value)) {
+		throw new Error('Private capability entropy must be exactly 32 lowercase hexadecimal bytes');
+	}
+	return value;
+}
+
+function privateDerivationKey(
+	domain: 'character-capability-v1' | 'engine-seed-v1',
+	recipe: CharacterGenerationRecipe,
+	capabilityEntropy: string
+): string {
+	return createHash('sha256')
+		.update('summonlab-private-derivation-v1')
+		.update('\0')
+		.update(domain)
+		.update('\0')
+		.update(canonicalCharacterRecipeKey(recipe))
+		.update('\0')
+		.update(parseCapabilityEntropy(capabilityEntropy))
+		.digest('hex');
+}
+
+export function derivePrivateEngineSeed(
+	input: CharacterGenerationRecipe,
+	capabilityEntropy: string
+): string {
+	const recipe = CharacterGenerationRecipeSchema.parse(input);
+	return privateDerivationKey('engine-seed-v1', recipe, capabilityEntropy);
 }
 
 function entryAtSelectionKey(key: string) {
@@ -53,7 +92,7 @@ export function resolveCanonicalSummonableDraft(
 	if (recipe.generationVersion !== SUMMONABLE_HERO_GENERATION_VERSION) return null;
 	const entry = entriesByRecipeSeed.get(recipe.seed);
 	if (!entry) throw new Error(`Unknown approved summonable hero recipe: ${recipe.seed}`);
-	if (selectionKey(recipe) !== selectionKey(entry.draft.recipe)) {
+	if (canonicalCharacterRecipeKey(recipe) !== canonicalCharacterRecipeKey(entry.draft.recipe)) {
 		throw new Error(
 			`Approved summonable hero recipes do not support reroll cursors: ${recipe.seed}`
 		);
@@ -61,11 +100,69 @@ export function resolveCanonicalSummonableDraft(
 	return entry.draft;
 }
 
-export async function generateSummonableCharacterDraft(
+function scoreForCapabilityLabel(
+	capabilityKey: string,
+	label: string,
+	minimum: number,
+	maximum: number
+): number {
+	const digest = createHash('sha256').update(capabilityKey).update('\0').update(label).digest();
+	return minimum + (digest.readUInt32BE(0) % (maximum - minimum + 1));
+}
+
+export async function generateLegacySummonableCharacterDraft(
 	input: CharacterGenerationRecipe
 ): Promise<CharacterDraft> {
 	const recipe = CharacterGenerationRecipeSchema.parse(input);
-	return entryAtSelectionKey(selectionKey(recipe)).draft;
+	return entryAtSelectionKey(canonicalCharacterRecipeKey(recipe)).draft;
+}
+
+export async function generateSummonableCharacterDraft(
+	input: CharacterGenerationRecipe,
+	options: { readonly capabilityEntropy: string }
+): Promise<CharacterDraftV2> {
+	if (!options) throw new Error('New v2 characters require private capability entropy');
+	const legacy = await generateLegacySummonableCharacterDraft(input);
+	const { aptitudes: legacyAptitudes, ...mind } = legacy.mind;
+	void legacyAptitudes;
+	const recipe = legacy.recipe;
+	return CharacterDraftV2Schema.parse({
+		...legacy,
+		mind,
+		capabilityProfile: deriveCharacterCapabilityProfile(recipe, options.capabilityEntropy)
+	});
+}
+
+export function deriveCharacterCapabilityProfile(
+	input: CharacterGenerationRecipe,
+	capabilityEntropy: string
+): CharacterCapabilityProfileV1 {
+	const recipe = CharacterGenerationRecipeSchema.parse(input);
+	const capabilityKey = privateDerivationKey('character-capability-v1', recipe, capabilityEntropy);
+	return CharacterCapabilityProfileV1Schema.parse({
+		profileVersion: 'character-capability-v1',
+		attributes: {
+			strength: scoreForCapabilityLabel(capabilityKey, 'combat-attribute:strength:v1', 1, 100),
+			agility: scoreForCapabilityLabel(capabilityKey, 'combat-attribute:agility:v1', 1, 100),
+			vitality: scoreForCapabilityLabel(capabilityKey, 'combat-attribute:vitality:v1', 1, 100),
+			magic: scoreForCapabilityLabel(capabilityKey, 'combat-attribute:magic:v1', 1, 100)
+		},
+		learning: {
+			cognitiveLearningScore: scoreForCapabilityLabel(
+				capabilityKey,
+				'learning:cognitive:v1',
+				0,
+				100
+			),
+			domainAptitudes: {
+				martial: scoreForCapabilityLabel(capabilityKey, 'learning:domain:martial:v1', 0, 100),
+				magical: scoreForCapabilityLabel(capabilityKey, 'learning:domain:magical:v1', 0, 100),
+				crafting: scoreForCapabilityLabel(capabilityKey, 'learning:domain:crafting:v1', 0, 100),
+				survival: scoreForCapabilityLabel(capabilityKey, 'learning:domain:survival:v1', 0, 100),
+				social: scoreForCapabilityLabel(capabilityKey, 'learning:domain:social:v1', 0, 100)
+			}
+		}
+	});
 }
 
 export async function generateSummonableCompany(

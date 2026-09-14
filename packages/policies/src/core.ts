@@ -1,17 +1,98 @@
 import {
+	ActorDecisionViewSchema,
+	CombatActionIntentSchema,
 	HERO_POLICY_RESULT_VERSION,
 	HeroDecisionPacketSchema,
 	HeroDecisionSchema,
 	HeroPolicyResultSchema,
 	type HeroDecision,
 	type HeroDecisionPacket,
+	type ActorDecisionView,
+	type CombatLegalAction,
 	type HeroPolicyResult
 } from '@summonlab/contracts';
-import { canonicalJson, hashCanonical, verifyHeroDecisionPacket } from '@summonlab/engine';
+import {
+	assembleCombatActionDecisionContext,
+	canonicalJson,
+	hashCanonical,
+	verifyHeroDecisionPacket
+} from '@summonlab/engine';
 
 export interface HeroPolicy {
 	readonly policyId: HeroPolicyResult['policyId'];
 	decide(packet: HeroDecisionPacket): Promise<HeroPolicyResult>;
+}
+
+export const CombatPolicyResponseSchema = CombatActionIntentSchema.pick({
+	windowId: true,
+	snapshotHash: true,
+	actorViewHash: true,
+	legalActionSetHash: true,
+	actionId: true,
+	target: true,
+	fallbackId: true,
+	publicIntent: true
+}).strict();
+
+export type CombatPolicyResponse = ReturnType<typeof CombatPolicyResponseSchema.parse>;
+
+export interface CombatPolicy {
+	decide(view: ActorDecisionView): Promise<CombatPolicyResponse>;
+}
+
+export function validateCombatPolicyView(input: ActorDecisionView): ActorDecisionView {
+	const view = ActorDecisionViewSchema.parse(input);
+	assembleCombatActionDecisionContext(view);
+	return view;
+}
+
+function targetMatchesAction(action: CombatLegalAction, response: CombatPolicyResponse): boolean {
+	if (
+		response.fallbackId !== null &&
+		!action.fallbackOptions.some((fallback) => fallback.fallbackId === response.fallbackId)
+	) {
+		return false;
+	}
+	const contract = action.targetContract;
+	const target = response.target;
+	if (contract.kind !== target.kind) return false;
+	if (contract.kind === 'self') return true;
+	if (contract.kind === 'entity' && target.kind === 'entity') {
+		return contract.allowedCombatantIds.includes(target.combatantId);
+	}
+	if (contract.kind === 'tile' && target.kind === 'tile') {
+		return contract.allowedPositions.some(
+			(position) => position.x === target.position.x && position.y === target.position.y
+		);
+	}
+	if (contract.kind === 'entity-relative-position' && target.kind === 'entity-relative-position') {
+		return (
+			contract.allowedCombatantIds.includes(target.combatantId) &&
+			contract.allowedRelations.includes(target.relation)
+		);
+	}
+	return false;
+}
+
+export function validateCombatPolicyResponse(
+	viewInput: ActorDecisionView,
+	input: unknown
+): CombatPolicyResponse {
+	const view = validateCombatPolicyView(viewInput);
+	const response = CombatPolicyResponseSchema.parse(input);
+	if (
+		response.windowId !== view.windowId ||
+		response.snapshotHash !== view.snapshotHash ||
+		response.actorViewHash !== view.actorViewHash ||
+		response.legalActionSetHash !== view.legalActionSetHash
+	) {
+		throw new Error('Combat policy response is bound to another frozen actor view');
+	}
+	const action = view.legalActions.find((candidate) => candidate.actionId === response.actionId);
+	if (!action || !targetMatchesAction(action, response)) {
+		throw new Error('Combat policy response selected outside the supplied legal actions');
+	}
+	return response;
 }
 
 export function validatePolicyPacket(input: HeroDecisionPacket): HeroDecisionPacket {

@@ -4,6 +4,7 @@ import { MissionSlugSchema, StoryExpressionResolutionSchema } from '../mission.j
 import { RelationshipDimensionsSchema } from '../social.js';
 import { EntityIdSchema, IsoDateTimeSchema, StateHashSchema } from '../shared.js';
 import { HeroProgressionSchema } from './base-state.js';
+import { ExperienceReceiptSchema, HeroProgressionV2Schema } from '../progression.js';
 import { MissionContentBindingSchema } from './mission-state.js';
 
 export {
@@ -97,6 +98,22 @@ export const SynthesisReceiptSchema = z
 		}
 	});
 
+export const SynthesisReceiptV2Schema = z
+	.object({
+		...SynthesisReceiptSchema.shape,
+		receiptVersion: z.literal('synthesis-receipt-v2'),
+		sourceProgression: HeroProgressionV2Schema,
+		recipientProgressionBefore: HeroProgressionV2Schema,
+		recipientProgressionAfter: HeroProgressionV2Schema,
+		experienceReceipt: ExperienceReceiptSchema
+	})
+	.strict()
+	.superRefine((receipt, context) => {
+		if (receipt.sourceHeroId === receipt.recipientHeroId) {
+			context.addIssue({ code: 'custom', message: 'Synthesis source and recipient must differ' });
+		}
+	});
+
 export const SynthesisRumorRecordSchema = z
 	.object({
 		rumorVersion: z.literal('synthesis-rumor-v1'),
@@ -142,6 +159,29 @@ export const SynthesisStateSchema = z
 			Object.keys(synthesis.rumors).length > 4_096
 		) {
 			context.addIssue({ code: 'custom', message: 'Synthesis history limit exceeded' });
+		}
+	});
+
+export const SynthesisStateV2Schema = z
+	.object({
+		contentVersion: z.literal('synthesis-v2'),
+		receipts: z.record(EntityIdSchema, z.union([SynthesisReceiptSchema, SynthesisReceiptV2Schema])),
+		rumors: z.record(EntityIdSchema, SynthesisRumorRecordSchema)
+	})
+	.strict()
+	.superRefine((synthesis, context) => {
+		for (const [receiptId, receipt] of Object.entries(synthesis.receipts)) {
+			if (receipt.receiptId !== receiptId) {
+				context.addIssue({
+					code: 'custom',
+					message: 'Synthesis receipt key does not match its id'
+				});
+			}
+		}
+		for (const [rumorId, rumor] of Object.entries(synthesis.rumors)) {
+			if (rumor.rumorId !== rumorId) {
+				context.addIssue({ code: 'custom', message: 'Synthesis rumor key does not match its id' });
+			}
 		}
 	});
 
@@ -227,8 +267,10 @@ export const FirstBandArchiveStateSchema = z
 	});
 
 export type SynthesisReceipt = z.infer<typeof SynthesisReceiptSchema>;
+export type SynthesisReceiptV2 = z.infer<typeof SynthesisReceiptV2Schema>;
 export type SynthesisRumorRecord = z.infer<typeof SynthesisRumorRecordSchema>;
 export type SynthesisState = z.infer<typeof SynthesisStateSchema>;
+export type SynthesisStateV2 = z.infer<typeof SynthesisStateV2Schema>;
 export type FirstBandArchiveState = z.infer<typeof FirstBandArchiveStateSchema>;
 export type FirstBandExtractionReceipt = z.infer<typeof FirstBandExtractionReceiptSchema>;
 export type FirstBandArchiveReveal = z.infer<typeof FirstBandArchiveRevealSchema>;

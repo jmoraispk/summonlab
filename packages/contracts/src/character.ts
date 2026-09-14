@@ -1,5 +1,6 @@
 import { z } from 'zod';
 
+import { CharacterCapabilityProfileV1Schema } from './capability.js';
 import { ContentVersionSchema, EntityIdSchema, StateHashSchema } from './shared.js';
 
 export const CharacterGenerationCursorsSchema = z
@@ -280,6 +281,18 @@ export const CharacterDraftSchema = z
 	})
 	.strict();
 
+export const CharacterMindV2Schema = CharacterMindSchema.omit({ aptitudes: true });
+
+export const CharacterDraftV2Schema = z
+	.object({
+		recipe: CharacterGenerationRecipeSchema,
+		manifest: CharacterManifestSchema,
+		mind: CharacterMindV2Schema,
+		capabilityProfile: CharacterCapabilityProfileV1Schema,
+		manifestHash: StateHashSchema
+	})
+	.strict();
+
 export const LegalActionSchema = z
 	.object({
 		actionId: z.string().regex(/^[a-z][a-z0-9._-]{1,79}$/u),
@@ -305,8 +318,10 @@ export const LegalActionSchema = z
 	.strict();
 
 export type CharacterDraft = z.infer<typeof CharacterDraftSchema>;
+export type CharacterDraftV2 = z.infer<typeof CharacterDraftV2Schema>;
 export type CharacterGenerationCursors = z.infer<typeof CharacterGenerationCursorsSchema>;
 export type CharacterGenerationRecipe = z.infer<typeof CharacterGenerationRecipeSchema>;
 export type CharacterManifest = z.infer<typeof CharacterManifestSchema>;
 export type CharacterMind = z.infer<typeof CharacterMindSchema>;
+export type CharacterMindV2 = z.infer<typeof CharacterMindV2Schema>;
 export type LegalAction = z.infer<typeof LegalActionSchema>;

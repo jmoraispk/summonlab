@@ -1,5 +1,6 @@
 import { generateCharacterDraft, recipeFromSeed } from '@summonlab/characters';
 import {
+	ActorDecisionViewSchema,
 	HeroPolicyResultSchema,
 	type HeroDecision,
 	type HeroDecisionPacket
@@ -16,9 +17,12 @@ import { describe, expect, it } from 'vitest';
 
 import {
 	ModelPolicyError,
+	OPENAI_COMBAT_DECISION_INSTRUCTIONS,
+	OPENAI_COMBAT_DECISION_SCHEMA_NAME,
 	OPENAI_HERO_DECISION_INSTRUCTIONS,
 	OPENAI_HERO_DECISION_JSON_SCHEMA,
 	OPENAI_HERO_DECISION_SCHEMA_NAME,
+	OpenAICombatPolicy,
 	OpenAIModelPolicy,
 	buildOpenAIHeroDecisionRequest,
 	buildOpenAIHeroDecisionRequestProfile,
@@ -102,6 +106,62 @@ class CapturingTransport implements OpenAIResponsesTransport {
 		this.requests.push(request);
 		return this.handler(request, this.requests.length - 1);
 	}
+}
+
+function combatViewFixture() {
+	const actorId = deterministicUuid('openai-combat-actor');
+	const legalActions = [
+		{
+			actionId: 'hold-position',
+			actionInstanceId: deterministicUuid('openai-combat-action'),
+			actionKind: 'guard' as const,
+			skillId: null,
+			publicLabel: 'Hold position',
+			targetContract: { kind: 'self' as const },
+			reactionPriority: 0,
+			recoveryTicks: 2,
+			manaCost: 0,
+			conflictPolicy: {
+				invalidTarget: 'cancel' as const,
+				occupiedDestination: 'cancel' as const,
+				cancellationRefund: { mana: 'full' as const, readiness: 'full' as const }
+			},
+			fallbackOptions: []
+		}
+	];
+	const unsigned = {
+		viewVersion: 'actor-decision-view-v1' as const,
+		windowId: deterministicUuid('openai-combat-window'),
+		actorId,
+		snapshotHash: 'c'.repeat(64),
+		legalActionSetHash: hashCanonical(legalActions),
+		self: {
+			combatantId: actorId,
+			combatantKind: 'hero' as const,
+			teamId: 'party',
+			position: { x: 1, y: 1 },
+			resources: {
+				health: { current: 100, maximum: 100 },
+				mana: { current: 5, maximum: 5 }
+			},
+			conditions: [],
+			readiness: { ready: true, recoveryTicksRemaining: 0 },
+			downed: false,
+			active: true
+		},
+		visibleCombatants: [],
+		visibleTerrain: { width: 4, height: 4, blockedTiles: [], features: [] },
+		visibleTelegraphs: [],
+		rememberedContext: [],
+		doctrine: [],
+		relationships: [],
+		masterDirections: [],
+		legalActions
+	};
+	return ActorDecisionViewSchema.parse({
+		...unsigned,
+		actorViewHash: hashCanonical(unsigned)
+	});
 }
 
 function expectPolicyError(error: unknown, code: ModelPolicyError['code'], retryable: boolean) {
@@ -290,5 +350,65 @@ describe('OpenAI model policy', () => {
 
 		await expect(policy.decide(tampered)).rejects.toThrow('integrity');
 		expect(transport.requests).toHaveLength(0);
+	});
+});
+
+describe('OpenAI combat policy', () => {
+	it('sends only the public frozen actor context with the exact authority instruction', async () => {
+		const view = combatViewFixture();
+		const output = {
+			windowId: view.windowId,
+			snapshotHash: view.snapshotHash,
+			actorViewHash: view.actorViewHash,
+			legalActionSetHash: view.legalActionSetHash,
+			actionId: 'hold-position',
+			target: { kind: 'self' as const },
+			fallbackId: null,
+			publicIntent: 'I hold this ground.'
+		};
+		const transport = new CapturingTransport(async () => responseFor(output));
+		const policy = new OpenAICombatPolicy({ model: 'gpt-5-nano', transport });
+
+		await expect(policy.decide(view)).resolves.toEqual(output);
+		const request = transport.requests[0]!;
+		expect(request.instructions).toBe(
+			'Choose exactly one supplied legal action. The engine resolves it.'
+		);
+		expect(request.instructions).toBe(OPENAI_COMBAT_DECISION_INSTRUCTIONS);
+		expect(request.text?.format).toMatchObject({
+			type: 'json_schema',
+			name: OPENAI_COMBAT_DECISION_SCHEMA_NAME,
+			strict: true
+		});
+		const sent = JSON.parse(String(request.input));
+		expect(sent.context.view).toEqual(view);
+		expect(JSON.stringify(sent)).not.toMatch(
+			/attributes|exactNumerator|resolutionProfile|unresolvedChoices|seed/iu
+		);
+	});
+
+	it('rejects malformed structured output before it can become a stored intent', async () => {
+		const view = combatViewFixture();
+		for (const output of [
+			{ damage: 999 },
+			{
+				windowId: view.windowId,
+				snapshotHash: view.snapshotHash,
+				actorViewHash: view.actorViewHash,
+				legalActionSetHash: 'f'.repeat(64),
+				actionId: 'hold-position',
+				target: { kind: 'self' },
+				fallbackId: null
+			}
+		]) {
+			const policy = new OpenAICombatPolicy({
+				model: 'gpt-5-nano',
+				transport: new CapturingTransport(async () => responseFor(output))
+			});
+			await expect(policy.decide(view)).rejects.toMatchObject({
+				name: 'ModelPolicyError',
+				retryable: true
+			});
+		}
 	});
 });

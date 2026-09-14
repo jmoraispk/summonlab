@@ -406,7 +406,8 @@ describe('settlement domain ownership', () => {
 			'hero.equip.item',
 			'simulation.advance',
 			'simulation.sync.clock',
-			'simulation.apply.damage'
+			'simulation.apply.damage',
+			'hero.allocate.attribute'
 		]);
 		expect(SETTLEMENT_EVENT_TYPES).toStrictEqual([
 			'hero.activity.started',
@@ -432,7 +433,8 @@ describe('settlement domain ownership', () => {
 			'social.directive.issued',
 			'social.directive.replaced',
 			'social.directive.revoked',
-			'story.first.ember.recovered'
+			'story.first.ember.recovered',
+			'hero.attribute.allocated'
 		]);
 		expect(settlementCommandHandler).toMatchObject({
 			ownerId: 'settlement',

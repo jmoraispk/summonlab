@@ -28,11 +28,16 @@ import {
 	MissionRunStateV6Schema as PublicMissionRunStateV6Schema,
 	MissionRunStateV7Schema as PublicMissionRunStateV7Schema,
 	MissionRunStateV8Schema as PublicMissionRunStateV8Schema,
+	MissionRunStateV9Schema as PublicMissionRunStateV9Schema,
+	MissionRunStateV10Schema as PublicMissionRunStateV10Schema,
 	MODEL_POLICY_VERSION,
 	StoryPatchCandidateSchema as PublicStoryPatchCandidateSchema,
 	SynthesisReceiptSchema as PublicSynthesisReceiptSchema,
 	SynthesisRumorRecordSchema as PublicSynthesisRumorRecordSchema
 } from '@summonlab/contracts';
+import { createHash } from 'node:crypto';
+import { Buffer } from 'node:buffer';
+import { gunzipSync } from 'node:zlib';
 import { describe, expect, it } from 'vitest';
 
 import {
@@ -62,7 +67,9 @@ import {
 	MissionRunStateV5Schema,
 	MissionRunStateV6Schema,
 	MissionRunStateV7Schema,
-	MissionRunStateV8Schema
+	MissionRunStateV8Schema,
+	MissionRunStateV9Schema,
+	MissionRunStateV10Schema
 } from './engine/mission-state.js';
 import {
 	FirstBandArchiveStateSchema,
@@ -78,6 +85,349 @@ import { ENGINE_COMPATIBILITY_STATE_FIXTURES } from './engine-compatibility-stat
 import * as engineContracts from './engine.js';
 import { SocietyStateV4Schema } from './social.js';
 
+const V24_COMBAT_REPLAY_FINAL_STATE_HASH =
+	'be17653a611538c5820f595dd04b61265e94896c399dca7d05e02d5d19491d20';
+
+function canonicalJson(value: unknown): string {
+	if (value === null) return 'null';
+	if (typeof value === 'string' || typeof value === 'boolean') return JSON.stringify(value);
+	if (typeof value === 'number') return JSON.stringify(value);
+	if (Array.isArray(value)) return `[${value.map((item) => canonicalJson(item)).join(',')}]`;
+	if (typeof value === 'object') {
+		const record = value as Record<string, unknown>;
+		return `{${Object.keys(record)
+			.sort((left, right) => left.localeCompare(right))
+			.map((key) => `${JSON.stringify(key)}:${canonicalJson(record[key])}`)
+			.join(',')}}`;
+	}
+	throw new Error(`Canonical JSON cannot encode ${typeof value}`);
+}
+
+function hashCanonical(value: unknown): string {
+	return createHash('sha256').update(canonicalJson(value)).digest('hex');
+}
+
+// Provenance: gzip-compressed JSON captured from the engine's v24-equipment-mission-resolution
+// replay final state. Its canonical hash is pinned here and in replay-vectors.ts.
+const V24_COMBAT_REPLAY_FINAL_STATE_SNAPSHOT =
+	'H4sIAAAAAAAAA+1cW4/cNpb+KwU9Fw1Kom69T46TjI2dTALbmwU28MMheVjFaZVYQ1Hd6W34vy9ISqpLl2N120mcWQP1UCJFiufC' +
+	'c/l4uU96scUd/Iy216ZLrjK2TuzQvZLJVUJpmZdpVZMyxYIwFILUKeWE1liVTVOxrMmSddIj+rct7lu4IzconLHkJmNEmB0HR0L9' +
+	'OhGmc9i5+UsJdhvdoX/Td+LADX1ylYBw+gaTdXIzvcjWCd5g514Mtjc2uSrWCXbOmv3dVJKyddLr3dCCQ/ncJVdJRiklNCU0fUvp' +
+	'Vfg9o5T+T7JOdtA7tMnV/fgvkFoygLJOS6JUCoRRUKTGqiCqqUtkSqYp5ck6abXCNw4c+oG2cZytEeAiRf2w25lOdxuy8e+sky1C' +
+	'67bJVUqp//CvL4+fdffPwWrsk6tf3q0T3+JV1+9R+M5emKFzyRVdJy307m/g8DX2poNOYHLVDW373ndujW99n0BVVlKAIqlQJWGq' +
+	'VoSXnoSyyGiKAFla+Pd8i0DuogZn5E5y+S16JfZOd2O1H+ZHWLCDTivs3Uvot8lVklNMecNZnTapqqsmbVJQZV4w0VRlw2kjucAs' +
+	'ZUArZFKIoqRAK6mUxBxzUSfrpEOUgSfbodt4MWd0nShwejNgcpUW78/5vrdmY7GPqnbv9dD2yVW6Tlq8wTb8w1/3aDUG3tN10l/r' +
+	'tg3f6G+Nld/rzdbpbuMLLHTX4Z2TJu/fv18n+K9B73fopeo1T3cvofOiQKFS1vCGZLVihJV1RWqRlyRDxqqK501d02SdGKVig5mr' +
+	'839nbG+mhxY3/fSfG+P6WV3EYC127rmXo3Z3c4NRnP8wEoNueFESCbpP1onStnfPrdU30L4wu32Lzs91BW2Pc49vLQROxf6g7/Wm' +
+	'i4TGkp32475P9mi9Crfh4/eJ2WPXYd8nV0URrEMvNHZOm6GPxWXgo/O9T5agWCewsYjAWxzb+pd2xlMA7c+mBafjBxh974Wrd2Dv' +
+	'fobWSz+Rg7tL5tJvrVdor8X2Jqp2b4SG9o27azEYtB7tTbBdvfMq8hr7vel6X7e3uAcbVB50e/cSuPZmR2xRXPcEf9XOsw/2TrtB' +
+	'xkm683oSrJfSfuwY/uuun8st9qb1Qyq8wmxjn/fTn/PO/Zi6jZ9KZe3b7tFpz4Y+Kik43SsQcSoWoyF5a/VmgzYayVEvAgE/tTDP' +
+	'2FGsr83gdIdnpd8buwnKHlq/99bfuRYnxfYkDFZEipUxMrnK14m2piPGYnKVeWlxtKTfgpV+bqznNn9HGWbsL/fBvt8FbWRQYilS' +
+	'SmrIwE+PgjRl2pCGV7lQBSITaTI6iNCgRlbnwAQpqBSEcclIDSmQhtVFpaCuZQ7J4aPJVRzmOuGowhDpOgEVPETuDVrrIPyzCH0w' +
+	'enboVmFmOQv7Ve+MuE7er4/HLFlZsCJDgg2vCVMApM6FImUlZAYKESv5iWOeOXpp3Nk87uxR46aNqGueA2mEVIShlAREzYkUElKW' +
+	'AooUP3Hcx8K/NHQ6D51+bOjv1kkHN3ozepv7I00Mg9siWLclNL0Ue8yV5OaofnRDdY6ZZJQpyDFNGy5oplSpVKrqrG5KhFopnlLI' +
+	'yjJVtag4xbqoIS8Qed3wxs/84C3f3PUOd6+8Q/olkcbutDP2jvShOIk+//A0jml+dhZ0cK5jyTtv0Mytn77fDLqVutu8mp0AH0ui' +
+	'Xzr1y1f3c3XgzAO33Y/jnKz/PISDMT91DxZ0e1L92gSTGSrBOewkdO7kjRewBxEscz0Vo3wZApLRE3PosdUd/uRpnMKO0QgnI+nn' +
+	'xe/XybV2YovdAyqn8hPyznl8gcCxHYmvXqJSGHP9Adryz0vbrDMPqDvUnNB3QckukHh4iw/ddX+JRou9lvhBGZafl85Z1TfWDDFa' +
+	'OKH2vP6E5vN5cpHk+SXrvdcFgsMLiH+Mzt4ae91vzf4BoXPFCYXK2M1vz8qpHeHYiYtKC9bpHrrPobdDN5qhcwoPFT4yCMHjd97g' +
+	'ezKFsXGooZhERyCiC5uTv6GzKMzN2Pf8/3trdpOhmwufzwGmMLuddu64iD8wkBZijDgHNDsjtdJoR0otxmApPL73qYlDq6H9e4ih' +
+	'7xNuTfe/MYLxzjcGWQ594EvXCW9BXB8e++u7o5fA7tDBWDN0h9eCu0nXyR3ehmff5jYETXR0B/NTv9dWHx5bfeOVmVvw4vYlt8a2' +
+	'0llE0uodD0XCgO2RbLWMPtZ7XdIiuO3oajlC70gvAld8g612Oo5aWrjGQ83tnd0dnqALoTqRFjamO+pgi7s9uUW4GVsZ045J7J0X' +
+	'Gel1ez2Sg217eHFnTHd48hwTrXGRMAUOpzqvVX4uRMcalHI0Z97d+NzO4S6Ia1FadXUfGrx6RB4mUekuxNmx1ZTVkagfJKSEPl+7' +
+	'7UZoYWGuHXrao/zm7jGthAXl+h10/VYHa9IC98rledjJMcoynZ9cgXm6g/Z1SFKT7z01gwU+JkxlSM+/PS0xVm908K3XIYvz+SUI' +
+	'73Tin7e423vUJYx5b/0UEkh4CxKDDaiqFHnBFKnTPCMMUyBcMUGYBIpZI3mD1YkYFjX4DTFAvyXc3H66BEbT8vn4yx7wlz2Sv/3W' +
+	'WBeoC4hCPwUG2N1ga/YPzWuIbScbMaZ7PsfFmIE/iIrHOnLj2WG4d1cw2sT7BAueFYIWJFe0JqyqMtKouiaKZ5hWTVorlYa8/tAu' +
+	'ymZJOz8unyJ899jcIn4N7ctHQltju4+ihaNY4BausYuhgw+fwXM+ebWK5ShX4FZui6s5tF75UHjFQxS1gm41dAp2utVgVyCH1j0L' +
+	'HfF/onBjfrBw4IuQyndePzi2GlXMxCFDyKqUYE2RMC4E4bJmpExpXuZ13ahcBCcXmkQ9WtJknWxNKx/P/Zny5U32FqUWIxY5cp2A' +
+	'C6L0fR3PoQmhPKBbl/Ke9yHvUz7M9blpACTnSGSLrQyzEGz3cS3ZW3ODIzo7D+OAAcpP1e9Hz6Zx3D5wOjJmW9Ddt7gPjtVrCGVF' +
+	'UxVQEkVFQ1hWIgGaIalyLGpZyhIaOFOLRU0+h1osROSP1WLvI2zvAxw5nq9fqn5MJuiLVI6Ay7XR+m/1PliRJs/zsqwyQnlWElaK' +
+	'gtRUUZIxxVMpMk5TFkHAQ8MwrkUN14myZvdYlXHmu85pd/cYnZF6h10/+TVnh96NeFNYfolRJ4IdgSmFI4oaX8HORbQzYFXcRc8/' +
+	'7OWSxScPwr55mrDxZtLEX4J531uz031AWt+vExjc1tgRWseqhrIUGYGGC8KqghEQkJE6A6gqpIxDcNVzo6g9S1o93eM+YXKfCkqY' +
+	'3R7dvAzj55TuJ8EcpNjiRju981HUiSAPeDmNyw26953d/Vny81nr0HnbpW/wuXCjIIXp/HpHmEBvB9uNxVJbDJji+fOrTrWD7zdU' +
+	'+MRVz4tZXHdyXJkaSyMW4vMmolpj7Afg0dM3LmGkeaqqoqRVCTmWFciGZnlKa0YpKxk2QIE3TVOUeZWVJU95o1gqaprJHFjNaeat' +
+	'K9yAbv1Szg/T4EIgdDa8d8esC6ruoeIdeEneHx4Ogx9JJXMVuclnSPa5c7jbR8GhrJockBKFVU0YU4zUWV4SqBjNm6oQCjAS3uO/' +
+	'Jh57rACs2EZRBKgAYp/jmm06F4TxPf57xkqfRoSeZn8T14aiQ9uDjfP88QvY2xncWTZt362TXcglxkYLP7Os7/dxIf/uANIFybut' +
+	'xd4HEMm4/idO1icfvrQ3vZ7TlEUjvEqM14sttO3S0R438ahzZ25bv2Dlvyl1H0Cpuxk385bJoYyDDpw7/uA5Ce+iOYjLqz8GM+ln' +
+	'tpyXqMNi40eNk8R9a+4+/t6BqT/usTuGzbCTx49mcMLsZsTMDbYbob778PBwzvlScpOFbRa/6t2we+3x2j65Yn6N0v//xxARwWwK' +
+	'zMIi7P3h4VXcTBIYSo6y2ZNNIpPl8NMTrNVxFpwhhD92ryOaHMsl+h0b5+VhUaXV4u6bg7F8YA93xqN2loQ3NfaXLGIh0ooWmBag' +
+	'oOayaGQFjRAFK6qyoYxxVgGXjSwbisCzSuWiFJnMyxSxaUTltWr8TlDkTPJSibIkWZNywrBhBPJM+BiKKUYr2tA6GIHYJrBtUZt1' +
+	'WAd/05polTaGt7ojIf4jt+ACfBxZEusHDxvGamEG6yLxExDywles/tu3WwVncmy+umnSHjW/vNlHu3FjQDarzs/HZdCidRPOPK7j' +
+	'S1TonfaZnL2Pfi7moHjkzzM/054tYpC3S1RwKWlGoEgzwhT6SLqsSJZTrCUTBWP0nPmL2vyOzM+OmZ99gcxfxKD36yRnWVbKjBPJ' +
+	's4qwKhUEAh7blCJXsmCqzM+Zv6jN78j8/Jj5+RfI/EUM8szPykLlDSWyKFKf4EvChShIWpUFVE2W8ko8YP6SNpeZH4HKLQxtsPBH' +
+	'3N9b41DMK0UWZIunAghrS6uXoe1v2J4RC4Wh/ZgE0gsSSD+fBJZwKWR2Pr772xA2yCwNaO49PeZRseAmfiGfif7bXHAUdoK8G/Oe' +
+	'F1voNkcU+7Rp6c7Dw+AWZoufPjg/OotdALDUYDsQh72MvI9L28KYVnebF8bvJ22nEHNaVTyu++7XvennvW+H7XRvtxbBvQqBQB/2' +
+	'Lj3BH3/c5sCn+LMZxR7jZY+z/OOyfXLmQxVgN+gO3HHY4sbCfvsgBFgFS4p9wMNj1QvfyaqFDnuPe0PntNB7P32+C+hKcpX8ALpz' +
+	'oLt+pV2/isAEypWfbatb7bZmcKtNXMJfbbWU2K3mEPxZ2Mf0BIO0yNp8iPULv/EbrD81TEesP6v4DdafmcDVNeK+X3HjtqstdLJf' +
+	'mS7IIfS4imT9QSJY5pCfrvoLP/AHqn7+Jaj+wij06Xxf+IE/kO/Zn8L3d2NCG61++PswHw7FMSE+yX5HaAcP5y588n3jN4B4cHkE' +
+	'F8f83331MV99zFcf89XHfPUx//98zMiXKakMWPJTzPNT7MpTZPL4+fPOn4LRToeFsB+tDGdAluaJC6lfmBIv5MtCViyl/rDx9AmJ' +
+	'cmjwn+NEQGvOZlWMQ57tzA0+mxcciDPkeD1CbI0W+GY6pNELq/du3N47T+GplByd44qzeA/iGicYvMGUIkqo6lJlFVBkrOSc1Y1q' +
+	'aNGwqqhZjnXesJTzGlJZCr/DktdI67RpCjpufWujwo+dSsHSnLFGcsiarM4Exzwv6qIqq0rmCjgCYsFSXiFNCxCsRCyqMhOVKJsG' +
+	'm5mS19gP7TTUNPWQfI2KVxyzlDMq8iKDMlVpWmU1r9MCGRNU5RlmaQksBZYi5o1IS15VYVfSwFstYmiWXCVvt7jyQljpTuLer6Z0' +
+	'rr1bia3pcbVAFt6MHObCN+APiZXpcdlbjd9YhOvkqq6Py/0h2OZoxSaB/b7V+MAuPlw9O7KNJ2tUZ5bx4RrXvGLz1kIXV+DmdaRg' +
+	'/+Y3DzvmfjA3KFd+RKuzkaycWR3xwbucRyNax3NhPOb76bNhB90A7clciEQeq/18+PJUcccXH6jeWP5QeX4Io/40hSnoZYUpyjOF' +
+	'oeW/k8Kc+8q/SqZ0Lr6cXRZfdS6+lC4Q3xPjoA/K4ywP89vgLoQ204r8XyhreiCG5rIYWHMqBm+GPyqFJ2ZhH5TCeUr2aDF8mRH8' +
+	'0qmQp6cyKIs/eyZkT5gJX2TyulQEWXYqgmKJL/ldRZAvEMG7qbOpq7CU9DyePT7aY+Vl9UhELztH9PKviN5XRO8rovcV0fuK6H1F' +
+	'9B6F6D0FnVuo15+M6C1yHZcRvYVkLaRk6aHOZTQuBBiWUv8HIHrjFPmc0B2rylRlTc3qoi4zrJhsJMOyAAGcZrSUEqvSX7gleFlI' +
+	'TjMpCiwULVAWVangInRXFWmTF3WelyqDmkOKNMMUBDYsZyKvM8XyUogsF1kjKE15XpZ5IRAaDjk7CnROoDtViTItVV41GeNFQTGV' +
+	'oOqSVUoKWdVcQCoEskzVUiDLUaGU/hgC503KgYonQndhCjwCo8vOEpU6WxAln+4U/wOxlpc+fp6i5f9YIdhWo10dCFhZlIPAfqU7' +
+	'YXbhlKv3AisJO9jgit+t0pXb6n4VIuPfGcS7PAH+fLTuQzryIVguLZ6QzP4b6cjHcbsvNi5fihk19Ay6y5ZA9V8caPRlBudLEYvi' +
+	'DLhr8r8CYvGXiNOXioCdzYOK/dkieAJu92WiM4txO3aG2y2Br//0RYTFuN27cHI9hg3jzu1wWE3vwtGu5BZ03Pc9dE6a2+4NChO2' +
+	'8IXrN4/OE0sU4eHH6UQBnU6QfjvWHG/595fztsOxA1XQthzE9XicTOnNEG+gOkIUwyjJ9OYYkAe18Uve4YBvkMV41nfUFdrkQsgq' +
+	'JzxPK8KAloQrWpG0znnNFG+qnB83eou/+njlubzx9w+EZHd2/KvbrW5xNbpL76x9tT+KCN3ds3hVqj8gHm/LTZQRQ08Ox/bWs6Pt' +
+	'sVVHj/GE6ru5YLpVbOJODwrd3Rtn4sUC8R7IV9ZiuOqVt/h8PHLv7ICTPOPNwW/nlcirvFgnt1vs/qsTrb+9THnVnZuEUwMv/Nld' +
+	'MfjRfj/yuU+u6ulqh83w0WOV78cDwA868ccfOHTyzXQNT7iP5yBeO3RO75D4d0ioixK+cFtPeGXwVOidv9VkPst/ePvF5SPaoSVN' +
+	'L/X/4uR0Ila8aFQhaImsYI3iBcs4o1xRWTJVMAl1xbKac5kqXme8qZGrspGioDzF0qvhVs83Do1/j24OircJIjgy1sXBDF1rxDXK' +
+	'7/1p7jDL5nOu33gEPKIfwpq+J26L43nP49XmHjHUHG737EkXbxTfIbqjVuPJnFar49Lp7KjFcDYVegJkVHBv5sIpc3driL+OOB6v' +
+	'PpT5C0X6IVxRdyj0imNN56YrRA4148HT034Ph20PxVt/TduDD4bSh58MxR/4aKh7+NlQfOHDygz2wXdD4YPPhtLLXw1VDz4aSo++' +
+	'OaIgNx48+8mavemhHV2BP5kTHc1PEYEbC/u7zm2x1/3ly6mm2qhZFgXq/XRrgh12xk43IATBfwOdfB7P6YcDSPHvobujmTfWxX7n' +
+	'00U9QhvU7JMm7OebfgI646+LaH/AvocNTvhKDQ2t0wqzsuGSVlmp6qysi0KUdZGnivq4rS6rEkvFm7KuC0xB5YUsaV4xgYd7Fucr' +
+	'wb0Zhna64vn/APRbU6MjYAAA';
+
+const V24_COMBAT_REPLAY_FINAL_STATE_FIXTURE = JSON.parse(
+	gunzipSync(Buffer.from(V24_COMBAT_REPLAY_FINAL_STATE_SNAPSHOT, 'base64')).toString('utf8')
+);
+
+const V25_CAPABILITY_PROFILE = {
+	profileVersion: 'character-capability-v1' as const,
+	attributes: { strength: 41, agility: 63, vitality: 52, magic: 74 },
+	learning: {
+		cognitiveLearningScore: 55,
+		domainAptitudes: { martial: 61, magical: 62, crafting: 63, survival: 64, social: 65 }
+	}
+};
+
+function v25StateFromV24Fixture() {
+	const heroes = Object.fromEntries(
+		Object.entries(
+			V24_COMBAT_REPLAY_FINAL_STATE_FIXTURE.heroes as Record<
+				string,
+				{ mind: { aptitudes: unknown }; [key: string]: unknown }
+			>
+		).map(([heroId, hero]) => {
+			const mind = structuredClone(hero.mind) as { aptitudes?: unknown };
+			delete mind.aptitudes;
+			return [
+				heroId,
+				{
+					...hero,
+					mind,
+					maxHealth: 308,
+					mana: 188,
+					maxMana: 188,
+					progression: {
+						...(hero.progression as object),
+						unspentAttributePoints: 0,
+						attributeGrowthReceipts: []
+					},
+					capabilityProfile: V25_CAPABILITY_PROFILE
+				}
+			];
+		})
+	) as Record<string, Record<string, unknown>>;
+	const firstHero = Object.values(heroes)[0]!;
+	const secondHeroId = '11111111-1111-4111-8111-111111111111';
+	heroes[secondHeroId] = {
+		...structuredClone(firstHero),
+		heroId: secondHeroId,
+		manifestHash: '1'.repeat(64),
+		equipment: {
+			mainHand: null,
+			offHand: null,
+			head: null,
+			torso: null,
+			legs: null,
+			boots: null
+		}
+	};
+	return {
+		...V24_COMBAT_REPLAY_FINAL_STATE_FIXTURE,
+		schemaVersion: 25,
+		contentVersion: 'engine-v25',
+		mission: {
+			...V24_COMBAT_REPLAY_FINAL_STATE_FIXTURE.mission,
+			aftermath: {
+				...V24_COMBAT_REPLAY_FINAL_STATE_FIXTURE.mission.aftermath,
+				aftermathVersion: 'mission-aftermath-v4'
+			},
+			attempt: V24_COMBAT_REPLAY_FINAL_STATE_FIXTURE.mission.attempt
+				? {
+						...V24_COMBAT_REPLAY_FINAL_STATE_FIXTURE.mission.attempt,
+						combatModeBinding: {
+							modeId: 'legacy-auto-v1',
+							rulesVersion: 'legacy-auto-rules-v1',
+							contentHash: '1'.repeat(64),
+							boundAt: V24_COMBAT_REPLAY_FINAL_STATE_FIXTURE.mission.attempt.preparedAt
+						}
+					}
+				: null
+		},
+		heroes
+	};
+}
+
+function v26HeroesFromV25Fixture(heroes: ReturnType<typeof v25StateFromV24Fixture>['heroes']) {
+	return Object.fromEntries(
+		Object.entries(heroes as Record<string, Record<string, unknown>>).map(([heroId, hero]) => [
+			heroId,
+			{
+				...hero,
+				combatTraining: {
+					schemaVersion: 'hero-combat-training-v1',
+					proficiencyTags: [],
+					learnedSkills: [
+						{
+							schemaVersion: 'learned-combat-skill-v1',
+							skillId: 'combat-skill-basic-sword-strike',
+							mastery: 0,
+							trainedDeliveryTags: ['one-handed-blade']
+						}
+					]
+				}
+			}
+		])
+	);
+}
+
+function v26ReadinessStateFromV24Fixture() {
+	const v25 = v25StateFromV24Fixture();
+	const attempt = v25.mission.attempt;
+	if (!attempt) throw new Error('Expected the frozen replay to contain an active attempt');
+	const combatants = Object.fromEntries(
+		attempt.party.memberIds.map((combatantId: string, index: number) => [
+			combatantId,
+			{
+				combatantId,
+				combatantKind: combatantId === attempt.party.masterId ? 'master' : 'hero',
+				teamId: 'party',
+				position: { x: index + 1, y: 1 },
+				facing: 'east',
+				resources: {
+					health: { current: 100, maximum: 100 },
+					mana: { current: 50, maximum: 50 }
+				},
+				lastDamagedAtTick: null,
+				attributes: { strength: 41, agility: 63, vitality: 52, magic: 74 },
+				armour: 0,
+				resistances: {},
+				readiness: { value: 0, exactNumerator: 0, recoveryUntilTick: 0 },
+				conditions: [],
+				cooldowns: {},
+				downed: false,
+				active: true
+			}
+		])
+	);
+	const actorContexts = Object.fromEntries(
+		attempt.party.memberIds.map((combatantId: string, index: number) => [
+			combatantId,
+			{
+				actorId: combatantId,
+				visibleCombatantIds: [],
+				visibleTelegraphIds: [],
+				observableReadinessActorIds: [],
+				targetablePositions: [{ x: index + 1, y: 1 }],
+				visibleTerrainFeatureIds: [],
+				rememberedContext: [],
+				doctrine: [],
+				relationships: [],
+				masterDirections: [],
+				legalActionTemplates: [
+					{
+						actionId: 'guard-self',
+						actionKind: 'guard',
+						skillId: null,
+						publicLabel: 'Guard',
+						targetContract: { kind: 'self' },
+						reactionPriority: 0,
+						recoveryTicks: 2,
+						manaCost: 0,
+						conflictPolicy: {
+							invalidTarget: 'cancel',
+							occupiedDestination: 'cancel',
+							cancellationRefund: { mana: 'full', readiness: 'full' }
+						},
+						fallbackOptions: [
+							{ fallbackId: 'brace', publicLabel: 'Brace', target: { kind: 'self' } }
+						],
+						resolutionProfile: {
+							profileKind: 'non-damaging',
+							rulesVersion: 'combat-rules-v1',
+							contentHash: '2'.repeat(64)
+						}
+					}
+				]
+			}
+		])
+	);
+	const partyHeroes = Object.fromEntries(
+		Object.values(combatants)
+			.filter((combatant) => combatant.combatantKind === 'hero' && combatant.teamId === 'party')
+			.map((combatant) => [
+				combatant.combatantId,
+				{
+					startingHealth: combatant.resources.health.current,
+					startingMana: combatant.resources.mana.current,
+					currentHealth: combatant.resources.health.current,
+					currentMana: combatant.resources.mana.current,
+					damageTaken: 0,
+					downed: combatant.downed
+				}
+			])
+	);
+	return {
+		...v25,
+		schemaVersion: 26,
+		contentVersion: 'engine-v26',
+		heroes: v26HeroesFromV25Fixture(v25.heroes),
+		mission: {
+			...v25.mission,
+			attempt: {
+				...Object.fromEntries(
+					Object.entries(attempt).filter(
+						([key]) => key !== 'turnState' && key !== 'combatModeBinding'
+					)
+				),
+				combatModeBinding: {
+					modeId: 'agent-readiness-v1',
+					rulesVersion: 'agent-readiness-rules-v1',
+					contentHash: '2'.repeat(64),
+					boundAt: attempt.preparedAt
+				},
+				combatState: {
+					modeId: 'agent-readiness-v1',
+					readinessState: {
+						stateVersion: 'readiness-combat-state-v1',
+						seed: 'a'.repeat(64),
+						attemptId: attempt.attemptId,
+						tick: 12,
+						combatants,
+						actorContexts,
+						terrain: { width: 16, height: 8, blockedTiles: [], features: [] },
+						visibleTelegraphs: [],
+						scheduledEffects: [],
+						safety: { ticksAdvanced: 12, eventsEmitted: 0, noProgressCycles: 0 },
+						outcomeEvidence: {
+							evidenceVersion: 'readiness-outcome-evidence-v1',
+							attemptId: attempt.attemptId,
+							partyHeroes,
+							resolvedEvents: [],
+							emittedEventIds: [],
+							eventsEmitted: 0,
+							engineRecoveredCombatantIds: [],
+							securedLoot: [],
+							objectiveStates: [],
+							terminalDirective: null,
+							authoredDeadline: null
+						},
+						status: 'active',
+						result: null
+					}
+				}
+			}
+		}
+	};
+}
+
 describe('engine contracts compatibility', () => {
 	it('keeps the engine runtime exports available through the contracts entrypoint', async () => {
 		const contracts = await import('@summonlab/contracts');
@@ -90,50 +440,281 @@ describe('engine contracts compatibility', () => {
 		expect(Object.keys(engineContracts).sort()).toEqual(ENGINE_CONTRACT_RUNTIME_EXPORTS);
 	});
 
+	it('adds v25 public schema coverage without changing the frozen v24 boundary', () => {
+		expect(ENGINE_CONTRACT_RUNTIME_EXPORTS).toContain('EngineGameStateV24Schema');
+		expect(ENGINE_CONTRACT_RUNTIME_EXPORTS).toContain('EngineGameStateV25Schema');
+		expect(ENGINE_CONTRACT_RUNTIME_EXPORTS).toContain('EngineHeroStateV26Schema');
+		expect(ENGINE_CONTRACT_RUNTIME_EXPORTS).toContain('HeroCombatTrainingV1Schema');
+		expect(
+			EngineGameStateSchema.parse(ENGINE_COMPATIBILITY_STATE_FIXTURES.at(-1)!).schemaVersion
+		).toBe(24);
+		expect(EngineGameStateSchema.parse(v25StateFromV24Fixture()).schemaVersion).toBe(25);
+	});
+
+	it('parses the frozen v24 combat replay final state through public schemas', () => {
+		const union = EngineGameStateSchema.parse(V24_COMBAT_REPLAY_FINAL_STATE_FIXTURE);
+		const v24 = engineContracts.EngineGameStateV24Schema.parse(
+			V24_COMBAT_REPLAY_FINAL_STATE_FIXTURE
+		);
+		expect(union).toStrictEqual(v24);
+		expect(v24).toMatchObject({
+			schemaVersion: 24,
+			entropyCursor: 14,
+			mission: { attempt: { status: 'resolving', turnState: { roundNumber: 2 } } }
+		});
+		expect(Object.keys(v24.mission.attempt!.turnState.monsters)).toHaveLength(4);
+		expect(
+			v24.mission.attempt!.turnState.rounds.map((round) => round.initiativeOrder)
+		).toStrictEqual([
+			[
+				'a767dcaf-1cf6-4f8f-b6af-865201eaa215',
+				'2db6fc66-291b-4e94-a32c-0b24f4070908',
+				'64aa6816-ff1a-40af-8e75-f986e4fd110b',
+				'3265f390-d551-426d-bcc5-1765a7921b7c',
+				'e0cbdd02-a512-4fe2-9f67-230e8d4c5440',
+				'34226d2b-db27-471c-a687-896c3fd54f63'
+			],
+			[
+				'3265f390-d551-426d-bcc5-1765a7921b7c',
+				'34226d2b-db27-471c-a687-896c3fd54f63',
+				'a767dcaf-1cf6-4f8f-b6af-865201eaa215',
+				'e0cbdd02-a512-4fe2-9f67-230e8d4c5440',
+				'64aa6816-ff1a-40af-8e75-f986e4fd110b',
+				'2db6fc66-291b-4e94-a32c-0b24f4070908'
+			]
+		]);
+		expect(hashCanonical(v24)).toBe(V24_COMBAT_REPLAY_FINAL_STATE_HASH);
+	});
+
+	it('requires every v25 hero to carry a capability profile and a v2 mind', () => {
+		const state = v25StateFromV24Fixture();
+		const parsed = gameStateContracts.EngineGameStateV25Schema.parse(state);
+		expect(parsed).toStrictEqual(engineContracts.EngineGameStateV25Schema.parse(state));
+		expect(MissionRunStateV9Schema.parse(parsed.mission)).toStrictEqual(
+			PublicMissionRunStateV9Schema.parse(parsed.mission)
+		);
+		expect(Object.values(parsed.heroes)).toHaveLength(2);
+		expect(Object.values(parsed.heroes)[0]).toMatchObject({
+			maxHealth: 308,
+			mana: 188,
+			maxMana: 188
+		});
+		for (const heroId of Object.keys(parsed.heroes)) {
+			const withoutProfile = structuredClone(state);
+			delete withoutProfile.heroes[heroId].capabilityProfile;
+			expect(gameStateContracts.EngineGameStateV25Schema.safeParse(withoutProfile).success).toBe(
+				false
+			);
+		}
+
+		const withLegacyAptitudes = structuredClone(state);
+		const firstHero = Object.values(withLegacyAptitudes.heroes)[0]! as {
+			mind: { aptitudes?: unknown };
+		};
+		firstHero.mind.aptitudes = { might: 10, finesse: 10, insight: 10, resolve: 10 };
+		expect(gameStateContracts.EngineGameStateV25Schema.safeParse(withLegacyAptitudes).success).toBe(
+			false
+		);
+		expect(
+			engineContracts.EngineGameStateV24Schema.parse(V24_COMBAT_REPLAY_FINAL_STATE_FIXTURE)
+		).toBeDefined();
+	});
+
+	it('adds v26 mission state without widening the frozen v25 schema', () => {
+		const v25 = v25StateFromV24Fixture();
+		const legacyAttempt = v25.mission.attempt;
+		const v26 = {
+			...v25,
+			schemaVersion: 26,
+			contentVersion: 'engine-v26',
+			heroes: v26HeroesFromV25Fixture(v25.heroes),
+			mission: {
+				...v25.mission,
+				attempt: legacyAttempt
+					? {
+							...Object.fromEntries(
+								Object.entries(legacyAttempt).filter(([key]) => key !== 'turnState')
+							),
+							combatState: { modeId: 'legacy-auto-v1', turnState: legacyAttempt.turnState }
+						}
+					: null
+			}
+		};
+		const parsed = gameStateContracts.EngineGameStateV26Schema.parse(v26);
+		expect(parsed.schemaVersion).toBe(26);
+		expect(MissionRunStateV10Schema.parse(parsed.mission)).toStrictEqual(
+			PublicMissionRunStateV10Schema.parse(parsed.mission)
+		);
+		expect(gameStateContracts.EngineGameStateV25Schema.safeParse(v26).success).toBe(false);
+	});
+
+	it('adds bound v27 progression without widening the frozen v26 schema', () => {
+		const v26 = v26ReadinessStateFromV24Fixture();
+		const v27 = {
+			...v26,
+			schemaVersion: 27 as const,
+			contentVersion: 'engine-v27',
+			progressionRules: {
+				rulesVersion: 'progression-rules-v1' as const,
+				contentHash: '06fc61271c9c3254836c4f50f845624bea08731952957d0c1d6faf295e8744ce'
+			},
+			synthesis: {
+				...v26.synthesis,
+				contentVersion: 'synthesis-v2' as const
+			},
+			heroes: Object.fromEntries(
+				Object.entries(v26.heroes as Record<string, Record<string, unknown>>).map(
+					([heroId, hero]) => [
+						heroId,
+						{
+							...hero,
+							progression: {
+								progressionVersion: 'hero-progression-v2' as const,
+								stars: 7,
+								level: 999,
+								experience: 9_980,
+								unallocatedAttributePoints: 6_986,
+								permanentGrowth: {
+									strength: 2_000,
+									agility: 1_500,
+									vitality: 1_250,
+									magic: 2_800
+								},
+								evidenceCounts: { combat: {}, crafting: {} },
+								skills: (hero.progression as { skills: Record<string, unknown> }).skills
+							}
+						}
+					]
+				)
+			)
+		};
+
+		expect(gameStateContracts.EngineGameStateV27Schema.parse(v27).schemaVersion).toBe(27);
+		expect(gameStateContracts.EngineGameStateV26Schema.safeParse(v27).success).toBe(false);
+		expect(
+			gameStateContracts.EngineGameStateV27Schema.safeParse({ ...v27, progressionRules: undefined })
+				.success
+		).toBe(false);
+		expect(
+			gameStateContracts.EngineGameStateV27Schema.safeParse({
+				...v27,
+				progressionRules: { ...v27.progressionRules, contentHash: '0'.repeat(64) }
+			}).success
+		).toBe(false);
+		const overCap = structuredClone(v27);
+		(Object.values(overCap.heroes)[0] as { progression: { level: number } }).progression.level =
+			1000;
+		expect(gameStateContracts.EngineGameStateV27Schema.safeParse(overCap).success).toBe(false);
+	});
+
+	it('validates inherited mission references and decision lifecycle in readiness mode', () => {
+		const v26 = v26ReadinessStateFromV24Fixture();
+		expect(gameStateContracts.EngineGameStateV26Schema.parse(v26).schemaVersion).toBe(26);
+		const attempt = v26.mission.attempt!;
+		const originalHeroId = attempt.party.heroIds[0]!;
+		const missingHeroId = '99999999-9999-4999-8999-999999999999';
+		const missingPartyMember = structuredClone(v26);
+		missingPartyMember.mission.attempt!.party.heroIds[0] = missingHeroId;
+		missingPartyMember.mission.attempt!.party.memberIds[1] = missingHeroId;
+		missingPartyMember.mission.attempt!.positions[missingHeroId] =
+			missingPartyMember.mission.attempt!.positions[originalHeroId]!;
+		delete missingPartyMember.mission.attempt!.positions[originalHeroId];
+		expect(gameStateContracts.EngineGameStateV26Schema.safeParse(missingPartyMember).success).toBe(
+			false
+		);
+		const nonlivingPartyMember = structuredClone(v26);
+		Object.assign(nonlivingPartyMember.heroes[originalHeroId]!, {
+			lifeState: 'downed',
+			health: 0,
+			currentActivity: null,
+			currentTravel: null,
+			assignment: null,
+			currentRoutine: null,
+			currentForging: null
+		});
+		expect(
+			gameStateContracts.EngineGameStateV26Schema.safeParse(nonlivingPartyMember).success
+		).toBe(false);
+
+		const evidenceId = '88888888-8888-4888-8888-888888888888';
+		const missingEvidenceHolder = structuredClone(v26);
+		missingEvidenceHolder.mission.evidence[evidenceId] = {
+			evidenceId,
+			evidenceKey: 'missing-holder-evidence',
+			holderActorId: missingHeroId,
+			sourceBinding: missingEvidenceHolder.mission.binding,
+			sourceAttemptId: attempt.attemptId,
+			discoveredOnRound: 1
+		};
+		expect(
+			gameStateContracts.EngineGameStateV26Schema.safeParse(missingEvidenceHolder).success
+		).toBe(false);
+
+		const invalidDecisionLifecycle = structuredClone(v26);
+		invalidDecisionLifecycle.mission.attempt!.status = 'extraction';
+		invalidDecisionLifecycle.mission.attempt!.extractionOpenedAt = v26.simulatedAt;
+		invalidDecisionLifecycle.masterControl.decisionOrdinal = 1;
+		invalidDecisionLifecycle.masterControl.activeDecision = {
+			decisionId: '77777777-7777-4777-8777-777777777777',
+			ordinal: 1,
+			timing: invalidDecisionLifecycle.masterControl.timing,
+			openedAt: v26.simulatedAt,
+			expiresAt: null,
+			fallback: invalidDecisionLifecycle.masterControl.fallback
+		};
+		expect(
+			gameStateContracts.EngineGameStateV26Schema.safeParse(invalidDecisionLifecycle).success
+		).toBe(false);
+	});
+
 	it('keeps command discriminators and public version constants stable', () => {
 		expect(EngineCommandSchema.options.map((option) => option.shape.commandType.value).sort())
 			.toMatchInlineSnapshot(`
-		[
-		  "hero.arrive",
-		  "hero.choose.destination",
-		  "hero.equip.item",
-		  "hero.plan.day",
-		  "hero.share.synthesis.rumor",
-		  "hero.start.activity",
-		  "hero.start.forging",
-		  "hero.start.routine",
-		  "hero.start.travel",
-		  "master.apply.safety-stop",
-		  "master.communicate",
-		  "master.configure.fallback",
-		  "master.configure.timing",
-		  "master.converse",
-		  "master.inspect.gate",
-		  "master.issue.directive",
-		  "master.open.decision",
-		  "master.replace.directive",
-		  "master.revoke.directive",
-		  "mission.cancel",
-		  "mission.deploy",
-		  "mission.extract",
-		  "mission.open.extraction",
-		  "mission.prepare",
-		  "mission.resolve.turn",
-		  "mission.retreat",
-		  "mission.revise.party",
-		  "settlement.allocate.power",
-		  "settlement.assign.hero",
-		  "settlement.commit.first.ember",
-		  "settlement.synthesize.hero",
-		  "settlement.unassign.hero",
-		  "simulation.advance",
-		  "simulation.apply.damage",
-		  "simulation.sync.clock",
-		  "story.apply.patch",
-		  "story.recover.first.ember",
-		  "story.reveal.first.archive",
-		]
-	`);
+				[
+				  "hero.allocate.attribute",
+				  "hero.arrive",
+				  "hero.choose.destination",
+				  "hero.equip.item",
+				  "hero.plan.day",
+				  "hero.share.synthesis.rumor",
+				  "hero.start.activity",
+				  "hero.start.forging",
+				  "hero.start.routine",
+				  "hero.start.travel",
+				  "master.apply.safety-stop",
+				  "master.communicate",
+				  "master.configure.fallback",
+				  "master.configure.timing",
+				  "master.converse",
+				  "master.inspect.gate",
+				  "master.issue.directive",
+				  "master.open.decision",
+				  "master.replace.directive",
+				  "master.revoke.directive",
+				  "mission.advance.automatic",
+				  "mission.apply.combat-choice-batch",
+				  "mission.cancel",
+				  "mission.commit.readiness-terminal",
+				  "mission.deploy",
+				  "mission.extract",
+				  "mission.open.extraction",
+				  "mission.prepare",
+				  "mission.resolve.turn",
+				  "mission.retreat",
+				  "mission.revise.party",
+				  "settlement.allocate.power",
+				  "settlement.assign.hero",
+				  "settlement.commit.first.ember",
+				  "settlement.synthesize.hero",
+				  "settlement.unassign.hero",
+				  "simulation.advance",
+				  "simulation.apply.damage",
+				  "simulation.sync.clock",
+				  "story.apply.patch",
+				  "story.recover.first.ember",
+				  "story.reveal.first.archive",
+				]
+			`);
 		expect({
 			DECISION_INSPECTOR_VERSION,
 			DECISION_JOB_CLIENT_VIEW_VERSION,
@@ -318,7 +899,7 @@ describe('engine contracts compatibility', () => {
 
 		const unsupported = {
 			...ENGINE_COMPATIBILITY_STATE_FIXTURES[23],
-			schemaVersion: 25
+			schemaVersion: 28
 		};
 		const directVersionResult = gameStateContracts.EngineGameStateV24Schema.safeParse(unsupported);
 		expect(directVersionResult).toStrictEqual(
@@ -353,7 +934,7 @@ describe('engine contracts compatibility', () => {
 				code: 'invalid_union',
 				path: ['schemaVersion'],
 				message:
-					"Invalid discriminator value. Expected '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' | '10' | '11' | '12' | '13' | '14' | '15' | '16' | '17' | '18' | '19' | '20' | '21' | '22' | '23' | '24'"
+					"Invalid discriminator value. Expected '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' | '10' | '11' | '12' | '13' | '14' | '15' | '16' | '17' | '18' | '19' | '20' | '21' | '22' | '23' | '24' | '25' | '26' | '27'"
 			}
 		]);
 	});
@@ -486,6 +1067,7 @@ describe('engine contracts compatibility', () => {
 				commandType: 'hero.equip.item',
 				itemId: '50000000-0000-4000-8000-000000000010'
 			},
+			{ ...commandBase, commandType: 'hero.allocate.attribute', attribute: 'strength' },
 			{
 				...commandBase,
 				commandType: 'hero.start.forging',
@@ -537,6 +1119,38 @@ describe('engine contracts compatibility', () => {
 				decisionId: '50000000-0000-4000-8000-000000000011',
 				resolvedAt: '2000-01-01T00:01:00.000Z'
 			},
+			{ ...commandBase, commandType: 'mission.advance.automatic' },
+			{
+				...commandBase,
+				commandType: 'mission.apply.combat-choice-batch',
+				batch: {
+					batchVersion: 'combat-choice-batch-v1',
+					batchId: '50000000-0000-4000-8000-000000000013',
+					windowId: '50000000-0000-4000-8000-000000000014',
+					attemptId: '50000000-0000-4000-8000-000000000015',
+					tick: 1,
+					snapshotHash: '3'.repeat(64),
+					choices: [
+						{
+							windowId: '50000000-0000-4000-8000-000000000014',
+							attemptId: '50000000-0000-4000-8000-000000000015',
+							tick: 1,
+							actorId: heroId,
+							snapshotHash: '3'.repeat(64),
+							actorViewHash: '4'.repeat(64),
+							legalActionSetHash: '5'.repeat(64),
+							actionId: 'guard-self',
+							actionInstanceId: '50000000-0000-4000-8000-000000000016',
+							actionKind: 'guard',
+							skillId: null,
+							target: { kind: 'self' },
+							fallbackId: 'brace'
+						}
+					],
+					batchHash: '6'.repeat(64)
+				}
+			},
+			{ ...commandBase, commandType: 'mission.commit.readiness-terminal' },
 			{
 				...commandBase,
 				commandType: 'mission.open.extraction',
@@ -586,6 +1200,7 @@ describe('engine contracts compatibility', () => {
 			'master.inspect.gate',
 			'hero.start.activity',
 			'hero.equip.item',
+			'hero.allocate.attribute',
 			'hero.start.forging',
 			'simulation.advance',
 			'simulation.sync.clock',
@@ -595,6 +1210,9 @@ describe('engine contracts compatibility', () => {
 			'mission.cancel',
 			'mission.deploy',
 			'mission.resolve.turn',
+			'mission.advance.automatic',
+			'mission.apply.combat-choice-batch',
+			'mission.commit.readiness-terminal',
 			'mission.open.extraction',
 			'mission.extract',
 			'mission.retreat',
@@ -630,7 +1248,7 @@ describe('engine contracts compatibility', () => {
 				code: 'invalid_union',
 				path: ['commandType'],
 				message:
-					"Invalid discriminator value. Expected 'hero.choose.destination' | 'hero.arrive' | 'hero.start.travel' | 'settlement.assign.hero' | 'settlement.unassign.hero' | 'settlement.allocate.power' | 'story.recover.first.ember' | 'settlement.commit.first.ember' | 'master.communicate' | 'master.converse' | 'master.issue.directive' | 'master.replace.directive' | 'master.revoke.directive' | 'master.configure.timing' | 'master.open.decision' | 'master.configure.fallback' | 'master.apply.safety-stop' | 'hero.plan.day' | 'hero.start.routine' | 'master.inspect.gate' | 'hero.start.activity' | 'hero.equip.item' | 'hero.start.forging' | 'simulation.advance' | 'simulation.sync.clock' | 'simulation.apply.damage' | 'mission.prepare' | 'mission.revise.party' | 'mission.cancel' | 'mission.deploy' | 'mission.resolve.turn' | 'mission.open.extraction' | 'mission.extract' | 'mission.retreat' | 'story.apply.patch' | 'story.reveal.first.archive' | 'settlement.synthesize.hero' | 'hero.share.synthesis.rumor'"
+					"Invalid discriminator value. Expected 'hero.choose.destination' | 'hero.arrive' | 'hero.start.travel' | 'settlement.assign.hero' | 'settlement.unassign.hero' | 'settlement.allocate.power' | 'story.recover.first.ember' | 'settlement.commit.first.ember' | 'master.communicate' | 'master.converse' | 'master.issue.directive' | 'master.replace.directive' | 'master.revoke.directive' | 'master.configure.timing' | 'master.open.decision' | 'master.configure.fallback' | 'master.apply.safety-stop' | 'hero.plan.day' | 'hero.start.routine' | 'master.inspect.gate' | 'hero.start.activity' | 'hero.equip.item' | 'hero.allocate.attribute' | 'hero.start.forging' | 'simulation.advance' | 'simulation.sync.clock' | 'simulation.apply.damage' | 'mission.prepare' | 'mission.revise.party' | 'mission.cancel' | 'mission.deploy' | 'mission.resolve.turn' | 'mission.advance.automatic' | 'mission.apply.combat-choice-batch' | 'mission.commit.readiness-terminal' | 'mission.open.extraction' | 'mission.extract' | 'mission.retreat' | 'story.apply.patch' | 'story.reveal.first.archive' | 'settlement.synthesize.hero' | 'hero.share.synthesis.rumor'"
 			}
 		]);
 	});

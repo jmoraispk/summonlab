@@ -29,7 +29,7 @@ export type SynthesisCommand = Extract<
 function assertSynthesisCommandLegal(state: EngineGameState, command: SynthesisCommand): void {
 	if (command.commandType === 'settlement.synthesize.hero') {
 		if (
-			state.schemaVersion !== 22 ||
+			(state.schemaVersion !== 22 && state.schemaVersion !== 27) ||
 			state.status !== 'active' ||
 			state.master.lifeState !== 'alive' ||
 			command.actorId !== state.master.masterId ||
@@ -52,7 +52,7 @@ function assertSynthesisCommandLegal(state: EngineGameState, command: SynthesisC
 		return;
 	}
 	if (
-		state.schemaVersion !== 22 ||
+		(state.schemaVersion !== 22 && state.schemaVersion !== 27) ||
 		state.status !== 'active' ||
 		!['scripted', 'model', 'habit', 'random'].includes(command.source.source) ||
 		command.source.timing !== null ||
@@ -67,7 +67,8 @@ function buildSynthesisEvent(
 	command: SynthesisCommand
 ): AuthoritativeEvent {
 	if (command.commandType === 'settlement.synthesize.hero') {
-		if (state.schemaVersion !== 22) throw new IllegalActionError(command.commandType);
+		if (state.schemaVersion !== 22 && state.schemaVersion !== 27)
+			throw new IllegalActionError(command.commandType);
 		const base = eventBase(state, command, 'hero.synthesized');
 		const resolved = resolveSynthesis(state, command, base.eventId, base.sequence);
 		return AuthoritativeEventSchema.parse({
@@ -84,7 +85,8 @@ function buildSynthesisEvent(
 			}
 		});
 	}
-	if (state.schemaVersion !== 22) throw new IllegalActionError(command.commandType);
+	if (state.schemaVersion !== 22 && state.schemaVersion !== 27)
+		throw new IllegalActionError(command.commandType);
 	const base = eventBase(state, command, 'social.synthesis.rumor.shared');
 	const resolved = resolveSynthesisRumor(state, command, base.eventId, base.sequence);
 	return AuthoritativeEventSchema.parse({

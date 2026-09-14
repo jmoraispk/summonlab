@@ -11,6 +11,9 @@ import {
 import type {
 	EngineGameState,
 	EngineGameStateV24,
+	EngineGameStateV25,
+	EngineGameStateV26,
+	EngineGameStateV27,
 	EquipmentDefinition,
 	EquipmentLoadoutSlot,
 	EquipmentRank,
@@ -47,12 +50,17 @@ type NavigationState = Extract<
 			| 21
 			| 22
 			| 23
-			| 24;
+			| 24
+			| 25
+			| 27;
 	}
 >;
 type MissionState = Extract<
 	EngineGameState,
-	{ schemaVersion: 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21 | 22 | 23 | 24 }
+	{
+		schemaVersion:
+			11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21 | 22 | 23 | 24 | 25 | 26 | 27;
+	}
 >;
 
 let verifiedSettlement: SettlementDefinition | undefined;
@@ -61,6 +69,8 @@ let verifiedBandStory: typeof TOWER_BAND_01_STORY_ENVELOPE | undefined;
 let verifiedEquipment = false;
 let verifiedEquipmentDropFixture: MissionEquipmentDropFixture | undefined;
 const EQUIPMENT_RANKS = Object.freeze(['F', 'E', 'D', 'C', 'B', 'A', 'S'] as const);
+type EquipmentState =
+	EngineGameStateV24 | EngineGameStateV25 | EngineGameStateV26 | EngineGameStateV27;
 
 function verifyEquipmentCatalog(): void {
 	if (verifiedEquipment) return;
@@ -116,7 +126,7 @@ export function equipmentRankWithBonus(baseRank: EquipmentRank, bonus: 0 | 1 | 2
 }
 
 function equipmentItemDefinition(
-	state: EngineGameStateV24,
+	state: EquipmentState,
 	itemId: string
 ): Readonly<EquipmentDefinition> | undefined {
 	const item = state.items[itemId];
@@ -124,7 +134,7 @@ function equipmentItemDefinition(
 }
 
 export function equipmentSlotIsLegal(
-	state: EngineGameStateV24,
+	state: EquipmentState,
 	heroId: string,
 	definition: Readonly<EquipmentDefinition>,
 	targetSlot: EquipmentLoadoutSlot
@@ -155,7 +165,7 @@ export function equipmentSlotIsLegal(
 	return Boolean(main && ['sword', 'dagger'].includes(main.equipmentClass));
 }
 
-export function validateEquipmentStateContent(state: EngineGameStateV24): void {
+export function validateEquipmentStateContent(state: EquipmentState): void {
 	for (const item of Object.values(state.items)) {
 		const definition = verifiedEquipmentDefinition(item.definitionId);
 		if (
@@ -191,7 +201,7 @@ export function validateEquipmentStateContent(state: EngineGameStateV24): void {
 				);
 			}
 		}
-		for (const [slot, itemId] of Object.entries(hero.equipment)) {
+		for (const [slot, itemId] of Object.entries(hero.equipment) as [string, string | null][]) {
 			if (!itemId) continue;
 			const definition = equipmentItemDefinition(state, itemId);
 			const targetSlot = slot === 'mainHand' ? 'main-hand' : slot === 'offHand' ? 'off-hand' : slot;

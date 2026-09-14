@@ -443,7 +443,7 @@ export async function listDispatchableDecisionJobIds(
 	try {
 		const rows = await sql<{ decision_job_id: string }[]>`
 			select decision_job_id from summonlab_decision_jobs
-			where status in ('created', 'retry_wait', 'fallback')
+			where window_id is null and status in ('created', 'retry_wait', 'fallback')
 			order by updated_at, decision_job_id
 			limit ${limit}
 		`;
@@ -464,7 +464,7 @@ export async function listCompletedDecisionJobIds(
 	try {
 		const rows = await sql<{ decision_job_id: string }[]>`
 			select decision_job_id from summonlab_decision_jobs
-			where status = 'completed'
+			where window_id is null and status = 'completed'
 			order by updated_at, decision_job_id
 			limit ${limit}
 		`;
@@ -956,8 +956,9 @@ export async function recoverExpiredDecisionJobs(
 		return await sql.begin(async (transaction) => {
 			const rows = await transaction<DecisionJobRow[]>`
 				select * from summonlab_decision_jobs
-				where (status = 'in_progress' and lease_expires_at <= ${now})
+				where window_id is null and ((status = 'in_progress' and lease_expires_at <= ${now})
 					or (status = 'queued' and updated_at <= ${queuedBefore})
+				)
 				order by updated_at, decision_job_id
 				limit ${limit}
 				for update skip locked

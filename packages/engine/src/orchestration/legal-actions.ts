@@ -92,7 +92,7 @@ function masterActionsV2(state: EngineGameStateModern): LegalAction[] {
 	}
 	const [inspectGate, ...settlementTail] = settlementLegalActions(state, actorId);
 	const actions: LegalAction[] = [...controlActions, ...(inspectGate ? [inspectGate] : [])];
-	if (state.schemaVersion === 22 || state.schemaVersion === 23) {
+	if (state.schemaVersion === 22 || state.schemaVersion === 23 || state.schemaVersion === 27) {
 		const eligible = Object.values(state.heroes).filter(
 			(hero) =>
 				hero.lifeState === 'active' &&
@@ -154,7 +154,7 @@ function masterActionsV2(state: EngineGameStateModern): LegalAction[] {
 }
 
 function heroActionsV2(state: EngineGameStateModern, actorId: string): LegalAction[] {
-	if (state.schemaVersion === 22) {
+	if (state.schemaVersion === 22 || state.schemaVersion === 27) {
 		const speaker = state.heroes[actorId];
 		if (speaker?.lifeState === 'active' && heroCanHearCommunication(speaker)) {
 			const rumorActions = Object.values(state.synthesis.receipts).flatMap((receipt) => {

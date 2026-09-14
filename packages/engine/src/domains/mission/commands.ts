@@ -5,18 +5,23 @@ import {
 	type EngineGameState,
 	type EngineGameStateV23,
 	type EngineGameStateV24,
+	type EngineGameStateV25,
+	type EngineGameStateV26,
+	type EngineGameStateV27,
 	type EntropyDraw,
 	type MissionRunStateV3,
 	type MissionRunStateV4,
 	type MissionRunStateV6,
 	type MissionRunStateV7,
-	type MissionRunStateV8
+	type MissionRunStateV8,
+	type MissionRunStateV9
 } from '@summonlab/contracts';
 
 import { emptyMetadata, eventBase } from '../../core/event-metadata.js';
 import type { EngineCommandHandler } from '../../core/types.js';
 import { IllegalActionError } from '../../errors.js';
 import { hashCanonical } from '../../hash.js';
+import { buildCombatExperienceOutcomes } from '../progression/combat-experience.js';
 import { normalizedMissionTurnChoices } from './actions.js';
 import { resolveMissionCombatTurn, resolveMissionTurn } from './combat.js';
 import { buildMissionEquipmentDrop } from './equipment-drop.js';
@@ -50,6 +55,10 @@ import {
 	resolvePortalMissionTurn,
 	type PortalResourceChange
 } from './portal.js';
+import {
+	assertMissionModeAdvanceAvailable,
+	resolveMissionModeTurn
+} from './mission-mode-runner.js';
 
 export const MISSION_COMMAND_TYPES = [
 	'master.configure.timing',
@@ -61,6 +70,7 @@ export const MISSION_COMMAND_TYPES = [
 	'mission.cancel',
 	'mission.deploy',
 	'mission.resolve.turn',
+	'mission.advance.automatic',
 	'mission.open.extraction',
 	'mission.extract',
 	'mission.retreat'
@@ -173,7 +183,6 @@ function assertMissionCommandLegal(state: EngineGameState, command: MissionComma
 		}
 		return;
 	}
-
 	if (
 		(state.schemaVersion !== 11 &&
 			state.schemaVersion !== 12 &&
@@ -186,7 +195,10 @@ function assertMissionCommandLegal(state: EngineGameState, command: MissionComma
 			state.schemaVersion !== 19 &&
 			state.schemaVersion !== 20 &&
 			state.schemaVersion !== 23 &&
-			state.schemaVersion !== 24) ||
+			state.schemaVersion !== 24 &&
+			state.schemaVersion !== 25 &&
+			state.schemaVersion !== 26 &&
+			state.schemaVersion !== 27) ||
 		state.status !== 'active' ||
 		state.master.lifeState !== 'alive' ||
 		command.actorId !== state.master.masterId
@@ -259,6 +271,17 @@ function assertMissionCommandLegal(state: EngineGameState, command: MissionComma
 		}
 		return;
 	}
+	if (command.commandType === 'mission.advance.automatic') {
+		if (
+			(state.schemaVersion !== 25 && state.schemaVersion !== 26 && state.schemaVersion !== 27) ||
+			command.source.source !== 'manual' ||
+			command.source.timing !== 'step'
+		) {
+			throw new IllegalActionError(command.commandType, []);
+		}
+		assertMissionModeAdvanceAvailable(state);
+		return;
+	}
 	if (command.source.source !== 'manual' || command.source.timing !== 'step') {
 		throw new IllegalActionError(command.commandType, []);
 	}
@@ -273,10 +296,21 @@ function assertMissionCommandLegal(state: EngineGameState, command: MissionComma
 		state.schemaVersion === 17 ||
 		state.schemaVersion === 18 ||
 		state.schemaVersion === 19 ||
-		state.schemaVersion === 20
+		state.schemaVersion === 20 ||
+		state.schemaVersion === 23 ||
+		state.schemaVersion === 24 ||
+		state.schemaVersion === 25 ||
+		state.schemaVersion === 26 ||
+		state.schemaVersion === 27
 	) {
 		if (command.commandType === 'mission.prepare')
-			prepareMissionAttempt(state, command.commandId, command.heroIds, command.missionId);
+			prepareMissionAttempt(
+				state,
+				command.commandId,
+				command.heroIds,
+				command.missionId,
+				command.combatModeBinding
+			);
 		if (command.commandType === 'mission.revise.party') reviseMissionParty(state, command.heroIds);
 		if (command.commandType === 'mission.cancel') cancelMissionPreparation(state);
 		if (command.commandType === 'mission.deploy') deployMissionAttempt(state);
@@ -416,11 +450,26 @@ export function buildMissionEvent(
 		state.schemaVersion !== 19 &&
 		state.schemaVersion !== 20 &&
 		state.schemaVersion !== 23 &&
-		state.schemaVersion !== 24
+		state.schemaVersion !== 24 &&
+		state.schemaVersion !== 25 &&
+		state.schemaVersion !== 26 &&
+		state.schemaVersion !== 27
 	)
 		throw new IllegalActionError(command.commandType);
-	if (command.commandType === 'mission.resolve.turn') {
+	if (
+		command.commandType === 'mission.resolve.turn' ||
+		command.commandType === 'mission.advance.automatic'
+	) {
 		if (
+			command.commandType === 'mission.advance.automatic' &&
+			state.schemaVersion !== 25 &&
+			state.schemaVersion !== 26 &&
+			state.schemaVersion !== 27
+		) {
+			throw new IllegalActionError(command.commandType);
+		}
+		if (
+			state.schemaVersion !== 25 &&
 			state.schemaVersion !== 12 &&
 			state.schemaVersion !== 13 &&
 			state.schemaVersion !== 14 &&
@@ -431,13 +480,27 @@ export function buildMissionEvent(
 			state.schemaVersion !== 19 &&
 			state.schemaVersion !== 20 &&
 			state.schemaVersion !== 23 &&
-			state.schemaVersion !== 24
+			state.schemaVersion !== 24 &&
+			state.schemaVersion !== 26 &&
+			state.schemaVersion !== 27
 		)
 			throw new IllegalActionError(command.commandType);
 		const base = eventBase(state, command, 'mission.round.resolved');
+		const automaticResolution =
+			command.commandType === 'mission.advance.automatic'
+				? resolveMissionModeTurn(
+						state as EngineGameStateV25 | EngineGameStateV26 | EngineGameStateV27,
+						base.eventId
+					)
+				: null;
+		const choices =
+			command.commandType === 'mission.advance.automatic'
+				? automaticResolution!.choices
+				: command.choices;
 		const resolution =
-			state.schemaVersion === 15
-				? resolvePortalMissionTurn(state, command.choices)
+			automaticResolution ??
+			(state.schemaVersion === 15
+				? resolvePortalMissionTurn(state, choices)
 				: state.schemaVersion === 13 ||
 					  state.schemaVersion === 14 ||
 					  state.schemaVersion === 16 ||
@@ -449,7 +512,7 @@ export function buildMissionEvent(
 					  state.schemaVersion === 24
 					? resolveMissionCombatTurn(
 							state,
-							command.choices,
+							choices,
 							state.schemaVersion === 16 ||
 								state.schemaVersion === 17 ||
 								state.schemaVersion === 18 ||
@@ -460,12 +523,19 @@ export function buildMissionEvent(
 								? base.eventId
 								: null
 						)
-					: resolveMissionTurn(state, command.choices);
+					: state.schemaVersion === 12
+						? resolveMissionTurn(state, choices)
+						: (() => {
+								throw new IllegalActionError(command.commandType);
+							})());
 		const monsterCount =
 			'monsterActions' in resolution.round ? resolution.round.monsterActions.length : 0;
 		const timingResolution =
 			state.schemaVersion === 19 || state.schemaVersion === 20
 				? (() => {
+						if (command.commandType !== 'mission.resolve.turn') {
+							throw new IllegalActionError(command.commandType);
+						}
 						const masterChoice = resolution.choices.find(
 							(choice) => choice.actorId === state.master.masterId
 						);
@@ -498,6 +568,18 @@ export function buildMissionEvent(
 								);
 					})()
 				: null;
+		const combatProgressionOutcomes =
+			state.schemaVersion === 27 &&
+			resolution.mission.attempt !== null &&
+			!['preparing', 'deployed', 'resolving', 'extraction'].includes(
+				resolution.mission.attempt.status
+			)
+				? buildCombatExperienceOutcomes(
+						{ ...state, mission: resolution.mission } as EngineGameStateV27,
+						base.eventId,
+						resolution.mission.attempt.status === 'success'
+					)
+				: [];
 		return AuthoritativeEventSchema.parse({
 			...base,
 			seedCursor: resolution.entropyCursor,
@@ -506,6 +588,7 @@ export function buildMissionEvent(
 				mission: resolution.mission,
 				choices: resolution.choices,
 				round: resolution.round,
+				...(state.schemaVersion === 27 ? { combatProgressionOutcomes } : {}),
 				nextVersion: state.version + 1,
 				...emptyMetadata(
 					'status' in resolution && resolution.status === 'game_over'
@@ -519,7 +602,9 @@ export function buildMissionEvent(
 					state.schemaVersion === 19 ||
 					state.schemaVersion === 20 ||
 					state.schemaVersion === 23 ||
-					state.schemaVersion === 24) &&
+					state.schemaVersion === 24 ||
+					state.schemaVersion === 25 ||
+					command.commandType === 'mission.advance.automatic') &&
 				'consequences' in resolution
 					? { consequences: resolution.consequences }
 					: {}),
@@ -546,7 +631,13 @@ export function buildMissionEvent(
 		transition = 'prepare';
 		eventType = 'mission.preparation.started';
 		heroIds = normalizedMissionHeroIds(command.heroIds);
-		mission = prepareMissionAttempt(state, command.commandId, heroIds, command.missionId);
+		mission = prepareMissionAttempt(
+			state,
+			command.commandId,
+			heroIds,
+			command.missionId,
+			command.combatModeBinding
+		);
 		summary = `The Master reserved a ${heroIds.length + 1}-member party for ${mission.binding.missionId}.`;
 	} else if (command.commandType === 'mission.revise.party') {
 		transition = 'revise-party';
@@ -577,8 +668,13 @@ export function buildMissionEvent(
 					  state.schemaVersion === 19 ||
 					  state.schemaVersion === 20 ||
 					  state.schemaVersion === 23 ||
-					  state.schemaVersion === 24
-					? `The prepared party crossed the Tower Threshold; ${Object.keys((deployment.mission as MissionRunStateV3 | MissionRunStateV4 | MissionRunStateV6 | MissionRunStateV7 | MissionRunStateV8).attempt!.turnState.monsters).length} deterministic monster duties activated.`
+					  state.schemaVersion === 24 ||
+					  state.schemaVersion === 25 ||
+					  state.schemaVersion === 26 ||
+					  state.schemaVersion === 27
+					? state.schemaVersion === 26 || state.schemaVersion === 27
+						? 'The prepared party crossed the Tower Threshold; combat began under the stored attempt mode.'
+						: `The prepared party crossed the Tower Threshold; ${Object.keys((deployment.mission as MissionRunStateV3 | MissionRunStateV4 | MissionRunStateV6 | MissionRunStateV7 | MissionRunStateV8 | MissionRunStateV9).attempt!.turnState.monsters).length} deterministic monster duties activated.`
 					: 'The prepared party crossed the Tower Threshold as one authoritative deployment.';
 	} else if (command.commandType === 'mission.open.extraction') {
 		if (state.schemaVersion !== 11) throw new IllegalActionError(command.commandType);
@@ -613,6 +709,10 @@ export function buildMissionEvent(
 		throw new Error('Unreachable mission command discriminator');
 	}
 	const base = eventBase(state, command, eventType);
+	const combatProgressionOutcomes =
+		state.schemaVersion === 27 && (transition === 'extract' || transition === 'retreat')
+			? buildCombatExperienceOutcomes(state, base.eventId, transition === 'extract')
+			: [];
 	const firstBandConsequences =
 		(state.schemaVersion === 23 || state.schemaVersion === 24) && transition !== 'open-extraction'
 			? buildFirstBandConsequences?.(state, base.eventId, transition, mission as MissionRunStateV8)
@@ -635,6 +735,7 @@ export function buildMissionEvent(
 			mission,
 			heroIds,
 			completedObjectiveIds,
+			...(state.schemaVersion === 27 ? { combatProgressionOutcomes } : {}),
 			nextVersion: state.version + 1,
 			...emptyMetadata(
 				summary,

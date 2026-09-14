@@ -6,6 +6,11 @@ Domain: **Craft**
 
 Design status: **draft source import**. These definitions preserve the supplied compendium; exact combat values and Living Village availability require validation.
 
+Supersession note: requirements or effects below that mention retired attributes or poise are
+preserved migration prose, not active mechanics. [ADR 0072](../../../decisions/0072-four-attributes-and-operator-owned-combat-modes.md)
+requires learned mastery/evidence in place of precision or comprehension stats and permits only
+explicitly authored Break mechanics.
+
 ## Forging
 
 Craft and Life. Weapons, armour and tools. Determines what every martial family has to work with.
@@ -93,7 +98,7 @@ Feeds Forging, Alchemy and Cooking, and makes hauling heroes worth a roster slot
 | 7 | **Breeding** | — | D | C | Taming Master, Cultivation or equivalent | Produces creatures with inherited traits |
 | 8 | **Careful Harvest** | — | E | P | Any gathering skill at Expert | Nodes yield more and are not exhausted as quickly |
 | 9 | **Prospecting** | — | E | P | Mining Expert, Cartography Novice | Reveals nearby nodes and their quality |
-| 10 | **Bulk Carry** | — | E | P | Might threshold, 5,000 gathers | Substantially increased carry capacity for materials |
+| 10 | **Bulk Carry** | — | E | P | Strength threshold, 5,000 gathers | Substantially increased carry capacity for materials |
 | 11 | **Deep Vein** | — | D | C | Prospecting Master | Access to Rare and better material nodes |
 | 12 | **Perfect Cut** | — | D | P | Skinning Master, Dexterity threshold | Signature components from monsters drop far more often |
 | 13 | **Cultivation** | — | D | C | Foraging Master | Grow reagents rather than finding them; a settlement supply |

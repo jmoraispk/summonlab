@@ -110,14 +110,14 @@ These are reviewable content budgets, not permanent catalog limits.
 | --- | --- | --- |
 | Heroes | exactly Dara Zev, Mara Vey, Jori Daro, Kira Toren, Iven Orra, and Remy Nahl | broader procedural human generation is deferred until after the prototype |
 | Summoning | one Normal channel; deterministic receipt; enough starting access to form a party | Advanced, gems, pity, portal upgrades, and 4★–5★ odds documented but deferred |
-| Progression | 1★ and levels 1–10; six attributes; XP and training deltas | all seven star caps and late progression documented |
+| Progression | immutable 1★ and levels 1–10; Strength, Agility, Vitality, Magic; XP and training deltas | all seven immutable ratings and late progression documented |
 | Affinity | every 1★ hero is Unaligned; an authored monster fixture may use a base affinity only if the first resolver explicitly enables it | ten total affinities, the T1–T5 affinity-rank mapping, and the rule that monsters below T3 are mostly Unaligned remain documented; hero awakening, affinity ranks, dual affinities, advanced states, Dominion, and off-cycle affinities deferred |
 | Skills | 8–12 definitions across representative martial, magical, and support disciplines | complete draft compendium remains available and addressable by ID |
 | Equipment | 12–20 definitions; weapon, armour, accessory; equip/unequip, rarity, weight, modifiers | complete materials/items/sets/crafting catalog documented |
 | Materials | typed drops from the three runtime species; shared Village inventory; at least one visible use or fixed exchange before shipping | full gathering, recipes, crafting quality, and economy remain deferred |
 | Monsters | three distinct races in one approved low-tier visual form each; floor-scaled combat variants; one separately approved boss treatment | all 30 visual-progression race seeds available for art production |
 | Tower | Floors 1–10; known species hunts; about three encounter patterns with monotonically scaled definitions | story envelopes, randomized geography, secrets, and full 100-floor campaign deferred |
-| Combat | seeded deterministic resolution with an understandable action/result trace | final formula waits for the combat-system draft |
+| Combat | shipped operator-owned `legacy-auto-v1` automatic resolution with an understandable action/result trace | `agent-readiness-v1` V2 is implemented and mechanically qualified for internal operator evaluation; broader hostile tactics, full product balance, and owner promotion remain |
 | Rewards | visible hunt, material, training, progression, and daily-return benefits; exact cadence remains a fixture decision | full engagement model, Advanced/Special access, milestone cadence, pity, and economy tuning documented separately |
 
 The recommended monster option is **three distinct low-tier races**, because it tests silhouette,
@@ -170,10 +170,13 @@ range:
 - the supplied star caps remain `10, 20, 30, 40, 50, 70, 99` for `1★` through `7★`.
 
 ADR 0063 makes the supplied progression, skill, equipment, and monster documents authoritative over
-earlier conversational conflicts. Kill-only XP, the six-attribute vocabulary, affinity formulas,
-unlimited passives, consumed-input skill merging, star-stone promotion, and summoning bands
-therefore guide future implementation. Values the sources themselves mark approximate, unfinished,
-or contradictory remain visible tuning and convergence work.
+earlier conversational conflicts, but [ADR 0072](../../decisions/0072-four-attributes-and-operator-owned-combat-modes.md)
+supersedes its six-attribute and combat-mode rules. Strength, Agility, Vitality, and Magic are the
+current combat attributes; Health and Mana are the only universal resource bars. ADR 0063's
+unrelated decisions—such as kill-only XP, unlimited passives, consumed-input skill merging,
+star-stone promotion, and summoning bands—continue to guide future implementation. Values the
+sources themselves mark approximate, unfinished, or contradictory remain visible tuning and
+convergence work.
 
 ## Training
 
@@ -217,7 +220,7 @@ known species and bounded encounter sequence, then submits frozen party snapshot
 The initial resolver may be mathematical, but it must return a seeded trace containing enough
 detail to visualize and explain:
 
-- initiative and action order;
+- readiness/action order (or legacy initiative where that historical mode uses it);
 - skill and basic-action use;
 - Health and Mana changes where applicable;
 - attribute, skill, affinity, and equipment contributions;
@@ -225,16 +228,18 @@ detail to visualize and explain:
 - defeat, victory, and reward claims.
 
 Combat reports outcomes; it does not directly grant XP, items, or unlocks. Progression, inventory,
-and tower ownership validate and commit their own claims. Until the combat rules and stakes are
-accepted, defeat returns the party without permanent death or lasting injury and grants no
-first-clear reward. Return resets Health and Mana so the milestone does not accidentally acquire a
-recovery subsystem.
+and tower ownership validate and commit their own claims. Living Village defeat returns the party
+without permanent death or lasting injury and grants no first-clear reward. Return resets Health
+and Mana so the milestone does not accidentally acquire a recovery subsystem.
 
-Before combat implementation begins, LV-1 must resolve the attribute vocabulary, XP attribution,
-whether affinity participates in the first resolver, exact defeat behavior, typed first-clear and
-repeat-hunt rewards, material drop fields, and the safety estimator used before another encounter.
-The combat draft may answer these; until then they remain explicit blockers rather than local
-worker choices.
+[ADR 0072](../../decisions/0072-four-attributes-and-operator-owned-combat-modes.md) resolves the
+attribute/resource vocabulary and release-mode authority. Remaining Living Village decisions are
+XP attribution, whether affinity participates in its resolver, typed first-clear and repeat-hunt
+rewards, material drop fields, and the safety estimator used before another encounter. Implemented
+readiness timing, hit/miss, critical, collision rules, durable cohorts, and hostile strikes remain an
+operator-evaluation path. They do not block or replace the shipped legacy automatic default; the
+current V2 tuple passes its mechanical qualification gates, while broader hostile tactics, full
+product balance, and explicit owner promotion remain outstanding.
 
 ## Minimum contracts
 
@@ -369,7 +374,7 @@ fixtures before runtime math is final.
 | Equipment visuals | icons plus hero-compatible presentation bindings | equipment and hero manifests | choose slots and overlay strategy |
 | Tower/content | Floors 1–10 and encounter fixtures | monster/combat/reward contracts | set encounter and reward curve |
 | UI flow | three surfaces and focused states | projections and visual assets | approve navigation model |
-| Combat | versioned resolver behind fixed request/receipt | forthcoming combat draft | accept placeholder behavior |
+| Combat | versioned resolver behind fixed request/receipt | shipped legacy default plus implemented readiness evaluation path | qualify readiness V2 without exposing a player mode selector or implying promotion |
 | Validation | catalog, link, fixture, replay, visual and accessibility gates | all manifests/contracts | declare pass/fail evidence |
 
 Three simultaneous visual agents—monster, skill-effect, and equipment—are a practical starting
@@ -399,6 +404,7 @@ one integration owner controlling shared files.
 
 1. Approve or revise the three-surface navigation model.
 2. Choose the three low-tier monster races; visual tiers will remain separate from floor scaling.
-3. Approve no permanent death/injury until combat rules arrive.
+3. Approve no permanent death/injury in the Living Village slice; later readiness consequences stay
+   separately versioned.
 4. Decide whether the first playtest omits gems or labels them as future currency while Advanced and
    Special summoning remain off.

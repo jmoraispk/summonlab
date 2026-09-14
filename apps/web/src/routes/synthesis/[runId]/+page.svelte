@@ -100,7 +100,14 @@
 						>{member.lifeState === 'synthesized' ? 'SYNTHESIZED' : `SUMMON 0${index + 1}`}</small
 					>
 					<h2>{member.callsign}</h2>
-					<p>{member.stars}★ · LV {member.level} · {member.experience} XP</p>
+					<p>Immutable {member.stars}★ · LV {member.level} · {member.experience} XP</p>
+					{#if member.progression}
+						<p class="awakening-ledger">
+							Awakening {member.progression.awakeningTier} · {member.progression
+								.unallocatedAttributePoints} pts · {member.progression.powerPerStrengthMilli / 1000} Power/STR·MAG
+							· {member.progression.healthPerVitality} Health/VIT
+						</p>
+					{/if}
 				</div>
 				{#if member.knowledge}
 					<div class="knowledge {member.knowledge}" data-testid="synthesis-knowledge">
@@ -150,7 +157,7 @@
 				<div>
 					<small>OUTPUT</small><strong
 						>+{hero(sourceHeroId)?.synthesisEssenceExperience ?? 0} XP</strong
-					><span>stars + level determine essence</span>
+					><span>immutable stars + level determine essence</span>
 				</div>
 				<div>
 					<small>KNOWLEDGE</small><strong
@@ -174,7 +181,7 @@
 			<div class="receipt-grid">
 				<article>
 					<small>CONSUMED</small><strong>{hero(receipt.sourceHeroId)?.callsign}</strong>
-					<p>{receipt.sourceProgression.stars}★ · LV {receipt.sourceProgression.level}</p>
+					<p>Immutable {receipt.sourceProgression.stars}★ · LV {receipt.sourceProgression.level}</p>
 				</article>
 				<article class="gain">
 					<small>RECIPIENT</small><strong>{hero(receipt.recipientHeroId)?.callsign}</strong>
@@ -479,6 +486,11 @@
 		margin: 0;
 		color: #a69c8f;
 		font: 0.56rem ui-monospace;
+	}
+	.hero-meta .awakening-ledger {
+		margin-top: 0.35rem;
+		color: #d9ac69;
+		line-height: 1.45;
 	}
 	.hero.terminal {
 		opacity: 0.58;

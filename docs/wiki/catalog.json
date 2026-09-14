@@ -1,6 +1,6 @@
 {
   "schemaVersion": "summonlab-wiki-catalog-v1",
-  "lastReviewed": "2026-09-04",
+  "lastReviewed": "2026-09-12",
   "entries": [
     {
       "wikiId": "wiki.root",
@@ -340,6 +340,76 @@
       "implementationStatus": "none",
       "visualStatus": "brief",
       "spoilerScope": "public"
+    },
+    {
+      "wikiId": "mechanics.progression.experience-levels",
+      "path": "docs/wiki/mechanics/progression/experience-and-levels.md",
+      "pageType": "mechanic",
+      "owner": "progression",
+      "designStatus": "accepted",
+      "implementationStatus": "implemented",
+      "visualStatus": "none",
+      "spoilerScope": "public"
+    },
+    {
+      "wikiId": "mechanics.progression.stars",
+      "path": "docs/wiki/mechanics/progression/stars.md",
+      "pageType": "mechanic",
+      "owner": "progression",
+      "designStatus": "accepted",
+      "implementationStatus": "implemented",
+      "visualStatus": "none",
+      "spoilerScope": "public"
+    },
+    {
+      "wikiId": "research.attribute-systems.overgeared",
+      "path": "docs/wiki/research/attribute-systems/overgeared/README.md",
+      "pageType": "research-index",
+      "owner": "progression",
+      "designStatus": "accepted",
+      "implementationStatus": "none",
+      "visualStatus": "none",
+      "spoilerScope": "internal"
+    },
+    {
+      "wikiId": "research.attribute-systems.overgeared.combat-math",
+      "path": "docs/wiki/research/attribute-systems/overgeared/combat-math.md",
+      "pageType": "research",
+      "owner": "progression",
+      "designStatus": "accepted",
+      "implementationStatus": "none",
+      "visualStatus": "none",
+      "spoilerScope": "internal"
+    },
+    {
+      "wikiId": "research.attribute-systems.overgeared.equipment-catalogue",
+      "path": "docs/wiki/research/attribute-systems/overgeared/equipment-catalogue.md",
+      "pageType": "research",
+      "owner": "inventory",
+      "designStatus": "accepted",
+      "implementationStatus": "none",
+      "visualStatus": "none",
+      "spoilerScope": "internal"
+    },
+    {
+      "wikiId": "research.attribute-systems.overgeared.equipment-mechanics",
+      "path": "docs/wiki/research/attribute-systems/overgeared/equipment-mechanics.md",
+      "pageType": "research",
+      "owner": "inventory",
+      "designStatus": "accepted",
+      "implementationStatus": "none",
+      "visualStatus": "none",
+      "spoilerScope": "internal"
+    },
+    {
+      "wikiId": "research.attribute-systems.overgeared.item-properties",
+      "path": "docs/wiki/research/attribute-systems/overgeared/item-properties.md",
+      "pageType": "research",
+      "owner": "inventory",
+      "designStatus": "accepted",
+      "implementationStatus": "none",
+      "visualStatus": "none",
+      "spoilerScope": "internal"
     },
     {
       "wikiId": "mechanics.progression.affinities",

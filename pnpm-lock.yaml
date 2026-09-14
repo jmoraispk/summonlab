@@ -172,6 +172,9 @@ importers:
       '@summonlab/characters':
         specifier: workspace:*
         version: link:../../packages/characters
+      '@summonlab/content':
+        specifier: workspace:*
+        version: link:../../packages/content
 
   packages/characters:
     dependencies:
@@ -202,6 +205,9 @@ importers:
 
   packages/database:
     dependencies:
+      '@summonlab/characters':
+        specifier: workspace:*
+        version: link:../characters
       '@summonlab/config':
         specifier: workspace:*
         version: link:../config
@@ -215,9 +221,9 @@ importers:
         specifier: ^3.4.9
         version: 3.4.9
     devDependencies:
-      '@summonlab/characters':
+      '@summonlab/content':
         specifier: workspace:*
-        version: link:../characters
+        version: link:../content
 
   packages/engine:
     dependencies:

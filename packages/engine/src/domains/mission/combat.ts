@@ -13,11 +13,13 @@ import {
 	MissionRunStateV6Schema,
 	MissionRunStateV7Schema,
 	MissionRunStateV8Schema,
+	MissionTurnChoiceSchema,
 	SocietyStateV4Schema,
 	SocietyStateV5Schema,
 	type EngineGameStateV12,
 	type EngineGameStateV13,
 	type EngineGameStateV14,
+	type EngineGameStateV15,
 	type EngineGameStateV16,
 	type EngineGameStateV17,
 	type EngineGameStateV18,
@@ -28,6 +30,7 @@ import {
 	type EngineGameStateV24,
 	type EntropyDraw,
 	type MissionConsequenceRecordV3,
+	type MissionConsequenceRecordV4,
 	type MissionHarmRecord,
 	type MissionMasterHarmRecord,
 	type MissionResolvedEffect,
@@ -39,6 +42,7 @@ import {
 	type MissionRunStateV6,
 	type MissionRunStateV7,
 	type MissionRunStateV8,
+	type MissionRunStateV9,
 	type MissionTurnChoice,
 	type SocietyStateV4,
 	type SocietyStateV5
@@ -54,11 +58,7 @@ import { missionContentForState } from '../../core/content-bindings.js';
 import { createEntropyCursor, drawInteger } from '../../entropy.js';
 import { ReplayIntegrityError } from '../../errors.js';
 import { deterministicUuid, hashCanonical } from '../../hash.js';
-import {
-	missionToolTagsForActor,
-	normalizedMissionTurnChoices,
-	type MissionTurnEngineState
-} from './actions.js';
+import { missionToolTagsForActor, normalizedMissionTurnChoices } from './actions.js';
 import {
 	deriveMonsterIntents,
 	monsterArmorReduction,
@@ -91,7 +91,24 @@ function skipUnfinishedPlan(hero: EngineGameStateV18['heroes'][string], resolved
 	});
 }
 
-export function missionInitiativeBase(state: MissionTurnEngineState, actorId: string): number {
+type FrozenMissionTurnEngineState =
+	| EngineGameStateV12
+	| EngineGameStateV13
+	| EngineGameStateV14
+	| EngineGameStateV15
+	| EngineGameStateV16
+	| EngineGameStateV17
+	| EngineGameStateV18
+	| EngineGameStateV19
+	| EngineGameStateV20
+	| EngineGameStateV21
+	| EngineGameStateV23
+	| EngineGameStateV24;
+
+export function missionInitiativeBase(
+	state: FrozenMissionTurnEngineState,
+	actorId: string
+): number {
 	if (actorId === state.master.masterId) return 50;
 	const hero = state.heroes[actorId]!;
 	return (
@@ -100,7 +117,7 @@ export function missionInitiativeBase(state: MissionTurnEngineState, actorId: st
 }
 
 export function activeMissionEnvironmentEvents(
-	state: MissionTurnEngineState,
+	state: FrozenMissionTurnEngineState,
 	roundNumber: number
 ): string[] {
 	const mission = missionContentForState(state);
@@ -319,20 +336,34 @@ export type MissionCombatTurnResolution = {
 	readonly status: EngineGameStateV18['status'];
 };
 
-function missionAttackPower(
-	state:
-		| EngineGameStateV13
-		| EngineGameStateV14
-		| EngineGameStateV16
-		| EngineGameStateV17
-		| EngineGameStateV18
-		| EngineGameStateV19
-		| EngineGameStateV20
-		| EngineGameStateV21
-		| EngineGameStateV23
-		| EngineGameStateV24,
-	actorId: string
-): number {
+export type LegacyV24CombatResolverState = EngineGameStateV24;
+
+export type LegacyV24CombatResolution = Omit<
+	MissionCombatTurnResolution,
+	'mission' | 'consequences'
+> & {
+	readonly mission: MissionRunStateV9;
+	readonly consequences: MissionConsequenceRecordV4[];
+};
+
+type MissionCombatResolverState =
+	| EngineGameStateV13
+	| EngineGameStateV14
+	| EngineGameStateV16
+	| EngineGameStateV17
+	| EngineGameStateV18
+	| EngineGameStateV19
+	| EngineGameStateV20
+	| EngineGameStateV21
+	| EngineGameStateV23
+	| EngineGameStateV24;
+
+export type LegacyV24CombatSchemas = {
+	readonly mission: { parse(value: unknown): MissionRunStateV9 };
+	readonly consequence: { parse(value: unknown): MissionConsequenceRecordV4 };
+};
+
+function missionAttackPower(state: MissionCombatResolverState, actorId: string): number {
 	if (actorId === state.master.masterId) return 1;
 	const hero = state.heroes[actorId]!;
 	return (
@@ -342,22 +373,15 @@ function missionAttackPower(
 	);
 }
 
-export function resolveMissionCombatTurn(
-	state:
-		| EngineGameStateV13
-		| EngineGameStateV14
-		| EngineGameStateV16
-		| EngineGameStateV17
-		| EngineGameStateV18
-		| EngineGameStateV19
-		| EngineGameStateV20
-		| EngineGameStateV21
-		| EngineGameStateV23
-		| EngineGameStateV24,
+function resolveMissionCombatTurnCore(
+	state: MissionCombatResolverState,
 	choicesInput: readonly MissionTurnChoice[],
-	sourceEventId: string | null = null
-): MissionCombatTurnResolution {
-	const choices = normalizedMissionTurnChoices(state, choicesInput);
+	sourceEventId: string | null,
+	compatibilitySchemas: LegacyV24CombatSchemas | null
+): MissionCombatTurnResolution | LegacyV24CombatResolution {
+	const choices = compatibilitySchemas
+		? choicesInput.map((choice) => MissionTurnChoiceSchema.parse(choice))
+		: normalizedMissionTurnChoices(state, choicesInput);
 	const currentAttempt = state.mission.attempt!;
 	verifiedMonsterPolicyBinding(currentAttempt);
 	const missionContent = missionContentForState(state);
@@ -436,8 +460,12 @@ export function resolveMissionCombatTurn(
 			? SocietyStateV5Schema.parse(value)
 			: SocietyStateV4Schema.parse(value);
 	let society = parseMissionSociety(structuredClone(state.society));
-	const consequences: (MissionHarmRecord | MissionMasterHarmRecord | MissionConsequenceRecordV3)[] =
-		[];
+	const consequences: (
+		| MissionHarmRecord
+		| MissionMasterHarmRecord
+		| MissionConsequenceRecordV3
+		| MissionConsequenceRecordV4
+	)[] = [];
 	const environmentEventIds = activeMissionEnvironmentEvents(state, roundNumber);
 	const effects: MissionResolvedEffect[] = [];
 	const resolvedPartyActions: MissionRoundV2['actions'] = [];
@@ -575,13 +603,15 @@ export function resolveMissionCombatTurn(
 				return { heroId, observationId, relationshipId };
 			});
 			consequences.push(
-				(state.schemaVersion === 18 ||
-				state.schemaVersion === 19 ||
-				state.schemaVersion === 20 ||
-				state.schemaVersion === 23 ||
-				state.schemaVersion === 24
-					? MissionConsequenceRecordV3Schema
-					: MissionMasterHarmRecordSchema
+				(
+					compatibilitySchemas?.consequence ??
+					(state.schemaVersion === 18 ||
+					state.schemaVersion === 19 ||
+					state.schemaVersion === 20 ||
+					state.schemaVersion === 23 ||
+					state.schemaVersion === 24
+						? MissionConsequenceRecordV3Schema
+						: MissionMasterHarmRecordSchema)
 				).parse({
 					consequenceKind: 'master-harm',
 					consequenceId,
@@ -729,13 +759,15 @@ export function resolveMissionCombatTurn(
 			return { heroId, observationId, relationshipId };
 		});
 		consequences.push(
-			(state.schemaVersion === 18 ||
-			state.schemaVersion === 19 ||
-			state.schemaVersion === 20 ||
-			state.schemaVersion === 23 ||
-			state.schemaVersion === 24
-				? MissionConsequenceRecordV3Schema
-				: MissionHarmRecordSchema
+			(
+				compatibilitySchemas?.consequence ??
+				(state.schemaVersion === 18 ||
+				state.schemaVersion === 19 ||
+				state.schemaVersion === 20 ||
+				state.schemaVersion === 23 ||
+				state.schemaVersion === 24
+					? MissionConsequenceRecordV3Schema
+					: MissionHarmRecordSchema)
 			).parse({
 				consequenceId,
 				sourceEventId,
@@ -1255,7 +1287,8 @@ export function resolveMissionCombatTurn(
 			? deriveMonsterIntents(missionContent, currentAttempt, monsters, positions, objective, arena)
 			: [];
 	const missionSchema =
-		state.schemaVersion === 18 ||
+		compatibilitySchemas?.mission ??
+		(state.schemaVersion === 18 ||
 		state.schemaVersion === 19 ||
 		state.schemaVersion === 20 ||
 		state.schemaVersion === 23 ||
@@ -1267,7 +1300,7 @@ export function resolveMissionCombatTurn(
 					? MissionRunStateV6Schema
 					: state.schemaVersion === 14
 						? MissionRunStateV4Schema
-						: MissionRunStateV3Schema;
+						: MissionRunStateV3Schema);
 	const mission = missionSchema.parse({
 		...state.mission,
 		...(state.schemaVersion === 14 ||
@@ -1315,7 +1348,7 @@ export function resolveMissionCombatTurn(
 			}
 		}
 	});
-	return {
+	const resolution = {
 		mission,
 		round,
 		choices,
@@ -1328,4 +1361,34 @@ export function resolveMissionCombatTurn(
 		master,
 		status: masterFatal ? 'game_over' : state.status
 	};
+	return compatibilitySchemas
+		? (resolution as LegacyV24CombatResolution)
+		: (resolution as MissionCombatTurnResolution);
+}
+
+export function resolveMissionCombatTurn(
+	state: MissionCombatResolverState,
+	choicesInput: readonly MissionTurnChoice[],
+	sourceEventId: string | null = null
+): MissionCombatTurnResolution {
+	return resolveMissionCombatTurnCore(
+		state,
+		choicesInput,
+		sourceEventId,
+		null
+	) as MissionCombatTurnResolution;
+}
+
+export function resolveLegacyV24CombatTurn(
+	state: LegacyV24CombatResolverState,
+	choicesInput: readonly MissionTurnChoice[],
+	sourceEventId: string | null,
+	compatibilitySchemas: LegacyV24CombatSchemas
+): LegacyV24CombatResolution {
+	return resolveMissionCombatTurnCore(
+		state,
+		choicesInput,
+		sourceEventId,
+		compatibilitySchemas
+	) as LegacyV24CombatResolution;
 }

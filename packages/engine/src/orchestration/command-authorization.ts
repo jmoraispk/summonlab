@@ -35,6 +35,11 @@ export function requiredAction(command: EngineCommand): string {
 	if (command.commandType === 'mission.cancel') return 'mission.cancel';
 	if (command.commandType === 'mission.deploy') return 'mission.deploy';
 	if (command.commandType === 'mission.resolve.turn') return 'mission.resolve.turn';
+	if (command.commandType === 'mission.advance.automatic') return 'mission.advance.automatic';
+	if (command.commandType === 'mission.apply.combat-choice-batch')
+		return 'mission.apply.combat-choice-batch';
+	if (command.commandType === 'mission.commit.readiness-terminal')
+		return 'mission.commit.readiness-terminal';
 	if (command.commandType === 'mission.open.extraction') return 'mission.open.extraction';
 	if (command.commandType === 'mission.extract') return 'mission.extract';
 	if (command.commandType === 'mission.retreat') return 'mission.retreat';
@@ -68,6 +73,13 @@ export function assertCommandIsLegal(state: EngineGameState, command: EngineComm
 		) {
 			throw new IllegalActionError(command.commandType, []);
 		}
+		return;
+	}
+	if (
+		command.commandType === 'mission.apply.combat-choice-batch' ||
+		command.commandType === 'mission.commit.readiness-terminal'
+	) {
+		owner.assertLegal(state, command);
 		return;
 	}
 	if (MISSION_COMMAND_TYPES.some((commandType) => commandType === command.commandType)) {

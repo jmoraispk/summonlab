@@ -1,11 +1,16 @@
-import type { EngineGameStateV22 } from '@summonlab/contracts';
+import { PROGRESSION_RULES_V1 } from '@summonlab/content';
+import type { EngineGameState } from '@summonlab/contracts';
 import { legalActions } from '@summonlab/engine';
+
+import { presentHeroProgression } from '$lib/progression-presentation';
 
 function short(value: string) {
 	return value.slice(0, 8).toUpperCase();
 }
 
-export function synthesisView(state: EngineGameStateV22, stateHash: string) {
+type SynthesisViewState = Extract<EngineGameState, { schemaVersion: 22 | 27 }>;
+
+export function synthesisView(state: SynthesisViewState, stateHash: string) {
 	const latestReceipt = Object.values(state.synthesis.receipts).at(-1) ?? null;
 	const latestRumor = Object.values(state.synthesis.rumors).at(-1) ?? null;
 	const heroes = Object.values(state.heroes)
@@ -35,6 +40,8 @@ export function synthesisView(state: EngineGameStateV22, stateHash: string) {
 				stars: hero.progression.stars,
 				level: hero.progression.level,
 				experience: hero.progression.experience,
+				progression:
+					state.schemaVersion === 27 ? presentHeroProgression(hero, PROGRESSION_RULES_V1) : null,
 				synthesisEssenceExperience: 20 + hero.progression.stars * 15 + hero.progression.level * 5,
 				primaryValue: hero.mind.primaryValue,
 				primaryDrive: hero.mind.primaryDrive,

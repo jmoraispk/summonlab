@@ -1,5 +1,6 @@
 import { z } from 'zod';
 
+import { CombatAttributeNameSchema } from '../capability.js';
 import { ActivityKindSchema } from './base-state.js';
 import {
 	EquipmentCraftsmanshipSchema,
@@ -8,7 +9,7 @@ import {
 	EquipmentMaterialIdSchema
 } from '../equipment.js';
 import { MasterFallbackPrioritySchema, MasterFallbackSafetyStopsSchema } from './master-control.js';
-import { MissionTurnChoiceSchema } from './mission-state.js';
+import { CombatModeBindingSchema, MissionTurnChoiceSchema } from './mission-state.js';
 import {
 	BuildingAssignmentRoleSchema,
 	FirstEmberFacilitySchema,
@@ -23,6 +24,7 @@ import {
 	FallbackPolicySchema
 } from '../event.js';
 import { MissionSlugSchema } from '../mission.js';
+import { CombatChoiceBatchV1Schema } from '../readiness-combat.js';
 import { SettlementSlugSchema } from '../settlement.js';
 import {
 	ConversationActKindSchema,
@@ -58,7 +60,8 @@ export const ArriveDestinationCommandSchema = EngineCommandBaseSchema.extend({
 
 export const StartTravelCommandSchema = EngineCommandBaseSchema.extend({
 	commandType: z.literal('hero.start.travel'),
-	targetNodeId: SettlementNodeIdSchema
+	targetNodeId: SettlementNodeIdSchema,
+	requestContext: z.literal('mission-readiness').optional()
 }).strict();
 
 export const AssignHeroBuildingCommandSchema = EngineCommandBaseSchema.extend({
@@ -262,6 +265,12 @@ export const EquipItemCommandSchema = EngineCommandBaseSchema.extend({
 	targetSlot: EquipmentLoadoutSlotSchema.optional()
 }).strict();
 
+export const AllocateHeroAttributeCommandSchema = EngineCommandBaseSchema.extend({
+	commandType: z.literal('hero.allocate.attribute'),
+	attribute: CombatAttributeNameSchema,
+	amount: z.number().int().positive().max(999).optional()
+}).strict();
+
 export const StartForgingCommandSchema = EngineCommandBaseSchema.extend({
 	commandType: z.literal('hero.start.forging'),
 	definitionId: EquipmentDefinitionIdSchema,
@@ -289,7 +298,8 @@ export const ApplyDamageCommandSchema = EngineCommandBaseSchema.extend({
 export const PrepareMissionCommandSchema = EngineCommandBaseSchema.extend({
 	commandType: z.literal('mission.prepare'),
 	heroIds: z.array(EntityIdSchema).max(7),
-	missionId: MissionSlugSchema.optional()
+	missionId: MissionSlugSchema.optional(),
+	combatModeBinding: CombatModeBindingSchema.optional()
 }).strict();
 
 export const ReviseMissionPartyCommandSchema = EngineCommandBaseSchema.extend({
@@ -310,6 +320,19 @@ export const ResolveMissionTurnCommandSchema = EngineCommandBaseSchema.extend({
 	choices: z.array(MissionTurnChoiceSchema).min(1).max(8),
 	decisionId: EntityIdSchema.optional(),
 	resolvedAt: IsoDateTimeSchema.optional()
+}).strict();
+
+export const AdvanceAutomaticCombatCommandSchema = EngineCommandBaseSchema.extend({
+	commandType: z.literal('mission.advance.automatic')
+}).strict();
+
+export const ApplyCombatChoiceBatchCommandSchema = EngineCommandBaseSchema.extend({
+	commandType: z.literal('mission.apply.combat-choice-batch'),
+	batch: CombatChoiceBatchV1Schema
+}).strict();
+
+export const CommitReadinessTerminalCommandSchema = EngineCommandBaseSchema.extend({
+	commandType: z.literal('mission.commit.readiness-terminal')
 }).strict();
 
 export const OpenMissionExtractionCommandSchema = EngineCommandBaseSchema.extend({
@@ -403,6 +426,7 @@ export const EngineCommandSchema = z.discriminatedUnion('commandType', [
 	InspectGateCommandSchema,
 	StartActivityCommandSchema,
 	EquipItemCommandSchema,
+	AllocateHeroAttributeCommandSchema,
 	StartForgingCommandSchema,
 	AdvanceSimulationCommandSchema,
 	SyncSimulationClockCommandSchema,
@@ -412,6 +436,9 @@ export const EngineCommandSchema = z.discriminatedUnion('commandType', [
 	CancelMissionCommandSchema,
 	DeployMissionCommandSchema,
 	ResolveMissionTurnCommandSchema,
+	AdvanceAutomaticCombatCommandSchema,
+	ApplyCombatChoiceBatchCommandSchema,
+	CommitReadinessTerminalCommandSchema,
 	OpenMissionExtractionCommandSchema,
 	ExtractMissionCommandSchema,
 	RetreatMissionCommandSchema,
@@ -439,6 +466,7 @@ export const MissionLifecycleRequestSchema = z.discriminatedUnion('action', [
 		})
 		.strict(),
 	z.object({ action: z.literal('resolve-fallback') }).strict(),
+	z.object({ action: z.literal('advance-automatic-combat') }).strict(),
 	z.object({ action: z.literal('extract') }).strict(),
 	z.object({ action: z.literal('retreat') }).strict()
 ]);
@@ -450,6 +478,8 @@ export const CatchUpRequestSchema = z
 	.strict();
 
 export type EngineCommand = z.infer<typeof EngineCommandSchema>;
+export type ApplyCombatChoiceBatchCommand = z.infer<typeof ApplyCombatChoiceBatchCommandSchema>;
+export type CommitReadinessTerminalCommand = z.infer<typeof CommitReadinessTerminalCommandSchema>;
 export type FirstEmberRequest = z.infer<typeof FirstEmberRequestSchema>;
 export type MissionLifecycleRequest = z.infer<typeof MissionLifecycleRequestSchema>;
 export type SynthesisRequest = z.infer<typeof SynthesisRequestSchema>;

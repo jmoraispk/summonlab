@@ -1,4 +1,86 @@
 export * from './catch-up.js';
+export * from './core/combat-fallback.js';
+export * from './domains/combat/capability.js';
+export {
+	authorizeReadinessTerminalDirective,
+	emitCombatOutcome,
+	finalizeReadinessCombatOutcome,
+	readinessTerminalDirective,
+	type AuthorizeReadinessTerminalDirectiveInput,
+	type CombatObjectiveState,
+	type CombatTermination,
+	type EmitCombatOutcomeInput,
+	type FinalizeReadinessCombatInput,
+	type ReadinessTerminalDirective,
+	type SecuredCombatLoot
+} from './domains/combat/outcome.js';
+export {
+	applyCombatChoiceBatch,
+	combatChoiceBatchHash,
+	type CombatChoiceBatchResolution
+} from './domains/combat/arbitration.js';
+export * from './domains/combat/readiness.js';
+export {
+	purposeKeyedInteger,
+	type PurposeKeyedIntegerDraw,
+	type PurposeKeyedIntegerInput
+} from './domains/combat/randomness.js';
+export {
+	resolveCombatAction,
+	type CombatActionResolution,
+	type CombatDamageCalculation,
+	type CombatHitContest,
+	type ResolveCombatActionInput
+} from './domains/combat/resolver.js';
+export { advanceUntilDecision } from './domains/combat/window.js';
+export {
+	createCombatMissionClaimProjection,
+	missionAttemptTransitionForCombatResult,
+	type CombatMissionAttemptTransition,
+	type CombatMissionClaimCombatantSeed,
+	type CombatMissionClaimCombatantState,
+	type CombatMissionClaimProjection
+} from './domains/mission/lifecycle.js';
+export {
+	createCombatProgressionClaimProjection,
+	type CombatProgressionClaimProjection
+} from './domains/progression/claims.js';
+export {
+	attributePowerMilli,
+	awakeningTier,
+	combatExperience,
+	craftExperience,
+	multiplyBasisPoints,
+	type CombatExperienceInput,
+	type CraftExperienceInput
+} from './domains/progression/math.js';
+export {
+	applyExperienceClaim,
+	experienceThresholdForLevel,
+	levelForExperience,
+	reconcileHealthAfterProgression,
+	type ApplyExperienceClaimInput,
+	type ExperienceClaimOutcome
+} from './domains/progression/experience.js';
+export {
+	applyAttributeGrowthClaim,
+	type ApplyAttributeGrowthClaimInput,
+	type AttributeGrowthClaimOutcome,
+	type ProgressionHero
+} from './domains/progression/attributes.js';
+export {
+	experienceClaimForProduction,
+	productionEvidenceKey,
+	type ProductionHistory
+} from './domains/progression/production.js';
+export { experienceClaimsForCombatResult } from './domains/progression/combat-experience.js';
+export {
+	adaptV26LegacyCombatOutcome,
+	transitionCombatResultClaims,
+	type CombatClaimTransition,
+	type CombatClaimTransitionInput,
+	type V26LegacyCombatOutcomeInput
+} from './orchestration/combat-claims.js';
 export * from './context.js';
 export * from './engine.js';
 export * from './entropy.js';

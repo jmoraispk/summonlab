@@ -31,13 +31,15 @@ that less talented people exist to perform degrading work.
 
 ## Guardrails
 
-- There is no IQ, worth, genetic quality, or human-value score.
-- Insight affects explicit checks, perception, learning, and evidence use; it never makes the agent
-  model inherently smarter or less deserving.
+- There is no player-facing IQ, worth, genetic quality, or human-value score.
+- A hidden general cognitive factor can change comprehension-heavy practice gain by at most ten
+  percent in either direction. Separate martial, magical, crafting, survival, and social aptitudes
+  contribute by domain. Neither changes model reasoning, action quality, human worth, or eventual
+  access.
 - Appearance, ancestry, culture, gender, rarity, personality, morality, obedience, and intelligence
   remain independent generation dimensions.
-- Any hero can learn any non-exclusive skill, though pace and ceiling may differ by aptitude,
-  teachers, facilities, habits, health, and time.
+- Any hero can learn any non-exclusive skill, though pace and domain fit may differ with aptitude,
+  teachers, facilities, habits, health, and time. Aptitude does not set an eventual ceiling.
 - Roles are revisable. Assignment must not silently become hereditary caste or permanent destiny.
 - Heroes can prefer, refuse, negotiate, become bored, seek recognition, request training, or change
   goals.
@@ -102,3 +104,4 @@ actually optimal over the life of the settlement.
 - [Vision: people, not units](../../system-architecture/vision.md#people-not-units)
 - [Vision: design systems, not puppets](../../system-architecture/vision.md#design-systems-not-puppets)
 - [ADR 0059: motivating systems](../../decisions/0059-player-mastery-is-designing-motivating-systems.md)
+- [ADR 0072: four attributes and hidden learning profiles](../../decisions/0072-four-attributes-and-operator-owned-combat-modes.md)

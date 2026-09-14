@@ -7,6 +7,11 @@ Family: **Ranged**
 
 Design status: **draft source import**. These definitions preserve the supplied compendium; exact combat values and Living Village availability require validation.
 
+Supersession note: requirements or effects below that mention retired attributes or poise are
+preserved migration prose, not active mechanics. [ADR 0072](../../../decisions/0072-four-attributes-and-operator-owned-combat-modes.md)
+requires learned mastery/evidence in place of precision or comprehension stats and permits only
+explicitly authored Break mechanics.
+
 Ranged owns bow, crossbow, and sling projectile techniques. Equipment labels narrow compatibility; `—` means any compatible Ranged-family equipment.
 
 | # | Skill | Equipment | R | T | Requires | Effect |
@@ -16,7 +21,7 @@ Ranged owns bow, crossbow, and sling projectile techniques. Equipment labels nar
 | 3 | **Quick Loose** | Bow | F | A | Archery Novice | Fast, inaccurate, cheap |
 | 4 | **Steady Stance** | Bow | F | P | Archery Intermediate | Accuracy penalty removed while standing still |
 | 5 | **Fletching** | Bow | E | C | Archery Intermediate, Gathering prerequisite | Craft arrows, including specialised heads |
-| 6 | **Power Draw** | Bow | E | P | Might threshold, 5,000 shots | Increased damage and range on all bow skills |
+| 6 | **Power Draw** | Bow | E | P | Strength threshold, 5,000 shots | Increased damage and range on all bow skills |
 | 7 | **Pinning Shot** | Bow | E | A | Aimed Shot Expert | Roots the target briefly |
 | 8 | **Arcing Volley** | Bow | E | A | Archery Expert | Indirect fire over cover into an area |
 | 9 | **Multishot** | Bow | D | A | Quick Loose Master, Dexterity threshold | Several arrows loosed in a spread |
@@ -36,7 +41,7 @@ Ranged owns bow, crossbow, and sling projectile techniques. Equipment labels nar
 | 23 | **Braced Shot** | Crossbow | E | A | Bolt Shot Expert, Steady Stance | Massive penetration from a planted position |
 | 24 | **Repeating Mechanism** | Crossbow | E | P | Reload Drill Master, Forging prerequisite | Enables a magazine; several shots before reloading |
 | 25 | **Bolt Storm** | Crossbow | D | A | Repeating Mechanism Master | Empties the magazine in a rapid burst |
-| 26 | **Siege Bolt** | Crossbow | D | A | Braced Shot Master, Might threshold | Destroys barriers, doors and constructs outright |
+| 26 | **Siege Bolt** | Crossbow | D | A | Braced Shot Master, Strength threshold | Destroys barriers, doors and constructs outright |
 | 27 | **Trick Bolt** | Crossbow | D | A | Bolt Craft Master, Alchemy prerequisite | Applies the loaded bolt's alchemical effect on impact |
 | 28 | **Ballista Form** | Crossbow | C | St | Siege Bolt Master | Immobile; enormous damage and range while held |
 | 29 | **Puncture** | Crossbow | C | P | Bolt Storm Master, 25,000 bolts | Each bolt on the same target penetrates further than the last |

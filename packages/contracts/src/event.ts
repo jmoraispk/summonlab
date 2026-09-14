@@ -1,5 +1,12 @@
 import { z } from 'zod';
 
+import { CombatAttributeNameSchema } from './capability.js';
+import { CombatRulesVersionSchema } from './combat-rules.js';
+import {
+	CombatChoiceBatchV1Schema,
+	CombatResolvedEventSchema,
+	CombatResultSchema
+} from './readiness-combat.js';
 import {
 	ContentVersionSchema,
 	EntityIdSchema,
@@ -111,6 +118,25 @@ export const ActionSourceSchema = z
 	})
 	.strict();
 
+export const AttributeGrowthReceiptSchema = z
+	.object({
+		receiptId: EntityIdSchema,
+		heroId: EntityIdSchema,
+		attribute: CombatAttributeNameSchema,
+		beforeIntrinsicValue: z.number().int().min(1).max(100),
+		afterIntrinsicValue: z.number().int().min(1).max(100),
+		spentPoints: z.literal(1),
+		sourceLevel: z.number().int().min(2).max(70),
+		rulesVersion: CombatRulesVersionSchema,
+		commandId: EntityIdSchema,
+		gameTime: IsoDateTimeSchema
+	})
+	.strict()
+	.refine(
+		(receipt) => receipt.afterIntrinsicValue - receipt.beforeIntrinsicValue === receipt.spentPoints,
+		{ message: 'Attribute growth receipt must record exactly the points spent' }
+	);
+
 export const RewardDeltaSchema = z
 	.object({
 		ownerId: EntityIdSchema,
@@ -143,7 +169,10 @@ export const AuthoritativeEventSchema = z
 		sequence: z.number().int().positive(),
 		schemaVersion: z.number().int().positive(),
 		gameTime: IsoDateTimeSchema,
-		eventType: z.string().regex(/^[a-z][a-z0-9.]{2,99}$/u),
+		eventType: z.union([
+			z.literal('mission.combat.choice-batch.applied'),
+			z.string().regex(/^[a-z][a-z0-9.]{2,99}$/u)
+		]),
 		actorId: EntityIdSchema.nullable(),
 		commandId: EntityIdSchema,
 		causationId: EntityIdSchema.nullable(),
@@ -156,6 +185,48 @@ export const AuthoritativeEventSchema = z
 		payload: z.record(z.string(), z.unknown())
 	})
 	.strict();
+
+export const CombatChoiceBatchAppliedEventSchema = AuthoritativeEventSchema.extend({
+	schemaVersion: z.literal(26),
+	eventType: z.literal('mission.combat.choice-batch.applied'),
+	contentVersion: z.literal('engine-v26'),
+	payload: z
+		.object({
+			batch: CombatChoiceBatchV1Schema,
+			resolvedEvents: z.array(CombatResolvedEventSchema).max(1_000),
+			terminalResult: CombatResultSchema.nullable(),
+			claimCheckpoint: z
+				.object({
+					checkpointVersion: z.literal('combat-claim-transition-checkpoint-v1'),
+					checkpointId: EntityIdSchema,
+					attemptId: EntityIdSchema,
+					beforeMissionHash: StateHashSchema,
+					beforeProgressionHash: StateHashSchema,
+					resultHash: StateHashSchema,
+					claimManifestHash: StateHashSchema,
+					authorityHash: StateHashSchema,
+					afterMissionHash: StateHashSchema,
+					afterProgressionHash: StateHashSchema,
+					receiptManifestHash: StateHashSchema
+				})
+				.strict()
+				.nullable()
+		})
+		.strict()
+}).strict();
+
+export const ReadinessCombatTerminalCommittedEventSchema = AuthoritativeEventSchema.extend({
+	schemaVersion: z.literal(26),
+	eventType: z.literal('mission.combat.readiness.terminal.committed'),
+	contentVersion: z.literal('engine-v26'),
+	payload: z
+		.object({
+			result: CombatResultSchema,
+			claimCheckpoint:
+				CombatChoiceBatchAppliedEventSchema.shape.payload.shape.claimCheckpoint.unwrap()
+		})
+		.strict()
+}).strict();
 
 export const JournalEntrySchema = z
 	.object({
@@ -306,7 +377,7 @@ export const PlayerJournalStoryChangeSchema = z
 
 export const PlayerJournalEntrySchema = JournalEntrySchema.safeExtend({
 	entryVersion: z.literal('player-journal-entry-v1'),
-	eventType: z.string().regex(/^[a-z][a-z0-9.]{2,99}$/u),
+	eventType: z.string().regex(/^[a-z][a-z0-9.-]{2,99}$/u),
 	stateHash: StateHashSchema,
 	dayNumber: z.number().int().positive(),
 	facets: z.array(PlayerJournalFacetSchema).min(1).max(9),
@@ -450,6 +521,7 @@ export const ReturnRecapSchema = z
 	});
 
 export type ActionSource = z.infer<typeof ActionSourceSchema>;
+export type AttributeGrowthReceipt = z.infer<typeof AttributeGrowthReceiptSchema>;
 export type AuthoritativeEvent = z.infer<typeof AuthoritativeEventSchema>;
 export type DecisionSource = z.infer<typeof DecisionSourceSchema>;
 export type DecisionTiming = z.infer<typeof DecisionTimingSchema>;

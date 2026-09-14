@@ -1,5 +1,7 @@
 import {
+	ActorDecisionViewSchema,
 	CharacterManifestSchema,
+	CombatActionIntentSchema,
 	HeroDecisionPacketSchema,
 	HeroDecisionPreviewSchema,
 	HeroPolicyResultSchema,
@@ -13,6 +15,7 @@ import {
 import {
 	applyCommand,
 	assembleHeroDecisionPacket,
+	buildDeterministicCombatFallbackIntent as buildEngineDeterministicCombatFallbackIntent,
 	createBootstrapEngine,
 	deterministicUuid,
 	hashCanonical,
@@ -21,12 +24,97 @@ import {
 import { describe, expect, it } from 'vitest';
 
 import {
+	CombatPolicyResponseSchema,
+	RandomCombatPolicy,
 	RandomPolicy,
+	ScriptedCombatPolicy,
 	ScriptedPolicy,
+	buildDeterministicCombatFallbackIntent,
 	createHeroDecisionPreview,
 	policyResultBytes,
+	validateCombatPolicyResponse,
 	verifyHeroPolicyResult
 } from './index.js';
+
+function combatViewFixture() {
+	const actorId = deterministicUuid('policy-combat-actor');
+	const enemyId = deterministicUuid('policy-combat-enemy');
+	const legalActions = [
+		{
+			actionId: 'strike-nearby',
+			actionInstanceId: deterministicUuid('policy-combat-action'),
+			actionKind: 'attack' as const,
+			skillId: 'combat-skill-strike',
+			publicLabel: 'Strike nearby',
+			targetContract: { kind: 'entity' as const, allowedCombatantIds: [enemyId] },
+			reactionPriority: 0,
+			recoveryTicks: 3,
+			manaCost: 0,
+			conflictPolicy: {
+				invalidTarget: 'selected-fallback' as const,
+				occupiedDestination: 'cancel' as const,
+				cancellationRefund: { mana: 'full' as const, readiness: 'none' as const }
+			},
+			fallbackOptions: [
+				{
+					fallbackId: 'guard-instead',
+					publicLabel: 'Guard instead',
+					target: { kind: 'self' as const }
+				}
+			]
+		},
+		{
+			actionId: 'wait-here',
+			actionInstanceId: deterministicUuid('policy-combat-wait'),
+			actionKind: 'guard' as const,
+			skillId: null,
+			publicLabel: 'Wait here',
+			targetContract: { kind: 'self' as const },
+			reactionPriority: 0,
+			recoveryTicks: 2,
+			manaCost: 0,
+			conflictPolicy: {
+				invalidTarget: 'cancel' as const,
+				occupiedDestination: 'cancel' as const,
+				cancellationRefund: { mana: 'full' as const, readiness: 'full' as const }
+			},
+			fallbackOptions: []
+		}
+	].sort((left, right) => left.actionId.localeCompare(right.actionId));
+	const unsigned = {
+		viewVersion: 'actor-decision-view-v1' as const,
+		windowId: deterministicUuid('policy-combat-window'),
+		actorId,
+		snapshotHash: 'a'.repeat(64),
+		legalActionSetHash: hashCanonical(legalActions),
+		self: {
+			combatantId: actorId,
+			combatantKind: 'hero' as const,
+			teamId: 'party',
+			position: { x: 1, y: 1 },
+			resources: {
+				health: { current: 100, maximum: 100 },
+				mana: { current: 10, maximum: 10 }
+			},
+			conditions: [],
+			readiness: { ready: true, recoveryTicksRemaining: 0 },
+			downed: false,
+			active: true
+		},
+		visibleCombatants: [],
+		visibleTerrain: { width: 8, height: 8, blockedTiles: [], features: [] },
+		visibleTelegraphs: [],
+		rememberedContext: [],
+		doctrine: [],
+		relationships: [],
+		masterDirections: [],
+		legalActions
+	};
+	return ActorDecisionViewSchema.parse({
+		...unsigned,
+		actorViewHash: hashCanonical(unsigned)
+	});
+}
 
 const MINDS = {
 	social: {
@@ -325,5 +413,120 @@ describe('packet-bound hero policies', () => {
 				decision: { ...result.decision, publicIntent: 'A forged explanation.' }
 			})
 		).toBe(false);
+	});
+});
+
+describe('frozen-view combat policies', () => {
+	it('re-exports the engine-owned deterministic fallback builder', () => {
+		expect(buildDeterministicCombatFallbackIntent).toBe(
+			buildEngineDeterministicCombatFallbackIntent
+		);
+	});
+
+	it('builds the production deterministic fallback from the first supplied legal action', async () => {
+		const view = combatViewFixture();
+		const leastCostResponse = await new ScriptedCombatPolicy().decide(view);
+		const firstAction = view.legalActions[0]!;
+		if (firstAction.targetContract.kind !== 'entity') {
+			throw new Error('Fallback divergence fixture requires an entity-targeting first action');
+		}
+		const intent = buildDeterministicCombatFallbackIntent(view, {
+			attemptId: deterministicUuid('policy-combat-attempt'),
+			tick: 17,
+			snapshotHash: view.snapshotHash
+		});
+
+		expect(view.legalActions.map((action) => action.actionId)).toStrictEqual([
+			'strike-nearby',
+			'wait-here'
+		]);
+		expect(leastCostResponse.actionId).toBe('wait-here');
+		expect(CombatActionIntentSchema.parse(intent)).toEqual(intent);
+		expect(intent).toMatchObject({
+			actionId: 'strike-nearby',
+			actionInstanceId: firstAction.actionInstanceId,
+			actionKind: 'attack',
+			skillId: 'combat-skill-strike',
+			target: { kind: 'entity', combatantId: firstAction.targetContract.allowedCombatantIds[0] },
+			fallbackId: 'guard-instead',
+			publicIntent: 'Follow the deterministic fallback: Strike nearby.'
+		});
+	});
+
+	it('returns only a legal selection and four frozen-view bindings', async () => {
+		const view = combatViewFixture();
+		const response = await new ScriptedCombatPolicy().decide(view);
+
+		expect(CombatPolicyResponseSchema.parse(response)).toEqual(response);
+		expect(Object.keys(response).sort()).toEqual([
+			'actionId',
+			'actorViewHash',
+			'fallbackId',
+			'legalActionSetHash',
+			'publicIntent',
+			'snapshotHash',
+			'target',
+			'windowId'
+		]);
+		expect(
+			CombatPolicyResponseSchema.safeParse({
+				...response,
+				actionInstanceId: view.legalActions[0]!.actionInstanceId
+			}).success
+		).toBe(false);
+	});
+
+	it('makes Random and Scripted choices deterministic and locally legal', async () => {
+		const view = combatViewFixture();
+		const random = new RandomCombatPolicy('combat-seed');
+		const [left, right, scripted] = await Promise.all([
+			random.decide(view),
+			random.decide(view),
+			new ScriptedCombatPolicy().decide(view)
+		]);
+		expect(left).toEqual(right);
+		expect(validateCombatPolicyResponse(view, left)).toEqual(left);
+		expect(validateCombatPolicyResponse(view, scripted)).toEqual(scripted);
+	});
+
+	it('rejects stale hashes, malformed targets, and unavailable fallbacks', async () => {
+		const view = combatViewFixture();
+		const response = await new ScriptedCombatPolicy().decide(view);
+		for (const malformed of [
+			{ ...response, snapshotHash: 'b'.repeat(64) },
+			{ ...response, target: { kind: 'entity', combatantId: deterministicUuid('hidden') } },
+			{ ...response, fallbackId: 'invented-fallback' }
+		]) {
+			expect(() => validateCombatPolicyResponse(view, malformed)).toThrow();
+		}
+		expect(CombatActionIntentSchema.safeParse(response).success).toBe(false);
+	});
+
+	it('never treats an authored fallback target as a valid primary target', () => {
+		const view = combatViewFixture();
+		const action = view.legalActions.find((candidate) => candidate.actionId === 'strike-nearby')!;
+		const bindings = {
+			windowId: view.windowId,
+			snapshotHash: view.snapshotHash,
+			actorViewHash: view.actorViewHash,
+			legalActionSetHash: view.legalActionSetHash,
+			actionId: action.actionId,
+			fallbackId: 'guard-instead'
+		};
+		expect(() =>
+			validateCombatPolicyResponse(view, { ...bindings, target: { kind: 'self' } })
+		).toThrow(/supplied legal actions/u);
+		expect(
+			validateCombatPolicyResponse(view, {
+				...bindings,
+				target: {
+					kind: 'entity',
+					combatantId:
+						action.targetContract.kind === 'entity'
+							? action.targetContract.allowedCombatantIds[0]!
+							: ''
+				}
+			})
+		).toMatchObject({ actionId: action.actionId, fallbackId: 'guard-instead' });
 	});
 });

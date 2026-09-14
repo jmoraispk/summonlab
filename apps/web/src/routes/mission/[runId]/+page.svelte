@@ -17,6 +17,9 @@
 	let selectionInitialized = $state(false);
 	let resultMessage = $state('');
 	let errorMessage = $state('');
+	type CombatWindowStatus = NonNullable<typeof data.combatWindow>;
+	let combatWindow = $state<CombatWindowStatus | null>(null);
+	let pollingCombat = $state(false);
 	let selectedMasterActionId = $state('');
 	let observedNow = $state(Date.now());
 	let lastAutoDecisionId = $state('');
@@ -44,9 +47,17 @@
 
 	const engineState = $derived(data.report.snapshot.state);
 	const isPortal = $derived(engineState.schemaVersion === 15);
+	const isCapabilityMission = $derived(
+		engineState.schemaVersion === 25 || engineState.schemaVersion === 26
+	);
+	const isReadinessCombat = $derived(
+		data.combatMode?.status === 'available' && data.combatMode.modeId === 'agent-readiness-v1'
+	);
 	const isMasterFallback = $derived(engineState.schemaVersion === 20);
 	const isMasterTiming = $derived(engineState.schemaVersion === 19 || isMasterFallback);
-	const isAttemptAftermath = $derived(engineState.schemaVersion === 18 || isMasterTiming);
+	const isAttemptAftermath = $derived(
+		engineState.schemaVersion === 18 || isCapabilityMission || isMasterTiming
+	);
 	const isMasterRisk = $derived(engineState.schemaVersion === 17 || isAttemptAftermath);
 	const isAftermath = $derived(
 		engineState.schemaVersion === 16 || engineState.schemaVersion === 17 || isAttemptAftermath
@@ -77,12 +88,25 @@
 			engineState.schemaVersion === 17 ||
 			engineState.schemaVersion === 18 ||
 			engineState.schemaVersion === 19 ||
-			engineState.schemaVersion === 20
+			engineState.schemaVersion === 20 ||
+			engineState.schemaVersion === 25 ||
+			engineState.schemaVersion === 26
 			? engineState.mission
 			: null
 	);
 	const attempt = $derived(mission?.attempt ?? null);
-	const turnState = $derived(attempt?.turnState ?? null);
+	const turnState = $derived(
+		attempt && 'combatState' in attempt
+			? attempt.combatState.modeId === 'legacy-auto-v1'
+				? attempt.combatState.turnState
+				: null
+			: (attempt?.turnState ?? null)
+	);
+	const readinessState = $derived(
+		attempt && 'combatState' in attempt && attempt.combatState.modeId === 'agent-readiness-v1'
+			? attempt.combatState.readinessState
+			: null
+	);
 	const portalTurnState = $derived(
 		engineState.schemaVersion === 15 ? (engineState.mission.attempt?.turnState ?? null) : null
 	);
@@ -92,8 +116,10 @@
 			engineState.schemaVersion === 17 ||
 			engineState.schemaVersion === 18 ||
 			engineState.schemaVersion === 19 ||
-			engineState.schemaVersion === 20
-			? (engineState.mission.attempt?.turnState ?? null)
+			engineState.schemaVersion === 20 ||
+			engineState.schemaVersion === 25 ||
+			engineState.schemaVersion === 26
+			? turnState
 			: null
 	);
 	const aftermath = $derived(
@@ -101,7 +127,9 @@
 			engineState.schemaVersion === 17 ||
 			engineState.schemaVersion === 18 ||
 			engineState.schemaVersion === 19 ||
-			engineState.schemaVersion === 20
+			engineState.schemaVersion === 20 ||
+			engineState.schemaVersion === 25 ||
+			engineState.schemaVersion === 26
 			? engineState.mission.aftermath
 			: null
 	);
@@ -205,7 +233,21 @@
 
 	onMount(() => {
 		const timer = window.setInterval(() => (observedNow = Date.now()), 100);
-		return () => window.clearInterval(timer);
+		const combatTimer = window.setInterval(() => {
+			if (combatWindow && ['collecting', 'ready'].includes(combatWindow.status)) {
+				void pollCombatWindow(combatWindow.windowId);
+			}
+		}, 1_000);
+		return () => {
+			window.clearInterval(timer);
+			window.clearInterval(combatTimer);
+		};
+	});
+
+	$effect(() => {
+		if (data.combatWindow && data.combatWindow.updatedAt !== combatWindow?.updatedAt) {
+			combatWindow = data.combatWindow;
+		}
 	});
 
 	$effect(() => {
@@ -370,6 +412,62 @@
 		selectedMasterActionId = '';
 	}
 
+	async function pollCombatWindow(windowId: string) {
+		if (pollingCombat) return;
+		pollingCombat = true;
+		try {
+			const response = await fetch(`/api/runs/${engineState.runId}/combat-windows/${windowId}`);
+			const body = (await response.json()) as CombatWindowStatus & { message?: string };
+			if (!response.ok) {
+				throw new Error(body.message ?? 'The combat status could not be refreshed.');
+			}
+			combatWindow = body;
+			if (['applied', 'stale', 'failed'].includes(body.status)) {
+				resultMessage =
+					body.status === 'applied'
+						? 'The heroes resolved the action window.'
+						: body.status === 'stale'
+							? 'That action window was superseded by the current battle state.'
+							: 'The heroes could not resolve that action window.';
+				await invalidateAll();
+			}
+		} catch (error) {
+			errorMessage =
+				error instanceof Error ? error.message : 'The combat status could not be refreshed.';
+		} finally {
+			pollingCombat = false;
+		}
+	}
+
+	async function advanceAutomaticCombat() {
+		busy = true;
+		resultMessage = '';
+		errorMessage = '';
+		try {
+			const response = await fetch(`/api/runs/${engineState.runId}/mission`, {
+				method: 'POST',
+				headers: { 'content-type': 'application/json' },
+				body: JSON.stringify({ action: 'advance-automatic-combat' })
+			});
+			const body = (await response.json()) as CombatWindowStatus & {
+				message?: string;
+				missionStatus?: string;
+			};
+			if (!response.ok) throw new Error(body.message ?? 'The battle could not continue.');
+			if ('windowId' in body) {
+				combatWindow = body;
+				resultMessage = 'The heroes are choosing their next actions.';
+			} else {
+				resultMessage = 'The automatic battle advanced.';
+				await invalidateAll();
+			}
+		} catch (error) {
+			errorMessage = error instanceof Error ? error.message : 'The battle could not continue.';
+		} finally {
+			busy = false;
+		}
+	}
+
 	function actorName(actorId: string) {
 		const monster = turnState?.monsters[actorId];
 		if (monster) return monster.label;
@@ -390,7 +488,9 @@
 			engineState.schemaVersion !== 17 &&
 			engineState.schemaVersion !== 18 &&
 			engineState.schemaVersion !== 19 &&
-			engineState.schemaVersion !== 20
+			engineState.schemaVersion !== 20 &&
+			engineState.schemaVersion !== 25 &&
+			engineState.schemaVersion !== 26
 		)
 			return null;
 		const itemId = engineState.heroes[heroId]?.equipment.mainHand;
@@ -426,39 +526,45 @@
 			<p class="eyebrow">
 				{isPortal
 					? 'Portal World / extraction clock'
-					: isMasterFallback
-						? 'Tower Floor 01 / autonomous doctrine'
-						: isMasterTiming
-							? 'Tower Floor 01 / four command tempos'
-							: isMasterRisk
-								? 'Tower Floor 03 / the Master is mortal'
-								: isAftermath
-									? 'Tower Floor 03 / persistent consequences'
-									: 'Tower Floor 01 / authoritative threshold'}
+					: isCapabilityMission
+						? 'Tower Floor 01 / automatic combat trial'
+						: isMasterFallback
+							? 'Tower Floor 01 / autonomous doctrine'
+							: isMasterTiming
+								? 'Tower Floor 01 / four command tempos'
+								: isMasterRisk
+									? 'Tower Floor 03 / the Master is mortal'
+									: isAftermath
+										? 'Tower Floor 03 / persistent consequences'
+										: 'Tower Floor 01 / authoritative threshold'}
 			</p>
 			<h1>
 				{isPortal
 					? 'The Closing'
-					: isMasterFallback
-						? 'The Chosen'
-						: isMasterTiming
-							? 'The Living'
-							: isMasterRisk
-								? 'The Last'
-								: isAftermath
-									? 'The Red'
-									: 'The Unlit'}<br /><em
+					: isCapabilityMission
+						? 'The Unlit'
+						: isMasterFallback
+							? 'The Chosen'
+							: isMasterTiming
+								? 'The Living'
+								: isMasterRisk
+									? 'The Last'
+									: isAftermath
+										? 'The Red'
+										: 'The Unlit'}<br /><em
 					>{isPortal
 						? 'Scar'
-						: isMasterFallback
-							? 'Intent'
-							: isMasterTiming
-								? 'Tempo'
-								: isMasterRisk
-									? 'Command'
-									: isAftermath
-										? 'Tithe'
-										: 'Muster'}</em
+						: isCapabilityMission
+							? 'Muster'
+							: isMasterFallback
+								? 'Intent'
+								: isMasterTiming
+									? 'Tempo'
+									: isMasterRisk
+										? 'Command'
+										: isAftermath
+											? 'Tithe'
+											: 'Muster'}</em
 				>
 			</h1>
 		</div>
@@ -562,7 +668,9 @@
 				<span>{phase === 'available' ? 'Threshold dormant' : phase.replaceAll('-', ' ')}</span>
 				<strong
 					>{attempt
-						? `Attempt ${attempt.ordinal} · Round ${turnState?.roundNumber ?? 0}/${data.missionDefinition.maximumRounds}`
+						? readinessState
+							? `Attempt ${attempt.ordinal} · Battle tick ${readinessState.tick}`
+							: `Attempt ${attempt.ordinal} · Round ${turnState?.roundNumber ?? 0}/${data.missionDefinition.maximumRounds}`
 						: 'No attempt committed'}</strong
 				>
 			</div>
@@ -883,63 +991,134 @@
 						>stand down</button
 					>
 				{:else if phase === 'deployed' || phase === 'resolving'}
-					<div class="turn-objective">
-						<span>Round {(turnState?.roundNumber ?? 0) + 1}</span>
-						<strong
-							>{turnState?.objective.status ?? 'available'} · {data.missionDefinition
-								.objectiveTitle}</strong
-						>
-						<small>Choose only the Master. Every summoned hero chooses independently.</small>
-					</div>
-					{#if turnState && (turnState.currentThreatIntents.length > 0 || redSlagImminent)}
-						<div class="threat-ledger" data-testid="threat-intents">
-							<div><span>Declared threats</span><small>visible before you commit</small></div>
-							{#if redSlagImminent}
-								<article class="hazard-warning" data-testid="red-slag-warning">
-									<strong>RED SLAG VENTS</strong>
-									<p>The Red Gallery will strip 1 guard from every actor beneath its vents.</p>
-									<small>environment · resolves after initiative</small>
-								</article>
-							{/if}
-							{#each turnState.currentThreatIntents as intent (intent.monsterId)}
-								<article>
-									<strong>{actorName(intent.monsterId)}</strong>
-									<p>{intent.telegraph}</p>
-									<small>{intent.kind.replaceAll('-', ' ')} · {intent.anticipatedEffect}</small>
-								</article>
+					{#if isCapabilityMission}
+						<div class="turn-objective" data-testid="automatic-combat-status">
+							<span
+								>{readinessState ? `Battle tick ${readinessState.tick}` : 'Automatic battle'}</span
+							>
+							<strong>{data.missionDefinition.objectiveTitle}</strong>
+							<small>
+								The combat rules resolve outcomes. Each hero chooses only from the legal actions
+								available in the shared action window.
+							</small>
+						</div>
+						{#if readinessState}
+							<div class="threat-ledger" data-testid="readiness-combatants">
+								<div>
+									<span>Shared combat state</span><small
+										>{combatWindow
+											? `${combatWindow.readyActors}/${combatWindow.totalActors} choices ready`
+											: 'ready for the next action window'}</small
+									>
+								</div>
+								{#each Object.values(readinessState.combatants) as combatant (combatant.combatantId)}
+									<article>
+										<strong
+											>{combatant.combatantKind === 'master'
+												? 'The Master'
+												: combatant.combatantKind === 'hero'
+													? data.proof.manifest.displayName
+													: 'Tower defender'}</strong
+										>
+										<p>
+											Health {combatant.resources.health.current}/{combatant.resources.health
+												.maximum}
+											· Mana {combatant.resources.mana.current}/{combatant.resources.mana.maximum}
+										</p>
+										<small>{combatant.downed ? 'downed' : combatant.teamId}</small>
+									</article>
+								{/each}
+							</div>
+						{/if}
+						{#if data.combatMode?.status === 'unavailable'}
+							<p class="error" role="alert">{data.combatMode.message}</p>
+						{:else}
+							<button
+								class="primary resolve"
+								disabled={busy ||
+									(combatWindow !== null && ['collecting', 'ready'].includes(combatWindow.status))}
+								onclick={advanceAutomaticCombat}
+								data-testid="advance-automatic-combat"
+							>
+								<span
+									>{isReadinessCombat
+										? 'Open next action window'
+										: 'Advance automatic battle'}</span
+								>
+								<small
+									>{isReadinessCombat
+										? 'heroes choose → engine resolves'
+										: 'legacy automatic resolution'}</small
+								>
+							</button>
+						{/if}
+						{#if retreatAvailable}
+							<button
+								class="quiet"
+								disabled={busy}
+								onclick={() => act({ action: 'retreat' }, 'The party retreated alive.')}
+								data-testid="retreat-party">retreat at threshold</button
+							>
+						{/if}
+					{:else}
+						<div class="turn-objective">
+							<span>Round {(turnState?.roundNumber ?? 0) + 1}</span>
+							<strong
+								>{turnState?.objective.status ?? 'available'} · {data.missionDefinition
+									.objectiveTitle}</strong
+							>
+							<small>Choose only the Master. Every summoned hero chooses independently.</small>
+						</div>
+						{#if turnState && (turnState.currentThreatIntents.length > 0 || redSlagImminent)}
+							<div class="threat-ledger" data-testid="threat-intents">
+								<div><span>Declared threats</span><small>visible before you commit</small></div>
+								{#if redSlagImminent}
+									<article class="hazard-warning" data-testid="red-slag-warning">
+										<strong>RED SLAG VENTS</strong>
+										<p>The Red Gallery will strip 1 guard from every actor beneath its vents.</p>
+										<small>environment · resolves after initiative</small>
+									</article>
+								{/if}
+								{#each turnState.currentThreatIntents as intent (intent.monsterId)}
+									<article>
+										<strong>{actorName(intent.monsterId)}</strong>
+										<p>{intent.telegraph}</p>
+										<small>{intent.kind.replaceAll('-', ' ')} · {intent.anticipatedEffect}</small>
+									</article>
+								{/each}
+							</div>
+						{/if}
+						<div class="turn-choices" data-testid="master-turn-actions">
+							{#each masterTurnActions as choice (choice.actionId)}
+								<button
+									type="button"
+									class:selected={choice.actionId === selectedMasterActionId}
+									disabled={busy || !manualDecisionOpen || (isMasterTiming && !masterDecision)}
+									onclick={() => (selectedMasterActionId = choice.actionId)}
+								>
+									<strong>{choice.label}</strong><small>{choice.description}</small>
+								</button>
 							{/each}
 						</div>
-					{/if}
-					<div class="turn-choices" data-testid="master-turn-actions">
-						{#each masterTurnActions as choice (choice.actionId)}
-							<button
-								type="button"
-								class:selected={choice.actionId === selectedMasterActionId}
-								disabled={busy || !manualDecisionOpen || (isMasterTiming && !masterDecision)}
-								onclick={() => (selectedMasterActionId = choice.actionId)}
-							>
-								<strong>{choice.label}</strong><small>{choice.description}</small>
-							</button>
-						{/each}
-					</div>
-					<button
-						class="primary resolve"
-						disabled={busy ||
-							!selectedMasterActionId ||
-							!manualDecisionOpen ||
-							(isMasterTiming && !masterDecision)}
-						onclick={resolveTurn}
-						data-testid="resolve-turn"
-						><span>Commit round</span><small>hero policy → seeded initiative → engine</small
-						></button
-					>
-					{#if retreatAvailable}
 						<button
-							class="quiet"
-							disabled={busy}
-							onclick={() => act({ action: 'retreat' }, 'The party retreated alive.')}
-							data-testid="retreat-party">retreat at threshold</button
+							class="primary resolve"
+							disabled={busy ||
+								!selectedMasterActionId ||
+								!manualDecisionOpen ||
+								(isMasterTiming && !masterDecision)}
+							onclick={resolveTurn}
+							data-testid="resolve-turn"
+							><span>Commit round</span><small>hero policy → seeded initiative → engine</small
+							></button
 						>
+						{#if retreatAvailable}
+							<button
+								class="quiet"
+								disabled={busy}
+								onclick={() => act({ action: 'retreat' }, 'The party retreated alive.')}
+								data-testid="retreat-party">retreat at threshold</button
+							>
+						{/if}
 					{/if}
 				{:else if phase === 'extraction'}
 					<button

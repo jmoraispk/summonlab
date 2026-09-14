@@ -43,10 +43,9 @@ aptitudes are innate talent for an attribute, skill family, or learning mode. Th
 must not label invented phrases such as `Shieldwork` or `Ember control` as if they were accepted
 skills.
 
-- Body contains exactly `Might`, `Vitality`, and `Agility` and uses a muscle/arm icon.
-- Mind contains exactly `Dexterity`, `Intellect`, and `Spirit` and uses a brain icon. Dexterity's
-  wiki territory includes accuracy, control, weak-point execution, and crafting precision, so this
-  is a presentation grouping rather than a change to its canonical definition.
+- Use one unified four-attribute grid in `STR`, `AGI`, `VIT`, `MAG` order. Accessible labels and
+  surrounding prose use Strength, Agility, Vitality, and Magic. Do not add Body/Mind headings or
+  attribute-group icons.
 - Aptitude names use accepted wiki family/focus vocabulary under the three supplied sectors:
   Martial, Magical, and Craft & Life. They remain route-local person-to-family assignments until a
   hero ownership contract establishes them.
@@ -176,8 +175,8 @@ This revision supersedes the visible lab-comparison composition below:
    result batch both remain inside the portal surface.
 3. Keep a session arrival strip so five sequential singles or an eleven-result batch remain
    clickable. Selecting an arrival opens an in-place hero dossier rather than navigating away.
-4. Model dossiers with the accepted six attributes (`Might`, `Vitality`, `Agility`, `Dexterity`,
-   `Intellect`, `Spirit`) and the accepted personality dimensions (traits, value, drive, social
+4. Model dossiers with the accepted four attributes (`Strength`, `Agility`, `Vitality`, `Magic`)
+   and the accepted personality dimensions (traits, value, drive, social
    style, stress response, and risk/leadership tendency). Numeric readiness bars are explicitly
    local presentation estimates because the wiki still leaves attribute numeric ranges open.
 5. Retain all three reveal directions, replay, skip, muted sound hooks, recognition timing, and the
@@ -202,9 +201,8 @@ instructions. This pass keeps the accepted in-gate composition and raises its cr
 2. Give every browser receipt slot an arrival ID and unread state. New results carry a visible
    `NEW` marker in both the result contact sheet and Recent arrivals; opening a dossier clears only
    that receipt slot, including when several slots reference the same fixed identity.
-3. Present canonical attributes in two mechanical columns: Body on the left (`Might`, `Vitality`,
-   `Agility`, `Dexterity`) and Mind on the right (`Intellect`, `Spirit`). This grouping is a view
-   convention, not a change to the wiki vocabulary or progression contract.
+3. Present canonical attributes in one row or a responsive 2×2 grid in `STR`, `AGI`, `VIT`, `MAG`
+   order. Use full names in accessible labels and no Body/Mind grouping.
 4. Add code-native elemental affinity icons and aptitude-class icons. Route-local aptitude entries
    are tagged `martial`, `magic`, or `crafting`; no shared catalog or production skill contract is
    changed.
@@ -212,7 +210,7 @@ instructions. This pass keeps the accepted in-gate composition and raises its cr
    dossier: 1★ ember-gold, 2★ arc-blue, and 3★ astral-violet. Rarity changes presentation only and
    never portrait quality, body treatment, dignity, or personality.
 6. Extend the focused browser proof to verify unread clearing, duplicate-slot independence,
-   Body/Mind grouping, affinity and aptitude icons, and distinct 1★/2★ rarity treatments.
+   unified attribute ordering, affinity and aptitude icons, and distinct 1★/2★ rarity treatments.
 
 Status: implementation-ready plan, written before prototype code
 

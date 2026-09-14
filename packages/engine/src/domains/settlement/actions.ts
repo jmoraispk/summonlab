@@ -1,4 +1,5 @@
 import {
+	CombatAttributeNameSchema,
 	LegalActionSchema,
 	type EngineGameState,
 	type EngineGameStateV3,
@@ -23,10 +24,14 @@ import {
 	type EngineGameStateV22,
 	type EngineGameStateV23,
 	type EngineGameStateV24,
+	type EngineGameStateV25,
+	type EngineGameStateV27,
 	type LegalAction
 } from '@summonlab/contracts';
+import { COMBAT_RULES_V1 } from '@summonlab/content';
 
 import { settlementForState } from '../../core/content-bindings.js';
+import { intrinsicAttributes } from '../../core/capability.js';
 import { parseGameState } from '../../core/state.js';
 import type { EngineGameStateModern } from '../../core/types.js';
 import {
@@ -77,7 +82,9 @@ export function settlementTravelActions(
 		| EngineGameStateV21
 		| EngineGameStateV22
 		| EngineGameStateV23
-		| EngineGameStateV24,
+		| EngineGameStateV24
+		| EngineGameStateV25
+		| EngineGameStateV27,
 	actorId: string,
 	targetNodeIds?: readonly string[]
 ): LegalAction[] {
@@ -447,9 +454,56 @@ function masterSettlementActions(
 }
 
 function heroSettlementActions(state: EngineGameStateModern, actorId: string): LegalAction[] {
-	const route = routeActions(state, actorId);
-	if (route.length > 0) return route;
 	const hero = state.heroes[actorId];
+	let allocationActions: LegalAction[] = [];
+	if (state.schemaVersion === 27) {
+		const progressionHero = state.heroes[actorId];
+		if (
+			progressionHero?.lifeState === 'active' &&
+			progressionHero.progression.unallocatedAttributePoints > 0
+		) {
+			allocationActions = CombatAttributeNameSchema.options.map((attribute) =>
+				action({
+					actionId: `hero.allocate.attribute.${attribute}`,
+					actorId,
+					kind: 'train',
+					label: `Increase ${attribute}`,
+					description: `Spend unallocated level points to permanently increase intrinsic ${attribute}.`,
+					targetIds: [],
+					resourceCosts: {},
+					tags: ['progression', 'attribute', 'intrinsic', attribute]
+				})
+			);
+		}
+	} else if (state.schemaVersion === 25 || state.schemaVersion === 26) {
+		const capabilityHero = state.heroes[actorId];
+		if (
+			capabilityHero?.lifeState === 'active' &&
+			capabilityHero.progression.unspentAttributePoints > 0
+		) {
+			const intrinsic = intrinsicAttributes(
+				capabilityHero.capabilityProfile,
+				capabilityHero.progression.attributeGrowthReceipts,
+				COMBAT_RULES_V1
+			);
+			allocationActions = CombatAttributeNameSchema.options
+				.filter((attribute) => intrinsic[attribute] < COMBAT_RULES_V1.attributes.intrinsicMaximum)
+				.map((attribute) =>
+					action({
+						actionId: `hero.allocate.attribute.${attribute}`,
+						actorId,
+						kind: 'train',
+						label: `Increase ${attribute}`,
+						description: `Spend one unallocated level point to permanently increase intrinsic ${attribute}.`,
+						targetIds: [],
+						resourceCosts: {},
+						tags: ['progression', 'attribute', 'intrinsic', attribute]
+					})
+				);
+		}
+	}
+	const route = routeActions(state, actorId);
+	if (route.length > 0) return [...allocationActions, ...route];
 	if (
 		!hero ||
 		hero.lifeState !== 'active' ||
@@ -458,9 +512,12 @@ function heroSettlementActions(state: EngineGameStateModern, actorId: string): L
 		currentRoutineFor(state, actorId) ||
 		currentForgingFor(state, actorId)
 	)
-		return [];
-	const actions: LegalAction[] = [];
-	if (state.schemaVersion === 24 && heroHasForgePermission(state, actorId)) {
+		return allocationActions;
+	const actions: LegalAction[] = [...allocationActions];
+	if (
+		(state.schemaVersion === 24 || state.schemaVersion === 27) &&
+		heroHasForgePermission(state, actorId)
+	) {
 		for (const definition of availableStandardForgeDefinitions(state, actorId)) {
 			actions.push(
 				action({

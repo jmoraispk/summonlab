@@ -1,5 +1,8 @@
 export {
 	ATTEMPT_AFTERMATH_ENGINE_CONTENT_VERSION,
+	CAPABILITY_ENGINE_CONTENT_VERSION,
+	READINESS_COMBAT_ENGINE_CONTENT_VERSION,
+	PROGRESSION_ENGINE_CONTENT_VERSION,
 	COMMUNICATION_ENGINE_CONTENT_VERSION,
 	CONVERSATION_ENGINE_CONTENT_VERSION,
 	DIRECTIVE_ENGINE_CONTENT_VERSION,
@@ -34,6 +37,7 @@ export {
 	supportsEquipmentApi,
 	supportsFirstBandArchiveApi,
 	supportsMissionApi,
+	supportsProgressionV2,
 	supportsStoryPatchApi,
 	supportsSynthesisApi
 } from './core/versions.js';
@@ -60,6 +64,13 @@ export {
 } from './domains/settlement/equipment.js';
 export { missionTurnLegalActions } from './domains/mission/actions.js';
 export {
+	LEGACY_AUTO_RULES_VERSION,
+	combatModeAvailability,
+	createCombatModeBinding
+} from './domains/mission/combat-mode.js';
+export { missionHeroReadiness, missionPreparationReadiness } from './domains/mission/lifecycle.js';
+export { advanceUntilDecision } from './domains/combat/window.js';
+export {
 	isIrreversibleMasterAction,
 	masterFallbackActionSource,
 	masterFallbackMissionChoice,
@@ -73,7 +84,10 @@ export {
 } from './domains/mission/monster-policy.js';
 export { legalActions, decisionLegalActions } from './orchestration/legal-actions.js';
 export { commandFromHeroPolicyResult } from './orchestration/policy-commands.js';
-export { createBootstrapEngine } from './orchestration/bootstrap.js';
+export {
+	capabilityProfileFromLegacyMind,
+	createBootstrapEngine
+} from './orchestration/bootstrap.js';
 export { applyCommand } from './orchestration/apply-command.js';
 export { reduceEvent } from './orchestration/reduction.js';
 export {

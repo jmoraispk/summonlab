@@ -1,4 +1,5 @@
 import {
+	CombatResultSchema,
 	EngineGameStateV11Schema,
 	EngineGameStateV12Schema,
 	EngineGameStateV13Schema,
@@ -11,6 +12,9 @@ import {
 	EngineGameStateV20Schema,
 	EngineGameStateV23Schema,
 	EngineGameStateV24Schema,
+	EngineGameStateV25Schema,
+	EngineGameStateV26Schema,
+	EngineGameStateV27Schema,
 	FirstBandArchiveStateSchema,
 	MasterControlStateSchema,
 	MasterControlStateV2Schema,
@@ -19,6 +23,7 @@ import {
 	MasterFallbackConfigurationSchema,
 	MissionConsequenceRecordV2Schema,
 	MissionConsequenceRecordV3Schema,
+	MissionConsequenceRecordV4Schema,
 	MissionHarmRecordSchema,
 	MissionRoundSchema,
 	MissionRoundV2Schema,
@@ -31,10 +36,14 @@ import {
 	MissionRunStateV6Schema,
 	MissionRunStateV7Schema,
 	MissionRunStateV8Schema,
+	MissionRunStateV9Schema,
+	MissionRunStateV10Schema,
 	MissionTurnChoiceSchema,
 	ResourceKeySchema,
 	RuntimeBandStoryStateSchema,
 	type AuthoritativeEvent,
+	type CombatClaim,
+	type CombatResult,
 	type EngineGameState,
 	type EngineGameStateV23,
 	type EngineGameStateV24,
@@ -44,9 +53,19 @@ import {
 import { z } from 'zod';
 
 import { EmptyMetadataSchema } from '../../core/event-metadata.js';
+import { combatAftermathRulesForBinding } from '../../core/combat-aftermath-rules.js';
 import type { EngineEventReducer, EngineGameStateModern } from '../../core/types.js';
+import {
+	combatClaimReceipt,
+	existingCombatClaimReceipt,
+	type CombatClaimReceipt
+} from '../../core/combat-claims.js';
 import { ReplayIntegrityError } from '../../errors.js';
 import { deterministicUuid, hashCanonical } from '../../hash.js';
+import {
+	CombatExperienceOutcomeV1Schema,
+	buildCombatExperienceOutcomes
+} from '../progression/combat-experience.js';
 import { resolveMissionCombatTurn, resolveMissionTurn } from './combat.js';
 import { buildMissionEquipmentDrop, MissionEquipmentDropOutcomeSchema } from './equipment-drop.js';
 import {
@@ -54,10 +73,13 @@ import {
 	completeMissionExtraction,
 	deployMissionAttempt,
 	openMissionExtraction,
+	parseCombatMissionClaimProjection,
 	prepareMissionAttempt,
 	retreatMissionAttempt,
-	reviseMissionParty
+	reviseMissionParty,
+	type CombatMissionClaimProjection
 } from './lifecycle.js';
+import { resolveMissionModeTurn } from './mission-mode-runner.js';
 import {
 	applyMasterSafetyStop,
 	configureMasterFallback,
@@ -77,6 +99,177 @@ import {
 	completePortalMissionExtraction,
 	resolvePortalMissionTurn
 } from './portal.js';
+
+export interface CombatMissionClaimTransition {
+	readonly projection: CombatMissionClaimProjection;
+	readonly receipts: readonly CombatClaimReceipt[];
+}
+
+function checkedAdd(left: number, right: number, label: string): number {
+	const value = left + right;
+	if (!Number.isSafeInteger(value) || value < 0) throw new Error(`${label} overflowed`);
+	return value;
+}
+
+function validateOwnedClaim(
+	result: CombatResult,
+	claim: CombatClaim,
+	minimumSafeHealth: number
+): void {
+	if (!claim.idempotencyKey.startsWith(`${result.attemptId}:`)) {
+		throw new Error('Combat claim belongs to another attempt');
+	}
+	if (claim.claimType === 'final-resource') {
+		const combatant = result.finalCombatants[claim.combatantId];
+		if (!combatant || combatant.resources[claim.resource].current !== claim.value) {
+			throw new Error('Final-resource claim diverged from combat result');
+		}
+	}
+	if (claim.claimType === 'harm') {
+		const combatant = result.finalCombatants[claim.heroId];
+		if (!combatant || combatant.downed !== claim.downed) {
+			throw new Error('Harm claim diverged from combat result');
+		}
+	}
+	if (claim.claimType === 'recovery') {
+		const combatant = result.finalCombatants[claim.heroId];
+		if (
+			!combatant?.downed ||
+			!['victory', 'extraction'].includes(result.outcome) ||
+			claim.minimumSafeHealth !== minimumSafeHealth ||
+			claim.minimumSafeHealth > combatant.resources.health.maximum
+		) {
+			throw new Error('Recovery claim lacks engine-owned safe-outcome evidence');
+		}
+	}
+}
+
+/** Derives only the mission/aftermath-owned side of a common combat result. */
+export function transitionCombatMissionClaims(
+	projection: CombatMissionClaimProjection,
+	resultInput: CombatResult
+): CombatMissionClaimTransition {
+	projection = parseCombatMissionClaimProjection(projection);
+	const result = CombatResultSchema.parse(resultInput);
+	const aftermathRules = combatAftermathRulesForBinding(result.modeId, result.rulesVersion);
+	const outcomeClaims = result.claims.filter((claim) => claim.claimType === 'attempt-outcome');
+	if (outcomeClaims.length !== 1 || outcomeClaims[0]?.outcome !== result.outcome) {
+		throw new Error('Combat result outcome claims are inconsistent');
+	}
+	for (const claim of result.claims) {
+		validateOwnedClaim(result, claim, aftermathRules.minimumSafeHealth);
+	}
+
+	let mission = projection;
+	const receipts: CombatClaimReceipt[] = [];
+	for (const claim of result.claims) {
+		if (claim.claimType === 'skill-practice') continue;
+		const existing = existingCombatClaimReceipt(mission.receipts, claim, 'mission-aftermath');
+		if (existing) {
+			receipts.push(existing);
+			continue;
+		}
+		const receipt = combatClaimReceipt(claim, 'mission-aftermath', hashCanonical(mission));
+		if (claim.claimType === 'final-resource') {
+			const combatant = mission.combatants[claim.combatantId];
+			if (!combatant) throw new Error(`Unknown persistent combatant ${claim.combatantId}`);
+			const maximum = claim.resource === 'health' ? combatant.maximumHealth : combatant.maximumMana;
+			if (claim.value > maximum)
+				throw new Error('Final combat resource exceeds its persistent cap');
+			mission = {
+				...mission,
+				combatants: {
+					...mission.combatants,
+					[claim.combatantId]: { ...combatant, [claim.resource]: claim.value }
+				}
+			};
+		} else if (claim.claimType === 'harm') {
+			const combatant = mission.combatants[claim.heroId];
+			if (!combatant) throw new Error(`Unknown harmed hero ${claim.heroId}`);
+			mission = {
+				...mission,
+				combatants: {
+					...mission.combatants,
+					[claim.heroId]: { ...combatant, downed: claim.downed }
+				},
+				harm: {
+					...mission.harm,
+					[claim.heroId]: { damageTaken: claim.damageTaken, downed: claim.downed }
+				}
+			};
+		} else if (claim.claimType === 'recovery') {
+			const combatant = mission.combatants[claim.heroId];
+			if (!combatant) throw new Error(`Unknown recovered hero ${claim.heroId}`);
+			mission = {
+				...mission,
+				combatants: {
+					...mission.combatants,
+					[claim.heroId]: {
+						...combatant,
+						health: claim.minimumSafeHealth,
+						downed: false,
+						lost: false
+					}
+				},
+				recoveries: {
+					...mission.recoveries,
+					[claim.heroId]: { minimumSafeHealth: claim.minimumSafeHealth }
+				}
+			};
+		} else if (claim.claimType === 'loot') {
+			const ownerLoot = mission.loot[claim.ownerId] ?? {};
+			mission = {
+				...mission,
+				loot: {
+					...mission.loot,
+					[claim.ownerId]: {
+						...ownerLoot,
+						[claim.lootId]: checkedAdd(ownerLoot[claim.lootId] ?? 0, claim.quantity, 'Combat loot')
+					}
+				}
+			};
+		} else if (claim.claimType === 'objective') {
+			mission = {
+				...mission,
+				objectives: { ...mission.objectives, [claim.objectiveId]: claim.completed }
+			};
+		} else {
+			mission = {
+				...mission,
+				attempts: {
+					...mission.attempts,
+					[result.attemptId]: {
+						outcome: claim.outcome,
+						modeId: result.modeId,
+						rulesVersion: result.rulesVersion,
+						traceHash: result.traceHash
+					}
+				}
+			};
+		}
+		mission = {
+			...mission,
+			receipts: { ...mission.receipts, [claim.idempotencyKey]: receipt }
+		};
+		receipts.push(receipt);
+	}
+
+	if (aftermathRules.permanentLossOutcomes.some((outcome) => outcome === result.outcome)) {
+		const recoveredIds = new Set(
+			result.claims.filter((claim) => claim.claimType === 'recovery').map((claim) => claim.heroId)
+		);
+		const combatants = { ...mission.combatants };
+		for (const [combatantId, finalCombatant] of Object.entries(result.finalCombatants)) {
+			const persistent = combatants[combatantId];
+			if (persistent && finalCombatant.downed && !recoveredIds.has(combatantId)) {
+				combatants[combatantId] = { ...persistent, health: 0, downed: true, lost: true };
+			}
+		}
+		mission = { ...mission, combatants };
+	}
+
+	return { projection: parseCombatMissionClaimProjection(mission), receipts };
+}
 
 const ResourceChangeSchema = z
 	.object({
@@ -234,6 +427,29 @@ const MissionAttemptAftermathTurnResolvedPayloadSchema = EmptyMetadataSchema.ext
 	nextVersion: z.number().int().positive()
 }).strict();
 
+const MissionLegacyAutomaticTurnResolvedPayloadSchema = EmptyMetadataSchema.extend({
+	transition: z.literal('resolve-turn'),
+	mission: MissionRunStateV9Schema,
+	choices: z.array(MissionTurnChoiceSchema).min(1).max(8),
+	round: MissionRoundV2Schema,
+	consequences: z.array(MissionConsequenceRecordV4Schema).max(40),
+	nextVersion: z.number().int().positive()
+}).strict();
+
+const MissionLegacyAutomaticTurnResolvedPayloadV2Schema = EmptyMetadataSchema.extend({
+	transition: z.literal('resolve-turn'),
+	mission: MissionRunStateV10Schema,
+	choices: z.array(MissionTurnChoiceSchema).min(1).max(8),
+	round: MissionRoundV2Schema,
+	consequences: z.array(MissionConsequenceRecordV4Schema).max(40),
+	nextVersion: z.number().int().positive()
+}).strict();
+
+const MissionLegacyAutomaticTurnResolvedPayloadV3Schema =
+	MissionLegacyAutomaticTurnResolvedPayloadV2Schema.extend({
+		combatProgressionOutcomes: z.array(CombatExperienceOutcomeV1Schema)
+	}).strict();
+
 const MasterTimingChangedPayloadSchema = EmptyMetadataSchema.extend({
 	timing: z.enum(['wait', 'countdown', 'step', 'continuous']),
 	countdownSeconds: z.number().int().min(1).max(60),
@@ -336,6 +552,26 @@ const MissionTransitionPayloadV11Schema = MissionTransitionPayloadV8Schema.safeE
 
 const MissionTransitionPayloadV12Schema = MissionTransitionPayloadV11Schema.safeExtend({
 	equipmentDrop: MissionEquipmentDropOutcomeSchema.nullable()
+}).strict();
+
+const MissionTransitionPayloadV13Schema = EmptyMetadataSchema.extend({
+	transition: z.enum(['prepare', 'revise-party', 'cancel', 'deploy', 'extract', 'retreat']),
+	mission: MissionRunStateV9Schema,
+	heroIds: z.array(z.string().uuid()).max(7),
+	completedObjectiveIds: z.array(z.string()).max(20),
+	nextVersion: z.number().int().positive()
+}).strict();
+
+const MissionTransitionPayloadV14Schema = EmptyMetadataSchema.extend({
+	transition: z.enum(['prepare', 'revise-party', 'cancel', 'deploy', 'extract', 'retreat']),
+	mission: MissionRunStateV10Schema,
+	heroIds: z.array(z.string().uuid()).max(7),
+	completedObjectiveIds: z.array(z.string()).max(20),
+	nextVersion: z.number().int().positive()
+}).strict();
+
+const MissionTransitionPayloadV15Schema = MissionTransitionPayloadV14Schema.extend({
+	combatProgressionOutcomes: z.array(CombatExperienceOutcomeV1Schema)
 }).strict();
 
 function reduceMissionEventInternal(
@@ -548,6 +784,127 @@ function reduceMissionEventInternal(
 		});
 	}
 	if (event.eventType === 'mission.round.resolved') {
+		if (state.schemaVersion === 26 || state.schemaVersion === 27) {
+			if (event.actorId !== state.master.masterId || event.gameTime !== state.simulatedAt) {
+				throw new ReplayIntegrityError(
+					'Current legacy mission round precondition failed',
+					event.sequence
+				);
+			}
+			const payload = (
+				state.schemaVersion === 27
+					? MissionLegacyAutomaticTurnResolvedPayloadV3Schema
+					: MissionLegacyAutomaticTurnResolvedPayloadV2Schema
+			).parse(event.payload);
+			if (payload.nextVersion !== state.version + 1) {
+				throw new ReplayIntegrityError(
+					'Current legacy mission round version diverged',
+					event.sequence
+				);
+			}
+			const expected = resolveMissionModeTurn(state, event.eventId);
+			const expectedCombatProgressionOutcomes =
+				state.schemaVersion === 27 &&
+				expected.mission.attempt !== null &&
+				!['preparing', 'deployed', 'resolving', 'extraction'].includes(
+					expected.mission.attempt.status
+				)
+					? buildCombatExperienceOutcomes(
+							{ ...state, mission: expected.mission } as Extract<
+								EngineGameState,
+								{ schemaVersion: 27 }
+							>,
+							event.eventId,
+							expected.mission.attempt.status === 'success'
+						)
+					: [];
+			if (
+				expected.entropyCursor !== event.seedCursor ||
+				hashCanonical(expected.choices) !== hashCanonical(payload.choices) ||
+				hashCanonical(expected.entropyDraws) !== hashCanonical(payload.entropyDraws) ||
+				hashCanonical(expected.round) !== hashCanonical(payload.round) ||
+				hashCanonical(expected.consequences) !== hashCanonical(payload.consequences) ||
+				hashCanonical(expected.mission) !== hashCanonical(payload.mission) ||
+				(state.schemaVersion === 27 &&
+					hashCanonical(expectedCombatProgressionOutcomes) !==
+						hashCanonical(
+							'combatProgressionOutcomes' in payload ? payload.combatProgressionOutcomes : []
+						))
+			) {
+				throw new ReplayIntegrityError(
+					'Current legacy mission round payload diverged',
+					event.sequence
+				);
+			}
+			const heroes = { ...expected.heroes };
+			for (const outcome of expectedCombatProgressionOutcomes) {
+				const hero = heroes[outcome.evidence.heroId];
+				if (!hero) throw new ReplayIntegrityError('Combat XP hero disappeared', event.sequence);
+				heroes[outcome.evidence.heroId] = {
+					...hero,
+					progression: outcome.progressionAfter,
+					maxHealth: outcome.maxHealthAfter,
+					health: outcome.healthAfter
+				} as (typeof heroes)[string];
+			}
+			return (
+				state.schemaVersion === 27 ? EngineGameStateV27Schema : EngineGameStateV26Schema
+			).parse({
+				...state,
+				version: payload.nextVersion,
+				eventCursor: event.sequence,
+				entropyCursor: event.seedCursor,
+				mission: payload.mission,
+				heroes,
+				items: expected.items,
+				society: expected.society,
+				master: expected.master,
+				status: expected.status
+			});
+		}
+		if (state.schemaVersion === 25) {
+			if (event.actorId !== state.master.masterId || event.gameTime !== state.simulatedAt) {
+				throw new ReplayIntegrityError(
+					'Legacy automatic mission round precondition failed',
+					event.sequence
+				);
+			}
+			const payload = MissionLegacyAutomaticTurnResolvedPayloadSchema.parse(event.payload);
+			if (payload.nextVersion !== state.version + 1) {
+				throw new ReplayIntegrityError(
+					'Legacy automatic mission round version diverged',
+					event.sequence
+				);
+			}
+			const expected = resolveMissionModeTurn(state, event.eventId);
+			if (hashCanonical(expected.choices) !== hashCanonical(payload.choices)) {
+				throw new ReplayIntegrityError('Legacy automatic policy evidence diverged', event.sequence);
+			}
+			if (
+				expected.entropyCursor !== event.seedCursor ||
+				hashCanonical(expected.entropyDraws) !== hashCanonical(payload.entropyDraws) ||
+				hashCanonical(expected.round) !== hashCanonical(payload.round) ||
+				hashCanonical(expected.consequences) !== hashCanonical(payload.consequences) ||
+				hashCanonical(expected.mission) !== hashCanonical(payload.mission)
+			) {
+				throw new ReplayIntegrityError(
+					'Legacy automatic mission round payload diverged',
+					event.sequence
+				);
+			}
+			return EngineGameStateV25Schema.parse({
+				...state,
+				version: payload.nextVersion,
+				eventCursor: event.sequence,
+				entropyCursor: event.seedCursor,
+				mission: payload.mission,
+				heroes: expected.heroes,
+				items: expected.items,
+				society: expected.society,
+				master: expected.master,
+				status: expected.status
+			});
+		}
 		if (state.schemaVersion === 23 || state.schemaVersion === 24) {
 			if (event.actorId !== state.master.masterId || event.gameTime !== state.simulatedAt) {
 				throw new ReplayIntegrityError(
@@ -898,6 +1255,195 @@ function reduceMissionEventInternal(
 			'mission.retreated'
 		].includes(event.eventType)
 	) {
+		if (state.schemaVersion === 26 || state.schemaVersion === 27) {
+			if (
+				event.actorId !== state.master.masterId ||
+				event.gameTime !== state.simulatedAt ||
+				event.eventType === 'mission.extraction.opened'
+			) {
+				throw new ReplayIntegrityError(
+					'Current mission transition precondition failed',
+					event.sequence
+				);
+			}
+			const payload = (
+				state.schemaVersion === 27
+					? MissionTransitionPayloadV15Schema
+					: MissionTransitionPayloadV14Schema
+			).parse(event.payload);
+			if (payload.nextVersion !== state.version + 1) {
+				throw new ReplayIntegrityError(
+					'Current mission transition version diverged',
+					event.sequence
+				);
+			}
+			const eventTypes = {
+				prepare: 'mission.preparation.started',
+				'revise-party': 'mission.party.revised',
+				cancel: 'mission.preparation.canceled',
+				deploy: 'mission.deployed',
+				extract: 'mission.extracted',
+				retreat: 'mission.retreated'
+			} as const;
+			if (eventTypes[payload.transition] !== event.eventType) {
+				throw new ReplayIntegrityError('Current mission event type diverged', event.sequence);
+			}
+			const expectedMission =
+				payload.transition === 'prepare'
+					? prepareMissionAttempt(
+							state,
+							event.commandId,
+							payload.heroIds,
+							payload.mission.binding.missionId,
+							payload.mission.attempt?.combatModeBinding
+						)
+					: payload.transition === 'revise-party'
+						? reviseMissionParty(state, payload.heroIds)
+						: payload.transition === 'cancel'
+							? cancelMissionPreparation(state)
+							: payload.transition === 'deploy'
+								? deployMissionAttempt(state).mission
+								: payload.transition === 'extract'
+									? completeMissionExtraction(state)
+									: retreatMissionAttempt(state, appendPortalCargoLosses);
+			const expectedCombatProgressionOutcomes =
+				state.schemaVersion === 27 &&
+				(payload.transition === 'extract' || payload.transition === 'retreat')
+					? buildCombatExperienceOutcomes(state, event.eventId, payload.transition === 'extract')
+					: [];
+			if (
+				hashCanonical(expectedMission) !== hashCanonical(payload.mission) ||
+				(state.schemaVersion === 27 &&
+					hashCanonical(expectedCombatProgressionOutcomes) !==
+						hashCanonical(
+							'combatProgressionOutcomes' in payload ? payload.combatProgressionOutcomes : []
+						))
+			) {
+				throw new ReplayIntegrityError(
+					'Current mission transition payload diverged',
+					event.sequence
+				);
+			}
+			if (payload.transition === 'deploy') {
+				const deployment = deployMissionAttempt(state);
+				if (
+					deployment.entropyCursor !== event.seedCursor ||
+					hashCanonical(deployment.entropyDraws) !== hashCanonical(payload.entropyDraws)
+				) {
+					throw new ReplayIntegrityError(
+						'Current mission deployment entropy diverged',
+						event.sequence
+					);
+				}
+			} else if (event.seedCursor !== state.entropyCursor || payload.entropyDraws.length !== 0) {
+				throw new ReplayIntegrityError(
+					'Current mission transition entropy diverged',
+					event.sequence
+				);
+			}
+			const heroes = { ...state.heroes };
+			for (const outcome of expectedCombatProgressionOutcomes) {
+				const hero = heroes[outcome.evidence.heroId];
+				if (!hero) throw new ReplayIntegrityError('Combat XP hero disappeared', event.sequence);
+				heroes[outcome.evidence.heroId] = {
+					...hero,
+					progression: outcome.progressionAfter,
+					maxHealth: outcome.maxHealthAfter,
+					health: outcome.healthAfter
+				} as (typeof heroes)[string];
+			}
+			return (
+				state.schemaVersion === 27 ? EngineGameStateV27Schema : EngineGameStateV26Schema
+			).parse({
+				...state,
+				version: payload.nextVersion,
+				eventCursor: event.sequence,
+				entropyCursor: event.seedCursor,
+				mission: payload.mission,
+				heroes
+			});
+		}
+		if (state.schemaVersion === 25) {
+			if (
+				event.actorId !== state.master.masterId ||
+				event.gameTime !== state.simulatedAt ||
+				event.eventType === 'mission.extraction.opened'
+			) {
+				throw new ReplayIntegrityError(
+					'Legacy automatic mission transition precondition failed',
+					event.sequence
+				);
+			}
+			const payload = MissionTransitionPayloadV13Schema.parse(event.payload);
+			if (payload.nextVersion !== state.version + 1) {
+				throw new ReplayIntegrityError(
+					'Legacy automatic mission transition version diverged',
+					event.sequence
+				);
+			}
+			const eventTypes = {
+				prepare: 'mission.preparation.started',
+				'revise-party': 'mission.party.revised',
+				cancel: 'mission.preparation.canceled',
+				deploy: 'mission.deployed',
+				extract: 'mission.extracted',
+				retreat: 'mission.retreated'
+			} as const;
+			if (eventTypes[payload.transition] !== event.eventType) {
+				throw new ReplayIntegrityError(
+					'Legacy automatic mission event type diverged',
+					event.sequence
+				);
+			}
+			const expectedMission =
+				payload.transition === 'prepare'
+					? prepareMissionAttempt(
+							state,
+							event.commandId,
+							payload.heroIds,
+							payload.mission.binding.missionId,
+							payload.mission.attempt?.combatModeBinding
+						)
+					: payload.transition === 'revise-party'
+						? reviseMissionParty(state, payload.heroIds)
+						: payload.transition === 'cancel'
+							? cancelMissionPreparation(state)
+							: payload.transition === 'deploy'
+								? deployMissionAttempt(state).mission
+								: payload.transition === 'extract'
+									? completeMissionExtraction(state)
+									: retreatMissionAttempt(state, appendPortalCargoLosses);
+			if (hashCanonical(expectedMission) !== hashCanonical(payload.mission)) {
+				throw new ReplayIntegrityError(
+					'Legacy automatic mission transition payload diverged',
+					event.sequence
+				);
+			}
+			if (payload.transition === 'deploy') {
+				const deployment = deployMissionAttempt(state);
+				if (
+					deployment.entropyCursor !== event.seedCursor ||
+					hashCanonical(deployment.entropyDraws) !== hashCanonical(payload.entropyDraws)
+				) {
+					throw new ReplayIntegrityError(
+						'Legacy automatic mission deployment entropy diverged',
+						event.sequence
+					);
+				}
+			} else if (event.seedCursor !== state.entropyCursor || payload.entropyDraws.length !== 0) {
+				throw new ReplayIntegrityError(
+					'Legacy automatic mission transition entropy diverged',
+					event.sequence
+				);
+			}
+			return EngineGameStateV25Schema.parse({
+				...state,
+				version: payload.nextVersion,
+				eventCursor: event.sequence,
+				entropyCursor: event.seedCursor,
+				mission: payload.mission
+			});
+		}
 		if (state.schemaVersion === 24) {
 			if (
 				event.actorId !== state.master.masterId ||
@@ -1710,7 +2256,6 @@ export const MISSION_EVENT_TYPES = [
 	'master.fallback.changed',
 	'master.safety.stopped',
 	'master.decision.opened',
-	'mission.round.resolved',
 	'mission.extraction.opened'
 ] as const;
 

@@ -1,4 +1,5 @@
 import {
+	AttributeGrowthReceiptSchema,
 	AuthoritativeEventSchema,
 	CurrentRoutineSchema,
 	FirstEmberStateSchema,
@@ -11,9 +12,15 @@ import {
 	type EntropyDraw,
 	type RewardDelta
 } from '@summonlab/contracts';
+import {
+	COMBAT_RULES_V1,
+	PROGRESSION_RULES_V1,
+	PROGRESSION_RULES_V1_BINDING
+} from '@summonlab/content';
 import { z } from 'zod';
 
 import { settlementForState, verifiedEquipmentDefinition } from '../../core/content-bindings.js';
+import { intrinsicAttributes } from '../../core/capability.js';
 import { emptyMetadata, eventBase } from '../../core/event-metadata.js';
 import type { EngineCommandHandler, EngineGameStateModern } from '../../core/types.js';
 import {
@@ -25,6 +32,7 @@ import {
 import { createEntropyCursor, drawInteger } from '../../entropy.js';
 import { IllegalActionError, StaleStateVersionError } from '../../errors.js';
 import { deterministicUuid } from '../../hash.js';
+import { applyAttributeGrowthClaim } from '../progression/attributes.js';
 import { addGameMinutes, addGameSeconds, compareGameTime, gameMinutesBetween } from '../../time.js';
 import { settlementLegalActions } from './actions.js';
 import {
@@ -36,6 +44,8 @@ import {
 } from './navigation.js';
 import {
 	ActivityOutcomeSchema,
+	ActivityOutcomeV25Schema,
+	ActivityOutcomeV27Schema,
 	activityDuration,
 	buildActivityOutcome,
 	buildRoutineOutcome,
@@ -86,7 +96,8 @@ export const SETTLEMENT_COMMAND_TYPES = [
 	'hero.equip.item',
 	'simulation.advance',
 	'simulation.sync.clock',
-	'simulation.apply.damage'
+	'simulation.apply.damage',
+	'hero.allocate.attribute'
 ] as const;
 
 export type SettlementCommand = Extract<
@@ -122,6 +133,8 @@ export function requiredSettlementAction(command: SettlementCommand): string {
 	if (command.commandType === 'hero.start.activity') return `hero.activity.${command.activity}`;
 	if (command.commandType === 'hero.start.forging') return `hero.forge.${command.definitionId}`;
 	if (command.commandType === 'hero.equip.item') return `hero.equip.${command.itemId}`;
+	if (command.commandType === 'hero.allocate.attribute')
+		return `hero.allocate.attribute.${command.attribute}`;
 	if (command.commandType === 'simulation.advance') return 'simulation.advance';
 	if (command.commandType === 'simulation.sync.clock') return 'simulation.sync.clock';
 	return command.targetId === command.actorId
@@ -328,7 +341,7 @@ function assertSettlementCommandLegal(
 	}
 	if (command.commandType === 'hero.start.forging') {
 		if (
-			state.schemaVersion !== 24 ||
+			(state.schemaVersion !== 24 && state.schemaVersion !== 27) ||
 			!canStartStandardForging(
 				state,
 				command.actorId,
@@ -416,7 +429,12 @@ function assertSettlementCommandLegal(
 		}
 	}
 	if (command.commandType === 'hero.equip.item') {
-		if (state.schemaVersion === 24) {
+		if (
+			state.schemaVersion === 24 ||
+			state.schemaVersion === 25 ||
+			state.schemaVersion === 26 ||
+			state.schemaVersion === 27
+		) {
 			try {
 				equipEquipmentItem(state, {
 					heroId: command.actorId,
@@ -427,6 +445,32 @@ function assertSettlementCommandLegal(
 				throw new IllegalActionError(required, actionIds);
 			}
 		} else if (command.targetSlot !== undefined) {
+			throw new IllegalActionError(required, actionIds);
+		}
+	}
+	if (command.commandType === 'hero.allocate.attribute') {
+		if (state.schemaVersion === 27) {
+			const hero = state.heroes[command.actorId];
+			const amount = command.amount ?? 1;
+			if (
+				!hero ||
+				hero.lifeState !== 'active' ||
+				hero.progression.unallocatedAttributePoints < amount
+			) {
+				throw new IllegalActionError(required, actionIds);
+			}
+			return;
+		}
+		if (
+			(state.schemaVersion !== 25 && state.schemaVersion !== 26) ||
+			state.heroes[command.actorId]?.lifeState !== 'active' ||
+			state.heroes[command.actorId]!.progression.unspentAttributePoints < 1 ||
+			intrinsicAttributes(
+				state.heroes[command.actorId]!.capabilityProfile,
+				state.heroes[command.actorId]!.progression.attributeGrowthReceipts,
+				COMBAT_RULES_V1
+			)[command.attribute] >= COMBAT_RULES_V1.attributes.intrinsicMaximum
+		) {
 			throw new IllegalActionError(required, actionIds);
 		}
 	}
@@ -903,6 +947,15 @@ function buildModernSettlementEvent(
 	}
 	if (command.commandType === 'hero.start.travel') {
 		if (!hasNavigationState(state)) throw new IllegalActionError(command.commandType);
+		if (
+			command.requestContext !== undefined &&
+			(state.schemaVersion !== 25 ||
+				command.targetNodeId !== 'gate-dais' ||
+				command.source.source !== 'system' ||
+				command.source.timing !== null)
+		) {
+			throw new IllegalActionError(command.commandType);
+		}
 		const hero = state.heroes[command.actorId];
 		if (!hero) throw new IllegalActionError(command.commandType);
 		const definition = settlementForState(state);
@@ -935,6 +988,7 @@ function buildModernSettlementEvent(
 			payload: {
 				heroId: command.actorId,
 				travelId,
+				...(command.requestContext === undefined ? {} : { requestContext: command.requestContext }),
 				fromNodeId: route.fromNodeId,
 				toNodeId: route.toNodeId,
 				destinationZone,
@@ -944,7 +998,9 @@ function buildModernSettlementEvent(
 				scheduledEvent,
 				nextVersion: state.version + 1,
 				...emptyMetadata(
-					`The hero began a ${route.totalTravelGameSeconds}-second route from ${route.fromNodeId} to ${route.toNodeId}; arrival is due at ${dueGameTime}.`
+					command.requestContext === 'mission-readiness'
+						? `At the Master's request, the hero began the verified ${route.totalTravelGameSeconds}-second route from ${route.fromNodeId} to the Tower Threshold; arrival is due at ${dueGameTime}.`
+						: `The hero began a ${route.totalTravelGameSeconds}-second route from ${route.fromNodeId} to ${route.toNodeId}; arrival is due at ${dueGameTime}.`
 				)
 			}
 		});
@@ -1049,7 +1105,8 @@ function buildModernSettlementEvent(
 		});
 	}
 	if (command.commandType === 'hero.start.forging') {
-		if (state.schemaVersion !== 24) throw new IllegalActionError(command.commandType);
+		if (state.schemaVersion !== 24 && state.schemaVersion !== 27)
+			throw new IllegalActionError(command.commandType);
 		const base = eventBase(state, command, 'hero.forging.started');
 		const start = buildStandardForgingStart({
 			state,
@@ -1091,11 +1148,14 @@ function buildModernSettlementEvent(
 		const nextItem = state.items[command.itemId];
 		const base = eventBase(state, command, 'hero.item.equipped');
 		const targetSlot =
-			state.schemaVersion === 24 && nextItem && 'definitionId' in nextItem
+			(state.schemaVersion === 24 || state.schemaVersion === 25 || state.schemaVersion === 26) &&
+			nextItem &&
+			'definitionId' in nextItem
 				? (command.targetSlot ?? verifiedEquipmentDefinition(nextItem.definitionId).slot)
 				: undefined;
 		const previousItemId =
-			state.schemaVersion === 24 && targetSlot
+			(state.schemaVersion === 24 || state.schemaVersion === 25 || state.schemaVersion === 26) &&
+			targetSlot
 				? state.heroes[command.actorId]!.equipment[
 						targetSlot === 'main-hand'
 							? 'mainHand'
@@ -1130,6 +1190,82 @@ function buildModernSettlementEvent(
 			}
 		});
 	}
+	if (command.commandType === 'hero.allocate.attribute') {
+		if (state.schemaVersion === 27) {
+			const hero = state.heroes[command.actorId];
+			if (!hero) throw new IllegalActionError(command.commandType);
+			const base = eventBase(state, command, 'hero.attribute.growth.applied');
+			const claim = {
+				claimId: deterministicUuid(`${base.eventId}:attribute-growth-claim`),
+				heroId: hero.heroId,
+				sourceEventId: base.eventId,
+				attribute: command.attribute,
+				amount: command.amount ?? 1,
+				sourceKind: 'allocation' as const
+			};
+			const outcome = applyAttributeGrowthClaim({
+				hero,
+				claim,
+				rules: PROGRESSION_RULES_V1,
+				rulesBinding: PROGRESSION_RULES_V1_BINDING,
+				occurredAt: state.simulatedAt
+			});
+			return AuthoritativeEventSchema.parse({
+				...base,
+				seedCursor: state.entropyCursor,
+				payload: {
+					heroId: hero.heroId,
+					claim,
+					receipt: outcome.receipt,
+					progressionBefore: hero.progression,
+					progressionAfter: outcome.hero.progression,
+					healthAfter: outcome.hero.health,
+					maximumHealthAfter: outcome.hero.maxHealth,
+					manaAfter: outcome.hero.mana,
+					maximumManaAfter: outcome.hero.maxMana,
+					nextVersion: state.version + 1,
+					...emptyMetadata(
+						`The hero permanently increased intrinsic ${command.attribute} by ${claim.amount} point${claim.amount === 1 ? '' : 's'}.`
+					)
+				}
+			});
+		}
+		if (state.schemaVersion !== 25 && state.schemaVersion !== 26) {
+			throw new IllegalActionError(command.commandType);
+		}
+		const hero = state.heroes[command.actorId];
+		if (!hero) throw new IllegalActionError(command.commandType);
+		const base = eventBase(state, command, 'hero.attribute.allocated');
+		const beforeIntrinsicValue = intrinsicAttributes(
+			hero.capabilityProfile,
+			hero.progression.attributeGrowthReceipts,
+			COMBAT_RULES_V1
+		)[command.attribute];
+		const attributeGrowthReceipt = AttributeGrowthReceiptSchema.parse({
+			receiptId: deterministicUuid(`${base.eventId}:attribute-growth`),
+			heroId: hero.heroId,
+			attribute: command.attribute,
+			beforeIntrinsicValue,
+			afterIntrinsicValue: beforeIntrinsicValue + 1,
+			spentPoints: 1,
+			sourceLevel: hero.progression.level,
+			rulesVersion: COMBAT_RULES_V1.rulesVersion,
+			commandId: command.commandId,
+			gameTime: state.simulatedAt
+		});
+		return AuthoritativeEventSchema.parse({
+			...base,
+			seedCursor: state.entropyCursor,
+			payload: {
+				heroId: hero.heroId,
+				attributeGrowthReceipt,
+				nextVersion: state.version + 1,
+				...emptyMetadata(
+					`The hero permanently increased intrinsic ${command.attribute} by one point.`
+				)
+			}
+		});
+	}
 	if (command.commandType === 'simulation.advance') {
 		const base = eventBase(state, command, 'simulation.advanced');
 		const dueHeroes = Object.values(state.heroes)
@@ -1146,7 +1282,11 @@ function buildModernSettlementEvent(
 				return time === 0 ? left.heroId.localeCompare(right.heroId) : time;
 			});
 		let entropy = createEntropyCursor(state.seed, state.entropyCursor);
-		const outcomes: z.infer<typeof ActivityOutcomeSchema>[] = [];
+		const outcomes: (
+			| z.infer<typeof ActivityOutcomeSchema>
+			| z.infer<typeof ActivityOutcomeV25Schema>
+			| z.infer<typeof ActivityOutcomeV27Schema>
+		)[] = [];
 		const draws: EntropyDraw[] = [];
 		for (const hero of dueHeroes) {
 			const result = buildActivityOutcome(state, hero.heroId, base.eventId, entropy);
@@ -1209,7 +1349,7 @@ function buildModernSettlementEvent(
 				});
 			const routineOutcomes = dueRoutines.map((hero) => buildRoutineOutcome(state, hero.heroId));
 			const dueForgings =
-				state.schemaVersion === 24
+				state.schemaVersion === 24 || state.schemaVersion === 27
 					? Object.values(state.heroes)
 							.filter(
 								(hero) =>
@@ -1225,8 +1365,8 @@ function buildModernSettlementEvent(
 							})
 					: [];
 			const forgingOutcomes =
-				state.schemaVersion === 24
-					? dueForgings.map((hero) => buildForgingOutcome(state, hero.heroId))
+				state.schemaVersion === 24 || state.schemaVersion === 27
+					? dueForgings.map((hero) => buildForgingOutcome(state, hero.heroId, base.eventId))
 					: [];
 			const dueByScheduleId = new Map<string, string>();
 			for (const hero of dueHeroes)
@@ -1306,7 +1446,7 @@ function buildModernSettlementEvent(
 					activityOutcomes: outcomes,
 					travelOutcomes,
 					routineOutcomes,
-					...(state.schemaVersion === 24 ? { forgingOutcomes } : {}),
+					...(state.schemaVersion === 24 || state.schemaVersion === 27 ? { forgingOutcomes } : {}),
 					expiredDirectiveIds: expiredDirectives.map((directive) => directive.directiveId),
 					nextVersion: state.version + 1,
 					...emptyMetadata(

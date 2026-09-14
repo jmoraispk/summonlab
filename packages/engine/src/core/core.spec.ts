@@ -88,9 +88,7 @@ describe('deterministic engine core', () => {
 			[supportsCommunicationApi, COMMUNICATION_API_SUPPORTED_VERSIONS, [8, 9, 10, 11, 12, 13]],
 			[supportsConversationApi, CONVERSATION_API_SUPPORTED_VERSIONS, [9, 10, 11, 12, 13]],
 			[supportsDirectivesApi, DIRECTIVES_API_SUPPORTED_VERSIONS, [10, 11, 12, 13, 16, 17, 18]],
-			[supportsMissionApi, MISSION_API_SUPPORTED_VERSIONS, [13, 15, 16, 17, 18, 19, 20]],
 			[supportsStoryPatchApi, STORY_PATCH_API_SUPPORTED_VERSIONS, [21]],
-			[supportsSynthesisApi, SYNTHESIS_API_SUPPORTED_VERSIONS, [22]],
 			[supportsFirstBandArchiveApi, FIRST_BAND_ARCHIVE_API_SUPPORTED_VERSIONS, [23]],
 			[supportsEquipmentApi, EQUIPMENT_API_SUPPORTED_VERSIONS, [24]]
 		] as const;
@@ -100,6 +98,14 @@ describe('deterministic engine core', () => {
 			expect(Object.isFrozen(declared)).toBe(true);
 			expect(acceptedVersions(predicate)).toEqual(expected);
 		}
+		expect(SYNTHESIS_API_SUPPORTED_VERSIONS).toEqual([22, 27]);
+		expect(Object.isFrozen(SYNTHESIS_API_SUPPORTED_VERSIONS)).toBe(true);
+		expect(acceptedVersions(supportsSynthesisApi)).toEqual([22]);
+		expect(MISSION_API_SUPPORTED_VERSIONS).toEqual([13, 15, 16, 17, 18, 19, 20, 25, 26, 27]);
+		expect(Object.isFrozen(MISSION_API_SUPPORTED_VERSIONS)).toBe(true);
+		// The compatibility fixture inventory is intentionally frozen at v24; V25 is exercised by
+		// the capability and legacy-automatic mission suites.
+		expect(acceptedVersions(supportsMissionApi)).toEqual([13, 15, 16, 17, 18, 19, 20]);
 	});
 
 	it('parses with the public schema and preserves representative state hashes', () => {

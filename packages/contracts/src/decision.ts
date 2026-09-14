@@ -27,6 +27,7 @@ import {
 	RelationshipDimensionsSchema
 } from './social.js';
 import { EntityIdSchema, IsoDateTimeSchema, StateHashSchema } from './shared.js';
+import { ActorDecisionViewSchema, CombatActionIntentSchema } from './readiness-combat.js';
 
 const DecisionLocationSchema = z.enum([...EngineZoneSchema.options, 'tower', 'portal-world']);
 import { PolicyModeSchema } from './run.js';
@@ -43,6 +44,7 @@ export const MODEL_POLICY_VERSION = 'model-policy-v1';
 export const HERO_MODEL_PROMPT_VERSION = 'hero-model-prompt-v1';
 export const LEGACY_DECISION_JOB_VERSION = 'decision-job-v1';
 export const DECISION_JOB_VERSION = 'decision-job-v2';
+export const COMBAT_DECISION_JOB_VERSION = 'decision-job-v3';
 export const DECISION_PROVIDER_REQUEST_VERSION = 'decision-provider-request-v1';
 
 export const HeroDecisionKindSchema = z.enum([
@@ -545,6 +547,44 @@ export const DecisionJobStatusSchema = z.enum([
 	'failed'
 ]);
 
+export const DecisionJobWindowBindingSchema = z
+	.object({
+		windowId: EntityIdSchema,
+		actorViewHash: StateHashSchema,
+		attemptId: EntityIdSchema,
+		tick: z.number().int().nonnegative()
+	})
+	.strict();
+
+export const CombatDecisionJobResultBindingSchema = z
+	.object({
+		heroId: EntityIdSchema,
+		windowId: EntityIdSchema,
+		actorViewHash: StateHashSchema,
+		attemptId: EntityIdSchema,
+		tick: z.number().int().nonnegative(),
+		snapshotHash: StateHashSchema,
+		legalActionHash: StateHashSchema,
+		result: CombatActionIntentSchema
+	})
+	.strict()
+	.superRefine((binding, context) => {
+		if (
+			binding.result.actorId !== binding.heroId ||
+			binding.result.windowId !== binding.windowId ||
+			binding.result.actorViewHash !== binding.actorViewHash ||
+			binding.result.attemptId !== binding.attemptId ||
+			binding.result.tick !== binding.tick ||
+			binding.result.snapshotHash !== binding.snapshotHash ||
+			binding.result.legalActionSetHash !== binding.legalActionHash
+		) {
+			context.addIssue({
+				code: 'custom',
+				message: 'Combat decision result is bound to another window or actor view'
+			});
+		}
+	});
+
 export const DecisionAttemptKindSchema = z.enum(['primary', 'retry', 'fallback']);
 
 export const DecisionJobFailureSchema = z
@@ -719,6 +759,77 @@ export const DecisionJobRecordV2Schema = z
 		}
 	});
 
+export const CombatDecisionJobRecordV3Schema = z
+	.object({
+		schemaVersion: z.literal(COMBAT_DECISION_JOB_VERSION),
+		decisionJobId: EntityIdSchema,
+		runId: EntityIdSchema,
+		heroId: EntityIdSchema,
+		decisionKind: z.literal('combat-action'),
+		windowId: EntityIdSchema,
+		actorViewHash: StateHashSchema,
+		attemptId: EntityIdSchema,
+		tick: z.number().int().nonnegative(),
+		expectedRunVersion: z.number().int().nonnegative(),
+		expectedEventCursor: z.number().int().positive(),
+		snapshotHash: StateHashSchema,
+		legalActionHash: StateHashSchema,
+		status: DecisionJobStatusSchema,
+		requestedPolicy: PolicyModeSchema,
+		nextAttemptKind: DecisionAttemptKindSchema,
+		activePolicy: PolicyModeSchema.nullable(),
+		resolution: z.enum(['requested', 'fallback']).nullable(),
+		view: ActorDecisionViewSchema,
+		result: CombatActionIntentSchema.nullable(),
+		deterministicFallback: CombatActionIntentSchema,
+		failure: DecisionJobFailureSchema.nullable(),
+		attemptCount: z.number().int().nonnegative().max(16),
+		providerAttemptCount: z.number().int().nonnegative().max(4),
+		maxProviderAttempts: z.number().int().min(1).max(4),
+		leaseExpiresAt: IsoDateTimeSchema.nullable(),
+		createdAt: IsoDateTimeSchema,
+		updatedAt: IsoDateTimeSchema
+	})
+	.strict()
+	.superRefine((job, context) => {
+		if (
+			job.view.actorId !== job.heroId ||
+			job.view.windowId !== job.windowId ||
+			job.view.actorViewHash !== job.actorViewHash ||
+			job.view.snapshotHash !== job.snapshotHash ||
+			job.view.legalActionSetHash !== job.legalActionHash
+		) {
+			context.addIssue({ code: 'custom', message: 'Combat decision view binding is inconsistent' });
+		}
+		for (const result of [job.result, job.deterministicFallback]) {
+			if (result === null) continue;
+			const binding = CombatDecisionJobResultBindingSchema.safeParse({
+				heroId: job.heroId,
+				windowId: job.windowId,
+				actorViewHash: job.actorViewHash,
+				attemptId: job.attemptId,
+				tick: job.tick,
+				snapshotHash: job.snapshotHash,
+				legalActionHash: job.legalActionHash,
+				result
+			});
+			if (!binding.success) {
+				context.addIssue({
+					code: 'custom',
+					message: 'Combat decision result binding is inconsistent'
+				});
+			}
+		}
+		if ((job.status === 'in_progress') !== (job.leaseExpiresAt !== null)) {
+			context.addIssue({ code: 'custom', message: 'Combat decision lease is inconsistent' });
+		}
+		if (job.status === 'completed' && job.result === null) {
+			context.addIssue({ code: 'custom', message: 'Completed combat decision has no result' });
+		}
+	});
+
+export const CombatDecisionJobRecordSchema = CombatDecisionJobRecordV3Schema;
+
 export const DecisionJobRecordSchema = z.discriminatedUnion('schemaVersion', [
 	DecisionJobRecordV1Schema,
 	DecisionJobRecordV2Schema
@@ -783,6 +894,8 @@ export type DecisionJobFailure = z.infer<typeof DecisionJobFailureSchema>;
 export type DecisionJobRecord = z.infer<typeof DecisionJobRecordSchema>;
 export type DecisionJobStatus = z.infer<typeof DecisionJobStatusSchema>;
 export type DecisionJobTransition = z.infer<typeof DecisionJobTransitionSchema>;
+export type CombatDecisionJobRecordV3 = z.infer<typeof CombatDecisionJobRecordV3Schema>;
+export type CombatDecisionJobRecord = z.infer<typeof CombatDecisionJobRecordSchema>;
 export type PolicyActionScore = z.infer<typeof PolicyActionScoreSchema>;
 export type PolicyScoreContribution = z.infer<typeof PolicyScoreContributionSchema>;
 export type RetrievedMemory = z.infer<typeof RetrievedMemorySchema>;

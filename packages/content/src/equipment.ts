@@ -1,9 +1,14 @@
 import {
+	CombatEquipmentProfileSchema,
+	CombatEquipmentProfileCatalogSchema,
 	EquipmentDefinitionCatalogSchema,
 	EquipmentStandardRecipeDescriptorSchema,
 	type EquipmentArmourSlot,
 	type EquipmentClass,
+	type CombatEquipmentProfile,
+	type CombatEquipmentProfileCatalog,
 	type EquipmentDefinition,
+	type EquipmentFamilyTag,
 	type EquipmentHandedness,
 	type EquipmentMaterialFamily,
 	type EquipmentMaterialId,
@@ -18,6 +23,14 @@ type MaterialDefinition = Readonly<{
 	family: EquipmentMaterialFamily;
 	rank: EquipmentRank;
 }>;
+
+function deepFreeze<T>(value: T): T {
+	if (value !== null && typeof value === 'object' && !Object.isFrozen(value)) {
+		for (const child of Object.values(value)) deepFreeze(child);
+		Object.freeze(value);
+	}
+	return value;
+}
 
 export const EQUIPMENT_MATERIALS = Object.freeze([
 	{ materialId: 'bronze', displayName: 'Bronze', family: 'metal', rank: 'F' },
@@ -223,6 +236,139 @@ export const EQUIPMENT_DEFINITIONS_BY_ID = Object.freeze(
 		EQUIPMENT_DEFINITIONS.map((definition) => [definition.definitionId, definition])
 	) as Readonly<Record<string, Readonly<EquipmentDefinition>>>
 );
+
+const EQUIPMENT_LOAD_BY_CLASS = Object.freeze({
+	sword: 12,
+	dagger: 6,
+	spear: 16,
+	bow: 14,
+	axe: 20,
+	mace: 20,
+	shield: 16,
+	staff: 14,
+	'heavy-armour': 0,
+	'light-armour': 0,
+	robes: 0
+} satisfies Readonly<Record<EquipmentClass, number>>);
+
+const ARMOUR_LOAD_BY_CLASS_AND_SLOT = Object.freeze({
+	'heavy-armour': Object.freeze({ head: 12, torso: 28, legs: 22, boots: 10 }),
+	'light-armour': Object.freeze({ head: 6, torso: 14, legs: 11, boots: 5 }),
+	robes: Object.freeze({ head: 2, torso: 4, legs: 3, boots: 2 })
+} as const);
+
+function combatFamilyTags(definition: EquipmentDefinition): readonly EquipmentFamilyTag[] {
+	if (definition.equipmentClass === 'sword' || definition.equipmentClass === 'dagger') {
+		return ['one-handed-blade'];
+	}
+	if (definition.equipmentClass === 'bow') return ['bow'];
+	if (definition.equipmentClass === 'staff') return ['staff-focus'];
+	if (definition.equipmentClass === 'shield') return ['shield'];
+	return [];
+}
+
+function equipmentLoad(definition: EquipmentDefinition): number {
+	if (
+		definition.equipmentClass === 'heavy-armour' ||
+		definition.equipmentClass === 'light-armour' ||
+		definition.equipmentClass === 'robes'
+	) {
+		return ARMOUR_LOAD_BY_CLASS_AND_SLOT[definition.equipmentClass][
+			definition.slot as EquipmentArmourSlot
+		];
+	}
+	return EQUIPMENT_LOAD_BY_CLASS[definition.equipmentClass];
+}
+
+function createCombatEquipmentProfile(
+	definition: EquipmentDefinition
+): Readonly<CombatEquipmentProfile> {
+	const heavyArmour = definition.equipmentClass === 'heavy-armour';
+	const resistanceGrants = heavyArmour
+		? [
+				{ tag: 'cut' as const, basisPoints: 800, capBasisPoints: 1_500 },
+				{ tag: 'impact' as const, basisPoints: 600, capBasisPoints: 1_200 }
+			]
+		: definition.equipmentClass === 'light-armour'
+			? [{ tag: 'pierce' as const, basisPoints: 400, capBasisPoints: 1_000 }]
+			: definition.equipmentClass === 'robes'
+				? [{ tag: 'arcane' as const, basisPoints: 300, capBasisPoints: 900 }]
+				: [];
+	return deepFreeze(
+		CombatEquipmentProfileSchema.parse({
+			schemaVersion: 'combat-equipment-profile-v1',
+			definitionId: definition.definitionId,
+			familyTags: combatFamilyTags(definition),
+			load: equipmentLoad(definition),
+			requirements: {
+				minimumStrength: heavyArmour ? 45 : definition.weightClass === 'heavy' ? 35 : null,
+				proficiencyTags: heavyArmour ? ['armour-training'] : []
+			},
+			resistanceGrants
+		})
+	);
+}
+
+export const COMBAT_EQUIPMENT_PROFILE_CATALOG = deepFreeze(
+	CombatEquipmentProfileCatalogSchema.parse({
+		schemaVersion: 'combat-equipment-profile-catalog-v1',
+		contentVersion: 'combat-equipment-profiles-v1',
+		contentHash: '38472191a697de908ae96296cf33939d72d985587d029c72c17df108799c97dd',
+		profiles: EQUIPMENT_DEFINITIONS.map(createCombatEquipmentProfile)
+	})
+);
+
+export const COMBAT_EQUIPMENT_PROFILES = COMBAT_EQUIPMENT_PROFILE_CATALOG.profiles;
+
+export const COMBAT_EQUIPMENT_PROFILES_BY_ID = Object.freeze(
+	Object.fromEntries(
+		COMBAT_EQUIPMENT_PROFILES.map((profile) => [profile.definitionId, profile])
+	) as Readonly<Record<string, Readonly<CombatEquipmentProfile>>>
+);
+
+function canonicalJson(value: unknown): string {
+	if (value === null || typeof value !== 'object') return JSON.stringify(value);
+	if (Array.isArray(value)) return `[${value.map((item) => canonicalJson(item)).join(',')}]`;
+	const object = value as Record<string, unknown>;
+	return `{${Object.keys(object)
+		.sort((left, right) => left.localeCompare(right))
+		.map((key) => `${JSON.stringify(key)}:${canonicalJson(object[key])}`)
+		.join(',')}}`;
+}
+
+export async function calculateCombatEquipmentProfileContentHash(
+	catalog: CombatEquipmentProfileCatalog
+): Promise<string> {
+	const payload: Partial<CombatEquipmentProfileCatalog> = { ...catalog };
+	delete payload.contentHash;
+	const digest = await globalThis.crypto.subtle.digest(
+		'SHA-256',
+		new TextEncoder().encode(canonicalJson(payload))
+	);
+	return [...new Uint8Array(digest)].map((byte) => byte.toString(16).padStart(2, '0')).join('');
+}
+
+export async function verifyCombatEquipmentProfileCatalog(
+	catalogInput: CombatEquipmentProfileCatalog
+): Promise<CombatEquipmentProfileCatalog> {
+	const catalog = CombatEquipmentProfileCatalogSchema.parse(catalogInput);
+	const calculated = await calculateCombatEquipmentProfileContentHash(catalog);
+	if (calculated !== catalog.contentHash) {
+		throw new Error(
+			`Combat equipment profile content hash drifted: expected ${catalog.contentHash}, calculated ${calculated}`
+		);
+	}
+	return catalog;
+}
+
+let verifiedCombatEquipmentCatalog: Promise<CombatEquipmentProfileCatalog> | undefined;
+
+export function loadCombatEquipmentProfileCatalog(): Promise<CombatEquipmentProfileCatalog> {
+	verifiedCombatEquipmentCatalog ??= verifyCombatEquipmentProfileCatalog(
+		COMBAT_EQUIPMENT_PROFILE_CATALOG
+	);
+	return verifiedCombatEquipmentCatalog;
+}
 
 export const EQUIPMENT_DEFINITION_CATALOG = Object.freeze(
 	EquipmentDefinitionCatalogSchema.parse({

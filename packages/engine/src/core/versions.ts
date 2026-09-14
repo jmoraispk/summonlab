@@ -12,6 +12,9 @@ export const STORY_PATCH_ENGINE_CONTENT_VERSION = 'engine-v21';
 export const SYNTHESIS_ENGINE_CONTENT_VERSION = 'engine-v22';
 export const FIRST_BAND_ARCHIVE_ENGINE_CONTENT_VERSION = 'engine-v23';
 export const EQUIPMENT_ENGINE_CONTENT_VERSION = 'engine-v24';
+export const CAPABILITY_ENGINE_CONTENT_VERSION = 'engine-v25';
+export const READINESS_COMBAT_ENGINE_CONTENT_VERSION = 'engine-v26';
+export const PROGRESSION_ENGINE_CONTENT_VERSION = 'engine-v27';
 export const MISSION_COMBAT_ENGINE_CONTENT_VERSION = 'engine-v13';
 export const MISSION_TURN_ENGINE_CONTENT_VERSION = 'engine-v12';
 export const MISSION_ENGINE_CONTENT_VERSION = 'engine-v11';
@@ -49,33 +52,35 @@ export const DEFAULT_ACTIVE_SYSTEM_IDS = Object.freeze([
 ] as const);
 
 const NAVIGATION_VERSIONS = Object.freeze([
-	3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24
+	3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 27
 ] as const);
 const FACILITY_VERSIONS = Object.freeze([
-	4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24
+	4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 27
 ] as const);
 const ROUTINE_VERSIONS = Object.freeze([
-	5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24
+	5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 27
 ] as const);
 const FIRST_EMBER_VERSIONS = Object.freeze([
-	6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24
+	6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 27
 ] as const);
 const SOCIETY_VERSIONS = Object.freeze([
-	7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24
+	7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 27
 ] as const);
 const COMMUNICATION_VERSIONS = Object.freeze([
-	8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24
+	8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 27
 ] as const);
 const CONVERSATION_VERSIONS = Object.freeze([
-	9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24
+	9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 27
 ] as const);
 const DIRECTIVE_VERSIONS = Object.freeze([
-	10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24
+	10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 27
 ] as const);
 const MISSION_VERSIONS = Object.freeze([
-	11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24
+	11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 27
 ] as const);
-const MISSION_TURN_VERSIONS = Object.freeze([12, 13, 14, 15, 16, 17, 18, 19, 20, 23, 24] as const);
+const MISSION_TURN_VERSIONS = Object.freeze([
+	12, 13, 14, 15, 16, 17, 18, 19, 20, 23, 24, 25
+] as const);
 
 export const CATCH_UP_SUPPORTED_VERSIONS = Object.freeze([
 	5, 6, 7, 8, 9, 10, 11, 12, 13, 24
@@ -85,9 +90,11 @@ export const CONVERSATION_API_SUPPORTED_VERSIONS = Object.freeze([9, 10, 11, 12,
 export const DIRECTIVES_API_SUPPORTED_VERSIONS = Object.freeze([
 	10, 11, 12, 13, 16, 17, 18
 ] as const);
-export const MISSION_API_SUPPORTED_VERSIONS = Object.freeze([13, 15, 16, 17, 18, 19, 20] as const);
+export const MISSION_API_SUPPORTED_VERSIONS = Object.freeze([
+	13, 15, 16, 17, 18, 19, 20, 25, 26, 27
+] as const);
 export const STORY_PATCH_API_SUPPORTED_VERSIONS = Object.freeze([21] as const);
-export const SYNTHESIS_API_SUPPORTED_VERSIONS = Object.freeze([22] as const);
+export const SYNTHESIS_API_SUPPORTED_VERSIONS = Object.freeze([22, 27] as const);
 export const FIRST_BAND_ARCHIVE_API_SUPPORTED_VERSIONS = Object.freeze([23] as const);
 export const EQUIPMENT_API_SUPPORTED_VERSIONS = Object.freeze([24] as const);
 
@@ -237,4 +244,10 @@ export function supportsEquipmentApi(
 	state: EngineGameState
 ): state is Extract<EngineGameState, { schemaVersion: 24 }> {
 	return includesVersion(EQUIPMENT_API_SUPPORTED_VERSIONS, state);
+}
+
+export function supportsProgressionV2(
+	state: EngineGameState
+): state is Extract<EngineGameState, { schemaVersion: 27 }> {
+	return state.schemaVersion === 27;
 }

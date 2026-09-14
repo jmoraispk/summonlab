@@ -11,7 +11,7 @@ export type OfferMode = 'single' | 'batch';
 export type AffinityIcon = 'ember' | 'tide' | 'gale' | 'grove';
 export type AptitudeClass = 'martial' | 'magic' | 'crafting';
 
-export type AttributeName = 'Might' | 'Vitality' | 'Agility' | 'Dexterity' | 'Intellect' | 'Spirit';
+export type AttributeName = 'Strength' | 'Agility' | 'Vitality' | 'Magic';
 
 export type AttributeReadiness = {
 	name: AttributeName;
@@ -49,19 +49,15 @@ export type RevealDirectionFixture = {
 };
 
 const attributes = (
-	might: number,
-	vitality: number,
+	strength: number,
 	agility: number,
-	dexterity: number,
-	intellect: number,
-	spirit: number
+	vitality: number,
+	magic: number
 ): readonly AttributeReadiness[] => [
-	{ name: 'Might', value: might },
-	{ name: 'Vitality', value: vitality },
+	{ name: 'Strength', value: strength },
 	{ name: 'Agility', value: agility },
-	{ name: 'Dexterity', value: dexterity },
-	{ name: 'Intellect', value: intellect },
-	{ name: 'Spirit', value: spirit }
+	{ name: 'Vitality', value: vitality },
+	{ name: 'Magic', value: magic }
 ];
 
 export const heroes: readonly HeroFixture[] = [
@@ -74,7 +70,7 @@ export const heroes: readonly HeroFixture[] = [
 		calling: 'Pathfinder',
 		stars: 1,
 		image: daraAnchor,
-		attributes: attributes(46, 52, 78, 72, 66, 57),
+		attributes: attributes(46, 78, 52, 57),
 		personality: {
 			traits: ['Observant', 'Self-contained', 'Adaptable'],
 			value: 'Preparedness',
@@ -98,7 +94,7 @@ export const heroes: readonly HeroFixture[] = [
 		calling: 'Vanguard',
 		stars: 1,
 		image: maraAnchor,
-		attributes: attributes(72, 82, 58, 61, 54, 76),
+		attributes: attributes(72, 58, 82, 76),
 		personality: {
 			traits: ['Guarded', 'Steadfast', 'Exacting'],
 			value: 'Reliability',
@@ -122,7 +118,7 @@ export const heroes: readonly HeroFixture[] = [
 		calling: 'Wardkeeper',
 		stars: 1,
 		image: joriAnchor,
-		attributes: attributes(68, 77, 49, 65, 70, 74),
+		attributes: attributes(68, 49, 77, 74),
 		personality: {
 			traits: ['Formal', 'Patient', 'Conscientious'],
 			value: 'Stewardship',
@@ -146,7 +142,7 @@ export const heroes: readonly HeroFixture[] = [
 		calling: 'Envoy',
 		stars: 2,
 		image: kiraAnchor,
-		attributes: attributes(55, 70, 51, 64, 82, 73),
+		attributes: attributes(55, 51, 70, 73),
 		personality: {
 			traits: ['Grounded', 'Perceptive', 'Deliberate'],
 			value: 'Reciprocity',
@@ -170,7 +166,7 @@ export const heroes: readonly HeroFixture[] = [
 		calling: 'Ritualist',
 		stars: 2,
 		image: ivenAnchor,
-		attributes: attributes(38, 48, 57, 76, 88, 84),
+		attributes: attributes(38, 57, 48, 84),
 		personality: {
 			traits: ['Precise', 'Curious', 'Composed'],
 			value: 'Understanding',
@@ -194,7 +190,7 @@ export const heroes: readonly HeroFixture[] = [
 		calling: 'Skirmisher',
 		stars: 3,
 		image: remyAnchor,
-		attributes: attributes(62, 64, 86, 83, 67, 69),
+		attributes: attributes(62, 86, 64, 69),
 		personality: {
 			traits: ['Open-hearted', 'Patient', 'Playful'],
 			value: 'Mutual trust',

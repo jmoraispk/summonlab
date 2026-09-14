@@ -5,11 +5,18 @@ import {
 	TOWER_FLOOR_01_PACKAGE,
 	projectMissionArenaKnowledge
 } from '@summonlab/content';
-import { getEngineReplay, getProofRun } from '@summonlab/database';
-import { supportsMissionApi } from '@summonlab/engine';
+import {
+	getEngineReplay,
+	getLatestCombatDecisionWindowForRun,
+	getProofRun
+} from '@summonlab/database';
+import { combatModeAvailability, supportsMissionApi } from '@summonlab/engine';
 import { error } from '@sveltejs/kit';
 
 import { runtimePortraitFor } from '$lib/server/runtime-portraits';
+import { projectCombatWindowStatus } from '$lib/server/combat-window-presentation';
+import { projectMissionReportForPublic } from '$lib/server/mission-report-presentation';
+import { projectProofRunForPublic } from '$lib/server/proof-presentation';
 
 import type { PageServerLoad } from './$types';
 
@@ -26,7 +33,10 @@ export const load: PageServerLoad = async ({ params }) => {
 	const isPortal = report.snapshot.state.schemaVersion === 15;
 	const isMasterTiming =
 		report.snapshot.state.schemaVersion === 19 || report.snapshot.state.schemaVersion === 20;
-	const isAttemptAftermath = report.snapshot.state.schemaVersion === 18 || isMasterTiming;
+	const isCapabilityMission =
+		report.snapshot.state.schemaVersion === 25 || report.snapshot.state.schemaVersion === 26;
+	const isAttemptAftermath =
+		report.snapshot.state.schemaVersion === 18 || isCapabilityMission || isMasterTiming;
 	const isAftermath = report.snapshot.state.schemaVersion === 16 || isAttemptAftermath;
 	const isMasterRisk = report.snapshot.state.schemaVersion === 17 || isAttemptAftermath;
 	const missionBindingId = report.snapshot.state.mission.binding.missionId;
@@ -36,12 +46,32 @@ export const load: PageServerLoad = async ({ params }) => {
 				(candidate) => candidate.missionId === missionBindingId
 			) ?? TOWER_FLOOR_01_PACKAGE);
 	const attempt = report.snapshot.state.mission.attempt;
+	const combatMode =
+		(report.snapshot.state.schemaVersion === 25 || report.snapshot.state.schemaVersion === 26) &&
+		report.snapshot.state.mission.attempt
+			? combatModeAvailability(
+					report.snapshot.state.mission.attempt.combatModeBinding,
+					report.snapshot.state.schemaVersion
+				)
+			: null;
+	const readinessAttempt =
+		report.snapshot.state.schemaVersion === 26 ? report.snapshot.state.mission.attempt : null;
+	const combatWindow =
+		readinessAttempt?.combatState.modeId === 'agent-readiness-v1'
+			? await getLatestCombatDecisionWindowForRun(
+					config.databaseUrl,
+					params.runId,
+					readinessAttempt.attemptId
+				).catch(() => null)
+			: null;
 	const knowledge = attempt?.knowledge ?? { discoveryIds: [], visitedNodeIds: [] };
 	const projection = projectMissionArenaKnowledge(missionPackage, knowledge);
 	const primaryObjective = missionPackage.objectives.find((objective) => objective.primary)!;
 	return {
-		report,
-		proof,
+		report: projectMissionReportForPublic(report),
+		proof: projectProofRunForPublic(proof),
+		combatMode,
+		combatWindow: combatWindow ? projectCombatWindowStatus(combatWindow) : null,
 		heroPortrait: runtimePortraitFor(proof.manifestHash, proof.manifest.artKey, 'roster'),
 		missionDefinition: {
 			isPortal,

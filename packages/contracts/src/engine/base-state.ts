@@ -7,6 +7,7 @@ import {
 	EquipmentOriginSchema,
 	EquipmentRankSchema
 } from '../equipment.js';
+import { AttributeGrowthReceiptSchema } from '../event.js';
 import { EntityIdSchema, IsoDateTimeSchema, StateHashSchema } from '../shared.js';
 
 export const EngineLocationV1Schema = z.enum(['summoning-gate', 'kitchen', 'training-ground']);
@@ -108,6 +109,46 @@ export const HeroProgressionSchema = z
 	.strict()
 	.refine((value) => value.level <= value.stars * 10, {
 		message: 'Hero level cannot exceed the current star cap'
+	});
+
+export const HeroProgressionV25Schema = HeroProgressionSchema.safeExtend({
+	unspentAttributePoints: z.number().int().nonnegative().max(69),
+	attributeGrowthReceipts: z.array(AttributeGrowthReceiptSchema).max(69)
+})
+	.strict()
+	.superRefine((progression, context) => {
+		if (
+			progression.unspentAttributePoints + progression.attributeGrowthReceipts.length !==
+			progression.level - 1
+		) {
+			context.addIssue({
+				code: 'custom',
+				message: 'Attribute points must equal gained levels minus recorded allocations'
+			});
+		}
+		if (
+			new Set(progression.attributeGrowthReceipts.map((receipt) => receipt.receiptId)).size !==
+			progression.attributeGrowthReceipts.length
+		) {
+			context.addIssue({ code: 'custom', message: 'Attribute receipt IDs must be unique' });
+		}
+		if (
+			new Set(progression.attributeGrowthReceipts.map((receipt) => receipt.commandId)).size !==
+			progression.attributeGrowthReceipts.length
+		) {
+			context.addIssue({
+				code: 'custom',
+				message: 'Attribute allocation command IDs must be unique'
+			});
+		}
+		if (
+			progression.attributeGrowthReceipts.some((receipt) => receipt.sourceLevel > progression.level)
+		) {
+			context.addIssue({
+				code: 'custom',
+				message: 'Attribute receipt source level cannot exceed current level'
+			});
+		}
 	});
 
 export const CurrentActivitySchema = z
@@ -259,5 +300,6 @@ export const EngineEquipmentItemStateV24Schema = z
 
 export type ActivityKind = z.infer<typeof ActivityKindSchema>;
 export type EngineItemState = z.infer<typeof EngineItemStateSchema>;
+export type HeroProgressionV25 = z.infer<typeof HeroProgressionV25Schema>;
 export type EngineEquipmentLoadoutV24 = z.infer<typeof EngineEquipmentLoadoutV24Schema>;
 export type EngineEquipmentItemStateV24 = z.infer<typeof EngineEquipmentItemStateV24Schema>;
