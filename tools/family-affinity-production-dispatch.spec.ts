@@ -54,9 +54,10 @@ async function stageCleanDispatchCorpus(): Promise<{
 describe('mandatory family affinity production dispatch gate', () => {
 	it('binds the approved tracked and installed full v3 execution surface', async () => {
 		const receipt = JSON.parse(await readFile(join(repositoryRoot, receiptPath), 'utf8'));
+		const worktreeApproval = { ...receipt, approvedSkillRoot: trackedSkillRoot };
 		await expect(
 			validateFamilyAffinityProductionSurface({
-				compatibility: receipt,
+				compatibility: worktreeApproval,
 				trackedSkillRoot,
 				installedSkillRoot: trackedSkillRoot,
 				repositoryRoot

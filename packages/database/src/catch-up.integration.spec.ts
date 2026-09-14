@@ -2,12 +2,12 @@ import { randomUUID } from 'node:crypto';
 
 import { FIRST_OBSERVATION, generateCharacterDraft, recipeFromSeed } from '@summonlab/characters';
 import { EngineCommandSchema } from '@summonlab/contracts';
-import { addGameMinutes, sha256Hex } from '@summonlab/engine';
+import { addGameMinutes } from '@summonlab/engine';
 import postgres from 'postgres';
 import { describe, expect, it } from 'vitest';
 
 import { catchUpRun, listDueCatchUpRunIds } from './catch-up.js';
-import { commitEngineCommand, getEngineReplay, initializeEngineRun } from './engine.js';
+import { commitEngineCommand, getEngineReplay } from './engine.js';
 import { createProofRun, markProofArrival } from './proof.js';
 
 const databaseUrl = process.env.TEST_DATABASE_URL;
@@ -16,27 +16,23 @@ const run = databaseUrl ? it : it.skip;
 describe('accelerated settlement catch-up', () => {
 	run('completes a persisted v24 forging job and resolves its schedule', async () => {
 		if (!databaseUrl) throw new Error('TEST_DATABASE_URL is required');
+		const draft = await generateCharacterDraft(recipeFromSeed(`catch-up-forging-${randomUUID()}`));
 		const runId = randomUUID();
-		const heroId = randomUUID();
-		const sql = postgres(databaseUrl, { max: 1 });
-		try {
-			await sql.begin((transaction) =>
-				initializeEngineRun(transaction, {
-					runId,
-					seed: `catch-up-forging-${runId}`,
-					heroId,
-					manifestHash: sha256Hex(`catch-up-forging-manifest-${runId}`),
-					developmentEquipmentScenario: {
-						enabled: true,
-						forgeReady: true,
-						materialLots: { bronze: 1 }
-					},
-					clockSpeed: 4
-				})
-			);
-		} finally {
-			await sql.end({ timeout: 5 });
-		}
+		const heroId = draft.manifest.characterId;
+		await createProofRun(databaseUrl, {
+			runId,
+			draft,
+			controlMode: 'autonomous',
+			directive: 'Prepare the company forge.',
+			firstObservation: FIRST_OBSERVATION,
+			choice: null,
+			developmentEquipmentScenario: {
+				enabled: true,
+				forgeReady: true,
+				materialLots: { bronze: 1 }
+			},
+			clockSpeed: 4
+		});
 
 		const initialized = await getEngineReplay(databaseUrl, runId);
 		if (!initialized || initialized.snapshot.state.schemaVersion !== 24) {
