@@ -1,6 +1,6 @@
 # Single Village Progression Design
 
-**Status:** Approved architecture; consolidated specification awaiting owner review
+**Status:** Approved architecture
 
 **Date:** 2026-09-11
 
