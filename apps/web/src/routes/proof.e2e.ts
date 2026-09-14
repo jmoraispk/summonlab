@@ -1,5 +1,3 @@
-import { randomUUID } from 'node:crypto';
-
 import { expect, test } from '@playwright/test';
 
 const emberRecipe = {
@@ -28,30 +26,6 @@ test('replays the same seeded-random identity and first choice', async ({ reques
 	expect(left.mind).toEqual(right.mind);
 	expect(left.destination).toBe(right.destination);
 	expect(left.storyBranch).toBe(right.storyBranch);
-});
-
-test('uses approved runtime art on the surviving legacy mission view', async ({
-	page
-}) => {
-	const created = await page.request.post('/api/runs', {
-		data: {
-			recipe: {
-				...emberRecipe,
-				seed: `unpainted-proof-${randomUUID()}`,
-				generationVersion: 'human-v5'
-			},
-			controlMode: 'random',
-			directive: ''
-		}
-	});
-	expect(created.status()).toBe(201);
-	const { runId } = (await created.json()) as { runId: string };
-
-	await page.goto(`/mission/${runId}`);
-	await expect(page.getByRole('img', { name: /roster portrait$/u })).toHaveAttribute(
-		'src',
-		/^\/runtime\/(?:visual-catalog-v1|summonable-heroes-v1)\/[^/]+\/(?:roster|summon)\.[a-f0-9]{12}\.webp$/u
-	);
 });
 
 test('retains witnessed communication, replies, directives, and redacted decisions without the legacy summon page', async ({

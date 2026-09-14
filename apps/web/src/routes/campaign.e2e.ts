@@ -121,4 +121,45 @@ test('enters the canonical Village and summons the first company in place', asyn
 	await house.getByRole('button', { name: 'Finish introductions' }).click();
 	await expect(house).toHaveCount(0);
 	await expect(page.getByTestId('city-scene-resident')).toHaveCount(3);
+
+	await page
+		.getByRole('navigation', { name: 'City destinations' })
+		.getByRole('link', { name: 'Tower' })
+		.click();
+	await expect(page).toHaveURL('/tower');
+	await expect(page.getByTestId('tower-screen')).toBeVisible();
+	await expect(page.getByRole('heading', { name: 'Choose a floor' })).toBeVisible();
+	await expect(page.locator('[data-floor]')).toHaveCount(5);
+	await page.locator('[data-floor="1"]').getByRole('button', { name: 'Explore' }).click();
+	await expect(page.getByRole('heading', { name: /The Unlit Muster/u })).toBeVisible();
+	await expect(page.getByText(/Position f001-r016-c005/u)).toBeVisible();
+
+	await page.reload();
+	await expect(page.getByText(/Position f001-r016-c005/u)).toBeVisible();
+	for (let step = 0; step < 11; step += 1) {
+		await page.getByRole('button', { name: /north to/u }).click();
+	}
+	await expect(page.getByRole('heading', { name: /Opposition in/u })).toBeVisible();
+	await expect(page.getByText(/f001-r005-c005/u)).toBeVisible();
+	await page.getByRole('button', { name: 'Automated' }).click();
+	await page.getByRole('button', { name: 'Run encounter' }).click();
+	await expect(page.getByText(/Position f001-r005-c005/u)).toBeVisible();
+
+	for (let step = 0; step < 4; step += 1) {
+		await page.getByRole('button', { name: /north to/u }).click();
+	}
+	await expect(page.getByRole('heading', { name: /Opposition in/u })).toBeVisible();
+	await expect(page.getByText(/f001-r001-c005/u)).toBeVisible();
+	await page.getByRole('button', { name: 'Resolve turn' }).click();
+	await page.getByRole('button', { name: /north to/u }).click();
+	await expect(page.getByText(/Position f001-r000-c005/u)).toBeVisible();
+
+	for (let step = 0; step < 16; step += 1) {
+		await page.getByRole('button', { name: /south to/u }).click();
+	}
+	await page.getByRole('button', { name: 'Extract to Village' }).click();
+	await expect(page.getByRole('heading', { name: /returned to Hearth 01/u })).toBeVisible();
+	await page.getByRole('link', { name: 'Return to Village' }).click();
+	await expect(page).toHaveURL('/village');
+	await expect(page.getByTestId('city-scene-resident')).toHaveCount(3);
 });

@@ -9,6 +9,73 @@ import type {
 
 import type { EquipmentWorkshopProjection } from './server/equipment-runtime';
 
+export type TowerFloorStatus = 'available' | 'active' | 'cleared' | 'locked';
+
+export interface TowerFloorView {
+	readonly floorId: string;
+	readonly floorNumber: number;
+	readonly name: string;
+	readonly tagline: string;
+	readonly objective: string;
+	readonly knownMonsters: readonly string[];
+	readonly rewards: readonly string[];
+	readonly status: TowerFloorStatus;
+	readonly lockReason: string | null;
+}
+
+export interface TowerExplorationView {
+	readonly attemptId: string;
+	readonly floorId: string;
+	readonly floorName: string;
+	readonly status: 'exploring' | 'returning';
+	readonly version: number;
+	readonly positionTileId: string;
+	readonly columns: number;
+	readonly rows: number;
+	readonly revealedCount: number;
+	readonly objectiveComplete: boolean;
+	readonly pendingLoot: readonly {
+		readonly kind: string;
+		readonly key: string;
+		readonly amount: number;
+	}[];
+	readonly tiles: readonly {
+		readonly tileId: string;
+		readonly row: number;
+		readonly column: number;
+		readonly knowledge: 'hidden' | 'revealed';
+		readonly walkable?: boolean;
+		readonly zoneLabel?: string;
+		readonly interactionKind?: string | null;
+	}[];
+	readonly legalSteps: readonly { readonly tileId: string; readonly label: string }[];
+}
+
+export type TowerView =
+	| { readonly state: 'floor-list'; readonly floors: readonly TowerFloorView[] }
+	| {
+			readonly state: 'exploration';
+			readonly floors: readonly TowerFloorView[];
+			readonly exploration: TowerExplorationView;
+	  }
+	| {
+			readonly state: 'encounter';
+			readonly floors: readonly TowerFloorView[];
+			readonly exploration: Omit<TowerExplorationView, 'status' | 'legalSteps'>;
+			readonly encounterRequestId: string | null;
+	  }
+	| {
+			readonly state: 'report';
+			readonly floors: readonly TowerFloorView[];
+			readonly outcome: 'victory' | 'defeat' | 'extracted';
+			readonly floorId: string;
+			readonly loot: readonly {
+				readonly kind: string;
+				readonly key: string;
+				readonly amount: number;
+			}[];
+	  };
+
 export const CITY_MODES = [
 	{ id: 'village', label: 'Village' },
 	{ id: 'residents', label: 'Residents' },
@@ -150,7 +217,7 @@ export interface CityViewModel {
 	readonly occupancy: readonly CityOccupancyRow[];
 	readonly objectives: CampaignObjectiveProjection | null;
 	readonly inventory: EquipmentWorkshopProjection | null;
-	readonly tower: { readonly available: false; readonly reason: string };
+	readonly tower: TowerView;
 	readonly eventCue: AuthoritativeEvent | null;
 }
 

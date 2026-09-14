@@ -5,7 +5,7 @@
 	import VillageInventoryPanel from '$lib/components/village-shell/VillageInventoryPanel.svelte';
 	import VillageMissionsPanel from '$lib/components/village-shell/VillageMissionsPanel.svelte';
 	import VillageResidentsPanel from '$lib/components/village-shell/VillageResidentsPanel.svelte';
-	import VillageTowerPanel from '$lib/components/village-shell/VillageTowerPanel.svelte';
+	import TowerScreen from '$lib/components/tower/TowerScreen.svelte';
 	import type { CityIntent, CitySummonIntent, CityViewModel } from '$lib/city';
 
 	import CityModeDock from './CityModeDock.svelte';
@@ -20,7 +20,8 @@
 		onCompleteIntroduction = async () => undefined,
 		pendingIntent = null,
 		intentError = null,
-		onEquipmentChanged
+		onEquipmentChanged,
+		onTowerChanged
 	}: {
 		view: CityViewModel;
 		onIntent?: (intent: CityIntent) => void | Promise<void>;
@@ -30,6 +31,7 @@
 		pendingIntent?: CityIntent | null;
 		intentError?: string | null;
 		onEquipmentChanged?: () => void | Promise<void>;
+		onTowerChanged?: () => void | Promise<void>;
 	} = $props();
 
 	let summoningHouseOpen = $state(false);
@@ -73,7 +75,7 @@
 	{:else if view.mode === 'residents'}
 		<VillageResidentsPanel residents={view.residents} />
 	{:else if view.mode === 'tower'}
-		<VillageTowerPanel />
+		<TowerScreen {view} onChanged={onTowerChanged} />
 	{:else if view.mode === 'missions' && view.objectives}
 		<VillageMissionsPanel objectives={view.objectives} />
 	{:else if view.mode === 'inventory' && view.inventory}

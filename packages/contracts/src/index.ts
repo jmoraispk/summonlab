@@ -5,6 +5,7 @@ export * from './city-actions.js';
 export * from './decision.js';
 export * from './decision-inspector.js';
 export * from './engine.js';
+export * from './exploration.js';
 export * from './exploration-combat.js';
 export * from './equipment.js';
 export * from './equipment-visual.js';

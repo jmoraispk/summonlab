@@ -15,7 +15,7 @@ describe('player audio presentation routing', () => {
 		['/missions', 'hearth'],
 		['/onboarding/run-1', 'silence'],
 		['/play/run-1', 'silence'],
-		['/mission/run-1', 'tower'],
+		['/mission/run-1', 'silence'],
 		['/forge', 'silence']
 	] as const)('maps %s to the %s soundscape', (pathname, profile) => {
 		expect(soundProfileForPath(pathname)).toBe(profile);

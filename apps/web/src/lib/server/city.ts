@@ -13,7 +13,8 @@ import type {
 	CityResidentReadiness,
 	CityResidentSource,
 	CitySummonHero,
-	CityViewModel
+	CityViewModel,
+	TowerView
 } from '../city';
 import { projectVillageFacilities, projectVillageSceneResidents } from '../village-scene';
 import type { EquipmentWorkshopProjection } from './equipment-runtime';
@@ -36,6 +37,7 @@ export interface ProjectCityViewInput {
 	readonly visibleHeroIds: readonly string[];
 	readonly objectives: CampaignObjectiveProjection | null;
 	readonly inventory: EquipmentWorkshopProjection | null;
+	readonly tower?: TowerView;
 	readonly eventCue: AuthoritativeEvent | null;
 }
 
@@ -69,10 +71,7 @@ export function projectCityView(input: ProjectCityViewInput): CityViewModel {
 		occupancy: projectOccupancy(presentation),
 		objectives: input.objectives,
 		inventory: input.inventory,
-		tower: {
-			available: false,
-			reason: 'Expedition controls are not connected yet.'
-		},
+		tower: input.tower ?? { state: 'floor-list', floors: [] },
 		eventCue: input.eventCue
 	};
 }

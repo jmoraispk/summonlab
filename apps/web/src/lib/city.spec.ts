@@ -90,6 +90,20 @@ describe('City navigation', () => {
 		expect(staleSources).toEqual([]);
 	});
 
+	it('removes every parallel Tower, combat, and mission player route', () => {
+		const repositoryRoot = fileURLToPath(new URL('../../../..', import.meta.url));
+		for (const retiredPath of [
+			'apps/web/src/routes/living-village-lab',
+			'apps/web/src/routes/mission-lab',
+			'apps/web/src/routes/mission/[runId]',
+			'apps/web/src/routes/settlement-lab',
+			'apps/web/src/routes/summon/[runId]',
+			'apps/web/src/routes/onboarding/[runId]'
+		]) {
+			expect(existsSync(`${repositoryRoot}/${retiredPath}`), retiredPath).toBe(false);
+		}
+	});
+
 	it('keeps surviving player transitions off the retired play route', () => {
 		const repositoryRoot = fileURLToPath(new URL('../../../..', import.meta.url));
 		const sources = ['apps/web/src/routes/replay/[runId]/+page.svelte'].map((path) =>

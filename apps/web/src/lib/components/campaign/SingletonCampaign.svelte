@@ -119,6 +119,7 @@
 			pendingIntent={pendingCityIntent}
 			intentError={cityIntentError}
 			onEquipmentChanged={refreshProjection}
+			onTowerChanged={refreshProjection}
 		/>
 	{:else}
 		<section class="unavailable" role="status">

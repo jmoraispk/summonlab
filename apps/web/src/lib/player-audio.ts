@@ -28,7 +28,6 @@ export function soundProfileForPath(pathname: string): PlayerSoundProfile {
 		return 'hearth';
 	}
 	if (
-		pathname.startsWith('/mission/') ||
 		pathname.startsWith('/synthesis/') ||
 		pathname.startsWith('/first-band-archive/') ||
 		pathname.startsWith('/last-command') ||

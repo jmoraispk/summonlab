@@ -16,6 +16,7 @@ import { campaignExperienceView } from './campaign';
 import { projectCityView } from './city';
 import { projectEquipmentWorkshop } from './equipment-runtime';
 import { runtimePortraitFor } from './runtime-portraits';
+import { projectTowerView } from './tower';
 
 async function loadCampaignPage(databaseUrl: string, campaign: CampaignRun, mode: CityMode) {
 	const snapshot = await getProofRun(databaseUrl, campaign.runId).catch(() => null);
@@ -54,6 +55,10 @@ async function loadCampaignPage(databaseUrl: string, campaign: CampaignRun, mode
 		'dialogue'
 	);
 	const scene = await loadHearth01Scene();
+	const tower =
+		mode === 'tower'
+			? await projectTowerView({ databaseUrl, runId: campaign.runId })
+			: { state: 'floor-list' as const, floors: [] };
 	const cityState = engineSnapshot?.state.schemaVersion === 13 ? engineSnapshot.state : null;
 	const citySummonHeroes = campaignView
 		? campaignView.heroes.map((hero) => {
@@ -154,6 +159,7 @@ async function loadCampaignPage(databaseUrl: string, campaign: CampaignRun, mode
 							.map((hero) => hero.draft.manifest.characterId),
 						objectives: campaignView.objectives,
 						inventory: equipment,
+						tower,
 						eventCue: null
 					})
 				: null,

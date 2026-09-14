@@ -5,6 +5,7 @@
 	"type": "module",
 	"exports": {
 		".": "./src/index.ts",
+		"./exploration": "./src/domains/exploration/index.ts",
 		"./hash": "./src/hash.ts"
 	},
 	"scripts": {
