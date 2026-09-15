@@ -246,14 +246,14 @@ const EQUIPMENT_LOAD_BY_CLASS = Object.freeze({
 	mace: 20,
 	shield: 16,
 	staff: 14,
-	'heavy-armour': 0,
-	'light-armour': 0,
+	'heavy-armor': 0,
+	'light-armor': 0,
 	robes: 0
 } satisfies Readonly<Record<EquipmentClass, number>>);
 
-const ARMOUR_LOAD_BY_CLASS_AND_SLOT = Object.freeze({
-	'heavy-armour': Object.freeze({ head: 12, torso: 28, legs: 22, boots: 10 }),
-	'light-armour': Object.freeze({ head: 6, torso: 14, legs: 11, boots: 5 }),
+const ARMOR_LOAD_BY_CLASS_AND_SLOT = Object.freeze({
+	'heavy-armor': Object.freeze({ head: 12, torso: 28, legs: 22, boots: 10 }),
+	'light-armor': Object.freeze({ head: 6, torso: 14, legs: 11, boots: 5 }),
 	robes: Object.freeze({ head: 2, torso: 4, legs: 3, boots: 2 })
 } as const);
 
@@ -269,12 +269,12 @@ function combatFamilyTags(definition: EquipmentDefinition): readonly EquipmentFa
 
 function equipmentLoad(definition: EquipmentDefinition): number {
 	if (
-		definition.equipmentClass === 'heavy-armour' ||
-		definition.equipmentClass === 'light-armour' ||
+		definition.equipmentClass === 'heavy-armor' ||
+		definition.equipmentClass === 'light-armor' ||
 		definition.equipmentClass === 'robes'
 	) {
-		return ARMOUR_LOAD_BY_CLASS_AND_SLOT[definition.equipmentClass][
-			definition.slot as EquipmentArmourSlot
+		return ARMOR_LOAD_BY_CLASS_AND_SLOT[definition.equipmentClass][
+			definition.slot as EquipmentArmorSlot
 		];
 	}
 	return EQUIPMENT_LOAD_BY_CLASS[definition.equipmentClass];
@@ -283,13 +283,13 @@ function equipmentLoad(definition: EquipmentDefinition): number {
 function createCombatEquipmentProfile(
 	definition: EquipmentDefinition
 ): Readonly<CombatEquipmentProfile> {
-	const heavyArmour = definition.equipmentClass === 'heavy-armour';
-	const resistanceGrants = heavyArmour
+	const heavyArmor = definition.equipmentClass === 'heavy-armor';
+	const resistanceGrants = heavyArmor
 		? [
 				{ tag: 'cut' as const, basisPoints: 800, capBasisPoints: 1_500 },
 				{ tag: 'impact' as const, basisPoints: 600, capBasisPoints: 1_200 }
 			]
-		: definition.equipmentClass === 'light-armour'
+		: definition.equipmentClass === 'light-armor'
 			? [{ tag: 'pierce' as const, basisPoints: 400, capBasisPoints: 1_000 }]
 			: definition.equipmentClass === 'robes'
 				? [{ tag: 'arcane' as const, basisPoints: 300, capBasisPoints: 900 }]
@@ -301,8 +301,8 @@ function createCombatEquipmentProfile(
 			familyTags: combatFamilyTags(definition),
 			load: equipmentLoad(definition),
 			requirements: {
-				minimumStrength: heavyArmour ? 45 : definition.weightClass === 'heavy' ? 35 : null,
-				proficiencyTags: heavyArmour ? ['armour-training'] : []
+				minimumStrength: heavyArmor ? 45 : definition.weightClass === 'heavy' ? 35 : null,
+				proficiencyTags: heavyArmor ? ['armour-training'] : []
 			},
 			resistanceGrants
 		})
