@@ -686,6 +686,9 @@ describe('integrity binding classification', () => {
 		expect(
 			runtimeAndEngineIntegrityOwner.owns('packages/engine/src/compatibility/replay-vectors.ts', '')
 		).toBe(true);
+		expect(runtimeAndEngineIntegrityOwner.intentMaterialization?.paths).toContain(
+			'packages/contracts/src/readiness-combat.spec.ts'
+		);
 		expect(
 			runtimeAndEngineIntegrityOwner.owns('apps/web/src/lib/server/tower-encounter-request.ts', '')
 		).toBe(true);

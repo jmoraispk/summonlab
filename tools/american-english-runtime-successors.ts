@@ -87,6 +87,7 @@ export const runtimeAndEngineIntegrityOwner: AmericanEnglishIntegrityOwner = {
 			'docs/evidence/combat-balance-v1.json',
 			'packages/content/src/agent-readiness-content-binding.ts',
 			'packages/content/src/combat-content-binding.ts',
+			'packages/contracts/src/readiness-combat.spec.ts',
 			'packages/contracts/src/readiness-combat.ts',
 			'packages/engine/src/compatibility/replay-vectors.spec.ts',
 			'packages/engine/src/domains/mission/mission-runtime.spec.ts',

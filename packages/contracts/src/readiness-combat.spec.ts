@@ -35,7 +35,7 @@ const HASH = {
 	view: '3'.repeat(64),
 	legal: '4'.repeat(64),
 	batch: '5'.repeat(64),
-	content: '659a89f61dcd9ebc7ca561a78ce5a405f81dbf8740246c7a18e7df697b862489',
+	content: 'dfbff1f2acdb3b68f6be65843e35e4b79e7db274478b793ef146df2b2ac367ac',
 	trace: '7'.repeat(64)
 } as const;
 
@@ -825,7 +825,7 @@ describe('readiness combat contracts', () => {
 			attemptId: ID.attempt,
 			modeId: 'agent-readiness-v1',
 			rulesVersion: 'agent-readiness-rules-v2',
-			contentHash: '713a146cc6e5198fc208e0e5cc35bb67023ef9002e37a364dda71905b025eedd',
+			contentHash: '221f8b8cbbe2e966584c60c88bb7a963ffbf9c0da4a605d198667aa7b76cd074',
 			outcome: 'victory',
 			endedAtTick: 20,
 			finalCombatants: {

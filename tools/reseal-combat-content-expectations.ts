@@ -11,6 +11,7 @@ import {
 const COMBAT_BINDING_PATH = 'packages/content/src/combat-content-binding.ts';
 const READINESS_BINDING_PATH = 'packages/content/src/agent-readiness-content-binding.ts';
 const READINESS_CONTRACT_PATH = 'packages/contracts/src/readiness-combat.ts';
+const READINESS_SPEC_PATH = 'packages/contracts/src/readiness-combat.spec.ts';
 
 function replaceNamedHash(source: string, name: string, contentHash: string): string {
 	const pattern = new RegExp(`(const ${name} =\\n?\\s*')[0-9a-f]{64}(';?)`, 'u');
@@ -41,16 +42,36 @@ function replaceObjectContentHash(
 	)}${source.slice(end)}`;
 }
 
+function replaceScopedHash(
+	source: string,
+	scopeStart: string,
+	scopeEnd: string,
+	pattern: RegExp,
+	contentHash: string
+): string {
+	const start = source.indexOf(scopeStart);
+	if (start === -1) throw new Error(`Missing ${scopeStart} expectation scope`);
+	const next = source.indexOf(scopeEnd, start + scopeStart.length);
+	const end = next === -1 ? source.length : next;
+	const scopedSource = source.slice(start, end);
+	if ([...scopedSource.matchAll(new RegExp(pattern.source, 'gu'))].length !== 1) {
+		throw new Error(`Expected exactly one hash binding in ${scopeStart}`);
+	}
+	return `${source.slice(0, start)}${scopedSource.replace(pattern, `$1${contentHash}$2`)}${source.slice(end)}`;
+}
+
 export function resealCombatContentSources(
 	combatBindingSource: string,
 	readinessBindingSource: string,
 	readinessContractSource: string,
+	readinessSpecSource: string,
 	combatContentHash: string,
 	readinessContentHash: string
 ): {
 	readonly combatBindingSource: string;
 	readonly readinessBindingSource: string;
 	readonly readinessContractSource: string;
+	readonly readinessSpecSource: string;
 } {
 	return {
 		combatBindingSource: replaceObjectContentHash(
@@ -71,14 +92,37 @@ export function resealCombatContentSources(
 			),
 			'READINESS_V2_CONTENT_HASH',
 			readinessContentHash
+		),
+		readinessSpecSource: replaceScopedHash(
+			replaceScopedHash(
+				readinessSpecSource,
+				'const HASH = {',
+				'} as const;',
+				/(content: ')[0-9a-f]{64}(')/u,
+				combatContentHash
+			),
+			"it('returns only a decision window or a common combat result'",
+			'\n\tit(',
+			/(contentHash: ')[0-9a-f]{64}(')/u,
+			readinessContentHash
 		)
 	};
 }
 
 async function main(): Promise<void> {
 	const repositoryRoot = process.cwd();
-	const paths = [COMBAT_BINDING_PATH, READINESS_BINDING_PATH, READINESS_CONTRACT_PATH] as const;
-	const [combatBindingSource, readinessBindingSource, readinessContractSource] = await Promise.all(
+	const paths = [
+		COMBAT_BINDING_PATH,
+		READINESS_BINDING_PATH,
+		READINESS_CONTRACT_PATH,
+		READINESS_SPEC_PATH
+	] as const;
+	const [
+		combatBindingSource,
+		readinessBindingSource,
+		readinessContractSource,
+		readinessSpecSource
+	] = await Promise.all(
 		paths.map((repositoryPath) =>
 			readFile(path.join(repositoryRoot, ...repositoryPath.split('/')), 'utf8')
 		)
@@ -91,6 +135,7 @@ async function main(): Promise<void> {
 		combatBindingSource,
 		readinessBindingSource,
 		readinessContractSource,
+		readinessSpecSource,
 		combatContentHash,
 		readinessContentHash
 	);
@@ -106,6 +151,10 @@ async function main(): Promise<void> {
 		writeFile(
 			path.join(repositoryRoot, ...READINESS_CONTRACT_PATH.split('/')),
 			resealed.readinessContractSource
+		),
+		writeFile(
+			path.join(repositoryRoot, ...READINESS_SPEC_PATH.split('/')),
+			resealed.readinessSpecSource
 		)
 	]);
 }
