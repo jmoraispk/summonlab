@@ -3,7 +3,9 @@ import { getLatestActiveCampaignRun } from '@summonlab/database';
 
 import { createPlayerCampaign } from './campaign';
 
-export const SINGLETON_VILLAGE_SEED = 'hearth-01-singleton-v1';
+// This seed resolves to the approved Yaso/Oren/Joror pilot company. Keep the singleton on residents
+// with Village cutouts until the remaining summonable roster completes cutout approval.
+export const SINGLETON_VILLAGE_SEED = 'village-shell-19aa1947-bcad-4fab-b2f8-e0e34a9b7eb3';
 export const SINGLETON_CONTROL_MODE: CampaignControlMode = 'wait';
 
 export interface SingletonVillageDependencies<TCampaign> {

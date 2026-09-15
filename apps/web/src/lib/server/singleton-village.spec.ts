@@ -4,14 +4,29 @@ import { fileURLToPath } from 'node:url';
 import type { CampaignRun } from '@summonlab/contracts';
 import { describe, expect, it, vi } from 'vitest';
 
-import { campaignResumePath } from './campaign';
-import { createSingletonVillageResolver } from './singleton-village';
+import { campaignResumePath, generateCampaignCompany } from './campaign';
+import { runtimePortraitFor } from './runtime-portraits';
+import { createSingletonVillageResolver, SINGLETON_VILLAGE_SEED } from './singleton-village';
 
 interface TestCampaign {
 	readonly runId: string;
 }
 
 describe('singleton Village resolver', () => {
+	it('summons only residents with approved Village cutouts', async () => {
+		const company = await generateCampaignCompany(SINGLETON_VILLAGE_SEED);
+
+		expect(
+			company.map((hero) =>
+				runtimePortraitFor(hero.manifestHash, hero.manifest.artKey, 'village-cutout')
+			)
+		).toEqual([
+			expect.objectContaining({ publicPath: expect.stringContaining('/yaso-dreno/') }),
+			expect.objectContaining({ publicPath: expect.stringContaining('/oren-sorin/') }),
+			expect.objectContaining({ publicPath: expect.stringContaining('/joror-pelleth/') })
+		]);
+	});
+
 	it('returns the active campaign without creating another', async () => {
 		const existing = { runId: 'existing-run' } satisfies TestCampaign;
 		const create = vi.fn<() => Promise<TestCampaign>>();
