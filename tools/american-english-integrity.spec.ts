@@ -692,6 +692,19 @@ describe('integrity binding classification', () => {
 		expect(runtimeAndEngineIntegrityOwner.intentMaterialization?.paths).toContain(
 			'packages/content/src/progression-rules.ts'
 		);
+		expect(runtimeAndEngineIntegrityOwner.intentMaterialization?.commands).toContainEqual([
+			'pnpm',
+			'tsx',
+			'tools/progression-balance-harness.ts',
+			'--write'
+		]);
+		for (const repositoryPath of [
+			'docs/evidence/progression-balance-v1.json',
+			'packages/contracts/src/engine/game-state.ts',
+			'packages/contracts/src/engine-compatibility.spec.ts'
+		]) {
+			expect(runtimeAndEngineIntegrityOwner.intentMaterialization?.paths).toContain(repositoryPath);
+		}
 		expect(
 			runtimeAndEngineIntegrityOwner.owns('apps/web/src/lib/server/tower-encounter-request.ts', '')
 		).toBe(true);

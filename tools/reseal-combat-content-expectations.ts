@@ -17,6 +17,8 @@ const READINESS_BINDING_PATH = 'packages/content/src/agent-readiness-content-bin
 const READINESS_CONTRACT_PATH = 'packages/contracts/src/readiness-combat.ts';
 const READINESS_SPEC_PATH = 'packages/contracts/src/readiness-combat.spec.ts';
 const PROGRESSION_RULES_PATH = 'packages/content/src/progression-rules.ts';
+const GAME_STATE_PATH = 'packages/contracts/src/engine/game-state.ts';
+const ENGINE_COMPATIBILITY_SPEC_PATH = 'packages/contracts/src/engine-compatibility.spec.ts';
 
 function replaceNamedHash(source: string, name: string, contentHash: string): string {
 	const pattern = new RegExp(`(const ${name} =\\n?\\s*')[0-9a-f]{64}(';?)`, 'u');
@@ -71,6 +73,8 @@ export function resealCombatContentSources(
 	readinessContractSource: string,
 	readinessSpecSource: string,
 	progressionRulesSource: string,
+	gameStateSource: string,
+	engineCompatibilitySpecSource: string,
 	combatContentHash: string,
 	readinessContentHash: string,
 	progressionContentHash: string
@@ -80,6 +84,8 @@ export function resealCombatContentSources(
 	readonly readinessContractSource: string;
 	readonly readinessSpecSource: string;
 	readonly progressionRulesSource: string;
+	readonly gameStateSource: string;
+	readonly engineCompatibilitySpecSource: string;
 } {
 	return {
 		combatBindingSource: replaceObjectContentHash(
@@ -118,6 +124,18 @@ export function resealCombatContentSources(
 			progressionRulesSource,
 			'PROGRESSION_RULES_V1_BINDING',
 			progressionContentHash
+		),
+		gameStateSource: replaceNamedHash(
+			gameStateSource,
+			'PROGRESSION_RULES_V1_CONTENT_HASH',
+			progressionContentHash
+		),
+		engineCompatibilitySpecSource: replaceScopedHash(
+			engineCompatibilitySpecSource,
+			"it('adds bound v27 progression without widening the frozen v26 schema'",
+			'\n\tit(',
+			/(contentHash: ')[0-9a-f]{64}(')/u,
+			progressionContentHash
 		)
 	};
 }
@@ -129,14 +147,18 @@ async function main(): Promise<void> {
 		READINESS_BINDING_PATH,
 		READINESS_CONTRACT_PATH,
 		READINESS_SPEC_PATH,
-		PROGRESSION_RULES_PATH
+		PROGRESSION_RULES_PATH,
+		GAME_STATE_PATH,
+		ENGINE_COMPATIBILITY_SPEC_PATH
 	] as const;
 	const [
 		combatBindingSource,
 		readinessBindingSource,
 		readinessContractSource,
 		readinessSpecSource,
-		progressionRulesSource
+		progressionRulesSource,
+		gameStateSource,
+		engineCompatibilitySpecSource
 	] = await Promise.all(
 		paths.map((repositoryPath) =>
 			readFile(path.join(repositoryRoot, ...repositoryPath.split('/')), 'utf8')
@@ -153,6 +175,8 @@ async function main(): Promise<void> {
 		readinessContractSource,
 		readinessSpecSource,
 		progressionRulesSource,
+		gameStateSource,
+		engineCompatibilitySpecSource,
 		combatContentHash,
 		readinessContentHash,
 		progressionContentHash
@@ -177,6 +201,11 @@ async function main(): Promise<void> {
 		writeFile(
 			path.join(repositoryRoot, ...PROGRESSION_RULES_PATH.split('/')),
 			resealed.progressionRulesSource
+		),
+		writeFile(path.join(repositoryRoot, ...GAME_STATE_PATH.split('/')), resealed.gameStateSource),
+		writeFile(
+			path.join(repositoryRoot, ...ENGINE_COMPATIBILITY_SPEC_PATH.split('/')),
+			resealed.engineCompatibilitySpecSource
 		)
 	]);
 }

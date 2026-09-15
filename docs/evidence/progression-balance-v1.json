@@ -3,7 +3,7 @@
 	"status": "passed",
 	"bindings": {
 		"rulesVersion": "progression-rules-v1",
-		"rulesHash": "06fc61271c9c3254836c4f50f845624bea08731952957d0c1d6faf295e8744ce",
+		"rulesHash": "c876965e9a35d3358001db0687199651f86563870a1b2fd7e010b2c290776de2",
 		"stateSchema": "hero-progression-v2"
 	},
 	"seedSet": [
@@ -680,7 +680,7 @@
 					},
 					"rules": {
 						"rulesVersion": "progression-rules-v1",
-						"contentHash": "06fc61271c9c3254836c4f50f845624bea08731952957d0c1d6faf295e8744ce"
+						"contentHash": "c876965e9a35d3358001db0687199651f86563870a1b2fd7e010b2c290776de2"
 					},
 					"experienceBefore": 980,
 					"experienceAfter": 1010,
@@ -716,7 +716,7 @@
 					},
 					"rules": {
 						"rulesVersion": "progression-rules-v1",
-						"contentHash": "06fc61271c9c3254836c4f50f845624bea08731952957d0c1d6faf295e8744ce"
+						"contentHash": "c876965e9a35d3358001db0687199651f86563870a1b2fd7e010b2c290776de2"
 					},
 					"experienceBefore": 980,
 					"experienceAfter": 1010,

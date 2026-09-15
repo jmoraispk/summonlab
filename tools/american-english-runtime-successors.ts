@@ -20,7 +20,7 @@ export const RUNTIME_AND_ENGINE_INTEGRITY_PATH_PATTERNS = [
 	/^apps\/web\/src\/lib\/components\/tower\/combat\/automated\//u,
 	/^apps\/web\/src\/lib\/server\/tower-encounter-request\.ts$/u,
 	/^apps\/web\/src\/routes\/story-patch\//u,
-	/^docs\/(?:evidence\/(?:agent-readiness-v1\.json$|combat-balance-v1\.json$|living-village-|phase-)|private-playtest-release\.md$|system-architecture\/)/u,
+	/^docs\/(?:evidence\/(?:agent-readiness-v1\.json$|combat-balance-v1\.json$|progression-balance-v1\.json$|living-village-|phase-)|private-playtest-release\.md$|system-architecture\/)/u,
 	/^docs\/superpowers\/(?:plans\/(?:2026-09-07-exploration-combat-contract|2026-09-12-awakening-and-multi-path-progression)|specs\/2026-09-07-exploration-combat-contract-design)\.md$/u,
 	/^docs\/wiki\/mechanics\/skills\//u,
 	/^packages\/content\/src\/progression-rules\.ts$/u,
@@ -40,7 +40,7 @@ export const RUNTIME_AND_ENGINE_FILE_BINDING_PATH_PATTERNS = [
 	/^apps\/web\/src\/(?:lib\/components\/living-village|routes\/story-patch)\/.*\.(?:ts|svelte)$/u,
 	/^apps\/web\/src\/lib\/components\/tower\/combat\/automated\/.*\.ts$/u,
 	/^apps\/web\/src\/lib\/server\/tower-encounter-request\.ts$/u,
-	/^docs\/(?:evidence\/(?:agent-readiness-v1|combat-balance-v1)\.json|evidence\/living-village-(?:tower-handoff|village-plan)\.md|private-playtest-release\.md|system-architecture\/integration-contracts\.md)$/u,
+	/^docs\/(?:evidence\/(?:agent-readiness-v1|combat-balance-v1|progression-balance-v1)\.json|evidence\/living-village-(?:tower-handoff|village-plan)\.md|private-playtest-release\.md|system-architecture\/integration-contracts\.md)$/u,
 	/^docs\/superpowers\/(?:plans\/(?:2026-09-07-exploration-combat-contract|2026-09-12-awakening-and-multi-path-progression)|specs\/2026-09-07-exploration-combat-contract-design)\.md$/u,
 	/^packages\/content\/src\/progression-rules\.ts$/u,
 	/^packages\/content\/src\/(?:agent-readiness-content-binding|combat-content-binding)\.ts$/u,
@@ -73,6 +73,7 @@ export const runtimeAndEngineIntegrityOwner: AmericanEnglishIntegrityOwner = {
 	intentMaterialization: {
 		commands: [
 			['pnpm', 'tsx', 'tools/reseal-combat-content-expectations.ts'],
+			['pnpm', 'tsx', 'tools/progression-balance-harness.ts', '--write'],
 			['pnpm', 'tsx', 'tools/reseal-runtime-migration-snapshots.ts'],
 			['pnpm', 'tsx', 'tools/combat-balance-harness.ts', '--write'],
 			['pnpm', 'tsx', 'tools/reseal-skill-taxonomy-expectations.ts'],
@@ -85,11 +86,14 @@ export const runtimeAndEngineIntegrityOwner: AmericanEnglishIntegrityOwner = {
 		paths: [
 			'docs/evidence/agent-readiness-v1.json',
 			'docs/evidence/combat-balance-v1.json',
+			'docs/evidence/progression-balance-v1.json',
 			'packages/content/src/agent-readiness-content-binding.ts',
 			'packages/content/src/combat-content-binding.ts',
 			'packages/content/src/progression-rules.ts',
 			'packages/contracts/src/readiness-combat.spec.ts',
 			'packages/contracts/src/readiness-combat.ts',
+			'packages/contracts/src/engine/game-state.ts',
+			'packages/contracts/src/engine-compatibility.spec.ts',
 			'packages/engine/src/compatibility/replay-vectors.spec.ts',
 			'packages/engine/src/domains/mission/mission-runtime.spec.ts',
 			'tools/package-playtest-release.ts',
@@ -103,9 +107,9 @@ export const runtimeAndEngineIntegrityOwner: AmericanEnglishIntegrityOwner = {
 	},
 	regeneration: {
 		writeCommand:
-			'pnpm tsx tools/reseal-combat-content-expectations.ts && pnpm tsx tools/reseal-runtime-migration-snapshots.ts && pnpm tsx tools/combat-balance-harness.ts --write && pnpm tsx tools/export-skill-taxonomy-migration.ts --write && pnpm export:story-envelope && pnpm export:story-patch && pnpm export:story-workshop && pnpm export:moderated-playtest && pnpm export:playtest-release && pnpm package:playtest -- --acknowledge-private-release',
+			'pnpm tsx tools/reseal-combat-content-expectations.ts && pnpm tsx tools/progression-balance-harness.ts --write && pnpm tsx tools/reseal-runtime-migration-snapshots.ts && pnpm tsx tools/combat-balance-harness.ts --write && pnpm tsx tools/export-skill-taxonomy-migration.ts --write && pnpm export:story-envelope && pnpm export:story-patch && pnpm export:story-workshop && pnpm export:moderated-playtest && pnpm export:playtest-release && pnpm package:playtest -- --acknowledge-private-release',
 		checkCommand:
-			'pnpm tsx tools/combat-balance-harness.ts --check && pnpm tsx tools/export-skill-taxonomy-migration.ts --check && pnpm validate:story-envelope && pnpm validate:story-patch && pnpm validate:story-workshop && pnpm validate:moderated-playtest && pnpm validate:playtest-release && pnpm rehearse:playtest-package && pnpm --filter @summonlab/engine test'
+			'pnpm tsx tools/progression-balance-harness.ts --check && pnpm tsx tools/combat-balance-harness.ts --check && pnpm tsx tools/export-skill-taxonomy-migration.ts --check && pnpm validate:story-envelope && pnpm validate:story-patch && pnpm validate:story-workshop && pnpm validate:moderated-playtest && pnpm validate:playtest-release && pnpm rehearse:playtest-package && pnpm --filter @summonlab/engine test'
 	},
 	serializerFor(path, kind) {
 		if (kind === 'raw-file') return null;

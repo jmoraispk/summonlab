@@ -23,6 +23,8 @@ describe('combat content expectation resealing', () => {
 				`});`
 			].join('\n'),
 			`export const PROGRESSION_RULES_V1_BINDING = { contentHash: '${OLD_HASH}' };`,
+			`const PROGRESSION_RULES_V1_CONTENT_HASH = '${OLD_HASH}';`,
+			`it('adds bound v27 progression without widening the frozen v26 schema', () => { const progressionRules = { contentHash: '${OLD_HASH}' }; });`,
 			COMBAT_HASH,
 			READINESS_HASH,
 			PROGRESSION_HASH
@@ -39,6 +41,8 @@ describe('combat content expectation resealing', () => {
 		expect(result.readinessSpecSource).toContain(`content: '${COMBAT_HASH}'`);
 		expect(result.readinessSpecSource).toContain(`contentHash: '${READINESS_HASH}'`);
 		expect(result.progressionRulesSource).toContain(PROGRESSION_HASH);
+		expect(result.gameStateSource).toContain(PROGRESSION_HASH);
+		expect(result.engineCompatibilitySpecSource).toContain(PROGRESSION_HASH);
 	});
 
 	it('rejects an ambiguous or missing named binding', () => {
@@ -49,6 +53,8 @@ describe('combat content expectation resealing', () => {
 				`const LEGACY_AND_READINESS_V1_CONTENT_HASH = '${OLD_HASH}';\nconst READINESS_V2_CONTENT_HASH = '${OLD_HASH}';`,
 				`const HASH = { content: '${OLD_HASH}' } as const;\nit('returns only a decision window or a common combat result', () => { const result = { contentHash: '${OLD_HASH}' }; });`,
 				`export const PROGRESSION_RULES_V1_BINDING = { contentHash: '${OLD_HASH}' };`,
+				`const PROGRESSION_RULES_V1_CONTENT_HASH = '${OLD_HASH}';`,
+				`it('adds bound v27 progression without widening the frozen v26 schema', () => { const progressionRules = { contentHash: '${OLD_HASH}' }; });`,
 				COMBAT_HASH,
 				READINESS_HASH,
 				PROGRESSION_HASH

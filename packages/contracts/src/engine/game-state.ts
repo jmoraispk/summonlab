@@ -859,7 +859,7 @@ const EngineGameStateV26BaseSchema = z
 	.strict();
 
 const PROGRESSION_RULES_V1_CONTENT_HASH =
-	'06fc61271c9c3254836c4f50f845624bea08731952957d0c1d6faf295e8744ce';
+	'c876965e9a35d3358001db0687199651f86563870a1b2fd7e010b2c290776de2';
 
 const EngineGameStateV27BaseSchema = z
 	.object({
