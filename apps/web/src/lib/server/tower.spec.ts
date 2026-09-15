@@ -34,16 +34,25 @@ describe('canonical Tower projection', () => {
 			state: 'exploration',
 			exploration: { positionTileId: state.positionTileId }
 		});
+		if (exploring.state !== 'exploration') throw new Error('Expected exploration view');
+		expect(exploring.exploration.destinations).toContainEqual(
+			expect.objectContaining({ tileId: 'f001-r011-c005', intent: 'travel' })
+		);
 
 		const requestId = '00000000-0000-4000-8000-000000000013';
 		const encounter = projectTowerViewFromState(await loadTowerBand01(), {
 			...attempt,
 			state: { ...state, status: 'encounter', version: 1 },
-			activeEncounter: { requestId, requestHash: 'a'.repeat(64) }
+			activeEncounter: {
+				requestId,
+				requestHash: 'a'.repeat(64),
+				request: { requestId } as never
+			}
 		});
 		expect(encounter).toMatchObject({
 			state: 'encounter',
 			encounterRequestId: requestId,
+			encounterRequest: { requestId },
 			exploration: { positionTileId: state.positionTileId }
 		});
 	});

@@ -1,14 +1,17 @@
-import { createHash, randomUUID } from 'node:crypto';
-
 import { getConfig } from '@summonlab/config';
 import { TOWER_FLOOR_01_EXPLORATION } from '@summonlab/content';
+import { EngineGameStateV13Schema } from '@summonlab/contracts';
 import {
 	beginExplorationEncounter,
-	commitExplorationMove,
+	commitExplorationTravel,
+	getCampaignRun,
+	getEngineSnapshot,
 	getExplorationAttempt
 } from '@summonlab/database';
-import { stepExploration } from '@summonlab/engine/exploration';
+import { applyExplorationTravel, planExplorationTravel } from '@summonlab/engine/exploration';
 import { json } from '@sveltejs/kit';
+
+import { buildTowerEncounterRequest } from '$lib/server/tower-encounter-request';
 
 import type { RequestHandler } from './$types';
 
@@ -19,7 +22,7 @@ export const POST: RequestHandler = async ({ params, request }) => {
 		destinationTileId?: string;
 	} | null;
 	if (!body?.attemptId || !Number.isInteger(body.expectedVersion) || !body.destinationTileId) {
-		return json({ message: 'Choose a legal adjacent Tower tile.' }, { status: 400 });
+		return json({ message: 'Choose a revealed Tower destination.' }, { status: 400 });
 	}
 	try {
 		const config = getConfig();
@@ -27,11 +30,21 @@ export const POST: RequestHandler = async ({ params, request }) => {
 		if (!current || current.state.runId !== params.runId) {
 			return json({ message: 'Exploration attempt not found.' }, { status: 404 });
 		}
-		const next = stepExploration(TOWER_FLOOR_01_EXPLORATION, current.state, body.destinationTileId);
-		let persisted = await commitExplorationMove(config.databaseUrl, {
+		const travel = planExplorationTravel(
+			TOWER_FLOOR_01_EXPLORATION,
+			current.state,
+			body.destinationTileId
+		);
+		const next = applyExplorationTravel(
+			TOWER_FLOOR_01_EXPLORATION,
+			current.state,
+			travel.pathTileIds
+		);
+		let persisted = await commitExplorationTravel(config.databaseUrl, {
 			attemptId: body.attemptId,
 			expectedVersion: body.expectedVersion!,
-			nextState: next
+			nextState: next,
+			pathTileIds: travel.pathTileIds
 		});
 		const tile = TOWER_FLOOR_01_EXPLORATION.tiles.find(
 			(candidate) => candidate.tileId === persisted.state.positionTileId
@@ -40,19 +53,46 @@ export const POST: RequestHandler = async ({ params, request }) => {
 			tile?.interaction?.kind === 'encounter' &&
 			!persisted.state.resolvedInteractionTileIds.includes(tile.tileId)
 		) {
-			const requestId = randomUUID();
-			const requestHash = createHash('sha256')
-				.update(
-					`${persisted.state.attemptId}:${persisted.state.positionTileId}:${tile.interaction.dutySlotId}`
-				)
-				.digest('hex');
+			const [campaign, engine] = await Promise.all([
+				getCampaignRun(config.databaseUrl, params.runId),
+				getEngineSnapshot(config.databaseUrl, params.runId)
+			]);
+			if (!campaign || !engine || engine.state.schemaVersion !== 13) {
+				throw new Error('The campaign party is unavailable for this encounter.');
+			}
+			const campaignState = EngineGameStateV13Schema.parse(engine.state);
+			const heroes = persisted.state.partyHeroIds.map((heroId) => {
+				const campaignHero = campaign.heroes.find(
+					(candidate) => candidate.draft.manifest.characterId === heroId
+				);
+				const stateHero = campaignState.heroes[heroId];
+				if (!campaignHero || !stateHero || stateHero.lifeState !== 'active') {
+					throw new Error(`The Tower party no longer contains combat-capable hero ${heroId}.`);
+				}
+				return {
+					heroId,
+					manifestHash: campaignHero.draft.manifestHash,
+					artKey: campaignHero.draft.manifest.artKey,
+					displayName: campaignHero.draft.manifest.displayName,
+					health: stateHero.health,
+					maximumHealth: stateHero.maxHealth,
+					level: stateHero.progression.level,
+					equipment: stateHero.equipment
+				};
+			});
+			const encounterRequest = buildTowerEncounterRequest({
+				attempt: persisted.state,
+				heroes,
+				dutySlotId: tile.interaction.dutySlotId,
+				observedGameTime: campaignState.simulatedAt
+			});
 			persisted = await beginExplorationEncounter(config.databaseUrl, {
 				attemptId: body.attemptId,
 				expectedVersion: persisted.state.version,
-				request: { requestId, requestHash }
+				request: encounterRequest
 			});
 		}
-		return json(persisted, { headers: { 'cache-control': 'no-store' } });
+		return json({ attempt: persisted, travel }, { headers: { 'cache-control': 'no-store' } });
 	} catch (error) {
 		return json(
 			{ message: error instanceof Error ? error.message : 'The company could not move.' },

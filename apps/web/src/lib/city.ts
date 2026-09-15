@@ -1,6 +1,7 @@
 import type {
 	AuthoritativeEvent,
 	CampaignObjectiveProjection,
+	ExplorationEncounterRequest,
 	NormalizedScenePoint,
 	SettlementPresentation,
 	SettlementSceneDefinition,
@@ -49,6 +50,15 @@ export interface TowerExplorationView {
 		readonly interactionKind?: string | null;
 	}[];
 	readonly legalSteps: readonly { readonly tileId: string; readonly label: string }[];
+	readonly destinations: readonly {
+		readonly tileId: string;
+		readonly row: number;
+		readonly column: number;
+		readonly zoneLabel: string;
+		readonly distance: number;
+		readonly pathTileIds: readonly string[];
+		readonly intent: 'travel' | 'encounter';
+	}[];
 }
 
 export type TowerView =
@@ -61,8 +71,9 @@ export type TowerView =
 	| {
 			readonly state: 'encounter';
 			readonly floors: readonly TowerFloorView[];
-			readonly exploration: Omit<TowerExplorationView, 'status' | 'legalSteps'>;
+			readonly exploration: Omit<TowerExplorationView, 'status' | 'legalSteps' | 'destinations'>;
 			readonly encounterRequestId: string | null;
+			readonly encounterRequest: ExplorationEncounterRequest | null;
 	  }
 	| {
 			readonly state: 'report';

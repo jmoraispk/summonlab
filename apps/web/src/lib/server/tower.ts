@@ -2,7 +2,11 @@ import { TOWER_FLOOR_01_EXPLORATION, loadTowerBand01 } from '@summonlab/content'
 import type { MissionPackage } from '@summonlab/contracts';
 import type { PersistedExplorationAttempt } from '@summonlab/database';
 import { getLatestExplorationAttemptForRun } from '@summonlab/database';
-import { legalExplorationSteps, projectExplorationWindow } from '@summonlab/engine/exploration';
+import {
+	legalExplorationSteps,
+	projectExplorationWindow,
+	safeExplorationDestinations
+} from '@summonlab/engine/exploration';
 
 import type { TowerFloorView, TowerView } from '$lib/city';
 
@@ -84,7 +88,8 @@ export function projectTowerViewFromState(
 			state: 'encounter',
 			floors,
 			exploration: projectExploration(attempt),
-			encounterRequestId: attempt.activeEncounter?.requestId ?? null
+			encounterRequestId: attempt.activeEncounter?.requestId ?? null,
+			encounterRequest: attempt.activeEncounter?.request ?? null
 		};
 	}
 	if (attempt.state.status === 'exploring' || attempt.state.status === 'returning') {
@@ -94,6 +99,7 @@ export function projectTowerViewFromState(
 			exploration: {
 				...projectExploration(attempt),
 				status: attempt.state.status,
+				destinations: safeExplorationDestinations(TOWER_FLOOR_01_EXPLORATION, attempt.state),
 				legalSteps: legalExplorationSteps(TOWER_FLOOR_01_EXPLORATION, attempt.state).map(
 					(step) => ({ tileId: step.tileId, label: step.label })
 				)
