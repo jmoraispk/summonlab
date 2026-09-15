@@ -13,7 +13,7 @@ import {
 	TOWER_COMBAT_CLAIM_POLICY,
 	TOWER_COMBAT_CLAIM_POLICY_BINDING
 } from '../tower-combat-policy';
-import { TOWER_COMBAT_CONTENT_CATALOG } from '../tower-combat-content';
+import { TOWER_COMBAT_CONTENT_CATALOG } from './tower-combat-content';
 
 export interface ValidatedTowerEncounterReceipt {
 	readonly receiptId: string;

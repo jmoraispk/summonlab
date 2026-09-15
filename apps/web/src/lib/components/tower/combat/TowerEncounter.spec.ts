@@ -12,7 +12,7 @@ describe('canonical Tower encounter', () => {
 		);
 		expect(source).toContain('<RealtimeCombatStage');
 		expect(source).toContain('request={encounterRequest}');
-		expect(source).toContain('TOWER_COMBAT_CONTENT_CATALOG');
+		expect(source).toContain('combatContentCatalogForEncounterRequest');
 	});
 
 	it('submits only the completed deterministic receipt', () => {

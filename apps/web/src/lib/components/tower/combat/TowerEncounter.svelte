@@ -9,7 +9,7 @@
 		TOWER_COMBAT_CLAIM_POLICY,
 		TOWER_COMBAT_CLAIM_POLICY_BINDING
 	} from '$lib/tower-combat-policy';
-	import { TOWER_COMBAT_CONTENT_CATALOG } from '$lib/tower-combat-content';
+	import { combatContentCatalogForEncounterRequest } from '$lib/tower-combat-content';
 
 	import RealtimeCombatStage from './automated/RealtimeCombatStage.svelte';
 	import {
@@ -34,6 +34,7 @@
 	} = $props();
 
 	const registry = new CombatSessionRegistry();
+	const contentCatalog = $derived(combatContentCatalogForEncounterRequest(encounterRequest));
 	let started = $state(false);
 	let paused = $state(false);
 	let settling = $state(false);
@@ -68,7 +69,7 @@
 				request={encounterRequest}
 				claimPolicy={TOWER_COMBAT_CLAIM_POLICY}
 				claimPolicyBinding={TOWER_COMBAT_CLAIM_POLICY_BINDING}
-				contentCatalog={TOWER_COMBAT_CONTENT_CATALOG}
+				{contentCatalog}
 				{registry}
 				mode="2.5d-v2"
 				{paused}

@@ -15,9 +15,9 @@ import {
 	TOWER_COMBAT_CLAIM_POLICY,
 	TOWER_COMBAT_CLAIM_POLICY_BINDING
 } from '../tower-combat-policy';
-import { TOWER_COMBAT_CONTENT_CATALOG } from '../tower-combat-content';
 import { buildTowerEncounterRequest } from './tower-encounter-request';
 import { validateTowerEncounterReceipt } from './tower-encounter';
+import { TOWER_COMBAT_CONTENT_CATALOG } from './tower-combat-content';
 
 function completedReceipt(
 	request: ExplorationEncounterRequest,

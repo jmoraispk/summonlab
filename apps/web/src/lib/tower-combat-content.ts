@@ -1,20 +1,14 @@
-import { TOWER_FLOOR_01_PACKAGE } from '@summonlab/content';
-import {
-	SummonableHeroRuntimeManifestSchema,
-	type CombatRasterBinding
+import type {
+	CombatMotionPackBinding,
+	CombatRasterBinding,
+	ExplorationEncounterRequest
 } from '@summonlab/contracts';
 
-import summonableHeroRuntimeManifestSource from '../../static/runtime/summonable-heroes-v1/manifest.json';
 import {
 	createCombatContentCatalog,
 	type CombatContentCatalog
 } from './components/tower/combat/automated/combat-content-catalog';
 import { combatValueHash } from './components/tower/combat/automated/combat-hash';
-
-const runtimeManifest = SummonableHeroRuntimeManifestSchema.parse(
-	summonableHeroRuntimeManifestSource
-);
-const runtimePortraits = runtimeManifest.entries.flatMap((entry) => entry.bundle.assets);
 
 export const RUINED_THRESHOLD_COMBAT_BINDING = Object.freeze({
 	battlefieldId: 'ruined-threshold',
@@ -46,28 +40,6 @@ export const FLOOR_ONE_GOBLIN_COMBAT_BINDING = Object.freeze({
 	approvalId: 'floor-one-goblin-automated-combat-approved'
 });
 
-export function runtimeCombatBindingFor(
-	manifestHash: string,
-	artKey: string | null
-): CombatRasterBinding | null {
-	const asset = runtimePortraits.find(
-		(candidate) =>
-			candidate.usage === 'combat-chibi' &&
-			candidate.sourceStatus === 'approved' &&
-			(candidate.manifestHashes.includes(manifestHash) ||
-				(artKey !== null && candidate.sourceAssetKey === artKey))
-	);
-	return asset
-		? {
-				assetKey: asset.sourceAssetKey,
-				source: asset.publicPath,
-				contentHash: asset.contentHash,
-				approvalStatus: 'approved',
-				approvalId: `${asset.sourceAssetKey}-runtime-approved`
-			}
-		: null;
-}
-
 function trustedRaster(binding: CombatRasterBinding) {
 	return {
 		assetKey: binding.assetKey,
@@ -77,39 +49,47 @@ function trustedRaster(binding: CombatRasterBinding) {
 	};
 }
 
-export const TOWER_COMBAT_CONTENT_CATALOG: CombatContentCatalog = createCombatContentCatalog({
-	heroes: runtimeManifest.entries.flatMap((entry) => {
-		const combatAssetBinding = runtimeCombatBindingFor(entry.manifestHash, null);
-		return combatAssetBinding
-			? [
-					{
-						heroId: entry.characterId,
-						characterManifestHash: entry.manifestHash,
-						combatAssetBinding: trustedRaster(combatAssetBinding),
-						motionPackBinding: null
-					}
-				]
-			: [];
-	}),
-	enemies: TOWER_FLOOR_01_PACKAGE.monsterDuties.map((duty) => ({
-		definitionRef: {
-			enemyDefinitionId: duty.dutySlotId,
-			definitionVersion: `${duty.dutySlotId}-v1`,
-			contentHash: combatValueHash(duty)
-		},
-		combatAssetBinding: trustedRaster(FLOOR_ONE_GOBLIN_COMBAT_BINDING),
-		motionPackBinding: null
-	})),
-	battlefields: [
-		{
-			battlefieldId: RUINED_THRESHOLD_COMBAT_BINDING.battlefieldId,
-			version: RUINED_THRESHOLD_COMBAT_BINDING.version,
-			contentHash: RUINED_THRESHOLD_COMBAT_BINDING.contentHash,
-			environmentAssetBinding: trustedRaster(
-				RUINED_THRESHOLD_COMBAT_BINDING.environmentAssetBinding
-			),
-			occluderAssetBindings:
-				RUINED_THRESHOLD_COMBAT_BINDING.occluderAssetBindings.map(trustedRaster)
-		}
-	]
-});
+function trustedMotionPack(binding: CombatMotionPackBinding | null) {
+	return binding
+		? {
+				motionPackId: binding.motionPackId,
+				source: binding.source,
+				atlasImageSource: binding.atlasImageSource,
+				version: binding.version,
+				contentHash: binding.contentHash,
+				atlasImageHash: binding.atlasImageHash,
+				approvalId: binding.approvalId
+			}
+		: null;
+}
+
+/**
+ * Builds the browser's read-only presentation catalog from the server-issued encounter request.
+ * The server independently validates the completed receipt against its private canonical catalog.
+ */
+export function combatContentCatalogForEncounterRequest(
+	request: ExplorationEncounterRequest
+): CombatContentCatalog {
+	return createCombatContentCatalog({
+		heroes: request.party.map((hero) => ({
+			heroId: hero.heroRef.heroId,
+			characterManifestHash: hero.heroRef.characterManifestHash,
+			combatAssetBinding: trustedRaster(hero.presentation.combatAssetBinding),
+			motionPackBinding: trustedMotionPack(hero.presentation.motionPackBinding)
+		})),
+		enemies: request.enemies.map((enemy) => ({
+			definitionRef: enemy.definitionRef,
+			combatAssetBinding: trustedRaster(enemy.presentation.combatAssetBinding),
+			motionPackBinding: trustedMotionPack(enemy.presentation.motionPackBinding)
+		})),
+		battlefields: [
+			{
+				battlefieldId: request.battlefieldBinding.battlefieldId,
+				version: request.battlefieldBinding.version,
+				contentHash: request.battlefieldBinding.contentHash,
+				environmentAssetBinding: trustedRaster(request.battlefieldBinding.environmentAssetBinding),
+				occluderAssetBindings: request.battlefieldBinding.occluderAssetBindings.map(trustedRaster)
+			}
+		]
+	});
+}

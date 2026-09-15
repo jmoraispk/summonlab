@@ -64,6 +64,20 @@ async function prepareArrivedCampaign(request: APIRequestContext) {
 	};
 }
 
+test('Village stays mounted after its client modules load', async ({ page, request }) => {
+	test.setTimeout(90_000);
+	const browserErrors: string[] = [];
+	page.on('pageerror', (error) => browserErrors.push(error.message));
+	await prepareArrivedCampaign(request);
+
+	await page.goto('/village');
+	await expect(page.getByTestId('city-screen')).toHaveCount(1);
+	await page.waitForTimeout(1_000);
+
+	expect(browserErrors).toEqual([]);
+	await expect(page.getByText('Internal Error', { exact: true })).toHaveCount(0);
+});
+
 test('campaign City uses the shared shell, authoritative actions, and responsive dock', async ({
 	page,
 	request
