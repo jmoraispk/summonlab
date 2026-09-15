@@ -13,8 +13,9 @@ describe('RealtimeCombatStage session boundary', () => {
 		expect(stageSource).toContain('request: ExplorationEncounterRequest;');
 		expect(stageSource).toContain('fixtureRequestHash?: string;');
 		expect(stageSource).toContain('claimPolicyBinding: CombatClaimPolicyBinding;');
+		expect(stageSource).toContain('contentCatalog?: CombatContentCatalog;');
 		expect(stageSource).toContain(
-			'stageSessionDependencies(\n\t\tclaimPolicyForSession,\n\t\tclaimPolicyBindingForSession,\n\t\tfixtureRequestHashForSession\n\t)'
+			'stageSessionDependencies(\n\t\tclaimPolicyForSession,\n\t\tclaimPolicyBindingForSession,\n\t\tfixtureRequestHashForSession,\n\t\tcontentCatalogForSession\n\t)'
 		);
 		expect(stageSource).toContain(
 			'enterCombatSession(requestForSession, dependencies, registryForSession)'

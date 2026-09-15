@@ -89,19 +89,23 @@
 				});
 			}}
 		/>
-	{:else if view.tower.state === 'encounter' && active}
+	{:else if view.tower.state === 'encounter' && active && view.tower.encounterRequest}
 		<TowerEncounter
 			floorName={active.floorName}
 			positionTileId={active.positionTileId}
+			encounterRequest={view.tower.encounterRequest}
 			{busy}
-			onResolve={async (mode) => {
-				await command('encounter', {
+			onComplete={async (receipt) => {
+				const settled = await command('encounter', {
 					attemptId: active.attemptId,
 					expectedVersion: active.version,
-					mode
+					receipt
 				});
+				return settled !== null;
 			}}
 		/>
+	{:else if view.tower.state === 'encounter'}
+		<p class="error" role="alert">The active encounter request could not be loaded.</p>
 	{:else if view.tower.state === 'report'}
 		<TowerReport
 			outcome={view.tower.outcome}

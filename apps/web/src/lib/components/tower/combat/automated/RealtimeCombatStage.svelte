@@ -58,11 +58,13 @@
 		type CombatReplayVerification,
 		type CombatUnavailableState
 	} from './combat-session';
+	import type { CombatContentCatalog } from './combat-content-catalog';
 
 	let {
 		request,
 		claimPolicy,
 		claimPolicyBinding,
+		contentCatalog,
 		fixtureRequestHash,
 		registry,
 		replayOf,
@@ -78,6 +80,7 @@
 		request: ExplorationEncounterRequest;
 		claimPolicy: CombatClaimPolicy;
 		claimPolicyBinding: CombatClaimPolicyBinding;
+		contentCatalog?: CombatContentCatalog;
 		fixtureRequestHash?: string;
 		registry: CombatSessionRegistry;
 		replayOf?: ExplorationCombatReceipt;
@@ -126,6 +129,7 @@
 	const requestForSession = untrack(() => request);
 	const claimPolicyForSession = untrack(() => claimPolicy);
 	const claimPolicyBindingForSession = untrack(() => claimPolicyBinding);
+	const contentCatalogForSession = untrack(() => contentCatalog);
 	const fixtureRequestHashForSession = untrack(() => fixtureRequestHash);
 	const registryForSession = untrack(() => registry);
 	const replayForSession = untrack(() => replayOf);
@@ -134,7 +138,8 @@
 	const dependencies = stageSessionDependencies(
 		claimPolicyForSession,
 		claimPolicyBindingForSession,
-		fixtureRequestHashForSession
+		fixtureRequestHashForSession,
+		contentCatalogForSession
 	);
 	const entry = replayForSession
 		? {

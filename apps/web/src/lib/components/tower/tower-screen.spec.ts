@@ -3,7 +3,7 @@ import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 
 describe('canonical Tower screen ownership', () => {
-	it('keeps floors, exploration, both combat modes, and extraction inside TowerScreen', () => {
+	it('keeps floors, exploration, canonical combat, and extraction inside TowerScreen', () => {
 		const root = fileURLToPath(new URL('.', import.meta.url));
 		const source = readFileSync(`${root}/TowerScreen.svelte`, 'utf8');
 		expect(source).toContain('TowerFloorList');

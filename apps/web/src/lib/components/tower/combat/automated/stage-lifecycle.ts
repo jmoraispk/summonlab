@@ -7,6 +7,7 @@ import type {
 	CombatSessionEntry,
 	CombatUnavailableState
 } from './combat-session';
+import type { CombatContentCatalog } from './combat-content-catalog';
 
 export type StageAssetBinding = Readonly<{
 	source: string;
@@ -150,11 +151,15 @@ export function stageAssetOwner(loader: StageAssetLoader) {
 export function stageSessionDependencies(
 	claimPolicy: CombatClaimPolicy,
 	claimPolicyBinding: CombatClaimPolicyBinding,
-	fixtureRequestHash?: string
+	fixtureRequestHash?: string,
+	contentCatalog?: CombatContentCatalog
 ): CombatSessionDependencies {
-	return fixtureRequestHash === undefined
-		? { claimPolicy, claimPolicyBinding }
-		: { claimPolicy, claimPolicyBinding, fixtureRequestHash };
+	return {
+		claimPolicy,
+		claimPolicyBinding,
+		...(fixtureRequestHash === undefined ? {} : { fixtureRequestHash }),
+		...(contentCatalog === undefined ? {} : { contentCatalog })
+	};
 }
 
 export type StageEntryCallbacks = Readonly<{
