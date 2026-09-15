@@ -187,6 +187,11 @@ describe('integrity owner successor planning', () => {
 		expect(runtimeAndEngineIntegrityOwner.intentMaterialization?.commands).toContainEqual([
 			'pnpm',
 			'tsx',
+			'tools/reseal-runtime-migration-snapshots.ts'
+		]);
+		expect(runtimeAndEngineIntegrityOwner.intentMaterialization?.commands).toContainEqual([
+			'pnpm',
+			'tsx',
 			'tools/combat-balance-harness.ts',
 			'--write'
 		]);
@@ -196,7 +201,9 @@ describe('integrity owner successor planning', () => {
 				'docs/evidence/combat-balance-v1.json',
 				'packages/content/src/agent-readiness-content-binding.ts',
 				'packages/content/src/combat-content-binding.ts',
-				'packages/contracts/src/readiness-combat.ts'
+				'packages/contracts/src/readiness-combat.ts',
+				'packages/engine/src/compatibility/replay-vectors.spec.ts',
+				'packages/engine/src/domains/mission/mission-runtime.spec.ts'
 			])
 		);
 		expect(runtimeAndEngineIntegrityOwner.regeneration?.checkCommand).toContain(

@@ -69,6 +69,7 @@ export const runtimeAndEngineIntegrityOwner: AmericanEnglishIntegrityOwner = {
 	intentMaterialization: {
 		commands: [
 			['pnpm', 'tsx', 'tools/reseal-combat-content-expectations.ts'],
+			['pnpm', 'tsx', 'tools/reseal-runtime-migration-snapshots.ts'],
 			['pnpm', 'tsx', 'tools/combat-balance-harness.ts', '--write'],
 			['pnpm', 'tsx', 'tools/reseal-skill-taxonomy-expectations.ts'],
 			['pnpm', 'tsx', 'tools/export-skill-taxonomy-migration.ts', '--write'],
@@ -83,6 +84,8 @@ export const runtimeAndEngineIntegrityOwner: AmericanEnglishIntegrityOwner = {
 			'packages/content/src/agent-readiness-content-binding.ts',
 			'packages/content/src/combat-content-binding.ts',
 			'packages/contracts/src/readiness-combat.ts',
+			'packages/engine/src/compatibility/replay-vectors.spec.ts',
+			'packages/engine/src/domains/mission/mission-runtime.spec.ts',
 			'tools/package-playtest-release.ts',
 			'packages/engine/src/compatibility/replay-vectors.ts',
 			'docs/evidence/phase-6-story-envelope.json',
@@ -94,7 +97,7 @@ export const runtimeAndEngineIntegrityOwner: AmericanEnglishIntegrityOwner = {
 	},
 	regeneration: {
 		writeCommand:
-			'pnpm tsx tools/reseal-combat-content-expectations.ts && pnpm tsx tools/combat-balance-harness.ts --write && pnpm tsx tools/export-skill-taxonomy-migration.ts --write && pnpm export:story-envelope && pnpm export:story-patch && pnpm export:story-workshop && pnpm export:moderated-playtest && pnpm export:playtest-release && pnpm package:playtest -- --acknowledge-private-release',
+			'pnpm tsx tools/reseal-combat-content-expectations.ts && pnpm tsx tools/reseal-runtime-migration-snapshots.ts && pnpm tsx tools/combat-balance-harness.ts --write && pnpm tsx tools/export-skill-taxonomy-migration.ts --write && pnpm export:story-envelope && pnpm export:story-patch && pnpm export:story-workshop && pnpm export:moderated-playtest && pnpm export:playtest-release && pnpm package:playtest -- --acknowledge-private-release',
 		checkCommand:
 			'pnpm tsx tools/combat-balance-harness.ts --check && pnpm tsx tools/export-skill-taxonomy-migration.ts --check && pnpm validate:story-envelope && pnpm validate:story-patch && pnpm validate:story-workshop && pnpm validate:moderated-playtest && pnpm validate:playtest-release && pnpm rehearse:playtest-package && pnpm --filter @summonlab/engine test'
 	},

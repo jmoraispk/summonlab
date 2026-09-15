@@ -430,7 +430,7 @@ describe('same-window combat arbitration', () => {
 				}),
 				COMBAT_RULES_V1
 			);
-			if (candidate.state.combatants[ID.target]!.downed) observed = candidate;
+			if (candidate.events[1]?.finalOutcome === 'canceled') observed = candidate;
 		}
 		expect(observed).toBeDefined();
 		const result = observed!;

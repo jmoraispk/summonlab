@@ -202,9 +202,8 @@ describe('versioned replay vectors', () => {
 			replay.events.some(
 				(event) =>
 					event.actionId === 'replay-miss' &&
-					!event.effects.some(
-						(effect) => effect.kind === 'resource' && effect.resource === 'health'
-					)
+					event.finalOutcome === 'applied' &&
+					event.effects.some((effect) => effect.kind === 'readiness')
 			)
 		).toBe(true);
 		expect(
@@ -226,26 +225,34 @@ describe('versioned replay vectors', () => {
 			outcome: 'extraction'
 		});
 		expect(replay.result.claims.some((claim) => claim.claimType === 'recovery')).toBe(true);
-		expect(replay.windowHashes).toStrictEqual([
-			'c2005096eda3bac822580340dd65b62308bb5a906c3cb8fc4cf5bdb570bdaf68',
-			'336c460663fd7f905b6391dae33195f936eff747edfa592bcdf82c47250dd948'
-		]);
-		expect(replay.batchHashes).toStrictEqual([
-			'c9ad5bef50b1dbc3c36cdf046a06e1d7fcb84491b9de33e55aff3b846a872d7c',
-			'b73d5f6e90b9337a1ae6e4df9872a2448d560b943df5d0cc4086dddf61795716'
-		]);
-		expect(replay.resolvedEventHashes).toStrictEqual([
-			'0d7d2e5729aa1837b323f1adee027ea8ed34e3a0f616a88d60c088957d3464d6',
-			'7ba45d6a8f1c2e4a60bb1278fad3603cca95377de486445a30ba53f2c05c0bb6'
-		]);
-		expect(replay.stateHashes).toStrictEqual([
-			'70d527ce26d2c8058c83de3fdf68a8079d0da623312652fcf1430d67083c331d',
-			'1161d2d05f97f6d231f19ba30394ce0d578790a50b406035b2bdd1855f1bba6f',
-			'e5551e35d97b4884bfa94637ccc4635200ceb1b80984e63f3974ec401e1921eb',
-			'8b1244d8c6c2bdc35ef0914bc5790756df1cf0b7e3d8462309869dc917a3e0c2'
-		]);
-		expect(hashCanonical(replay.result)).toBe(
-			'604fbe2dbf19f0d52aa7b4710f526ee1e4539fdf8c5b8f4e1793202c564e92be'
-		);
+		expect({
+			windowHashes: replay.windowHashes,
+			batchHashes: replay.batchHashes,
+			resolvedEventHashes: replay.resolvedEventHashes,
+			stateHashes: replay.stateHashes,
+			resultHash: hashCanonical(replay.result)
+		}).toMatchInlineSnapshot(`
+			{
+			  "batchHashes": [
+			    "c9ad5bef50b1dbc3c36cdf046a06e1d7fcb84491b9de33e55aff3b846a872d7c",
+			    "b73d5f6e90b9337a1ae6e4df9872a2448d560b943df5d0cc4086dddf61795716",
+			  ],
+			  "resolvedEventHashes": [
+			    "0d7d2e5729aa1837b323f1adee027ea8ed34e3a0f616a88d60c088957d3464d6",
+			    "7ba45d6a8f1c2e4a60bb1278fad3603cca95377de486445a30ba53f2c05c0bb6",
+			  ],
+			  "resultHash": "604fbe2dbf19f0d52aa7b4710f526ee1e4539fdf8c5b8f4e1793202c564e92be",
+			  "stateHashes": [
+			    "70d527ce26d2c8058c83de3fdf68a8079d0da623312652fcf1430d67083c331d",
+			    "1161d2d05f97f6d231f19ba30394ce0d578790a50b406035b2bdd1855f1bba6f",
+			    "e5551e35d97b4884bfa94637ccc4635200ceb1b80984e63f3974ec401e1921eb",
+			    "8b1244d8c6c2bdc35ef0914bc5790756df1cf0b7e3d8462309869dc917a3e0c2",
+			  ],
+			  "windowHashes": [
+			    "c2005096eda3bac822580340dd65b62308bb5a906c3cb8fc4cf5bdb570bdaf68",
+			    "336c460663fd7f905b6391dae33195f936eff747edfa592bcdf82c47250dd948",
+			  ],
+			}
+		`);
 	});
 });

@@ -1238,83 +1238,85 @@ describe('mission runtime ownership', () => {
 			expect(event.eventType).toBe(eventType);
 			return { commandType, eventType: event.eventType, eventHash: hashCanonical(event) };
 		});
-		expect(observed).toStrictEqual([
-			{
-				commandType: 'master.configure.timing',
-				eventType: 'master.timing.changed',
-				eventHash: '1fd4c6018917ebfbf6258cf4f48e57029d7548c91a9956e8fd8d205842dd5c4b'
-			},
-			{
-				commandType: 'master.configure.fallback',
-				eventType: 'master.fallback.changed',
-				eventHash: '62e5d8806deebcd5e3efa502bb65f3d7d8a3b1be4f93f409a1a193a5509749c4'
-			},
-			{
-				commandType: 'master.apply.safety-stop',
-				eventType: 'master.safety.stopped',
-				eventHash: '0e5f8b2687886fe689c3de9f4b068e258112c07ee87358be9cd47a9e4016922a'
-			},
-			{
-				commandType: 'master.open.decision',
-				eventType: 'master.decision.opened',
-				eventHash: '8d4b764c9b96d2dbeda4916683c330c0996e64f7cacacbb357d76fcff0ac0823'
-			},
-			{
-				commandType: 'mission.prepare',
-				eventType: 'mission.preparation.started',
-				eventHash: 'd1a7d8915ad6e3d33b9bb3ceb4f8a5656407d8e8c10ffc99f0481474c817d35a'
-			},
-			{
-				commandType: 'mission.revise.party',
-				eventType: 'mission.party.revised',
-				eventHash: 'e36d0d2377f1ed5f482dde36939effd16a21bd7e583db96867875d5e42a082cc'
-			},
-			{
-				commandType: 'mission.cancel',
-				eventType: 'mission.preparation.canceled',
-				eventHash: 'f2f09be184ef322205b6fe8f0ba0c16c79e2bd054497c35f2035f8508f7ac355'
-			},
-			{
-				commandType: 'mission.deploy',
-				eventType: 'mission.deployed',
-				eventHash: 'e73d8403dc4ba6e9bd826a9946e5214db8a75ecb520603f1b742762be6104128'
-			},
-			{
-				commandType: 'mission.resolve.turn',
-				eventType: 'mission.round.resolved',
-				eventHash: '94ed1a6d7127a14f36e440729af8b52131e59789d3273a0e6227332cc988d579'
-			},
-			{
-				commandType: 'mission.advance.automatic',
-				eventType: 'mission.round.resolved',
-				eventHash: '47fe9e0a14162afd31b4414a565fb506f5618812340d397f5986b50ebbeb1a3d'
-			},
-			{
-				commandType: 'mission.apply.combat-choice-batch',
-				eventType: 'mission.combat.choice-batch.applied',
-				eventHash: '626ca390911e5a30683f26a1b4b21d78a810928aff18dc52f30667c349073547'
-			},
-			{
-				commandType: 'mission.commit.readiness-terminal',
-				eventType: 'mission.combat.readiness.terminal.committed',
-				eventHash: 'c6d070d031355385159d2588f82da3e8fc1a613768cc230da0efbf9500117dc2'
-			},
-			{
-				commandType: 'mission.open.extraction',
-				eventType: 'mission.extraction.opened',
-				eventHash: '1635fd8ac2509369138e8b4aa678af79af144205dd4b9201bc57adf33f45c810'
-			},
-			{
-				commandType: 'mission.extract',
-				eventType: 'mission.extracted',
-				eventHash: 'c779a99c2b3c9f221ac7de4354d13fc169ec6cd23e61644efbbf43df38018272'
-			},
-			{
-				commandType: 'mission.retreat',
-				eventType: 'mission.retreated',
-				eventHash: '98922c1b99170ff81642c6d74802428cf0fa1c91b827a8501ed1616c603e775e'
-			}
-		]);
+		expect(observed).toMatchInlineSnapshot(`
+			[
+			  {
+			    "commandType": "master.configure.timing",
+			    "eventHash": "1fd4c6018917ebfbf6258cf4f48e57029d7548c91a9956e8fd8d205842dd5c4b",
+			    "eventType": "master.timing.changed",
+			  },
+			  {
+			    "commandType": "master.configure.fallback",
+			    "eventHash": "62e5d8806deebcd5e3efa502bb65f3d7d8a3b1be4f93f409a1a193a5509749c4",
+			    "eventType": "master.fallback.changed",
+			  },
+			  {
+			    "commandType": "master.apply.safety-stop",
+			    "eventHash": "0e5f8b2687886fe689c3de9f4b068e258112c07ee87358be9cd47a9e4016922a",
+			    "eventType": "master.safety.stopped",
+			  },
+			  {
+			    "commandType": "master.open.decision",
+			    "eventHash": "8d4b764c9b96d2dbeda4916683c330c0996e64f7cacacbb357d76fcff0ac0823",
+			    "eventType": "master.decision.opened",
+			  },
+			  {
+			    "commandType": "mission.prepare",
+			    "eventHash": "d1a7d8915ad6e3d33b9bb3ceb4f8a5656407d8e8c10ffc99f0481474c817d35a",
+			    "eventType": "mission.preparation.started",
+			  },
+			  {
+			    "commandType": "mission.revise.party",
+			    "eventHash": "e36d0d2377f1ed5f482dde36939effd16a21bd7e583db96867875d5e42a082cc",
+			    "eventType": "mission.party.revised",
+			  },
+			  {
+			    "commandType": "mission.cancel",
+			    "eventHash": "f2f09be184ef322205b6fe8f0ba0c16c79e2bd054497c35f2035f8508f7ac355",
+			    "eventType": "mission.preparation.canceled",
+			  },
+			  {
+			    "commandType": "mission.deploy",
+			    "eventHash": "e73d8403dc4ba6e9bd826a9946e5214db8a75ecb520603f1b742762be6104128",
+			    "eventType": "mission.deployed",
+			  },
+			  {
+			    "commandType": "mission.resolve.turn",
+			    "eventHash": "94ed1a6d7127a14f36e440729af8b52131e59789d3273a0e6227332cc988d579",
+			    "eventType": "mission.round.resolved",
+			  },
+			  {
+			    "commandType": "mission.advance.automatic",
+			    "eventHash": "47fe9e0a14162afd31b4414a565fb506f5618812340d397f5986b50ebbeb1a3d",
+			    "eventType": "mission.round.resolved",
+			  },
+			  {
+			    "commandType": "mission.apply.combat-choice-batch",
+			    "eventHash": "626ca390911e5a30683f26a1b4b21d78a810928aff18dc52f30667c349073547",
+			    "eventType": "mission.combat.choice-batch.applied",
+			  },
+			  {
+			    "commandType": "mission.commit.readiness-terminal",
+			    "eventHash": "c6d070d031355385159d2588f82da3e8fc1a613768cc230da0efbf9500117dc2",
+			    "eventType": "mission.combat.readiness.terminal.committed",
+			  },
+			  {
+			    "commandType": "mission.open.extraction",
+			    "eventHash": "1635fd8ac2509369138e8b4aa678af79af144205dd4b9201bc57adf33f45c810",
+			    "eventType": "mission.extraction.opened",
+			  },
+			  {
+			    "commandType": "mission.extract",
+			    "eventHash": "c779a99c2b3c9f221ac7de4354d13fc169ec6cd23e61644efbbf43df38018272",
+			    "eventType": "mission.extracted",
+			  },
+			  {
+			    "commandType": "mission.retreat",
+			    "eventHash": "98922c1b99170ff81642c6d74802428cf0fa1c91b827a8501ed1616c603e775e",
+			    "eventType": "mission.retreated",
+			  },
+			]
+		`);
 	});
 
 	it('loads the dedicated monster, combat, and portal owners', () => {
