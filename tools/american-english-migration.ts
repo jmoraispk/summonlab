@@ -2173,11 +2173,20 @@ export async function refreshAmericanEnglishMigrationReceipt(
 	for (const file of previousReceipt.files) addReboundFile(file);
 	for (const file of incrementalReceipt.files) {
 		const currentPath = currentPathsByHash.get(file.successorPathHash);
-		if (
-			currentPath === undefined ||
-			currentEntries.get(currentPath)?.blobId !== file.successorBlobId
-		) {
+		if (currentPath === undefined) continue;
+		if (currentEntries.get(currentPath)?.blobId !== file.successorBlobId) {
 			if (files.has(file.successorPathHash)) continue;
+			const matchingOwners = AMERICAN_ENGLISH_INTEGRITY_OWNERS.filter(
+				(owner) => owner.ownsPath(currentPath) && owner.regeneratesPath(currentPath)
+			);
+			if (
+				file.ownerId !== 'migration-planner' &&
+				matchingOwners.length === 1 &&
+				matchingOwners[0]!.id === file.ownerId
+			) {
+				addReboundFile(file);
+				continue;
+			}
 			throw new Error(
 				'Incremental migration receipt successor does not match the migration commit'
 			);

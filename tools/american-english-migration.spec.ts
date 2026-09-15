@@ -279,7 +279,7 @@ describe('rebased migration receipt refresh', () => {
 					baselineCommit: incrementalBaseline,
 					policyVersion: 1,
 					ruleCounts: refreshedRuleCounts,
-					ownerCounts: { 'migration-planner': 2 },
+					ownerCounts: { 'migration-planner': 2, 'visual-production': 1 },
 					files: [
 						{
 							sourceBlobId: git(repository.root, [
@@ -306,6 +306,19 @@ describe('rebased migration receipt refresh', () => {
 							]),
 							unchangedBinary: false,
 							ownerId: 'migration-planner'
+						},
+						{
+							sourceBlobId: git(repository.root, [
+								'rev-parse',
+								`${newBaseline}:${rebasedOwnerPath}`
+							]),
+							successorPathHash: pathHash(rebasedOwnerPath),
+							successorBlobId: git(repository.root, [
+								'rev-parse',
+								`${newBaseline}:${rebasedOwnerPath}`
+							]),
+							unchangedBinary: false,
+							ownerId: 'visual-production'
 						}
 					]
 				},
