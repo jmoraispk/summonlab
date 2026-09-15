@@ -750,8 +750,8 @@
       "owner": "skill-catalog",
       "designStatus": "accepted",
       "implementationStatus": "implemented",
-			"visualStatus": "approved",
-			"spoilerScope": "public"
+      "visualStatus": "approved",
+      "spoilerScope": "public"
     },
     {
       "wikiId": "art.hero-rarity-frames",
@@ -789,34 +789,34 @@
           "status": "candidate"
         },
         {
-		  "assetKey": "dara-zev-lab-cutout-v1",
-		  "file": "docs/evidence/living-village-lab-cutouts-v1/dara-zev.png",
-		  "status": "candidate"
+          "assetKey": "dara-zev-lab-cutout-v1",
+          "file": "docs/evidence/living-village-lab-cutouts-v1/dara-zev.png",
+          "status": "candidate"
         },
         {
-		  "assetKey": "mara-vey-lab-cutout-v1",
-		  "file": "docs/evidence/living-village-lab-cutouts-v1/mara-vey.png",
-		  "status": "candidate"
+          "assetKey": "mara-vey-lab-cutout-v1",
+          "file": "docs/evidence/living-village-lab-cutouts-v1/mara-vey.png",
+          "status": "candidate"
         },
         {
-		  "assetKey": "jori-daro-lab-cutout-v1",
-		  "file": "docs/evidence/living-village-lab-cutouts-v1/jori-daro.png",
-		  "status": "candidate"
+          "assetKey": "jori-daro-lab-cutout-v1",
+          "file": "docs/evidence/living-village-lab-cutouts-v1/jori-daro.png",
+          "status": "candidate"
         },
         {
-		  "assetKey": "kira-toren-lab-cutout-v1",
-		  "file": "docs/evidence/living-village-lab-cutouts-v1/kira-toren.png",
-		  "status": "candidate"
+          "assetKey": "kira-toren-lab-cutout-v1",
+          "file": "docs/evidence/living-village-lab-cutouts-v1/kira-toren.png",
+          "status": "candidate"
         },
         {
-		  "assetKey": "iven-orra-lab-cutout-v1",
-		  "file": "docs/evidence/living-village-lab-cutouts-v1/iven-orra.png",
-		  "status": "candidate"
+          "assetKey": "iven-orra-lab-cutout-v1",
+          "file": "docs/evidence/living-village-lab-cutouts-v1/iven-orra.png",
+          "status": "candidate"
         },
         {
-		  "assetKey": "remy-nahl-lab-cutout-v1",
-		  "file": "docs/evidence/living-village-lab-cutouts-v1/remy-nahl.png",
-		  "status": "candidate"
+          "assetKey": "remy-nahl-lab-cutout-v1",
+          "file": "docs/evidence/living-village-lab-cutouts-v1/remy-nahl.png",
+          "status": "candidate"
         }
       ]
     },
@@ -1236,8 +1236,8 @@
       "pageType": "monster-reference",
       "owner": "visuals-content",
       "designStatus": "accepted",
-		"implementationStatus": "verified",
-		"visualStatus": "none",
+      "implementationStatus": "complete",
+      "visualStatus": "not-required",
       "spoilerScope": "discoverable"
     },
     {

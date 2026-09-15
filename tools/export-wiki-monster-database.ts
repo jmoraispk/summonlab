@@ -178,7 +178,6 @@ function buildCatalog(current: WikiCatalog, database: CanonicalMonsterWikiDataba
 	const retained = current.entries.filter((entry) => !replaceableWikiIds.has(entry.wikiId));
 	return {
 		...current,
-		lastReviewed: '2026-09-04',
 		entries: [
 			...retained,
 			{

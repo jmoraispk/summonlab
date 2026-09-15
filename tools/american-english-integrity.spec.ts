@@ -747,8 +747,16 @@ describe('integrity binding classification', () => {
 	it('materializes the live v2 skill catalog closure', () => {
 		expect(visualProductionIntegrityOwner.intentMaterialization?.commands).toContainEqual([
 			'pnpm',
+			'export:wiki-monsters'
+		]);
+		expect(visualProductionIntegrityOwner.intentMaterialization?.commands).toContainEqual([
+			'pnpm',
 			'export:skill-icons'
 		]);
+		expect(visualProductionIntegrityOwner.intentMaterialization?.paths).toContain(
+			'docs/wiki/catalog.json'
+		);
+		expect(visualProductionIntegrityOwner.owns('docs/wiki/catalog.json', '')).toBe(true);
 		expect(visualProductionIntegrityOwner.intentMaterialization?.paths).toContain(
 			'assets/wiki/skills/icon-production-v2/catalog.json'
 		);
@@ -775,6 +783,12 @@ describe('integrity binding classification', () => {
 
 		expect(runtimeIndex).toBeGreaterThanOrEqual(0);
 		expect(visualIndex).toBeGreaterThan(runtimeIndex);
+	});
+
+	it('preserves the integration base review date when rebuilding the wiki catalog', () => {
+		const exporter = readFileSync('tools/export-wiki-monster-database.ts', 'utf8');
+
+		expect(exporter).not.toMatch(/lastReviewed:\s*'\d{4}-\d{2}-\d{2}'/u);
 	});
 
 	it('materializes family production compatibility seals from the migrated skill surface', () => {
