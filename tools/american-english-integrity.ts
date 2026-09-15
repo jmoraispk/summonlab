@@ -157,8 +157,8 @@ function scanJsonDigests(
 
 export const AMERICAN_ENGLISH_INTEGRITY_OWNERS = [
 	equipmentIntegrityOwner,
-	visualProductionIntegrityOwner,
-	runtimeAndEngineIntegrityOwner
+	runtimeAndEngineIntegrityOwner,
+	visualProductionIntegrityOwner
 ] as const satisfies readonly AmericanEnglishIntegrityOwner[];
 
 function ownerMatchesPath(owner: AmericanEnglishIntegrityOwner, repositoryPath: string): boolean {

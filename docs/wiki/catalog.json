@@ -1,6 +1,6 @@
 {
   "schemaVersion": "summonlab-wiki-catalog-v1",
-  "lastReviewed": "2026-09-12",
+  "lastReviewed": "2026-09-04",
   "entries": [
     {
       "wikiId": "wiki.root",
@@ -750,8 +750,8 @@
       "owner": "skill-catalog",
       "designStatus": "accepted",
       "implementationStatus": "implemented",
-			"visualStatus": "approved",
-			"spoilerScope": "public"
+      "visualStatus": "approved",
+      "spoilerScope": "public"
     },
     {
       "wikiId": "art.hero-rarity-frames",

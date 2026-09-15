@@ -756,6 +756,18 @@ describe('integrity binding classification', () => {
 		).toBe(false);
 	});
 
+	it('materializes runtime-owned taxonomy before visual catalogs', () => {
+		const runtimeIndex = AMERICAN_ENGLISH_INTEGRITY_OWNERS.findIndex(
+			({ id }) => id === 'runtime-and-engine'
+		);
+		const visualIndex = AMERICAN_ENGLISH_INTEGRITY_OWNERS.findIndex(
+			({ id }) => id === 'visual-production'
+		);
+
+		expect(runtimeIndex).toBeGreaterThanOrEqual(0);
+		expect(visualIndex).toBeGreaterThan(runtimeIndex);
+	});
+
 	it('materializes family production compatibility seals from the migrated skill surface', () => {
 		const contractPath = 'skills/summonlab-image-production/references/contract-v3.json';
 		const bundlePath = 'skills/summonlab-image-production/scripts/family_dispatch_gate.mjs';
