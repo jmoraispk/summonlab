@@ -164,6 +164,15 @@ export const ExplorationPowerEstimateSchema = z
 		}
 	});
 
+export const ExplorationTravelResultSchema = z
+	.object({
+		requestedTileId: ExplorationTileIdSchema,
+		destinationTileId: ExplorationTileIdSchema,
+		pathTileIds: z.array(ExplorationTileIdSchema).min(1),
+		stopReason: z.enum(['destination', 'interaction'])
+	})
+	.strict();
+
 export type ExplorationTileId = z.infer<typeof ExplorationTileIdSchema>;
 export type ExplorationChunkId = z.infer<typeof ExplorationChunkIdSchema>;
 export type ExplorationLifecycle = z.infer<typeof ExplorationLifecycleSchema>;
@@ -174,3 +183,4 @@ export type ExplorationTileDefinition = z.infer<typeof ExplorationTileDefinition
 export type ExplorationFloorDefinition = z.infer<typeof ExplorationFloorDefinitionSchema>;
 export type ExplorationTileProjection = z.infer<typeof ExplorationTileProjectionSchema>;
 export type ExplorationPowerEstimate = z.infer<typeof ExplorationPowerEstimateSchema>;
+export type ExplorationTravelResult = z.infer<typeof ExplorationTravelResultSchema>;

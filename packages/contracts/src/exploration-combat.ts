@@ -82,7 +82,7 @@ export const DeploymentSchema = z
 export const CombatPresentationBindingSchema = z
 	.object({
 		combatAssetBinding: CombatRasterBindingSchema,
-		motionPackBinding: CombatMotionPackBindingSchema,
+		motionPackBinding: CombatMotionPackBindingSchema.nullable(),
 		visualTuning: z
 			.object({
 				bodyOffsetY: z.number().finite().min(-200).max(200),
@@ -224,7 +224,7 @@ const ExplorationEncounterRequestBaseSchema = z
 function hasFixtureBinding(presentation: z.infer<typeof CombatPresentationBindingSchema>) {
 	return (
 		presentation.combatAssetBinding.approvalStatus === 'fixture-only' ||
-		presentation.motionPackBinding.approvalStatus === 'fixture-only'
+		presentation.motionPackBinding?.approvalStatus === 'fixture-only'
 	);
 }
 

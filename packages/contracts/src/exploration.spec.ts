@@ -5,6 +5,7 @@ import {
 	ExplorationAttemptStateSchema,
 	ExplorationFloorDefinitionSchema,
 	ExplorationPowerEstimateSchema,
+	ExplorationTravelResultSchema,
 	ExplorationTileIdSchema,
 	HiddenExplorationTileProjectionSchema
 } from './exploration.js';
@@ -48,6 +49,23 @@ describe('exploration contracts', () => {
 		expect(ExplorationTileIdSchema.safeParse('f001-r00-c00').success).toBe(false);
 		expect(ExplorationChunkIdSchema.parse('f001-k-r006-c010')).toBe('f001-k-r006-c010');
 		expect(ExplorationChunkIdSchema.safeParse('f001-k-r6-c10').success).toBe(false);
+	});
+
+	it('accepts an authoritative multi-tile travel result', () => {
+		const result = {
+			requestedTileId: 'f001-r011-c005',
+			destinationTileId: 'f001-r013-c005',
+			pathTileIds: ['f001-r015-c005', 'f001-r014-c005', 'f001-r013-c005'],
+			stopReason: 'interaction'
+		};
+
+		expect(ExplorationTravelResultSchema.parse(result)).toEqual(result);
+		expect(
+			ExplorationTravelResultSchema.safeParse({ ...result, pathTileIds: [] }).success
+		).toBe(false);
+		expect(
+			ExplorationTravelResultSchema.safeParse({ ...result, clientPath: result.pathTileIds }).success
+		).toBe(false);
 	});
 
 	it('keeps hidden tiles opaque at the schema boundary', () => {

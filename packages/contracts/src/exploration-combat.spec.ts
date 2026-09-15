@@ -308,6 +308,13 @@ describe('exploration combat contracts', () => {
 		});
 	});
 
+	it('allows an approved combat raster without a motion pack', () => {
+		const request = validRequest();
+		request.party[0]!.presentation.motionPackBinding = null;
+
+		expect(parse('ExplorationEncounterRequestSchema', request)?.success).toBe(true);
+	});
+
 	it.each(['explorationPosition', 'fog', 'tileInteractions', 'lootCache', 'rewardBalance'])(
 		'rejects the foreign ownership field %s',
 		(field) => {
