@@ -5,6 +5,7 @@ import { resealCombatContentSources } from './reseal-combat-content-expectations
 const OLD_HASH = 'a'.repeat(64);
 const COMBAT_HASH = 'b'.repeat(64);
 const READINESS_HASH = 'c'.repeat(64);
+const PROGRESSION_HASH = 'd'.repeat(64);
 
 describe('combat content expectation resealing', () => {
 	it('reseals both named aggregates and their contract constants', () => {
@@ -21,8 +22,10 @@ describe('combat content expectation resealing', () => {
 				`  const result = { contentHash: '${OLD_HASH}' };`,
 				`});`
 			].join('\n'),
+			`export const PROGRESSION_RULES_V1_BINDING = { contentHash: '${OLD_HASH}' };`,
 			COMBAT_HASH,
-			READINESS_HASH
+			READINESS_HASH,
+			PROGRESSION_HASH
 		);
 
 		expect(result.combatBindingSource).toContain(COMBAT_HASH);
@@ -35,6 +38,7 @@ describe('combat content expectation resealing', () => {
 		);
 		expect(result.readinessSpecSource).toContain(`content: '${COMBAT_HASH}'`);
 		expect(result.readinessSpecSource).toContain(`contentHash: '${READINESS_HASH}'`);
+		expect(result.progressionRulesSource).toContain(PROGRESSION_HASH);
 	});
 
 	it('rejects an ambiguous or missing named binding', () => {
@@ -44,8 +48,10 @@ describe('combat content expectation resealing', () => {
 				`export const AGENT_READINESS_CONTENT_BINDING_V2 = { contentHash: '${OLD_HASH}' };\n`,
 				`const LEGACY_AND_READINESS_V1_CONTENT_HASH = '${OLD_HASH}';\nconst READINESS_V2_CONTENT_HASH = '${OLD_HASH}';`,
 				`const HASH = { content: '${OLD_HASH}' } as const;\nit('returns only a decision window or a common combat result', () => { const result = { contentHash: '${OLD_HASH}' }; });`,
+				`export const PROGRESSION_RULES_V1_BINDING = { contentHash: '${OLD_HASH}' };`,
 				COMBAT_HASH,
-				READINESS_HASH
+				READINESS_HASH,
+				PROGRESSION_HASH
 			)
 		).toThrow(/exactly one COMBAT_CONTENT_BINDING/u);
 	});

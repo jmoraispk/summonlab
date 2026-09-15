@@ -7,11 +7,16 @@ import {
 	calculateCombatContentAggregateHash,
 	COMBAT_CONTENT_BINDING
 } from '../packages/content/src/combat-content-binding.js';
+import {
+	calculateProgressionRulesContentHash,
+	PROGRESSION_RULES_V1
+} from '../packages/content/src/progression-rules.js';
 
 const COMBAT_BINDING_PATH = 'packages/content/src/combat-content-binding.ts';
 const READINESS_BINDING_PATH = 'packages/content/src/agent-readiness-content-binding.ts';
 const READINESS_CONTRACT_PATH = 'packages/contracts/src/readiness-combat.ts';
 const READINESS_SPEC_PATH = 'packages/contracts/src/readiness-combat.spec.ts';
+const PROGRESSION_RULES_PATH = 'packages/content/src/progression-rules.ts';
 
 function replaceNamedHash(source: string, name: string, contentHash: string): string {
 	const pattern = new RegExp(`(const ${name} =\\n?\\s*')[0-9a-f]{64}(';?)`, 'u');
@@ -65,13 +70,16 @@ export function resealCombatContentSources(
 	readinessBindingSource: string,
 	readinessContractSource: string,
 	readinessSpecSource: string,
+	progressionRulesSource: string,
 	combatContentHash: string,
-	readinessContentHash: string
+	readinessContentHash: string,
+	progressionContentHash: string
 ): {
 	readonly combatBindingSource: string;
 	readonly readinessBindingSource: string;
 	readonly readinessContractSource: string;
 	readonly readinessSpecSource: string;
+	readonly progressionRulesSource: string;
 } {
 	return {
 		combatBindingSource: replaceObjectContentHash(
@@ -105,6 +113,11 @@ export function resealCombatContentSources(
 			'\n\tit(',
 			/(contentHash: ')[0-9a-f]{64}(')/u,
 			readinessContentHash
+		),
+		progressionRulesSource: replaceObjectContentHash(
+			progressionRulesSource,
+			'PROGRESSION_RULES_V1_BINDING',
+			progressionContentHash
 		)
 	};
 }
@@ -115,29 +128,34 @@ async function main(): Promise<void> {
 		COMBAT_BINDING_PATH,
 		READINESS_BINDING_PATH,
 		READINESS_CONTRACT_PATH,
-		READINESS_SPEC_PATH
+		READINESS_SPEC_PATH,
+		PROGRESSION_RULES_PATH
 	] as const;
 	const [
 		combatBindingSource,
 		readinessBindingSource,
 		readinessContractSource,
-		readinessSpecSource
+		readinessSpecSource,
+		progressionRulesSource
 	] = await Promise.all(
 		paths.map((repositoryPath) =>
 			readFile(path.join(repositoryRoot, ...repositoryPath.split('/')), 'utf8')
 		)
 	);
-	const [combatContentHash, readinessContentHash] = await Promise.all([
+	const [combatContentHash, readinessContentHash, progressionContentHash] = await Promise.all([
 		calculateCombatContentAggregateHash(COMBAT_CONTENT_BINDING.components),
-		calculateCombatContentAggregateHash(AGENT_READINESS_CONTENT_BINDING_V2.components)
+		calculateCombatContentAggregateHash(AGENT_READINESS_CONTENT_BINDING_V2.components),
+		calculateProgressionRulesContentHash(PROGRESSION_RULES_V1)
 	]);
 	const resealed = resealCombatContentSources(
 		combatBindingSource,
 		readinessBindingSource,
 		readinessContractSource,
 		readinessSpecSource,
+		progressionRulesSource,
 		combatContentHash,
-		readinessContentHash
+		readinessContentHash,
+		progressionContentHash
 	);
 	await Promise.all([
 		writeFile(
@@ -155,6 +173,10 @@ async function main(): Promise<void> {
 		writeFile(
 			path.join(repositoryRoot, ...READINESS_SPEC_PATH.split('/')),
 			resealed.readinessSpecSource
+		),
+		writeFile(
+			path.join(repositoryRoot, ...PROGRESSION_RULES_PATH.split('/')),
+			resealed.progressionRulesSource
 		)
 	]);
 }

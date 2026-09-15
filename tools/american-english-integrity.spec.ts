@@ -689,6 +689,9 @@ describe('integrity binding classification', () => {
 		expect(runtimeAndEngineIntegrityOwner.intentMaterialization?.paths).toContain(
 			'packages/contracts/src/readiness-combat.spec.ts'
 		);
+		expect(runtimeAndEngineIntegrityOwner.intentMaterialization?.paths).toContain(
+			'packages/content/src/progression-rules.ts'
+		);
 		expect(
 			runtimeAndEngineIntegrityOwner.owns('apps/web/src/lib/server/tower-encounter-request.ts', '')
 		).toBe(true);
