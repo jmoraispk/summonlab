@@ -32,7 +32,7 @@ New heroes use `hero-progression-v2` under `engine-v27` and a content-hashed
   `[1.0, 1.2, 1.4, 1.8, 2.2, 2.6, 3.2, 3.8, 4.4, 5.0]`.
 - Health-per-Vitality rates are `[5, 6, 7, 9, 11, 13, 16, 19, 22, 25]`.
 - Fixed-point integers own authoritative calculations. Awakening does not multiply Agility ratios,
-  armour, resistance, accuracy, cadence, flat equipment/effect values, skill mastery, XP, craft
+  armor, resistance, accuracy, cadence, flat equipment/effect values, skill mastery, XP, craft
   quality, or affinity ratios.
 - Combat and Crafting are the first macro-path identifiers, not exclusive classes. Both award one
   shared hero XP track from completed, meaningful evidence. Forging ships first; cooking and other

@@ -50,7 +50,7 @@
 - Added field-level drift coverage proving delivery tags, mastery accuracy, load, explicit Might/proficiency requirements, and named resistance grants invalidate the relevant combat catalog hash.
 - Added immutable `COMBAT_CONTENT_BINDING`, whose aggregate hash `1abef40c18eb97d4c1694c674f9b4917f286053e6d810d5b4282760f2ab4c2a7` is calculated only from sorted component `{ contentVersion, contentHash }` pairs. Reordering components or attaching a non-authoritative runtime field does not change the aggregate; changing a component hash does.
 - Added the typed `resistanceGrantReceiptsFromAuthoredSources` adapter for equipment profiles, passive skills, and physiology records. It emits canonical `ResistanceGrantReceiptSchema` values with additive stacking, the stricter authored/global cap, `combat-rules-v1`, and collision-safe deterministic receipt/grant IDs derived from JSON-encoded identity tuples.
-- Proved the adapter is connected rather than inert: ten actual heavy-armour cut grants enter `namedResistanceReduction` and are capped at the global `COMBAT_RULES_V1` limit of 7,500 basis points.
+- Proved the adapter is connected rather than inert: ten actual heavy-armor cut grants enter `namedResistanceReduction` and are capped at the global `COMBAT_RULES_V1` limit of 7,500 basis points.
 
 ### RED evidence
 
@@ -65,7 +65,7 @@
 - `pnpm --filter @summonlab/contracts exec vitest run --maxWorkers=1`: 14 files, 119 tests passed.
 - `pnpm --filter @summonlab/content exec vitest run --maxWorkers=1`: 13 files, 66 tests passed.
 - `pnpm --filter @summonlab/engine exec vitest run src/domains/combat/legal-actions.spec.ts src/domains/combat/resistance-grants.spec.ts src/domains/combat/capability.spec.ts src/domains/settlement/equipment.spec.ts src/compatibility/replay-vectors.spec.ts --maxWorkers=1`: 5 files, 34 tests passed.
-- The focused resistance adapter suite passed 7/7, including actual heavy-armour integration, authored/global cap selection, deterministic ordering, collision resistance, canonical schema validation, and invalid-source rejection.
+- The focused resistance adapter suite passed 7/7, including actual heavy-armor integration, authored/global cap selection, deterministic ordering, collision resistance, canonical schema validation, and invalid-source rejection.
 - Contracts, content, and engine typechecks passed. Touched-file ESLint, Prettier, and `git diff --check` passed.
 - `pnpm validate:equipment-content-bindings` passed with the unchanged legacy hash, 140 definitions, and 280 runtime assets.
 

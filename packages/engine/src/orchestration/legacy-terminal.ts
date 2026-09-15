@@ -39,7 +39,7 @@ function finalCombatants(
 					attributes: isMaster
 						? { strength: 20, agility: 20, vitality: 20, magic: 20 }
 						: hero!.capabilityProfile.attributes,
-					armour: 0,
+					armor: 0,
 					resistances: {},
 					readiness: { value: 0, exactNumerator: 0, recoveryUntilTick: 0 },
 					conditions: [],
@@ -77,7 +77,7 @@ function finalCombatants(
 						lastDamagedAtTick:
 							monster.vitality < monster.maximumVitality ? resolution.round.roundNumber : null,
 						attributes: { strength: 20, agility: 20, vitality: 20, magic: 20 },
-						armour: 0,
+						armor: 0,
 						resistances: {},
 						readiness: { value: 0, exactNumerator: 0, recoveryUntilTick: 0 },
 						conditions: [],

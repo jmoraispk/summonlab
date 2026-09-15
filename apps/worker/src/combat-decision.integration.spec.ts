@@ -60,7 +60,7 @@ function combatant(id: string, x: number, kind: 'master' | 'hero' | 'monster', r
 		},
 		lastDamagedAtTick: null,
 		attributes: { strength: 10, agility: 10, vitality: 10, magic: 10 },
-		armour: 0,
+		armor: 0,
 		resistances: {},
 		readiness: { value: readiness, exactNumerator: readiness, recoveryUntilTick: 0 },
 		conditions: [],

@@ -307,7 +307,7 @@ function v26ReadinessStateFromV24Fixture() {
 				},
 				lastDamagedAtTick: null,
 				attributes: { strength: 41, agility: 63, vitality: 52, magic: 74 },
-				armour: 0,
+				armor: 0,
 				resistances: {},
 				readiness: { value: 0, exactNumerator: 0, recoveryUntilTick: 0 },
 				conditions: [],

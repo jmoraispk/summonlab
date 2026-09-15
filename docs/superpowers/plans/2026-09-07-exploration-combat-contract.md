@@ -175,7 +175,7 @@ const CombatProfileSchema = z.object({
 	movementUnitsPerSecond: z.number().finite().positive().max(4),
 	attackRange: z.number().finite().positive().max(2),
 	attackPower: z.number().int().positive().max(100_000),
-	armour: z.number().int().nonnegative().max(100_000),
+	armor: z.number().int().nonnegative().max(100_000),
 	attackIntervalTicks: z.number().int().positive().max(36_000)
 }).strict();
 

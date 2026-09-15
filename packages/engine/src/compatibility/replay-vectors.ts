@@ -1876,7 +1876,7 @@ function readinessReplayCombatant(
 		resources: { health: { current: 100, maximum: 100 }, mana: { current: 20, maximum: 20 } },
 		lastDamagedAtTick: null,
 		attributes,
-		armour: 0,
+		armor: 0,
 		resistances: {},
 		readiness: { value: 10_000, exactNumerator: 10_000, recoveryUntilTick: 0 },
 		conditions: [],

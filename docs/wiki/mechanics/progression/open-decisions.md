@@ -23,7 +23,7 @@ unresolved tuning and future-system questions.
 - Final XP curve, encounter difficulty factors, objective/first-clear bonuses, and repetition decay.
 - Mana-per-Magic progression, safe-rest recovery, and late-tier Health/Mana refill presentation.
 - Agility's real-world movement curve, travel pacing, readiness rate, hit contest, and action cap.
-- Physical and magical skill coefficients, defense curve constant, armour budgets, criticals, and
+- Physical and magical skill coefficients, defense curve constant, armor budgets, criticals, and
   the hero-to-gear power ratio across all ten awakening tiers.
 - Exact summon-channel probabilities for immutable star ratings.
 - Production difficulty, ingredient-rarity, quality, novelty, and repetition tables for forging,

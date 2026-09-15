@@ -155,7 +155,7 @@ no-free-refill rule will apply to Mana after its table is accepted.
 
 The awakening table does not multiply:
 
-- armour or other flat equipment power;
+- armor or other flat equipment power;
 - mitigation, evasion, hit probability, critical probability, or proc probability;
 - action-rate or movement-speed ceilings;
 - skill mastery, ingredient rarity, crafting quality, or experience rewards;

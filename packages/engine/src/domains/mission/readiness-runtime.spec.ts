@@ -148,7 +148,7 @@ describe('mission readiness construction', () => {
 		const fixture = await readinessFixture();
 		const hero = fixture.state.heroes[fixture.heroId]!;
 		const bow = equippedItem(fixture.heroId, 'equipment-ash-bow', 'bow');
-		const torso = equippedItem(fixture.heroId, 'equipment-iron-heavy-armour-torso', 'heavy-torso');
+		const torso = equippedItem(fixture.heroId, 'equipment-iron-heavy-armor-torso', 'heavy-torso');
 		const oldMainHand = hero.equipment.mainHand!;
 		const configured = {
 			...fixture.state,
@@ -196,7 +196,7 @@ describe('mission readiness construction', () => {
 					},
 					combatTraining: {
 						schemaVersion: 'hero-combat-training-v1',
-						proficiencyTags: ['armour-training'],
+						proficiencyTags: ['armor-training'],
 						learnedSkills: [
 							{
 								schemaVersion: 'learned-combat-skill-v1',

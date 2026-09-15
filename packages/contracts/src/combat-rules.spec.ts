@@ -48,7 +48,7 @@ function validRules() {
 			regenerationSaturationConstant: 50,
 			combatRecoveryBasisPoints: 5_000
 		},
-		armour: { curveConstant: 100, maximumGeneralReductionBasisPoints: 7_499 },
+		armor: { curveConstant: 100, maximumGeneralReductionBasisPoints: 7_499 },
 		resistance: { capBasisPoints: 7_500 },
 		learning: {
 			cognitiveMinimumBasisPoints: 9_000,
@@ -224,7 +224,7 @@ describe('combat rules contracts', () => {
 		expect(
 			CombatRulesV1Schema.safeParse({
 				...validRules(),
-				armour: { ...validRules().armour, maximumGeneralReductionBasisPoints: 7_500 }
+				armor: { ...validRules().armor, maximumGeneralReductionBasisPoints: 7_500 }
 			}).success
 		).toBe(false);
 		expect(

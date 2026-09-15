@@ -12,11 +12,11 @@
 	"sourceAuthorities": {
 		"catalog": {
 			"path": "assets/wiki/skills/icon-production-v2/catalog.json",
-			"contentHash": "699ebc2e91788f08646ce3fa05a215b975a14bf19721c8e159f025db6536296d"
+			"contentHash": "ec91b8d955d32db6ce8ff503ed2c1dee01be7fac042adaa313d296c536f566ea"
 		},
 		"assetManifest": {
 			"path": "assets/wiki/skills/icon-production-v2/asset-manifest.json",
-			"contentHash": "018fce982836876a161b58d6cf8319fa535ca5c5fb0f12fa5f68a01d072a1d68"
+			"contentHash": "b517998f412363eb442ecb6c10a0e3d7a952d2be8e2415909ef43cf7f4443d62"
 		}
 	},
 	"records": [
@@ -456,15 +456,15 @@
 			"contentHash": "84a60b689f7e8a67c970e1217083ee540d5d3d77a9c12e5ed2464d2ab045adbd"
 		},
 		{
-			"targetId": "craft:forging:armoursmithing",
-			"sourcePath": "assets/wiki/skills/icon-production-v2/interiors/craft-forging-armoursmithing.png",
+			"targetId": "craft:forging:armorsmithing",
+			"sourcePath": "assets/wiki/skills/icon-production-v2/interiors/craft-forging-armorsmithing.png",
 			"sourceContentHash": "8b6b0f3315ed849f07d3b633634c9ed6058d58d767d603bbf2c250172804e7d3",
 			"framePath": "assets/wiki/skills/icon-production-v2/frames/rarity-frame-e.png",
 			"frameContentHash": "759766a69a4c8daecc72f3714f6e6bcc06560f9dd349e9be676b88bf69199056",
 			"backingContentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15",
 			"compositionContentHash": "e2b0411896fe13daaffb8036d664bf87130cdd6acd6d8d70bd37e524cdd622b4",
-			"file": "icons/craft-forging-armoursmithing.e2b0411896fe.webp",
-			"publicPath": "/wiki-media/skills/visual-catalog-v2/icons/craft-forging-armoursmithing.e2b0411896fe.webp",
+			"file": "icons/craft-forging-armorsmithing.e2b0411896fe.webp",
+			"publicPath": "/wiki-media/skills/visual-catalog-v2/icons/craft-forging-armorsmithing.e2b0411896fe.webp",
 			"width": 512,
 			"height": 512,
 			"bytes": 61412,
@@ -1941,15 +1941,15 @@
 			"contentHash": "5a1f23c8a192e2e7ca2f8475724cded5d2d63afd4cb33d1ad0050133f044fd00"
 		},
 		{
-			"targetId": "magical:enchantment:armour-imbuing",
-			"sourcePath": "assets/wiki/skills/icon-production-v2/interiors/magical-enchantment-armour-imbuing.png",
+			"targetId": "magical:enchantment:armor-imbuing",
+			"sourcePath": "assets/wiki/skills/icon-production-v2/interiors/magical-enchantment-armor-imbuing.png",
 			"sourceContentHash": "2f2c9e965124dac40e18d49b648e15217b13262136e614731df776c6681e323a",
 			"framePath": "assets/wiki/skills/icon-production-v2/frames/rarity-frame-e.png",
 			"frameContentHash": "759766a69a4c8daecc72f3714f6e6bcc06560f9dd349e9be676b88bf69199056",
 			"backingContentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15",
 			"compositionContentHash": "8ff2e8cb9a1f5b98c61294f308630b7e0079f4d1e9ef9e99ad7c39e80e2a628c",
-			"file": "icons/magical-enchantment-armour-imbuing.8ff2e8cb9a1f.webp",
-			"publicPath": "/wiki-media/skills/visual-catalog-v2/icons/magical-enchantment-armour-imbuing.8ff2e8cb9a1f.webp",
+			"file": "icons/magical-enchantment-armor-imbuing.8ff2e8cb9a1f.webp",
+			"publicPath": "/wiki-media/skills/visual-catalog-v2/icons/magical-enchantment-armor-imbuing.8ff2e8cb9a1f.webp",
 			"width": 512,
 			"height": 512,
 			"bytes": 69214,
@@ -2661,15 +2661,15 @@
 			"contentHash": "58eb2da9f040d588708cc84f88b5209b65fc51ce65c72e9ffe8641db1e187598"
 		},
 		{
-			"targetId": "magical:restoration:shared-vigour",
-			"sourcePath": "assets/wiki/skills/icon-production-v2/interiors/magical-restoration-shared-vigour.png",
+			"targetId": "magical:restoration:shared-vigor",
+			"sourcePath": "assets/wiki/skills/icon-production-v2/interiors/magical-restoration-shared-vigor.png",
 			"sourceContentHash": "a30f9612201653ad2ec33f3d215a1e5ceecdf0dc9b994498836700683121e3c1",
 			"framePath": "assets/wiki/skills/icon-production-v2/frames/rarity-frame-e.png",
 			"frameContentHash": "759766a69a4c8daecc72f3714f6e6bcc06560f9dd349e9be676b88bf69199056",
 			"backingContentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15",
 			"compositionContentHash": "2af799e04bd4aedd185adbbb3f110cc11367f4f4ec7386ede9f34c0e83ef65a9",
-			"file": "icons/magical-restoration-shared-vigour.2af799e04bd4.webp",
-			"publicPath": "/wiki-media/skills/visual-catalog-v2/icons/magical-restoration-shared-vigour.2af799e04bd4.webp",
+			"file": "icons/magical-restoration-shared-vigor.2af799e04bd4.webp",
+			"publicPath": "/wiki-media/skills/visual-catalog-v2/icons/magical-restoration-shared-vigor.2af799e04bd4.webp",
 			"width": 512,
 			"height": 512,
 			"bytes": 65556,
@@ -5811,15 +5811,15 @@
 			"contentHash": "134c27ed347b6243bacf5e3ebdaa0f5a729085cfe5ca75e81d167a8c437900a3"
 		},
 		{
-			"targetId": "martial:polearm:rend-armour",
-			"sourcePath": "assets/wiki/skills/icon-production-v2/interiors/martial-polearm-rend-armour.png",
+			"targetId": "martial:polearm:rend-armor",
+			"sourcePath": "assets/wiki/skills/icon-production-v2/interiors/martial-polearm-rend-armor.png",
 			"sourceContentHash": "a127cb9138cbdaa162522c4418ab313caf952a5bfcc295b75d7fac3a01c97b97",
 			"framePath": "assets/wiki/skills/icon-production-v2/frames/rarity-frame-e.png",
 			"frameContentHash": "759766a69a4c8daecc72f3714f6e6bcc06560f9dd349e9be676b88bf69199056",
 			"backingContentHash": "b78d55c4121770720714c40d24912b7e36a7b6f2e09af212cc972baa23839f15",
 			"compositionContentHash": "ade531f92c5512d0bfa93f4979caf8fcafac9bcf3fc694e3f350f09a8774d957",
-			"file": "icons/martial-polearm-rend-armour.ade531f92c55.webp",
-			"publicPath": "/wiki-media/skills/visual-catalog-v2/icons/martial-polearm-rend-armour.ade531f92c55.webp",
+			"file": "icons/martial-polearm-rend-armor.ade531f92c55.webp",
+			"publicPath": "/wiki-media/skills/visual-catalog-v2/icons/martial-polearm-rend-armor.ade531f92c55.webp",
 			"width": 512,
 			"height": 512,
 			"bytes": 64310,
@@ -6880,7 +6880,7 @@
 		"skillCount": 457,
 		"assetCount": 457,
 		"totalBytes": 28015022,
-		"managedDirectoryBytes": 28437579,
+		"managedDirectoryBytes": 28437563,
 		"maximumAssetBytes": 170000,
 		"maximumManagedDirectoryBytes": 60000000
 	}

@@ -90,16 +90,16 @@ export function manaRegeneration(
 		: recovery;
 }
 
-export function armourReduction(armour: number, penetration: number, rules: CombatRulesV1): number {
-	assertNonnegativeInteger(armour, 'Armour');
+export function armorReduction(armor: number, penetration: number, rules: CombatRulesV1): number {
+	assertNonnegativeInteger(armor, 'Armor');
 	assertNonnegativeInteger(penetration, 'Penetration');
-	const effectiveArmour = Math.max(0, armour - penetration);
-	if (effectiveArmour === 0) return 0;
+	const effectiveArmor = Math.max(0, armor - penetration);
+	if (effectiveArmor === 0) return 0;
 	return Math.min(
-		rules.armour.maximumGeneralReductionBasisPoints,
+		rules.armor.maximumGeneralReductionBasisPoints,
 		divideHalfUp(
-			BigInt(effectiveArmour) * BigInt(BASIS_POINTS),
-			BigInt(effectiveArmour + rules.armour.curveConstant)
+			BigInt(effectiveArmor) * BigInt(BASIS_POINTS),
+			BigInt(effectiveArmor + rules.armor.curveConstant)
 		)
 	);
 }

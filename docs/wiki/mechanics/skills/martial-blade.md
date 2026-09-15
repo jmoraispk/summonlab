@@ -23,11 +23,11 @@ Blade owns cutting, thrusting, and coordinated blade-handling techniques. Equipm
 | 5 | **Cross Guard** | Sword | F | A | Swordsmanship Novice | Block with the blade; better than an empty hand, worse than a shield |
 | 6 | **Quick Draw** | Sword | F | P | Swordsmanship Intermediate | Weapon readies instantly; no opening penalty entering combat |
 | 7 | **Edge Care** | Sword | F | P | Swordsmanship Intermediate | Weapon condition holds longer; small accuracy bonus |
-| 8 | **Piercing Thrust** | Sword | E | A | Strength threshold, Measured Cut Intermediate | Single-target; ignores part of armour |
+| 8 | **Piercing Thrust** | Sword | E | A | Strength threshold, Measured Cut Intermediate | Single-target; ignores part of armor |
 | 9 | **Feinting Cut** | Sword | E | A | Feint Intermediate, Measured Cut Intermediate | A cut that becomes a different cut mid-swing |
 | 10 | **Whirl Step** | Sword | E | A | Agility threshold, Horizontal Slash Intermediate | Spinning cut that repositions the hero behind the target |
 | 11 | **Edge Alignment** | Sword | E | P | 5,000 swings | Increased critical rate with swords |
-| 12 | **Half-Sword** | Sword | E | A | Overhead Chop Expert, Strength threshold | Grip the blade for a short armour-splitting thrust at close range |
+| 12 | **Half-Sword** | Sword | E | A | Overhead Chop Expert, Strength threshold | Grip the blade for a short armor-splitting thrust at close range |
 | 13 | **Binding Cut** | Sword | E | A | Cross Guard Expert | Locks the target's weapon for a moment; sets up Disarm |
 | 14 | **Crescent Sweep** | Sword | D | A | Measured Cut Expert, 10,000 swings | A wide arc striking everything in front |
 | 15 | **Drawing Cut** | Sword | D | A | Dexterity threshold, Swordsmanship Expert, teacher | Enormous damage from a sheathed blade. Once per engagement. |
@@ -92,7 +92,7 @@ Blade owns cutting, thrusting, and coordinated blade-handling techniques. Equipm
 | 74 | **Alternating Strike** | — | F | A | Two Blades Novice | Left, right, left. Simple and reliable. |
 | 75 | **Cross Block** | — | F | A | Two Blades Novice | Catch an attack between both blades |
 | 76 | **Mirror Grip** | — | E | P | Two Blades Intermediate | Off-hand penalty substantially reduced |
-| 77 | **Scissor Cut** | — | E | A | Alternating Strike Expert | Both blades strike the same point; bonus against unarmoured |
+| 77 | **Scissor Cut** | — | E | A | Alternating Strike Expert | Both blades strike the same point; bonus against unarmored |
 | 78 | **Rolling Guard** | — | E | A | Cross Block Expert | Block and immediately reposition |
 | 79 | **Dance of Two** | — | D | St | Mirror Grip Master, Agility threshold | Attack speed rises the longer the stance is held |
 | 80 | **Whirlwind** | — | D | A | Scissor Cut Master | Continuous spinning attack; movement permitted |

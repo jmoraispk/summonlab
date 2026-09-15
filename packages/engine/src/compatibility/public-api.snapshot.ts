@@ -51,7 +51,7 @@ export const ENGINE_PUBLIC_RUNTIME_EXPORTS = [
 	'applyExperienceClaim',
 	'applyReadinessActionCost',
 	'applyValidatedStoryPatch',
-	'armourReduction',
+	'armorReduction',
 	'assembleCombatActionDecisionContext',
 	'assembleHeroDecisionPacket',
 	'attributePowerMilli',

@@ -4,7 +4,7 @@
 	"bindings": {
 		"rules": {
 			"rulesVersion": "combat-rules-v1",
-			"rulesHash": "cef7f151b683ec8f7f785059773371a7a9bf7c44aa2e7f46d74bc5b16d206db2"
+			"rulesHash": "5d09d55fce45f609da612e634e6fbb39faa4e098a895ced579f9481fc4536745"
 		},
 		"readinessRules": {
 			"rulesVersion": "agent-readiness-rules-v2",
@@ -12,11 +12,11 @@
 		},
 		"combatContent": {
 			"bindingVersion": "agent-readiness-content-binding-v2",
-			"contentHash": "713a146cc6e5198fc208e0e5cc35bb67023ef9002e37a364dda71905b025eedd",
+			"contentHash": "221f8b8cbbe2e966584c60c88bb7a963ffbf9c0da4a605d198667aa7b76cd074",
 			"components": [
 				{
 					"contentVersion": "combat-equipment-profiles-v1",
-					"contentHash": "38472191a697de908ae96296cf33939d72d985587d029c72c17df108799c97dd"
+					"contentHash": "88a8e86072d5161bbdd96d638058a46673b2b0440723371223a87948a1a60854"
 				},
 				{
 					"contentVersion": "combat-skills-v1",
@@ -55,7 +55,7 @@
 			},
 			"encounterFixture": {
 				"scope": "smallest-authored-complete-encounter",
-				"party": "authored-master-and-one-levelled-hero",
+				"party": "authored-master-and-one-leveled-hero",
 				"opponent": "lowest-health-policy-authored-tower-floor-01-enemy",
 				"pruning": "remove-other-authored-enemies-before-the-first-readiness-window"
 			},
@@ -71,7 +71,7 @@
 				"maximumEvents": 100000
 			}
 		},
-		"profileHash": "24baa43a27b42ff25148927a447df415def4517853f7395c5ae342e23294ee99",
+		"profileHash": "fbce79c0cd79f328c90f6360d2b23f95a31c811258110d432f8f6e5d952936b2",
 		"trialsPerBenchmark": 10000,
 		"encountersPerArchetype": 100,
 		"percentileMethod": "nearest-rank",
@@ -10086,8 +10086,8 @@
 			"productionFallbackIntentBuilds": 20000,
 			"productionFallbackSelectionsApplied": 40000,
 			"completeEncounters": 400,
-			"encounterAdvanceCalls": 4057,
-			"encounterResolverCalls": 3657
+			"encounterAdvanceCalls": 4053,
+			"encounterResolverCalls": 3653
 		}
 	},
 	"fixtures": {
@@ -10115,24 +10115,24 @@
 		"providerCalls": 0,
 		"nondeterministicReplays": 0,
 		"windowHashes": [
-			"c2005096eda3bac822580340dd65b62308bb5a906c3cb8fc4cf5bdb570bdaf68",
-			"336c460663fd7f905b6391dae33195f936eff747edfa592bcdf82c47250dd948"
+			"f25ecae31395c5e1de0ef011fddb8035d103103163779880fbd6314568d13ee4",
+			"2c1af6800e495726b3ddaec0a4488fe3b0833679234e80aef2ccbb505f82686b"
 		],
 		"batchHashes": [
-			"c9ad5bef50b1dbc3c36cdf046a06e1d7fcb84491b9de33e55aff3b846a872d7c",
-			"b73d5f6e90b9337a1ae6e4df9872a2448d560b943df5d0cc4086dddf61795716"
+			"a7aa4147d059ccc1824f0ee3eeed1978456dfb1cf4d2349c0d1404ecd669a111",
+			"64f7fa8e5567b3db6b32a05cbbe6079dd4ace7c59356602597b3964d5e9c9d02"
 		],
 		"resolvedEventHashes": [
-			"0d7d2e5729aa1837b323f1adee027ea8ed34e3a0f616a88d60c088957d3464d6",
-			"7ba45d6a8f1c2e4a60bb1278fad3603cca95377de486445a30ba53f2c05c0bb6"
+			"f306f9a67c1cdc6d66414c08acc56912686efa247b366b93ef5d3991a6a5437a",
+			"46152d977d458e8c981af413ee21bd47b1ded17853ac8889588fd37baa178527"
 		],
 		"stateHashes": [
-			"70d527ce26d2c8058c83de3fdf68a8079d0da623312652fcf1430d67083c331d",
-			"1161d2d05f97f6d231f19ba30394ce0d578790a50b406035b2bdd1855f1bba6f",
-			"e5551e35d97b4884bfa94637ccc4635200ceb1b80984e63f3974ec401e1921eb",
-			"8b1244d8c6c2bdc35ef0914bc5790756df1cf0b7e3d8462309869dc917a3e0c2"
+			"9956785292ec243d888674eafa65f0d7bb3834a0d4c3ddcb99723a60a5dee64c",
+			"c61a4e76468b803c0269f16761491e2dca71669507a5c9a63b54deb4e28e1c60",
+			"bc4edd415aa825f67de918e6ebd4676a4bfe64acb3774f960755c8faad381757",
+			"d470f7a6a06ff441a81d0db70a56cf9883ee186d689e4c991c5eecb07d91848c"
 		],
-		"resultHash": "604fbe2dbf19f0d52aa7b4710f526ee1e4539fdf8c5b8f4e1793202c564e92be"
+		"resultHash": "381b999a9cbd4b707eed2609133f5a413246a9be276baeef8bdf9c93cb5d4a56"
 	},
 	"benchmarks": {
 		"actionCadence": {
@@ -10186,17 +10186,17 @@
 			"completed": 100,
 			"ticks": {
 				"p50": 591,
-				"p95": 1090
+				"p95": 991
 			},
 			"events": {
 				"p50": 18,
-				"p95": 34
+				"p95": 31
 			},
 			"safetyStops": 0,
 			"noProgressStops": 0,
-			"damageApplied": 1611,
-			"partyDamageReceived": 449,
-			"passiveHealthRecovered": 336,
+			"damageApplied": 1606,
+			"partyDamageReceived": 445,
+			"passiveHealthRecovered": 318,
 			"recoveryObservedEncounters": 83,
 			"regenerationStalemates": 0
 		},
@@ -10207,18 +10207,18 @@
 			"completed": 100,
 			"ticks": {
 				"p50": 313,
-				"p95": 474
+				"p95": 635
 			},
 			"events": {
 				"p50": 10,
-				"p95": 16
+				"p95": 21
 			},
 			"safetyStops": 0,
 			"noProgressStops": 0,
-			"damageApplied": 1297,
-			"partyDamageReceived": 212,
-			"passiveHealthRecovered": 130,
-			"recoveryObservedEncounters": 69,
+			"damageApplied": 1352,
+			"partyDamageReceived": 243,
+			"passiveHealthRecovered": 171,
+			"recoveryObservedEncounters": 73,
 			"regenerationStalemates": 0
 		},
 		{
@@ -10227,19 +10227,19 @@
 			"trials": 100,
 			"completed": 100,
 			"ticks": {
-				"p50": 195,
+				"p50": 127,
 				"p95": 398
 			},
 			"events": {
-				"p50": 7,
+				"p50": 4,
 				"p95": 14
 			},
 			"safetyStops": 0,
 			"noProgressStops": 0,
-			"damageApplied": 1151,
-			"partyDamageReceived": 132,
-			"passiveHealthRecovered": 29,
-			"recoveryObservedEncounters": 13,
+			"damageApplied": 1124,
+			"partyDamageReceived": 109,
+			"passiveHealthRecovered": 25,
+			"recoveryObservedEncounters": 15,
 			"regenerationStalemates": 0
 		},
 		{
@@ -10257,10 +10257,10 @@
 			},
 			"safetyStops": 0,
 			"noProgressStops": 0,
-			"damageApplied": 1092,
-			"partyDamageReceived": 83,
-			"passiveHealthRecovered": 14,
-			"recoveryObservedEncounters": 10,
+			"damageApplied": 1088,
+			"partyDamageReceived": 80,
+			"passiveHealthRecovered": 10,
+			"recoveryObservedEncounters": 7,
 			"regenerationStalemates": 0
 		}
 	],
@@ -10278,9 +10278,9 @@
 			"count": 0,
 			"safetyStops": 0,
 			"noProgressStops": 0,
-			"aggregateDamageApplied": 5151,
-			"aggregatePassiveHealthRecovered": 509,
-			"recoveryObservedEncounters": 175
+			"aggregateDamageApplied": 5170,
+			"aggregatePassiveHealthRecovered": 524,
+			"recoveryObservedEncounters": 178
 		},
 		"safetyStops": {
 			"status": "passed",

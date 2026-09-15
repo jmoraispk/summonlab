@@ -4,15 +4,15 @@
 	"bindings": {
 		"rules": {
 			"rulesVersion": "combat-rules-v1",
-			"rulesHash": "cef7f151b683ec8f7f785059773371a7a9bf7c44aa2e7f46d74bc5b16d206db2"
+			"rulesHash": "5d09d55fce45f609da612e634e6fbb39faa4e098a895ced579f9481fc4536745"
 		},
 		"combatContent": {
 			"bindingVersion": "combat-content-binding-v1",
-			"contentHash": "659a89f61dcd9ebc7ca561a78ce5a405f81dbf8740246c7a18e7df697b862489",
+			"contentHash": "dfbff1f2acdb3b68f6be65843e35e4b79e7db274478b793ef146df2b2ac367ac",
 			"components": [
 				{
 					"contentVersion": "combat-equipment-profiles-v1",
-					"contentHash": "38472191a697de908ae96296cf33939d72d985587d029c72c17df108799c97dd"
+					"contentHash": "88a8e86072d5161bbdd96d638058a46673b2b0440723371223a87948a1a60854"
 				},
 				{
 					"contentVersion": "combat-skills-v1",
@@ -50,7 +50,7 @@
 						"regeneration": [
 							"level",
 							"attributeSpread",
-							"armourState"
+							"armorState"
 						],
 						"affinity": [
 							"level",
@@ -58,7 +58,7 @@
 							"archetype",
 							"variant"
 						],
-						"armour": [
+						"armor": [
 							"level",
 							"attributeSpread"
 						]
@@ -129,9 +129,9 @@
 					"trained",
 					"mastered"
 				],
-				"armourStates": [
-					"unarmoured",
-					"armoured"
+				"armorStates": [
+					"unarmored",
+					"armored"
 				]
 			},
 			"attributeFixture": "all-four-attributes-equal-to-level-spread-value",
@@ -164,7 +164,7 @@
 				},
 				"randomStreamCoupling": "paired-baseline-and-adjusted"
 			},
-			"armourPointSeries": [
+			"armorPointSeries": [
 				0,
 				25,
 				50,
@@ -191,11 +191,11 @@
 				},
 				"minimumSuccessfulDamage": 1,
 				"mitigationOrder": [
-					"armour",
+					"armor",
 					"named-resistance"
 				],
 				"penetrationPoints": 0,
-				"resistancePolicy": "apply-authored-armour-receipts-when-enabled"
+				"resistancePolicy": "apply-authored-armor-receipts-when-enabled"
 			},
 			"completionFixture": {
 				"damageModel": "attribute-scaled-level-base-magnitude-with-affinity-candidate",
@@ -211,7 +211,7 @@
 				"minimumSuccessfulDamage": 1,
 				"maximumActions": 200,
 				"missConsumesAction": true,
-				"defencePolicy": "no-armour-or-named-resistance",
+				"defensePolicy": "no-armor-or-named-resistance",
 				"affinityVariantRandomStreamCoupling": "independent",
 				"affinityVariantCoordinates": {
 					"matched": "matched",
@@ -247,7 +247,7 @@
 					"normalizedThroughput": "mean-regeneration-strictly-below-mean-damage",
 					"zeroDamageRatioDenominatorScaledUnits": 1
 				},
-				"armourReduction": {
+				"armorReduction": {
 					"monotonicRequired": true,
 					"maximumExclusiveBasisPoints": 7500,
 					"authoritativeCeilingRequired": true
@@ -309,12 +309,12 @@
 				"99": 30
 			},
 			"benchmarkDomain": {
-				"armour": {
+				"armor": {
 					"minimumPoints": 0,
 					"maximumPoints": 10000,
 					"pointIncrement": 1,
 					"penetrationPoints": 0,
-					"armouredFixturePoints": 100,
+					"armoredFixturePoints": 100,
 					"damageFixturePoints": 250,
 					"damageFixtureIncludesNamedResistance": false,
 					"equipmentMagnitudeStatus": "not-yet-shipped",
@@ -351,23 +351,23 @@
 					"offAffinity": "water"
 				}
 			},
-			"armourFixtures": {
-				"unarmoured": {
-					"armourPoints": 0,
-					"includeHeavyArmourResistance": false
+			"armorFixtures": {
+				"unarmored": {
+					"armorPoints": 0,
+					"includeHeavyArmorResistance": false
 				},
-				"armoured": {
-					"armourPoints": 100,
-					"includeHeavyArmourResistance": true
+				"armored": {
+					"armorPoints": 100,
+					"includeHeavyArmorResistance": true
 				}
 			},
 			"sourceRecords": {
 				"accuracySkillId": "combat-skill-basic-sword-strike",
 				"peerDamageTagSkillId": "combat-skill-basic-sword-strike",
-				"armouredEquipmentDefinitionId": "equipment-iron-heavy-armour-torso"
+				"armoredEquipmentDefinitionId": "equipment-iron-heavy-armor-torso"
 			}
 		},
-		"profileHash": "3a3bf8901c83896d103c36f6dbf02626efc3c0e2cd778176ef07d66feb15b062",
+		"profileHash": "ba68fb56e2c79ee61a2a986ba17d0a8d1b8895a3cceef107c7f1734a18770361",
 		"trialsPerMatchup": 10000,
 		"percentileMethod": "nearest-rank",
 		"seedSet": [
@@ -400,9 +400,9 @@
 			"trained",
 			"mastered"
 		],
-		"armourStates": [
-			"unarmoured",
-			"armoured"
+		"armorStates": [
+			"unarmored",
+			"armored"
 		],
 		"offAffinityArchetypes": [
 			"fire-caster",
@@ -434,7 +434,7 @@
 		},
 		"passiveCombatRegeneration": {
 			"status": "passed",
-			"maximumRegenerationToDamageRatioBasisPoints": 5
+			"maximumRegenerationToDamageRatioBasisPoints": 4
 		},
 		"offAffinityCompletion": {
 			"status": "passed",
@@ -443,14 +443,14 @@
 			"minimumObservedMedianRatioBasisPoints": 10000,
 			"maximumObservedMedianRatioBasisPoints": 11111
 		},
-		"armour": {
+		"armor": {
 			"status": "passed",
 			"maximumAllowedExclusiveReductionBasisPoints": 7500,
 			"maximumObservedReductionBasisPoints": 7499,
 			"monotonic": true,
 			"exhaustiveDomain": {
-				"minimumArmourPoints": 0,
-				"maximumArmourPoints": 10000,
+				"minimumArmorPoints": 0,
+				"maximumArmorPoints": 10000,
 				"testedPointCount": 10001,
 				"curveHash": "d1b4cd26653e2347046bf701f8c3e090c24b32f0f36dc45ef013622a2ef7c1a5"
 			}
@@ -1519,109 +1519,109 @@
 		],
 		"regeneration": [
 			{
-				"matchupId": "regeneration-l10-low-unarmoured",
+				"matchupId": "regeneration-l10-low-unarmored",
 				"level": 10,
 				"attributeSpread": "low",
-				"armourState": "unarmoured",
+				"armorState": "unarmored",
 				"trials": 10000,
 				"completedTrials": 10000,
 				"timedOutTrials": 0,
 				"damageTotal": {
-					"mean": 124.808,
+					"mean": 124.901,
 					"p10": 102,
 					"p50": 128,
 					"p90": 146
 				},
 				"regenerationTotal": {
-					"mean": 0.028,
+					"mean": 0.017,
 					"p10": 0,
 					"p50": 0,
 					"p90": 0
 				},
 				"damagePerThousandTicks": {
-					"mean": 1040.071,
+					"mean": 1040.841,
 					"p10": 850,
 					"p50": 1067,
 					"p90": 1217
 				},
 				"regenerationPerThousandTicks": {
-					"mean": 0.233,
+					"mean": 0.141,
 					"p10": 0,
 					"p50": 0,
 					"p90": 0
 				}
 			},
 			{
-				"matchupId": "regeneration-l10-low-armoured",
+				"matchupId": "regeneration-l10-low-armored",
 				"level": 10,
 				"attributeSpread": "low",
-				"armourState": "armoured",
+				"armorState": "armored",
 				"trials": 10000,
 				"completedTrials": 10000,
 				"timedOutTrials": 0,
 				"damageTotal": {
-					"mean": 57.688,
+					"mean": 57.577,
 					"p10": 48,
 					"p50": 60,
 					"p90": 66
 				},
 				"regenerationTotal": {
-					"mean": 0.024,
+					"mean": 0.025,
 					"p10": 0,
 					"p50": 0,
 					"p90": 0
 				},
 				"damagePerThousandTicks": {
-					"mean": 480.73,
+					"mean": 479.805,
 					"p10": 400,
 					"p50": 500,
 					"p90": 550
 				},
 				"regenerationPerThousandTicks": {
-					"mean": 0.2,
+					"mean": 0.208,
 					"p10": 0,
 					"p50": 0,
 					"p90": 0
 				}
 			},
 			{
-				"matchupId": "regeneration-l10-mid-unarmoured",
+				"matchupId": "regeneration-l10-mid-unarmored",
 				"level": 10,
 				"attributeSpread": "mid",
-				"armourState": "unarmoured",
+				"armorState": "unarmored",
 				"trials": 10000,
 				"completedTrials": 10000,
 				"timedOutTrials": 0,
 				"damageTotal": {
-					"mean": 134.06,
+					"mean": 134.035,
 					"p10": 110,
 					"p50": 138,
-					"p90": 156
+					"p90": 157
 				},
 				"regenerationTotal": {
-					"mean": 0.022,
+					"mean": 0.026,
 					"p10": 0,
 					"p50": 0,
 					"p90": 0
 				},
 				"damagePerThousandTicks": {
-					"mean": 1117.171,
+					"mean": 1116.957,
 					"p10": 917,
 					"p50": 1150,
-					"p90": 1300
+					"p90": 1308
 				},
 				"regenerationPerThousandTicks": {
-					"mean": 0.183,
+					"mean": 0.216,
 					"p10": 0,
 					"p50": 0,
 					"p90": 0
 				}
 			},
 			{
-				"matchupId": "regeneration-l10-mid-armoured",
+				"matchupId": "regeneration-l10-mid-armored",
 				"level": 10,
 				"attributeSpread": "mid",
-				"armourState": "armoured",
+				"armorState": "armored",
 				"trials": 10000,
 				"completedTrials": 10000,
 				"timedOutTrials": 0,
@@ -1632,49 +1632,16 @@
 					"p90": 71
 				},
 				"regenerationTotal": {
-					"mean": 0.031,
-					"p10": 0,
-					"p50": 0,
-					"p90": 0
-				},
-				"damagePerThousandTicks": {
-					"mean": 504.422,
-					"p10": 408,
-					"p50": 517,
-					"p90": 592
-				},
-				"regenerationPerThousandTicks": {
-					"mean": 0.258,
-					"p10": 0,
-					"p50": 0,
-					"p90": 0
-				}
-			},
-			{
-				"matchupId": "regeneration-l10-high-unarmoured",
-				"level": 10,
-				"attributeSpread": "high",
-				"armourState": "unarmoured",
-				"trials": 10000,
-				"completedTrials": 10000,
-				"timedOutTrials": 0,
-				"damageTotal": {
-					"mean": 153.336,
-					"p10": 126,
-					"p50": 157,
-					"p90": 179
-				},
-				"regenerationTotal": {
 					"mean": 0.02,
 					"p10": 0,
 					"p50": 0,
 					"p90": 0
 				},
 				"damagePerThousandTicks": {
-					"mean": 1277.799,
-					"p10": 1050,
-					"p50": 1308,
-					"p90": 1492
+					"mean": 504.43,
+					"p10": 408,
+					"p50": 517,
+					"p90": 592
 				},
 				"regenerationPerThousandTicks": {
 					"mean": 0.166,
@@ -1684,18 +1651,117 @@
 				}
 			},
 			{
-				"matchupId": "regeneration-l10-high-armoured",
+				"matchupId": "regeneration-l10-high-unarmored",
 				"level": 10,
 				"attributeSpread": "high",
-				"armourState": "armoured",
+				"armorState": "unarmored",
 				"trials": 10000,
 				"completedTrials": 10000,
 				"timedOutTrials": 0,
 				"damageTotal": {
-					"mean": 70.037,
+					"mean": 153.145,
+					"p10": 126,
+					"p50": 157,
+					"p90": 179
+				},
+				"regenerationTotal": {
+					"mean": 0.031,
+					"p10": 0,
+					"p50": 0,
+					"p90": 0
+				},
+				"damagePerThousandTicks": {
+					"mean": 1276.212,
+					"p10": 1050,
+					"p50": 1308,
+					"p90": 1492
+				},
+				"regenerationPerThousandTicks": {
+					"mean": 0.258,
+					"p10": 0,
+					"p50": 0,
+					"p90": 0
+				}
+			},
+			{
+				"matchupId": "regeneration-l10-high-armored",
+				"level": 10,
+				"attributeSpread": "high",
+				"armorState": "armored",
+				"trials": 10000,
+				"completedTrials": 10000,
+				"timedOutTrials": 0,
+				"damageTotal": {
+					"mean": 70.173,
 					"p10": 57,
 					"p50": 72,
 					"p90": 82
+				},
+				"regenerationTotal": {
+					"mean": 0.017,
+					"p10": 0,
+					"p50": 0,
+					"p90": 0
+				},
+				"damagePerThousandTicks": {
+					"mean": 584.777,
+					"p10": 475,
+					"p50": 600,
+					"p90": 683
+				},
+				"regenerationPerThousandTicks": {
+					"mean": 0.141,
+					"p10": 0,
+					"p50": 0,
+					"p90": 0
+				}
+			},
+			{
+				"matchupId": "regeneration-l40-low-unarmored",
+				"level": 40,
+				"attributeSpread": "low",
+				"armorState": "unarmored",
+				"trials": 10000,
+				"completedTrials": 10000,
+				"timedOutTrials": 0,
+				"damageTotal": {
+					"mean": 202.071,
+					"p10": 166,
+					"p50": 207,
+					"p90": 235
+				},
+				"regenerationTotal": {
+					"mean": 0.015,
+					"p10": 0,
+					"p50": 0,
+					"p90": 0
+				},
+				"damagePerThousandTicks": {
+					"mean": 1683.925,
+					"p10": 1383,
+					"p50": 1725,
+					"p90": 1958
+				},
+				"regenerationPerThousandTicks": {
+					"mean": 0.125,
+					"p10": 0,
+					"p50": 0,
+					"p90": 0
+				}
+			},
+			{
+				"matchupId": "regeneration-l40-low-armored",
+				"level": 40,
+				"attributeSpread": "low",
+				"armorState": "armored",
+				"trials": 10000,
+				"completedTrials": 10000,
+				"timedOutTrials": 0,
+				"damageTotal": {
+					"mean": 94.119,
+					"p10": 77,
+					"p50": 96,
+					"p90": 110
 				},
 				"regenerationTotal": {
 					"mean": 0.025,
@@ -1704,10 +1770,10 @@
 					"p90": 0
 				},
 				"damagePerThousandTicks": {
-					"mean": 583.643,
-					"p10": 475,
-					"p50": 600,
-					"p90": 683
+					"mean": 784.328,
+					"p10": 642,
+					"p50": 800,
+					"p90": 917
 				},
 				"regenerationPerThousandTicks": {
 					"mean": 0.208,
@@ -1717,216 +1783,18 @@
 				}
 			},
 			{
-				"matchupId": "regeneration-l40-low-unarmoured",
-				"level": 40,
-				"attributeSpread": "low",
-				"armourState": "unarmoured",
-				"trials": 10000,
-				"completedTrials": 10000,
-				"timedOutTrials": 0,
-				"damageTotal": {
-					"mean": 202.072,
-					"p10": 165,
-					"p50": 207,
-					"p90": 236
-				},
-				"regenerationTotal": {
-					"mean": 0.023,
-					"p10": 0,
-					"p50": 0,
-					"p90": 0
-				},
-				"damagePerThousandTicks": {
-					"mean": 1683.933,
-					"p10": 1375,
-					"p50": 1725,
-					"p90": 1967
-				},
-				"regenerationPerThousandTicks": {
-					"mean": 0.191,
-					"p10": 0,
-					"p50": 0,
-					"p90": 0
-				}
-			},
-			{
-				"matchupId": "regeneration-l40-low-armoured",
-				"level": 40,
-				"attributeSpread": "low",
-				"armourState": "armoured",
-				"trials": 10000,
-				"completedTrials": 10000,
-				"timedOutTrials": 0,
-				"damageTotal": {
-					"mean": 94.13,
-					"p10": 77,
-					"p50": 96,
-					"p90": 110
-				},
-				"regenerationTotal": {
-					"mean": 0.022,
-					"p10": 0,
-					"p50": 0,
-					"p90": 0
-				},
-				"damagePerThousandTicks": {
-					"mean": 784.418,
-					"p10": 642,
-					"p50": 800,
-					"p90": 917
-				},
-				"regenerationPerThousandTicks": {
-					"mean": 0.183,
-					"p10": 0,
-					"p50": 0,
-					"p90": 0
-				}
-			},
-			{
-				"matchupId": "regeneration-l40-mid-unarmoured",
+				"matchupId": "regeneration-l40-mid-unarmored",
 				"level": 40,
 				"attributeSpread": "mid",
-				"armourState": "unarmoured",
+				"armorState": "unarmored",
 				"trials": 10000,
 				"completedTrials": 10000,
 				"timedOutTrials": 0,
 				"damageTotal": {
-					"mean": 230.152,
+					"mean": 230.538,
 					"p10": 189,
-					"p50": 236,
+					"p50": 237,
 					"p90": 269
-				},
-				"regenerationTotal": {
-					"mean": 0.019,
-					"p10": 0,
-					"p50": 0,
-					"p90": 0
-				},
-				"damagePerThousandTicks": {
-					"mean": 1917.934,
-					"p10": 1575,
-					"p50": 1967,
-					"p90": 2242
-				},
-				"regenerationPerThousandTicks": {
-					"mean": 0.158,
-					"p10": 0,
-					"p50": 0,
-					"p90": 0
-				}
-			},
-			{
-				"matchupId": "regeneration-l40-mid-armoured",
-				"level": 40,
-				"attributeSpread": "mid",
-				"armourState": "armoured",
-				"trials": 10000,
-				"completedTrials": 10000,
-				"timedOutTrials": 0,
-				"damageTotal": {
-					"mean": 107.794,
-					"p10": 88,
-					"p50": 110,
-					"p90": 126
-				},
-				"regenerationTotal": {
-					"mean": 0.015,
-					"p10": 0,
-					"p50": 0,
-					"p90": 0
-				},
-				"damagePerThousandTicks": {
-					"mean": 898.28,
-					"p10": 733,
-					"p50": 917,
-					"p90": 1050
-				},
-				"regenerationPerThousandTicks": {
-					"mean": 0.125,
-					"p10": 0,
-					"p50": 0,
-					"p90": 0
-				}
-			},
-			{
-				"matchupId": "regeneration-l40-high-unarmoured",
-				"level": 40,
-				"attributeSpread": "high",
-				"armourState": "unarmoured",
-				"trials": 10000,
-				"completedTrials": 10000,
-				"timedOutTrials": 0,
-				"damageTotal": {
-					"mean": 268.123,
-					"p10": 220,
-					"p50": 275,
-					"p90": 313
-				},
-				"regenerationTotal": {
-					"mean": 0.029,
-					"p10": 0,
-					"p50": 0,
-					"p90": 0
-				},
-				"damagePerThousandTicks": {
-					"mean": 2234.357,
-					"p10": 1833,
-					"p50": 2292,
-					"p90": 2608
-				},
-				"regenerationPerThousandTicks": {
-					"mean": 0.241,
-					"p10": 0,
-					"p50": 0,
-					"p90": 0
-				}
-			},
-			{
-				"matchupId": "regeneration-l40-high-armoured",
-				"level": 40,
-				"attributeSpread": "high",
-				"armourState": "armoured",
-				"trials": 10000,
-				"completedTrials": 10000,
-				"timedOutTrials": 0,
-				"damageTotal": {
-					"mean": 126.841,
-					"p10": 104,
-					"p50": 130,
-					"p90": 148
-				},
-				"regenerationTotal": {
-					"mean": 0.022,
-					"p10": 0,
-					"p50": 0,
-					"p90": 0
-				},
-				"damagePerThousandTicks": {
-					"mean": 1057.005,
-					"p10": 867,
-					"p50": 1083,
-					"p90": 1233
-				},
-				"regenerationPerThousandTicks": {
-					"mean": 0.183,
-					"p10": 0,
-					"p50": 0,
-					"p90": 0
-				}
-			},
-			{
-				"matchupId": "regeneration-l70-low-unarmoured",
-				"level": 70,
-				"attributeSpread": "low",
-				"armourState": "unarmoured",
-				"trials": 10000,
-				"completedTrials": 10000,
-				"timedOutTrials": 0,
-				"damageTotal": {
-					"mean": 279.428,
-					"p10": 229,
-					"p50": 286,
-					"p90": 325
 				},
 				"regenerationTotal": {
 					"mean": 0.021,
@@ -1935,10 +1803,10 @@
 					"p90": 0
 				},
 				"damagePerThousandTicks": {
-					"mean": 2328.562,
-					"p10": 1908,
-					"p50": 2383,
-					"p90": 2708
+					"mean": 1921.147,
+					"p10": 1575,
+					"p50": 1975,
+					"p90": 2242
 				},
 				"regenerationPerThousandTicks": {
 					"mean": 0.175,
@@ -1948,216 +1816,51 @@
 				}
 			},
 			{
-				"matchupId": "regeneration-l70-low-armoured",
-				"level": 70,
-				"attributeSpread": "low",
-				"armourState": "armoured",
-				"trials": 10000,
-				"completedTrials": 10000,
-				"timedOutTrials": 0,
-				"damageTotal": {
-					"mean": 133.202,
-					"p10": 109,
-					"p50": 136,
-					"p90": 155
-				},
-				"regenerationTotal": {
-					"mean": 0.015,
-					"p10": 0,
-					"p50": 0,
-					"p90": 0
-				},
-				"damagePerThousandTicks": {
-					"mean": 1110.017,
-					"p10": 908,
-					"p50": 1133,
-					"p90": 1292
-				},
-				"regenerationPerThousandTicks": {
-					"mean": 0.125,
-					"p10": 0,
-					"p50": 0,
-					"p90": 0
-				}
-			},
-			{
-				"matchupId": "regeneration-l70-mid-unarmoured",
-				"level": 70,
+				"matchupId": "regeneration-l40-mid-armored",
+				"level": 40,
 				"attributeSpread": "mid",
-				"armourState": "unarmoured",
+				"armorState": "armored",
 				"trials": 10000,
 				"completedTrials": 10000,
 				"timedOutTrials": 0,
 				"damageTotal": {
-					"mean": 346.809,
-					"p10": 284,
-					"p50": 355,
-					"p90": 404
+					"mean": 107.882,
+					"p10": 88,
+					"p50": 110,
+					"p90": 126
 				},
 				"regenerationTotal": {
-					"mean": 0.01,
+					"mean": 0.03,
 					"p10": 0,
 					"p50": 0,
 					"p90": 0
 				},
 				"damagePerThousandTicks": {
-					"mean": 2890.072,
-					"p10": 2367,
-					"p50": 2958,
-					"p90": 3367
+					"mean": 899.025,
+					"p10": 733,
+					"p50": 917,
+					"p90": 1050
 				},
 				"regenerationPerThousandTicks": {
-					"mean": 0.083,
+					"mean": 0.25,
 					"p10": 0,
 					"p50": 0,
 					"p90": 0
 				}
 			},
 			{
-				"matchupId": "regeneration-l70-mid-armoured",
-				"level": 70,
-				"attributeSpread": "mid",
-				"armourState": "armoured",
-				"trials": 10000,
-				"completedTrials": 10000,
-				"timedOutTrials": 0,
-				"damageTotal": {
-					"mean": 162.594,
-					"p10": 133,
-					"p50": 167,
-					"p90": 188
-				},
-				"regenerationTotal": {
-					"mean": 0.026,
-					"p10": 0,
-					"p50": 0,
-					"p90": 0
-				},
-				"damagePerThousandTicks": {
-					"mean": 1354.948,
-					"p10": 1108,
-					"p50": 1392,
-					"p90": 1567
-				},
-				"regenerationPerThousandTicks": {
-					"mean": 0.216,
-					"p10": 0,
-					"p50": 0,
-					"p90": 0
-				}
-			},
-			{
-				"matchupId": "regeneration-l70-high-unarmoured",
-				"level": 70,
+				"matchupId": "regeneration-l40-high-unarmored",
+				"level": 40,
 				"attributeSpread": "high",
-				"armourState": "unarmoured",
+				"armorState": "unarmored",
 				"trials": 10000,
 				"completedTrials": 10000,
 				"timedOutTrials": 0,
 				"damageTotal": {
-					"mean": 412.407,
-					"p10": 337,
-					"p50": 423,
-					"p90": 482
-				},
-				"regenerationTotal": {
-					"mean": 0.046,
-					"p10": 0,
-					"p50": 0,
-					"p90": 0
-				},
-				"damagePerThousandTicks": {
-					"mean": 3436.725,
-					"p10": 2808,
-					"p50": 3525,
-					"p90": 4017
-				},
-				"regenerationPerThousandTicks": {
-					"mean": 0.384,
-					"p10": 0,
-					"p50": 0,
-					"p90": 0
-				}
-			},
-			{
-				"matchupId": "regeneration-l70-high-armoured",
-				"level": 70,
-				"attributeSpread": "high",
-				"armourState": "armoured",
-				"trials": 10000,
-				"completedTrials": 10000,
-				"timedOutTrials": 0,
-				"damageTotal": {
-					"mean": 189.45,
-					"p10": 155,
-					"p50": 194,
-					"p90": 221
-				},
-				"regenerationTotal": {
-					"mean": 0.028,
-					"p10": 0,
-					"p50": 0,
-					"p90": 0
-				},
-				"damagePerThousandTicks": {
-					"mean": 1578.747,
-					"p10": 1292,
-					"p50": 1617,
-					"p90": 1842
-				},
-				"regenerationPerThousandTicks": {
-					"mean": 0.234,
-					"p10": 0,
-					"p50": 0,
-					"p90": 0
-				}
-			},
-			{
-				"matchupId": "regeneration-l99-low-unarmoured",
-				"level": 99,
-				"attributeSpread": "low",
-				"armourState": "unarmoured",
-				"trials": 10000,
-				"completedTrials": 10000,
-				"timedOutTrials": 0,
-				"damageTotal": {
-					"mean": 368.536,
-					"p10": 301,
-					"p50": 376,
-					"p90": 426
-				},
-				"regenerationTotal": {
-					"mean": 0.019,
-					"p10": 0,
-					"p50": 0,
-					"p90": 0
-				},
-				"damagePerThousandTicks": {
-					"mean": 3071.133,
-					"p10": 2508,
-					"p50": 3133,
-					"p90": 3550
-				},
-				"regenerationPerThousandTicks": {
-					"mean": 0.158,
-					"p10": 0,
-					"p50": 0,
-					"p90": 0
-				}
-			},
-			{
-				"matchupId": "regeneration-l99-low-armoured",
-				"level": 99,
-				"attributeSpread": "low",
-				"armourState": "armoured",
-				"trials": 10000,
-				"completedTrials": 10000,
-				"timedOutTrials": 0,
-				"damageTotal": {
-					"mean": 169.799,
-					"p10": 139,
-					"p50": 174,
-					"p90": 197
+					"mean": 268.272,
+					"p10": 220,
+					"p50": 275,
+					"p90": 313
 				},
 				"regenerationTotal": {
 					"mean": 0.022,
@@ -2166,10 +1869,10 @@
 					"p90": 0
 				},
 				"damagePerThousandTicks": {
-					"mean": 1414.996,
-					"p10": 1158,
-					"p50": 1450,
-					"p90": 1642
+					"mean": 2235.605,
+					"p10": 1833,
+					"p50": 2292,
+					"p90": 2608
 				},
 				"regenerationPerThousandTicks": {
 					"mean": 0.183,
@@ -2179,18 +1882,216 @@
 				}
 			},
 			{
-				"matchupId": "regeneration-l99-mid-unarmoured",
-				"level": 99,
-				"attributeSpread": "mid",
-				"armourState": "unarmoured",
+				"matchupId": "regeneration-l40-high-armored",
+				"level": 40,
+				"attributeSpread": "high",
+				"armorState": "armored",
 				"trials": 10000,
 				"completedTrials": 10000,
 				"timedOutTrials": 0,
 				"damageTotal": {
-					"mean": 483.278,
-					"p10": 395,
-					"p50": 495,
-					"p90": 561
+					"mean": 126.751,
+					"p10": 104,
+					"p50": 130,
+					"p90": 148
+				},
+				"regenerationTotal": {
+					"mean": 0.023,
+					"p10": 0,
+					"p50": 0,
+					"p90": 0
+				},
+				"damagePerThousandTicks": {
+					"mean": 1056.256,
+					"p10": 867,
+					"p50": 1083,
+					"p90": 1233
+				},
+				"regenerationPerThousandTicks": {
+					"mean": 0.191,
+					"p10": 0,
+					"p50": 0,
+					"p90": 0
+				}
+			},
+			{
+				"matchupId": "regeneration-l70-low-unarmored",
+				"level": 70,
+				"attributeSpread": "low",
+				"armorState": "unarmored",
+				"trials": 10000,
+				"completedTrials": 10000,
+				"timedOutTrials": 0,
+				"damageTotal": {
+					"mean": 280.152,
+					"p10": 229,
+					"p50": 287,
+					"p90": 326
+				},
+				"regenerationTotal": {
+					"mean": 0.019,
+					"p10": 0,
+					"p50": 0,
+					"p90": 0
+				},
+				"damagePerThousandTicks": {
+					"mean": 2334.597,
+					"p10": 1908,
+					"p50": 2392,
+					"p90": 2717
+				},
+				"regenerationPerThousandTicks": {
+					"mean": 0.158,
+					"p10": 0,
+					"p50": 0,
+					"p90": 0
+				}
+			},
+			{
+				"matchupId": "regeneration-l70-low-armored",
+				"level": 70,
+				"attributeSpread": "low",
+				"armorState": "armored",
+				"trials": 10000,
+				"completedTrials": 10000,
+				"timedOutTrials": 0,
+				"damageTotal": {
+					"mean": 132.904,
+					"p10": 109,
+					"p50": 136,
+					"p90": 155
+				},
+				"regenerationTotal": {
+					"mean": 0.022,
+					"p10": 0,
+					"p50": 0,
+					"p90": 0
+				},
+				"damagePerThousandTicks": {
+					"mean": 1107.537,
+					"p10": 908,
+					"p50": 1133,
+					"p90": 1292
+				},
+				"regenerationPerThousandTicks": {
+					"mean": 0.183,
+					"p10": 0,
+					"p50": 0,
+					"p90": 0
+				}
+			},
+			{
+				"matchupId": "regeneration-l70-mid-unarmored",
+				"level": 70,
+				"attributeSpread": "mid",
+				"armorState": "unarmored",
+				"trials": 10000,
+				"completedTrials": 10000,
+				"timedOutTrials": 0,
+				"damageTotal": {
+					"mean": 345.852,
+					"p10": 283,
+					"p50": 355,
+					"p90": 403
+				},
+				"regenerationTotal": {
+					"mean": 0.025,
+					"p10": 0,
+					"p50": 0,
+					"p90": 0
+				},
+				"damagePerThousandTicks": {
+					"mean": 2882.099,
+					"p10": 2358,
+					"p50": 2958,
+					"p90": 3358
+				},
+				"regenerationPerThousandTicks": {
+					"mean": 0.208,
+					"p10": 0,
+					"p50": 0,
+					"p90": 0
+				}
+			},
+			{
+				"matchupId": "regeneration-l70-mid-armored",
+				"level": 70,
+				"attributeSpread": "mid",
+				"armorState": "armored",
+				"trials": 10000,
+				"completedTrials": 10000,
+				"timedOutTrials": 0,
+				"damageTotal": {
+					"mean": 161.664,
+					"p10": 133,
+					"p50": 167,
+					"p90": 188
+				},
+				"regenerationTotal": {
+					"mean": 0.029,
+					"p10": 0,
+					"p50": 0,
+					"p90": 0
+				},
+				"damagePerThousandTicks": {
+					"mean": 1347.2,
+					"p10": 1108,
+					"p50": 1392,
+					"p90": 1567
+				},
+				"regenerationPerThousandTicks": {
+					"mean": 0.241,
+					"p10": 0,
+					"p50": 0,
+					"p90": 0
+				}
+			},
+			{
+				"matchupId": "regeneration-l70-high-unarmored",
+				"level": 70,
+				"attributeSpread": "high",
+				"armorState": "unarmored",
+				"trials": 10000,
+				"completedTrials": 10000,
+				"timedOutTrials": 0,
+				"damageTotal": {
+					"mean": 411.981,
+					"p10": 338,
+					"p50": 423,
+					"p90": 481
+				},
+				"regenerationTotal": {
+					"mean": 0.068,
+					"p10": 0,
+					"p50": 0,
+					"p90": 0
+				},
+				"damagePerThousandTicks": {
+					"mean": 3433.176,
+					"p10": 2817,
+					"p50": 3525,
+					"p90": 4008
+				},
+				"regenerationPerThousandTicks": {
+					"mean": 0.567,
+					"p10": 0,
+					"p50": 0,
+					"p90": 0
+				}
+			},
+			{
+				"matchupId": "regeneration-l70-high-armored",
+				"level": 70,
+				"attributeSpread": "high",
+				"armorState": "armored",
+				"trials": 10000,
+				"completedTrials": 10000,
+				"timedOutTrials": 0,
+				"damageTotal": {
+					"mean": 189.754,
+					"p10": 155,
+					"p50": 194,
+					"p90": 222
 				},
 				"regenerationTotal": {
 					"mean": 0.044,
@@ -2199,10 +2100,10 @@
 					"p90": 0
 				},
 				"damagePerThousandTicks": {
-					"mean": 4027.314,
-					"p10": 3292,
-					"p50": 4125,
-					"p90": 4675
+					"mean": 1581.286,
+					"p10": 1292,
+					"p50": 1617,
+					"p90": 1850
 				},
 				"regenerationPerThousandTicks": {
 					"mean": 0.367,
@@ -2212,81 +2113,180 @@
 				}
 			},
 			{
-				"matchupId": "regeneration-l99-mid-armoured",
+				"matchupId": "regeneration-l99-low-unarmored",
 				"level": 99,
-				"attributeSpread": "mid",
-				"armourState": "armoured",
+				"attributeSpread": "low",
+				"armorState": "unarmored",
 				"trials": 10000,
 				"completedTrials": 10000,
 				"timedOutTrials": 0,
 				"damageTotal": {
-					"mean": 224.46,
+					"mean": 368.558,
+					"p10": 301,
+					"p50": 377,
+					"p90": 428
+				},
+				"regenerationTotal": {
+					"mean": 0.016,
+					"p10": 0,
+					"p50": 0,
+					"p90": 0
+				},
+				"damagePerThousandTicks": {
+					"mean": 3071.315,
+					"p10": 2508,
+					"p50": 3142,
+					"p90": 3567
+				},
+				"regenerationPerThousandTicks": {
+					"mean": 0.133,
+					"p10": 0,
+					"p50": 0,
+					"p90": 0
+				}
+			},
+			{
+				"matchupId": "regeneration-l99-low-armored",
+				"level": 99,
+				"attributeSpread": "low",
+				"armorState": "armored",
+				"trials": 10000,
+				"completedTrials": 10000,
+				"timedOutTrials": 0,
+				"damageTotal": {
+					"mean": 170.119,
+					"p10": 139,
+					"p50": 174,
+					"p90": 197
+				},
+				"regenerationTotal": {
+					"mean": 0.014,
+					"p10": 0,
+					"p50": 0,
+					"p90": 0
+				},
+				"damagePerThousandTicks": {
+					"mean": 1417.662,
+					"p10": 1158,
+					"p50": 1450,
+					"p90": 1642
+				},
+				"regenerationPerThousandTicks": {
+					"mean": 0.116,
+					"p10": 0,
+					"p50": 0,
+					"p90": 0
+				}
+			},
+			{
+				"matchupId": "regeneration-l99-mid-unarmored",
+				"level": 99,
+				"attributeSpread": "mid",
+				"armorState": "unarmored",
+				"trials": 10000,
+				"completedTrials": 10000,
+				"timedOutTrials": 0,
+				"damageTotal": {
+					"mean": 483.074,
+					"p10": 394,
+					"p50": 494,
+					"p90": 562
+				},
+				"regenerationTotal": {
+					"mean": 0.04,
+					"p10": 0,
+					"p50": 0,
+					"p90": 0
+				},
+				"damagePerThousandTicks": {
+					"mean": 4025.612,
+					"p10": 3283,
+					"p50": 4117,
+					"p90": 4683
+				},
+				"regenerationPerThousandTicks": {
+					"mean": 0.334,
+					"p10": 0,
+					"p50": 0,
+					"p90": 0
+				}
+			},
+			{
+				"matchupId": "regeneration-l99-mid-armored",
+				"level": 99,
+				"attributeSpread": "mid",
+				"armorState": "armored",
+				"trials": 10000,
+				"completedTrials": 10000,
+				"timedOutTrials": 0,
+				"damageTotal": {
+					"mean": 224.357,
 					"p10": 183,
-					"p50": 230,
+					"p50": 229,
 					"p90": 261
 				},
 				"regenerationTotal": {
-					"mean": 0.036,
+					"mean": 0.046,
 					"p10": 0,
 					"p50": 0,
 					"p90": 0
 				},
 				"damagePerThousandTicks": {
-					"mean": 1870.498,
+					"mean": 1869.646,
 					"p10": 1525,
-					"p50": 1917,
+					"p50": 1908,
 					"p90": 2175
 				},
 				"regenerationPerThousandTicks": {
-					"mean": 0.3,
+					"mean": 0.384,
 					"p10": 0,
 					"p50": 0,
 					"p90": 0
 				}
 			},
 			{
-				"matchupId": "regeneration-l99-high-unarmoured",
+				"matchupId": "regeneration-l99-high-unarmored",
 				"level": 99,
 				"attributeSpread": "high",
-				"armourState": "unarmoured",
+				"armorState": "unarmored",
 				"trials": 10000,
 				"completedTrials": 10000,
 				"timedOutTrials": 0,
 				"damageTotal": {
-					"mean": 566.321,
+					"mean": 566.239,
 					"p10": 464,
 					"p50": 581,
-					"p90": 661
+					"p90": 660
 				},
 				"regenerationTotal": {
-					"mean": 0.026,
+					"mean": 0.046,
 					"p10": 0,
 					"p50": 0,
 					"p90": 0
 				},
 				"damagePerThousandTicks": {
-					"mean": 4719.343,
+					"mean": 4718.66,
 					"p10": 3867,
 					"p50": 4842,
-					"p90": 5508
+					"p90": 5500
 				},
 				"regenerationPerThousandTicks": {
-					"mean": 0.217,
+					"mean": 0.384,
 					"p10": 0,
 					"p50": 0,
 					"p90": 0
 				}
 			},
 			{
-				"matchupId": "regeneration-l99-high-armoured",
+				"matchupId": "regeneration-l99-high-armored",
 				"level": 99,
 				"attributeSpread": "high",
-				"armourState": "armoured",
+				"armorState": "armored",
 				"trials": 10000,
 				"completedTrials": 10000,
 				"timedOutTrials": 0,
 				"damageTotal": {
-					"mean": 265.242,
+					"mean": 265.122,
 					"p10": 218,
 					"p50": 272,
 					"p90": 308
@@ -2298,7 +2298,7 @@
 					"p90": 0
 				},
 				"damagePerThousandTicks": {
-					"mean": 2210.348,
+					"mean": 2209.348,
 					"p10": 1817,
 					"p50": 2267,
 					"p90": 2567
@@ -3009,458 +3009,458 @@
 				"medianCompletionTimeRatioBasisPoints": 11000
 			}
 		],
-		"armour": [
+		"armor": [
 			{
-				"matchupId": "armour-l10-low",
+				"matchupId": "armor-l10-low",
 				"level": 10,
 				"attributeSpread": "low",
 				"trials": 10000,
 				"reductionCurve": [
 					{
-						"armour": 0,
+						"armor": 0,
 						"reductionBasisPoints": 0
 					},
 					{
-						"armour": 25,
+						"armor": 25,
 						"reductionBasisPoints": 2000
 					},
 					{
-						"armour": 50,
+						"armor": 50,
 						"reductionBasisPoints": 3333
 					},
 					{
-						"armour": 100,
+						"armor": 100,
 						"reductionBasisPoints": 5000
 					},
 					{
-						"armour": 150,
+						"armor": 150,
 						"reductionBasisPoints": 6000
 					},
 					{
-						"armour": 250,
+						"armor": 250,
 						"reductionBasisPoints": 7143
 					}
 				],
-				"damageAfterArmour": {
-					"mean": 2.955,
+				"damageAfterArmor": {
+					"mean": 2.964,
 					"p10": 0,
 					"p50": 4,
 					"p90": 4
 				}
 			},
 			{
-				"matchupId": "armour-l10-mid",
+				"matchupId": "armor-l10-mid",
 				"level": 10,
 				"attributeSpread": "mid",
 				"trials": 10000,
 				"reductionCurve": [
 					{
-						"armour": 0,
+						"armor": 0,
 						"reductionBasisPoints": 0
 					},
 					{
-						"armour": 25,
+						"armor": 25,
 						"reductionBasisPoints": 2000
 					},
 					{
-						"armour": 50,
+						"armor": 50,
 						"reductionBasisPoints": 3333
 					},
 					{
-						"armour": 100,
+						"armor": 100,
 						"reductionBasisPoints": 5000
 					},
 					{
-						"armour": 150,
+						"armor": 150,
 						"reductionBasisPoints": 6000
 					},
 					{
-						"armour": 250,
+						"armor": 250,
 						"reductionBasisPoints": 7143
 					}
 				],
-				"damageAfterArmour": {
-					"mean": 3.196,
+				"damageAfterArmor": {
+					"mean": 3.198,
 					"p10": 0,
 					"p50": 4,
 					"p90": 4
 				}
 			},
 			{
-				"matchupId": "armour-l10-high",
+				"matchupId": "armor-l10-high",
 				"level": 10,
 				"attributeSpread": "high",
 				"trials": 10000,
 				"reductionCurve": [
 					{
-						"armour": 0,
+						"armor": 0,
 						"reductionBasisPoints": 0
 					},
 					{
-						"armour": 25,
+						"armor": 25,
 						"reductionBasisPoints": 2000
 					},
 					{
-						"armour": 50,
+						"armor": 50,
 						"reductionBasisPoints": 3333
 					},
 					{
-						"armour": 100,
+						"armor": 100,
 						"reductionBasisPoints": 5000
 					},
 					{
-						"armour": 150,
+						"armor": 150,
 						"reductionBasisPoints": 6000
 					},
 					{
-						"armour": 250,
+						"armor": 250,
 						"reductionBasisPoints": 7143
 					}
 				],
-				"damageAfterArmour": {
-					"mean": 3.689,
+				"damageAfterArmor": {
+					"mean": 3.728,
 					"p10": 0,
 					"p50": 5,
 					"p90": 5
 				}
 			},
 			{
-				"matchupId": "armour-l40-low",
+				"matchupId": "armor-l40-low",
 				"level": 40,
 				"attributeSpread": "low",
 				"trials": 10000,
 				"reductionCurve": [
 					{
-						"armour": 0,
+						"armor": 0,
 						"reductionBasisPoints": 0
 					},
 					{
-						"armour": 25,
+						"armor": 25,
 						"reductionBasisPoints": 2000
 					},
 					{
-						"armour": 50,
+						"armor": 50,
 						"reductionBasisPoints": 3333
 					},
 					{
-						"armour": 100,
+						"armor": 100,
 						"reductionBasisPoints": 5000
 					},
 					{
-						"armour": 150,
+						"armor": 150,
 						"reductionBasisPoints": 6000
 					},
 					{
-						"armour": 250,
+						"armor": 250,
 						"reductionBasisPoints": 7143
 					}
 				],
-				"damageAfterArmour": {
-					"mean": 4.837,
+				"damageAfterArmor": {
+					"mean": 4.863,
 					"p10": 0,
 					"p50": 6,
 					"p90": 7
 				}
 			},
 			{
-				"matchupId": "armour-l40-mid",
+				"matchupId": "armor-l40-mid",
 				"level": 40,
 				"attributeSpread": "mid",
 				"trials": 10000,
 				"reductionCurve": [
 					{
-						"armour": 0,
+						"armor": 0,
 						"reductionBasisPoints": 0
 					},
 					{
-						"armour": 25,
+						"armor": 25,
 						"reductionBasisPoints": 2000
 					},
 					{
-						"armour": 50,
+						"armor": 50,
 						"reductionBasisPoints": 3333
 					},
 					{
-						"armour": 100,
+						"armor": 100,
 						"reductionBasisPoints": 5000
 					},
 					{
-						"armour": 150,
+						"armor": 150,
 						"reductionBasisPoints": 6000
 					},
 					{
-						"armour": 250,
+						"armor": 250,
 						"reductionBasisPoints": 7143
 					}
 				],
-				"damageAfterArmour": {
-					"mean": 5.45,
+				"damageAfterArmor": {
+					"mean": 5.493,
 					"p10": 0,
 					"p50": 7,
 					"p90": 7
 				}
 			},
 			{
-				"matchupId": "armour-l40-high",
+				"matchupId": "armor-l40-high",
 				"level": 40,
 				"attributeSpread": "high",
 				"trials": 10000,
 				"reductionCurve": [
 					{
-						"armour": 0,
+						"armor": 0,
 						"reductionBasisPoints": 0
 					},
 					{
-						"armour": 25,
+						"armor": 25,
 						"reductionBasisPoints": 2000
 					},
 					{
-						"armour": 50,
+						"armor": 50,
 						"reductionBasisPoints": 3333
 					},
 					{
-						"armour": 100,
+						"armor": 100,
 						"reductionBasisPoints": 5000
 					},
 					{
-						"armour": 150,
+						"armor": 150,
 						"reductionBasisPoints": 6000
 					},
 					{
-						"armour": 250,
+						"armor": 250,
 						"reductionBasisPoints": 7143
 					}
 				],
-				"damageAfterArmour": {
-					"mean": 6.378,
+				"damageAfterArmor": {
+					"mean": 6.364,
 					"p10": 0,
 					"p50": 8,
 					"p90": 9
 				}
 			},
 			{
-				"matchupId": "armour-l70-low",
+				"matchupId": "armor-l70-low",
 				"level": 70,
 				"attributeSpread": "low",
 				"trials": 10000,
 				"reductionCurve": [
 					{
-						"armour": 0,
+						"armor": 0,
 						"reductionBasisPoints": 0
 					},
 					{
-						"armour": 25,
+						"armor": 25,
 						"reductionBasisPoints": 2000
 					},
 					{
-						"armour": 50,
+						"armor": 50,
 						"reductionBasisPoints": 3333
 					},
 					{
-						"armour": 100,
+						"armor": 100,
 						"reductionBasisPoints": 5000
 					},
 					{
-						"armour": 150,
+						"armor": 150,
 						"reductionBasisPoints": 6000
 					},
 					{
-						"armour": 250,
+						"armor": 250,
 						"reductionBasisPoints": 7143
 					}
 				],
-				"damageAfterArmour": {
-					"mean": 6.677,
+				"damageAfterArmor": {
+					"mean": 6.7,
 					"p10": 0,
 					"p50": 8,
 					"p90": 9
 				}
 			},
 			{
-				"matchupId": "armour-l70-mid",
+				"matchupId": "armor-l70-mid",
 				"level": 70,
 				"attributeSpread": "mid",
 				"trials": 10000,
 				"reductionCurve": [
 					{
-						"armour": 0,
+						"armor": 0,
 						"reductionBasisPoints": 0
 					},
 					{
-						"armour": 25,
+						"armor": 25,
 						"reductionBasisPoints": 2000
 					},
 					{
-						"armour": 50,
+						"armor": 50,
 						"reductionBasisPoints": 3333
 					},
 					{
-						"armour": 100,
+						"armor": 100,
 						"reductionBasisPoints": 5000
 					},
 					{
-						"armour": 150,
+						"armor": 150,
 						"reductionBasisPoints": 6000
 					},
 					{
-						"armour": 250,
+						"armor": 250,
 						"reductionBasisPoints": 7143
 					}
 				],
-				"damageAfterArmour": {
-					"mean": 8.22,
+				"damageAfterArmor": {
+					"mean": 8.246,
 					"p10": 0,
 					"p50": 10,
 					"p90": 11
 				}
 			},
 			{
-				"matchupId": "armour-l70-high",
+				"matchupId": "armor-l70-high",
 				"level": 70,
 				"attributeSpread": "high",
 				"trials": 10000,
 				"reductionCurve": [
 					{
-						"armour": 0,
+						"armor": 0,
 						"reductionBasisPoints": 0
 					},
 					{
-						"armour": 25,
+						"armor": 25,
 						"reductionBasisPoints": 2000
 					},
 					{
-						"armour": 50,
+						"armor": 50,
 						"reductionBasisPoints": 3333
 					},
 					{
-						"armour": 100,
+						"armor": 100,
 						"reductionBasisPoints": 5000
 					},
 					{
-						"armour": 150,
+						"armor": 150,
 						"reductionBasisPoints": 6000
 					},
 					{
-						"armour": 250,
+						"armor": 250,
 						"reductionBasisPoints": 7143
 					}
 				],
-				"damageAfterArmour": {
-					"mean": 9.722,
+				"damageAfterArmor": {
+					"mean": 9.765,
 					"p10": 0,
 					"p50": 12,
 					"p90": 13
 				}
 			},
 			{
-				"matchupId": "armour-l99-low",
+				"matchupId": "armor-l99-low",
 				"level": 99,
 				"attributeSpread": "low",
 				"trials": 10000,
 				"reductionCurve": [
 					{
-						"armour": 0,
+						"armor": 0,
 						"reductionBasisPoints": 0
 					},
 					{
-						"armour": 25,
+						"armor": 25,
 						"reductionBasisPoints": 2000
 					},
 					{
-						"armour": 50,
+						"armor": 50,
 						"reductionBasisPoints": 3333
 					},
 					{
-						"armour": 100,
+						"armor": 100,
 						"reductionBasisPoints": 5000
 					},
 					{
-						"armour": 150,
+						"armor": 150,
 						"reductionBasisPoints": 6000
 					},
 					{
-						"armour": 250,
+						"armor": 250,
 						"reductionBasisPoints": 7143
 					}
 				],
-				"damageAfterArmour": {
-					"mean": 8.793,
+				"damageAfterArmor": {
+					"mean": 8.801,
 					"p10": 0,
 					"p50": 11,
 					"p90": 12
 				}
 			},
 			{
-				"matchupId": "armour-l99-mid",
+				"matchupId": "armor-l99-mid",
 				"level": 99,
 				"attributeSpread": "mid",
 				"trials": 10000,
 				"reductionCurve": [
 					{
-						"armour": 0,
+						"armor": 0,
 						"reductionBasisPoints": 0
 					},
 					{
-						"armour": 25,
+						"armor": 25,
 						"reductionBasisPoints": 2000
 					},
 					{
-						"armour": 50,
+						"armor": 50,
 						"reductionBasisPoints": 3333
 					},
 					{
-						"armour": 100,
+						"armor": 100,
 						"reductionBasisPoints": 5000
 					},
 					{
-						"armour": 150,
+						"armor": 150,
 						"reductionBasisPoints": 6000
 					},
 					{
-						"armour": 250,
+						"armor": 250,
 						"reductionBasisPoints": 7143
 					}
 				],
-				"damageAfterArmour": {
-					"mean": 11.477,
+				"damageAfterArmor": {
+					"mean": 11.41,
 					"p10": 0,
 					"p50": 14,
 					"p90": 15
 				}
 			},
 			{
-				"matchupId": "armour-l99-high",
+				"matchupId": "armor-l99-high",
 				"level": 99,
 				"attributeSpread": "high",
 				"trials": 10000,
 				"reductionCurve": [
 					{
-						"armour": 0,
+						"armor": 0,
 						"reductionBasisPoints": 0
 					},
 					{
-						"armour": 25,
+						"armor": 25,
 						"reductionBasisPoints": 2000
 					},
 					{
-						"armour": 50,
+						"armor": 50,
 						"reductionBasisPoints": 3333
 					},
 					{
-						"armour": 100,
+						"armor": 100,
 						"reductionBasisPoints": 5000
 					},
 					{
-						"armour": 150,
+						"armor": 150,
 						"reductionBasisPoints": 6000
 					},
 					{
-						"armour": 250,
+						"armor": 250,
 						"reductionBasisPoints": 7143
 					}
 				],
-				"damageAfterArmour": {
-					"mean": 13.392,
+				"damageAfterArmor": {
+					"mean": 13.515,
 					"p10": 0,
 					"p50": 17,
 					"p90": 18

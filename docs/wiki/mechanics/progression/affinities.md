@@ -31,11 +31,11 @@ rank growth, dual-affinity rarity, and awakening triggers remain separate author
 These canonical identities and statuses remain future combat content; the table is not an attribute
 conversion table.
 
-| Affinity | Colour | Character | Status | Behaviour |
+| Affinity | Color | Character | Status | Behavior |
 | --- | --- | --- | --- | --- |
 | **Fire** | Vermilion | Expansion, aggression, consumption | **Burn** | Damage over time; intensity stacks rather than duration |
-| **Earth** | Ochre-brown | Stability, endurance, weight | **Weight** | Slows actions and supports authored stagger or Break effects |
-| **Wind** | Pale green-grey | Motion, severance, displacement | **Lacerate** | Cutting damage scaling with target movement |
+| **Earth** | Ocher-brown | Stability, endurance, weight | **Weight** | Slows actions and supports authored stagger or Break effects |
+| **Wind** | Pale green-gray | Motion, severance, displacement | **Lacerate** | Cutting damage scaling with target movement |
 | **Water** | Deep blue | Flow, depth, patience | **Chill** | Reduces action speed and Mana recovery; may escalate toward torpor |
 
 ## 2.4 The overcoming cycle
@@ -54,13 +54,13 @@ canon.
 The closed six-pair vocabulary remains accepted design direction. Exact acquisition, stability,
 rank, and combat strength are deferred.
 
-| Dual | From | Colour | Character | Status |
+| Dual | From | Color | Character | Status |
 | --- | --- | --- | --- | --- |
-| **Mist** | Water × Fire | Near-white grey | Vapour and concealment | **Shroud** — accuracy loss and broken target lock |
+| **Mist** | Water × Fire | Near-white gray | Vapor and concealment | **Shroud** — accuracy loss and broken target lock |
 | **Lightning** | Fire × Wind | Gold-violet | Discharge and instantaneity | **Shock** — cast interruption and nearby chaining |
-| **Sand** | Wind × Earth | Tan-ochre | Erosion and abrasion | **Abrade** — armour shred and blind |
-| **Rot** | Earth × Water | Sickly green | Decay and waterlogged ground | **Decay** — stacking degeneration that ignores armour |
-| **Magma** | Fire × Earth | Molten red-black | Liquid stone and burning crust | **Melt** — armour destruction and ground denial |
+| **Sand** | Wind × Earth | Tan-ocher | Erosion and abrasion | **Abrade** — armor shred and blind |
+| **Rot** | Earth × Water | Sickly green | Decay and waterlogged ground | **Decay** — stacking degeneration that ignores armor |
+| **Magma** | Fire × Earth | Molten red-black | Liquid stone and burning crust | **Melt** — armor destruction and ground denial |
 | **Ice** | Water × Wind | Pale cyan | Contraction and brittleness | **Freeze** — hard stop and increased stagger taken |
 
 ![Affinity pairing matrix for four bases and six duals.](../../../../assets/enemies/wiki/affinities/reference/affinity-matrix-v2.svg)

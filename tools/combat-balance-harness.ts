@@ -39,7 +39,7 @@ import {
 	deterministicUuid
 } from '../packages/engine/src/index.js';
 import {
-	armourReduction,
+	armorReduction,
 	attributeScaledMagnitude,
 	healthRegeneration,
 	maximumHealth,
@@ -70,12 +70,12 @@ const SEED_SET = [
 ] as const;
 
 const BASIS_POINTS = 10_000;
-const HEAVY_ARMOUR_DEFINITION_ID = 'equipment-iron-heavy-armour-torso' as const;
+const HEAVY_ARMOR_DEFINITION_ID = 'equipment-iron-heavy-armor-torso' as const;
 
 type BalanceLevel = (typeof BALANCE_LEVELS)[number];
 type BalanceSpread = (typeof BALANCE_SPREADS)[number];
 type MasteryBand = 'novice' | 'trained' | 'mastered';
-type ArmourState = 'unarmoured' | 'armoured';
+type ArmorState = 'unarmored' | 'armored';
 type BalanceRandomCoordinate =
 	| Readonly<{
 			streamKind: 'accuracy';
@@ -98,7 +98,7 @@ type BalanceRandomCoordinate =
 			values: Readonly<{
 				level: BalanceLevel;
 				attributeSpread: BalanceSpread;
-				armourState: ArmourState;
+				armorState: ArmorState;
 			}>;
 	  }>
 	| Readonly<{
@@ -111,7 +111,7 @@ type BalanceRandomCoordinate =
 			}>;
 	  }>
 	| Readonly<{
-			streamKind: 'armour';
+			streamKind: 'armor';
 			values: Readonly<{ level: BalanceLevel; attributeSpread: BalanceSpread }>;
 	  }>;
 
@@ -141,9 +141,9 @@ const BALANCE_SIMULATION_PROFILE_V1 = deepFreeze({
 			fieldsByStreamKind: {
 				accuracy: ['level', 'attributeSpread', 'masteryBand'],
 				relativeAgility: ['level', 'attributeSpread', 'direction'],
-				regeneration: ['level', 'attributeSpread', 'armourState'],
+				regeneration: ['level', 'attributeSpread', 'armorState'],
 				affinity: ['level', 'attributeSpread', 'archetype', 'variant'],
-				armour: ['level', 'attributeSpread']
+				armor: ['level', 'attributeSpread']
 			}
 		},
 		pairedStreamDerivation: {
@@ -176,7 +176,7 @@ const BALANCE_SIMULATION_PROFILE_V1 = deepFreeze({
 	masteryResolution: 'greatest-minimum-mastery-at-or-below-fixture',
 	fixtureMatrix: {
 		accuracyMasteryBands: ['novice', 'trained', 'mastered'],
-		armourStates: ['unarmoured', 'armoured']
+		armorStates: ['unarmored', 'armored']
 	},
 	attributeFixture: 'all-four-attributes-equal-to-level-spread-value',
 	accuracyFixture: {
@@ -203,7 +203,7 @@ const BALANCE_SIMULATION_PROFILE_V1 = deepFreeze({
 		endpointAttackerAgility: { faster: 100, slower: 1 },
 		randomStreamCoupling: 'paired-baseline-and-adjusted'
 	},
-	armourPointSeries: [0, 25, 50, 100, 150, 250] as const,
+	armorPointSeries: [0, 25, 50, 100, 150, 250] as const,
 	peerDamageFixture: {
 		damageModel: 'attribute-scaled-level-base-magnitude',
 		masteryBand: 'trained',
@@ -215,9 +215,9 @@ const BALANCE_SIMULATION_PROFILE_V1 = deepFreeze({
 		missDamage: 0,
 		damageVarianceBasisPoints: { minimum: 9_000, maximum: 11_000, endpoints: 'inclusive' },
 		minimumSuccessfulDamage: 1,
-		mitigationOrder: ['armour', 'named-resistance'],
+		mitigationOrder: ['armor', 'named-resistance'],
 		penetrationPoints: 0,
-		resistancePolicy: 'apply-authored-armour-receipts-when-enabled'
+		resistancePolicy: 'apply-authored-armor-receipts-when-enabled'
 	},
 	completionFixture: {
 		damageModel: 'attribute-scaled-level-base-magnitude-with-affinity-candidate',
@@ -229,7 +229,7 @@ const BALANCE_SIMULATION_PROFILE_V1 = deepFreeze({
 		minimumSuccessfulDamage: 1,
 		maximumActions: 200,
 		missConsumesAction: true,
-		defencePolicy: 'no-armour-or-named-resistance',
+		defensePolicy: 'no-armor-or-named-resistance',
 		affinityVariantRandomStreamCoupling: 'independent',
 		affinityVariantCoordinates: { matched: 'matched', offAffinity: 'off-affinity' }
 	},
@@ -250,7 +250,7 @@ const BALANCE_SIMULATION_PROFILE_V1 = deepFreeze({
 			normalizedThroughput: 'mean-regeneration-strictly-below-mean-damage',
 			zeroDamageRatioDenominatorScaledUnits: 1
 		},
-		armourReduction: {
+		armorReduction: {
 			monotonicRequired: true,
 			maximumExclusiveBasisPoints: 7_500,
 			authoritativeCeilingRequired: true
@@ -280,12 +280,12 @@ const BALANCE_SIMULATION_PROFILE_V1 = deepFreeze({
 	},
 	baseMagnitudeByLevel: { 10: 12, 40: 18, 70: 24, 99: 30 },
 	benchmarkDomain: {
-		armour: {
+		armor: {
 			minimumPoints: 0,
 			maximumPoints: 10_000,
 			pointIncrement: 1,
 			penetrationPoints: 0,
-			armouredFixturePoints: 100,
+			armoredFixturePoints: 100,
 			damageFixturePoints: 250,
 			damageFixtureIncludesNamedResistance: false,
 			equipmentMagnitudeStatus: 'not-yet-shipped',
@@ -319,14 +319,14 @@ const BALANCE_SIMULATION_PROFILE_V1 = deepFreeze({
 			offAffinity: 'water'
 		}
 	},
-	armourFixtures: {
-		unarmoured: { armourPoints: 0, includeHeavyArmourResistance: false },
-		armoured: { armourPoints: 100, includeHeavyArmourResistance: true }
+	armorFixtures: {
+		unarmored: { armorPoints: 0, includeHeavyArmorResistance: false },
+		armored: { armorPoints: 100, includeHeavyArmorResistance: true }
 	},
 	sourceRecords: {
 		accuracySkillId: BASIC_SWORD_STRIKE.skillId,
 		peerDamageTagSkillId: BASIC_SWORD_STRIKE.skillId,
-		armouredEquipmentDefinitionId: HEAVY_ARMOUR_DEFINITION_ID
+		armoredEquipmentDefinitionId: HEAVY_ARMOR_DEFINITION_ID
 	}
 } as const);
 
@@ -374,7 +374,7 @@ type RegenerationMatchup = Readonly<{
 	matchupId: string;
 	level: BalanceLevel;
 	attributeSpread: BalanceSpread;
-	armourState: ArmourState;
+	armorState: ArmorState;
 	trials: typeof BALANCE_TRIALS_PER_MATCHUP;
 	completedTrials: number;
 	timedOutTrials: number;
@@ -406,16 +406,16 @@ type AffinityMatchup = Readonly<{
 	medianCompletionTimeRatioBasisPoints: number | null;
 }>;
 
-type ArmourMatchup = Readonly<{
+type ArmorMatchup = Readonly<{
 	matchupId: string;
 	level: BalanceLevel;
 	attributeSpread: BalanceSpread;
 	trials: typeof BALANCE_TRIALS_PER_MATCHUP;
 	reductionCurve: readonly Readonly<{
-		armour: number;
+		armor: number;
 		reductionBasisPoints: number;
 	}>[];
-	damageAfterArmour: SeededSummary;
+	damageAfterArmor: SeededSummary;
 }>;
 
 export type CombatBalanceEvidence = Readonly<{
@@ -440,7 +440,7 @@ export type CombatBalanceEvidence = Readonly<{
 		levels: typeof BALANCE_LEVELS;
 		attributeSpreads: typeof BALANCE_SPREADS;
 		masteryBands: readonly MasteryBand[];
-		armourStates: readonly ArmourState[];
+		armorStates: readonly ArmorState[];
 		offAffinityArchetypes: readonly ('fire-caster' | 'water-martial')[];
 	}>;
 	gates: Readonly<{
@@ -464,14 +464,14 @@ export type CombatBalanceEvidence = Readonly<{
 			minimumObservedMedianRatioBasisPoints: number | null;
 			maximumObservedMedianRatioBasisPoints: number;
 		}>;
-		armour: Readonly<{
+		armor: Readonly<{
 			status: 'passed' | 'failed';
 			maximumAllowedExclusiveReductionBasisPoints: 7_500;
 			maximumObservedReductionBasisPoints: number;
 			monotonic: boolean;
 			exhaustiveDomain: Readonly<{
-				minimumArmourPoints: number;
-				maximumArmourPoints: number;
+				minimumArmorPoints: number;
+				maximumArmorPoints: number;
 				testedPointCount: number;
 				curveHash: string;
 			}>;
@@ -482,7 +482,7 @@ export type CombatBalanceEvidence = Readonly<{
 		agility: readonly AgilityMatchup[];
 		regeneration: readonly RegenerationMatchup[];
 		affinity: readonly AffinityMatchup[];
-		armour: readonly ArmourMatchup[];
+		armor: readonly ArmorMatchup[];
 	}>;
 }>;
 
@@ -823,11 +823,11 @@ function buildAgilityMatchups(): AgilityMatchup[] {
 	);
 }
 
-const heavyArmourProfile = COMBAT_EQUIPMENT_PROFILES_BY_ID[HEAVY_ARMOUR_DEFINITION_ID];
-if (!heavyArmourProfile) throw new Error('Balance fixture requires iron heavy armour torso');
-const heavyArmourResistanceReceipts = resistanceGrantReceiptsFromAuthoredSources(
+const heavyArmorProfile = COMBAT_EQUIPMENT_PROFILES_BY_ID[HEAVY_ARMOR_DEFINITION_ID];
+if (!heavyArmorProfile) throw new Error('Balance fixture requires iron heavy armor torso');
+const heavyArmorResistanceReceipts = resistanceGrantReceiptsFromAuthoredSources(
 	{
-		equipment: [{ sourceInstanceId: 'combat-balance-heavy-armour', profile: heavyArmourProfile }],
+		equipment: [{ sourceInstanceId: 'combat-balance-heavy-armor', profile: heavyArmorProfile }],
 		passiveSkills: [],
 		physiology: []
 	},
@@ -867,7 +867,7 @@ function affinityAdjustedMagnitude(
 
 function damageAfterMitigation(
 	damage: number,
-	armourBasisPoints: number,
+	armorBasisPoints: number,
 	resistanceBasisPoints: number
 ): number {
 	let mitigated = damage;
@@ -875,7 +875,7 @@ function damageAfterMitigation(
 		mitigated = scaleByBasisPoints(
 			mitigated,
 			BALANCE_SIMULATION_PROFILE_V1.arithmetic.basisPointScale -
-				(mitigation === 'armour' ? armourBasisPoints : resistanceBasisPoints)
+				(mitigation === 'armor' ? armorBasisPoints : resistanceBasisPoints)
 		);
 	}
 	return Math.max(
@@ -888,8 +888,8 @@ function simulatePeerDamage(input: {
 	randomCoordinate: BalanceRandomCoordinate;
 	attributes: CombatAttributes;
 	level: BalanceLevel;
-	armourPoints: number;
-	includeHeavyArmourResistance: boolean;
+	armorPoints: number;
+	includeHeavyArmorResistance: boolean;
 }): SeededSummary {
 	const values: number[] = [];
 	const profile = createPeerDamageProfile(input);
@@ -906,22 +906,22 @@ function simulatePeerDamage(input: {
 type PeerDamageProfile = Readonly<{
 	accuracyBasisPoints: number;
 	scaledMagnitude: number;
-	armourBasisPoints: number;
+	armorBasisPoints: number;
 	resistanceBasisPoints: number;
 }>;
 
 function createPeerDamageProfile(input: {
 	attributes: CombatAttributes;
 	level: BalanceLevel;
-	armourPoints: number;
-	includeHeavyArmourResistance: boolean;
+	armorPoints: number;
+	includeHeavyArmorResistance: boolean;
 }): PeerDamageProfile {
 	const fixture = BALANCE_SIMULATION_PROFILE_V1.peerDamageFixture;
 	if (
 		fixture.damageModel !== 'attribute-scaled-level-base-magnitude' ||
 		fixture.attackerAgilitySource !== 'peer' ||
 		fixture.defenderAgilitySource !== 'peer' ||
-		fixture.resistancePolicy !== 'apply-authored-armour-receipts-when-enabled'
+		fixture.resistancePolicy !== 'apply-authored-armor-receipts-when-enabled'
 	) {
 		throw new Error('Unsupported peer-damage fixture policy');
 	}
@@ -943,18 +943,18 @@ function createPeerDamageProfile(input: {
 		input.attributes,
 		fixture.matchedAffinity
 	);
-	const armourBasisPoints = armourReduction(
-		input.armourPoints,
+	const armorBasisPoints = armorReduction(
+		input.armorPoints,
 		fixture.penetrationPoints,
 		COMBAT_RULES_V1
 	);
-	const resistanceBasisPoints = input.includeHeavyArmourResistance
-		? namedResistanceReduction(fixture.damageTags, heavyArmourResistanceReceipts, COMBAT_RULES_V1)
+	const resistanceBasisPoints = input.includeHeavyArmorResistance
+		? namedResistanceReduction(fixture.damageTags, heavyArmorResistanceReceipts, COMBAT_RULES_V1)
 		: 0;
 	return {
 		accuracyBasisPoints: accuracy,
 		scaledMagnitude,
-		armourBasisPoints,
+		armorBasisPoints,
 		resistanceBasisPoints
 	};
 }
@@ -973,15 +973,15 @@ function peerDamageForAttack(random: () => number, profile: PeerDamageProfile): 
 			fixture.damageVarianceBasisPoints.maximum
 		)
 	);
-	return damageAfterMitigation(varied, profile.armourBasisPoints, profile.resistanceBasisPoints);
+	return damageAfterMitigation(varied, profile.armorBasisPoints, profile.resistanceBasisPoints);
 }
 
 function simulateSustainedTimeline(input: {
 	randomCoordinate: BalanceRandomCoordinate;
 	attributes: CombatAttributes;
 	level: BalanceLevel;
-	armourPoints: number;
-	includeHeavyArmourResistance: boolean;
+	armorPoints: number;
+	includeHeavyArmorResistance: boolean;
 }): Pick<
 	RegenerationMatchup,
 	| 'completedTrials'
@@ -1083,25 +1083,25 @@ function simulateSustainedTimeline(input: {
 function buildRegenerationMatchups(): RegenerationMatchup[] {
 	return BALANCE_SIMULATION_PROFILE_V1.benchmarkLevels.flatMap((level) =>
 		BALANCE_SIMULATION_PROFILE_V1.attributeSpreads.flatMap((attributeSpread) =>
-			BALANCE_SIMULATION_PROFILE_V1.fixtureMatrix.armourStates.map((armourState) => {
+			BALANCE_SIMULATION_PROFILE_V1.fixtureMatrix.armorStates.map((armorState) => {
 				const attributes = peerAttributes(level, attributeSpread);
-				const matchupId = `regeneration-l${level}-${attributeSpread}-${armourState}`;
-				const armourFixture = BALANCE_SIMULATION_PROFILE_V1.armourFixtures[armourState];
+				const matchupId = `regeneration-l${level}-${attributeSpread}-${armorState}`;
+				const armorFixture = BALANCE_SIMULATION_PROFILE_V1.armorFixtures[armorState];
 				const timeline = simulateSustainedTimeline({
 					randomCoordinate: {
 						streamKind: 'regeneration',
-						values: { level, attributeSpread, armourState }
+						values: { level, attributeSpread, armorState }
 					},
 					attributes,
 					level,
-					armourPoints: armourFixture.armourPoints,
-					includeHeavyArmourResistance: armourFixture.includeHeavyArmourResistance
+					armorPoints: armorFixture.armorPoints,
+					includeHeavyArmorResistance: armorFixture.includeHeavyArmorResistance
 				});
 				return {
 					matchupId,
 					level,
 					attributeSpread,
-					armourState,
+					armorState,
 					trials: BALANCE_SIMULATION_PROFILE_V1.trialsPerMatchup,
 					...timeline
 				};
@@ -1123,7 +1123,7 @@ function simulateCompletionActions(input: {
 		fixture.attackerAgilitySource !== 'peer' ||
 		fixture.defenderAgilitySource !== 'peer' ||
 		fixture.targetHealthSource !== 'maximum-health-from-peer-vitality' ||
-		fixture.defencePolicy !== 'no-armour-or-named-resistance' ||
+		fixture.defensePolicy !== 'no-armor-or-named-resistance' ||
 		!fixture.missConsumesAction
 	) {
 		throw new Error('Unsupported affinity-completion fixture policy');
@@ -1291,35 +1291,34 @@ function buildAffinityMatchups(): AffinityMatchup[] {
 	);
 }
 
-function buildArmourMatchups(): ArmourMatchup[] {
-	const reductionCurve = BALANCE_SIMULATION_PROFILE_V1.armourPointSeries.map((armour) => ({
-		armour,
-		reductionBasisPoints: armourReduction(
-			armour,
-			BALANCE_SIMULATION_PROFILE_V1.benchmarkDomain.armour.penetrationPoints,
+function buildArmorMatchups(): ArmorMatchup[] {
+	const reductionCurve = BALANCE_SIMULATION_PROFILE_V1.armorPointSeries.map((armor) => ({
+		armor,
+		reductionBasisPoints: armorReduction(
+			armor,
+			BALANCE_SIMULATION_PROFILE_V1.benchmarkDomain.armor.penetrationPoints,
 			COMBAT_RULES_V1
 		)
 	}));
 	return BALANCE_SIMULATION_PROFILE_V1.benchmarkLevels.flatMap((level) =>
 		BALANCE_SIMULATION_PROFILE_V1.attributeSpreads.map((attributeSpread) => {
-			const matchupId = `armour-l${level}-${attributeSpread}`;
+			const matchupId = `armor-l${level}-${attributeSpread}`;
 			return {
 				matchupId,
 				level,
 				attributeSpread,
 				trials: BALANCE_SIMULATION_PROFILE_V1.trialsPerMatchup,
 				reductionCurve,
-				damageAfterArmour: simulatePeerDamage({
+				damageAfterArmor: simulatePeerDamage({
 					randomCoordinate: {
-						streamKind: 'armour',
+						streamKind: 'armor',
 						values: { level, attributeSpread }
 					},
 					attributes: peerAttributes(level, attributeSpread),
 					level,
-					armourPoints: BALANCE_SIMULATION_PROFILE_V1.benchmarkDomain.armour.damageFixturePoints,
-					includeHeavyArmourResistance:
-						BALANCE_SIMULATION_PROFILE_V1.benchmarkDomain.armour
-							.damageFixtureIncludesNamedResistance
+					armorPoints: BALANCE_SIMULATION_PROFILE_V1.benchmarkDomain.armor.damageFixturePoints,
+					includeHeavyArmorResistance:
+						BALANCE_SIMULATION_PROFILE_V1.benchmarkDomain.armor.damageFixtureIncludesNamedResistance
 				})
 			};
 		})
@@ -1330,29 +1329,29 @@ function status(condition: boolean): 'passed' | 'failed' {
 	return condition ? 'passed' : 'failed';
 }
 
-function auditArmourDomain(): Readonly<{
-	minimumArmourPoints: number;
-	maximumArmourPoints: number;
+function auditArmorDomain(): Readonly<{
+	minimumArmorPoints: number;
+	maximumArmorPoints: number;
 	testedPointCount: number;
 	curveHash: string;
 	monotonic: boolean;
 	maximumReductionBasisPoints: number;
 }> {
-	const { minimumPoints, maximumPoints } = BALANCE_SIMULATION_PROFILE_V1.benchmarkDomain.armour;
+	const { minimumPoints, maximumPoints } = BALANCE_SIMULATION_PROFILE_V1.benchmarkDomain.armor;
 	const reductions: number[] = [];
-	const pointIncrement = BALANCE_SIMULATION_PROFILE_V1.benchmarkDomain.armour.pointIncrement;
-	for (let armour = minimumPoints; armour <= maximumPoints; armour += pointIncrement) {
+	const pointIncrement = BALANCE_SIMULATION_PROFILE_V1.benchmarkDomain.armor.pointIncrement;
+	for (let armor = minimumPoints; armor <= maximumPoints; armor += pointIncrement) {
 		reductions.push(
-			armourReduction(
-				armour,
-				BALANCE_SIMULATION_PROFILE_V1.benchmarkDomain.armour.penetrationPoints,
+			armorReduction(
+				armor,
+				BALANCE_SIMULATION_PROFILE_V1.benchmarkDomain.armor.penetrationPoints,
 				COMBAT_RULES_V1
 			)
 		);
 	}
 	return {
-		minimumArmourPoints: minimumPoints,
-		maximumArmourPoints: maximumPoints,
+		minimumArmorPoints: minimumPoints,
+		maximumArmorPoints: maximumPoints,
 		testedPointCount: reductions.length,
 		curveHash: hashCanonical(reductions),
 		monotonic: reductions.every(
@@ -1368,7 +1367,7 @@ export async function createCombatBalanceEvidence(): Promise<CombatBalanceEviden
 	const agility = buildAgilityMatchups();
 	const regeneration = buildRegenerationMatchups();
 	const affinity = buildAffinityMatchups();
-	const armour = buildArmourMatchups();
+	const armor = buildArmorMatchups();
 	if (BALANCE_SIMULATION_PROFILE_V1.promotionGates.accuracyStatistic !== 'aggregate-hit-rate') {
 		throw new Error('Unsupported accuracy promotion statistic');
 	}
@@ -1449,10 +1448,10 @@ export async function createCombatBalanceEvidence(): Promise<CombatBalanceEviden
 		completedAffinityRatios.length === 0 ? null : Math.min(...completedAffinityRatios);
 	const maximumObservedMedianRatioBasisPoints =
 		completedAffinityRatios.length === 0 ? 0 : Math.max(...completedAffinityRatios);
-	const armourAudit = auditArmourDomain();
-	const armourGate = BALANCE_SIMULATION_PROFILE_V1.promotionGates.armourReduction;
-	const armourMonotonic = armourAudit.monotonic;
-	const maximumObservedReductionBasisPoints = armourAudit.maximumReductionBasisPoints;
+	const armorAudit = auditArmorDomain();
+	const armorGate = BALANCE_SIMULATION_PROFILE_V1.promotionGates.armorReduction;
+	const armorMonotonic = armorAudit.monotonic;
+	const maximumObservedReductionBasisPoints = armorAudit.maximumReductionBasisPoints;
 	const gates = {
 		accuracy: {
 			status: status(accuracyPassed),
@@ -1480,22 +1479,22 @@ export async function createCombatBalanceEvidence(): Promise<CombatBalanceEviden
 			minimumObservedMedianRatioBasisPoints,
 			maximumObservedMedianRatioBasisPoints
 		},
-		armour: {
+		armor: {
 			status: status(
-				(!armourGate.monotonicRequired || armourMonotonic) &&
+				(!armorGate.monotonicRequired || armorMonotonic) &&
 					maximumObservedReductionBasisPoints <=
-						COMBAT_RULES_V1.armour.maximumGeneralReductionBasisPoints &&
-					maximumObservedReductionBasisPoints < armourGate.maximumExclusiveBasisPoints &&
-					armourGate.authoritativeCeilingRequired
+						COMBAT_RULES_V1.armor.maximumGeneralReductionBasisPoints &&
+					maximumObservedReductionBasisPoints < armorGate.maximumExclusiveBasisPoints &&
+					armorGate.authoritativeCeilingRequired
 			),
-			maximumAllowedExclusiveReductionBasisPoints: armourGate.maximumExclusiveBasisPoints,
+			maximumAllowedExclusiveReductionBasisPoints: armorGate.maximumExclusiveBasisPoints,
 			maximumObservedReductionBasisPoints,
-			monotonic: armourMonotonic,
+			monotonic: armorMonotonic,
 			exhaustiveDomain: {
-				minimumArmourPoints: armourAudit.minimumArmourPoints,
-				maximumArmourPoints: armourAudit.maximumArmourPoints,
-				testedPointCount: armourAudit.testedPointCount,
-				curveHash: armourAudit.curveHash
+				minimumArmorPoints: armorAudit.minimumArmorPoints,
+				maximumArmorPoints: armorAudit.maximumArmorPoints,
+				testedPointCount: armorAudit.testedPointCount,
+				curveHash: armorAudit.curveHash
 			}
 		}
 	};
@@ -1525,13 +1524,13 @@ export async function createCombatBalanceEvidence(): Promise<CombatBalanceEviden
 			levels: BALANCE_SIMULATION_PROFILE_V1.benchmarkLevels,
 			attributeSpreads: BALANCE_SIMULATION_PROFILE_V1.attributeSpreads,
 			masteryBands: BALANCE_SIMULATION_PROFILE_V1.fixtureMatrix.accuracyMasteryBands,
-			armourStates: BALANCE_SIMULATION_PROFILE_V1.fixtureMatrix.armourStates,
+			armorStates: BALANCE_SIMULATION_PROFILE_V1.fixtureMatrix.armorStates,
 			offAffinityArchetypes: Object.values(BALANCE_SIMULATION_PROFILE_V1.affinityArchetypes).map(
 				(archetype) => archetype.archetype
 			)
 		},
 		gates,
-		matchups: { accuracy, agility, regeneration, affinity, armour }
+		matchups: { accuracy, agility, regeneration, affinity, armor }
 	});
 }
 
@@ -1571,7 +1570,7 @@ const READINESS_SIMULATION_PROFILE_V1 = deepFreeze({
 	},
 	encounterFixture: {
 		scope: 'smallest-authored-complete-encounter',
-		party: 'authored-master-and-one-levelled-hero',
+		party: 'authored-master-and-one-leveled-hero',
 		opponent: 'lowest-health-policy-authored-tower-floor-01-enemy',
 		pruning: 'remove-other-authored-enemies-before-the-first-readiness-window'
 	},

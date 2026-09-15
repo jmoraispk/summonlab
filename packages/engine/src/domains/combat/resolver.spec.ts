@@ -119,7 +119,7 @@ function fighter(
 		},
 		lastDamagedAtTick: null,
 		attributes: { strength: 20, vitality: 20, agility: options.agility ?? 20, magic: 20 },
-		armour: teamId === 'enemy' ? 100 : 0,
+		armor: teamId === 'enemy' ? 100 : 0,
 		resistances: teamId === 'enemy' ? { cut: 2_000, burn: 7_500 } : {},
 		readiness: {
 			value: options.readiness ?? 0,
@@ -301,8 +301,8 @@ describe('authoritative combat action resolution', () => {
 			affinityAdjustedMagnitude: 183,
 			criticalAdjustedMagnitude: 275,
 			statusAdjustedMagnitude: 330,
-			armourReductionBasisPoints: 5_000,
-			armourAdjustedMagnitude: 165,
+			armorReductionBasisPoints: 5_000,
+			armorAdjustedMagnitude: 165,
 			resistanceReductionBasisPoints: 2_000,
 			finalDamage: 132
 		});

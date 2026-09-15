@@ -9,7 +9,7 @@ import {
 	COMBAT_RULES_V1
 } from '../packages/content/src/index.js';
 import { hashCanonical } from '../packages/engine/src/hash.js';
-import { armourReduction } from '../packages/engine/src/domains/combat/capability.js';
+import { armorReduction } from '../packages/engine/src/domains/combat/capability.js';
 import {
 	BALANCE_LEVELS,
 	BALANCE_SPREADS,
@@ -33,11 +33,11 @@ describe('four-attribute combat balance evidence', () => {
 		evidence = await pendingEvidence;
 	});
 
-	it('covers every benchmark level, attribute spread, mastery band, armour state, and off-affinity archetype', () => {
+	it('covers every benchmark level, attribute spread, mastery band, armor state, and off-affinity archetype', () => {
 		expect(evidence.fixtures.levels).toStrictEqual([10, 40, 70, 99]);
 		expect(evidence.fixtures.attributeSpreads).toStrictEqual(['low', 'mid', 'high']);
 		expect(evidence.fixtures.masteryBands).toStrictEqual(['novice', 'trained', 'mastered']);
-		expect(evidence.fixtures.armourStates).toStrictEqual(['unarmoured', 'armoured']);
+		expect(evidence.fixtures.armorStates).toStrictEqual(['unarmored', 'armored']);
 		expect(evidence.fixtures.offAffinityArchetypes).toStrictEqual(['fire-caster', 'water-martial']);
 		expect(evidence.matchups.accuracy).toHaveLength(
 			BALANCE_LEVELS.length * BALANCE_SPREADS.length * 3
@@ -48,13 +48,13 @@ describe('four-attribute combat balance evidence', () => {
 		expect(evidence.matchups.affinity).toHaveLength(
 			BALANCE_LEVELS.length * BALANCE_SPREADS.length * 2
 		);
-		expect(evidence.matchups.armour).toHaveLength(BALANCE_LEVELS.length * BALANCE_SPREADS.length);
+		expect(evidence.matchups.armor).toHaveLength(BALANCE_LEVELS.length * BALANCE_SPREADS.length);
 		expect(
 			[
 				...evidence.matchups.accuracy,
 				...evidence.matchups.agility,
 				...evidence.matchups.regeneration,
-				...evidence.matchups.armour
+				...evidence.matchups.armor
 			].every((matchup) => matchup.trials === BALANCE_TRIALS_PER_MATCHUP)
 		).toBe(true);
 		expect(
@@ -120,7 +120,7 @@ describe('four-attribute combat balance evidence', () => {
 		expect(evidence.gates.relativeAgility.status).toBe('passed');
 	});
 
-	it('rejects immortal passive recovery, affinity lock-in, and armour-only over-mitigation', () => {
+	it('rejects immortal passive recovery, affinity lock-in, and armor-only over-mitigation', () => {
 		expect(evidence.simulation.profile.sustainedTimeline).toStrictEqual({
 			damageSource: 'peer-damage-fixture',
 			tickDurationMilliseconds: 100,
@@ -183,30 +183,30 @@ describe('four-attribute combat balance evidence', () => {
 				}
 			)
 		).toStrictEqual({ status: 'failed', medianRatioBasisPoints: 20_000 });
-		for (const matchup of evidence.matchups.armour) {
+		for (const matchup of evidence.matchups.armor) {
 			expect(matchup.reductionCurve.map((point) => point.reductionBasisPoints)).toStrictEqual([
 				0, 2_000, 3_333, 5_000, 6_000, 7_143
 			]);
 			expect(
 				Math.max(...matchup.reductionCurve.map((point) => point.reductionBasisPoints))
 			).toBeLessThan(7_500);
-			expect(matchup.damageAfterArmour).toMatchObject({
+			expect(matchup.damageAfterArmor).toMatchObject({
 				p10: expect.any(Number),
 				p50: expect.any(Number),
 				p90: expect.any(Number)
 			});
 		}
-		const exhaustiveArmourDomain = Array.from({ length: 10_001 }, (_unused, armour) =>
-			armourReduction(armour, 0, COMBAT_RULES_V1)
+		const exhaustiveArmorDomain = Array.from({ length: 10_001 }, (_unused, armor) =>
+			armorReduction(armor, 0, COMBAT_RULES_V1)
 		);
-		expect(evidence.gates.armour.exhaustiveDomain).toStrictEqual({
-			minimumArmourPoints: 0,
-			maximumArmourPoints: 10_000,
+		expect(evidence.gates.armor.exhaustiveDomain).toStrictEqual({
+			minimumArmorPoints: 0,
+			maximumArmorPoints: 10_000,
 			testedPointCount: 10_001,
-			curveHash: hashCanonical(exhaustiveArmourDomain)
+			curveHash: hashCanonical(exhaustiveArmorDomain)
 		});
-		expect(evidence.gates.armour.maximumObservedReductionBasisPoints).toBe(7_499);
-		expect(evidence.gates.armour.status).toBe('passed');
+		expect(evidence.gates.armor.maximumObservedReductionBasisPoints).toBe(7_499);
+		expect(evidence.gates.armor.status).toBe('passed');
 	});
 
 	it('binds exact shipped rules and Task 7 content while remaining byte-deterministic', async () => {
@@ -224,12 +224,12 @@ describe('four-attribute combat balance evidence', () => {
 		});
 		expect(first.simulation.seedSet).toHaveLength(10);
 		expect(first.simulation.profile.calibrationStatus).toBe('benchmark-promotion-candidate');
-		expect(first.simulation.profile.benchmarkDomain.armour).toStrictEqual({
+		expect(first.simulation.profile.benchmarkDomain.armor).toStrictEqual({
 			minimumPoints: 0,
 			maximumPoints: 10_000,
 			pointIncrement: 1,
 			penetrationPoints: 0,
-			armouredFixturePoints: 100,
+			armoredFixturePoints: 100,
 			damageFixturePoints: 250,
 			damageFixtureIncludesNamedResistance: false,
 			equipmentMagnitudeStatus: 'not-yet-shipped',
@@ -238,8 +238,8 @@ describe('four-attribute combat balance evidence', () => {
 		expect(first.simulation.profile.sourceRecords).toStrictEqual({
 			accuracySkillId: BASIC_SWORD_STRIKE.skillId,
 			peerDamageTagSkillId: BASIC_SWORD_STRIKE.skillId,
-			armouredEquipmentDefinitionId:
-				COMBAT_EQUIPMENT_PROFILES_BY_ID['equipment-iron-heavy-armour-torso']?.definitionId
+			armoredEquipmentDefinitionId:
+				COMBAT_EQUIPMENT_PROFILES_BY_ID['equipment-iron-heavy-armor-torso']?.definitionId
 		});
 		expect(first.simulation.profileHash).toMatch(/^[a-f0-9]{64}$/u);
 		expect(first.status).toBe('passed');
@@ -269,9 +269,9 @@ describe('four-attribute combat balance evidence', () => {
 				fieldsByStreamKind: {
 					accuracy: ['level', 'attributeSpread', 'masteryBand'],
 					relativeAgility: ['level', 'attributeSpread', 'direction'],
-					regeneration: ['level', 'attributeSpread', 'armourState'],
+					regeneration: ['level', 'attributeSpread', 'armorState'],
 					affinity: ['level', 'attributeSpread', 'archetype', 'variant'],
-					armour: ['level', 'attributeSpread']
+					armor: ['level', 'attributeSpread']
 				}
 			},
 			pairedStreamDerivation: {
@@ -317,9 +317,9 @@ describe('four-attribute combat balance evidence', () => {
 				endpoints: 'inclusive'
 			},
 			minimumSuccessfulDamage: 1,
-			mitigationOrder: ['armour', 'named-resistance'],
+			mitigationOrder: ['armor', 'named-resistance'],
 			penetrationPoints: 0,
-			resistancePolicy: 'apply-authored-armour-receipts-when-enabled'
+			resistancePolicy: 'apply-authored-armor-receipts-when-enabled'
 		});
 		expect(first.simulation.profile.sustainedTimeline).toStrictEqual({
 			damageSource: 'peer-damage-fixture',
@@ -351,7 +351,7 @@ describe('four-attribute combat balance evidence', () => {
 			minimumSuccessfulDamage: 1,
 			maximumActions: 200,
 			missConsumesAction: true,
-			defencePolicy: 'no-armour-or-named-resistance',
+			defensePolicy: 'no-armor-or-named-resistance',
 			affinityVariantRandomStreamCoupling: 'independent',
 			affinityVariantCoordinates: { matched: 'matched', offAffinity: 'off-affinity' }
 		});
@@ -369,7 +369,7 @@ describe('four-attribute combat balance evidence', () => {
 		});
 		expect(first.simulation.profile.fixtureMatrix).toStrictEqual({
 			accuracyMasteryBands: ['novice', 'trained', 'mastered'],
-			armourStates: ['unarmoured', 'armoured']
+			armorStates: ['unarmored', 'armored']
 		});
 		expect(first.simulation.profile.promotionGates.regenerationComparison).toStrictEqual({
 			completionPolicy: 'all-trials-complete-with-zero-timeouts',
@@ -531,8 +531,8 @@ describe('four-attribute combat balance evidence', () => {
 				...first.simulation.profile,
 				benchmarkDomain: {
 					...first.simulation.profile.benchmarkDomain,
-					armour: {
-						...first.simulation.profile.benchmarkDomain.armour,
+					armor: {
+						...first.simulation.profile.benchmarkDomain.armor,
 						damageFixturePoints: 150
 					}
 				}

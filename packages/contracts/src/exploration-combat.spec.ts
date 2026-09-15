@@ -100,7 +100,7 @@ function validRequest() {
 					movementUnitsPerSecond: 2,
 					attackRange: 1,
 					attackPower: 20,
-					armour: 4,
+					armor: 4,
 					attackIntervalTicks: 30
 				},
 				deployment: { x: 0.2, y: 0.5 },
@@ -123,7 +123,7 @@ function validRequest() {
 					movementUnitsPerSecond: 2.5,
 					attackRange: 0.75,
 					attackPower: 5,
-					armour: 0,
+					armor: 0,
 					attackIntervalTicks: 45
 				},
 				deployment: { x: 0.8, y: 0.5 },

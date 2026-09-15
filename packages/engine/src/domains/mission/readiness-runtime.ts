@@ -486,7 +486,7 @@ export function createMissionReadinessState(
 						attributes: isMaster
 							? { strength: 20, agility: 20, vitality: 20, magic: 20 }
 							: projection!.attributes,
-						armour: 0,
+						armor: 0,
 						resistances: projection?.resistances ?? {},
 						readiness: { value: 0, exactNumerator: 0, recoveryUntilTick: 0 },
 						conditions: [],
@@ -518,7 +518,7 @@ export function createMissionReadinessState(
 						},
 						lastDamagedAtTick: null,
 						attributes: { strength: 20, agility: 20, vitality: 20, magic: 20 },
-						armour: 0,
+						armor: 0,
 						resistances: {},
 						readiness: { value: 0, exactNumerator: 0, recoveryUntilTick: 0 },
 						conditions: [],

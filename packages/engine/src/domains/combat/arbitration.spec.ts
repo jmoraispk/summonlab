@@ -171,7 +171,7 @@ function fighter(
 		resources: { health: { current: health, maximum: 100 }, mana: { current: 20, maximum: 20 } },
 		lastDamagedAtTick: null,
 		attributes: { strength: 20, vitality: 20, agility: 20, magic: 20 },
-		armour: 0,
+		armor: 0,
 		resistances: {},
 		readiness: {
 			value: Math.min(10_000, readiness),

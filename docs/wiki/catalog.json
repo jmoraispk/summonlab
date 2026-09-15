@@ -382,8 +382,8 @@
       "spoilerScope": "internal"
     },
     {
-      "wikiId": "research.attribute-systems.overgeared.equipment-catalogue",
-      "path": "docs/wiki/research/attribute-systems/overgeared/equipment-catalogue.md",
+      "wikiId": "research.attribute-systems.overgeared.equipment-catalog",
+      "path": "docs/wiki/research/attribute-systems/overgeared/equipment-catalog.md",
       "pageType": "research",
       "owner": "inventory",
       "designStatus": "accepted",

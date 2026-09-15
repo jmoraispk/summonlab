@@ -18,7 +18,7 @@ Mastering a Common skill does not change its rarity, and finding a rare skill do
 
 Common skills remain useful because their authored effects, compatibility, reliability, costs, and
 passive benefits continue to matter. A higher-rarity replacement is not automatically legal or
-well-practised.
+well-practiced.
 
 The current `combat-skill-v1` contract represents mastery on a `0..100` scale. Each skill publishes
 monotonic authored steps containing:
@@ -38,7 +38,7 @@ claims can advance persisted mastery and therefore the accuracy step used by lat
 ## Delivery and equipment training
 
 An active combat skill declares one or more equipment-family delivery tags. A learned skill records
-the family tags with which that hero has actually practised it. Legal-action enumeration requires
+the family tags with which that hero has actually practiced it. Legal-action enumeration requires
 one tag shared by all three sets:
 
 ```text

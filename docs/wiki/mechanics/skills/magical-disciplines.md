@@ -50,9 +50,9 @@ Magical family. Buffs on self and others, and the imbuing of objects. Consumes c
 | 4 | **Light** | — | F | A | Imbuing Novice | Persistent light on an object or person |
 | 5 | **Greater Blessing** | — | E | A | Minor Blessing Expert, Rank II | Substantial buff on one ally; longer duration |
 | 6 | **Group Blessing** | — | E | A | Minor Blessing Master | Weaker buff applied to the whole party |
-| 7 | **Armour Imbuing** | Attuned | E | C | Weapon Oil Expert | Grants armour temporary resistance and a retaliation effect |
+| 7 | **Armor Imbuing** | Attuned | E | C | Weapon Oil Expert | Grants armor temporary resistance and a retaliation effect |
 | 8 | **Component Craft** | — | E | C | Imbuing Expert, Alchemy prerequisite | Produces enchanting components rather than buying them |
-| 9 | **Sigil Binding** | — | D | C | Armour Imbuing Master, Forging prerequisite | Applies a permanent enchantment to an item with an open slot |
+| 9 | **Sigil Binding** | — | D | C | Armor Imbuing Master, Forging prerequisite | Applies a permanent enchantment to an item with an open slot |
 | 10 | **Empowerment** | — | D | A | Greater Blessing Master, Magic threshold | One ally's next skill is cast at greatly increased potency |
 | 11 | **Sustained Weave** | — | D | P | Group Blessing Master, 10,000 casts | Buffs the hero applies last substantially longer |
 | 12 | **Elemental Attunement** | Attuned | D | A | Weapon Oil Master, Rank III | Grants an ally the hero's affinity temporarily at reduced affinity rank. |
@@ -77,10 +77,10 @@ Magical family. Healing, curing, revival. Deliberately scarce at high rarity —
 | 4 | **Field Care** | — | F | P | Mending Intermediate | Non-magical first aid; works without mana |
 | 5 | **Regeneration** | — | E | A | Close Wound Expert, Rank II | Healing over time on one ally |
 | 6 | **Cure** | — | E | A | Soothe Expert, Alchemy prerequisite | Removes poison, disease and Blight effects |
-| 7 | **Shared Vigour** | — | E | A | Field Care Master | Transfers the hero's health to an ally |
+| 7 | **Shared Vigor** | — | E | A | Field Care Master | Transfers the hero's health to an ally |
 | 8 | **Mass Mending** | — | D | A | Regeneration Master, Rank II | Heals the whole party at reduced potency |
 | 9 | **Restore Limb** | — | D | A | Cure Master, Intellect threshold | Repairs crippling injuries and lasting wounds |
-| 10 | **Life Link** | — | D | P | Shared Vigour Master, Magic threshold | Damage to a linked ally is partly taken by the hero instead |
+| 10 | **Life Link** | — | D | P | Shared Vigor Master, Magic threshold | Damage to a linked ally is partly taken by the hero instead |
 | 11 | **Sanctified Ground** | — | C | A | Mass Mending Master, Rank III | Persistent healing area |
 | 12 | **Second Life** | — | C | A | Life Link Master, Rank III | Revives a recently fallen ally at low health |
 | 13 | **Purity** | — | C | P | Restore Limb Master, 25,000 casts | All cures the hero applies also grant temporary immunity |

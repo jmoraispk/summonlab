@@ -18,9 +18,9 @@ export const CombatChoiceBatchVersionSchema = z.literal('combat-choice-batch-v1'
 export const CombatResultVersionSchema = z.literal('combat-result-v1');
 
 const LEGACY_AND_READINESS_V1_CONTENT_HASH =
-	'659a89f61dcd9ebc7ca561a78ce5a405f81dbf8740246c7a18e7df697b862489';
+	'dfbff1f2acdb3b68f6be65843e35e4b79e7db274478b793ef146df2b2ac367ac';
 const READINESS_V2_CONTENT_HASH =
-	'713a146cc6e5198fc208e0e5cc35bb67023ef9002e37a364dda71905b025eedd';
+	'221f8b8cbbe2e966584c60c88bb7a963ffbf9c0da4a605d198667aa7b76cd074';
 
 const TickSchema = z.number().int().nonnegative().max(Number.MAX_SAFE_INTEGER);
 const BoundedTextSchema = z.string().trim().min(1).max(300);
@@ -77,7 +77,7 @@ export const CombatantStateSchema = z
 		resources: ReadinessCombatResourcesSchema,
 		lastDamagedAtTick: TickSchema.nullable(),
 		attributes: CombatAttributesSchema,
-		armour: z.number().int().nonnegative().max(1_000_000),
+		armor: z.number().int().nonnegative().max(1_000_000),
 		resistances: z.partialRecord(ResistanceTagSchema, z.number().int().min(-10_000).max(10_000)),
 		readiness: CombatReadinessSchema,
 		conditions: z.array(CombatConditionSchema).max(128),

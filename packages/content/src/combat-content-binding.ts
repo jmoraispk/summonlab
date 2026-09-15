@@ -79,7 +79,7 @@ export const COMBAT_CONTENT_BINDING = deepFreeze<CombatContentBinding>({
 			contentHash: COMBAT_SKILL_CATALOG.contentHash
 		}
 	],
-	contentHash: '659a89f61dcd9ebc7ca561a78ce5a405f81dbf8740246c7a18e7df697b862489'
+	contentHash: 'dfbff1f2acdb3b68f6be65843e35e4b79e7db274478b793ef146df2b2ac367ac'
 });
 
 let verifiedBinding: Promise<CombatContentBinding> | undefined;

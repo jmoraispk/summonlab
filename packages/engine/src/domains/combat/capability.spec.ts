@@ -8,7 +8,7 @@ import { COMBAT_RULES_V1 } from '@summonlab/content';
 import { describe, expect, it } from 'vitest';
 
 import {
-	armourReduction,
+	armorReduction,
 	attributeScaledMagnitude,
 	effectiveAttribute,
 	healthRegeneration,
@@ -230,15 +230,15 @@ describe('four-attribute combat capability math', () => {
 		).toBeLessThan(10);
 	});
 
-	it('makes armour and penetration the only inputs to general mitigation', () => {
-		expect(armourReduction(100, 0, COMBAT_RULES_V1)).toBe(5_000);
-		expect(armourReduction(100, 25, COMBAT_RULES_V1)).toBe(4_286);
-		expect(armourReduction(50, 100, COMBAT_RULES_V1)).toBe(0);
-		expect(armourReduction(1_000_000, 0, COMBAT_RULES_V1)).toBe(7_499);
+	it('makes armor and penetration the only inputs to general mitigation', () => {
+		expect(armorReduction(100, 0, COMBAT_RULES_V1)).toBe(5_000);
+		expect(armorReduction(100, 25, COMBAT_RULES_V1)).toBe(4_286);
+		expect(armorReduction(50, 100, COMBAT_RULES_V1)).toBe(0);
+		expect(armorReduction(1_000_000, 0, COMBAT_RULES_V1)).toBe(7_499);
 
 		let previous = -1;
-		for (let armour = 0; armour <= 10_000; armour += 1) {
-			const reduction = armourReduction(armour, 0, COMBAT_RULES_V1);
+		for (let armor = 0; armor <= 10_000; armor += 1) {
+			const reduction = armorReduction(armor, 0, COMBAT_RULES_V1);
 			expect(reduction).toBeGreaterThanOrEqual(previous);
 			expect(reduction).toBeLessThan(7_500);
 			previous = reduction;

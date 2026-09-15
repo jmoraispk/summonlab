@@ -51,7 +51,7 @@ const hero = {
 	},
 	lastDamagedAtTick: 2,
 	attributes: { strength: 20, vitality: 20, agility: 20, magic: 20 },
-	armour: 10,
+	armor: 10,
 	resistances: { cut: 500 },
 	readiness: {
 		value: 10_000,

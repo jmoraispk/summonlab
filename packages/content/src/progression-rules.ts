@@ -10,9 +10,9 @@ export type ProgressionEquipmentClass =
 	| 'mace'
 	| 'shield'
 	| 'staff'
-	| 'light-armour'
+	| 'light-armor'
 	| 'robes'
-	| 'heavy-armour';
+	| 'heavy-armor';
 
 export type ProgressionRulesV1 = Readonly<{
 	rulesVersion: 'progression-rules-v1';
@@ -62,9 +62,9 @@ export const PROGRESSION_RULES_V1 = deepFreeze({
 			mace: 3,
 			shield: 3,
 			staff: 4,
-			'light-armour': 4,
+			'light-armor': 4,
 			robes: 4,
-			'heavy-armour': 5
+			'heavy-armor': 5
 		},
 		difficultyExperience: [4, 6, 9, 13, 18, 25, 35],
 		ingredientRarityBps: [10_000, 11_000, 12_000, 13_000, 14_000, 15_000, 16_000],

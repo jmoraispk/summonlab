@@ -1,54 +1,54 @@
-# Armour and shields
+# Armor and shields
 
-Wiki ID: `mechanics.equipment.armour-shields`
+Wiki ID: `mechanics.equipment.armor-shields`
 
 Design status: **runtime-v1 visuals/definitions and engine-v26 readiness integration for
 load/resistance profiles and eligibility are implemented**.
 
-Runtime-v1 implements all four pieces for every retained Armour material and a metal Shield at every
-rank. The 21 complete-set images are approved continuity references only; the 84 individual Armour
+Runtime-v1 implements all four pieces for every retained Armor material and a metal Shield at every
+rank. The 21 complete-set images are approved continuity references only; the 84 individual Armor
 pieces are the equippable definitions. Engine-v26 binds load, delivery families, and named
 resistance grants and consumes the eligibility result when assembling readiness combat. General
-armour-point magnitudes, over-tolerance penalty curves, magical support
+armor-point magnitudes, over-tolerance penalty curves, magical support
 values, and set convenience actions remain deferred.
 
-Armour uses three classes. The rank-bearing material determines the class; named cuts, cultural
+Armor uses three classes. The rank-bearing material determines the class; named cuts, cultural
 styles, coverage details, and monster-derived appearances do not create more mechanical classes.
 
-| Armour class | Rank-bearing material | Identity | Natural users |
+| Armor class | Rank-bearing material | Identity | Natural users |
 | --- | --- | --- | --- |
-| **Heavy Armour** | Metal | Highest physical protection and weight | Martial |
-| **Light Armour** | Hide or scale | Mobile protection at moderate weight | Martial and Craft |
-| **Robes** | Cloth or fibre | Lowest physical weight and strongest magical support | Magical and Craft |
+| **Heavy Armor** | Metal | Highest physical protection and weight | Martial |
+| **Light Armor** | Hide or scale | Mobile protection at moderate weight | Martial and Craft |
+| **Robes** | Cloth or fiber | Lowest physical weight and strongest magical support | Magical and Craft |
 
 These are natural fits, not Domain locks. Eligibility comes from total-load tolerance plus explicit
 item requirements, not the hero's Domain.
 
 ## Engine-v26 readiness combat profile
 
-| Armour class | Load by Head / Torso / Legs / Boots | Requirement | Named resistance per piece |
+| Armor class | Load by Head / Torso / Legs / Boots | Requirement | Named resistance per piece |
 | --- | --- | --- | --- |
-| **Heavy Armour** | `12 / 28 / 22 / 10` | intrinsic Strength 45 and `armour-training` | Cut 800 bp (authored cap 1,500); Impact 600 bp (authored cap 1,200) |
-| **Light Armour** | `6 / 14 / 11 / 5` | none | Pierce 400 bp (authored cap 1,000) |
+| **Heavy Armor** | `12 / 28 / 22 / 10` | intrinsic Strength 45 and `armor-training` | Cut 800 bp (authored cap 1,500); Impact 600 bp (authored cap 1,200) |
+| **Light Armor** | `6 / 14 / 11 / 5` | none | Pierce 400 bp (authored cap 1,000) |
 | **Robes** | `2 / 4 / 3 / 2` | none | Arcane 300 bp (authored cap 900) |
 
 When the pure evaluator is called, total equipped load is compared with scoped effective
 equipment-load Strength. Explicit item requirements read intrinsic Strength, so a temporary load bonus
-cannot satisfy Heavy Armour's Strength gate. Vitality is never an armour requirement. Readiness combat
+cannot satisfy Heavy Armor's Strength gate. Vitality is never an armor requirement. Readiness combat
 enforces this boundary; the frozen legacy runner continues to use its own compatibility behavior.
 
 Equipment, passive-skill, and physiology grants become deterministic typed resistance receipts.
 Matching tags stack additively under the stricter authored/global cap, with a 7,500-basis-point
-global ceiling. These named grants are not general armour mitigation.
+global ceiling. These named grants are not general armor mitigation.
 
-General mitigation uses `max(0, armour - penetration)` and the versioned armour curve, capped at
-7,499 basis points. No production equipment profile assigns a general armour magnitude yet; the
+General mitigation uses `max(0, armor - penetration)` and the versioned armor curve, capped at
+7,499 basis points. No production equipment profile assigns a general armor magnitude yet; the
 numbers exercised by the balance harness are explicitly benchmark candidates.
 
 There is no universal poise. A particular shield, stance, boss, or skill may later author a visible
-Break meter, but no current Armour class receives one implicitly.
+Break meter, but no current Armor class receives one implicitly.
 
-Each Armour class is authored as one visually consistent set and equipped as four separate items:
+Each Armor class is authored as one visually consistent set and equipped as four separate items:
 
 | Item | Includes |
 | --- | --- |
@@ -70,10 +70,10 @@ Anything authored as a set must establish the complete matching set before its p
 
 The complete-set image is required visual-production evidence, not a fifth equippable item. The
 four item images must preserve the accepted set's material, silhouette language, palette, trim,
-fastenings, wear, and ornament. Weapons are independent items and do not need to match an Armour
+fastenings, wear, and ornament. Weapons are independent items and do not need to match an Armor
 set unless a later named set explicitly includes them.
 
-This rule applies to Heavy Armour, Light Armour, and Robes at every retained material rank. It also
+This rule applies to Heavy Armor, Light Armor, and Robes at every retained material rank. It also
 applies to any later named or monster-derived equipment explicitly presented as a set.
 
 ### Full-set visual anchor
@@ -84,8 +84,8 @@ shading inside openings. A visible mannequin, body, or black void figure is not 
 
 The Head item must be present and readable in every full-set source. Camera consistency applies
 across material ranks: sets do not alternate between straight-on, opposite-facing, and strongly
-rotated views. Each source must also retain its class silhouette—mobile Light Armour, protective
-Heavy Armour, or cloth-led Robes—before its four separated items can be produced.
+rotated views. Each source must also retain its class silhouette—mobile Light Armor, protective
+Heavy Armor, or cloth-led Robes—before its four separated items can be produced.
 
 ## Shields
 
@@ -98,15 +98,15 @@ Staff. It may accompany a one-handed Sword, Dagger, Axe, or Mace.
 
 ## Rank
 
-The armour or shield design and selected material set the combined crafting difficulty. The
+The armor or shield design and selected material set the combined crafting difficulty. The
 material supplies base rank, and Forging craftsmanship adds `+0`, `+1`, or `+2`, capped at S, as
 defined in [Equipment rarity and craftsmanship](rarity-and-weight.md).
 
 ## Open implementation questions
 
-- Author and balance general armour-point magnitudes and magical-support values for the three
+- Author and balance general armor-point magnitudes and magical-support values for the three
   classes without changing the named resistance receipts above in place.
-- Define whether the four Armour items divide protection evenly or use slot-specific values.
+- Define whether the four Armor items divide protection evenly or use slot-specific values.
 - Define the exact over-tolerance penalties and Shield benefits without multiplying classes.
-- Define how later monster materials bind to Light Armour without creating a separate class for
+- Define how later monster materials bind to Light Armor without creating a separate class for
   every creature.

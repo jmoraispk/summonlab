@@ -78,7 +78,7 @@ function combatant(
 			agility: input.agility ?? 1,
 			magic: input.magic ?? 20
 		},
-		armour: 0,
+		armor: 0,
 		resistances: {},
 		readiness: {
 			value: input.readiness ?? 0,

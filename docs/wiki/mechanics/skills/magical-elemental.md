@@ -29,7 +29,7 @@ Water, and Earth preserve their imported ladders below.
 | 6 | **Cinder Trail** | Fire | E | A | Ignite Expert | Leaves burning ground along a path |
 | 7 | **Flame Shroud** | Fire | E | P | Warmth Expert, Rank II | A thin burning aura; retaliates against melee attackers |
 | 8 | **Great Fireball** | Fire | D | A | Fireball Expert, 5,000 casts | Larger, slower, heavier impact with a small blast |
-| 9 | **Flame Jet** | Fire | D | A | Fireball Expert, Magic threshold | Sustained cone; channelled, drains while held |
+| 9 | **Flame Jet** | Fire | D | A | Fireball Expert, Magic threshold | Sustained cone; channeled, drains while held |
 | 10 | **Detonation** | Fire | D | A | Fireball Expert, Dexterity threshold | A targeted explosion placed at a point rather than thrown |
 | 11 | **Kindling** | Fire | D | P | Fireball Master | Casting Fire skills builds a charge that empowers the next one |
 | 12 | **Firestorm** | Fire | C | A | Flame Jet Master, Rank III | A rotating column of flame over an area; pulls and burns |
@@ -43,7 +43,7 @@ Water, and Earth preserve their imported ladders below.
 | 20 | **Water Bullet** | Water | F | A | Draw Water Novice | Compressed droplet fired at speed. Cheap, precise. |
 | 21 | **Cold Touch** | Water | F | A | Draw Water Novice | Chills a target briefly; slows attack speed |
 | 22 | **Flow** | Water | F | P | Draw Water Intermediate | Move at full speed through water; small evasion bonus |
-| 23 | **Pressure Lance** | Water | E | A | Water Bullet Expert, Rank II | A cutting jet; ignores part of armour |
+| 23 | **Pressure Lance** | Water | E | A | Water Bullet Expert, Rank II | A cutting jet; ignores part of armor |
 | 24 | **Mist** | Water | E | A | Cold Touch Expert | Obscuring fog; reduces enemy accuracy |
 | 25 | **Water Whip** | Water | E | A | Flow Expert, Dexterity threshold | Reaching strike that can also pull or trip |
 | 26 | **Torrent** | Water | D | A | Pressure Lance Master | A sustained wave that pushes everything back |

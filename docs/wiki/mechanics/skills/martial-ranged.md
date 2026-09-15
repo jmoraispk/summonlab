@@ -20,7 +20,7 @@ Ranged owns bow, crossbow, and sling projectile techniques. Equipment labels nar
 | 2 | **Aimed Shot** | Bow | F | A | Archery Novice | Slower, more accurate, more damaging than a loose shot |
 | 3 | **Quick Loose** | Bow | F | A | Archery Novice | Fast, inaccurate, cheap |
 | 4 | **Steady Stance** | Bow | F | P | Archery Intermediate | Accuracy penalty removed while standing still |
-| 5 | **Fletching** | Bow | E | C | Archery Intermediate, Gathering prerequisite | Craft arrows, including specialised heads |
+| 5 | **Fletching** | Bow | E | C | Archery Intermediate, Gathering prerequisite | Craft arrows, including specialized heads |
 | 6 | **Power Draw** | Bow | E | P | Strength threshold, 5,000 shots | Increased damage and range on all bow skills |
 | 7 | **Pinning Shot** | Bow | E | A | Aimed Shot Expert | Roots the target briefly |
 | 8 | **Arcing Volley** | Bow | E | A | Archery Expert | Indirect fire over cover into an area |
@@ -34,7 +34,7 @@ Ranged owns bow, crossbow, and sling projectile techniques. Equipment labels nar
 | 16 | **Storm of a Thousand** | Bow | B | A | Rain of Arrows Master, Split Arrow Expert | The sky fills; a wide area is saturated for a long duration |
 | 17 | **The Arrow That Finds** | Bow | A | A | Sky Piercer Master, composite condition | Fired once, it does not stop until its target is dead |
 | 18 | **World's Edge Shot** | Bow | S | A | The Arrow That Finds Master, composite condition | A shot that crosses any distance and cannot be prevented |
-| 19 | **Crossbow Handling** | Crossbow | F | P | Hold a crossbow | Damage and armour-penetration bonus with crossbows. **Foundation.** |
+| 19 | **Crossbow Handling** | Crossbow | F | P | Hold a crossbow | Damage and armor-penetration bonus with crossbows. **Foundation.** |
 | 20 | **Bolt Shot** | Crossbow | F | A | Crossbow Handling Novice | Straightforward, high-penetration single shot |
 | 21 | **Reload Drill** | Crossbow | F | P | Crossbow Handling Intermediate | Reduced reload time |
 | 22 | **Bolt Craft** | Crossbow | E | C | Reload Drill Expert, Forging prerequisite | Craft bolts, including barbed, explosive and hollow heads |

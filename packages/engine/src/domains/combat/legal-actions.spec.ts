@@ -465,39 +465,39 @@ describe('combat legal actions', () => {
 	});
 
 	it('rejects overloaded or explicitly ineligible loadouts without consulting Vitality', () => {
-		const heavyArmour = equipment('equipment-iron-heavy-armour-torso', [], 28, 45, [
-			'armour-training'
+		const heavyArmor = equipment('equipment-iron-heavy-armor-torso', [], 28, 45, [
+			'armor-training'
 		]);
 		expect(
 			evaluateCombatLoadout({
 				intrinsicStrength: 40,
 				effectiveLoadStrength: 60,
 				proficiencyTags: [],
-				equipment: [heavyArmour]
+				equipment: [heavyArmor]
 			})
 		).toStrictEqual({
 			eligible: false,
 			totalLoad: 28,
 			strengthLoadTolerance: 60,
 			reasons: [
-				'equipment-iron-heavy-armour-torso:minimum-strength',
-				'equipment-iron-heavy-armour-torso:missing-armour-training'
+				'equipment-iron-heavy-armor-torso:minimum-strength',
+				'equipment-iron-heavy-armor-torso:missing-armor-training'
 			]
 		});
 		expect(
 			evaluateCombatLoadout({
 				intrinsicStrength: 45,
 				effectiveLoadStrength: 45,
-				proficiencyTags: ['armour-training'],
-				equipment: [heavyArmour, equipment('equipment-bronze-axe', [], 20)]
+				proficiencyTags: ['armor-training'],
+				equipment: [heavyArmor, equipment('equipment-bronze-axe', [], 20)]
 			})
 		).toMatchObject({ eligible: false, totalLoad: 48, strengthLoadTolerance: 45 });
 		expect(
 			evaluateCombatLoadout({
 				intrinsicStrength: 60,
 				effectiveLoadStrength: 60,
-				proficiencyTags: ['armour-training'],
-				equipment: [heavyArmour]
+				proficiencyTags: ['armor-training'],
+				equipment: [heavyArmor]
 			})
 		).toStrictEqual({ eligible: true, totalLoad: 28, strengthLoadTolerance: 60, reasons: [] });
 	});
@@ -512,7 +512,7 @@ describe('combat legal actions', () => {
 				equipment: [loadOnly]
 			})
 		).toStrictEqual({ eligible: true, totalLoad: 50, strengthLoadTolerance: 60, reasons: [] });
-		const intrinsicallyGated = equipment('equipment-iron-heavy-armour-torso', [], 28, 45);
+		const intrinsicallyGated = equipment('equipment-iron-heavy-armor-torso', [], 28, 45);
 		expect(
 			evaluateCombatLoadout({
 				intrinsicStrength: 40,
@@ -522,7 +522,7 @@ describe('combat legal actions', () => {
 			})
 		).toMatchObject({
 			eligible: false,
-			reasons: ['equipment-iron-heavy-armour-torso:minimum-strength']
+			reasons: ['equipment-iron-heavy-armor-torso:minimum-strength']
 		});
 	});
 });

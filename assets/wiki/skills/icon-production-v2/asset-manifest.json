@@ -4,7 +4,7 @@
 	"sourcePolicy": "exact-frameless-source",
 	"catalog": {
 		"path": "assets/wiki/skills/icon-production-v2/catalog.json",
-		"contentHash": "699ebc2e91788f08646ce3fa05a215b975a14bf19721c8e159f025db6536296d"
+		"contentHash": "ec91b8d955d32db6ce8ff503ed2c1dee01be7fac042adaa313d296c536f566ea"
 	},
 	"composition": {
 		"canvasSize": 1024,
@@ -236,9 +236,9 @@
 			"contentHash": "248563618b84fbb5f431064a6e500c13b95b8743121baecae1cdf8d527fd30d4"
 		},
 		{
-			"targetId": "craft:forging:armoursmithing",
-			"slug": "craft-forging-armoursmithing",
-			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/craft-forging-armoursmithing.png",
+			"targetId": "craft:forging:armorsmithing",
+			"slug": "craft-forging-armorsmithing",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/craft-forging-armorsmithing.png",
 			"contentHash": "8b6b0f3315ed849f07d3b633634c9ed6058d58d767d603bbf2c250172804e7d3"
 		},
 		{
@@ -830,9 +830,9 @@
 			"contentHash": "49b8cc32a18c811702518acf43fbb093ead57af7ac0f9a5bb1b2db9d4492edbe"
 		},
 		{
-			"targetId": "magical:enchantment:armour-imbuing",
-			"slug": "magical-enchantment-armour-imbuing",
-			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/magical-enchantment-armour-imbuing.png",
+			"targetId": "magical:enchantment:armor-imbuing",
+			"slug": "magical-enchantment-armor-imbuing",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/magical-enchantment-armor-imbuing.png",
 			"contentHash": "2f2c9e965124dac40e18d49b648e15217b13262136e614731df776c6681e323a"
 		},
 		{
@@ -1118,9 +1118,9 @@
 			"contentHash": "c116b4ddba3e64ad3cd57aececa817821e7110b0c3723680a6802b7b44d3f578"
 		},
 		{
-			"targetId": "magical:restoration:shared-vigour",
-			"slug": "magical-restoration-shared-vigour",
-			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/magical-restoration-shared-vigour.png",
+			"targetId": "magical:restoration:shared-vigor",
+			"slug": "magical-restoration-shared-vigor",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/magical-restoration-shared-vigor.png",
 			"contentHash": "a30f9612201653ad2ec33f3d215a1e5ceecdf0dc9b994498836700683121e3c1"
 		},
 		{
@@ -2378,9 +2378,9 @@
 			"contentHash": "518b6ff378ac283d5c586e99e88012c3075b31eb2d0243e49b08230b9c7f86ef"
 		},
 		{
-			"targetId": "martial:polearm:rend-armour",
-			"slug": "martial-polearm-rend-armour",
-			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-polearm-rend-armour.png",
+			"targetId": "martial:polearm:rend-armor",
+			"slug": "martial-polearm-rend-armor",
+			"interiorPath": "assets/wiki/skills/icon-production-v2/interiors/martial-polearm-rend-armor.png",
 			"contentHash": "a127cb9138cbdaa162522c4418ab313caf952a5bfcc295b75d7fac3a01c97b97"
 		},
 		{

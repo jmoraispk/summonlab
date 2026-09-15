@@ -22,7 +22,7 @@ import {
 } from '@summonlab/content';
 
 import { hashCanonical } from '../../hash.js';
-import { armourReduction } from './capability.js';
+import { armorReduction } from './capability.js';
 import { positionIsAtFacingRelation } from './geometry.js';
 import { recordReadinessOutcomeDamage, synchronizeReadinessOutcomeEvidence } from './outcome.js';
 import { purposeKeyedInteger } from './randomness.js';
@@ -60,8 +60,8 @@ export type CombatDamageCalculation = Readonly<{
 	affinityAdjustedMagnitude: number;
 	criticalAdjustedMagnitude: number;
 	statusAdjustedMagnitude: number;
-	armourReductionBasisPoints: number;
-	armourAdjustedMagnitude: number;
+	armorReductionBasisPoints: number;
+	armorAdjustedMagnitude: number;
 	resistanceReductionBasisPoints: number;
 	finalDamage: number;
 }>;
@@ -454,12 +454,12 @@ function calculateDamage(
 					'Status damage'
 				)
 			: criticalAdjustedMagnitude;
-	const armourReductionBasisPoints =
-		channel === 'physical' ? armourReduction(target.armour, authority.penetration, rules) : 0;
-	const armourAdjustedMagnitude = scaleHalfUp(
+	const armorReductionBasisPoints =
+		channel === 'physical' ? armorReduction(target.armor, authority.penetration, rules) : 0;
+	const armorAdjustedMagnitude = scaleHalfUp(
 		statusAdjustedMagnitude,
-		BASIS_POINTS - armourReductionBasisPoints,
-		'Armour mitigation'
+		BASIS_POINTS - armorReductionBasisPoints,
+		'Armor mitigation'
 	);
 	const resistanceReductionBasisPoints = resistanceReduction(
 		authority.tags,
@@ -467,7 +467,7 @@ function calculateDamage(
 		rules
 	);
 	const resisted = scaleHalfUp(
-		armourAdjustedMagnitude,
+		armorAdjustedMagnitude,
 		BASIS_POINTS - resistanceReductionBasisPoints,
 		'Named resistance mitigation'
 	);
@@ -479,8 +479,8 @@ function calculateDamage(
 		affinityAdjustedMagnitude,
 		criticalAdjustedMagnitude,
 		statusAdjustedMagnitude,
-		armourReductionBasisPoints,
-		armourAdjustedMagnitude,
+		armorReductionBasisPoints,
+		armorAdjustedMagnitude,
 		resistanceReductionBasisPoints,
 		finalDamage
 	};

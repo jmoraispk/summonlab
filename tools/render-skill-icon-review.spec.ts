@@ -80,7 +80,7 @@ describe('temporary skill icon review renderer', () => {
 		).rejects.toThrow(/omit the family sheet/i);
 	});
 
-	it('reviews a catalogued net-new target before its interior is promoted', async () => {
+	it('reviews a cataloged net-new target before its interior is promoted', async () => {
 		const root = await mkdtemp(path.join(os.tmpdir(), 'skill-review-net-new-'));
 		const assetRoot = path.join(root, 'assets/wiki/skills/icon-production-v2');
 		await mkdir(path.join(assetRoot, 'interiors'), { recursive: true });

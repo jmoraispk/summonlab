@@ -2158,7 +2158,7 @@
 				"family": "Restoration",
 				"skill": "Life Link"
 			},
-			"replacementRequires": "Shared Vigour Master, Magic threshold"
+			"replacementRequires": "Shared Vigor Master, Magic threshold"
 		},
 		{
 			"sourceId": "magical-disciplines.md#restoration:11",

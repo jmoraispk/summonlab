@@ -14,7 +14,7 @@ obedience, personality, decision quality, social worth, or the value of a life.
 | --- | --- | --- | --- |
 | `STR` | **Strength** | Physical power, carrying/load tolerance, explicit heavy requirements | Accuracy, critical rate, mitigation, cadence |
 | `AGI` | **Agility** | Readiness, movement, evasion, bounded relative speed | Learned accuracy, unrestricted actions, critical rate |
-| `VIT` | **Vitality** | Maximum Health and modest natural recovery | Armour, resistance, immunity, equipment eligibility |
+| `VIT` | **Vitality** | Maximum Health and modest natural recovery | Armor, resistance, immunity, equipment eligibility |
 | `MAG` | **Magic** | Magical power, maximum Mana, modest saturating Mana recovery | Morale, learning, control duration, decision quality |
 
 The character-sheet order is `STR`, `AGI`, `VIT`, `MAG`; normal prose uses the full names. There is
@@ -31,7 +31,7 @@ The ten current Power rates are `1.0, 1.2, 1.4, 1.8, 2.2, 2.6, 3.2, 3.8, 4.4, 5.
 Vitality is `5, 6, 7, 9, 11, 13, 16, 19, 22, 25`. See
 [Attributes and training](progression/attributes-and-training.md) for the complete table.
 
-Armour, named resistance, accuracy, evasion, critical probability, action cadence, flat equipment,
+Armor, named resistance, accuracy, evasion, critical probability, action cadence, flat equipment,
 and skill mastery remain separate. An awakening never refills current Health.
 
 ## Affinity interaction

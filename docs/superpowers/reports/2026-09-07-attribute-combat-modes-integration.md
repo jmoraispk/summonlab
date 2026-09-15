@@ -20,11 +20,11 @@ agent-readiness resolver without changing historical V1–V25 rules or replay by
   scope.
 - V26 heroes persist combat proficiency tags and per-skill mastery independently from attributes.
 - Readiness legal actions are derived from the exact equipped instances, combat equipment profiles,
-  load tolerance, intrinsic Strength gates, Armour Training, skill delivery tags, trained delivery
+  load tolerance, intrinsic Strength gates, Armor Training, skill delivery tags, trained delivery
   tags, and current per-skill mastery step.
 - Equipped-item grants project named Cut, Pierce, Impact, Burn, Frost, Shock, and Arcane resistances
   in readiness combat. The typed receipt pipeline also reserves passive-skill and physiology sources
-  for explicitly authored integrations. Vitality grants no mitigation or armour eligibility, and
+  for explicitly authored integrations. Vitality grants no mitigation or armor eligibility, and
   universal poise remains absent.
 - Authenticated readiness skill use produces idempotent practice claims. Applied practice advances
   the matching persisted mastery, capped at 100, and the next attempt consumes the new step.
@@ -111,7 +111,7 @@ recovery is 471, and recovery appears in 172 encounters. P95 tick/event counts a
 The independent `docs/evidence/combat-balance-v1.json` legacy artifact remains byte-stable at
 SHA-256 `d0b2814acfdca17dcede952f7015a46399e5902b2834cf4607e87e37978eabac`. The current V2 evidence
 qualifies mechanical operator evaluation; it does not claim readiness promotion, a player-visible
-mode choice, full hostile balance, broad hostile tactics, final armour magnitudes, or a
+mode choice, full hostile balance, broad hostile tactics, final armor magnitudes, or a
 release-default change.
 
 ## Governing records

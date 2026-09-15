@@ -22,7 +22,7 @@ changing the basic equations.
 
 Summonlab's Strength, Agility, Vitality, and Magic therefore match the four primary roles closely,
 but the mechanics are deliberately different. Summonlab uses one complete, terminating ten-row
-conversion table; keeps armour, cadence, accuracy, recovery, and most ratios as separate budgets;
+conversion table; keeps armor, cadence, accuracy, recovery, and most ratios as separate budgets;
 and does not add Dexterity as a fifth primary attribute. Full names are normal prose, while compact
 character sheets use the fixed order `STR`, `AGI`, `VIT`, `MAG`.
 
@@ -33,7 +33,7 @@ their relationship.
 ## Component pages
 
 - [Combat math and stat awakenings](combat-math.md)
-- [Equipment catalogue](equipment-catalogue.md)
+- [Equipment catalog](equipment-catalog.md)
 - [Equipment mechanics](equipment-mechanics.md)
 - [Item property vocabulary](item-properties.md)
 

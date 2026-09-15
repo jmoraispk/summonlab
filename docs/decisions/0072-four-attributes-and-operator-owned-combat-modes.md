@@ -32,7 +32,7 @@ scale:
 | Attribute | Owns | Explicit exclusions |
 | --- | --- | --- |
 | Strength | physical magnitude, carrying, equipment-load tolerance, authored heavy-item requirements | accuracy, critical chance, general mitigation, action cadence |
-| Vitality | maximum Health, modest natural Health regeneration | armour mitigation, blanket resistance, poise, armour eligibility |
+| Vitality | maximum Health, modest natural Health regeneration | armor mitigation, blanket resistance, poise, armor eligibility |
 | Agility | readiness, movement, evasion, bounded relative speed in hit contests | learned accuracy, critical chance, unrestricted extra actions |
 | Magic | magical magnitude, maximum Mana, modest saturating Mana regeneration | morale, learning, control duration, mental resistance, decision quality |
 
@@ -47,7 +47,7 @@ attribute scopes they explicitly name. The initial new-growth rule grants one fr
 for each level gained. `engine-v26` derives mission attributes from the complete growth-receipt chain
 and persists combat proficiency tags plus per-skill mastery separately from those attributes.
 
-Health and Mana remain the only universal resource bars. General mitigation comes from armour after
+Health and Mana remain the only universal resource bars. General mitigation comes from armor after
 penetration and is capped at 7,499 basis points by `combat-rules-v1`. Authored Cut, Pierce, Impact,
 Burn, Frost, Shock, and Arcane resistance receipts stack under a separate 7,500-basis-point cap.
 There is no universal poise; content may opt into an explicit visible Break meter.
@@ -148,7 +148,7 @@ old aptitudes in new canonical mechanics.
 - Task 7 combat-skill and combat-equipment-profile catalogs retain separate immutable hashes and an
   aggregate combat-content binding. The historical equipment definition hash is not repurposed.
 - Passing balance evidence does not promote every harness formula. Relative-Agility accuracy,
-  attack cadence/variance, affinity application, production armour magnitudes, and a magical active
+  attack cadence/variance, affinity application, production armor magnitudes, and a magical active
   remain hash-bound benchmark candidates until their owning runtime/content work lands.
 - The current checked `agent-readiness-v1.json` records 10,000 distinct deterministic trials for
   the current V2 operator-evaluation binding, 20,000 modeled provider
@@ -177,7 +177,7 @@ old aptitudes in new canonical mechanics.
 ## Supersession
 
 This decision supersedes ADR 0063 and the linked wiki pages only where they present the six-attribute
-vocabulary, Vitality mitigation/poise, Magic morale/control/learning, Vitality-supported armour
+vocabulary, Vitality mitigation/poise, Magic morale/control/learning, Vitality-supported armor
 eligibility, or player-selectable combat policy as current canon. ADR 0063's source-precedence rule
 and unrelated progression decisions remain accepted. Historical executable versions remain valid
 regardless of prose supersession.

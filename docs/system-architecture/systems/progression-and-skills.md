@@ -25,7 +25,7 @@ learned execution.
 - the combat or production event that supplies evidence;
 - resource balances, ingredient reservation, or encounter resolution;
 - summon odds, hero identity, personality, or learning-profile disclosure;
-- equipment flat power, armour, accuracy, cadence, affinity ratios, or skill coefficients.
+- equipment flat power, armor, accuracy, cadence, affinity ratios, or skill coefficients.
 
 ## Versioned progression
 

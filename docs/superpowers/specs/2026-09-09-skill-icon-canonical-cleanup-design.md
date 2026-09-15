@@ -5,7 +5,7 @@
 ## Decision
 
 Replace the accumulated skill-icon production archive with a small, live canonical source set.
-Keep one frameless interior for every catalogued skill so frames can be replaced without
+Keep one frameless interior for every cataloged skill so frames can be replaced without
 regenerating the artwork. Keep the seven approved complete rarity frames, the shared charcoal
 backing, geometry authority, generated catalog/specification data, and the bounded WebP runtime
 derivatives.

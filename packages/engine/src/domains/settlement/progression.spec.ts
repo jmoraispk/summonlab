@@ -125,7 +125,7 @@ async function readinessFixtureForEquipmentCommand(): Promise<{
 	const heroId = draft.manifest.characterId;
 	const torso = createEquipmentItem({
 		itemId: deterministicUuid('v26-equipment-command:torso'),
-		definitionId: 'equipment-iron-heavy-armour-torso',
+		definitionId: 'equipment-iron-heavy-armor-torso',
 		ownerId: heroId,
 		equippedById: null,
 		craftsmanship: { label: 'standard', bonus: 0 },
@@ -592,7 +592,7 @@ describe('engine-v26 intrinsic attribute progression', () => {
 					},
 					combatTraining: {
 						...hero.combatTraining,
-						proficiencyTags: ['armour-training']
+						proficiencyTags: ['armor-training']
 					}
 				}
 			}

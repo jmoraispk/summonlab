@@ -700,7 +700,7 @@ Put this editable map in progression rules rather than mutating equipment defini
 ```ts
 equipmentClassDifficulty: {
 	dagger: 1, sword: 2, spear: 3, bow: 3, axe: 3, mace: 3,
-	shield: 3, staff: 4, 'light-armour': 4, robes: 4, 'heavy-armour': 5
+	shield: 3, staff: 4, 'light-armor': 4, robes: 4, 'heavy-armor': 5
 }
 ```
 

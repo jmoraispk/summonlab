@@ -289,12 +289,12 @@ behavior.
 ### Balance evidence boundary
 
 The committed combat-balance evidence validates immutable rules and content hashes across levels
-10, 40, 70, and 99 with 10,000 seeded trials per matchup. The 7,499-basis-point general-armour cap,
+10, 40, 70, and 99 with 10,000 seeded trials per matchup. The 7,499-basis-point general-armor cap,
 four-attribute resource/scaling rules, named resistance cap, and versioned skill/equipment catalogs
 are production foundation.
 
 The harness's peer hit/evasion equation, relative-Agility conversion, attack cadence and variance,
-affinity matchup application, general armour-point fixture values, and magical-active substitute are
+affinity matchup application, general armor-point fixture values, and magical-active substitute are
 explicitly hash-bound **benchmark candidates**. They prove that a coherent tuning set can pass the
 promotion gates; they do not become runtime mechanics merely because the evidence passes.
 
@@ -382,7 +382,7 @@ kill-sensitive drops, gathering, and permanent consequences. The accepted family
 keeps form tier, numerical level, and affinity rank as separate axes; any restriction on low-tier
 affinity use must be authored explicitly. Engine-v26 implements both the four-attribute legacy mode
 and operator-controlled readiness timing, intent, deterministic arbitration, and common result
-contracts. Readiness V2 also includes executable deterministic damaging hostile strikes. Production armour
+contracts. Readiness V2 also includes executable deterministic damaging hostile strikes. Production armor
 magnitudes, magical active skills, broad hostile policy variety and balance, permanent injury/death
 promotion, free-roaming gathering, and model narration remain unshipped. Engine-v27 layers the
 shared progression owner over both mode adapters without changing their operator-owned boundary.

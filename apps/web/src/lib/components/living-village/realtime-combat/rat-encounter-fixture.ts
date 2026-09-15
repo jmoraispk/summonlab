@@ -134,7 +134,7 @@ const asha = {
 		movementUnitsPerSecond: 0.082,
 		attackRange: 0.075,
 		attackPower: 19,
-		armour: 0,
+		armor: 0,
 		attackIntervalTicks: 47
 	},
 	deployment: { x: 0.46, y: 0.8 },
@@ -168,7 +168,7 @@ const toma = {
 		movementUnitsPerSecond: 0.063,
 		attackRange: 0.08,
 		attackPower: 14,
-		armour: 0,
+		armor: 0,
 		attackIntervalTicks: 57
 	},
 	deployment: { x: 0.31, y: 0.86 },
@@ -202,7 +202,7 @@ const nessa = {
 		movementUnitsPerSecond: 0.071,
 		attackRange: 0.25,
 		attackPower: 17,
-		armour: 0,
+		armor: 0,
 		attackIntervalTicks: 65
 	},
 	deployment: { x: 0.66, y: 0.88 },
@@ -231,7 +231,7 @@ const ratBrute = {
 		movementUnitsPerSecond: 0.052,
 		attackRange: 0.09,
 		attackPower: 18,
-		armour: 0,
+		armor: 0,
 		attackIntervalTicks: 72
 	},
 	deployment: { x: 0.52, y: 0.2 },
@@ -271,7 +271,7 @@ const lesserRats = lesserRatDeployments.map(
 				movementUnitsPerSecond: 0.092,
 				attackRange: 0.062,
 				attackPower: 9,
-				armour: 0,
+				armor: 0,
 				attackIntervalTicks: lesserRatIntervals[index]!
 			},
 			deployment: { x, y },

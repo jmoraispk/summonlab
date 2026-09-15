@@ -24,7 +24,7 @@ const swordProfile = {
 } as const;
 
 describe('combat loadout contracts', () => {
-	it('freezes family and armour proficiency tags without item-instance training', () => {
+	it('freezes family and armor proficiency tags without item-instance training', () => {
 		expect(EquipmentFamilyTagSchema.options).toStrictEqual([
 			'unarmed',
 			'one-handed-blade',
@@ -33,7 +33,7 @@ describe('combat loadout contracts', () => {
 			'staff-focus',
 			'shield'
 		]);
-		expect(EquipmentProficiencyTagSchema.options).toStrictEqual(['armour-training']);
+		expect(EquipmentProficiencyTagSchema.options).toStrictEqual(['armor-training']);
 		expect(
 			LearnedCombatSkillStateSchema.parse({
 				schemaVersion: 'learned-combat-skill-v1',
@@ -44,21 +44,21 @@ describe('combat loadout contracts', () => {
 		).not.toHaveProperty('equipmentItemId');
 	});
 
-	it('keeps load and explicit Strength or armour-training requirements separate from Vitality', () => {
+	it('keeps load and explicit Strength or armor-training requirements separate from Vitality', () => {
 		expect(CombatEquipmentProfileSchema.parse(swordProfile)).toStrictEqual(swordProfile);
-		const heavyArmour = {
+		const heavyArmor = {
 			...swordProfile,
-			definitionId: 'equipment-iron-heavy-armour-torso',
+			definitionId: 'equipment-iron-heavy-armor-torso',
 			familyTags: [],
 			load: 28,
-			requirements: { minimumStrength: 45, proficiencyTags: ['armour-training'] },
+			requirements: { minimumStrength: 45, proficiencyTags: ['armor-training'] },
 			resistanceGrants: [{ tag: 'cut', basisPoints: 800, capBasisPoints: 1_500 }]
 		} as const;
-		expect(CombatEquipmentProfileSchema.parse(heavyArmour)).toStrictEqual(heavyArmour);
+		expect(CombatEquipmentProfileSchema.parse(heavyArmor)).toStrictEqual(heavyArmor);
 		expect(
 			CombatEquipmentProfileSchema.safeParse({
-				...heavyArmour,
-				requirements: { ...heavyArmour.requirements, minimumVitality: 45 }
+				...heavyArmor,
+				requirements: { ...heavyArmor.requirements, minimumVitality: 45 }
 			}).success
 		).toBe(false);
 	});

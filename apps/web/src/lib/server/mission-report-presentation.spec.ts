@@ -14,7 +14,7 @@ describe('mission report public projection', () => {
 							mind: {
 								personality: { openness: 91 },
 								primaryValue: 'knowledge',
-								dailyHabit: 'catalogues-tools'
+								dailyHabit: 'catalogs-tools'
 							},
 							capabilityProfile: {
 								profileVersion: 'character-capability-v1',

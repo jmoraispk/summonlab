@@ -302,7 +302,7 @@ function createCombatEquipmentProfile(
 			load: equipmentLoad(definition),
 			requirements: {
 				minimumStrength: heavyArmor ? 45 : definition.weightClass === 'heavy' ? 35 : null,
-				proficiencyTags: heavyArmor ? ['armour-training'] : []
+				proficiencyTags: heavyArmor ? ['armor-training'] : []
 			},
 			resistanceGrants
 		})
@@ -313,7 +313,7 @@ export const COMBAT_EQUIPMENT_PROFILE_CATALOG = deepFreeze(
 	CombatEquipmentProfileCatalogSchema.parse({
 		schemaVersion: 'combat-equipment-profile-catalog-v1',
 		contentVersion: 'combat-equipment-profiles-v1',
-		contentHash: '38472191a697de908ae96296cf33939d72d985587d029c72c17df108799c97dd',
+		contentHash: '88a8e86072d5161bbdd96d638058a46673b2b0440723371223a87948a1a60854',
 		profiles: EQUIPMENT_DEFINITIONS.map(createCombatEquipmentProfile)
 	})
 );

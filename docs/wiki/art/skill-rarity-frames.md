@@ -43,7 +43,7 @@ contains only the fixed rank language; bearer state is rendered separately by th
 ## Canonical source and runtime
 
 `assets/wiki/skills/icon-production-v2/asset-manifest.json` binds the seven frames, shared backing,
-geometry, and one frameless interior per catalogued skill by SHA-256. Final framed PNG masters are
+geometry, and one frameless interior per cataloged skill by SHA-256. Final framed PNG masters are
 not retained. The wiki runtime composes each icon in this order:
 
 1. shared charcoal backing;

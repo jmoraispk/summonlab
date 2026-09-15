@@ -119,7 +119,7 @@ combatProfile
   movementUnitsPerSecond
   attackRange
   attackPower
-  armour
+  armor
   attackIntervalTicks
 
 presentation
@@ -151,7 +151,7 @@ combatProfile
   movementUnitsPerSecond
   attackRange
   attackPower
-  armour
+  armor
   attackIntervalTicks
 requiredForVictory
 presentation

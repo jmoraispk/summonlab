@@ -168,7 +168,7 @@ function readinessV26Fixture(deployed: EngineGameStateV25): {
 		resources: { health: { current: 100, maximum: 100 }, mana: { current: 20, maximum: 20 } },
 		lastDamagedAtTick: null,
 		attributes: { strength: 20, agility: 20, vitality: 20, magic: 20 },
-		armour: 0,
+		armor: 0,
 		resistances: {},
 		readiness: { value: readiness, exactNumerator: readiness, recoveryUntilTick: 0 },
 		conditions: [],
@@ -1287,17 +1287,17 @@ describe('mission runtime ownership', () => {
 			  },
 			  {
 			    "commandType": "mission.advance.automatic",
-			    "eventHash": "47fe9e0a14162afd31b4414a565fb506f5618812340d397f5986b50ebbeb1a3d",
+			    "eventHash": "cc2da226d997b3679fff8b6d562635c662ea1b92768a65afacf48d280bd64235",
 			    "eventType": "mission.round.resolved",
 			  },
 			  {
 			    "commandType": "mission.apply.combat-choice-batch",
-			    "eventHash": "626ca390911e5a30683f26a1b4b21d78a810928aff18dc52f30667c349073547",
+			    "eventHash": "62767112c0edc35ed55456df4101e9e3a8c117e136628f77ca7b76e36ab7a6a1",
 			    "eventType": "mission.combat.choice-batch.applied",
 			  },
 			  {
 			    "commandType": "mission.commit.readiness-terminal",
-			    "eventHash": "c6d070d031355385159d2588f82da3e8fc1a613768cc230da0efbf9500117dc2",
+			    "eventHash": "855561a4125bf06352757d394ee3c30d53ee837676d17b777ce068c95d8ef961",
 			    "eventType": "mission.combat.readiness.terminal.committed",
 			  },
 			  {

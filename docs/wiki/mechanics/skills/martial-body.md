@@ -43,7 +43,7 @@ command in combat. `Unarmed` appears only when a technique truly requires empty 
 | 24 | **Iron Body** | Unarmed | E | P | Vitality threshold, 5,000 hits taken | Standing mitigation while unarmed |
 | 25 | **Rising Kick** | Unarmed | E | A | Low Kick Expert | Launches the target; opens an air chain |
 | 26 | **Flowing Redirect** | Unarmed | D | A | Palm Block Master | Redirects an attack into another enemy |
-| 27 | **Focused Strike** | Unarmed | D | A | Combination Master, Magic threshold | Damage passes through armour and barriers entirely |
+| 27 | **Focused Strike** | Unarmed | D | A | Combination Master, Magic threshold | Damage passes through armor and barriers entirely |
 | 28 | **Hundred Hands** | Unarmed | D | A | Combination Master, Agility threshold | Rapid multi-hit; count scales with attack speed |
 | 29 | **Diamond Body** | Unarmed | C | St | Iron Body Master | Heavy mitigation while held; no weapons may be used |
 | 30 | **One Inch** | Unarmed | C | A | Focused Strike Master, 50,000 punches | Full damage delivered from no distance at all |
@@ -52,7 +52,7 @@ command in combat. `Unarmed` appears only when a technique truly requires empty 
 | 33 | **Formless Body** | Unarmed | A | St | Diamond Body Master, composite condition | Attacks pass through the hero without effect for the duration |
 | 34 | **The Fist That Ends** | Unarmed | S | A | Empty Force Master, Formless Body Master, composite condition | One strike. Whatever it touches ceases. |
 | 35 | **Wrestling** | — | F | P | Strength threshold | Enables grabs and holds. **Foundation.** |
-| 36 | **Grab** | — | F | A | Wrestling Novice | Holds a target in place; both are immobilised |
+| 36 | **Grab** | — | F | A | Wrestling Novice | Holds a target in place; both are immobilized |
 | 37 | **Shove** | — | F | A | Wrestling Novice | Pushes a target back; breaks their stance |
 | 38 | **Trip** | — | E | A | Wrestling Intermediate | Knocks the target prone |
 | 39 | **Joint Lock** | — | E | A | Grab Expert, Dexterity threshold | Prevents the target from using skills while held |

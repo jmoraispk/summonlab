@@ -39,7 +39,7 @@ frequency.
 
 - Strength and Magic share the versioned power-rate table; Vitality uses its own Health table.
 - Agility owns readiness, movement, evasion, and bounded relative speed, not generic physical power.
-- Armour, resistance, accuracy, critical chance, cadence, flat equipment power, and skill mastery
+- Armor, resistance, accuracy, critical chance, cadence, flat equipment power, and skill mastery
   are not awakened.
 - Low-grade fixed effects may remain useful through reliability, cost, compatibility, or utility,
   but can be superseded over the very long progression horizon.

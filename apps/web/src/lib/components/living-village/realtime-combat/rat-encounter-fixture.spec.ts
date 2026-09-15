@@ -82,22 +82,26 @@ describe('rat encounter fixture', () => {
 				contentHash: '11d40da687b1795f8a8797ba09c348f332100a8d0b1d6420544d19830a82f996',
 				approvalStatus: 'fixture-only'
 			},
-			'/runtime/combat/realtime-study-v1/animation-canary-v1/iron-guardian/iron-guardian-motion-v5.json': {
-				contentHash: '8d949316d0e09b4f87965bf772dace215b1a194e647befe47f857d56f34a717f',
-				approvalStatus: 'fixture-only'
-			},
-			'/runtime/combat/realtime-study-v1/animation-canary-v1/iron-guardian/iron-guardian-motion-v5.png': {
-				contentHash: '7570e5324e42b3d0c8403990f25ea525b4e7231c67d2b52ae01156853aa7858a',
-				approvalStatus: 'fixture-only'
-			},
-			'/runtime/combat/realtime-study-v1/animation-canary-v1/moss-archer/moss-archer-motion-v4.json': {
-				contentHash: '0f304fbca4cabf8487db72a7b8dbef9c558d615219cce5281de385a1dbb1aeab',
-				approvalStatus: 'fixture-only'
-			},
-			'/runtime/combat/realtime-study-v1/animation-canary-v1/moss-archer/moss-archer-motion-v4.png': {
-				contentHash: '33e8e9eb65e84e23d84cdb56fd8f14a633624fc5e3809ebc4853f38a92ae77f5',
-				approvalStatus: 'fixture-only'
-			},
+			'/runtime/combat/realtime-study-v1/animation-canary-v1/iron-guardian/iron-guardian-motion-v5.json':
+				{
+					contentHash: '8d949316d0e09b4f87965bf772dace215b1a194e647befe47f857d56f34a717f',
+					approvalStatus: 'fixture-only'
+				},
+			'/runtime/combat/realtime-study-v1/animation-canary-v1/iron-guardian/iron-guardian-motion-v5.png':
+				{
+					contentHash: '7570e5324e42b3d0c8403990f25ea525b4e7231c67d2b52ae01156853aa7858a',
+					approvalStatus: 'fixture-only'
+				},
+			'/runtime/combat/realtime-study-v1/animation-canary-v1/moss-archer/moss-archer-motion-v4.json':
+				{
+					contentHash: '0f304fbca4cabf8487db72a7b8dbef9c558d615219cce5281de385a1dbb1aeab',
+					approvalStatus: 'fixture-only'
+				},
+			'/runtime/combat/realtime-study-v1/animation-canary-v1/moss-archer/moss-archer-motion-v4.png':
+				{
+					contentHash: '33e8e9eb65e84e23d84cdb56fd8f14a633624fc5e3809ebc4853f38a92ae77f5',
+					approvalStatus: 'fixture-only'
+				},
 			'/runtime/combat/realtime-study-v1/animation-canary-v1/rat-brute/rat-brute-motion-v1.json': {
 				contentHash: '735767a1122eca708c8c4602e8adac06cf0faf84626778fd0ab187ce5d5cb1fe',
 				approvalStatus: 'fixture-only'
@@ -106,10 +110,11 @@ describe('rat encounter fixture', () => {
 				contentHash: '4b6960602cd66044659b23f3bc4b6757ad0f19a18db7dcedc164d7e5baa5e7cc',
 				approvalStatus: 'fixture-only'
 			},
-			'/runtime/combat/realtime-study-v1/animation-canary-v1/lesser-rat/lesser-rat-motion-v2.json': {
-				contentHash: '5c56e9d0d3d2e508dbb58f2f4fc3bfec86cbd6a4c29340af6b9c2bb5391c7148',
-				approvalStatus: 'fixture-only'
-			},
+			'/runtime/combat/realtime-study-v1/animation-canary-v1/lesser-rat/lesser-rat-motion-v2.json':
+				{
+					contentHash: '5c56e9d0d3d2e508dbb58f2f4fc3bfec86cbd6a4c29340af6b9c2bb5391c7148',
+					approvalStatus: 'fixture-only'
+				},
 			'/runtime/combat/realtime-study-v1/animation-canary-v1/lesser-rat/lesser-rat-motion-v2.png': {
 				contentHash: '56a3338099ac3d71238d3c0406a91d6519b5246771f0cdde63bf3fcf0019ce0b',
 				approvalStatus: 'fixture-only'
@@ -125,14 +130,62 @@ describe('rat encounter fixture', () => {
 				(participant) => participant.combatProfile
 			)
 		).toEqual([
-			{ movementUnitsPerSecond: 0.082, attackRange: 0.075, attackPower: 19, armour: 0, attackIntervalTicks: 47 },
-			{ movementUnitsPerSecond: 0.063, attackRange: 0.08, attackPower: 14, armour: 0, attackIntervalTicks: 57 },
-			{ movementUnitsPerSecond: 0.071, attackRange: 0.25, attackPower: 17, armour: 0, attackIntervalTicks: 65 },
-			{ movementUnitsPerSecond: 0.052, attackRange: 0.09, attackPower: 18, armour: 0, attackIntervalTicks: 72 },
-			{ movementUnitsPerSecond: 0.092, attackRange: 0.062, attackPower: 9, armour: 0, attackIntervalTicks: 56 },
-			{ movementUnitsPerSecond: 0.092, attackRange: 0.062, attackPower: 9, armour: 0, attackIntervalTicks: 58 },
-			{ movementUnitsPerSecond: 0.092, attackRange: 0.062, attackPower: 9, armour: 0, attackIntervalTicks: 60 },
-			{ movementUnitsPerSecond: 0.092, attackRange: 0.062, attackPower: 9, armour: 0, attackIntervalTicks: 63 }
+			{
+				movementUnitsPerSecond: 0.082,
+				attackRange: 0.075,
+				attackPower: 19,
+				armor: 0,
+				attackIntervalTicks: 47
+			},
+			{
+				movementUnitsPerSecond: 0.063,
+				attackRange: 0.08,
+				attackPower: 14,
+				armor: 0,
+				attackIntervalTicks: 57
+			},
+			{
+				movementUnitsPerSecond: 0.071,
+				attackRange: 0.25,
+				attackPower: 17,
+				armor: 0,
+				attackIntervalTicks: 65
+			},
+			{
+				movementUnitsPerSecond: 0.052,
+				attackRange: 0.09,
+				attackPower: 18,
+				armor: 0,
+				attackIntervalTicks: 72
+			},
+			{
+				movementUnitsPerSecond: 0.092,
+				attackRange: 0.062,
+				attackPower: 9,
+				armor: 0,
+				attackIntervalTicks: 56
+			},
+			{
+				movementUnitsPerSecond: 0.092,
+				attackRange: 0.062,
+				attackPower: 9,
+				armor: 0,
+				attackIntervalTicks: 58
+			},
+			{
+				movementUnitsPerSecond: 0.092,
+				attackRange: 0.062,
+				attackPower: 9,
+				armor: 0,
+				attackIntervalTicks: 60
+			},
+			{
+				movementUnitsPerSecond: 0.092,
+				attackRange: 0.062,
+				attackPower: 9,
+				armor: 0,
+				attackIntervalTicks: 63
+			}
 		]);
 		expect(Object.isFrozen(RAT_ENCOUNTER_REQUEST)).toBe(true);
 		expect(Object.isFrozen(RAT_ENCOUNTER_REQUEST.party[0]!.resources)).toBe(true);

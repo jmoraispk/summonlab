@@ -58,7 +58,7 @@ magical attribute power  = effective MAG × current power rate
 maximum Health           = capacity-scoped effective VIT × current Health rate
 ```
 
-An awakening recomputes maximum Health without refilling current Health. Armour, resistance,
+An awakening recomputes maximum Health without refilling current Health. Armor, resistance,
 accuracy, evasion, critical chance, action cadence, movement ceilings, flat equipment power, skill
 mastery, affinity ratios, and explicitly flat skill effects do not receive this multiplier.
 

@@ -59,7 +59,7 @@ function combatant(
 		},
 		lastDamagedAtTick: health < 100 ? 3 : null,
 		attributes: { strength: 20, vitality: 20, agility: 20, magic: 20 },
-		armour: 0,
+		armor: 0,
 		resistances: {},
 		readiness: { value: 0, exactNumerator: 0, recoveryUntilTick: 0 },
 		conditions: [],

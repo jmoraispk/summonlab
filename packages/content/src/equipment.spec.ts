@@ -57,18 +57,18 @@ describe('equipment content catalog', () => {
 		]);
 	});
 
-	it('authors load, heavy Strength requirements, armour training, and named resistance grants', () => {
+	it('authors load, heavy Strength requirements, armor training, and named resistance grants', () => {
 		const heavyWeapon = COMBAT_EQUIPMENT_PROFILES_BY_ID['equipment-bronze-axe'];
-		const heavyArmour = COMBAT_EQUIPMENT_PROFILES_BY_ID['equipment-iron-heavy-armour-torso'];
+		const heavyArmor = COMBAT_EQUIPMENT_PROFILES_BY_ID['equipment-iron-heavy-armor-torso'];
 		expect(heavyWeapon).toMatchObject({
 			load: 20,
 			requirements: { minimumStrength: 35, proficiencyTags: [] }
 		});
-		expect(heavyArmour).toMatchObject({
+		expect(heavyArmor).toMatchObject({
 			load: 28,
-			requirements: { minimumStrength: 45, proficiencyTags: ['armour-training'] }
+			requirements: { minimumStrength: 45, proficiencyTags: ['armor-training'] }
 		});
-		expect(heavyArmour?.resistanceGrants).toEqual(
+		expect(heavyArmor?.resistanceGrants).toEqual(
 			expect.arrayContaining([
 				{ tag: 'cut', basisPoints: 800, capBasisPoints: 1_500 },
 				{ tag: 'impact', basisPoints: 600, capBasisPoints: 1_200 }
@@ -120,13 +120,13 @@ describe('equipment content catalog', () => {
 			);
 		}
 
-		const heavyArmourId = 'equipment-iron-heavy-armour-torso';
+		const heavyArmorId = 'equipment-iron-heavy-armor-torso';
 		const equipmentDrifts = [
 			COMBAT_EQUIPMENT_PROFILE_CATALOG.profiles.map((profile, index) =>
 				index === 0 ? { ...profile, load: profile.load + 1 } : profile
 			),
 			COMBAT_EQUIPMENT_PROFILE_CATALOG.profiles.map((profile) =>
-				profile.definitionId === heavyArmourId
+				profile.definitionId === heavyArmorId
 					? {
 							...profile,
 							requirements: {
@@ -137,7 +137,7 @@ describe('equipment content catalog', () => {
 					: profile
 			),
 			COMBAT_EQUIPMENT_PROFILE_CATALOG.profiles.map((profile) =>
-				profile.definitionId === heavyArmourId
+				profile.definitionId === heavyArmorId
 					? {
 							...profile,
 							resistanceGrants: profile.resistanceGrants.map((grant, index) =>
@@ -185,7 +185,7 @@ describe('equipment content catalog', () => {
 		expect(Object.isFrozen(COMBAT_CONTENT_BINDING.components)).toBe(true);
 		expect(await loadCombatContentBinding()).toBe(COMBAT_CONTENT_BINDING);
 		expect(EQUIPMENT_DEFINITION_CATALOG.contentHash).toBe(
-			'42a8ffc1899ee458ca8360d33dffbeac3713864548734b7345ce489c3599035c'
+			'42e64ba49543b86482f9b75d885885ba9b0681d6e68d1fc9f8f37ddcb5c0eaf9'
 		);
 	});
 	it('expands the four material families into exactly 140 frozen definitions', () => {

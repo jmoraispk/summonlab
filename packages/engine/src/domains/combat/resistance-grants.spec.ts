@@ -11,13 +11,13 @@ import { namedResistanceReduction } from './capability.js';
 import { resistanceGrantReceiptsFromAuthoredSources } from './resistance-grants.js';
 
 describe('authored resistance grant receipts', () => {
-	it('adapts real heavy-armour cut grants and applies the global combat-rules cap', () => {
-		const heavyArmour = COMBAT_EQUIPMENT_PROFILE_CATALOG.profiles
-			.filter((profile) => profile.definitionId.includes('-heavy-armour-'))
+	it('adapts real heavy-armor cut grants and applies the global combat-rules cap', () => {
+		const heavyArmor = COMBAT_EQUIPMENT_PROFILE_CATALOG.profiles
+			.filter((profile) => profile.definitionId.includes('-heavy-armor-'))
 			.slice(0, 10)
-			.map((profile, index) => ({ sourceInstanceId: `heavy-armour-${index}`, profile }));
+			.map((profile, index) => ({ sourceInstanceId: `heavy-armor-${index}`, profile }));
 		const receipts = resistanceGrantReceiptsFromAuthoredSources(
-			{ equipment: heavyArmour, passiveSkills: [], physiology: [] },
+			{ equipment: heavyArmor, passiveSkills: [], physiology: [] },
 			COMBAT_RULES_V1
 		);
 
@@ -38,12 +38,12 @@ describe('authored resistance grant receipts', () => {
 
 	it('uses the stricter of each authored cap and the global rules cap', () => {
 		const profile = COMBAT_EQUIPMENT_PROFILE_CATALOG.profiles.find(
-			(candidate) => candidate.definitionId === 'equipment-iron-heavy-armour-torso'
+			(candidate) => candidate.definitionId === 'equipment-iron-heavy-armor-torso'
 		)!;
 		const strictRules = { ...COMBAT_RULES_V1, resistance: { capBasisPoints: 500 } };
 		const receipts = resistanceGrantReceiptsFromAuthoredSources(
 			{
-				equipment: [{ sourceInstanceId: 'strict-cap-armour', profile }],
+				equipment: [{ sourceInstanceId: 'strict-cap-armor', profile }],
 				passiveSkills: [],
 				physiology: []
 			},
@@ -57,10 +57,10 @@ describe('authored resistance grant receipts', () => {
 
 	it('gives equipment, passive-skill, and physiology sources stable collision-free identities', () => {
 		const profile = COMBAT_EQUIPMENT_PROFILE_CATALOG.profiles.find(
-			(candidate) => candidate.definitionId === 'equipment-iron-heavy-armour-torso'
+			(candidate) => candidate.definitionId === 'equipment-iron-heavy-armor-torso'
 		)!;
 		const secondProfile = COMBAT_EQUIPMENT_PROFILE_CATALOG.profiles.find(
-			(candidate) => candidate.definitionId === 'equipment-bronze-heavy-armour-head'
+			(candidate) => candidate.definitionId === 'equipment-bronze-heavy-armor-head'
 		)!;
 		const passiveSkill = CombatSkillDefinitionSchema.parse({
 			schemaVersion: 'combat-skill-v1',
@@ -142,7 +142,7 @@ describe('authored resistance grant receipts', () => {
 
 	it('rejects duplicate equipment source instances before deterministic IDs can alias', () => {
 		const profile = COMBAT_EQUIPMENT_PROFILE_CATALOG.profiles.find(
-			(candidate) => candidate.definitionId === 'equipment-iron-heavy-armour-torso'
+			(candidate) => candidate.definitionId === 'equipment-iron-heavy-armor-torso'
 		)!;
 		const equipment = [
 			{ sourceInstanceId: 'duplicate-instance', profile },
@@ -185,7 +185,7 @@ describe('authored resistance grant receipts', () => {
 		const equipmentSource = NamedResistanceSourceSchema.parse({
 			schemaVersion: 'named-resistance-source-v1',
 			sourceKind: 'equipment',
-			sourceId: 'misrouted-armour',
+			sourceId: 'misrouted-armor',
 			grants: [{ tag: 'cut', basisPoints: 300, capBasisPoints: 900 }]
 		});
 		expect(() =>

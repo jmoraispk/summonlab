@@ -79,7 +79,7 @@ export const EquipmentFamilyTagSchema = z.enum([
 	'shield'
 ]);
 
-export const EquipmentProficiencyTagSchema = z.enum(['armour-training']);
+export const EquipmentProficiencyTagSchema = z.enum(['armor-training']);
 
 export const NamedResistanceGrantSchema = z
 	.object({

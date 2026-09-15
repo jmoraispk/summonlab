@@ -20,7 +20,7 @@ function spatialState(input: {
 		resources: { health: { current: 10, maximum: 10 }, mana: { current: 0, maximum: 0 } },
 		lastDamagedAtTick: null,
 		attributes: { strength: 1, vitality: 1, agility: 1, magic: 1 },
-		armour: 0,
+		armor: 0,
 		resistances: {},
 		readiness: { value: 0, exactNumerator: 0, recoveryUntilTick: 0 },
 		conditions: [],

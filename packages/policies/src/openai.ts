@@ -495,7 +495,7 @@ export class OpenAICombatPolicy implements CombatPolicy {
 		} catch (error) {
 			throw classifyTransportError(error);
 		}
-		if (response.error || response.status === 'failed' || response.status === 'cancelled') {
+		if (response.error || response.status === 'failed' || response.status === 'canceled') {
 			throw new ModelPolicyError(
 				'response-failed',
 				`The combat model response failed (${response.error?.code ?? response.status}).`,

@@ -45,7 +45,7 @@ function combatant(
 		},
 		lastDamagedAtTick: null,
 		attributes: { strength: 20, vitality: 20, agility: 20, magic: 20 },
-		armour: teamId === 'enemy' ? 8 : 4,
+		armor: teamId === 'enemy' ? 8 : 4,
 		resistances: { cut: 500 },
 		readiness: { value: readiness, exactNumerator: readiness, recoveryUntilTick: 0 },
 		conditions: [],
@@ -375,7 +375,7 @@ describe('frozen combat decision windows', () => {
 		expect(encoded).not.toContain(ID.hiddenMonster);
 		expect(encoded).not.toContain('exactNumerator');
 		expect(encoded).not.toContain('resistances');
-		expect(encoded).not.toContain('armour');
+		expect(encoded).not.toContain('armor');
 		expect(encoded).not.toContain('cooldowns');
 		expect(encoded).not.toContain('unresolvedChoices');
 		expect(encoded).not.toContain(state().seed);

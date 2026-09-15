@@ -49,7 +49,7 @@ legal-action collection. Master-owned current actions remain available only on m
 bounded player affordance; hero action lists never cross the boundary.
 
 `POST /api/runs` now generates 256 bits of capability entropy with the server cryptographic RNG.
-Character-v2 generation derives capabilities/learning through SHA-256-labelled draws from this
+Character-v2 generation derives capabilities/learning through SHA-256-labeled draws from this
 private entropy. The same recipe and entropy replay deterministically, while a public recipe alone
 cannot reproduce the result. The entropy is stored only in nullable private database column
 `summonlab_proof_runs.capability_entropy`; proof, event, page, and API projections never include it.
@@ -114,7 +114,7 @@ field and its UI labels were removed.
 ## Review round 2 — GREEN implementation
 
 The production v25 create path now generates exactly 32 random bytes and derives two separate,
-domain-labelled SHA-256 values from the canonical recipe key plus that entropy: one for hidden
+domain-labeled SHA-256 values from the canonical recipe key plus that entropy: one for hidden
 capability/learning generation and one for engine entropy. The database validates the entropy at
 the API, derivation, and persistence seams and verifies the supplied v2 profile against the shared
 canonical derivation owner before opening the transaction. The additive database constraint accepts
@@ -123,7 +123,7 @@ is absent; legacy null rows remain readable without regeneration.
 
 All player-facing evidence now hashes explicit public projections only. Public engine state,
 events, replay checks, journal entries/reports, proof manifests/events, settlement views, equipment,
-and campaign objectives have their own labelled projection hashes. Internal canonical hashes stay
+and campaign objectives have their own labeled projection hashes. Internal canonical hashes stay
 inside storage/replay. Changing hidden learning or private event payload fields leaves both public
 bytes and public hashes unchanged; changing a projected field changes the corresponding hash.
 Equipment uses its own `equipment-workshop` hash domain rather than sharing settlement's domain.
@@ -147,7 +147,7 @@ control, decision-window, campaign, onboarding, conversation, projection, and eq
   denylist copier, internal schema extension, or UI-only redaction.
 - Public initiative evidence includes order and resolved outcomes, never initiative base, total, or
   tie-break values. The test cannot reconstruct the private draw from the public receipt.
-- Public hash domains are labelled and contain only their explicit DTOs. Internal state/event/proof
+- Public hash domains are labeled and contain only their explicit DTOs. Internal state/event/proof
   hashes are not exposed as unkeyed hidden-state oracles.
 - The actual v25 POST path uses private engine entropy. Equal public recipes create different engine
   seeds and initiative streams, neither reproducible from the recipe.
