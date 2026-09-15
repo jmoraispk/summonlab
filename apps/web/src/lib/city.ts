@@ -31,6 +31,7 @@ export interface TowerExplorationView {
 	readonly status: 'exploring' | 'returning';
 	readonly version: number;
 	readonly positionTileId: string;
+	readonly partyHeroIds: readonly string[];
 	readonly columns: number;
 	readonly rows: number;
 	readonly revealedCount: number;

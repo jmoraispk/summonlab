@@ -1,20 +1,86 @@
 <script lang="ts">
-	import type { TowerExplorationView } from '$lib/city';
+	import { tick } from 'svelte';
+	import type { ExplorationTravelResult } from '@summonlab/contracts';
+
+	import type { CityResident, TowerExplorationView } from '$lib/city';
 
 	let {
 		exploration,
+		party,
 		onMove,
+		onTravelComplete,
 		onExtract,
 		busy = false
 	}: {
 		exploration: TowerExplorationView;
-		onMove: (tileId: string) => void | Promise<void>;
+		party: readonly CityResident[];
+		onMove: (tileId: string) => Promise<ExplorationTravelResult | null>;
+		onTravelComplete: () => void | Promise<void>;
 		onExtract: () => void | Promise<void>;
 		busy?: boolean;
 	} = $props();
 
-	const stepIds = $derived(new Set(exploration.legalSteps.map((step) => step.tileId)));
+	let moving = $state(false);
+	let visualTileId = $state<string | null>(null);
+	const effectiveVisualTileId = $derived(visualTileId ?? exploration.positionTileId);
+	const destinations = $derived(
+		new Map(exploration.destinations.map((destination) => [destination.tileId, destination]))
+	);
+	const visualTile = $derived(
+		exploration.tiles.find((tile) => tile.tileId === effectiveVisualTileId) ?? null
+	);
 	const atThreshold = $derived(exploration.positionTileId === 'f001-r016-c005');
+	const controlsBusy = $derived(busy || moving);
+
+	$effect(() => {
+		if (!moving) visualTileId = exploration.positionTileId;
+	});
+
+	function reducedMotion(): boolean {
+		return (
+			typeof window !== 'undefined' &&
+			(document.documentElement.dataset.playerMotion === 'reduced' ||
+				window.matchMedia('(prefers-reduced-motion: reduce)').matches)
+		);
+	}
+
+	function wait(milliseconds: number): Promise<void> {
+		return new Promise((resolve) => window.setTimeout(resolve, milliseconds));
+	}
+
+	function tileLabel(
+		tile: TowerExplorationView['tiles'][number],
+		destination: TowerExplorationView['destinations'][number] | undefined
+	): string {
+		if (tile.tileId === effectiveVisualTileId)
+			return `Company at ${tile.zoneLabel ?? 'the passage'}`;
+		if (destination?.intent === 'encounter') {
+			return `Engage enemies at ${destination.zoneLabel}`;
+		}
+		if (destination) return `Travel to ${destination.zoneLabel}, ${destination.distance} tiles`;
+		if (tile.knowledge === 'revealed' && tile.walkable) {
+			return `${tile.zoneLabel ?? 'Revealed passage'}. No safe route avoids enemy-controlled tiles.`;
+		}
+		return tile.zoneLabel ?? 'Unknown tile';
+	}
+
+	async function travelTo(tileId: string) {
+		if (controlsBusy || !destinations.has(tileId)) return;
+		moving = true;
+		try {
+			const travel = await onMove(tileId);
+			if (!travel) return;
+			const shouldPause = !reducedMotion();
+			for (const tileId of travel.pathTileIds) {
+				visualTileId = tileId;
+				await tick();
+				if (shouldPause) await wait(135);
+			}
+			await onTravelComplete();
+		} finally {
+			moving = false;
+		}
+	}
 </script>
 
 <section class="exploration" aria-labelledby="exploration-title">
@@ -25,44 +91,64 @@
 		</div>
 		<div class="status">
 			<span>{exploration.revealedCount} tiles known · {exploration.pendingLoot.length} finds</span
-			><b>Position {exploration.positionTileId}</b>
+			><b>Position {effectiveVisualTileId}</b>
 		</div>
 	</header>
 	<div class="layout">
 		<div
 			class="map"
+			class:moving
 			style={`--columns:${exploration.columns};--rows:${exploration.rows}`}
 			aria-label="Floor exploration map"
+			aria-busy={controlsBusy}
 		>
 			{#each exploration.tiles as tile (tile.tileId)}
+				{@const destination = destinations.get(tile.tileId)}
 				<button
 					type="button"
 					class:unknown={tile.knowledge === 'hidden'}
 					class:wall={tile.knowledge === 'revealed' && tile.walkable === false}
-					class:current={tile.tileId === exploration.positionTileId}
-					class:legal={stepIds.has(tile.tileId)}
-					class:encounter={tile.interactionKind === 'encounter'}
-					disabled={busy || !stepIds.has(tile.tileId)}
-					onclick={() => onMove(tile.tileId)}
-					aria-label={tile.tileId === exploration.positionTileId
-						? `Company at ${tile.zoneLabel}`
-						: (tile.zoneLabel ?? 'Unknown tile')}
+					class:current={tile.tileId === effectiveVisualTileId}
+					class:destination={Boolean(destination)}
+					class:encounter={destination?.intent === 'encounter'}
+					disabled={controlsBusy || !destination}
+					onclick={() => travelTo(tile.tileId)}
+					aria-label={tileLabel(tile, destination)}
+					title={tileLabel(tile, destination)}
 					style={`grid-column:${tile.column + 1};grid-row:${tile.row + 1}`}
 				></button>
 			{/each}
+			{#if visualTile}
+				<div
+					class="party-marker"
+					data-testid="tower-party"
+					style={`grid-column:${visualTile.column + 1};grid-row:${visualTile.row + 1}`}
+					aria-label={`${party.length} heroes at ${visualTile.zoneLabel ?? 'the passage'}`}
+				>
+					{#each party as resident, index (resident.heroId)}
+						{#if resident.combatArt}
+							<img
+								src={resident.combatArt.publicPath}
+								alt={resident.name}
+								data-testid="tower-party-member"
+								style={`--party-offset:${(index - (party.length - 1) / 2) * 20}%`}
+							/>
+						{/if}
+					{/each}
+				</div>
+			{/if}
 		</div>
 		<aside>
-			<p>Movement</p>
-			<h2>Choose an adjacent tile</h2>
-			{#each exploration.legalSteps as step (step.tileId)}
-				<button type="button" disabled={busy} onclick={() => onMove(step.tileId)}
-					>{step.label}</button
-				>
-			{/each}
+			<p>Route planning</p>
+			<h2>{moving ? 'Company moving' : 'Choose a destination'}</h2>
+			<p class="guidance">
+				Cyan tiles have a safe route. Red tiles deliberately begin an encounter. Enemy-adjacent
+				passages stay unavailable.
+			</p>
 			{#if atThreshold}<button
 					class="extract"
 					type="button"
-					disabled={busy || !exploration.objectiveComplete}
+					disabled={controlsBusy || !exploration.objectiveComplete}
 					onclick={onExtract}
 					>{exploration.objectiveComplete ? 'Extract to Village' : 'Objective required'}</button
 				>{/if}
@@ -120,6 +206,7 @@
 	}
 	.map {
 		display: grid;
+		isolation: isolate;
 		grid-template-columns: repeat(var(--columns), 1fr);
 		grid-template-rows: repeat(var(--rows), 1fr);
 		aspect-ratio: 11 / 17;
@@ -140,17 +227,50 @@
 	.map button.wall {
 		background: #111820;
 	}
-	.map button.legal {
+	.map button.destination {
 		background: #285566;
 		box-shadow: inset 0 0 0 1px #55d6ec;
 		cursor: pointer;
+	}
+	.map button.destination:hover,
+	.map button.destination:focus-visible {
+		position: relative;
+		z-index: 2;
+		outline: 2px solid #b8f4ff;
+		outline-offset: -2px;
+		background: #347087;
 	}
 	.map button.current {
 		background: #f0b45c;
 		box-shadow: 0 0 1rem #f0a43f;
 	}
 	.map button.encounter {
-		border-color: #b95645;
+		border-color: #ec725d;
+		background: #65352e;
+		box-shadow: inset 0 0 0 1px #ec725d;
+	}
+	.party-marker {
+		position: relative;
+		z-index: 4;
+		align-self: end;
+		justify-self: center;
+		width: 100%;
+		height: 100%;
+		pointer-events: none;
+		transition: transform 120ms ease-out;
+	}
+	.party-marker img {
+		position: absolute;
+		left: calc(50% + var(--party-offset));
+		bottom: -12%;
+		width: auto;
+		height: 260%;
+		max-width: none;
+		transform: translateX(-50%);
+		filter: drop-shadow(0 0.2rem 0.25rem #000c);
+	}
+	.map.moving .party-marker {
+		transform: translateY(-8%);
 	}
 	aside {
 		align-self: start;
@@ -160,6 +280,15 @@
 	}
 	aside h2 {
 		margin-bottom: 1rem;
+	}
+	aside .guidance {
+		color: #c6c4bd;
+		font-family: inherit;
+		font-size: 0.78rem;
+		font-weight: 400;
+		line-height: 1.6;
+		letter-spacing: 0;
+		text-transform: none;
 	}
 	aside button {
 		display: block;
@@ -177,6 +306,11 @@
 		border-color: #dca560;
 		background: #2f2114;
 		color: #f5d5aa;
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.party-marker {
+			transition: none;
+		}
 	}
 	@media (max-width: 650px) {
 		.exploration {

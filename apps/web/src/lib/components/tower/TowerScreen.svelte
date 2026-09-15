@@ -1,4 +1,6 @@
 <script lang="ts">
+	import type { ExplorationTravelResult } from '@summonlab/contracts';
+
 	import type { CityViewModel } from '$lib/city';
 	import TowerEncounter from './combat/TowerEncounter.svelte';
 	import TowerExplorationMap from './TowerExplorationMap.svelte';
@@ -12,8 +14,12 @@
 	let busy = $state(false);
 	let error = $state<string | null>(null);
 
-	async function command(path: string, body: unknown) {
-		if (busy) return;
+	async function command<T extends { message?: string }>(
+		path: string,
+		body: unknown,
+		refresh = true
+	): Promise<T | null> {
+		if (busy) return null;
 		busy = true;
 		error = null;
 		try {
@@ -22,11 +28,13 @@
 				headers: { 'content-type': 'application/json' },
 				body: JSON.stringify(body)
 			});
-			const payload = (await response.json().catch(() => ({}))) as { message?: string };
+			const payload = (await response.json().catch(() => ({}))) as T;
 			if (!response.ok) throw new Error(payload.message ?? 'The Tower command was rejected.');
-			await onChanged();
+			if (refresh) await onChanged();
+			return payload;
 		} catch (reason) {
 			error = reason instanceof Error ? reason.message : 'The Tower command was rejected.';
+			return null;
 		} finally {
 			busy = false;
 		}
@@ -37,6 +45,11 @@
 			? view.tower.exploration
 			: null
 	);
+	const explorationParty = $derived.by(() => {
+		if (view.tower.state !== 'exploration') return [];
+		const exploration = view.tower.exploration;
+		return view.residents.filter((resident) => exploration.partyHeroIds.includes(resident.heroId));
+	});
 </script>
 
 <div data-testid="tower-screen">
@@ -45,42 +58,57 @@
 		<TowerFloorList
 			floors={view.tower.floors}
 			{busy}
-			onExplore={(floorId) => command('start', { floorId })}
+			onExplore={async (floorId) => {
+				await command('start', { floorId });
+			}}
 		/>
 	{:else if view.tower.state === 'exploration'}
 		{@const exploration = view.tower.exploration}
 		<TowerExplorationMap
 			{exploration}
+			party={explorationParty}
 			{busy}
-			onMove={(destinationTileId) =>
-				command('move', {
-					attemptId: exploration.attemptId,
-					expectedVersion: exploration.version,
-					destinationTileId
-				})}
-			onExtract={() =>
-				command('extract', {
+			onMove={async (destinationTileId) => {
+				const payload = await command<{ message?: string; travel: ExplorationTravelResult }>(
+					'move',
+					{
+						attemptId: exploration.attemptId,
+						expectedVersion: exploration.version,
+						destinationTileId
+					},
+					false
+				);
+				if (!payload) return null;
+				return payload.travel;
+			}}
+			onTravelComplete={onChanged}
+			onExtract={async () => {
+				await command('extract', {
 					attemptId: exploration.attemptId,
 					expectedVersion: exploration.version
-				})}
+				});
+			}}
 		/>
 	{:else if view.tower.state === 'encounter' && active}
 		<TowerEncounter
 			floorName={active.floorName}
 			positionTileId={active.positionTileId}
 			{busy}
-			onResolve={(mode) =>
-				command('encounter', {
+			onResolve={async (mode) => {
+				await command('encounter', {
 					attemptId: active.attemptId,
 					expectedVersion: active.version,
 					mode
-				})}
+				});
+			}}
 		/>
 	{:else if view.tower.state === 'report'}
 		<TowerReport
 			outcome={view.tower.outcome}
 			loot={view.tower.loot}
-			onExploreAgain={() => command('start', { floorId: 'tower-floor-01' })}
+			onExploreAgain={async () => {
+				await command('start', { floorId: 'tower-floor-01' });
+			}}
 		/>
 	{/if}
 </div>

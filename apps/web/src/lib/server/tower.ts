@@ -56,6 +56,7 @@ function projectExploration(attempt: PersistedExplorationAttempt) {
 		floorName: TOWER_FLOOR_01_EXPLORATION.displayName,
 		version: attempt.state.version,
 		positionTileId: window.positionTileId,
+		partyHeroIds: attempt.state.partyHeroIds,
 		columns: window.columns,
 		rows: window.rows,
 		revealedCount: window.revealedCount,

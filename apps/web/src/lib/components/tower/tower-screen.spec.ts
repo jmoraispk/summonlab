@@ -14,4 +14,12 @@ describe('canonical Tower screen ownership', () => {
 		expect(source).not.toContain('/living-village-lab');
 		expect(source).not.toContain('/mission/');
 	});
+
+	it('passes the exact expedition party and returns accepted travel before refreshing', () => {
+		const root = fileURLToPath(new URL('.', import.meta.url));
+		const source = readFileSync(`${root}/TowerScreen.svelte`, 'utf8');
+		expect(source).toContain('exploration.partyHeroIds.includes(resident.heroId)');
+		expect(source).toContain('return payload.travel;');
+		expect(source).toContain('onTravelComplete={onChanged}');
+	});
 });
