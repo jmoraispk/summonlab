@@ -250,6 +250,8 @@ describe('rebased migration receipt refresh', () => {
 		await mkdir(path.dirname(path.join(repository.root, rebasedOwnerPath)), { recursive: true });
 		await writeFile(path.join(repository.root, rebasedOwnerPath), `${oldGray} owner output\n`);
 		const newBaseline = commitAll(repository.root, 'new integration base');
+		await writeFile(path.join(repository.root, 'support.txt'), 'integration support\n');
+		const incrementalBaseline = commitAll(repository.root, 'integration support');
 		git(repository.root, ['mv', sourcePath, successorPath]);
 		await writeFile(path.join(repository.root, successorPath), 'color upstream\n');
 		await writeFile(path.join(repository.root, incomingPath), 'vigor incoming\n');
@@ -270,13 +272,16 @@ describe('rebased migration receipt refresh', () => {
 			incrementalReceiptPath,
 			`${JSON.stringify(
 				{
-					baselineCommit: newBaseline,
+					baselineCommit: incrementalBaseline,
 					policyVersion: 1,
 					ruleCounts: refreshedRuleCounts,
 					ownerCounts: { 'migration-planner': 1 },
 					files: [
 						{
-							sourceBlobId: git(repository.root, ['rev-parse', `${newBaseline}:${incomingPath}`]),
+							sourceBlobId: git(repository.root, [
+								'rev-parse',
+								`${incrementalBaseline}:${incomingPath}`
+							]),
 							successorPathHash: pathHash(incomingPath),
 							successorBlobId: git(repository.root, [
 								'rev-parse',

@@ -2064,7 +2064,35 @@ export async function refreshAmericanEnglishMigrationReceipt(
 	const incrementalValue: unknown = JSON.parse(
 		(await readFile(path.resolve(options.incrementalReceiptPath))).toString('utf8')
 	);
-	const incrementalReceipt = validateReceiptValue(incrementalValue, baselineCommit);
+	const incrementalReceipt = validateReceiptValue(incrementalValue);
+	const incrementalBaseline = (
+		await runGit(repositoryRoot, [
+			'rev-parse',
+			'--verify',
+			`${incrementalReceipt.baselineCommit}^{commit}`
+		])
+	)
+		.toString('utf8')
+		.trim();
+	const [baselinePrecedesIncremental, incrementalPrecedesMigration] = await Promise.all([
+		runGitResult(repositoryRoot, [
+			'merge-base',
+			'--is-ancestor',
+			baselineCommit,
+			incrementalBaseline
+		]),
+		runGitResult(repositoryRoot, [
+			'merge-base',
+			'--is-ancestor',
+			incrementalBaseline,
+			migrationCommit
+		])
+	]);
+	if (baselinePrecedesIncremental.exitCode !== 0 || incrementalPrecedesMigration.exitCode !== 0) {
+		throw new Error(
+			'Incremental migration receipt baseline is outside the refreshed migration history'
+		);
+	}
 	const auditValue: unknown = JSON.parse(
 		(await readFile(path.resolve(options.auditPath))).toString('utf8')
 	);
