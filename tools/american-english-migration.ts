@@ -424,9 +424,11 @@ async function runProcess(repositoryRoot: string, command: readonly string[]): P
 	await new Promise<void>((resolve, reject) => {
 		const child = spawn(executable, arguments_, {
 			cwd: repositoryRoot,
-			stdio: ['ignore', 'ignore', 'pipe']
+			stdio: ['ignore', 'pipe', 'pipe']
 		});
+		const stdout: Buffer[] = [];
 		const stderr: Buffer[] = [];
+		child.stdout.on('data', (chunk: Buffer) => stdout.push(chunk));
 		child.stderr.on('data', (chunk: Buffer) => stderr.push(chunk));
 		child.on('error', reject);
 		child.on('close', (exitCode) => {
@@ -434,8 +436,11 @@ async function runProcess(repositoryRoot: string, command: readonly string[]): P
 			else
 				reject(
 					new Error(
-						Buffer.concat(stderr).toString('utf8').trim() ||
-							`Owner intent materialization exited ${exitCode ?? 1}`
+						`${command.join(' ')} exited ${exitCode ?? 1}: ${
+							Buffer.concat(stderr).toString('utf8').trim() ||
+							Buffer.concat(stdout).toString('utf8').trim() ||
+							'no process output'
+						}`
 					)
 				);
 		});
