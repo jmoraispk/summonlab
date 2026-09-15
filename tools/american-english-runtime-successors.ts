@@ -14,25 +14,39 @@ import {
 import { OWNER_DIGEST_POINTER_PATTERNS } from './american-english-integrity-pointers.js';
 
 export const RUNTIME_AND_ENGINE_INTEGRITY_PATH_PATTERNS = [
+	/^\.superpowers\/sdd\/2026-09-06-four-attribute-legacy-combat\/task-7-report\.md$/u,
+	/^apps\/worker\/src\/combat-decision\.integration\.spec\.ts$/u,
 	/^apps\/web\/src\/lib\/components\/living-village\//u,
 	/^apps\/web\/src\/routes\/story-patch\//u,
-	/^docs\/(?:evidence\/living-village-|evidence\/phase-|private-playtest-release\.md$|system-architecture\/)/u,
+	/^docs\/(?:evidence\/(?:agent-readiness-v1\.json$|combat-balance-v1\.json$|living-village-|phase-)|private-playtest-release\.md$|system-architecture\/)/u,
+	/^docs\/superpowers\/(?:plans\/(?:2026-09-07-exploration-combat-contract|2026-09-12-awakening-and-multi-path-progression)|specs\/2026-09-07-exploration-combat-contract-design)\.md$/u,
 	/^docs\/wiki\/mechanics\/skills\//u,
+	/^packages\/content\/src\/progression-rules\.ts$/u,
 	/^packages\/content\/src\/(?:tower-|story)/u,
+	/^packages\/contracts\/src\/(?:combat-loadout|engine-compatibility|exploration-combat|readiness-combat)(?:\.spec)?\.ts$/u,
 	/^packages\/contracts\/src\/(?:contracts\.spec\.ts$|engine\/|final-controlled-)/u,
+	/^packages\/database\/src\/combat-decision-windows\.integration\.spec\.ts$/u,
 	/^packages\/(?:engine|evaluation|policies)\//u,
+	/^tools\/combat-balance-harness(?:\.spec)?\.ts$/u,
 	/^tools\/(?:activate-final-controlled-rerun|compose-empty-rarity-frame-v6|export-recognition-audit|export-skill-taxonomy-migration(?:\.spec)?|final-controlled-design-risk-readiness|package-playtest-release|prepare-final-controlled-rerun|report-final-controlled-activation-readiness|skill-taxonomy-lib(?:\.spec)?)\.ts$/u
 ] as const;
 
 export const RUNTIME_AND_ENGINE_FILE_BINDING_PATH_PATTERNS = [
+	/^\.superpowers\/sdd\/2026-09-06-four-attribute-legacy-combat\/task-7-report\.md$/u,
+	/^apps\/worker\/src\/combat-decision\.integration\.spec\.ts$/u,
 	/^apps\/web\/src\/(?:lib\/components\/living-village|routes\/story-patch)\/.*\.(?:ts|svelte)$/u,
-	/^docs\/(?:evidence\/living-village-(?:tower-handoff|village-plan)\.md|private-playtest-release\.md|system-architecture\/integration-contracts\.md)$/u,
+	/^docs\/(?:evidence\/(?:agent-readiness-v1|combat-balance-v1)\.json|evidence\/living-village-(?:tower-handoff|village-plan)\.md|private-playtest-release\.md|system-architecture\/integration-contracts\.md)$/u,
+	/^docs\/superpowers\/(?:plans\/(?:2026-09-07-exploration-combat-contract|2026-09-12-awakening-and-multi-path-progression)|specs\/2026-09-07-exploration-combat-contract-design)\.md$/u,
+	/^packages\/content\/src\/progression-rules\.ts$/u,
 	/^packages\/content\/src\/tower-band-01-story\.ts$/u,
+	/^packages\/contracts\/src\/(?:combat-loadout|engine-compatibility|exploration-combat|readiness-combat)(?:\.spec)?\.ts$/u,
 	/^packages\/contracts\/src\/(?:contracts\.spec\.ts|engine\/settlement-state\.ts|final-controlled-design-risk-(?:decisions|resolutions)\.ts)$/u,
-	/^packages\/engine\/src\/(?:compatibility\/replay-vectors\.ts|domains\/settlement\/(?:equipment\.spec|routines)\.ts|orchestration\/(?:__snapshots__\/actions\.spec\.ts\.snap|legal-actions\.ts)|presentation(?:\.spec)?\.ts|story(?:\.spec)?\.ts)$/u,
+	/^packages\/database\/src\/combat-decision-windows\.integration\.spec\.ts$/u,
+	/^packages\/engine\/src\/.*\.(?:ts|snap)$/u,
 	/^packages\/evaluation\/src\/(?:foundry|story-patch)\.ts$/u,
 	/^packages\/policies\/src\/(?:index|openai(?:\.spec)?)\.ts$/u,
-	/^tools\/(?:activate-final-controlled-rerun|compose-empty-rarity-frame-v6|export-recognition-audit|export-skill-taxonomy-migration(?:\.spec)?|final-controlled-design-risk-readiness|package-playtest-release|prepare-final-controlled-rerun|report-final-controlled-activation-readiness|skill-taxonomy-lib(?:\.spec)?)\.ts$/u
+	/^tools\/(?:activate-final-controlled-rerun|compose-empty-rarity-frame-v6|export-recognition-audit|export-skill-taxonomy-migration(?:\.spec)?|final-controlled-design-risk-readiness|package-playtest-release|prepare-final-controlled-rerun|report-final-controlled-activation-readiness|skill-taxonomy-lib(?:\.spec)?)\.ts$/u,
+	/^tools\/combat-balance-harness(?:\.spec)?\.ts$/u
 ] as const;
 
 function runtimeDigest(serializer: IntegritySerializerId, value: unknown): string {
@@ -52,6 +66,7 @@ export const runtimeAndEngineIntegrityOwner: AmericanEnglishIntegrityOwner = {
 	id: 'runtime-and-engine',
 	intentMaterialization: {
 		commands: [
+			['pnpm', 'tsx', 'tools/combat-balance-harness.ts', '--write'],
 			['pnpm', 'tsx', 'tools/reseal-skill-taxonomy-expectations.ts'],
 			['pnpm', 'tsx', 'tools/export-skill-taxonomy-migration.ts', '--write'],
 			['pnpm', 'tsx', 'tools/reseal-engine-replay-expectations.ts'],
@@ -60,6 +75,8 @@ export const runtimeAndEngineIntegrityOwner: AmericanEnglishIntegrityOwner = {
 			['pnpm', 'prettier', '--write', 'tools/package-playtest-release.ts']
 		],
 		paths: [
+			'docs/evidence/agent-readiness-v1.json',
+			'docs/evidence/combat-balance-v1.json',
 			'tools/package-playtest-release.ts',
 			'packages/engine/src/compatibility/replay-vectors.ts',
 			'docs/evidence/phase-6-story-envelope.json',
@@ -71,9 +88,9 @@ export const runtimeAndEngineIntegrityOwner: AmericanEnglishIntegrityOwner = {
 	},
 	regeneration: {
 		writeCommand:
-			'pnpm tsx tools/export-skill-taxonomy-migration.ts --write && pnpm export:story-envelope && pnpm export:story-patch && pnpm export:story-workshop && pnpm export:moderated-playtest && pnpm export:playtest-release && pnpm package:playtest -- --acknowledge-private-release',
+			'pnpm tsx tools/combat-balance-harness.ts --write && pnpm tsx tools/export-skill-taxonomy-migration.ts --write && pnpm export:story-envelope && pnpm export:story-patch && pnpm export:story-workshop && pnpm export:moderated-playtest && pnpm export:playtest-release && pnpm package:playtest -- --acknowledge-private-release',
 		checkCommand:
-			'pnpm tsx tools/export-skill-taxonomy-migration.ts --check && pnpm validate:story-envelope && pnpm validate:story-patch && pnpm validate:story-workshop && pnpm validate:moderated-playtest && pnpm validate:playtest-release && pnpm rehearse:playtest-package && pnpm --filter @summonlab/engine test'
+			'pnpm tsx tools/combat-balance-harness.ts --check && pnpm tsx tools/export-skill-taxonomy-migration.ts --check && pnpm validate:story-envelope && pnpm validate:story-patch && pnpm validate:story-workshop && pnpm validate:moderated-playtest && pnpm validate:playtest-release && pnpm rehearse:playtest-package && pnpm --filter @summonlab/engine test'
 	},
 	serializerFor(path, kind) {
 		if (kind === 'raw-file') return null;

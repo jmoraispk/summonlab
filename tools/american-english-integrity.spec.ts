@@ -153,6 +153,49 @@ describe('integrity owner successor planning', () => {
 		expect(regeneration.checkCommand).not.toContain('skill-icon-cleanup');
 	});
 
+	it('registers the current combat qualification surface and its deterministic evidence owner', () => {
+		const ownedPaths = [
+			'.superpowers/sdd/2026-09-06-four-attribute-legacy-combat/task-7-report.md',
+			'apps/worker/src/combat-decision.integration.spec.ts',
+			'docs/evidence/agent-readiness-v1.json',
+			'docs/evidence/combat-balance-v1.json',
+			'docs/superpowers/plans/2026-09-07-exploration-combat-contract.md',
+			'docs/superpowers/plans/2026-09-12-awakening-and-multi-path-progression.md',
+			'docs/superpowers/specs/2026-09-07-exploration-combat-contract-design.md',
+			'packages/content/src/progression-rules.ts',
+			'packages/contracts/src/combat-loadout.spec.ts',
+			'packages/contracts/src/engine-compatibility.spec.ts',
+			'packages/contracts/src/exploration-combat.ts',
+			'packages/contracts/src/readiness-combat.ts',
+			'packages/database/src/combat-decision-windows.integration.spec.ts',
+			'packages/engine/src/compatibility/public-api.snapshot.ts',
+			'packages/engine/src/domains/combat/resolver.ts',
+			'packages/engine/src/domains/mission/readiness-runtime.ts',
+			'packages/engine/src/orchestration/legacy-terminal.ts',
+			'tools/combat-balance-harness.spec.ts',
+			'tools/combat-balance-harness.ts'
+		];
+
+		for (const repositoryPath of ownedPaths) {
+			expect(runtimeAndEngineIntegrityOwner.owns(repositoryPath, ''), repositoryPath).toBe(true);
+		}
+		expect(runtimeAndEngineIntegrityOwner.intentMaterialization?.commands).toContainEqual([
+			'pnpm',
+			'tsx',
+			'tools/combat-balance-harness.ts',
+			'--write'
+		]);
+		expect(runtimeAndEngineIntegrityOwner.intentMaterialization?.paths).toEqual(
+			expect.arrayContaining([
+				'docs/evidence/agent-readiness-v1.json',
+				'docs/evidence/combat-balance-v1.json'
+			])
+		);
+		expect(runtimeAndEngineIntegrityOwner.regeneration?.checkCommand).toContain(
+			'pnpm tsx tools/combat-balance-harness.ts --check'
+		);
+	});
+
 	it('preserves a manifest-relative asset reference when the asset path spelling changes', async () => {
 		const experimentRoot = 'assets/heroes/experiments/relative-reference-v1';
 		const manifestPath = `${experimentRoot}/manifest.json`;
@@ -1348,6 +1391,12 @@ describe('integrity binding classification', () => {
 			'/authority/v12Review/contentHash',
 			'/authority/visualSpecifications/contentHash',
 			'/backing/contentHash',
+			'/frames/0/contentHash',
+			'/geometryGuide/contentHash',
+			'/records/0/backingContentHash',
+			'/records/0/compositionContentHash',
+			'/records/0/frameContentHash',
+			'/referenceInputs/0/sha256',
 			'/cellEvidence/pages/0/contentHash',
 			'/cleanupCompositeContentHash',
 			'/cleanupInterior/contentHash',
@@ -1406,6 +1455,7 @@ describe('integrity binding classification', () => {
 			'/revisionPacket/contentHash',
 			'/sourceCandidate/contentHash',
 			'/sourceManifest/sha256',
+			'/sourceAuthorities/assetManifest/contentHash',
 			'/transactionContentHash',
 			'/transform/composite/contentHash',
 			'/transform/revisedInterior/contentHash'
