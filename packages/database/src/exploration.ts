@@ -3,6 +3,10 @@ import {
 	type ExplorationAttemptState
 } from '@summonlab/contracts/exploration';
 import {
+	ExplorationEncounterRequestSchema,
+	type ExplorationEncounterRequest
+} from '@summonlab/contracts/exploration-combat';
+import {
 	resumeExplorationAfterEncounter,
 	suspendExplorationForEncounter
 } from '@summonlab/engine/exploration';
@@ -11,6 +15,7 @@ import postgres from 'postgres';
 export type ExplorationEncounterBinding = Readonly<{
 	requestId: string;
 	requestHash: string;
+	request: ExplorationEncounterRequest;
 }>;
 
 export type ExplorationReceiptBinding = Readonly<{
@@ -37,6 +42,7 @@ type AttemptRow = {
 	state: unknown;
 	active_request_id: string | null;
 	active_request_hash: string | null;
+	active_request: unknown | null;
 };
 
 type ReceiptRow = {
@@ -51,6 +57,10 @@ function parseAttempt(
 	receipts: readonly ReceiptRow[]
 ): PersistedExplorationAttempt {
 	const state = ExplorationAttemptStateSchema.parse(row.state);
+	const activeRequest =
+		row.active_request_id && row.active_request_hash && row.active_request
+			? ExplorationEncounterRequestSchema.parse(row.active_request)
+			: null;
 	if (
 		state.attemptId !== row.attempt_id ||
 		state.runId !== row.run_id ||
@@ -64,10 +74,13 @@ function parseAttempt(
 	}
 	return {
 		state,
-		activeEncounter:
-			row.active_request_id && row.active_request_hash
-				? { requestId: row.active_request_id, requestHash: row.active_request_hash }
-				: null,
+		activeEncounter: activeRequest
+			? {
+					requestId: row.active_request_id!,
+					requestHash: row.active_request_hash!,
+					request: activeRequest
+				}
+			: null,
 		receipts: receipts.map((receipt) => ({
 			receiptId: receipt.receipt_id,
 			requestId: receipt.request_id,
@@ -75,6 +88,20 @@ function parseAttempt(
 			outcome: receipt.outcome
 		}))
 	};
+}
+
+function assertActiveRequestBinding(row: AttemptRow): void {
+	if (!row.active_request_id && !row.active_request_hash && !row.active_request) return;
+	if (!row.active_request_id || !row.active_request_hash || !row.active_request) {
+		throw new Error(`Exploration encounter request binding drifted: ${row.attempt_id}`);
+	}
+	const request = ExplorationEncounterRequestSchema.parse(row.active_request);
+	if (
+		request.requestId !== row.active_request_id ||
+		request.requestHash !== row.active_request_hash
+	) {
+		throw new Error(`Exploration encounter request binding drifted: ${row.attempt_id}`);
+	}
 }
 
 async function loadAttempt(
@@ -86,6 +113,7 @@ async function loadAttempt(
 	`;
 	const row = rows[0];
 	if (!row) return null;
+	assertActiveRequestBinding(row);
 	const receipts = await sql<ReceiptRow[]>`
 		select receipt_id, request_id, receipt_hash, outcome
 		from summonlab_exploration_receipts
@@ -223,14 +251,59 @@ export async function commitExplorationMove(
 	}
 }
 
+export async function commitExplorationTravel(
+	databaseUrl: string,
+	input: {
+		readonly attemptId: string;
+		readonly expectedVersion: number;
+		readonly nextState: ExplorationAttemptState;
+		readonly pathTileIds: readonly string[];
+	}
+): Promise<PersistedExplorationAttempt> {
+	if (input.pathTileIds.length === 0) {
+		throw new Error('Exploration travel requires at least one tile');
+	}
+	const next = ExplorationAttemptStateSchema.parse(input.nextState);
+	const sql = postgres(databaseUrl, { max: 1 });
+	try {
+		return await sql.begin(async (transaction) => {
+			const rows = await transaction<AttemptRow[]>`
+				select * from summonlab_exploration_attempts
+				where attempt_id = ${input.attemptId} for update
+			`;
+			const row = rows[0];
+			if (!row) throw new Error(`Exploration attempt not found: ${input.attemptId}`);
+			const current = ExplorationAttemptStateSchema.parse(row.state);
+			assertVersion(current, input.expectedVersion);
+			assertSameBinding(current, next);
+			if (current.status !== 'exploring' || next.status !== 'exploring') {
+				throw new Error('Exploration travel requires an exploring attempt');
+			}
+			if (next.version !== current.version + input.pathTileIds.length) {
+				throw new Error('Exploration travel version must match its path length');
+			}
+			await transaction`
+				update summonlab_exploration_attempts
+				set status = ${next.status}, version = ${next.version}, state = ${transaction.json(next as never)},
+					updated_at = now()
+				where attempt_id = ${input.attemptId}
+			`;
+			return (await loadAttempt(transaction, input.attemptId))!;
+		});
+	} finally {
+		await sql.end({ timeout: 5 });
+	}
+}
+
 export async function beginExplorationEncounter(
 	databaseUrl: string,
 	input: {
 		readonly attemptId: string;
 		readonly expectedVersion: number;
-		readonly request: ExplorationEncounterBinding;
+		readonly request: ExplorationEncounterRequest;
 	}
 ): Promise<PersistedExplorationAttempt> {
+	const request = ExplorationEncounterRequestSchema.parse(input.request);
 	const sql = postgres(databaseUrl, { max: 1 });
 	try {
 		return await sql.begin(async (transaction) => {
@@ -241,9 +314,11 @@ export async function beginExplorationEncounter(
 			const row = rows[0];
 			if (!row) throw new Error(`Exploration attempt not found: ${input.attemptId}`);
 			if (row.active_request_id) {
+				const persistedRequest = ExplorationEncounterRequestSchema.parse(row.active_request);
 				if (
-					row.active_request_id === input.request.requestId &&
-					row.active_request_hash === input.request.requestHash
+					row.active_request_id === request.requestId &&
+					row.active_request_hash === request.requestHash &&
+					JSON.stringify(persistedRequest) === JSON.stringify(request)
 				) {
 					return (await loadAttempt(transaction, input.attemptId))!;
 				}
@@ -255,8 +330,9 @@ export async function beginExplorationEncounter(
 			await transaction`
 				update summonlab_exploration_attempts
 				set status = ${next.status}, version = ${next.version}, state = ${transaction.json(next as never)},
-					active_request_id = ${input.request.requestId},
-					active_request_hash = ${input.request.requestHash}, updated_at = now()
+					active_request_id = ${request.requestId},
+					active_request_hash = ${request.requestHash},
+					active_request = ${transaction.json(request as never)}, updated_at = now()
 				where attempt_id = ${input.attemptId}
 			`;
 			return (await loadAttempt(transaction, input.attemptId))!;
@@ -316,7 +392,8 @@ export async function settleExplorationEncounter(
 			await transaction`
 				update summonlab_exploration_attempts
 				set status = ${next.status}, version = ${next.version}, state = ${transaction.json(next as never)},
-					active_request_id = null, active_request_hash = null, updated_at = now()
+					active_request_id = null, active_request_hash = null, active_request = null,
+					updated_at = now()
 				where attempt_id = ${input.attemptId}
 			`;
 			return (await loadAttempt(transaction, input.attemptId))!;
