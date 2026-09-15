@@ -9,7 +9,7 @@
 	"completedAt": "2026-09-03T13:24:09.908Z",
 	"provider": "OpenAI image generation",
 	"model": "gpt-imagegen-2.0",
-	"promptSha256": "eed6410bfdec8a7468e23e20d3ff8efdc2835811c799d7376597cf90a825f153",
+	"promptSha256": "37a5e3c1d3e8d71e6d774acd98d807eae5e87bcdc46c9e71fb9935751e696969",
 	"references": [
 		{
 			"path": "assets/equipment/experiments/rank-first-calibration-2026-09-02/shield-metal-ranks-v1.png",

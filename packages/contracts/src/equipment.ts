@@ -9,7 +9,7 @@ export const EquipmentMaterialFamilySchema = z.enum([
 	'metal',
 	'wood',
 	'hide-or-scale',
-	'cloth-or-fibre'
+	'cloth-or-fiber'
 ]);
 
 export const EquipmentMaterialIdSchema = z.enum([
@@ -52,12 +52,12 @@ export const EquipmentClassSchema = z.enum([
 	'mace',
 	'shield',
 	'staff',
-	'heavy-armour',
-	'light-armour',
+	'heavy-armor',
+	'light-armor',
 	'robes'
 ]);
 
-export const EquipmentArmourSlotSchema = z.enum(['head', 'torso', 'legs', 'boots']);
+export const EquipmentArmorSlotSchema = z.enum(['head', 'torso', 'legs', 'boots']);
 export const EquipmentDefinitionSlotSchema = z.enum([
 	'main-hand',
 	'off-hand',
@@ -204,13 +204,13 @@ const EQUIPMENT_MATERIAL_METADATA: Readonly<
 	drakescale: { family: 'hide-or-scale', rank: 'B' },
 	wyrmscale: { family: 'hide-or-scale', rank: 'A' },
 	'ancient-dragon-scale': { family: 'hide-or-scale', rank: 'S' },
-	'hemp-weave': { family: 'cloth-or-fibre', rank: 'F' },
-	wool: { family: 'cloth-or-fibre', rank: 'E' },
-	'layered-silk': { family: 'cloth-or-fibre', rank: 'D' },
-	spellweave: { family: 'cloth-or-fibre', rank: 'C' },
-	moonweave: { family: 'cloth-or-fibre', rank: 'B' },
-	starcloth: { family: 'cloth-or-fibre', rank: 'A' },
-	fateweave: { family: 'cloth-or-fibre', rank: 'S' }
+	'hemp-weave': { family: 'cloth-or-fiber', rank: 'F' },
+	wool: { family: 'cloth-or-fiber', rank: 'E' },
+	'layered-silk': { family: 'cloth-or-fiber', rank: 'D' },
+	spellweave: { family: 'cloth-or-fiber', rank: 'C' },
+	moonweave: { family: 'cloth-or-fiber', rank: 'B' },
+	starcloth: { family: 'cloth-or-fiber', rank: 'A' },
+	fateweave: { family: 'cloth-or-fiber', rank: 'S' }
 };
 
 export const EquipmentDefinitionSchema = z
@@ -241,17 +241,17 @@ export const EquipmentDefinitionSchema = z
 			context.addIssue({ code: 'custom', message: 'Definition material metadata is inconsistent' });
 		}
 
-		const armourSlots = new Set(['head', 'torso', 'legs', 'boots']);
-		const isArmour = ['heavy-armour', 'light-armour', 'robes'].includes(definition.equipmentClass);
+		const armorSlots = new Set(['head', 'torso', 'legs', 'boots']);
+		const isArmor = ['heavy-armor', 'light-armor', 'robes'].includes(definition.equipmentClass);
 		const legalFamily =
 			definition.materialFamily === 'metal'
-				? ['sword', 'dagger', 'spear', 'axe', 'mace', 'shield', 'heavy-armour'].includes(
+				? ['sword', 'dagger', 'spear', 'axe', 'mace', 'shield', 'heavy-armor'].includes(
 						definition.equipmentClass
 					)
 				: definition.materialFamily === 'wood'
 					? ['bow', 'staff'].includes(definition.equipmentClass)
 					: definition.materialFamily === 'hide-or-scale'
-						? definition.equipmentClass === 'light-armour'
+						? definition.equipmentClass === 'light-armor'
 						: definition.equipmentClass === 'robes';
 		if (!legalFamily) {
 			context.addIssue({
@@ -260,11 +260,11 @@ export const EquipmentDefinitionSchema = z
 			});
 		}
 
-		const handlingIsLegal = isArmour
-			? armourSlots.has(definition.slot) &&
+		const handlingIsLegal = isArmor
+			? armorSlots.has(definition.slot) &&
 				definition.handedness === 'none' &&
 				definition.weightClass ===
-					(definition.equipmentClass === 'heavy-armour'
+					(definition.equipmentClass === 'heavy-armor'
 						? 'heavy'
 						: definition.equipmentClass === 'robes'
 							? 'light'
@@ -383,7 +383,7 @@ export type EquipmentRank = z.infer<typeof EquipmentRankSchema>;
 export type EquipmentMaterialFamily = z.infer<typeof EquipmentMaterialFamilySchema>;
 export type EquipmentMaterialId = z.infer<typeof EquipmentMaterialIdSchema>;
 export type EquipmentClass = z.infer<typeof EquipmentClassSchema>;
-export type EquipmentArmourSlot = z.infer<typeof EquipmentArmourSlotSchema>;
+export type EquipmentArmorSlot = z.infer<typeof EquipmentArmorSlotSchema>;
 export type EquipmentDefinitionSlot = z.infer<typeof EquipmentDefinitionSlotSchema>;
 export type EquipmentLoadoutSlot = z.infer<typeof EquipmentLoadoutSlotSchema>;
 export type EquipmentHandedness = z.infer<typeof EquipmentHandednessSchema>;

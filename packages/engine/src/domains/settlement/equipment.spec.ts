@@ -270,7 +270,7 @@ describe('engine-v24 equipment state', () => {
 		).toBe(false);
 	});
 
-	it('enforces shield, two-handed, armour, ownership, and sword/dagger dual-wield legality', () => {
+	it('enforces shield, two-handed, armor, ownership, and sword/dagger dual-wield legality', () => {
 		let state = equipmentState();
 		const heroId = Object.keys(state.heroes)[0]!;
 		const shield = withItem(state, 'equipment-bronze-shield', 'shield');
@@ -311,7 +311,7 @@ describe('engine-v24 equipment state', () => {
 			'Equipment slot or handedness is not legal'
 		);
 
-		const torso = withItem(state, 'equipment-bronze-heavy-armour-torso', 'torso');
+		const torso = withItem(state, 'equipment-bronze-heavy-armor-torso', 'torso');
 		expect(() =>
 			equipEquipmentItem(torso.state, { heroId, itemId: torso.itemId, targetSlot: 'head' })
 		).toThrow('Equipment slot or handedness is not legal');

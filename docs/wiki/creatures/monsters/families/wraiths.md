@@ -16,7 +16,7 @@ Wiki ID: `monster-family.wraiths`
 ## Visual constants
 
 - A hooded or robed humanoid upper body becomes progressively defined while the lower body always trails into smoke or cold vapor without visible feet.
-- Black, charcoal, deep indigo, and ash grey carry one cold eye accent in pale blue, white, or sickly green; this family-native cold light is not an elemental affinity by itself.
+- Black, charcoal, deep indigo, and ash gray carry one cold eye accent in pale blue, white, or sickly green; this family-native cold light is not an elemental affinity by itself.
 - Smoke, tattered shroud-cloth, cold vapor, rusted chain, and hollow armor preserve incorporeality through negative space and incomplete edges.
 - Chains, funeral shrouds, spectral crowns, and localized rings of source-native frost become anchors that explain when and where an otherwise incorporeal form can be opposed.
 - Escalation condenses a faint outline into a sharply defined regal silhouette while retaining a vapor tail, empty interior, and one readable anchor for every phase-through action.

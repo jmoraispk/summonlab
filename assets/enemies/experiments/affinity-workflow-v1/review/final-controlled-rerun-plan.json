@@ -10,7 +10,7 @@
 	"speciesVersions": {
 		"death-knight": "v4",
 		"elemental": "v4",
-		"grey-wolf": "v3",
+		"gray-wolf": "v3",
 		"cave-bear": "v3"
 	},
 	"entryGate": {
@@ -108,18 +108,18 @@
 				"status": "pending-informative-v1-blind-review"
 			},
 			{
-				"riskId": "grey-wolf-normal-legacy-design",
-				"coordinate": "grey-wolf-normal-v3",
-				"sourceTargetId": "affinity-workflow-v1-grey-wolf-normal",
+				"riskId": "gray-wolf-normal-legacy-design",
+				"coordinate": "gray-wolf-normal-v3",
+				"sourceTargetId": "affinity-workflow-v1-gray-wolf-normal",
 				"severity": "risk",
 				"concern": "The safe-frame-v2 basic source had no demonstrated semantic visual failure, but it lacks the final explicit canine head, shoulders, spine, tail, and four-leg species grammar.",
 				"requiredResolution": "After informative v1 blind review, strengthen the plan-owned Normal target with the complete wolf anatomy grammar and explicit unaffiliated construction before activation.",
 				"status": "pending-informative-v1-blind-review"
 			},
 			{
-				"riskId": "grey-wolf-water-historical-v3-framing",
-				"coordinate": "grey-wolf-water-v3",
-				"sourceTargetId": "affinity-workflow-v1-grey-wolf-water",
+				"riskId": "gray-wolf-water-historical-v3-framing",
+				"coordinate": "gray-wolf-water-v3",
+				"sourceTargetId": "affinity-workflow-v1-gray-wolf-water",
 				"severity": "risk",
 				"concern": "The semantic source missed its first-attempt frame under safe-frame-v3, whose central lock omission is corrected by the planned v4 protocol.",
 				"requiredResolution": "Confirm after informative v1 review that safe-frame-v4 preserves the accepted wolf and Water construction while containing every tail, splash, mist, and wake extent.",
@@ -136,7 +136,7 @@
 			[
 				"death-knight-normal-v4",
 				"elemental-fire-v4",
-				"grey-wolf-metal-v3"
+				"gray-wolf-metal-v3"
 			],
 			[
 				"cave-bear-water-v3",
@@ -144,19 +144,19 @@
 				"elemental-wind-v4"
 			],
 			[
-				"grey-wolf-normal-v3",
+				"gray-wolf-normal-v3",
 				"cave-bear-fire-v3",
 				"death-knight-metal-v4"
 			],
 			[
 				"elemental-water-v4",
-				"grey-wolf-wood-v3",
+				"gray-wolf-wood-v3",
 				"cave-bear-wind-v3"
 			],
 			[
 				"death-knight-fire-v4",
 				"elemental-metal-v4",
-				"grey-wolf-water-v3"
+				"gray-wolf-water-v3"
 			],
 			[
 				"cave-bear-normal-v3",
@@ -164,13 +164,13 @@
 				"elemental-wood-v4"
 			],
 			[
-				"grey-wolf-fire-v3",
+				"gray-wolf-fire-v3",
 				"cave-bear-metal-v3",
 				"death-knight-water-v4"
 			],
 			[
 				"elemental-normal-v4",
-				"grey-wolf-wind-v3",
+				"gray-wolf-wind-v3",
 				"cave-bear-wood-v3"
 			]
 		]
@@ -225,26 +225,26 @@
 			"version": "v4"
 		},
 		{
-			"key": "grey-wolf-normal-v3",
-			"speciesId": "grey-wolf",
+			"key": "gray-wolf-normal-v3",
+			"speciesId": "gray-wolf",
 			"affinity": "normal",
 			"version": "v3"
 		},
 		{
-			"key": "grey-wolf-fire-v3",
-			"speciesId": "grey-wolf",
+			"key": "gray-wolf-fire-v3",
+			"speciesId": "gray-wolf",
 			"affinity": "fire",
 			"version": "v3"
 		},
 		{
-			"key": "grey-wolf-water-v3",
-			"speciesId": "grey-wolf",
+			"key": "gray-wolf-water-v3",
+			"speciesId": "gray-wolf",
 			"affinity": "water",
 			"version": "v3"
 		},
 		{
-			"key": "grey-wolf-wind-v3",
-			"speciesId": "grey-wolf",
+			"key": "gray-wolf-wind-v3",
+			"speciesId": "gray-wolf",
 			"affinity": "wind",
 			"version": "v3"
 		},

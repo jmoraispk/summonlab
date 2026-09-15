@@ -16,7 +16,7 @@ Wiki ID: `monster-family.werebeasts`
 ## Visual constants
 
 - A human frame progressively stretches toward animal proportions while hands, shoulders, legs, muzzle, and tail change at explicit tiers.
-- Grey, black, russet, or silver fur remains distinct from torn muted human clothing, hide, iron restraints, claw, and fang.
+- Gray, black, russet, or silver fur remains distinct from torn muted human clothing, hide, iron restraints, claw, and fang.
 - Shredded dress, snapped restraints, ritual scars, and restrained moon motifs record the unfinished transformation without defining an affinity.
 - Loss of human proportion escalates from patchy changes to an authored sovereign transformation while readable joints remain exposed.
 

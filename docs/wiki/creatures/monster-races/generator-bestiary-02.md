@@ -13,7 +13,7 @@ before promoting an entry to canon.
 
 **Visual constants**
 - **Silhouette:** Human, but off — dislocated shoulders, dragging leg, head at a wrong angle, jaw hanging.
-- **Palette:** Grey-green and bruise-purple flesh, dried blood brown, bile yellow, dirty linen white.
+- **Palette:** Gray-green and bruise-purple flesh, dried blood brown, bile yellow, dirty linen white.
 - **Material:** Rotting flesh, exposed sinew, wet bone, grave-dirt, torn burial clothes.
 - **Ornamentation:** Whatever they died in — funeral clothes, work aprons, armor rusted onto the body, the weapon that killed them still embedded.
 - **Escalation axis:** Decay reversing into cohesion — higher tiers are *more* physically integrated, not less.
@@ -32,7 +32,7 @@ before promoting an entry to canon.
 
 **Visual constants**
 - **Silhouette:** Hooded, robed, upper body defined and lower body dissolving into trailing vapor. No visible feet.
-- **Palette:** Black, charcoal, deep indigo, ash grey. One cold accent — pale blue, white or sickly green — for the eyes.
+- **Palette:** Black, charcoal, deep indigo, ash gray. One cold accent — pale blue, white or sickly green — for the eyes.
 - **Material:** Smoke, tattered cloth, cold vapor, rusted chain, hollow armor.
 - **Ornamentation:** Chains, funeral shrouds, spectral crowns, floating rings of frost.
 - **Escalation axis:** From formless mist to a sharply defined regal silhouette.
@@ -70,14 +70,14 @@ before promoting an entry to canon.
 
 **Visual constants**
 - **Silhouette:** Human, stiff-limbed, arms often held forward or crossed over the chest. Wrapped from head to foot.
-- **Palette:** Sun-bleached linen, sand beige, desert ochre, deep gold, lapis blue, turquoise.
+- **Palette:** Sun-bleached linen, sand beige, desert ocher, deep gold, lapis blue, turquoise.
 - **Material:** Linen bandage, dried flesh, gold leaf, lapis, carnelian, sandstone.
 - **Ornamentation:** Scarab charms, jeweled pectoral collars, glyph inscriptions, gold arm bands, headdresses.
 - **Escalation axis:** The wrappings themselves become royal gold.
 
 | Tier | Name | Visual |
 |------|------|--------|
-| T1 | Husk | Crude grey bandages, one leg dragging, dried flesh showing through gaps, empty eye holes. |
+| T1 | Husk | Crude gray bandages, one leg dragging, dried flesh showing through gaps, empty eye holes. |
 | T2 | Tomb Guard | Taut and dry, bronze charms sewn into the linen, a bronze khopesh, simple headcloth. |
 | T3 | Sacred Servant | Gilded bands wound over the wrappings, jeweled collar, glyphs glowing faintly along the bandages. |
 | T4 | Pharaoh's Champion | Full gold death-mask, ceremonial armor over the linen, sand swirling constantly at the feet. |

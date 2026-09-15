@@ -27,7 +27,7 @@ Skirmisher, archer, hexweaver, and chieftain—the first coordinated system the 
 
 ### Tower beasts
 
-Grey wolf, dire wolf, cave bear, and tunnel boar—movement, pursuit, burst, and line-breaking pressure.
+Gray wolf, dire wolf, cave bear, and tunnel boar—movement, pursuit, burst, and line-breaking pressure.
 
 ![Tower beasts](../../../assets/enemies/review/beasts-v1.webp)
 

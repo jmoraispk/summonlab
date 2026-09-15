@@ -13,7 +13,7 @@ checkpoint decisions, and approval receipts.
 
 - Checkpoint 1: `checkpoints/checkpoint-1-directions.json` — 4 accepted directions
 - Checkpoint 2: `checkpoints/checkpoint-2-roots.json` — 77 accepted roots
-- Checkpoint 3: `checkpoints/checkpoint-3-armour-pieces.json` — 84 accepted pieces
+- Checkpoint 3: `checkpoints/checkpoint-3-armor-pieces.json` — 84 accepted pieces
 - Candidate closeout: `runs/material-equipment-v3-run-001/candidate-closeout-v1.json`
 - Proposal-only promotion list: `reviews/proposed-promotions/candidate-promotion-v1.json`
 - Approved catalog: `../../approved/material-equipment-v1/manifest.json`
@@ -26,8 +26,8 @@ the compact provenance records; only the superseded raster payloads were removed
 
 `direction` → `candidate` → owner review receipt → approved source → runtime derivative
 
-The completed lifecycle passed owner checkpoint 1 for the four generated Bow, Staff, Light Armour,
-and Robes progression sheets; checkpoint 2 for all roots; and checkpoint 3 for all Armour pieces.
+The completed lifecycle passed owner checkpoint 1 for the four generated Bow, Staff, Light Armor,
+and Robes progression sheets; checkpoint 2 for all roots; and checkpoint 3 for all Armor pieces.
 Each approved source remains bound to its accepted historical candidate hash.
 
 ## Deterministic package

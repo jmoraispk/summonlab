@@ -20,6 +20,8 @@
 		"export-fauna-family-production.ts",
 		"fauna-family-promotion.ts",
 		"fauna-family-promotion.spec.ts",
+		"reseal-fauna-family-promotion-lineage.ts",
+		"reseal-fauna-family-promotion-lineage.spec.ts",
 		"wiki-fauna-integration.ts",
 		"wiki-fauna-integration.spec.ts",
 		"fauna-family-design.spec.ts",

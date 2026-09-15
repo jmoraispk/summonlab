@@ -11,7 +11,7 @@ export type MaterialFixture = {
 };
 
 export type SpeciesFixture = {
-	id: 'goblin-skirmisher' | 'grey-wolf' | 'ember-wisp';
+	id: 'goblin-skirmisher' | 'gray-wolf' | 'ember-wisp';
 	name: string;
 	family: string;
 	affinity: Affinity;
@@ -43,7 +43,7 @@ export type HeroFixture = {
 	maxHealth: number;
 	maxMana: number;
 	agility: number;
-	armour: number;
+	armor: number;
 	availability: Availability;
 	skill: {
 		id: string;
@@ -80,8 +80,8 @@ export const SPECIES: SpeciesFixture[] = [
 		]
 	},
 	{
-		id: 'grey-wolf',
-		name: 'Grey Wolf',
+		id: 'gray-wolf',
+		name: 'Gray Wolf',
 		family: 'Beasts',
 		affinity: 'Wood',
 		role: 'Pack pursuit',
@@ -90,7 +90,7 @@ export const SPECIES: SpeciesFixture[] = [
 		baseDamage: 9,
 		baseAgility: 20,
 		materials: [
-			{ id: 'grey-hide', name: 'Grey hide', minimum: 1, maximum: 2 },
+			{ id: 'gray-hide', name: 'Gray hide', minimum: 1, maximum: 2 },
 			{ id: 'keen-fang', name: 'Keen fang', minimum: 0, maximum: 1 }
 		]
 	},
@@ -112,16 +112,16 @@ export const SPECIES: SpeciesFixture[] = [
 ];
 
 const FLOOR_SPECIES: SpeciesFixture['id'][][] = [
-	['goblin-skirmisher', 'grey-wolf'],
-	['grey-wolf', 'goblin-skirmisher'],
+	['goblin-skirmisher', 'gray-wolf'],
+	['gray-wolf', 'goblin-skirmisher'],
 	['ember-wisp', 'goblin-skirmisher'],
-	['grey-wolf', 'ember-wisp'],
-	['goblin-skirmisher', 'grey-wolf'],
-	['ember-wisp', 'grey-wolf'],
+	['gray-wolf', 'ember-wisp'],
+	['goblin-skirmisher', 'gray-wolf'],
+	['ember-wisp', 'gray-wolf'],
 	['goblin-skirmisher', 'ember-wisp'],
-	['grey-wolf', 'goblin-skirmisher'],
+	['gray-wolf', 'goblin-skirmisher'],
 	['ember-wisp', 'goblin-skirmisher'],
-	['grey-wolf', 'ember-wisp']
+	['gray-wolf', 'ember-wisp']
 ];
 
 const FLOOR_NAMES = [
@@ -162,7 +162,7 @@ export const HEROES: HeroFixture[] = [
 		maxHealth: 112,
 		maxMana: 42,
 		agility: 15,
-		armour: 5,
+		armor: 5,
 		availability: 'idle',
 		skill: {
 			id: 'shielding-cleave-v0',
@@ -184,7 +184,7 @@ export const HEROES: HeroFixture[] = [
 		maxHealth: 88,
 		maxMana: 70,
 		agility: 18,
-		armour: 2,
+		armor: 2,
 		availability: 'idle',
 		skill: {
 			id: 'cinder-lance-v0',
@@ -206,7 +206,7 @@ export const HEROES: HeroFixture[] = [
 		maxHealth: 96,
 		maxMana: 56,
 		agility: 17,
-		armour: 3,
+		armor: 3,
 		availability: 'idle',
 		skill: {
 			id: 'measured-shot-v0',

@@ -53,7 +53,7 @@ Break their angle with terrain or stagger the committed biter before the partner
 
 ### Lower-form interaction
 
-Grey Wolves probe the opposite flank and create the turn that lets the Dire Wolf claim the rear quarter.
+Gray Wolves probe the opposite flank and create the turn that lets the Dire Wolf claim the rear quarter.
 
 ## Five-coordinate approved runtime matrix
 

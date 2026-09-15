@@ -7,7 +7,7 @@
 	"classificationNotes": "Source-draft Mummies are treated as ritually preserved, linen-wrapped dead whose grave goods and offices supply authored encounter ranks, not as a biological people or evidence about any real culture, religion, ethnicity, divinity, royal legitimacy, morality, or afterlife. Sand and dust are family-native burial residue and non-affinity staging; true affinities require separate material and behavior construction.",
 	"visualConstants": [
 		"A stiff-limbed human or humanoid silhouette remains wrapped from head to foot, with arms held forward, crossed, guarding, inscribing, or commanding through readable linen tension.",
-		"Sun-bleached linen, sand beige, desert ochre, deep gold, lapis blue, and turquoise remain funerary materials and symbols rather than affinity colors.",
+		"Sun-bleached linen, sand beige, desert ocher, deep gold, lapis blue, and turquoise remain funerary materials and symbols rather than affinity colors.",
 		"Linen bandage, dried flesh, gold leaf, lapis, carnelian, bronze, and sandstone grave goods stay materially distinct and retain visible knots, stitches, glyph routes, and breakable seals.",
 		"Family-native sand and dust follow disturbed wrappings, tomb movement, and burial objects without becoming Earth or Wind affinity by themselves.",
 		"Escalation adds precious thread, glyph density, collars, masks, armor, headdresses, and sarcophagus regalia while the bandages never come off and always explain binding and counterplay."
@@ -89,10 +89,10 @@
 			"primaryArchetype": "Loose-End Grasp Initiate (Initiate)",
 			"battlefieldDuty": "Probe footwork by dragging one crude wrapping end behind a stiff advance, then pulling the strip into a short ankle snare before the exposed knot can be retied.",
 			"teachingGoal": "Teach that linen is both animation and weakness: avoid the visible strip, step on it after the pull, and attack the knot while dried flesh shows through the loosened gap.",
-			"signatureMechanic": "Common-Grave Draw: the Husk advances on one dragging leg while a grey bandage end trails from its hip; when the arms lift, the end loops around the nearest ankle line and retracts toward the hip knot.",
+			"signatureMechanic": "Common-Grave Draw: the Husk advances on one dragging leg while a gray bandage end trails from its hip; when the arms lift, the end loops around the nearest ankle line and retracts toward the hip knot.",
 			"telegraph": "Empty eye holes face down, both stiff arms rise, and the dirty trailing strip straightens from the dragging leg to its hip knot.",
 			"counterplay": "Step over or pin the strip before it retracts, then cut the visible hip knot; the Husk must stop and rewrap the gap before it can snare again.",
-			"visualDelta": "A dried human husk in crude grey head-to-foot bandages, one dragging leg, empty eye holes, exposed flesh in several gaps, and one extra-long loose strip tied at the hip.",
+			"visualDelta": "A dried human husk in crude gray head-to-foot bandages, one dragging leg, empty eye holes, exposed flesh in several gaps, and one extra-long loose strip tied at the hip.",
 			"lowerFormInteraction": null,
 			"sourceReferences": ["Husk"]
 		},

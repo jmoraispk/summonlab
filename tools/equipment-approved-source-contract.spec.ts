@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vitest';
 
 import {
+	EQUIPMENT_PROMOTION_APPROVED_DESIGN_SHA256,
+	EQUIPMENT_PROMOTION_APPROVED_PLAN_SHA256,
 	EquipmentApprovedPromotionPlanV1Schema,
 	EquipmentApprovedPromotionReceiptV1Schema,
 	EquipmentApprovedSourceManifestV1Schema,
@@ -43,19 +45,19 @@ function itemRecord(index = 0) {
 function referenceRecord(index = 0) {
 	return {
 		...itemRecord(index),
-		assetKey: `equipment-v1-f-bronze-heavy-armour-set-reference-${index}`,
-		role: 'armour-set-reference',
-		targetId: `material-equipment-v3-bronze-heavy-armour-full-set-${index}-v3`,
+		assetKey: `equipment-v1-f-bronze-heavy-armor-set-reference-${index}`,
+		role: 'armor-set-reference',
+		targetId: `material-equipment-v3-bronze-heavy-armor-full-set-${index}-v3`,
 		materialId: `bronze-${index}`,
-		equipmentClass: 'heavy-armour',
-		artifactId: `heavy-armour-full-set-${index}`,
+		equipmentClass: 'heavy-armor',
+		artifactId: `heavy-armor-full-set-${index}`,
 		candidate: {
-			path: `assets/equipment/experiments/material-equipment-v3/candidates/f/bronze/heavy-armour-full-set-${index}.png`,
+			path: `assets/equipment/experiments/material-equipment-v3/candidates/f/bronze/heavy-armor-full-set-${index}.png`,
 			sha256: HASH_A
 		},
-		approvedPath: `assets/equipment/approved/material-equipment-v1/armour-set-references/f/bronze-${index}/heavy-armour.png`,
+		approvedPath: `assets/equipment/approved/material-equipment-v1/armor-set-references/f/bronze-${index}/heavy-armor.png`,
 		approved: {
-			path: `assets/equipment/approved/material-equipment-v1/armour-set-references/f/bronze-${index}/heavy-armour.png`,
+			path: `assets/equipment/approved/material-equipment-v1/armor-set-references/f/bronze-${index}/heavy-armor.png`,
 			width: 1024,
 			height: 1536,
 			bytes: 456,
@@ -79,11 +81,11 @@ function plan() {
 		authorization: {
 			design: {
 				path: 'docs/superpowers/specs/2026-09-03-equipment-promotion-runtime-integration-design.md',
-				sha256: '9e81d050551d959f27f00f65ff9318752579847a483f8f6e23e578befd97a874'
+				sha256: EQUIPMENT_PROMOTION_APPROVED_DESIGN_SHA256
 			},
 			implementationPlan: {
 				path: 'docs/superpowers/plans/2026-09-03-equipment-promotion-runtime-integration.md',
-				sha256: '1b8d287a708ab68634b6aea4900d1976b2eeaadfdb784a0fd663f1cd93720fa3'
+				sha256: EQUIPMENT_PROMOTION_APPROVED_PLAN_SHA256
 			},
 			approvalCommit: '46cd7e715e327e26ecd89829ad6826d8aaf7adf9'
 		},
@@ -104,15 +106,15 @@ function plan() {
 				path: 'assets/equipment/experiments/material-equipment-v3/checkpoints/checkpoint-2-roots.json',
 				canonicalSha256: HASH_A
 			},
-			armourPieces: {
-				path: 'assets/equipment/experiments/material-equipment-v3/checkpoints/checkpoint-3-armour-pieces.json',
+			armorPieces: {
+				path: 'assets/equipment/experiments/material-equipment-v3/checkpoints/checkpoint-3-armor-pieces.json',
 				canonicalSha256: HASH_B
 			}
 		},
 		summary: {
 			total: 161,
 			items: 140,
-			armourSetReferences: 21,
+			armorSetReferences: 21,
 			totalBytes: records.reduce((total, record) => total + record.approved.bytes, 0)
 		},
 		entries: records

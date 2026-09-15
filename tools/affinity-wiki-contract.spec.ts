@@ -62,11 +62,11 @@ Wiki ID: \`mechanics.progression.affinities\`
 
 ## 2.2 The four affinities
 
-| Affinity | Colour | Character | Status | Behaviour |
+| Affinity | Color | Character | Status | Behavior |
 | :--- | ---: | :---: | --- | ---: |
 | Fire | Vermilion | Expansion | Burn | Damage over time |
-| Earth | Ochre-brown | Stability | Weight | Reduces poise |
-| Wind | Pale green-grey | Motion | Lacerate | Cutting damage |
+| Earth | Ocher-brown | Stability | Weight | Reduces poise |
+| Wind | Pale green-gray | Motion | Lacerate | Cutting damage |
 | Water | Deep blue | Flow | Chill | Reduces attack speed |
 
 ## 2.4 The cycle
@@ -204,7 +204,7 @@ describe('active wiki affinity contract', () => {
 			)}
 ## Appendix
 
-| Affinity | Colour | Character | Status | Behaviour |
+| Affinity | Color | Character | Status | Behavior |
 | --- | --- | --- | --- | --- |
 | Water | Deep blue | Flow | Chill | Reduces attack speed |
 `

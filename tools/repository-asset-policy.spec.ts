@@ -29,7 +29,7 @@ describe('repository asset retention policy', () => {
 		expect(
 			findRepositoryAssetPathViolations([
 				'assets/enemies/experiments/family-affinity-v1/bridge/candidates/cave-bear/earth-v2.png',
-				'assets/enemies/experiments/fauna-family-v1/candidates/wolves/wolf-grey-wolf/normal-v1.png',
+				'assets/enemies/experiments/fauna-family-v1/candidates/wolves/wolf-gray-wolf/normal-v1.png',
 				'assets/equipment/experiments/material-equipment-v1/candidates/f/bronze/sword-v1.png',
 				'assets/equipment/experiments/material-equipment-v1/manifest.json',
 				'assets/equipment/experiments/material-equipment-v2/candidates/f/bronze/sword-v2.png',
@@ -44,7 +44,7 @@ describe('repository asset retention policy', () => {
 			])
 		).toEqual([
 			'Family-affinity bridge raster must not be tracked: assets/enemies/experiments/family-affinity-v1/bridge/candidates/cave-bear/earth-v2.png',
-			'Fauna experiment candidate raster must not be tracked: assets/enemies/experiments/fauna-family-v1/candidates/wolves/wolf-grey-wolf/normal-v1.png',
+			'Fauna experiment candidate raster must not be tracked: assets/enemies/experiments/fauna-family-v1/candidates/wolves/wolf-gray-wolf/normal-v1.png',
 			'Equipment production raster must not be tracked: assets/equipment/experiments/material-equipment-v1/candidates/f/bronze/sword-v1.png',
 			'Superseded Equipment campaign path must not be tracked: assets/equipment/experiments/material-equipment-v1/manifest.json',
 			'Equipment production raster must not be tracked: assets/equipment/experiments/material-equipment-v2/candidates/f/bronze/sword-v2.png',

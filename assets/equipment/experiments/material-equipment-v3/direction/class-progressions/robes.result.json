@@ -9,7 +9,7 @@
 	"completedAt": "2026-09-03T03:35:19.000Z",
 	"provider": "OpenAI image generation",
 	"model": "gpt-imagegen-2.0",
-	"promptSha256": "e3fe0edd3e92b8cf0982ff71d95161d4f8c219fd8fcf414a3cfc7e6a367279bb",
+	"promptSha256": "ecbf7e318b2995c4034bbdd08746400e328812bf27563e5e4f66b43383b8f7dc",
 	"references": [
 		{
 			"path": "assets/equipment/experiments/material-vs-class-calibration-2026-09-02/approach-b-dagger-class-progression-v1.png",
@@ -23,7 +23,7 @@
 		}
 	],
 	"output": {
-		"path": "assets/equipment/experiments/material-equipment-v3/direction/class-progressions/robes-cloth-fibre-ranks-v3.png",
+		"path": "assets/equipment/experiments/material-equipment-v3/direction/class-progressions/robes-cloth-fiber-ranks-v3.png",
 		"sha256": "3f982275114ec66f36a3d22a4a18da4cd39a0467804c6e07ecb5e470954b9c3c",
 		"bytes": 2417120,
 		"width": 1536,

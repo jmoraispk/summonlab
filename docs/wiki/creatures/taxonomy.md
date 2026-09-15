@@ -12,7 +12,7 @@ an implementer does not turn ancestry into behavior.
 | --- | --- | --- |
 | Origin | What kind of existence produced it? | natural, constructed, undead, elemental, summoned, interdimensional |
 | Visual/content family | Which creatures share a production grammar? | goblinoids, constructs, beasts, draconic |
-| Species | Which physiology and life cycle are shared? | goblin, grey wolf, cave drake |
+| Species | Which physiology and life cycle are shared? | goblin, gray wolf, cave drake |
 | People/race | Is there a sapient population with identity/culture? | only when authored; never inferred from combat labels |
 | Faction | Which organization or allegiance acts here? | tower warband, bound order, wild pack |
 | Duty/archetype | What battlefield or civic job is performed? | skirmisher, archer, guard, healer, builder |

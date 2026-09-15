@@ -15,9 +15,9 @@
 			"candidatePath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-bronze-axe-v3/attempt-2/candidate.png",
 			"candidateSha256": "75e000d4ecaa7c1099922ddba8d358027c4773ea1d431f0f08aaea011412b39d",
 			"assignmentPath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-bronze-axe-v3/attempt-2/assignment.json",
-			"assignmentSha256": "c7333f7bf4462030e5d964b1d4134d8c9268a43a4707e86d58ebd6e6f8b455ce",
+			"assignmentSha256": "981b65bae55e99f92afd35bbac793a69ae82f756129aa4afac7a1298dfc90ee8",
 			"resultPath": "assets/equipment/experiments/material-equipment-v3/revisions/material-equipment-v3-bronze-axe-v3/attempt-2/result.json",
-			"resultSha256": "036c4a1addfd27346de0d06dee8aaf6a4a1f2f848f299b02c9d7a6d2c7cc9bfa",
+			"resultSha256": "b9f4f901ff5f13b3f73def31888c446fd593b6cfd21142de0a6d71f5697502d2",
 			"reason": "class-rule-violation: Replace the double-bit-looking head with one unmistakable practical single-bit war-axe head. It may have a small blunt poll, but no second cutting edge. Keep the F-rank Bronze construction plain and modest."
 		},
 		{

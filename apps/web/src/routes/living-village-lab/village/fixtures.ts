@@ -201,7 +201,7 @@ export const heroes = [
 		stars: 3,
 		unallocatedAttributePoints: 3,
 		health: { current: 104, maximum: 116 },
-		activity: 'Cataloguing tower signs',
+		activity: 'Cataloging tower signs',
 		partyStatus: 'Reserve · Available',
 		portrait: remyPortrait,
 		portraitAlt: 'Remy Nahl fixed identity portrait',

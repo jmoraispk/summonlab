@@ -72,7 +72,7 @@ person's name on it.
 
 - Clarify the claimed three axes and whether material/monster is one source axis while enchantment
   and binding are separate overlays.
-- Define what counts as a full set across the canonical Weapon, Armour, Shield, Staff, Tool, and
+- Define what counts as a full set across the canonical Weapon, Armor, Shield, Staff, Tool, and
   Accessory forms without multiplying slots or item classes.
 - Define set-piece uniqueness, duplicate behavior, signature-component consumption, extraction,
   crafting provenance, and anti-farming constraints.

@@ -7,7 +7,7 @@
 	"status": "candidate-closeout",
 	"manifest": {
 		"path": "assets/equipment/experiments/material-equipment-v3/manifest.json",
-		"canonicalSha256": "ab8a0bac557322c97597fdaca21c08a19f5287fb4d4196bf86f593ef61d6980a"
+		"canonicalSha256": "d2899a27dccd95b91c12f0d5f8b8856321bbe969620fd9f82e2181cbb3dae12c"
 	},
 	"repository": {
 		"branch": "codex/equipment-material-cleanup",
@@ -99,7 +99,7 @@
 			},
 			{
 				"hash": "deb5bb6f777e10c40f5ec10cecbead15eeaad2aa",
-				"subject": "docs(equipment): define armour set production"
+				"subject": "docs(equipment): define armor set production"
 			},
 			{
 				"hash": "19c9dae8d5f1116b900d17e0c29894355e4a5d52",
@@ -175,7 +175,7 @@
 			},
 			{
 				"hash": "dc1ab87fac0cc83dcd0be63805dd21380f0414ea",
-				"subject": "feat(equipment): gate armour piece production"
+				"subject": "feat(equipment): gate armor piece production"
 			},
 			{
 				"hash": "bb9cd6af7848ef2c33531ea403c53a727f29f288",
@@ -283,11 +283,11 @@
 			},
 			{
 				"hash": "be5c05ccd2226638805f858f1865140a38ddeff4",
-				"subject": "feat(equipment): prepare armour unlock activation"
+				"subject": "feat(equipment): prepare armor unlock activation"
 			},
 			{
 				"hash": "7410ff051cb9b52c6258b196a146728b7db5d1c1",
-				"subject": "feat(equipment): schedule armour piece production"
+				"subject": "feat(equipment): schedule armor piece production"
 			},
 			{
 				"hash": "199ecfe3ec776399e6c55307572089f5832f7f58",
@@ -295,27 +295,27 @@
 			},
 			{
 				"hash": "6dbab53d9765a2104278f79f8deb37bef5ab8545",
-				"subject": "feat(equipment): activate armour piece production"
+				"subject": "feat(equipment): activate armor piece production"
 			},
 			{
 				"hash": "971b4f776b0cd9314b74dbbdf16a60012b6da29d",
-				"subject": "feat(equipment): generate armour piece first pass"
+				"subject": "feat(equipment): generate armor piece first pass"
 			},
 			{
 				"hash": "de85d7b556f729374a2f73c77f292b1584e53b99",
-				"subject": "feat(equipment): schedule armour piece corrections"
+				"subject": "feat(equipment): schedule armor piece corrections"
 			},
 			{
 				"hash": "ec125a58ff02600eabac62cd6a74cef6785fdd69",
-				"subject": "feat(equipment): refine armour piece boundaries"
+				"subject": "feat(equipment): refine armor piece boundaries"
 			},
 			{
 				"hash": "d7e79d0aa34e60801ba4201c10d739e15b453051",
-				"subject": "feat(equipment): isolate advanced armour slots"
+				"subject": "feat(equipment): isolate advanced armor slots"
 			},
 			{
 				"hash": "ac221277274b7754e2913e32768ff4965afc453a",
-				"subject": "feat(equipment): publish armour piece review gallery"
+				"subject": "feat(equipment): publish armor piece review gallery"
 			},
 			{
 				"hash": "3f3d8bb9de12f411d181461a6ef2cac2976c4e4f",
@@ -327,14 +327,14 @@
 			},
 			{
 				"hash": "c1cfb8fce6ab79230484f258c141acca6ee362f7",
-				"subject": "feat(equipment): accept final armour pieces"
+				"subject": "feat(equipment): accept final armor pieces"
 			}
 		]
 	},
 	"checkpoints": [
 		{
 			"path": "assets/equipment/experiments/material-equipment-v3/checkpoints/checkpoint-1-directions.json",
-			"canonicalSha256": "50572df501e039722331bc0d0c2aadf037a9b5a83547905f7fcea50262d682f2",
+			"canonicalSha256": "f0c84d5c79e6986dd11fd51bb6e425d4c74da160885f9f7049f701c1d30ea24e",
 			"summary": {
 				"accept": 4,
 				"revise": 0,
@@ -343,7 +343,7 @@
 		},
 		{
 			"path": "assets/equipment/experiments/material-equipment-v3/checkpoints/checkpoint-2-roots.json",
-			"canonicalSha256": "ff2fde9c9904bd47604473f026356e02218505ba68236df76f9774ac85c98dcf",
+			"canonicalSha256": "641cdb72736b2e65cebf5fd86911e5b693535f9cb55f6d3f961370a0022a5f54",
 			"summary": {
 				"accept": 77,
 				"revise": 0,
@@ -351,8 +351,8 @@
 			}
 		},
 		{
-			"path": "assets/equipment/experiments/material-equipment-v3/checkpoints/checkpoint-3-armour-pieces.json",
-			"canonicalSha256": "39ad1cb1fb5f8e3b7d872a80d527006e645008641bda75202033de16efc0d578",
+			"path": "assets/equipment/experiments/material-equipment-v3/checkpoints/checkpoint-3-armor-pieces.json",
+			"canonicalSha256": "f2bab5974692e751e4926f5245463e81be29f82e870f91bfb85314c811f66a10",
 			"summary": {
 				"accept": 84,
 				"revise": 0,
@@ -369,10 +369,10 @@
 	"evidence": {
 		"directionSheetCount": 11,
 		"rootCandidateCount": 77,
-		"armourPieceCandidateCount": 84,
+		"armorPieceCandidateCount": 84,
 		"classAuditCount": 11,
 		"materialAuditCount": 28,
-		"armourAuditCount": 21,
+		"armorAuditCount": 21,
 		"baseAssignmentCount": 161,
 		"revisionAssignmentCount": 49,
 		"terminalResultCount": 210,
@@ -382,11 +382,11 @@
 	},
 	"promotionProposal": {
 		"path": "assets/equipment/experiments/material-equipment-v3/reviews/proposed-promotions/candidate-promotion-v1.json",
-		"canonicalSha256": "08720524e89abedbc8c41268ccfe327ba5b1e4fbd425ca7c3bfe3d01c9c5bd8b"
+		"canonicalSha256": "da210f113c350a4d08cad1b00677eaf57222cc79e03d531e02564eb12cd54e6f"
 	},
 	"validationCommands": [
 		"corepack pnpm tsc -p tools/tsconfig.equipment-rank-first-v3.json --noEmit",
-		"corepack pnpm vitest run tools/equipment-rank-first-production-v3.spec.ts tools/equipment-armour-review.spec.ts tools/equipment-armour-piece-revisions-v3.spec.ts tools/equipment-rank-first-failures-v3.spec.ts",
+		"corepack pnpm vitest run tools/equipment-rank-first-production-v3.spec.ts tools/equipment-armor-review.spec.ts tools/equipment-armor-piece-revisions-v3.spec.ts tools/equipment-rank-first-failures-v3.spec.ts",
 		"corepack pnpm tsx tools/export-equipment-rank-first-production-v3.ts --check",
 		"corepack pnpm tsx tools/validate-equipment-rank-first-evidence-v3.ts --phase closeout",
 		"corepack pnpm tsx tools/validate-equipment-rank-first-terminal-evidence-v3.ts"

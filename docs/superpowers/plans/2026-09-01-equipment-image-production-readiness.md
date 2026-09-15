@@ -14,7 +14,7 @@
 
 - Keep production files under `assets/equipment/experiments/material-equipment-v1` and implementation files under `tools/equipment-*`.
 - Do not modify `packages/contracts/src/image-production.ts`, `tools/persist-image-production-output.ts`, `tools/affinity-*`, `assets/enemies`, the installed `summonlab-image-production` skill, runtime catalogs, or unrelated visual domains.
-- Produce exactly 161 planned jobs: 77 roots, 84 review-gated Armour pieces, and 21 four-child gates.
+- Produce exactly 161 planned jobs: 77 roots, 84 review-gated Armor pieces, and 21 four-child gates.
 - Admit `min(16 - activeEquipmentWorkers, availableWorkerSlots, readyUnclaimedJobs)`; reserve no worker slot and apply no voluntary throttling for unrelated tasks.
 - Use 1024×1024 PNG for isolated items and pieces and 1024×1536 PNG for complete sets on a featureless charcoal display form.
 - Treat every study as Standard craftsmanship (`+0`); material supplies the visible base rank.
@@ -37,7 +37,7 @@
 
 **Interfaces:**
 - Consumes: `buildEquipmentMaterialProductionManifest()` and `buildEquipmentMaterialAllocationPlan()` from `tools/equipment-material-production-lib.ts`.
-- Produces: `EquipmentVisualProfileSchema`, `EquipmentVisualProfileAcceptanceSchema`, `EquipmentImageTargetSchema`, `EquipmentImageAssignmentSchema`, `EquipmentImageResultSchema`, `EquipmentArmourSourceReviewReceiptSchema`, `EquipmentRunPlanSchema`, `EquipmentRunActivationSchema`, `EquipmentRunEventRequestSchema`, `EquipmentRunEventSchema`, `EquipmentRunReadinessReportSchema`, `EquipmentRunReportSchema`, and inferred public types.
+- Produces: `EquipmentVisualProfileSchema`, `EquipmentVisualProfileAcceptanceSchema`, `EquipmentImageTargetSchema`, `EquipmentImageAssignmentSchema`, `EquipmentImageResultSchema`, `EquipmentArmorSourceReviewReceiptSchema`, `EquipmentRunPlanSchema`, `EquipmentRunActivationSchema`, `EquipmentRunEventRequestSchema`, `EquipmentRunEventSchema`, `EquipmentRunReadinessReportSchema`, `EquipmentRunReportSchema`, and inferred public types.
 
 - [ ] **Step 1: Write the failing allocation-policy test**
 
@@ -93,7 +93,7 @@ expect(() => EquipmentVisualProfileSchema.parse({
 	...validProfile,
 	isolatedPresentation: { ...validProfile.isolatedPresentation, width: 1536 }
 })).toThrow();
-expect(() => EquipmentArmourSourceReviewReceiptSchema.parse({
+expect(() => EquipmentArmorSourceReviewReceiptSchema.parse({
 	...validReceipt,
 	decision: 'accepted',
 	candidateSha256: 'not-a-hash'
@@ -124,7 +124,7 @@ export const EQUIPMENT_PRODUCTION_ROOT =
 const SlugSchema = z.string().regex(/^[a-z][a-z0-9-]{1,119}$/u);
 const HashSchema = z.string().regex(/^[a-f0-9]{64}$/u);
 const RankSchema = z.enum(['F', 'E', 'D', 'C', 'B', 'A', 'S']);
-const FamilySchema = z.enum(['metal', 'wood', 'hide-scale', 'cloth-fibre']);
+const FamilySchema = z.enum(['metal', 'wood', 'hide-scale', 'cloth-fiber']);
 const SlotSchema = z.enum(['head', 'torso', 'legs', 'boots']);
 ```
 
@@ -136,7 +136,7 @@ Use these schema versions:
 'equipment-image-target-v1'
 'equipment-image-assignment-v1'
 'equipment-image-result-v1'
-'equipment-armour-source-review-receipt-v1'
+'equipment-armor-source-review-receipt-v1'
 'equipment-production-run-plan-v1'
 'equipment-production-run-activation-v1'
 'equipment-production-event-request-v1'
@@ -155,7 +155,7 @@ z.enum([
 	'claim-released',
 	'worker-started',
 	'job-terminal',
-	'armour-source-reviewed',
+	'armor-source-reviewed',
 	'epoch-paused',
 	'epoch-resumed'
 ]);
@@ -208,7 +208,7 @@ git commit -m "feat(equipment): define image production contracts"
 - Create: `assets/equipment/experiments/material-equipment-v1/schemas/target.schema.json`
 - Create: `assets/equipment/experiments/material-equipment-v1/schemas/assignment.schema.json`
 - Create: `assets/equipment/experiments/material-equipment-v1/schemas/result.schema.json`
-- Create: `assets/equipment/experiments/material-equipment-v1/schemas/armour-source-review-receipt.schema.json`
+- Create: `assets/equipment/experiments/material-equipment-v1/schemas/armor-source-review-receipt.schema.json`
 - Create: `assets/equipment/experiments/material-equipment-v1/schemas/run-plan.schema.json`
 - Create: `assets/equipment/experiments/material-equipment-v1/schemas/run-activation.schema.json`
 - Create: `assets/equipment/experiments/material-equipment-v1/schemas/run-event-request.schema.json`
@@ -609,7 +609,7 @@ expect(report).toMatchObject({
 		totalJobs: 161,
 		materializedRootJobs: 77,
 		gatedPieceJobs: 84,
-		armourReviewGates: 21,
+		armorReviewGates: 21,
 		maximumConcurrency: 16
 	}
 });
@@ -744,11 +744,11 @@ git commit -m "feat(equipment): add resumable job claiming"
 
 ---
 
-### Task 8: Verify Armour receipts and materialize the 84 dependent packets
+### Task 8: Verify Armor receipts and materialize the 84 dependent packets
 
 **Files:**
-- Create: `tools/equipment-armour-review.spec.ts`
-- Create: `tools/equipment-armour-review.ts`
+- Create: `tools/equipment-armor-review.spec.ts`
+- Create: `tools/equipment-armor-review.ts`
 - Modify: `tools/equipment-image-packets.ts`
 - Modify: `tools/equipment-image-packets.spec.ts`
 - Modify: `tools/equipment-image-production.ts`
@@ -758,7 +758,7 @@ git commit -m "feat(equipment): add resumable job claiming"
 
 **Interfaces:**
 - Consumes: verified candidate/result, current run hashes, gate definition, reviewer, decision, and timestamp.
-- Produces: `buildArmourSourceReviewReceipt(input)`, `verifyArmourSourceReviewReceipt(input)`, `materializeDependentArmourPackets(input)`, and CLI command `review-armour-source`.
+- Produces: `buildArmorSourceReviewReceipt(input)`, `verifyArmorSourceReviewReceipt(input)`, `materializeDependentArmorPackets(input)`, and CLI command `review-armor-source`.
 
 - [ ] **Step 1: Write failing receipt tests**
 
@@ -809,7 +809,7 @@ Receipt creation uses exclusive write. The CLI requires the reviewer and an expl
 
 - [ ] **Step 4: Write failing child-packet tests**
 
-For one accepted copper Heavy Armour source, assert exactly four packets in Head, Torso, Legs,
+For one accepted copper Heavy Armor source, assert exactly four packets in Head, Torso, Legs,
 Boots order. The first reference must be:
 
 ```ts
@@ -826,7 +826,7 @@ forbids redesign, and uses a 1024×1024 canvas.
 - [ ] **Step 5: Implement receipt-driven exclusive child materialization**
 
 Hold the run lock, verify the receipt and current run state, exclusive-create four targets and four
-assignments, verify all eight persisted hashes, then append `armour-source-reviewed`. A crash before
+assignments, verify all eight persisted hashes, then append `armor-source-reviewed`. A crash before
 the event is reconciled only when all eight exact files verify; partial materialization blocks.
 
 - [ ] **Step 6: Validate and commit**
@@ -835,7 +835,7 @@ Run review, packet, journal, and readiness specs, plus TypeScript, ESLint, and `
 Commit:
 
 ```bash
-git commit -m "feat(equipment): gate armour piece production"
+git commit -m "feat(equipment): gate armor piece production"
 ```
 
 ---
@@ -875,7 +875,7 @@ expect(await reconcile(resultWithoutCandidate)).toMatchObject({
 ```
 
 An active started worker is never reaped by elapsed time. Operator-confirmed failure requires an
-exact target, worker, reason, and acknowledgement flag and appends evidence rather than deleting
+exact target, worker, reason, and acknowledgment flag and appends evidence rather than deleting
 anything.
 
 - [ ] **Step 2: Write the failing end-to-end simulation test**
@@ -887,7 +887,7 @@ expect(report.summary).toEqual({
 	totalJobs: 161,
 	initiallyReadyJobs: 77,
 	gatedPieceJobs: 84,
-	armourReviewGates: 21,
+	armorReviewGates: 21,
 	maximumConcurrency: 16,
 	generatedImages: 0
 });
@@ -938,7 +938,7 @@ PATH=/home/joao/.nvm/versions/node/v24.14.1/bin:$PATH \
     tools/equipment-image-run-readiness.spec.ts \
     tools/equipment-image-run-journal.spec.ts \
     tools/equipment-image-run-recorder.spec.ts \
-    tools/equipment-armour-review.spec.ts \
+    tools/equipment-armor-review.spec.ts \
     tools/equipment-image-run-reconcile.spec.ts \
     tools/equipment-image-production.integration.spec.ts
 PATH=/home/joao/.nvm/versions/node/v24.14.1/bin:$PATH \

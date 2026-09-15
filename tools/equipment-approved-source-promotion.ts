@@ -39,7 +39,7 @@ function approvedPath(
 ): string {
 	const rank = target.rank.toLowerCase();
 	if (target.artifactRole === 'set-source') {
-		return `${EQUIPMENT_APPROVED_ROOT}/armour-set-references/${rank}/${target.materialId}/${target.classId}.png`;
+		return `${EQUIPMENT_APPROVED_ROOT}/armor-set-references/${rank}/${target.materialId}/${target.classId}.png`;
 	}
 	return `${EQUIPMENT_APPROVED_ROOT}/items/${rank}/${target.materialId}/${target.artifactId}.png`;
 }
@@ -88,7 +88,7 @@ function assertRecordMatchesTarget(
 	record: EquipmentApprovedSourceRecordV1,
 	target: ReturnType<typeof buildEquipmentV3Manifest>['targets'][number]
 ): void {
-	const expectedRole = target.artifactRole === 'set-source' ? 'armour-set-reference' : 'item';
+	const expectedRole = target.artifactRole === 'set-source' ? 'armor-set-reference' : 'item';
 	if (
 		record.targetId !== target.targetId ||
 		record.role !== expectedRole ||
@@ -138,7 +138,7 @@ async function assertApprovedRootLayout(workspaceRoot: string): Promise<void> {
 	const state = await equipmentRepositoryPathState(workspaceRoot, EQUIPMENT_APPROVED_ROOT);
 	if (state !== 'directory') throw new Error('Approved Equipment root must be a directory');
 	const allowedFiles = new Set(['manifest.json', 'integration-report.json']);
-	const allowedDirectories = new Set(['items', 'armour-set-references', 'receipts', 'reviews']);
+	const allowedDirectories = new Set(['items', 'armor-set-references', 'receipts', 'reviews']);
 	const absolute = path.join(workspaceRoot, ...EQUIPMENT_APPROVED_ROOT.split('/'));
 	for (const entry of await readdir(absolute, { withFileTypes: true })) {
 		const metadata = await lstat(path.join(absolute, entry.name));
@@ -180,7 +180,7 @@ export async function checkEquipmentApprovedSources(workspaceRoot = process.cwd(
 		throw new Error('Equipment v3 source manifest differs from its deterministic contract');
 	}
 	const manifestCanonicalSha256 = canonicalSha256(sourceManifestValue);
-	if (receipt.checkpoints.roots.path === receipt.checkpoints.armourPieces.path) {
+	if (receipt.checkpoints.roots.path === receipt.checkpoints.armorPieces.path) {
 		throw new Error('Equipment owner checkpoints must be distinct');
 	}
 
@@ -206,11 +206,11 @@ export async function checkEquipmentApprovedSources(workspaceRoot = process.cwd(
 				'Equipment roots checkpoint'
 			)
 		),
-		armourPieces: EquipmentCheckpointReceiptV3Schema.parse(
+		armorPieces: EquipmentCheckpointReceiptV3Schema.parse(
 			await readCanonicalReference(
 				workspaceRoot,
-				receipt.checkpoints.armourPieces,
-				'Equipment armour checkpoint'
+				receipt.checkpoints.armorPieces,
+				'Equipment armor checkpoint'
 			)
 		)
 	};
@@ -229,16 +229,16 @@ export async function checkEquipmentApprovedSources(workspaceRoot = process.cwd(
 		manifestCanonicalSha256
 	});
 	assertAcceptedCheckpoint({
-		label: 'Armour pieces',
-		receipt: checkpoints.armourPieces,
-		expectedId: 'equipment-v3-checkpoint-3-armour-pieces',
+		label: 'Armor pieces',
+		receipt: checkpoints.armorPieces,
+		expectedId: 'equipment-v3-checkpoint-3-armor-pieces',
 		expectedCount: 84,
 		manifestCanonicalSha256
 	});
 	if (
 		proposal.entries.length !== 161 ||
-		proposal.checkpoint3.path !== receipt.checkpoints.armourPieces.path ||
-		proposal.checkpoint3.canonicalSha256 !== receipt.checkpoints.armourPieces.canonicalSha256
+		proposal.checkpoint3.path !== receipt.checkpoints.armorPieces.path ||
+		proposal.checkpoint3.canonicalSha256 !== receipt.checkpoints.armorPieces.canonicalSha256
 	) {
 		throw new Error('Equipment promotion proposal/checkpoint binding mismatch');
 	}
@@ -248,8 +248,8 @@ export async function checkEquipmentApprovedSources(workspaceRoot = process.cwd(
 	const rootDecisions = new Map(
 		checkpoints.roots.decisions.map((decision) => [decision.subjectId, decision])
 	);
-	const armourDecisions = new Map(
-		checkpoints.armourPieces.decisions.map((decision) => [decision.subjectId, decision])
+	const armorDecisions = new Map(
+		checkpoints.armorPieces.decisions.map((decision) => [decision.subjectId, decision])
 	);
 	let retiredCandidateCount = 0;
 	for (const record of manifest.records) {
@@ -262,12 +262,12 @@ export async function checkEquipmentApprovedSources(workspaceRoot = process.cwd(
 		}
 		assertRecordMatchesTarget(record, target);
 		const checkpointReference =
-			target.artifactRole === 'armour-piece'
-				? receipt.checkpoints.armourPieces
+			target.artifactRole === 'armor-piece'
+				? receipt.checkpoints.armorPieces
 				: receipt.checkpoints.roots;
 		const decision =
-			target.artifactRole === 'armour-piece'
-				? armourDecisions.get(record.targetId)
+			target.artifactRole === 'armor-piece'
+				? armorDecisions.get(record.targetId)
 				: rootDecisions.get(record.targetId);
 		if (
 			selected.candidatePath !== record.candidate.path ||
@@ -318,7 +318,7 @@ export async function checkEquipmentApprovedSources(workspaceRoot = process.cwd(
 	]);
 	const managedFiles = (
 		await Promise.all(
-			['items', 'armour-set-references', 'receipts'].map((directory) =>
+			['items', 'armor-set-references', 'receipts'].map((directory) =>
 				collectManagedFiles(workspaceRoot, `${EQUIPMENT_APPROVED_ROOT}/${directory}`)
 			)
 		)

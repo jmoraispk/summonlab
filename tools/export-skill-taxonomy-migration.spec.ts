@@ -183,7 +183,7 @@ describe('skill taxonomy migration exporter', () => {
 		await writeFile(ledgerPath, `${JSON.stringify(ledger, null, '\t')}\n`);
 
 		await expect(exportSkillTaxonomyMigration({ workspaceRoot, mode: 'check' })).rejects.toThrow(
-			'legacy inventory SHA-256 mismatch: expected c4b0d6efe79987686fd3cfb6d3400d21c081936c23d7254f63b6b342d2c70df4'
+			'legacy inventory SHA-256 mismatch: expected b5c5dddaaec1f08d7948c122e448ce758e5fd97e7abba116324690fa0b1efaa2'
 		);
 	});
 });

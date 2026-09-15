@@ -43,13 +43,13 @@ const isolateSubject = (rgba, width, height, expectedCenter) => {
 			component.bottom = Math.max(component.bottom, y);
 			component.sumX += x;
 			component.sumY += y;
-			const neighbours = [index - 1, index + 1, index - width, index + width];
-			for (const neighbour of neighbours) {
-				if (neighbour < 0 || neighbour >= labels.length || labels[neighbour] !== -1) continue;
-				const neighbourX = neighbour % width;
-				if (Math.abs(neighbourX - x) > 1 || rgba[neighbour * 4 + 3] <= 18) continue;
-				labels[neighbour] = label;
-				queue[tail++] = neighbour;
+			const neighbors = [index - 1, index + 1, index - width, index + width];
+			for (const neighbor of neighbors) {
+				if (neighbor < 0 || neighbor >= labels.length || labels[neighbor] !== -1) continue;
+				const neighborX = neighbor % width;
+				if (Math.abs(neighborX - x) > 1 || rgba[neighbor * 4 + 3] <= 18) continue;
+				labels[neighbor] = label;
+				queue[tail++] = neighbor;
 			}
 		}
 		components.push(component);

@@ -16,7 +16,7 @@ Wiki ID: `monster-family.harpies`
 ## Visual constants
 
 - A humanoid torso remains joined to large raptor wings that replace or extend the arms, backward-jointed bird legs, oversized talons, and a feathered head crest.
-- Slate grey, brown, and dirty cream mature into iridescent blue-green, storm purple, and white without losing the family feather pattern.
+- Slate gray, brown, and dirty cream mature into iridescent blue-green, storm purple, and white without losing the family feather pattern.
 - Feather, hollow bone, sinew, raw hide, braided hair, and gold ankle ornaments remain physically readable materials.
 - Bone jewelry, trophy feathers, braided hair, ankle rings, and crest height communicate status without changing the core wing-and-talon silhouette.
 - Every attack keeps the wing roots, talons, crest, and flight direction visible enough to preserve counterplay.

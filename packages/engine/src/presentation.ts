@@ -40,11 +40,11 @@ export function settlementDayPhase(minuteOfDay: number): SettlementDayPhase {
 export function routineSettlementPose(kind: RoutineKind): SettlementPose {
 	if (kind === 'sleep') return 'sleep';
 	if (kind === 'meal' || kind === 'shares-breakfast') return 'eat';
-	if (kind === 'stretches-at-dawn' || kind === 'practises-knots') return 'train';
+	if (kind === 'stretches-at-dawn' || kind === 'practices-knots') return 'train';
 	if (
 		kind === 'assigned-duty' ||
 		kind === 'checks-exits' ||
-		kind === 'catalogues-tools' ||
+		kind === 'catalogs-tools' ||
 		kind === 'walks-the-walls'
 	)
 		return 'work';

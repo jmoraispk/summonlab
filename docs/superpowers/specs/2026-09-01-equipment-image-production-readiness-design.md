@@ -9,7 +9,7 @@ Date: 2026-09-01
 Prepare one safe, resumable production run for the 161 canonical material Equipment images under
 `assets/equipment/experiments/material-equipment-v1`. The production layer must use every currently
 available worker up to a total Equipment concurrency of 16, preserve full-set consistency for
-Armour, and remain isolated from active monster-image production.
+Armor, and remain isolated from active monster-image production.
 
 This design turns the existing manifest and allocation template into executable, auditable job
 packets. It does not generate, approve, or promote any image by itself.
@@ -22,8 +22,8 @@ packets. It does not generate, approve, or promote any image by itself.
 - The 161 targets form one logical, resumable production run.
 - The runner admits every currently available worker up to 16. It does not reserve capacity or
   voluntarily throttle because unrelated work is active.
-- The initial ready queue contains 77 jobs: 56 standalone items and 21 complete Armour sets.
-- Each complete Armour set is shown on a featureless charcoal display form.
+- The initial ready queue contains 77 jobs: 56 standalone items and 21 complete Armor sets.
+- Each complete Armor set is shown on a featureless charcoal display form.
 - A human-accepted, hash-bound full-set receipt unlocks exactly that set's Head, Torso, Legs, and
   Boots jobs.
 - The 84 dependent piece jobs use their accepted full-set candidate as the authoritative first
@@ -96,8 +96,8 @@ one bounded supernatural behavior. Palette alone never satisfies the material cr
 | Mode | Canvas | Composition |
 | --- | --- | --- |
 | Isolated item or piece | 1024×1024 PNG | One complete object or required pair, neutral three-quarter view, entirely inside an 8% safe margin |
-| Complete Armour set | 1024×1536 PNG | One featureless charcoal display form, full body visible, exactly Head, Torso, Legs, and Boots readable together |
-| Dependent Armour piece | 1024×1024 PNG | Isolated matching object derived from the accepted complete-set reference |
+| Complete Armor set | 1024×1536 PNG | One featureless charcoal display form, full body visible, exactly Head, Torso, Legs, and Boots readable together |
+| Dependent Armor piece | 1024×1024 PNG | Isolated matching object derived from the accepted complete-set reference |
 
 The display form proves silhouette, coverage, overlap, load, and interaction among the four slots
 without introducing a hero identity. Dependent piece jobs preserve the accepted set rather than
@@ -117,8 +117,8 @@ These are visual authoring defaults, not new gameplay mechanics:
 - Mace: practical one-hand flanged mace.
 - Shield: medium heater shield.
 - Staff: full-length, wood-led staff with subordinate fittings and no mandatory orb.
-- Heavy Armour: metal-dominant articulated protection.
-- Light Armour: hide- or scale-dominant mobile protection.
+- Heavy Armor: metal-dominant articulated protection.
+- Light Armor: hide- or scale-dominant mobile protection.
 - Robes: cloth-dominant layered clothing.
 
 Secondary materials may be visually necessary, but stay neutral and subordinate; they never assert
@@ -149,7 +149,7 @@ Every target requires explicit findings for:
 8. profile style cohesion;
 9. negative-constraint safety.
 
-Dependent Armour pieces additionally require exact continuity with their accepted source for
+Dependent Armor pieces additionally require exact continuity with their accepted source for
 material, silhouette language, palette, trim, fastenings, wear, ornament, and slot boundary.
 
 ## Repository layout
@@ -189,7 +189,7 @@ do not exist until their source receipt supplies the exact accepted candidate ha
 - visual profile and profile acceptance;
 - target and assignment;
 - generation attempt and result;
-- Armour source-review receipt;
+- Armor source-review receipt;
 - immutable run plan and activation receipt;
 - journal requests and sequenced journal events;
 - derived readiness and run reports.
@@ -319,7 +319,7 @@ never expired by time-to-live. Crash reconciliation either verifies the exact ca
 and appends the correct terminal event, or records an operator-confirmed failure. Partial output is
 a blocker and is never silently replaced.
 
-## Review receipts and Armour unlocking
+## Review receipts and Armor unlocking
 
 File existence never passes a review gate. An accepted receipt must bind:
 

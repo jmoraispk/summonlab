@@ -14,14 +14,14 @@ requested visual changes. The progression sheets may be used as class-direction 
 rank-first plan. The individual Daggers are method references rather than candidate substitutions;
 their dedicated v3 targets will still be rendered under the final manifest and canvas contract.
 
-The Heavy Armour sheet is accepted for progression, silhouette, and finish. Its mannequin-like
+The Heavy Armor sheet is accepted for progression, silhouette, and finish. Its mannequin-like
 presentation remains explicitly non-compliant for production full-set sources, which must be empty
 and self-supporting.
 
 ## Direction references
 
 - `../material-vs-class-calibration-2026-09-02/approach-a-steel-material-cohort-v1.png` supplies the
-  accepted finish and the Steel Axe, Spear, Dagger, Shield, and Heavy Armour style direction.
+  accepted finish and the Steel Axe, Spear, Dagger, Shield, and Heavy Armor style direction.
 - `../material-vs-class-calibration-2026-09-02/approach-b-dagger-class-progression-v1.png` supplies the
   owner-accepted rank-escalation rhythm and silhouette ambition.
 - Both inputs remain direction-only references. Their pictured items are not automatically approved
@@ -36,7 +36,7 @@ and self-supporting.
 | `axe-metal-ranks-v1.png` | seven-rank Axe sheet | 1624×969 | `b99400da66d60a542d80683dc8083993dbcca30a2f4a268a77037b3d6fbbb8dd` |
 | `mace-metal-ranks-v1.png` | seven-rank Mace sheet | 1624×969 | `b8e12d3b64ec7ac4515ef067b87dad09c5b51b02a1f5d6a1fb13f1c425389359` |
 | `shield-metal-ranks-v1.png` | seven-rank Shield sheet | 1770×889 | `fa4f02530a8838cd9ac0738dae28ffdddcbf5f87527f9fc2d2989f4568d936e2` |
-| `heavy-armour-metal-ranks-v1.png` | seven-rank Heavy Armour sheet | 1921×819 | `e43eebe931c75330abe54d39b35a97b69bc1e18c2e349c31eff1bb0b096683da` |
+| `heavy-armor-metal-ranks-v1.png` | seven-rank Heavy Armor sheet | 1921×819 | `e43eebe931c75330abe54d39b35a97b69bc1e18c2e349c31eff1bb0b096683da` |
 | `bronze-dagger-individual-v1.png` | dedicated Bronze Dagger test | 1024×1536 | `47022bbdf47bb370b1a84156190f8a7bab75c1f999c7b126fc3e8e7dcd47ec08` |
 | `sunsteel-dagger-individual-v1.png` | dedicated Sunsteel Dagger test | 1024×1536 | `8c5c69fc6a02b6eaa71bb6cfa679fb19f3c12b775ca85722cb282350a5e97cd1` |
 
@@ -51,7 +51,7 @@ were passed by exact local path. The dedicated Daggers are new renderings, not i
 - Both individual Dagger tests retain the selected progression-sheet designs in dedicated renders.
   Their portrait canvas is suitable for this calibration; production masters will use the final
   profile's locked canvas and framing.
-- The Heavy Armour sheet demonstrates useful rank escalation but does not yet satisfy the empty-set
+- The Heavy Armor sheet demonstrates useful rank escalation but does not yet satisfy the empty-set
   requirement: several sets read as occupied mannequins. It is a ranking reference only.
 
 ## Exact shared progression prompt
@@ -115,14 +115,14 @@ Material expression: visibly vary outline, boss, ribs, rim, apertures, surface c
 Avoid: seven identical heater-shield recolors, held shields, characters, wall displays, excessive scenery, unreadably thin silhouettes.
 ```
 
-### Heavy Armour supplement
+### Heavy Armor supplement
 
 ```text
-Primary request: create a clean seven-cell progression sheet of seven original EMPTY HEAVY ARMOUR SETS.
+Primary request: create a clean seven-cell progression sheet of seven original EMPTY HEAVY ARMOR SETS.
 Subject: one complete self-supporting set per cell in the same mild three-quarter front view, facing consistently; exactly Head, Torso, Legs, and paired Boots must be readable together.
 Material expression: progressively vary plate cut, articulation, overlap, helmet, shoulders, torso structure, skirt or fauld silhouette, greaves, and restrained ornament. Each material must change the set design rather than recolor one suit.
 Interior: natural cavity shadows inside openings only; absolutely no body, skin, face, mannequin, black void character, pose dummy, or visible wearer.
-Avoid: identical suits, missing helmets, floating disconnected pieces, robes, light armour, characters, weapons, capes hiding the required pieces.
+Avoid: identical suits, missing helmets, floating disconnected pieces, robes, light armor, characters, weapons, capes hiding the required pieces.
 ```
 
 ## Exact individual Dagger prompts

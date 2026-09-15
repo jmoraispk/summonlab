@@ -21,4 +21,4 @@ REVISION PASS 3. The attached first-pass piece candidate is immutable evidence. 
 
 Correct this exact audited issue: Render a waist-length Moonweave sleeved upper-robe with a plain open neckline and a clean high-hip hem. Zero hood, cowl, high collar, mantle, shoulder overlay, skirt, apron, lower robe panel, Legs item, or Boots item. Empty background must be visible above the neckline and below the hem.
 
-The owner-accepted full set remains the first and authoritative reference. Return one new isolated torso candidate only. Do not make unrelated redesigns, add another Armour slot, add a body or mannequin, add text, or imitate recognizable copyrighted geometry.
+The owner-accepted full set remains the first and authoritative reference. Return one new isolated torso candidate only. Do not make unrelated redesigns, add another Armor slot, add a body or mannequin, add text, or imitate recognizable copyrighted geometry.

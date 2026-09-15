@@ -319,7 +319,7 @@ expect(getMonsterFamilyVisualEntry('monster-family.goblins')?.forms.flatMap(({ v
 expect(getMonsterVisualEntry('monster.goblin-runt')?.variants).toHaveLength(5);
 expect(getMonsterVisualEntry('monster.goblin-runt')?.variants[0]?.thumbnailPath)
   .toMatch(/^\/runtime\/enemies\/monster-wiki-v1\//u);
-expect(getMonsterVisualEntry('monster.wolf-grey-wolf')?.variants[0]?.thumbnailPath)
+expect(getMonsterVisualEntry('monster.wolf-gray-wolf')?.variants[0]?.thumbnailPath)
   .toMatch(/^\/runtime\/enemies\/fauna-family-v1\//u);
 ```
 
@@ -533,7 +533,7 @@ Run:
 PATH=/tmp/summonlab-node-24.14.1/bin:$PATH pnpm --filter @summonlab/web exec vite dev --host 0.0.0.0 --port 4174
 ```
 
-Verify `0.0.0.0:4174` is listening and the index, Goblin family, Goblin Runt, and Grey Wolf routes
+Verify `0.0.0.0:4174` is listening and the index, Goblin family, Goblin Runt, and Gray Wolf routes
 return HTTP 200. Share `http://10.110.24.218:4174/wiki/creatures/monsters`.
 
 - [ ] **Step 5: Commit any final test-proven integration fix**

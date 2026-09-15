@@ -62,7 +62,7 @@
 
 - Modify `docs/wiki/mechanics/equipment/weapons.md`: equipment labels, Two Blades skill requirement, Polearm equipment, and removal of the generic Thrown ladder.
 - Modify `docs/wiki/mechanics/equipment/rarity-and-weight.md`: replace Paired Blades/Fist taxonomy names with concrete equipment or Body terminology.
-- Modify `docs/wiki/mechanics/equipment/armour-and-shields.md`: replace old aptitude/family references.
+- Modify `docs/wiki/mechanics/equipment/armor-and-shields.md`: replace old aptitude/family references.
 - Modify `docs/wiki/mechanics/progression/skills-and-ladders.md`: mirror the canonical three-level model.
 - Modify every repository-authored Markdown link reported by the migration validator.
 - Modify `apps/web/src/routes/living-village-lab/summon/fixtures.ts`: migrate displayed aptitude names.
@@ -329,14 +329,14 @@ Encode these explicit dispositions rather than relying on fuzzy name matching:
   `Equipment: Dagger`; rewrite their prerequisites through the retained Blade throwing technique.
 - Rename `Throwing Blade` to `Blade Throw` and retain it in Blade with `Equipment: Dagger`.
 - Delete `Throwing Axe`; the approved Polearm set does not classify a short throwing axe.
-- Delete Protection's `Armour Training`, `Heavy Bearing`, `Fortress`, and `Second Skin` as equipment
+- Delete Protection's `Armor Training`, `Heavy Bearing`, `Fortress`, and `Second Skin` as equipment
   progression rather than family skills.
 - Rehome `Taunt`, `Draw Attention`, and `Endure` to Shield.
 - Rehome `Set Jaw` and `Undying` to Body.
 - Merge `Punishment` into `Retaliation Ward`, `Bulwark of the Line` into `Phalanx`, and
   `They Shall Not Pass` into `The Last Wall`.
 - Apply `Element: Attuned` to Ward's `Elemental Guard` and `Counter Sigil`, and Enchantment's
-  `Weapon Oil`, `Armour Imbuing`, and `Elemental Attunement`.
+  `Weapon Oil`, `Armor Imbuing`, and `Elemental Attunement`.
 
 - [ ] **Step 4: Regenerate the complete ledger**
 
@@ -703,7 +703,7 @@ git commit -m "docs: adopt consolidated skill taxonomy"
 
 - Modify: `docs/wiki/mechanics/equipment/weapons.md`
 - Modify: `docs/wiki/mechanics/equipment/rarity-and-weight.md`
-- Modify: `docs/wiki/mechanics/equipment/armour-and-shields.md`
+- Modify: `docs/wiki/mechanics/equipment/armor-and-shields.md`
 - Modify: `docs/wiki/mechanics/progression/skills-and-ladders.md`
 - Modify: other Markdown files reported by exact old wiki IDs or old skill-page hrefs
 - Modify: `apps/web/src/routes/living-village-lab/summon/fixtures.ts`

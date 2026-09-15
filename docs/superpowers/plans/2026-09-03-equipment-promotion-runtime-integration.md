@@ -22,7 +22,7 @@ schema and replay. Forging and drops call one item factory; only provenance diff
 
 ## Global constraints
 
-- Promote exactly 161 source images: 140 item sources and 21 reference-only full Armour sets.
+- Promote exactly 161 source images: 140 item sources and 21 reference-only full Armor sets.
 - Export exactly 280 runtime files: `card` and `detail` for each of the 140 items.
 - Generate exactly 140 content definitions from canonical material/form rules.
 - Copy approved PNGs byte-for-byte; never regenerate or normalize them during promotion.
@@ -32,7 +32,7 @@ schema and replay. Forging and drops call one item factory; only provenance diff
 - Material and form select artwork. Craftsmanship never selects another material's artwork.
 - Enable Standard (`+0`) forging only. Fine/Masterwork thresholds, benefits, and quality-specific
   visual treatment remain deferred.
-- Armour sets remain reference evidence. Only Head, Torso, Legs, and Boots become definitions.
+- Armor sets remain reference evidence. Only Head, Torso, Legs, and Boots become definitions.
 - Keep the existing top-level `/forge` Character Forge unchanged; gameplay Forging belongs inside
   the play/workshop surface.
 - Preserve all engine schemas and replays through v23. Add v24 rather than mutating old schemas.
@@ -75,7 +75,7 @@ schema and replay. Forging and drops call one item factory; only provenance diff
 
 - `assets/equipment/experiments/material-equipment-v3/manifest.json`
 - `assets/equipment/experiments/material-equipment-v3/checkpoints/checkpoint-2-roots.json`
-- `assets/equipment/experiments/material-equipment-v3/checkpoints/checkpoint-3-armour-pieces.json`
+- `assets/equipment/experiments/material-equipment-v3/checkpoints/checkpoint-3-armor-pieces.json`
 - `assets/equipment/experiments/material-equipment-v3/reviews/proposed-promotions/candidate-promotion-v1.json`
 
 **Produces:** Strict schemas, inferred types, a deterministic 161-entry promotion plan, and CLI
@@ -103,13 +103,13 @@ Expected RED: the contract module does not exist.
 
 - [ ] **Step 2: Implement strict contracts**
 
-The approved record discriminates `item` and `armour-set-reference`. Require stable asset key,
+The approved record discriminates `item` and `armor-set-reference`. Require stable asset key,
 target ID, rank, material, class, optional slot, exact candidate/checkpoint provenance, approved
 path, width, height, bytes, and SHA-256. Path refinements allow only:
 
 ```text
 assets/equipment/approved/material-equipment-v1/items/**.png
-assets/equipment/approved/material-equipment-v1/armour-set-references/**.png
+assets/equipment/approved/material-equipment-v1/armor-set-references/**.png
 ```
 
 - [ ] **Step 3: Write planner tests and verify RED**
@@ -119,11 +119,11 @@ In a temporary Equipment workspace, assert:
 ```ts
 expect(plan.entries).toHaveLength(161);
 expect(plan.entries.filter(({ role }) => role === 'item')).toHaveLength(140);
-expect(plan.entries.filter(({ role }) => role === 'armour-set-reference')).toHaveLength(21);
+expect(plan.entries.filter(({ role }) => role === 'armor-set-reference')).toHaveLength(21);
 expect(new Set(plan.entries.map(({ approvedPath }) => approvedPath)).size).toBe(161);
 ```
 
-Test one revised candidate and one base candidate. Prove that all 84 Armour pieces use checkpoint 3,
+Test one revised candidate and one base candidate. Prove that all 84 Armor pieces use checkpoint 3,
 all 56 other items and 21 set sources use checkpoint 2, and every path/hash matches the proposal.
 
 - [ ] **Step 4: Implement the deterministic planner and CLI shell**
@@ -161,7 +161,7 @@ git commit -m "feat(equipment): define approved source promotion"
 - Create: `assets/equipment/approved/material-equipment-v1/receipts/promotion-v1.json`
 - Create: 140 PNGs under `assets/equipment/approved/material-equipment-v1/items/`
 - Create: 21 PNGs under
-  `assets/equipment/approved/material-equipment-v1/armour-set-references/`
+  `assets/equipment/approved/material-equipment-v1/armor-set-references/`
 - Modify: `assets/equipment/README.md` if present; otherwise create it with lifecycle boundaries
 
 - [ ] **Step 1: Capture the clean-tree basis and plan hash**
@@ -196,8 +196,8 @@ files, and a receipt whose manifest hash matches the checked manifest.
 
 - [ ] **Step 4: Review the manifest rather than the unchanged pixels**
 
-Inspect samples from a base candidate, a selected root revision, a base Armour piece, a selected
-Armour-piece revision, and an Armour set reference. The image review is identity verification only;
+Inspect samples from a base candidate, a selected root revision, a base Armor piece, a selected
+Armor-piece revision, and an Armor set reference. The image review is identity verification only;
 the owner already accepted the pixels at checkpoints 2 and 3.
 
 - [ ] **Step 5: Commit and push Task 2**
@@ -230,7 +230,7 @@ engine file has changed. Continue directly to Task 3 without requesting review.
 
 Define strict schemas for `card` and `detail` records, bundles, encoder evidence, source approval,
 per-file budget, total catalog bytes, and manifest hash. Reject experiment source paths and any
-`armour-set-reference` runtime entry.
+`armor-set-reference` runtime entry.
 
 - [ ] **Step 2: Implement contracts and exports**
 
@@ -296,7 +296,7 @@ design approval.
 
 - [ ] **Step 1: Write strict Equipment contract tests and verify RED**
 
-Define canonical schemas for rank, material family, 28 material IDs, equipment class, Armour slot,
+Define canonical schemas for rank, material family, 28 material IDs, equipment class, Armor slot,
 handedness, weight class, definition, definition catalog, craftsmanship label/bonus, origin, and
 recipe descriptor. Enforce `standard→0`, `fine→1`, and `masterwork→2` structurally without defining
 the Forging-level thresholds that award them.
@@ -314,11 +314,11 @@ Require:
 70 metal definitions
 14 wood definitions
 28 hide/scale definitions
-28 cloth/fibre definitions
+28 cloth/fiber definitions
 140 total definitions
 ```
 
-Assert stable IDs, legal material/form pairs, exactly 84 Armour pieces, no full-set definition, and
+Assert stable IDs, legal material/form pairs, exactly 84 Armor pieces, no full-set definition, and
 correct base rank inherited from material.
 
 - [ ] **Step 4: Implement the generated catalog**
@@ -501,7 +501,7 @@ git push
 - [ ] **Step 1: Write runtime-resolution tests and verify RED**
 
 Resolve a definition to its card/detail public paths through the checked Equipment runtime manifest.
-Reject missing aliases, source-hash drift, and Armour-set-reference keys.
+Reject missing aliases, source-hash drift, and Armor-set-reference keys.
 
 - [ ] **Step 2: Implement the minimal workshop UI**
 
@@ -548,7 +548,7 @@ git push
 ```
 
 **Evidence Milestone C:** Exercise material recognition, card/detail resolution, forge clarity,
-one-piece Armour semantics, inventory readability, and equip behavior at phone dimensions. Capture
+one-piece Armor semantics, inventory readability, and equip behavior at phone dimensions. Capture
 the results, correct objective defects, and continue directly to Task 8 without requesting review.
 
 ---
@@ -603,7 +603,7 @@ git push
 - Modify: `docs/wiki/mechanics/equipment/README.md`
 - Modify: `docs/wiki/mechanics/equipment/materials.md` only if runtime terminology needs clarification
 - Modify: `docs/wiki/mechanics/equipment/rarity-and-weight.md`
-- Modify: `docs/wiki/mechanics/equipment/armour-and-shields.md` only if implementation differs from
+- Modify: `docs/wiki/mechanics/equipment/armor-and-shields.md` only if implementation differs from
   the accepted prose
 - Modify: `docs/wiki/roadmap/living-village-v1.md`
 - Modify: `docs/system-architecture/system-map.md`

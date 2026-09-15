@@ -1,0 +1,48 @@
+{
+	"schemaVersion": "equipment-rank-first-provenance-result-v3",
+	"resultId": "result-material-equipment-v3-bronze-heavy-armor-legs-v3-attempt-1",
+	"targetId": "material-equipment-v3-bronze-heavy-armor-legs-v3",
+	"assignmentId": "assignment-material-equipment-v3-bronze-heavy-armor-legs-v3",
+	"attempt": 1,
+	"status": "succeeded",
+	"startedAt": "2026-09-03T17:27:58.794Z",
+	"completedAt": "2026-09-03T17:28:48.013Z",
+	"provider": "OpenAI image generation",
+	"model": "gpt-imagegen-2.0",
+	"promptSha256": "cae36f8bbb5f11b3723556fed0c427b3bdf1840492f8ab5c6af74dc3ab1eb524",
+	"references": [
+		{
+			"path": "assets/equipment/experiments/rank-first-calibration-2026-09-02/heavy-armor-metal-ranks-v1.png",
+			"sha256": "e43eebe931c75330abe54d39b35a97b69bc1e18c2e349c31eff1bb0b096683da",
+			"purpose": "Rank escalation, silhouette, and finish only; production must remove mannequin/body impression."
+		},
+		{
+			"path": "assets/equipment/experiments/material-vs-class-calibration-2026-09-02/approach-a-steel-material-cohort-v1.png",
+			"sha256": "6749ad1a65b995f48b89b0c1c8c8ee051da145315f5fd60775803f691ad7b887",
+			"purpose": "Accepted painterly finish and cross-class material-coherence reference; do not copy geometry."
+		},
+		{
+			"path": "assets/equipment/experiments/material-equipment-v3/candidates/f/bronze/heavy-armor-full-set-v3.png",
+			"sha256": "2427658c5f5aa71e236aa7e3425af0ae2234d8a4e0e518ca75b91625f3e48da5",
+			"purpose": "Owner-accepted full Armor set; authoritative source for piece reconstruction."
+		}
+	],
+	"source": {
+		"path": "/home/joao/.codex/generated_images/01a0684f-312d-7913-9267-6375dab7743f/exec-e7f6443f-8f67-4bc1-9ecb-eb225bbda995.png",
+		"sha256": "64842f25cb961c236c8a40553594339cb3a1f3d89f4c5e270a2a99ef6486f7ba",
+		"bytes": 2005168,
+		"width": 1254,
+		"height": 1254,
+		"mediaType": "image/png"
+	},
+	"persistenceOperation": "exclusive-normalize",
+	"output": {
+		"path": "assets/equipment/experiments/material-equipment-v3/candidates/f/bronze/heavy-armor-legs-v3.png",
+		"sha256": "14aed65daf672a1452df91b7c7262713b61a15e98f4d3337825be2ad544ae9e4",
+		"bytes": 1513599,
+		"width": 1024,
+		"height": 1024,
+		"mediaType": "image/png"
+	},
+	"error": null
+}

@@ -145,11 +145,11 @@ describe('online wiki registry', () => {
 		expect(getMonsterVisualEntry('monster.goblin-runt')?.variants[0]?.thumbnailPath).toMatch(
 			/^\/runtime\/enemies\/monster-wiki-v1\//u
 		);
-		expect(getMonsterVisualEntry('monster.wolf-grey-wolf')).toMatchObject({
-			id: 'wolf-grey-wolf',
+		expect(getMonsterVisualEntry('monster.wolf-gray-wolf')).toMatchObject({
+			id: 'wolf-gray-wolf',
 			familyId: 'wolves'
 		});
-		expect(getMonsterVisualEntry('monster.wolf-grey-wolf')?.variants[0]?.thumbnailPath).toMatch(
+		expect(getMonsterVisualEntry('monster.wolf-gray-wolf')?.variants[0]?.thumbnailPath).toMatch(
 			/^\/runtime\/enemies\/fauna-family-v1\//u
 		);
 		expect(
@@ -227,7 +227,7 @@ describe('online wiki registry', () => {
 		['hill-giant', '/wiki/creatures/monsters/giant-hill-giant'],
 		['goblin-chieftain', '/wiki/creatures/monsters/goblin-warboss'],
 		['death-knight', '/wiki/creatures/monsters/reconciliation'],
-		['grey-wolf', '/wiki/creatures/monsters/wolf-grey-wolf']
+		['gray-wolf', '/wiki/creatures/monsters/wolf-gray-wolf']
 	])('returns a permanent redirect for legacy %s', (currentClassId, destination) => {
 		expect(thrownRouteResult(`creatures/monsters/${currentClassId}`)).toMatchObject({
 			status: 308,

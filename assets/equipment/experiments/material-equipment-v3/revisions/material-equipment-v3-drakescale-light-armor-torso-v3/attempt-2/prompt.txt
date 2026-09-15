@@ -1,0 +1,24 @@
+Render only the torso item from the accepted full set. Preserve its exact material, palette, silhouette language, trim, fastenings, wear, ornament, and slot boundary. Do not redesign it.
+
+CLASS DIRECTION: Mobile hide- or scale-led protection comprising exactly Head, Torso, Legs, and Boots. Empty self-supporting full set in a consistent mild three-quarter front view; no mannequin or wearer. Use the accepted progression reference as the authoritative design for the B column while reconstructing it as a dedicated render. Preserve rank silhouette and distinctive structural cues; do not crop.
+
+MATERIAL BRIEF — Drakescale:
+Palette: Deep ember red, soot-black, and warm bronze-gold scale ridges.
+Value: Dark body with bright directional ridge accents.
+Surface/wear: Hard overlapping reptilian scales, heat-darkened recesses, chipped ridges, glossy high points.
+Construction: Tight aerodynamic scale rows, reinforced crests, clawlike trim, heat-resistant layered joints.
+Supernatural behavior: A few ember-warm seams suggest retained heat; no flames.
+Neutral secondary materials: Black leather, dark steel, charcoal lining, and bronze fasteners.
+Neighbor distinction: More refined, draconic, and heat-bearing than Chitin; smaller-scaled and less regal than Wyrmscale.
+
+One isolated torso only; no other set pieces, body part, wearer, mannequin, or display stand.
+
+STYLE/OUTPUT: premium realistic-painterly dark fantasy equipment inventory art; grounded construction; honest material response; cold key light, restrained warm rim, midnight-charcoal studio ground with restrained floor plane. One fully visible object centered on a 1024×1024 portrait-or-square canvas, about 8% margin and never below 5%; readable at 128px. No text, labels, UI, border, watermark, signature, scenery, extra objects, hands, wielder, detached particles, uncontrolled glow, or recognizable reference copying.
+
+The accepted full-set source is the first and authoritative visual reference. Match it exactly.
+
+REVISION PASS 2. No first-pass piece candidate exists. Reconstruct the corrected piece directly from the attached owner-accepted full set, preserving its exact slot boundary and all source-faithful traits.
+
+Correct this exact audited issue: Reconstruct exactly one connected Drakescale Torso garment from the accepted full set. Do not add a separate lower-body, waist, Legs, Head, or Boots item; retain only elements physically connected to the chest garment.
+
+The owner-accepted full set remains the first and authoritative reference. Return one new isolated torso candidate only. Do not make unrelated redesigns, add another Armor slot, add a body or mannequin, add text, or imitate recognizable copyrighted geometry.

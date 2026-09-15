@@ -841,7 +841,7 @@ Wiki ID: \`creatures.monster-reconciliation\`
 [← Monster bestiary](README.md)
 
 The forty earlier class identities remain preserved as historical production provenance. The fauna
-integration redirects Grey Wolf, Dire Wolf, Cave Bear, Tunnel Boar, and Burrowing Worm to their new
+integration redirects Gray Wolf, Dire Wolf, Cave Bear, Tunnel Boar, and Burrowing Worm to their new
 canonical forms without rewriting the original program. Armored Brood Guard, Death Knight, and Cave
 Drake remain secondary archetypes in Arachnids, Skeletons, and Dragons. Old images remain
 candidate-only reference evidence and are not substituted for the approved fauna coordinates.

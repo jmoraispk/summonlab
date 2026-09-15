@@ -53,7 +53,7 @@ Cross strong terrain to break the scent line or bait the intercept away before a
 
 ### Lower-form interaction
 
-It intercepts for Grey Wolves, completes Dire Wolf pursuit swaps, and changes wings on the Howler's cue.
+It intercepts for Gray Wolves, completes Dire Wolf pursuit swaps, and changes wings on the Howler's cue.
 
 ## Five-coordinate approved runtime matrix
 

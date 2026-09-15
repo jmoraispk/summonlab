@@ -21,8 +21,8 @@ export const ENEMY_ARCHETYPES = [
 		teaches: ['Cover use', 'Shield use', 'Closing distance']
 	},
 	{
-		id: 'grey-wolf',
-		name: 'Grey Wolf',
+		id: 'gray-wolf',
+		name: 'Gray Wolf',
 		family: 'beasts',
 		role: 'Fast flanking predator',
 		debutFloor: 3,
@@ -161,7 +161,7 @@ export const ENEMY_REVIEW_FAMILIES = [
 		id: 'beasts',
 		name: 'Beasts',
 		plate: 'beasts-v1',
-		enemyIds: ['grey-wolf', 'dire-wolf', 'cave-bear', 'tunnel-boar']
+		enemyIds: ['gray-wolf', 'dire-wolf', 'cave-bear', 'tunnel-boar']
 	},
 	{
 		id: 'constructs',
@@ -193,7 +193,7 @@ const floorEncounters: ReadonlyArray<{
 		newPressure: 'Ranged lanes'
 	},
 	{
-		enemyIds: ['grey-wolf', 'goblin-skirmisher'],
+		enemyIds: ['gray-wolf', 'goblin-skirmisher'],
 		skillTest: 'Footwork · perception',
 		newPressure: 'Flanking'
 	},
@@ -213,7 +213,7 @@ const floorEncounters: ReadonlyArray<{
 		newPressure: 'Line-breaking charge'
 	},
 	{
-		enemyIds: ['dire-wolf', 'grey-wolf'],
+		enemyIds: ['dire-wolf', 'gray-wolf'],
 		skillTest: 'Rescue movement · stamina',
 		newPressure: 'Persistent pursuit'
 	},

@@ -1,0 +1,26 @@
+{
+	"targetId": "material-equipment-v3-iron-heavy-armor-head-v3",
+	"productionOrder": 31,
+	"rank": "E",
+	"materialId": "iron",
+	"materialName": "Iron",
+	"materialFamily": "metal",
+	"materialBriefPath": "assets/equipment/experiments/material-equipment-v3/direction/material-briefs/e-iron.json",
+	"classId": "heavy-armor",
+	"classDirectionId": "equipment-v3-heavy-armor-rank-progression",
+	"artifactId": "heavy-armor-head",
+	"artifactRole": "armor-piece",
+	"slot": "head",
+	"setId": "iron-heavy-armor",
+	"dependsOnTargetId": "material-equipment-v3-iron-heavy-armor-full-set-v3",
+	"width": 1024,
+	"height": 1024,
+	"output": {
+		"targetPath": "assets/equipment/experiments/material-equipment-v3/targets/e/iron/heavy-armor-head-v3.json",
+		"assignmentPath": "assets/equipment/experiments/material-equipment-v3/assignments/e/iron/heavy-armor-head-v3.json",
+		"promptPath": "assets/equipment/experiments/material-equipment-v3/assignments/e/iron/heavy-armor-head-v3.prompt.txt",
+		"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/e/iron/heavy-armor-head-v3.png",
+		"provenanceResultPath": "assets/equipment/experiments/material-equipment-v3/results/e/iron/heavy-armor-head-v3.json",
+		"reviewReceiptPath": "assets/equipment/experiments/material-equipment-v3/reviews/decisions/e/iron/heavy-armor-head-v3.json"
+	}
+}

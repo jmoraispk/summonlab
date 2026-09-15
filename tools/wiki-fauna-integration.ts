@@ -185,7 +185,7 @@ export async function loadBaseMonsterWikiBuildInput(
 }
 
 const promotedLegacyForms = new Map([
-	['grey-wolf', ['wolves', 'wolf-grey-wolf']],
+	['gray-wolf', ['wolves', 'wolf-gray-wolf']],
 	['dire-wolf', ['wolves', 'wolf-dire-wolf']],
 	['cave-bear', ['bears', 'bear-cave-bear']],
 	['tunnel-boar', ['boars', 'boar-tunnel-boar']],

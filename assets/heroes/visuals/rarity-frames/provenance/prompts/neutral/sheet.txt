@@ -1,7 +1,7 @@
 Use case: stylized-concept image correction
 Asset type: seven-rank gemless neutral hero-card frame authority sheet
 
-Correct ONLY the remaining colored eye accents in reference image 1. Preserve the complete successful seven-frame composition exactly: the same seven equal card boxes, silhouettes, internal opening widths, charcoal/grey-steel/antique-gold materials, integrated bottom trays, exact warm-gold star counts 1 through 7, labels, ornaments, wings, claws, lighting, and mouth states.
+Correct ONLY the remaining colored eye accents in reference image 1. Preserve the complete successful seven-frame composition exactly: the same seven equal card boxes, silhouettes, internal opening widths, charcoal/gray-steel/antique-gold materials, integrated bottom trays, exact warm-gold star counts 1 through 7, labels, ornaments, wings, claws, lighting, and mouth states.
 
 Remove every blue, cyan, sapphire, and colored eye glow from ranks 4 through 7. Dragon eyes must be dormant neutral details only: dark charcoal sockets with tiny ivory-white or pale-steel specular reflections, no emission, no colored iris, and no magical light. Keep all crest ornaments as unlit forged metal with no gemstones or crystals.
 

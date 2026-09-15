@@ -10,7 +10,7 @@ export const EQUIPMENT_V3_DIRECTION_MANIFEST_PATH =
 	`${EQUIPMENT_V3_ROOT}/direction/class-progressions/manifest.json` as const;
 
 export const EQUIPMENT_RANKS = ['F', 'E', 'D', 'C', 'B', 'A', 'S'] as const;
-export const EQUIPMENT_ARMOUR_SLOTS = ['head', 'torso', 'legs', 'boots'] as const;
+export const EQUIPMENT_ARMOR_SLOTS = ['head', 'torso', 'legs', 'boots'] as const;
 export const EQUIPMENT_CLASSES = [
 	'sword',
 	'dagger',
@@ -20,15 +20,15 @@ export const EQUIPMENT_CLASSES = [
 	'shield',
 	'bow',
 	'staff',
-	'heavy-armour',
-	'light-armour',
+	'heavy-armor',
+	'light-armor',
 	'robes'
 ] as const;
 
 export type EquipmentRank = (typeof EQUIPMENT_RANKS)[number];
-export type EquipmentArmourSlot = (typeof EQUIPMENT_ARMOUR_SLOTS)[number];
+export type EquipmentArmorSlot = (typeof EQUIPMENT_ARMOR_SLOTS)[number];
 export type EquipmentClass = (typeof EQUIPMENT_CLASSES)[number];
-export type EquipmentMaterialFamily = 'metal' | 'wood' | 'hide-scale' | 'cloth-fibre';
+export type EquipmentMaterialFamily = 'metal' | 'wood' | 'hide-scale' | 'cloth-fiber';
 
 export interface EquipmentMaterialBriefV3 {
 	readonly materialId: string;
@@ -60,7 +60,7 @@ export const EQUIPMENT_MATERIAL_BRIEFS_V3 = [
 		displayName: 'Bronze',
 		family: 'metal',
 		rank: 'F',
-		palette: 'Warm ochre-brown metal with muted gold edges and dark umber recesses.',
+		palette: 'Warm ocher-brown metal with muted gold edges and dark umber recesses.',
 		valueRange: 'Middle-dark overall; restrained highlights, no mirror polish.',
 		surfaceAndWear:
 			'Cast grain, rubbed edges, shallow dents, and small green-brown oxidation traces.',
@@ -106,7 +106,7 @@ export const EQUIPMENT_MATERIAL_BRIEFS_V3 = [
 	material({
 		materialId: 'hemp-weave',
 		displayName: 'Hemp Weave',
-		family: 'cloth-fibre',
+		family: 'cloth-fiber',
 		rank: 'F',
 		palette: 'Natural flax beige, oatmeal, and weathered gray-brown.',
 		valueRange: 'Light-middle matte values with low contrast.',
@@ -172,7 +172,7 @@ export const EQUIPMENT_MATERIAL_BRIEFS_V3 = [
 	material({
 		materialId: 'wool',
 		displayName: 'Wool',
-		family: 'cloth-fibre',
+		family: 'cloth-fiber',
 		rank: 'E',
 		palette: 'Deep moss, warm gray, muted burgundy, and natural cream accents.',
 		valueRange: 'Soft middle values with deep fold shadows.',
@@ -235,7 +235,7 @@ export const EQUIPMENT_MATERIAL_BRIEFS_V3 = [
 	material({
 		materialId: 'layered-silk',
 		displayName: 'Layered Silk',
-		family: 'cloth-fibre',
+		family: 'cloth-fiber',
 		rank: 'D',
 		palette: 'Ink blue, muted teal, smoke gray, and restrained pearl highlights.',
 		valueRange: 'Deep folds with clean silky edge sheen.',
@@ -302,7 +302,7 @@ export const EQUIPMENT_MATERIAL_BRIEFS_V3 = [
 	material({
 		materialId: 'spellweave',
 		displayName: 'Spellweave',
-		family: 'cloth-fibre',
+		family: 'cloth-fiber',
 		rank: 'C',
 		palette: 'Deep indigo, muted violet, charcoal, and narrow cyan-violet thread accents.',
 		valueRange: 'Dark rich folds with selective luminous stitching.',
@@ -367,7 +367,7 @@ export const EQUIPMENT_MATERIAL_BRIEFS_V3 = [
 	material({
 		materialId: 'moonweave',
 		displayName: 'Moonweave',
-		family: 'cloth-fibre',
+		family: 'cloth-fiber',
 		rank: 'B',
 		palette: 'Midnight blue, cool silver, smoky lavender, and moon-pale trim.',
 		valueRange: 'Deep nocturnal folds with soft silver highlights.',
@@ -435,7 +435,7 @@ export const EQUIPMENT_MATERIAL_BRIEFS_V3 = [
 	material({
 		materialId: 'starcloth',
 		displayName: 'Starcloth',
-		family: 'cloth-fibre',
+		family: 'cloth-fiber',
 		rank: 'A',
 		palette:
 			'Deep indigo-black, radiant blue-violet, silver-white constellations, and sparse gold points.',
@@ -511,7 +511,7 @@ export const EQUIPMENT_MATERIAL_BRIEFS_V3 = [
 	material({
 		materialId: 'fateweave',
 		displayName: 'Fateweave',
-		family: 'cloth-fibre',
+		family: 'cloth-fiber',
 		rank: 'S',
 		palette: 'Void black, luminous pearl, royal violet, and thin gold destiny-lines.',
 		valueRange: 'Near-black depth crossed by brilliant precise threads and pale folds.',
@@ -661,8 +661,8 @@ export const EQUIPMENT_CLASS_DIRECTIONS_V3 = [
 			'Requires owner checkpoint 1 acceptance for rank escalation, silhouettes, finish, and camera.'
 	},
 	{
-		classId: 'heavy-armour',
-		displayName: 'Heavy Armour',
+		classId: 'heavy-armor',
+		displayName: 'Heavy Armor',
 		family: 'metal',
 		stableIdentity:
 			'Broad articulated metal protection comprising exactly Head, Torso, Legs, and Boots.',
@@ -671,14 +671,14 @@ export const EQUIPMENT_CLASS_DIRECTIONS_V3 = [
 		pose: 'Empty self-supporting full set in a consistent mild three-quarter front view; no mannequin or wearer.',
 		source: 'accepted-experiment',
 		status: 'owner-accepted',
-		imagePath: `${ACCEPTED_DIRECTION_ROOT}/heavy-armour-metal-ranks-v1.png`,
+		imagePath: `${ACCEPTED_DIRECTION_ROOT}/heavy-armor-metal-ranks-v1.png`,
 		sha256: 'e43eebe931c75330abe54d39b35a97b69bc1e18c2e349c31eff1bb0b096683da',
 		acceptanceScope:
 			'Rank escalation, silhouette, and finish only; production must remove mannequin/body impression.'
 	},
 	{
-		classId: 'light-armour',
-		displayName: 'Light Armour',
+		classId: 'light-armor',
+		displayName: 'Light Armor',
 		family: 'hide-scale',
 		stableIdentity:
 			'Mobile hide- or scale-led protection comprising exactly Head, Torso, Legs, and Boots.',
@@ -687,7 +687,7 @@ export const EQUIPMENT_CLASS_DIRECTIONS_V3 = [
 		pose: 'Empty self-supporting full set in a consistent mild three-quarter front view; no mannequin or wearer.',
 		source: 'v3-generated',
 		status: 'generation-required',
-		imagePath: `${EQUIPMENT_V3_ROOT}/direction/class-progressions/light-armour-hide-scale-ranks-v3.png`,
+		imagePath: `${EQUIPMENT_V3_ROOT}/direction/class-progressions/light-armor-hide-scale-ranks-v3.png`,
 		sha256: null,
 		acceptanceScope:
 			'Requires owner checkpoint 1 acceptance for rank escalation, silhouettes, finish, camera, and empty-set treatment.'
@@ -695,14 +695,14 @@ export const EQUIPMENT_CLASS_DIRECTIONS_V3 = [
 	{
 		classId: 'robes',
 		displayName: 'Robes',
-		family: 'cloth-fibre',
+		family: 'cloth-fiber',
 		stableIdentity: 'Cloth-led draped equipment comprising exactly Head, Torso, Legs, and Boots.',
 		variationLevers:
 			'Hem, sleeves, collar or hood, layers, weave behavior, closures, and increasing supernatural structure.',
 		pose: 'Empty self-supporting full set in a consistent mild three-quarter front view; no mannequin, wearer, or black void figure.',
 		source: 'v3-generated',
 		status: 'generation-required',
-		imagePath: `${EQUIPMENT_V3_ROOT}/direction/class-progressions/robes-cloth-fibre-ranks-v3.png`,
+		imagePath: `${EQUIPMENT_V3_ROOT}/direction/class-progressions/robes-cloth-fiber-ranks-v3.png`,
 		sha256: null,
 		acceptanceScope:
 			'Requires owner checkpoint 1 acceptance for rank escalation, silhouettes, finish, camera, and empty-set treatment.'
@@ -713,14 +713,14 @@ const STANDALONE_BY_FAMILY = {
 	metal: ['sword', 'dagger', 'spear', 'axe', 'mace', 'shield'],
 	wood: ['bow', 'staff'],
 	'hide-scale': [],
-	'cloth-fibre': []
+	'cloth-fiber': []
 } as const satisfies Record<EquipmentMaterialFamily, readonly EquipmentClass[]>;
 
-const ARMOUR_BY_FAMILY = {
-	metal: 'heavy-armour',
+const ARMOR_BY_FAMILY = {
+	metal: 'heavy-armor',
 	wood: null,
-	'hide-scale': 'light-armour',
-	'cloth-fibre': 'robes'
+	'hide-scale': 'light-armor',
+	'cloth-fiber': 'robes'
 } as const satisfies Record<EquipmentMaterialFamily, EquipmentClass | null>;
 
 export interface EquipmentCandidateTargetV3 {
@@ -734,8 +734,8 @@ export interface EquipmentCandidateTargetV3 {
 	readonly classId: EquipmentClass;
 	readonly classDirectionId: string;
 	readonly artifactId: string;
-	readonly artifactRole: 'item' | 'set-source' | 'armour-piece';
-	readonly slot: EquipmentArmourSlot | null;
+	readonly artifactRole: 'item' | 'set-source' | 'armor-piece';
+	readonly slot: EquipmentArmorSlot | null;
 	readonly setId: string | null;
 	readonly dependsOnTargetId: string | null;
 	readonly width: 1024;
@@ -796,10 +796,10 @@ export function buildEquipmentCandidateTargetsV3(): EquipmentCandidateTargetV3[]
 				output: targetPaths({ rank: brief.rank, materialId: brief.materialId, artifactId })
 			});
 		}
-		const armourClass = ARMOUR_BY_FAMILY[brief.family];
-		if (armourClass === null) continue;
-		const setId = `${brief.materialId}-${armourClass}`;
-		const sourceArtifactId = `${armourClass}-full-set`;
+		const armorClass = ARMOR_BY_FAMILY[brief.family];
+		if (armorClass === null) continue;
+		const setId = `${brief.materialId}-${armorClass}`;
+		const sourceArtifactId = `${armorClass}-full-set`;
 		const sourceTargetId = targetId(brief.materialId, sourceArtifactId);
 		targets.push({
 			targetId: sourceTargetId,
@@ -809,8 +809,8 @@ export function buildEquipmentCandidateTargetsV3(): EquipmentCandidateTargetV3[]
 			materialName: brief.displayName,
 			materialFamily: brief.family,
 			materialBriefPath: brief.briefPath,
-			classId: armourClass,
-			classDirectionId: classDirectionId(armourClass),
+			classId: armorClass,
+			classDirectionId: classDirectionId(armorClass),
 			artifactId: sourceArtifactId,
 			artifactRole: 'set-source',
 			slot: null,
@@ -824,8 +824,8 @@ export function buildEquipmentCandidateTargetsV3(): EquipmentCandidateTargetV3[]
 				artifactId: sourceArtifactId
 			})
 		});
-		for (const slot of EQUIPMENT_ARMOUR_SLOTS) {
-			const artifactId = `${armourClass}-${slot}`;
+		for (const slot of EQUIPMENT_ARMOR_SLOTS) {
+			const artifactId = `${armorClass}-${slot}`;
 			targets.push({
 				targetId: targetId(brief.materialId, artifactId),
 				productionOrder: targets.length + 1,
@@ -834,10 +834,10 @@ export function buildEquipmentCandidateTargetsV3(): EquipmentCandidateTargetV3[]
 				materialName: brief.displayName,
 				materialFamily: brief.family,
 				materialBriefPath: brief.briefPath,
-				classId: armourClass,
-				classDirectionId: classDirectionId(armourClass),
+				classId: armorClass,
+				classDirectionId: classDirectionId(armorClass),
 				artifactId,
-				artifactRole: 'armour-piece',
+				artifactRole: 'armor-piece',
 				slot,
 				setId,
 				dependsOnTargetId: sourceTargetId,
@@ -886,7 +886,7 @@ export function assertEquipmentV3Invariants(workspaceRoot = process.cwd()): void
 	if (targets.length !== 161)
 		throw new Error(`Expected exactly 161 targets, got ${targets.length}`);
 	const roots = targets.filter(({ dependsOnTargetId }) => dependsOnTargetId === null);
-	const pieces = targets.filter(({ artifactRole }) => artifactRole === 'armour-piece');
+	const pieces = targets.filter(({ artifactRole }) => artifactRole === 'armor-piece');
 	if (roots.length !== 77 || pieces.length !== 84)
 		throw new Error(`Expected 77 roots/84 pieces, got ${roots.length}/${pieces.length}`);
 	assertUnique(
@@ -915,7 +915,7 @@ export function assertEquipmentV3Invariants(workspaceRoot = process.cwd()): void
 		);
 		if (
 			children.length !== 4 ||
-			children.some((child, index) => child.slot !== EQUIPMENT_ARMOUR_SLOTS[index])
+			children.some((child, index) => child.slot !== EQUIPMENT_ARMOR_SLOTS[index])
 		) {
 			throw new Error(`Invalid four-piece dependency for ${source.targetId}`);
 		}
@@ -968,7 +968,7 @@ export function buildEquipmentV3Manifest() {
 			candidateIsNotApproved: true,
 			approvalIsNotRuntime: true,
 			selfPromotionForbidden: true,
-			armourPieceRequiresAcceptedHashBoundFullSet: true
+			armorPieceRequiresAcceptedHashBoundFullSet: true
 		},
 		imageSpecification: {
 			isolated: {
@@ -978,7 +978,7 @@ export function buildEquipmentV3Manifest() {
 				minimumMarginPercent: 5,
 				targetMarginPercent: 8
 			},
-			fullArmourSet: {
+			fullArmorSet: {
 				width: 1024,
 				height: 1536,
 				mediaType: 'image/png',
@@ -995,8 +995,8 @@ export function buildEquipmentV3Manifest() {
 			pendingDirectionCount: 4,
 			targetCount: 161,
 			rootCount: 77,
-			armourPieceCount: 84,
-			armourSetCount: 21
+			armorPieceCount: 84,
+			armorSetCount: 21
 		},
 		materialBriefs: EQUIPMENT_MATERIAL_BRIEFS_V3.map(({ materialId, briefPath }) => ({
 			materialId,
@@ -1033,13 +1033,13 @@ export function buildEquipmentV3AllocationPlan() {
 			}
 		}));
 	const pieceJobs = manifest.targets
-		.filter(({ artifactRole }) => artifactRole === 'armour-piece')
+		.filter(({ artifactRole }) => artifactRole === 'armor-piece')
 		.map((target) => ({
 			jobId: `job-${target.targetId}`,
 			targetId: target.targetId,
 			laneId: `set-${target.setId}`,
-			laneOrder: EQUIPMENT_ARMOUR_SLOTS.indexOf(target.slot!) + 1,
-			phase: 'armour-piece' as const,
+			laneOrder: EQUIPMENT_ARMOR_SLOTS.indexOf(target.slot!) + 1,
+			phase: 'armor-piece' as const,
 			activation: 'after-owner-checkpoint-2-and-full-set-acceptance' as const,
 			assignmentMaterialization: 'after-hash-bound-full-set-review-receipt' as const,
 			dependsOnTargetId: target.dependsOnTargetId,
@@ -1051,7 +1051,7 @@ export function buildEquipmentV3AllocationPlan() {
 	const sourceTargets = manifest.targets.filter(
 		({ artifactRole }) => artifactRole === 'set-source'
 	);
-	const armourPieceWaves = Array.from(
+	const armorPieceWaves = Array.from(
 		{ length: Math.ceil(sourceTargets.length / 4) },
 		(_, waveIndex) => {
 			const sources = sourceTargets.slice(waveIndex * 4, waveIndex * 4 + 4);
@@ -1060,12 +1060,12 @@ export function buildEquipmentV3AllocationPlan() {
 					.filter(({ dependsOnTargetId }) => dependsOnTargetId === source.targetId)
 					.sort(
 						(a, b) =>
-							EQUIPMENT_ARMOUR_SLOTS.indexOf(a.slot!) - EQUIPMENT_ARMOUR_SLOTS.indexOf(b.slot!)
+							EQUIPMENT_ARMOR_SLOTS.indexOf(a.slot!) - EQUIPMENT_ARMOR_SLOTS.indexOf(b.slot!)
 					)
 					.map(({ targetId }) => targetId)
 			);
 			return {
-				waveId: `armour-piece-wave-${waveIndex + 1}`,
+				waveId: `armor-piece-wave-${waveIndex + 1}`,
 				maximumConcurrency: 16,
 				setIds: sources.map(({ setId }) => setId!),
 				targetIds,
@@ -1078,11 +1078,11 @@ export function buildEquipmentV3AllocationPlan() {
 		}
 	);
 	if (
-		armourPieceWaves.length !== 6 ||
-		armourPieceWaves.some(({ targetIds }) => targetIds.length > 16) ||
-		armourPieceWaves.flatMap(({ targetIds }) => targetIds).length !== 84
+		armorPieceWaves.length !== 6 ||
+		armorPieceWaves.some(({ targetIds }) => targetIds.length > 16) ||
+		armorPieceWaves.flatMap(({ targetIds }) => targetIds).length !== 84
 	) {
-		throw new Error('Armour piece wave plan must be six waves, at most 16 jobs each, totaling 84');
+		throw new Error('Armor piece wave plan must be six waves, at most 16 jobs each, totaling 84');
 	}
 	return {
 		schemaVersion: 'equipment-rank-first-allocation-plan-v3' as const,
@@ -1095,7 +1095,7 @@ export function buildEquipmentV3AllocationPlan() {
 			rootLaneCount: 11,
 			rootLaneConcurrency: 11,
 			rootLaneOrder: 'F-E-D-C-B-A-S',
-			armourPieceConcurrency: 16,
+			armorPieceConcurrency: 16,
 			retryPolicy: 'new-versioned-attempt-never-overwrite'
 		},
 		ownership: {
@@ -1119,11 +1119,11 @@ export function buildEquipmentV3AllocationPlan() {
 			},
 			{
 				checkpointId: 'equipment-v3-checkpoint-2-roots',
-				unlocks: '84-armour-piece-jobs-for-accepted-sets',
+				unlocks: '84-armor-piece-jobs-for-accepted-sets',
 				requiredDecisionCount: 77
 			},
 			{
-				checkpointId: 'equipment-v3-checkpoint-3-armour-pieces',
+				checkpointId: 'equipment-v3-checkpoint-3-armor-pieces',
 				unlocks: 'candidate-closeout',
 				requiredDecisionCount: 84
 			}
@@ -1131,10 +1131,10 @@ export function buildEquipmentV3AllocationPlan() {
 		summary: {
 			jobCount: 161,
 			rootJobCount: rootJobs.length,
-			armourPieceJobCount: pieceJobs.length,
-			armourPieceWaveCount: armourPieceWaves.length
+			armorPieceJobCount: pieceJobs.length,
+			armorPieceWaveCount: armorPieceWaves.length
 		},
-		armourPieceWaves,
+		armorPieceWaves,
 		jobs: [...rootJobs, ...pieceJobs]
 	};
 }
@@ -1173,10 +1173,10 @@ function renderDirectionPrompt(direction: EquipmentClassDirectionV3): string {
 				`${brief.rank} — ${brief.displayName}: ${brief.palette} ${brief.constructionVocabulary} ${brief.supernaturalBehavior}`
 		)
 		.join('\n');
-	const armourRules = ['heavy-armour', 'light-armour', 'robes'].includes(direction.classId)
-		? '\nARMOUR RULES: Each column is one complete empty self-supporting equipment set with exactly four readable components: Head, Torso, Legs, Boots. Mild three-quarter front view, matching camera and stance across all seven. Natural cavity shadows only. Absolutely no person, mannequin, body, face, hands, pose dummy, black void figure, or extra fifth component.'
+	const armorRules = ['heavy-armor', 'light-armor', 'robes'].includes(direction.classId)
+		? '\nARMOR RULES: Each column is one complete empty self-supporting equipment set with exactly four readable components: Head, Torso, Legs, Boots. Mild three-quarter front view, matching camera and stance across all seven. Natural cavity shadows only. Absolutely no person, mannequin, body, face, hands, pose dummy, black void figure, or extra fifth component.'
 		: '';
-	return `Create one polished seven-column EQUIPMENT DESIGN PROGRESSION SHEET for Summonlab. This is a direction reference, not seven final item assets.\n\nCLASS: ${direction.displayName}. Stable identity: ${direction.stableIdentity}\nPOSE/CAMERA: ${direction.pose}\n\nLAYOUT: one clean landscape 3:2 sheet, exactly seven evenly spaced full-object columns ordered left-to-right F, E, D, C, B, A, S. Put a small plain rank letter and material name below each column. No title, no legend, no lore text, no UI frame. Every object fully inside canvas with generous margins and no overlap. Midnight-charcoal studio background and restrained floor plane.\n\nPROGRESSION: F practical and appealing with minimal ornament; E sturdier and more deliberate; D refined professional; C bold silhouette with first supernatural construction cues; B visibly exceptional; A extraordinary geometry and ornament; S legendary controlled spectacle. Adjacent ranks must differ structurally at phone-thumbnail size. Palette alone is never the difference. Variation levers: ${direction.variationLevers}\n\nMATERIAL COLUMNS:\n${columns}${armourRules}\n\nSTYLE: premium realistic-painterly dark fantasy equipment concept art, grounded medieval construction, crisp readable silhouettes, honest material response and wear, cold key light with restrained warm rim, high-end game inventory art. Use the attached Dagger progression only for escalation rhythm and the attached Steel cohort only for finish/material discipline. Do not reproduce their shapes, emblems, characters, text, or recognizable copyrighted designs.\n\nEXCLUDE: repeated identical geometry with color swaps, generic near-duplicates, extra objects, hands, wielders, mannequins, scenery, dramatic VFX, detached particles, full-object glow, illegible labels, watermarks, signatures, logos, crops, and recognizable copying.`;
+	return `Create one polished seven-column EQUIPMENT DESIGN PROGRESSION SHEET for Summonlab. This is a direction reference, not seven final item assets.\n\nCLASS: ${direction.displayName}. Stable identity: ${direction.stableIdentity}\nPOSE/CAMERA: ${direction.pose}\n\nLAYOUT: one clean landscape 3:2 sheet, exactly seven evenly spaced full-object columns ordered left-to-right F, E, D, C, B, A, S. Put a small plain rank letter and material name below each column. No title, no legend, no lore text, no UI frame. Every object fully inside canvas with generous margins and no overlap. Midnight-charcoal studio background and restrained floor plane.\n\nPROGRESSION: F practical and appealing with minimal ornament; E sturdier and more deliberate; D refined professional; C bold silhouette with first supernatural construction cues; B visibly exceptional; A extraordinary geometry and ornament; S legendary controlled spectacle. Adjacent ranks must differ structurally at phone-thumbnail size. Palette alone is never the difference. Variation levers: ${direction.variationLevers}\n\nMATERIAL COLUMNS:\n${columns}${armorRules}\n\nSTYLE: premium realistic-painterly dark fantasy equipment concept art, grounded medieval construction, crisp readable silhouettes, honest material response and wear, cold key light with restrained warm rim, high-end game inventory art. Use the attached Dagger progression only for escalation rhythm and the attached Steel cohort only for finish/material discipline. Do not reproduce their shapes, emblems, characters, text, or recognizable copyrighted designs.\n\nEXCLUDE: repeated identical geometry with color swaps, generic near-duplicates, extra objects, hands, wielders, mannequins, scenery, dramatic VFX, detached particles, full-object glow, illegible labels, watermarks, signatures, logos, crops, and recognizable copying.`;
 }
 
 export function buildEquipmentDirectionPacketsV3(): EquipmentDirectionPromptPacketV3[] {
@@ -1227,17 +1227,17 @@ function renderCandidatePrompt(
 	brief: EquipmentMaterialBriefV3,
 	consistencySource: AcceptedReferenceV3 | null
 ): string {
-	const piece = target.artifactRole === 'armour-piece';
+	const piece = target.artifactRole === 'armor-piece';
 	const set = target.artifactRole === 'set-source';
 	const identity = piece
 		? `Render only the ${target.slot} item from the accepted full set. Preserve its exact material, palette, silhouette language, trim, fastenings, wear, ornament, and slot boundary. Do not redesign it.`
 		: `Render one dedicated ${target.materialName} ${direction.displayName}${set ? ' complete set' : ''}, rank ${target.rank}, as a new individual image—not a crop from a progression sheet.`;
-	const armour = set
+	const armor = set
 		? 'Exactly four readable components: Head, Torso, Legs, Boots. Empty and self-supporting with natural cavity shadows only; absolutely no wearer, mannequin, body impression, face, hands, pose dummy, or black void figure.'
 		: piece
 			? `One isolated ${target.slot} only; no other set pieces, body part, wearer, mannequin, or display stand.`
 			: '';
-	return `${identity}\n\nCLASS DIRECTION: ${direction.stableIdentity} ${direction.pose} Use the accepted progression reference as the authoritative design for the ${target.rank} column while reconstructing it as a dedicated render. Preserve rank silhouette and distinctive structural cues; do not crop.\n\nMATERIAL BRIEF — ${brief.displayName}:\nPalette: ${brief.palette}\nValue: ${brief.valueRange}\nSurface/wear: ${brief.surfaceAndWear}\nConstruction: ${brief.constructionVocabulary}\nSupernatural behavior: ${brief.supernaturalBehavior}\nNeutral secondary materials: ${brief.neutralSecondaryMaterials}\nNeighbor distinction: ${brief.neighborDifference}\n\n${armour}\n\nSTYLE/OUTPUT: premium realistic-painterly dark fantasy equipment inventory art; grounded construction; honest material response; cold key light, restrained warm rim, midnight-charcoal studio ground with restrained floor plane. One fully visible object centered on a ${target.width}×${target.height} portrait-or-square canvas, about 8% margin and never below 5%; readable at 128px. No text, labels, UI, border, watermark, signature, scenery, extra objects, hands, wielder, detached particles, uncontrolled glow, or recognizable reference copying.${consistencySource ? '\n\nThe accepted full-set source is the first and authoritative visual reference. Match it exactly.' : ''}`;
+	return `${identity}\n\nCLASS DIRECTION: ${direction.stableIdentity} ${direction.pose} Use the accepted progression reference as the authoritative design for the ${target.rank} column while reconstructing it as a dedicated render. Preserve rank silhouette and distinctive structural cues; do not crop.\n\nMATERIAL BRIEF — ${brief.displayName}:\nPalette: ${brief.palette}\nValue: ${brief.valueRange}\nSurface/wear: ${brief.surfaceAndWear}\nConstruction: ${brief.constructionVocabulary}\nSupernatural behavior: ${brief.supernaturalBehavior}\nNeutral secondary materials: ${brief.neutralSecondaryMaterials}\nNeighbor distinction: ${brief.neighborDifference}\n\n${armor}\n\nSTYLE/OUTPUT: premium realistic-painterly dark fantasy equipment inventory art; grounded construction; honest material response; cold key light, restrained warm rim, midnight-charcoal studio ground with restrained floor plane. One fully visible object centered on a ${target.width}×${target.height} portrait-or-square canvas, about 8% margin and never below 5%; readable at 128px. No text, labels, UI, border, watermark, signature, scenery, extra objects, hands, wielder, detached particles, uncontrolled glow, or recognizable reference copying.${consistencySource ? '\n\nThe accepted full-set source is the first and authoritative visual reference. Match it exactly.' : ''}`;
 }
 
 export function buildEquipmentCandidateAssignmentV3(input: {
@@ -1253,10 +1253,10 @@ export function buildEquipmentCandidateAssignmentV3(input: {
 	);
 	if (!direction || !brief)
 		throw new Error(`Missing direction or brief for ${input.target.targetId}`);
-	if (input.target.artifactRole === 'armour-piece' && !input.consistencySource)
-		throw new Error(`Armour piece requires accepted full-set source: ${input.target.targetId}`);
-	if (input.target.artifactRole !== 'armour-piece' && input.consistencySource)
-		throw new Error(`Only Armour pieces may bind a consistency source: ${input.target.targetId}`);
+	if (input.target.artifactRole === 'armor-piece' && !input.consistencySource)
+		throw new Error(`Armor piece requires accepted full-set source: ${input.target.targetId}`);
+	if (input.target.artifactRole !== 'armor-piece' && input.consistencySource)
+		throw new Error(`Only Armor pieces may bind a consistency source: ${input.target.targetId}`);
 	const prompt = renderCandidatePrompt(
 		input.target,
 		direction,

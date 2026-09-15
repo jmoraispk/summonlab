@@ -2,7 +2,7 @@
 	"schemaVersion": "equipment-material-brief-v3",
 	"materialId": "fateweave",
 	"displayName": "Fateweave",
-	"family": "cloth-fibre",
+	"family": "cloth-fiber",
 	"rank": "S",
 	"palette": "Void black, luminous pearl, royal violet, and thin gold destiny-lines.",
 	"valueRange": "Near-black depth crossed by brilliant precise threads and pale folds.",

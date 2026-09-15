@@ -515,7 +515,7 @@ describe('skill taxonomy migration inventory', () => {
 				labels: [{ namespace: 'Equipment', value: 'Halberd' }]
 			},
 			replacementRequires: 'Hold a halberd',
-			replacementEffect: 'Damage bonus with halberds; small armour-shred chance. **Foundation.**'
+			replacementEffect: 'Damage bonus with halberds; small armor-shred chance. **Foundation.**'
 		});
 		expect(bySource.get('martial-haft-and-fist.md#axe:9')).toMatchObject({
 			replacementRequires: '10,000 halberd hits',
@@ -860,7 +860,7 @@ describe('target skill taxonomy', () => {
 		expect(labelsFor('Dragon Tail')).toEqual(['Spear', 'Glaive', 'Halberd']);
 		expect(rows.find((row) => row.name === 'Halberd Handling')).toMatchObject({
 			requires: 'Hold a halberd',
-			effect: 'Damage bonus with halberds; small armour-shred chance. **Foundation.**'
+			effect: 'Damage bonus with halberds; small armor-shred chance. **Foundation.**'
 		});
 		expect(rows.find((row) => row.name === 'Polehammer Handling')).toMatchObject({
 			requires: 'Strength threshold, hold a polehammer',

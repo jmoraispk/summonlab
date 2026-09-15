@@ -10,7 +10,7 @@ test('browses every generated enemy family and canonical archetype', async ({ pa
 	await expect(page.getByTestId('all-enemy-card')).toHaveCount(40);
 	await expect(page.getByTestId('enemy-proof')).toHaveCount(2);
 	await expect(page.getByRole('heading', { name: 'Goblin Skirmisher' })).toBeVisible();
-	await expect(page.getByRole('heading', { name: 'Grey Wolf' })).toBeVisible();
+	await expect(page.getByRole('heading', { name: 'Gray Wolf' })).toBeVisible();
 	await expect(page.getByRole('heading', { name: 'Giant Tower Dragon' })).toBeVisible();
 	if (process.env.CAPTURE_ALL_ENEMIES) {
 		await page.screenshot({ path: process.env.CAPTURE_ALL_ENEMIES, fullPage: true });

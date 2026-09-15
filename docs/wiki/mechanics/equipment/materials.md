@@ -20,34 +20,34 @@ Standard (`+0`) items only, so material rank and final rank are currently equal.
 
 ## Metal line
 
-Used as the rank-bearing material for most Weapons, Heavy Armour, Shield, Accessory, and many Tools.
+Used as the rank-bearing material for most Weapons, Heavy Armor, Shield, Accessory, and many Tools.
 
 | R | Material | Character |
 | --- | --- | --- |
 | F | **Bronze** | Familiar early weapon alloy; easy to cast and work for first-rank equipment. |
 | E | **Iron** | The workhorse. Cheap, plentiful, unremarkable. |
 | D | **Steel** | Properly worked. The standard for a serious weapon. |
-| C | **Blacksteel** | Dense, dark, resists heat. Favours heavy weapons and plate. |
+| C | **Blacksteel** | Dense, dark, resists heat. Favors heavy weapons and plate. |
 | B | **Skyiron** | Meteoric. Unnaturally light for its strength; holds enchantment readily. |
 | A | **Starmetal** | Weightless to the touch. Every property is superlative. |
 | S | **Sunsteel** | Exists in fragments. Cannot be worked without Godsmithing. |
 
 ## Hide and scale line
 
-Used for medium and light armour. This is where creature materials matter most: scale from a living
-thing is the primary route to armour that protects without weighing.
+Used for medium and light armor. This is where creature materials matter most: scale from a living
+thing is the primary route to armor that protects without weighing.
 
 | R | Material | Source |
 | --- | --- | --- |
 | F | **Coarse Hide** | Common beasts |
-| E | **Hard Leather** | Hardened, worked hide; the standard light armour material |
+| E | **Hard Leather** | Hardened, worked hide; the standard light armor material |
 | D | **Beast Scale** | Reptilian monsters; light for its protection |
 | C | **Chitin** | Insectoid monsters; very light, poor against blunt |
 | B | **Drakescale** | Lesser dragons; heat resistance, near-plate protection at medium weight |
 | A | **Wyrmscale** | True dragons; matches plate at light weight |
 | S | **Ancient Dragon Scale** | Ancient dragons; legendary protection at light weight |
 
-## Cloth and fibre
+## Cloth and fiber
 
 Used for robes, padding, and everything a caster wears.
 
@@ -55,7 +55,7 @@ Used for robes, padding, and everything a caster wears.
 | --- | --- | --- |
 | F | **Hemp Weave** | Coarse, durable, cheap |
 | E | **Wool** | Warmth and modest padding |
-| D | **Layered Silk** | Surprisingly good against piercing; favoured by duelists |
+| D | **Layered Silk** | Surprisingly good against piercing; favored by duelists |
 | C | **Spellweave** | Prepared thread woven to receive and hold magic reliably |
 | B | **Moonweave** | Faintly luminous; substantial mana regeneration |
 | A | **Starcloth** | The best caster material in existence |
@@ -82,17 +82,17 @@ and necessary, but they do not contribute another rank.
 
 | Material family | Rank-bearing item forms | Natural Domains |
 | --- | --- | --- |
-| **Metal** | Sword, Dagger, Spear, Axe, Mace, Heavy Armour, Shield, Accessory, and most Tools | Martial and Craft |
+| **Metal** | Sword, Dagger, Spear, Axe, Mace, Heavy Armor, Shield, Accessory, and most Tools | Martial and Craft |
 | **Wood** | Bow, Staff, and some Tools | Martial, Magical, and Craft |
-| **Hide or scale** | Light Armour | All three |
-| **Cloth or fibre** | Robes and workwear | Magical and Craft |
+| **Hide or scale** | Light Armor | All three |
+| **Cloth or fiber** | Robes and workwear | Magical and Craft |
 
 The mapping is deliberately fixed. A Spear's metal head supplies rank while its wood shaft is
-secondary. A Bow or Staff uses wood for rank. Heavy Armour and Shield use metal, Light Armour uses
-hide or scale, and Robes use cloth or fibre.
+secondary. A Bow or Staff uses wood for rank. Heavy Armor and Shield use metal, Light Armor uses
+hide or scale, and Robes use cloth or fiber.
 
 These are natural Domain fits rather than equip restrictions. The material system does not forbid
-a Magical hero from wearing Heavy Armour or a Martial hero from wearing Robes.
+a Magical hero from wearing Heavy Armor or a Martial hero from wearing Robes.
 
 ## Monster materials
 
@@ -101,7 +101,7 @@ creature's tier and affinity.
 
 | Type | Used for |
 | --- | --- |
-| **Bone and horn** | Hafts, arrowheads, focuses, light armour reinforcement |
+| **Bone and horn** | Hafts, arrowheads, focuses, light armor reinforcement |
 | **Sinew** | Bowstrings, bindings, high-tension components |
 | **Organs** | Alchemy, enchantment components |
 | **Charged remains** | Elementally saturated tissue from a high-tier monster. Among the best catalysts in the game. |

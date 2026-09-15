@@ -1,0 +1,32 @@
+{
+	"schemaVersion": "equipment-armor-set-unlock-receipt-v3",
+	"setId": "coarse-hide-light-armor",
+	"sourceTargetId": "material-equipment-v3-coarse-hide-light-armor-full-set-v3",
+	"sourceCandidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/f/coarse-hide/light-armor-full-set-v3.png",
+	"sourceCandidateSha256": "b51335521e27af145621d249e597ea4e63842637b4d4469fe8eb201612f0a532",
+	"checkpoint2Receipt": {
+		"path": "assets/equipment/experiments/material-equipment-v3/checkpoints/checkpoint-2-roots.json",
+		"sha256": "2154adda493e7592a276d6c0e183b8766b4b6e251e50cdf4267da96bdbdb1922"
+	},
+	"classAudit": {
+		"path": "assets/equipment/experiments/material-equipment-v3/reviews/class-audits/final/light-armor-f-to-s-v3.png",
+		"sha256": "72df2e015d5e87538051879315267e675d04e62901d11ac743ce89a717295066"
+	},
+	"materialAudit": {
+		"path": "assets/equipment/experiments/material-equipment-v3/reviews/material-audits/final/f-coarse-hide-v3.png",
+		"sha256": "eba7e15fc644074ef5394a14fab4f1c87d3814ac28c0b7b7587247018a1c8e81"
+	},
+	"classAuditDecision": "accept",
+	"materialAuditDecision": "accept",
+	"emptySetCheck": "pass",
+	"fourComponentCheck": "pass",
+	"reviewNotes": "No visible wearer or void mannequin; natural cavity shadows only. Head, torso, leg protection, and boots are all readable.",
+	"acceptedAt": "2026-09-03T17:25:08.000Z",
+	"acceptedBy": "summonlab-owner",
+	"unlocksTargetIds": [
+		"material-equipment-v3-coarse-hide-light-armor-head-v3",
+		"material-equipment-v3-coarse-hide-light-armor-torso-v3",
+		"material-equipment-v3-coarse-hide-light-armor-legs-v3",
+		"material-equipment-v3-coarse-hide-light-armor-boots-v3"
+	]
+}

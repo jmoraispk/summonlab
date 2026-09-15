@@ -10,6 +10,6 @@ stagger or Break effects. There is no universal poise.
 **Matching attribute:** Vitality. The candidate nudge is capped at 10% of Vitality's contribution;
 it is not a direct Vitality point on level-up and is not yet applied by production combat.
 
-**Material language:** Ochre-brown stone stress, displaced dust, and pressure.
+**Material language:** Ocher-brown stone stress, displaced dust, and pressure.
 
 See the canonical [Affinities](../progression/affinities.md) rules.

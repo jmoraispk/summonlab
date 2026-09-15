@@ -37,7 +37,7 @@
 				"metal",
 				"wood",
 				"hide-scale",
-				"cloth-fibre"
+				"cloth-fiber"
 			]
 		},
 		"materialBriefPath": {
@@ -55,8 +55,8 @@
 				"shield",
 				"bow",
 				"staff",
-				"heavy-armour",
-				"light-armour",
+				"heavy-armor",
+				"light-armor",
 				"robes"
 			]
 		},
@@ -73,7 +73,7 @@
 			"enum": [
 				"item",
 				"set-source",
-				"armour-piece"
+				"armor-piece"
 			]
 		},
 		"slot": {

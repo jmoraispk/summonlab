@@ -1,0 +1,32 @@
+{
+	"schemaVersion": "equipment-armor-set-unlock-receipt-v3",
+	"setId": "wyrmscale-light-armor",
+	"sourceTargetId": "material-equipment-v3-wyrmscale-light-armor-full-set-v3",
+	"sourceCandidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/a/wyrmscale/light-armor-full-set-v3.png",
+	"sourceCandidateSha256": "20032eb42dc16ce8a65ce2a39cc2d00d762723fa89fcb22fd463b5165e2b1927",
+	"checkpoint2Receipt": {
+		"path": "assets/equipment/experiments/material-equipment-v3/checkpoints/checkpoint-2-roots.json",
+		"sha256": "2154adda493e7592a276d6c0e183b8766b4b6e251e50cdf4267da96bdbdb1922"
+	},
+	"classAudit": {
+		"path": "assets/equipment/experiments/material-equipment-v3/reviews/class-audits/final/light-armor-f-to-s-v3.png",
+		"sha256": "72df2e015d5e87538051879315267e675d04e62901d11ac743ce89a717295066"
+	},
+	"materialAudit": {
+		"path": "assets/equipment/experiments/material-equipment-v3/reviews/material-audits/final/a-wyrmscale-v3.png",
+		"sha256": "c409a0bccf5842c3882e6a7118d5d9df1251ae27c27ac4c8ccb84d9f596fcce7"
+	},
+	"classAuditDecision": "accept",
+	"materialAuditDecision": "accept",
+	"emptySetCheck": "pass",
+	"fourComponentCheck": "pass",
+	"reviewNotes": "No visible wearer or void mannequin; natural cavity shadows only. Head, torso, leg protection, and boots are all readable.",
+	"acceptedAt": "2026-09-03T17:25:08.000Z",
+	"acceptedBy": "summonlab-owner",
+	"unlocksTargetIds": [
+		"material-equipment-v3-wyrmscale-light-armor-head-v3",
+		"material-equipment-v3-wyrmscale-light-armor-torso-v3",
+		"material-equipment-v3-wyrmscale-light-armor-legs-v3",
+		"material-equipment-v3-wyrmscale-light-armor-boots-v3"
+	]
+}

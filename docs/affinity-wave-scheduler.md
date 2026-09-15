@@ -167,7 +167,7 @@ affinity counts differing by no more than one. One valid coordinate schedule is:
 | --- | --- | --- |
 | Death Knight | Normal | Wood |
 | Elemental | Fire | Metal |
-| Grey Wolf | Water | Wind |
+| Gray Wolf | Water | Wind |
 | Cave Bear | Normal | Fire |
 | Goblin | Wood | Metal |
 | Tunnel Boar | Water | Wind |

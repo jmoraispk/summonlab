@@ -11,11 +11,9 @@ import { createPrivatePlaytestPackage } from './playtest-package-lib.js';
 
 const root = process.cwd();
 const run = promisify(execFile);
-const acknowledgement = '--acknowledge-private-release';
-if (!process.argv.includes(acknowledgement)) {
-	throw new Error(
-		`Private packaging requires explicit operator acknowledgement: ${acknowledgement}`
-	);
+const acknowledgment = '--acknowledge-private-release';
+if (!process.argv.includes(acknowledgment)) {
+	throw new Error(`Private packaging requires explicit operator acknowledgment: ${acknowledgment}`);
 }
 
 const reportPath = path.join(root, 'docs/evidence/phase-7-fin008-playtest-release.json');

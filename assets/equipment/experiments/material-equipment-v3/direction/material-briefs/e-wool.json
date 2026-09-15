@@ -2,7 +2,7 @@
 	"schemaVersion": "equipment-material-brief-v3",
 	"materialId": "wool",
 	"displayName": "Wool",
-	"family": "cloth-fibre",
+	"family": "cloth-fiber",
 	"rank": "E",
 	"palette": "Deep moss, warm gray, muted burgundy, and natural cream accents.",
 	"valueRange": "Soft middle values with deep fold shadows.",

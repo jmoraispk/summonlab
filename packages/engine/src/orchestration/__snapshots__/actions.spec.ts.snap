@@ -3600,7 +3600,7 @@ exports[`orchestration legal actions > preserves complete ordered Master and act
       {
         "actionId": "story.patch.apply",
         "actorId": "4683cc1a-cdc5-4b49-bc8c-6874ac26d9a1",
-        "description": "Activate one catalogued optional beat at the open Floor 04 checkpoint without changing fixed story authority.",
+        "description": "Activate one cataloged optional beat at the open Floor 04 checkpoint without changing fixed story authority.",
         "kind": "interact",
         "label": "Commit an engine-validated story patch",
         "resourceCosts": {},

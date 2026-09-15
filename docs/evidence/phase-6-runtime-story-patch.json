@@ -17,11 +17,11 @@
 	},
 	"acceptedPatch": {
 		"candidateHash": "b79f12ff02dda15865bbf7b3b810db762e55d10fd3ac6174260341342f3e91e5",
-		"validationHash": "833dd8ecd760e9d7f0eced9a79123f370d2002e407b0607d39c92aa489e5fe4f",
-		"patchHash": "8cec2b3b0d54f2df609deeb9934a6787466e2c71ce6d54ee6a03825d3efc6e06",
-		"eventHash": "f67d488fe681a72404124477337a0f61fde5b47736c548595cd5f3a140bfe35a",
+		"validationHash": "a0a71da834b85bf203687d9ee55dab6c4b812496514389afb5f52a8158fc762e",
+		"patchHash": "7922f4460e345276ae5ce1565aa6b0094d20c2d569a5de78fcacf6c3fa16df7b",
+		"eventHash": "db68124d87a17fa0abfad21c468a93e7439ba5049ba909cd91b247ce5aa349ac",
 		"beforeStateHash": "471249dfbcb42670fdfcca84abfe226325222bb7db5b709f8751b835478e606e",
-		"afterStateHash": "52cbea5ccb922583f485f0d18d2db6e0da6ff2445ed932042c73854fef09b517",
+		"afterStateHash": "73ea5ad99692109fa86827a028b61742f0b587ba2513b92c9bcdd8bdd24e4936",
 		"beforeHistoryHash": "ad66e0da0599f91231df93f49424567ecc35e9766bc81412bb663c3b9e7054f0",
 		"afterHistoryHash": "aeeda41866da72224ce1a30e5e78a757e251d6488e1af01c581e0b17dde20275",
 		"selectedProposalIds": ["floor-four-surface-discovery"],
@@ -130,7 +130,7 @@
 		"verified": true,
 		"hashMatchesCommittedState": true,
 		"activatedProposalIds": ["floor-four-surface-discovery"],
-		"finalStateHash": "52cbea5ccb922583f485f0d18d2db6e0da6ff2445ed932042c73854fef09b517"
+		"finalStateHash": "73ea5ad99692109fa86827a028b61742f0b587ba2513b92c9bcdd8bdd24e4936"
 	},
-	"evidenceHash": "cde49b21648086df0c77e90428fcb438669ca7a275729a768d1b890052cab5e8"
+	"evidenceHash": "8c56235ae0a2741f6975f9e675b48a842092d8e214a7a4a83b683022745a786d"
 }

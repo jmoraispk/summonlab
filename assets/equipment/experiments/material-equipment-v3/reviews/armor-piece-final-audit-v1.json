@@ -1,0 +1,41 @@
+{
+	"schemaVersion": "equipment-armor-piece-final-audit-v1",
+	"auditId": "equipment-v3-armor-piece-final-audit-v1",
+	"auditedAt": "2026-09-03T18:40:00Z",
+	"auditedBy": "independent-equipment-visual-auditor",
+	"sheetCount": 21,
+	"pieceCount": 84,
+	"blockingFindingCount": 0,
+	"decision": "ready-for-owner-checkpoint-3",
+	"checks": [
+		"Every accepted full set is followed by Head, Torso, Legs, and Boots pieces.",
+		"No Legs image contains footwear.",
+		"No Torso image contains a detached lower-body or Legs item.",
+		"No piece contains a wearer, mannequin, unrelated extra item, crop, blank canvas, or corrupt image.",
+		"Every four-piece group remains visibly source-faithful to the accepted full set."
+	],
+	"nonblockingConcerns": [
+		{
+			"subjects": [
+				"e-wool-robes-v3",
+				"s-fateweave-robes-v3"
+			],
+			"note": "Long connected Torso hems or sleeve drapes create mild Torso/Legs ambiguity, but each Torso remains a single connected garment and its separate Legs item is clean."
+		},
+		{
+			"subjects": [
+				"f-bronze-heavy-armor-v3",
+				"e-iron-heavy-armor-v3",
+				"d-steel-heavy-armor-v3",
+				"c-blacksteel-heavy-armor-v3"
+			],
+			"note": "Attached Torso fauld or tasset edges overlap the waist silhouette, but no detached extra item exists and the construction matches the accepted full set."
+		},
+		{
+			"subjects": [
+				"c-chitin-light-armor-v3"
+			],
+			"note": "Segmented greave and foot geometry can briefly read as multipart, but it remains entirely within Boots and does not contaminate Legs."
+		}
+	]
+}

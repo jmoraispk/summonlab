@@ -41,7 +41,7 @@ Test facing, pursuit swaps, howl direction, and commander separation as one coor
 
 ### Signature mechanic
 
-Closing Hunt: four breach points contract in sequence while the Greatwolf assigns Grey Wolves to probe, Dire Wolves to pin, the Howler to change tempo, and the Alpha to close the weakest exit.
+Closing Hunt: four breach points contract in sequence while the Greatwolf assigns Gray Wolves to probe, Dire Wolves to pin, the Howler to change tempo, and the Alpha to close the weakest exit.
 
 ### Telegraph
 

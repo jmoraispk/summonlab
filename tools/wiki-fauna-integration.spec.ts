@@ -42,13 +42,13 @@ describe('integrated monster wiki database', () => {
 						coordinate.runtimePath?.startsWith('apps/web/static/runtime/enemies/fauna-family-v1/')
 				)
 		).toBe(true);
-		const greyWolf = database.reconciliation.find(
-			({ currentClassId }) => currentClassId === 'grey-wolf'
+		const grayWolf = database.reconciliation.find(
+			({ currentClassId }) => currentClassId === 'gray-wolf'
 		);
-		expect(greyWolf).toMatchObject({
+		expect(grayWolf).toMatchObject({
 			disposition: 'rename-map',
 			canonicalFamilyId: 'wolves',
-			canonicalFormId: 'wolf-grey-wolf'
+			canonicalFormId: 'wolf-gray-wolf'
 		});
 	}, 120_000);
 });

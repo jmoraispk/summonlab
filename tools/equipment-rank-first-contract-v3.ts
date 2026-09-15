@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 import {
-	EQUIPMENT_ARMOUR_SLOTS,
+	EQUIPMENT_ARMOR_SLOTS,
 	EQUIPMENT_CLASSES,
 	EQUIPMENT_RANKS,
 	EQUIPMENT_V3_ROOT
@@ -36,13 +36,13 @@ export const EquipmentCandidateTargetV3Schema = z
 		rank: z.enum(EQUIPMENT_RANKS),
 		materialId: z.string().regex(/^[a-z0-9-]+$/u),
 		materialName: NonEmptySchema,
-		materialFamily: z.enum(['metal', 'wood', 'hide-scale', 'cloth-fibre']),
+		materialFamily: z.enum(['metal', 'wood', 'hide-scale', 'cloth-fiber']),
 		materialBriefPath: RepositoryPathSchema,
 		classId: z.enum(EQUIPMENT_CLASSES),
 		classDirectionId: z.string().regex(/^equipment-v3-[a-z-]+-rank-progression$/u),
 		artifactId: z.string().regex(/^[a-z-]+$/u),
-		artifactRole: z.enum(['item', 'set-source', 'armour-piece']),
-		slot: z.enum(EQUIPMENT_ARMOUR_SLOTS).nullable(),
+		artifactRole: z.enum(['item', 'set-source', 'armor-piece']),
+		slot: z.enum(EQUIPMENT_ARMOR_SLOTS).nullable(),
 		setId: z.string().nullable(),
 		dependsOnTargetId: z.string().nullable(),
 		width: z.literal(1024),
@@ -60,16 +60,16 @@ export const EquipmentCandidateTargetV3Schema = z
 	})
 	.strict()
 	.superRefine((target, context) => {
-		const isPiece = target.artifactRole === 'armour-piece';
+		const isPiece = target.artifactRole === 'armor-piece';
 		const isSet = target.artifactRole === 'set-source';
 		if (isPiece !== (target.slot !== null && target.dependsOnTargetId !== null)) {
 			context.addIssue({
 				code: 'custom',
-				message: 'Only an Armour piece has a slot and dependency'
+				message: 'Only an Armor piece has a slot and dependency'
 			});
 		}
 		if ((isPiece || isSet) !== (target.setId !== null)) {
-			context.addIssue({ code: 'custom', message: 'Only Armour sources and pieces have a set ID' });
+			context.addIssue({ code: 'custom', message: 'Only Armor sources and pieces have a set ID' });
 		}
 		if (isSet !== (target.height === 1536)) {
 			context.addIssue({ code: 'custom', message: 'Only full-set sources use 1024×1536' });
@@ -125,10 +125,10 @@ export const EquipmentCandidateRevisionPlanV3Schema = z
 	})
 	.strict();
 
-export const EquipmentArmourPieceRevisionPlanV3Schema = z
+export const EquipmentArmorPieceRevisionPlanV3Schema = z
 	.object({
-		schemaVersion: z.literal('equipment-armour-piece-revision-plan-v3'),
-		revisionPlanId: z.string().regex(/^equipment-v3-armour-piece-revisions-v[1-9][0-9]*$/u),
+		schemaVersion: z.literal('equipment-armor-piece-revision-plan-v3'),
+		revisionPlanId: z.string().regex(/^equipment-v3-armor-piece-revisions-v[1-9][0-9]*$/u),
 		createdAt: z.string().datetime({ offset: true }),
 		createdBy: NonEmptySchema,
 		reviewBasis: z.array(RepositoryPathSchema).min(1),
@@ -153,7 +153,7 @@ export const EquipmentArmourPieceRevisionPlanV3Schema = z
 	.superRefine((plan, context) => {
 		const targetIds = plan.revisions.map(({ targetId }) => targetId);
 		if (new Set(targetIds).size !== targetIds.length) {
-			context.addIssue({ code: 'custom', message: 'Armour-piece revisions must be target-unique' });
+			context.addIssue({ code: 'custom', message: 'Armor-piece revisions must be target-unique' });
 		}
 	});
 
@@ -275,8 +275,8 @@ export const EquipmentProvenanceResultV3Schema = z
 
 export const EquipmentWithheldCallAuditV1Schema = z
 	.object({
-		schemaVersion: z.literal('equipment-armour-piece-withheld-call-audit-v1'),
-		auditId: z.literal('equipment-v3-armour-piece-withheld-calls-v1'),
+		schemaVersion: z.literal('equipment-armor-piece-withheld-call-audit-v1'),
+		auditId: z.literal('equipment-v3-armor-piece-withheld-calls-v1'),
 		auditedAt: z.string().datetime({ offset: true }),
 		provider: NonEmptySchema,
 		model: NonEmptySchema,
@@ -392,10 +392,10 @@ export const EquipmentCandidateCloseoutV3Schema = z
 			.object({
 				directionSheetCount: z.literal(11),
 				rootCandidateCount: z.literal(77),
-				armourPieceCandidateCount: z.literal(84),
+				armorPieceCandidateCount: z.literal(84),
 				classAuditCount: z.literal(11),
 				materialAuditCount: z.literal(28),
-				armourAuditCount: z.literal(21),
+				armorAuditCount: z.literal(21),
 				baseAssignmentCount: z.literal(161),
 				revisionAssignmentCount: z.number().int().nonnegative(),
 				terminalResultCount: z.number().int().positive(),
@@ -448,12 +448,12 @@ export const EquipmentRootCandidateSelectionManifestV3Schema = z
 		}
 	});
 
-export const EquipmentArmourPieceCandidateSelectionManifestV3Schema = z
+export const EquipmentArmorPieceCandidateSelectionManifestV3Schema = z
 	.object({
-		schemaVersion: z.literal('equipment-armour-piece-candidate-selection-manifest-v3'),
+		schemaVersion: z.literal('equipment-armor-piece-candidate-selection-manifest-v3'),
 		selectionManifestId: z
 			.string()
-			.regex(/^equipment-v3-armour-piece-candidate-selections-v[1-9][0-9]*$/u),
+			.regex(/^equipment-v3-armor-piece-candidate-selections-v[1-9][0-9]*$/u),
 		createdAt: z.string().datetime({ offset: true }),
 		createdBy: NonEmptySchema,
 		approvalStatus: z.literal('candidate-only'),
@@ -482,7 +482,7 @@ export const EquipmentArmourPieceCandidateSelectionManifestV3Schema = z
 		if (new Set(targetIds).size !== targetIds.length) {
 			context.addIssue({
 				code: 'custom',
-				message: 'Armour-piece candidate selections must be target-unique'
+				message: 'Armor-piece candidate selections must be target-unique'
 			});
 		}
 	});
@@ -495,7 +495,7 @@ export const EquipmentCheckpointReceiptV3Schema = z
 		checkpointId: z.enum([
 			'equipment-v3-checkpoint-1-directions',
 			'equipment-v3-checkpoint-2-roots',
-			'equipment-v3-checkpoint-3-armour-pieces'
+			'equipment-v3-checkpoint-3-armor-pieces'
 		]),
 		createdAt: z.string().datetime({ offset: true }),
 		decidedBy: NonEmptySchema,
@@ -536,9 +536,9 @@ export const EquipmentCheckpointReceiptV3Schema = z
 		}
 	});
 
-export const EquipmentArmourSetUnlockReceiptV3Schema = z
+export const EquipmentArmorSetUnlockReceiptV3Schema = z
 	.object({
-		schemaVersion: z.literal('equipment-armour-set-unlock-receipt-v3'),
+		schemaVersion: z.literal('equipment-armor-set-unlock-receipt-v3'),
 		setId: NonEmptySchema,
 		sourceTargetId: z.string().regex(/^material-equipment-v3-[a-z0-9-]+-full-set-v3$/u),
 		sourceCandidatePath: RepositoryPathSchema,
@@ -557,10 +557,10 @@ export const EquipmentArmourSetUnlockReceiptV3Schema = z
 	})
 	.strict();
 
-export const EquipmentArmourSourceChecksV3Schema = z
+export const EquipmentArmorSourceChecksV3Schema = z
 	.object({
-		schemaVersion: z.literal('equipment-armour-source-checks-v3'),
-		checksId: z.string().regex(/^equipment-v3-armour-source-checks-v[1-9][0-9]*$/u),
+		schemaVersion: z.literal('equipment-armor-source-checks-v3'),
+		checksId: z.string().regex(/^equipment-v3-armor-source-checks-v[1-9][0-9]*$/u),
 		createdAt: z.string().datetime({ offset: true }),
 		createdBy: NonEmptySchema,
 		checks: z
@@ -580,7 +580,7 @@ export const EquipmentArmourSourceChecksV3Schema = z
 	.superRefine((manifest, context) => {
 		const ids = manifest.checks.map(({ sourceTargetId }) => sourceTargetId);
 		if (new Set(ids).size !== ids.length) {
-			context.addIssue({ code: 'custom', message: 'Armour source checks must be target-unique' });
+			context.addIssue({ code: 'custom', message: 'Armor source checks must be target-unique' });
 		}
 	});
 
@@ -663,7 +663,7 @@ export const EQUIPMENT_V3_SCHEMA_DEFINITIONS = [
 	['target.schema.json', EquipmentCandidateTargetV3Schema],
 	['assignment.schema.json', EquipmentCandidateAssignmentV3Schema],
 	['revision-plan.schema.json', EquipmentCandidateRevisionPlanV3Schema],
-	['armour-piece-revision-plan.schema.json', EquipmentArmourPieceRevisionPlanV3Schema],
+	['armor-piece-revision-plan.schema.json', EquipmentArmorPieceRevisionPlanV3Schema],
 	['revision-assignment.schema.json', EquipmentCandidateRevisionAssignmentV3Schema],
 	['provenance-result.schema.json', EquipmentProvenanceResultV3Schema],
 	['withheld-call-audit.schema.json', EquipmentWithheldCallAuditV1Schema],
@@ -674,12 +674,12 @@ export const EQUIPMENT_V3_SCHEMA_DEFINITIONS = [
 		EquipmentRootCandidateSelectionManifestV3Schema
 	],
 	[
-		'armour-piece-candidate-selection-manifest.schema.json',
-		EquipmentArmourPieceCandidateSelectionManifestV3Schema
+		'armor-piece-candidate-selection-manifest.schema.json',
+		EquipmentArmorPieceCandidateSelectionManifestV3Schema
 	],
 	['checkpoint-receipt.schema.json', EquipmentCheckpointReceiptV3Schema],
-	['armour-set-unlock-receipt.schema.json', EquipmentArmourSetUnlockReceiptV3Schema],
-	['armour-source-checks.schema.json', EquipmentArmourSourceChecksV3Schema],
+	['armor-set-unlock-receipt.schema.json', EquipmentArmorSetUnlockReceiptV3Schema],
+	['armor-source-checks.schema.json', EquipmentArmorSourceChecksV3Schema],
 	['direction-target.schema.json', EquipmentDirectionTargetV3Schema],
 	['direction-assignment.schema.json', EquipmentDirectionAssignmentV3Schema],
 	['direction-result.schema.json', EquipmentDirectionResultV3Schema]

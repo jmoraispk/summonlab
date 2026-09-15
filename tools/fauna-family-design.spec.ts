@@ -258,11 +258,11 @@ describe('fauna-family-v1 design', () => {
 			seenOutputs.add(target.ownedPaths.candidate);
 			seenOutputs.add(target.ownedPaths.result);
 		}
-		const greyWolf = FamilyAffinityTargetSchema.parse(
-			await readJson(`${expansionRoot}/targets/wolves/wolf-grey-wolf/normal/target-v1.json`)
+		const grayWolf = FamilyAffinityTargetSchema.parse(
+			await readJson(`${expansionRoot}/targets/wolves/wolf-gray-wolf/normal/target-v1.json`)
 		);
-		expect((greyWolf as Record<string, unknown>).familyDisplayName).toBe('Wolves');
-		expect((greyWolf as Record<string, unknown>).formDisplayName).toBe('Grey Wolf');
+		expect((grayWolf as Record<string, unknown>).familyDisplayName).toBe('Wolves');
+		expect((grayWolf as Record<string, unknown>).formDisplayName).toBe('Gray Wolf');
 		expect(seenTargets).toHaveLength(200);
 		expect(seenAssignments).toHaveLength(200);
 		expect(seenOutputs).toHaveLength(400);

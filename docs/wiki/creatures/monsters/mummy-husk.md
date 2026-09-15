@@ -27,7 +27,7 @@ Shared visual constants and the complete T1–T5 comparison live on the [Mummies
 
 **Escalation axis:** Crude wrapping knots become bronze guard bindings, processional glyph circuits, a masked tomb formation, and a royal sarcophagus engine whose dismantled cartouches remove commands and unwrap a simpler final phase.
 
-**This form's visual delta:** A dried human husk in crude grey head-to-foot bandages, one dragging leg, empty eye holes, exposed flesh in several gaps, and one extra-long loose strip tied at the hip.
+**This form's visual delta:** A dried human husk in crude gray head-to-foot bandages, one dragging leg, empty eye holes, exposed flesh in several gaps, and one extra-long loose strip tied at the hip.
 
 ## Combat reading
 
@@ -41,7 +41,7 @@ Teach that linen is both animation and weakness: avoid the visible strip, step o
 
 ### Signature mechanic
 
-Common-Grave Draw: the Husk advances on one dragging leg while a grey bandage end trails from its hip; when the arms lift, the end loops around the nearest ankle line and retracts toward the hip knot.
+Common-Grave Draw: the Husk advances on one dragging leg while a gray bandage end trails from its hip; when the arms lift, the end loops around the nearest ankle line and retracts toward the hip knot.
 
 ### Telegraph
 

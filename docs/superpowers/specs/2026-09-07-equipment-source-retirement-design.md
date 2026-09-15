@@ -10,7 +10,7 @@ move every intentionally retained Equipment PNG to Git LFS.
 
 ## Retention boundary
 
-- Keep all 140 approved item masters and 21 approved armour-set references.
+- Keep all 140 approved item masters and 21 approved armor-set references.
 - Keep the 280 optimized runtime WebP derivatives and their approved/runtime/content manifests.
 - Keep compact material-equipment-v3 manifests, targets, assignments, prompts, results,
   checkpoints, selections, and approval receipts as historical provenance.

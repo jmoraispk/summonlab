@@ -11,7 +11,7 @@
 			"enum": [
 				"equipment-v3-checkpoint-1-directions",
 				"equipment-v3-checkpoint-2-roots",
-				"equipment-v3-checkpoint-3-armour-pieces"
+				"equipment-v3-checkpoint-3-armor-pieces"
 			]
 		},
 		"createdAt": {

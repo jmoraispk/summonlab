@@ -14,7 +14,7 @@ import {
 import { listAffinityWorkflowReviews } from '../packages/database/src/index.js';
 import { AFFINITY_EXPERIMENT_ROOT } from './image-production-lib.js';
 
-const SPECIES = ['death-knight', 'elemental', 'grey-wolf', 'cave-bear'] as const;
+const SPECIES = ['death-knight', 'elemental', 'gray-wolf', 'cave-bear'] as const;
 const AFFINITIES = ['normal', 'wood', 'fire', 'metal', 'water', 'wind'] as const;
 export const BASELINE_TARGET_IDS = SPECIES.flatMap((species) =>
 	AFFINITIES.map((affinity) => `affinity-workflow-v1-${species}-${affinity}`)

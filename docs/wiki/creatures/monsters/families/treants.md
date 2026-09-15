@@ -16,7 +16,7 @@ Wiki ID: `monster-family.treants`
 ## Visual constants
 
 - Vertical trunk body, root-cluster legs, long branch arms, a bark-suggested face, and canopy remain recognizable.
-- Bark brown and grey, moss green, autumn gold, sap, and restrained amber heartwood remain botanical materials.
+- Bark brown and gray, moss green, autumn gold, sap, and restrained amber heartwood remain botanical materials.
 - Nests, vines, mushrooms, bark runes, scars, and growth rings record age without replacing readable joints.
 - Girth, canopy, rooted reach, and resident ecosystems escalate while branch load and root commitment preserve counterplay.
 

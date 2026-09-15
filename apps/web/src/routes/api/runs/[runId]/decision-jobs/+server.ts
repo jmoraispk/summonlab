@@ -38,7 +38,7 @@ export const POST: RequestHandler = async ({ params, request }) => {
 			return json(
 				{
 					code: 'model-cost-not-acknowledged',
-					message: 'A model job requires explicit cost acknowledgement.'
+					message: 'A model job requires explicit cost acknowledgment.'
 				},
 				{ status: 400 }
 			);

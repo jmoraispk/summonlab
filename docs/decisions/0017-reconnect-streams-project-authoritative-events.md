@@ -40,6 +40,6 @@ reconnects after missing many events.
 
 Connected clients observe committed state without polling or running a client simulation. A
 reconnecting client can resume exactly, detect impossible history, and inspect every summarized
-claim in Replay. Browser-local acknowledgement is sufficient for current private local playtests;
+claim in Replay. Browser-local acknowledgment is sufficient for current private local playtests;
 account-synchronized projection cursors remain future multi-device work. Scene-level `applyEvent`
 animation is deferred to SET-008, which can now consume the same ordered stream.

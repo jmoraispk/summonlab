@@ -29,7 +29,7 @@ const JsonPathSchema = RepositoryPathSchema.regex(/\.json$/u).refine(
 export const ImageProductionSpeciesSchema = z.enum([
 	'death-knight',
 	'elemental',
-	'grey-wolf',
+	'gray-wolf',
 	'cave-bear',
 	'goblin',
 	'tunnel-boar',
@@ -206,7 +206,7 @@ export const ImageProductionTargetSchema = z
 		const expectedConstructionMode = {
 			'death-knight': 'armored-undead',
 			elemental: 'substance-bodied',
-			'grey-wolf': 'organic-quadruped',
+			'gray-wolf': 'organic-quadruped',
 			'cave-bear': 'organic-quadruped',
 			goblin: 'humanoid-enemy',
 			'tunnel-boar': 'organic-quadruped',

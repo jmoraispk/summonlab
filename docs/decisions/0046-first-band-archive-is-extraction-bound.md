@@ -20,6 +20,6 @@ explicit knowledge.
 - The recovery receipt binds its source event, mission attempt, content, reward IDs, survivors, and
   completed story history.
 - New summons remain clean slates because knowledge is an explicit holder list, not global lore.
-- StoryDirector may affect catalogued expression elsewhere but cannot replace the finale conflict,
+- StoryDirector may affect cataloged expression elsewhere but cannot replace the finale conflict,
   rewards, archive message, or extraction requirement.
 - Extraction and reveal must both survive strict replay and database reload.

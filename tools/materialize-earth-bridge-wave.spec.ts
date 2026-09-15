@@ -128,7 +128,7 @@ describe('Earth bridge wave controller', () => {
 				telegraph: 'knife/lead foot feint commits',
 				counterplay: 'guard timing, weapon handling, target focus'
 			},
-			'grey-wolf': {
+			'gray-wolf': {
 				telegraph: 'shoulder/gaze shifts to flank before trip',
 				counterplay: 'footwork, perception, ally protection'
 			},

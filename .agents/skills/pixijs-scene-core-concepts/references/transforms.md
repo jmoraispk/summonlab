@@ -194,5 +194,5 @@ On `Sprite`, `anchor` is normalized (0–1) and shifts only the draw origin. `pi
 
 - [Container](https://pixijs.download/release/docs/scene.Container.html.md)
 - [ToLocalGlobalMixin](https://pixijs.download/release/docs/scene.ToLocalGlobalMixin.html.md)
-- [Matrix](https://pixijs.download/release/docs/maths.Matrix.html.md)
-- [ObservablePoint](https://pixijs.download/release/docs/maths.ObservablePoint.html.md)
+- [Matrix](https://pixijs.download/release/docs/math.Matrix.html.md)
+- [ObservablePoint](https://pixijs.download/release/docs/math.ObservablePoint.html.md)

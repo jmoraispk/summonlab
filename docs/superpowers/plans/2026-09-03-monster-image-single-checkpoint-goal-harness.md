@@ -357,7 +357,7 @@ Internal checkpoint evidence records:
 - last pushed commit;
 - clean or dirty worktree state.
 
-These records do not require owner acknowledgement.
+These records do not require owner acknowledgment.
 
 ## Phase 5 — the single owner checkpoint
 

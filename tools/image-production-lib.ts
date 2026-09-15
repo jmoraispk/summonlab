@@ -213,7 +213,7 @@ export function validateAffinityWorkflowDefinitions(
 	const expectedCorrectionTargetIds = new Set([
 		`${AFFINITY_WORKFLOW_VERSION}-death-knight-metal-v2`,
 		`${AFFINITY_WORKFLOW_VERSION}-death-knight-metal-v3`,
-		`${AFFINITY_WORKFLOW_VERSION}-grey-wolf-fire-v2`,
+		`${AFFINITY_WORKFLOW_VERSION}-gray-wolf-fire-v2`,
 		`${AFFINITY_WORKFLOW_VERSION}-cave-bear-wood-v2`,
 		`${AFFINITY_WORKFLOW_VERSION}-cave-bear-wind-v2`,
 		`${AFFINITY_WORKFLOW_VERSION}-elemental-fire-v3`

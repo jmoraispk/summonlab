@@ -1,12 +1,12 @@
 {
-	"schemaVersion": "equipment-armour-set-unlock-receipt-v3",
+	"schemaVersion": "equipment-armor-set-unlock-receipt-v3",
 	"setId": "layered-silk-robes",
 	"sourceTargetId": "material-equipment-v3-layered-silk-robes-full-set-v3",
 	"sourceCandidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/d/layered-silk/robes-full-set-v3.png",
 	"sourceCandidateSha256": "d25e29f103e037737aeb43486811715a43f16a44a7614aeb9b3afee4b2042abe",
 	"checkpoint2Receipt": {
 		"path": "assets/equipment/experiments/material-equipment-v3/checkpoints/checkpoint-2-roots.json",
-		"sha256": "e04e9d81b79653b1266593a7c24a97ddce808314d2cf7b3b426ba574acc02d2d"
+		"sha256": "2154adda493e7592a276d6c0e183b8766b4b6e251e50cdf4267da96bdbdb1922"
 	},
 	"classAudit": {
 		"path": "assets/equipment/experiments/material-equipment-v3/reviews/class-audits/final/robes-f-to-s-v3.png",

@@ -76,9 +76,9 @@ export const FinalControlledDesignRisks = [
 		severity: 'risk'
 	},
 	{
-		riskId: 'grey-wolf-normal-legacy-design',
-		coordinate: 'grey-wolf-normal-v3',
-		sourceTargetId: 'affinity-workflow-v1-grey-wolf-normal',
+		riskId: 'gray-wolf-normal-legacy-design',
+		coordinate: 'gray-wolf-normal-v3',
+		sourceTargetId: 'affinity-workflow-v1-gray-wolf-normal',
 		severity: 'risk'
 	},
 	{
@@ -88,15 +88,15 @@ export const FinalControlledDesignRisks = [
 		severity: 'risk'
 	},
 	{
-		riskId: 'grey-wolf-wood-historical-v3-framing',
-		coordinate: 'grey-wolf-wood-v3',
-		sourceTargetId: 'affinity-workflow-v1-grey-wolf-wood',
+		riskId: 'gray-wolf-wood-historical-v3-framing',
+		coordinate: 'gray-wolf-wood-v3',
+		sourceTargetId: 'affinity-workflow-v1-gray-wolf-wood',
 		severity: 'risk'
 	},
 	{
-		riskId: 'grey-wolf-water-historical-v3-framing',
-		coordinate: 'grey-wolf-water-v3',
-		sourceTargetId: 'affinity-workflow-v1-grey-wolf-water',
+		riskId: 'gray-wolf-water-historical-v3-framing',
+		coordinate: 'gray-wolf-water-v3',
+		sourceTargetId: 'affinity-workflow-v1-gray-wolf-water',
 		severity: 'risk'
 	}
 ] as const;

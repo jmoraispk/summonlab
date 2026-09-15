@@ -82,7 +82,7 @@ export function validateStoryPatch(
 			).length <=
 			slot.maximumSelections
 	);
-	const selectionsCatalogued = Boolean(
+	const selectionsCataloged = Boolean(
 		slot &&
 		candidate.selectedProposalIds.every(
 			(proposalId) =>
@@ -147,8 +147,8 @@ export function validateStoryPatch(
 		),
 		check(
 			'proposal-catalog',
-			selectionsCatalogued,
-			'Every selected proposal is catalogued for this mission and slot.',
+			selectionsCataloged,
+			'Every selected proposal is cataloged for this mission and slot.',
 			'At least one selected proposal is outside this slot or mission.'
 		),
 		check(

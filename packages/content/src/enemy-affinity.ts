@@ -6,7 +6,7 @@ import type { PackTwoMonsterId } from './pack-two-monsters.js';
 export type CanonicalEnemyId = EnemyArchetypeId | PackTwoMonsterId;
 
 export const ENEMY_AFFINITY_ARCHETYPE_LINKS = [
-	{ archetypeId: 'grey-wolf', affinitySpeciesId: 'grey-wolf' },
+	{ archetypeId: 'gray-wolf', affinitySpeciesId: 'gray-wolf' },
 	{ archetypeId: 'tunnel-boar', affinitySpeciesId: 'tunnel-boar' },
 	{ archetypeId: 'cave-bear', affinitySpeciesId: 'cave-bear' },
 	{ archetypeId: 'death-knight', affinitySpeciesId: 'death-knight' },

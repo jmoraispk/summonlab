@@ -9,9 +9,9 @@ import {
 } from '../packages/evaluation/src/index.js';
 import { format } from 'prettier';
 
-const acknowledgement = '--acknowledge-paid-provider-run';
-if (!process.argv.includes(acknowledgement)) {
-	throw new Error(`A paid corpus run requires ${acknowledgement}`);
+const acknowledgment = '--acknowledge-paid-provider-run';
+if (!process.argv.includes(acknowledgment)) {
+	throw new Error(`A paid corpus run requires ${acknowledgment}`);
 }
 if (process.env.CI) throw new Error('Paid provider evaluation is disabled in CI');
 const apiKey = process.env.OPENAI_API_KEY?.trim();

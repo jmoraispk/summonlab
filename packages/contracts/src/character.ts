@@ -71,9 +71,7 @@ export const CharacterManifestSchema = z
 					.enum(['close', 'jaw', 'shoulder', 'long', 'raised', 'crown', 'wrapped'])
 					.optional(),
 				grooming: z.enum(['clean', 'neat', 'weathered']).optional(),
-				facialHair: z
-					.enum(['none', 'stubble', 'moustache', 'short-beard', 'full-beard'])
-					.optional(),
+				facialHair: z.enum(['none', 'stubble', 'mustache', 'short-beard', 'full-beard']).optional(),
 				facialStructure: z
 					.object({
 						eyeShape: z.enum([
@@ -257,9 +255,9 @@ export const CharacterMindSchema = z
 			'checks-exits',
 			'stretches-at-dawn',
 			'shares-breakfast',
-			'catalogues-tools',
+			'catalogs-tools',
 			'walks-the-walls',
-			'practises-knots'
+			'practices-knots'
 		]),
 		aptitudes: z
 			.object({

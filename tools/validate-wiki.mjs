@@ -15,8 +15,8 @@ const catalogPath = join(wikiRoot, 'catalog.json');
 
 const allowed = {
 	designStatus: new Set(['seed', 'draft', 'accepted', 'approved', 'superseded']),
-	implementationStatus: new Set(['none', 'partial', 'implemented', 'verified']),
-	visualStatus: new Set(['none', 'brief', 'candidate', 'approved', 'runtime']),
+	implementationStatus: new Set(['none', 'partial', 'implemented', 'verified', 'complete']),
+	visualStatus: new Set(['none', 'brief', 'candidate', 'approved', 'runtime', 'not-required']),
 	spoilerScope: new Set(['public', 'discoverable', 'internal']),
 	assetStatus: new Set(['brief', 'candidate', 'approved', 'runtime'])
 };

@@ -1,0 +1,32 @@
+{
+	"schemaVersion": "equipment-armor-set-unlock-receipt-v3",
+	"setId": "sunsteel-heavy-armor",
+	"sourceTargetId": "material-equipment-v3-sunsteel-heavy-armor-full-set-v3",
+	"sourceCandidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/s/sunsteel/heavy-armor-full-set-v3.png",
+	"sourceCandidateSha256": "0d560a1d850b706578729343bf9076ee1c042b7eea17f25e9624d71b0ab9e83a",
+	"checkpoint2Receipt": {
+		"path": "assets/equipment/experiments/material-equipment-v3/checkpoints/checkpoint-2-roots.json",
+		"sha256": "2154adda493e7592a276d6c0e183b8766b4b6e251e50cdf4267da96bdbdb1922"
+	},
+	"classAudit": {
+		"path": "assets/equipment/experiments/material-equipment-v3/reviews/class-audits/final/heavy-armor-f-to-s-v3.png",
+		"sha256": "7f99810ec5875696a51d369f1488514ec673f42c826998f1a0f0e3adbfcd2a44"
+	},
+	"materialAudit": {
+		"path": "assets/equipment/experiments/material-equipment-v3/reviews/material-audits/final/s-sunsteel-v3.png",
+		"sha256": "ccbe9ac40cd572267790afa30887897591ebd20f7b9d0a79fdcf8595d9e8e4d9"
+	},
+	"classAuditDecision": "accept",
+	"materialAuditDecision": "accept",
+	"emptySetCheck": "pass",
+	"fourComponentCheck": "pass",
+	"reviewNotes": "No visible wearer or void mannequin; natural helmet and joint cavity shadows only. Head, torso, leg armor, and boots are all readable.",
+	"acceptedAt": "2026-09-03T17:25:08.000Z",
+	"acceptedBy": "summonlab-owner",
+	"unlocksTargetIds": [
+		"material-equipment-v3-sunsteel-heavy-armor-head-v3",
+		"material-equipment-v3-sunsteel-heavy-armor-torso-v3",
+		"material-equipment-v3-sunsteel-heavy-armor-legs-v3",
+		"material-equipment-v3-sunsteel-heavy-armor-boots-v3"
+	]
+}

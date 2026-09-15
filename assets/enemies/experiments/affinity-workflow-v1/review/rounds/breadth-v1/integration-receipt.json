@@ -63,13 +63,13 @@
 		{
 			"targetId": "affinity-workflow-v1-goblin-fire",
 			"targetPath": "assets/enemies/experiments/affinity-workflow-v1/targets/goblin/fire.json",
-			"targetCanonicalSha256": "73c280b2451d0741fabcd209e700a1b7952d61e3e3b39250c179387ebcb71196",
+			"targetCanonicalSha256": "51cfdba3d14fa84010be527039b67e1f6108ca8df4a80a57921979f7e3a43882",
 			"assignmentId": "assignment-affinity-workflow-v1-goblin-fire",
 			"assignmentPath": "assets/enemies/experiments/affinity-workflow-v1/assignments/goblin/fire.json",
 			"assignmentCanonicalSha256": "5a1319536439b6381f884248e19a15448cc10da60c63f75f40290ea0d05e45e4",
 			"resultId": "result-affinity-workflow-v1-goblin-fire",
 			"resultPath": "assets/enemies/experiments/affinity-workflow-v1/results/goblin-fire-v1.json",
-			"resultCanonicalSha256": "ec6f70b982b80d9e96aa7fbdc9e12caddd4ce88bc445609fbb1e8bc1e8100c6a",
+			"resultCanonicalSha256": "ce733ede56544a0419d3b51faae9a394227ae2ffa2f02d2ae4d5ba35715bdddf",
 			"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/goblin/fire-v1.png",
 			"candidateByteSha256": "3953b3d5a43a1a6d5d0ba8eae5c37263933e1fdb6c28cb6e8a068678c720faaa"
 		},
@@ -102,13 +102,13 @@
 		{
 			"targetId": "affinity-workflow-v1-goblin-wind",
 			"targetPath": "assets/enemies/experiments/affinity-workflow-v1/targets/goblin/wind.json",
-			"targetCanonicalSha256": "797ea6e2e09e699d0512094ebd6fe709dec50eaac9e82d025555c6fc96d48704",
+			"targetCanonicalSha256": "1ba1d9acdc9fee479eb3e5b017b7a53c59ca31066158a1a4bb32392c7db537d0",
 			"assignmentId": "assignment-affinity-workflow-v1-goblin-wind",
 			"assignmentPath": "assets/enemies/experiments/affinity-workflow-v1/assignments/goblin/wind.json",
 			"assignmentCanonicalSha256": "80adbfda83faa96f712a647afa3fe673af08dfe915e2fa2b81ff755edd935bea",
 			"resultId": "result-affinity-workflow-v1-goblin-wind",
 			"resultPath": "assets/enemies/experiments/affinity-workflow-v1/results/goblin-wind-v1.json",
-			"resultCanonicalSha256": "8db7da2a92cbed56863234c3b8a4b6402bfabb0a4175e693dba4c0be87da4fee",
+			"resultCanonicalSha256": "c7be15825538dd57c2b1854e03f09aa807ab3e6a33a388271b5dfc8585dfd7b4",
 			"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/goblin/wind-v1.png",
 			"candidateByteSha256": "96014cced19157d53ef873da7b62d002c7a448781c1f1eba9d32f261859dc5f7"
 		},

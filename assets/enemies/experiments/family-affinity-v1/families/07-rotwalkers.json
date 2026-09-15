@@ -7,7 +7,7 @@
 	"classificationNotes": "Source-draft Rotwalkers are treated as plague-animated human or humanoid corpses, not as a biological people or a claim about the identity, agency, morality, or allegiance of the deceased. Their family identity comes from wet opened remains, wrong-jointed posture, visible death wounds, and an animating rot that reverses decay into increasingly coordinated cohesion.",
 	"visualConstants": [
 		"A recognizably human but wrong silhouette retains dislocated shoulders, a dragging or mismatched gait, a hanging jaw, and a head or torso held at an impossible angle.",
-		"Grey-green and bruise-purple flesh, dried-blood brown, bile yellow, and dirty linen white remain bodily and funerary rather than elemental colors.",
+		"Gray-green and bruise-purple flesh, dried-blood brown, bile yellow, and dirty linen white remain bodily and funerary rather than elemental colors.",
 		"Rotting flesh, exposed sinew, wet bone, grave dirt, torn burial clothing, and the visible marks or embedded tools of death preserve each corpse's material history.",
 		"Every form is wet and partly open, with readable seams at tendons, ribs, sutures, or fused bodies that explain both animation and counterplay.",
 		"Escalation reverses decay into coordination: sagging fragments become corded muscle, reinforced bone, cooperative corpse anatomy, and finally a plague court built from many still-legible bodies."
@@ -17,7 +17,7 @@
 	"affinityThemes": {
 		"normal": {
 			"constructionDimensions": [
-				"Materials remain corpse-native and unaffiliated: grey-green wet flesh, bruise-purple pooling, brown dried blood, bile staining, dirty burial linen, grave dirt, exposed sinew, and wet bone retain recognizable bodily provenance.",
+				"Materials remain corpse-native and unaffiliated: gray-green wet flesh, bruise-purple pooling, brown dried blood, bile staining, dirty burial linen, grave dirt, exposed sinew, and wet bone retain recognizable bodily provenance.",
 				"Motion and surface behavior stay plague-biological rather than elemental: tendon tension, joint slip, fluid seepage, fly movement, dragging cloth, embedded weapons, and stitched-body load transfer expose the active seam without a supernatural environmental wake."
 			],
 			"counterplaySignal": "Dragging ankles, exposed tendon cords, open ribs, loaded corpse sutures, central faces, throne seams, and fly columns preserve each form's established weak point without elemental assistance.",

@@ -67,7 +67,7 @@ complete production matrix.
 
 ### Wolves
 
-- T1: Grey Wolf — Flank-Probe Initiate
+- T1: Gray Wolf — Flank-Probe Initiate
 - T2: Dire Wolf — Hamstring Pursuer
 - T3: Howler — Pack-Tempo Specialist
 - T4: Pack Alpha — Prey-Marking Champion
@@ -309,7 +309,7 @@ candidate-only status.
 
 | Legacy class | Disposition | Destination | Existing pixels |
 | --- | --- | --- | --- |
-| Grey Wolf | Promote identity | Wolves T1 — Grey Wolf | Reference-only |
+| Gray Wolf | Promote identity | Wolves T1 — Gray Wolf | Reference-only |
 | Dire Wolf | Promote identity | Wolves T2 — Dire Wolf | Reference-only |
 | Cave Bear | Promote identity | Bears T2 — Cave Bear | Reference-only |
 | Tunnel Boar | Promote identity | Boars T2 — Tunnel Boar | Reference-only |

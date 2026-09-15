@@ -235,7 +235,7 @@ the edge of a skill definition; they never create a separate focus or progressio
 | Magical | Enchantment | Self/ally buffs and object imbuing; use `Element: Attuned` only when affinity parameterizes the definition. |
 | Magical | Restoration | Healing, curing, and revival. |
 | Magical | Mind | Control, perception, illusion, and deception. |
-| Craft | Forging | Weapons, armour, and tools. |
+| Craft | Forging | Weapons, armor, and tools. |
 | Craft | Alchemy | Potions, poisons, and reagents. |
 | Craft | Cooking | Food, duration buffs, and morale. |
 | Craft | Gathering | Harvesting, mining, foraging, skinning, animal handling, taming, and breeding. |

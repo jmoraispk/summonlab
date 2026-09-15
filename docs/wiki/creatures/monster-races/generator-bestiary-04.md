@@ -32,7 +32,7 @@ before promoting an entry to canon.
 
 **Visual constants**
 - **Silhouette:** Blocky, heavy, thick-limbed humanoid with oversized hands, small or absent head, visible joint gaps.
-- **Palette:** Clay red-brown, grey stone, granite, black basalt, white marble and gold at the top tiers. Rune-glow in blue, gold or orange.
+- **Palette:** Clay red-brown, gray stone, granite, black basalt, white marble and gold at the top tiers. Rune-glow in blue, gold or orange.
 - **Material:** Clay, fieldstone, iron banding, carved granite, basalt, marble, gold inlay, gemstone.
 - **Ornamentation:** Carved runes, glowing seams, iron bindings, sculptural relief, a gemstone heart.
 - **Escalation axis:** Material quality — clay, to stone, to marble and gemstone.
@@ -55,7 +55,7 @@ in rocks, and a Water form is not a flame recolored blue. The substance itself b
 
 **Visual constants**
 - **Silhouette:** A small asymmetric teardrop at T1; from T2 onward, a legless hovering upper body with exactly two arm channels and a tapering lower body. A flame-like contour describes shape, not Fire.
-- **Palette:** Normal is desaturated silver-grey. Fire is vermilion, Earth ochre-brown and umber, Wind pale green-grey, and Water deep blue.
+- **Palette:** Normal is desaturated silver-gray. Fire is vermilion, Earth ocher-brown and umber, Wind pale green-gray, and Water deep blue.
 - **Material:** Neutral spell-matter, living combustion, circulating earth magic, compressed air, or cohesive water according to affinity. Never treat affinity as a decorative aura over another body.
 - **Ornamentation:** One seed, then an exposed core, a divided ring, three mantle sections, and finally four core facets with matching orbital vanes.
 - **Escalation axis:** Form coherence, core complexity, and control over shaped affinity substance.
@@ -69,9 +69,9 @@ in rocks, and a Water form is not a flame recolored blue. The substance itself b
 | T5 | Elemental Sovereign | Tall complete hovering figure with exactly two coherent arms, a four-facet central core, four orbital vanes, and an affinity-shaped arena wake. |
 
 For the Wisp, the flame-like outline is shared shape language. Fire makes it living vermilion
-combustion; Earth makes it an ochre-brown and umber flow of soil, clay, silt, and fine mineral grains;
-Wind makes it pale green-grey compressed air; Water makes it deep-blue cohesive liquid; and Normal
-makes it desaturated silver-grey neutral spell-matter. Earth settles and compacts rather than burns,
+combustion; Earth makes it an ocher-brown and umber flow of soil, clay, silt, and fine mineral grains;
+Wind makes it pale green-gray compressed air; Water makes it deep-blue cohesive liquid; and Normal
+makes it desaturated silver-gray neutral spell-matter. Earth settles and compacts rather than burns,
 and must not show red flame, embers, smoke, char, lava, or a solid rock-projectile body.
 
 ## 22. Treants
@@ -80,7 +80,7 @@ and must not show red flame, embers, smoke, char, lava, or a solid rock-projecti
 
 **Visual constants**
 - **Silhouette:** Vertical trunk-body, root-cluster legs, long branching arms, canopy spreading above the head.
-- **Palette:** Bark brown and grey, deep moss green, autumn gold, and a warm amber glow at the heartwood.
+- **Palette:** Bark brown and gray, deep moss green, autumn gold, and a warm amber glow at the heartwood.
 - **Material:** Bark, heartwood, moss, lichen, sap, vine, stone caught in the roots.
 - **Ornamentation:** Nesting birds, hanging vines, mushrooms, carved runes in the bark, growth rings visible at old wounds.
 - **Escalation axis:** Age, girth, and how much other life is growing on the body.
@@ -99,7 +99,7 @@ and must not show red flame, embers, smoke, char, lava, or a solid rock-projecti
 
 **Visual constants**
 - **Silhouette:** Cap-headed, stalk-bodied, slightly bulbous limbs, wider at the top than the base.
-- **Palette:** Pale bone-white flesh, cap in one strong tone (crimson, violet, ochre or teal), bioluminescent cyan or green at the gills.
+- **Palette:** Pale bone-white flesh, cap in one strong tone (crimson, violet, ocher or teal), bioluminescent cyan or green at the gills.
 - **Material:** Fungal flesh, spongy cap tissue, mycelium threads, damp wood, moss, spore dust.
 - **Ornamentation:** Spore clouds, glowing gill patterns, smaller mushrooms growing off the body, mycelium veins under translucent skin.
 - **Escalation axis:** Cap size, bioluminescence, and spore density in the surrounding air.
@@ -118,14 +118,14 @@ and must not show red flame, embers, smoke, char, lava, or a solid rock-projecti
 
 **Visual constants**
 - **Silhouette:** Humanoid but hunched and long-armed, finned forearms and spine, wide flat head, hunched gill-neck.
-- **Palette:** Drowned green, deep-sea blue-black, sickly grey, pearlescent belly white, with cold cyan or green bioluminescence.
+- **Palette:** Drowned green, deep-sea blue-black, sickly gray, pearlescent belly white, with cold cyan or green bioluminescence.
 - **Material:** Wet scale, eel skin, coral, barnacle, driftwood, rusted metal, whale bone.
 - **Ornamentation:** Coral shard armor, barnacle crusting, fishing net, pearl and shell jewelry, glowing lures.
 - **Escalation axis:** Loss of the humanoid look, and how much of the body produces light.
 
 | Tier | Name | Visual |
 |------|------|--------|
-| T1 | Fishman | Hunched and gasping, dull grey scales, visible gills, a rusted hook or gutting knife. |
+| T1 | Fishman | Hunched and gasping, dull gray scales, visible gills, a rusted hook or gutting knife. |
 | T2 | Tidewarrior | Finned forearms and calves, coral-shard armor over the chest, webbed claws, a barbed spear. |
 | T3 | Abyssal Hunter | Broad and eel-skinned, a small glowing lure on the brow, a trident, barnacles crusting the shoulders. |
 | T4 | Deep Priest | Tentacular beard and growths from the jaw, pressure-scarred plating, glowing organs visible through translucent skin, a staff of whale bone. |

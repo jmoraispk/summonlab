@@ -58,7 +58,7 @@ approved assignment with subject, supporting cue, palette, exclusions, paths, an
 | `polearm.sweep-hook` | **Sweep Low** → **Hook and Pull** → **Dragon Tail** → **Coiling Dragon** |
 | `polearm.reaping-blade` | **Halberd Handling** → **Chop** → **Berserk Swing** → **Reaping Arc** → **Storm of Iron** → **Red Harvest** → **The Last Harvest** |
 | `polearm.hook-grip` | **Hook Shield** → **Split Grip** → **Executioner's Grip** |
-| `polearm.armour-rend` | **Rend Armour** → **Bloodletting** → **Ruin** |
+| `polearm.armor-rend` | **Rend Armor** → **Bloodletting** → **Ruin** |
 | `polearm.hammer-impact` | **Polehammer Handling** → **Crush** → **Shatter** → **Concussive Blow** → **Anvil Strike** → **Bell Ringer** → **Unmaking** → **Silence the Bell** → **Nothing Stands** |
 | `polearm.seismic-weight` | **Knee Breaker** → **Heavy Footing** → **Seismic Step** → **Tremor Field** → **Mountain's Weight** |
 
@@ -144,7 +144,7 @@ approved assignment with subject, supporting cue, palette, exclusions, paths, an
 
 | Motif ID | Proposed primary visual lineage |
 | --- | --- |
-| `enchantment.imbued-object` | **Imbuing** → **Weapon Oil** → **Armour Imbuing** → **Elemental Attunement** |
+| `enchantment.imbued-object` | **Imbuing** → **Weapon Oil** → **Armor Imbuing** → **Elemental Attunement** |
 | `enchantment.blessing` | **Minor Blessing** → **Greater Blessing** → **Group Blessing** → **Battle Hymn** → **Ascendance** |
 | `enchantment.light` | **Light** |
 | `enchantment.bound-sigil` | **Component Craft** → **Sigil Binding** → **Greater Sigil** → **Soul Sigil** → **The Written World** |
@@ -155,7 +155,7 @@ approved assignment with subject, supporting cue, palette, exclusions, paths, an
 | Motif ID | Proposed primary visual lineage |
 | --- | --- |
 | `restoration.wound-mending` | **Mending** → **Close Wound** → **Field Care** → **Mass Mending** → **Great Renewal** |
-| `restoration.vital-renewal` | **Soothe** → **Regeneration** → **Shared Vigour** → **Sanctified Ground** |
+| `restoration.vital-renewal` | **Soothe** → **Regeneration** → **Shared Vigor** → **Sanctified Ground** |
 | `restoration.purification` | **Cure** → **Purity** |
 | `restoration.return-life` | **Restore Limb** → **Second Life** → **Return** → **What Was Taken Back** |
 | `restoration.life-thread` | **Life Link** → **The Unbroken Thread** |
@@ -177,7 +177,7 @@ approved assignment with subject, supporting cue, palette, exclusions, paths, an
 
 | Motif ID | Proposed primary visual lineage |
 | --- | --- |
-| `forging.smithing` | **Ore Sense** → **Simple Smithing** → **Weaponsmithing** → **Armoursmithing** → **Godsmithing** |
+| `forging.smithing` | **Ore Sense** → **Simple Smithing** → **Weaponsmithing** → **Armorsmithing** → **Godsmithing** |
 | `forging.finishing` | **Sharpening** → **Fittings** → **Weightless Craft** |
 | `forging.metallurgy` | **Fuel Craft** → **Alloying** → **Tempering** → **Living Metal** |
 | `forging.runic-mark` | **Runic Foundation** → **Master's Mark** → **Soul Forging** |

@@ -10,7 +10,7 @@ repository instructions because versions and ownership may change.
 - `docs/wiki/mechanics/equipment/materials.md` — rank ladders, material families, rank-bearing maps,
   and monster-material boundary.
 - `docs/wiki/mechanics/equipment/weapons.md` — canonical weapon classes, hands, visual rules.
-- `docs/wiki/mechanics/equipment/armour-and-shields.md` — four-piece Armour and full-set-first rule.
+- `docs/wiki/mechanics/equipment/armor-and-shields.md` — four-piece Armor and full-set-first rule.
 - `docs/wiki/mechanics/equipment/rarity-and-weight.md` — material rank plus craftsmanship.
 - `docs/wiki/mechanics/equipment/focuses-tools-accessories.md` — Staff and deferred item families.
 

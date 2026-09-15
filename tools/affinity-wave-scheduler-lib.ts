@@ -594,7 +594,7 @@ export const AffinityWaveAllocationSpecSchema = z
 				}
 				if (
 					job.manifestState === 'future-sentinel' &&
-					!['death-knight', 'elemental', 'grey-wolf', 'cave-bear'].includes(job.speciesId)
+					!['death-knight', 'elemental', 'gray-wolf', 'cave-bear'].includes(job.speciesId)
 				) {
 					context.addIssue({
 						code: 'custom',

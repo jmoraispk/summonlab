@@ -952,7 +952,7 @@ remain at the human feedback gate. Cohort expansion remains behind that gate.
 - `ART-004` implement Forge comparison, contact sheet, approval, and asset records;
 - `ART-005` create twelve representative original humans;
 - `ART-006` complete: preview and test reference-driven summon-card generation behind a development
-  flag, exact hashes, one-candidate cost acknowledgement, and an ephemeral non-canonical boundary;
+  flag, exact hashes, one-candidate cost acknowledgment, and an ephemeral non-canonical boundary;
 - `ART-007` complete: export approved sources into content-addressed, budgeted WebP variants and a
   validated PixiJS manifest while deferring every candidate source;
 - `ART-008` in progress: the first approved identity has a hash-bound, human-gated audit across all
@@ -1241,7 +1241,7 @@ replay schemas under `engine-v5`. `SET-006` persisted the configurable `4×` wal
 renewable crash-recoverable run lease, proved byte-equal online/offline resolution, bounded each
 batch, and connected due schedules to the worker and reconnect API. `SET-007` added
 transaction-bound PostgreSQL event notifications, bounded cursor pages, resumable SSE with typed
-gap recovery, browser-local acknowledgement cursors, and deterministic full-range return recap
+gap recovery, browser-local acknowledgment cursors, and deterministic full-range return recap
 totals with cursor-linked highlights. `SET-008` now projects day phase, exact physical occupancy,
 building state, travel, and work/sleep/eat/train/idle poses from the cached `engine-v5` through
 `engine-v8` snapshot and persisted clock. The painted scene consumes ordered SSE cues and periodic

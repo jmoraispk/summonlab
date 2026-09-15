@@ -17,6 +17,8 @@
 		"db:logs": "node tools/database.mjs logs",
 		"db:migrate": "pnpm --filter @summonlab/database migrate",
 		"simulate:engine": "pnpm --filter @summonlab/engine simulate",
+		"check:american-english": "tsx tools/check-american-english.ts",
+		"plan:american-english": "tsx tools/american-english-migration.ts --format json",
 		"validate:repository-assets": "tsx tools/validate-repository-assets.ts",
 		"validate:pack-two-monsters": "tsx tools/validate-pack-two-monsters.ts",
 		"validate:fauna-family-design": "vitest run tools/fauna-family-design.spec.ts",
@@ -167,7 +169,7 @@
 		"test": "pnpm test:wiki-skill-visual-catalog && pnpm test:packaging && pnpm test:family-affinity-production && pnpm test:skill-icons && pnpm -r --if-present test",
 		"test:integration": "pnpm -r --if-present test:integration",
 		"build": "pnpm -r --if-present build",
-		"check": "pnpm validate:wiki-skill-visual-catalog && pnpm validate:repository-assets && pnpm format:check && pnpm validate:wiki-monsters && pnpm validate:fauna-family-design && pnpm validate:enemy-creation-skill && pnpm validate:hero-creation-skill && pnpm validate:skill-icon-creation-skill && pnpm validate:summonable-hero-runtime && pnpm validate:wiki && pnpm test:family-affinity-production && pnpm validate:equipment-approved-sources && pnpm validate:equipment-runtime-visuals && pnpm validate:equipment-content-bindings && pnpm validate:equipment-integration-report && pnpm validate:player-visuals && pnpm validate:phone-performance && pnpm validate:moderated-playtest && pnpm validate:playtest-release && pnpm validate:agent-evaluation && pnpm validate:foundry-strategies && pnpm validate:attempt-aftermath && pnpm validate:master-timing && pnpm validate:master-fallback && pnpm validate:player-journal && pnpm validate:story-envelope && pnpm validate:story-patch && pnpm validate:story-workshop && pnpm validate:synthesis && pnpm validate:first-band-archive && pnpm validate:settlement-content && pnpm validate:settlement-scene && pnpm validate:mission-content && pnpm lint && pnpm typecheck && pnpm test && pnpm build && pnpm validate:web-build-budget",
+		"check": "pnpm check:american-english && pnpm validate:wiki-skill-visual-catalog && pnpm validate:repository-assets && pnpm format:check && pnpm validate:wiki-monsters && pnpm validate:fauna-family-design && pnpm validate:enemy-creation-skill && pnpm validate:hero-creation-skill && pnpm validate:skill-icon-creation-skill && pnpm validate:summonable-hero-runtime && pnpm validate:wiki && pnpm test:family-affinity-production && pnpm validate:equipment-approved-sources && pnpm validate:equipment-runtime-visuals && pnpm validate:equipment-content-bindings && pnpm validate:equipment-integration-report && pnpm validate:player-visuals && pnpm validate:phone-performance && pnpm validate:moderated-playtest && pnpm validate:playtest-release && pnpm validate:agent-evaluation && pnpm validate:foundry-strategies && pnpm validate:attempt-aftermath && pnpm validate:master-timing && pnpm validate:master-fallback && pnpm validate:player-journal && pnpm validate:story-envelope && pnpm validate:story-patch && pnpm validate:story-workshop && pnpm validate:synthesis && pnpm validate:first-band-archive && pnpm validate:settlement-content && pnpm validate:settlement-scene && pnpm validate:mission-content && pnpm lint && pnpm typecheck && pnpm test && pnpm build && pnpm validate:web-build-budget",
 		"test:e2e": "pnpm --filter @summonlab/web test:e2e"
 	},
 	"devDependencies": {

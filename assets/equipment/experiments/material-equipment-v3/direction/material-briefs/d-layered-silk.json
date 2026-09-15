@@ -2,7 +2,7 @@
 	"schemaVersion": "equipment-material-brief-v3",
 	"materialId": "layered-silk",
 	"displayName": "Layered Silk",
-	"family": "cloth-fibre",
+	"family": "cloth-fiber",
 	"rank": "D",
 	"palette": "Ink blue, muted teal, smoke gray, and restrained pearl highlights.",
 	"valueRange": "Deep folds with clean silky edge sheen.",

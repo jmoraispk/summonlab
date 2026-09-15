@@ -274,7 +274,7 @@ describe('family affinity provisional Normal anchor activation', () => {
 			)
 		).toHaveLength(160);
 		const coordinate = manifest.canonicalMatrix.activeCoordinates.find(
-			({ coordinateId }) => coordinateId === 'wolves/wolf-grey-wolf/fire'
+			({ coordinateId }) => coordinateId === 'wolves/wolf-gray-wolf/fire'
 		)!;
 		const target = FamilyAffinityTargetSchema.parse(
 			JSON.parse(await readFile(join(fixture.root, coordinate.targetPath), 'utf8'))
@@ -287,7 +287,7 @@ describe('family affinity provisional Normal anchor activation', () => {
 			status: 'planned-provisional-anchor',
 			anchor: {
 				kind: 'normal-verified-candidate',
-				normalCoordinateId: 'wolves/wolf-grey-wolf/normal',
+				normalCoordinateId: 'wolves/wolf-gray-wolf/normal',
 				humanReviewPending: true,
 				runtimeCatalogMutationForbidden: true
 			}
@@ -352,7 +352,7 @@ describe('family affinity provisional Normal anchor activation', () => {
 	it('rejects a fauna affinity output collision before mutating the manifest or target', async () => {
 		const fixture = await makeFaunaFixture();
 		const coordinate = fixture.bundle.manifest.canonicalMatrix.activeCoordinates.find(
-			({ coordinateId }) => coordinateId === 'wolves/wolf-grey-wolf/fire'
+			({ coordinateId }) => coordinateId === 'wolves/wolf-gray-wolf/fire'
 		)!;
 		const target = fixture.bundle.targets.find(
 			({ coordinateId }) => coordinateId === coordinate.coordinateId
@@ -367,7 +367,7 @@ describe('family affinity provisional Normal anchor activation', () => {
 				callerRole: 'integration-controller',
 				allVerifiedNormalCandidates: true
 			})
-		).rejects.toThrow(/collision|wolves\/wolf-grey-wolf\/normal/i);
+		).rejects.toThrow(/collision|wolves\/wolf-gray-wolf\/normal/i);
 		expect(await readFile(join(fixture.root, fixture.manifestPath))).toEqual(manifestBefore);
 		expect(await readFile(join(fixture.root, coordinate.targetPath))).toEqual(targetBefore);
 	}, 30_000);

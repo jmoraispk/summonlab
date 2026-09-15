@@ -2,7 +2,7 @@
 
 Status: **superseded; do not activate**
 Owner: Equipment visual domain
-Scope: the 28-material core ladder, six Weapons, Shield, Staff, and three four-piece Armour classes
+Scope: the 28-material core ladder, six Weapons, Shield, Staff, and three four-piece Armor classes
 
 ## Outcome
 
@@ -12,11 +12,11 @@ Produce a complete review-ready Equipment candidate library using a hybrid workf
 2. render every actual item individually from that material anchor;
 3. compare each item class across all seven materials;
 4. revise only repeated or weak silhouettes;
-5. derive Armour pieces only from accepted full-set sources.
+5. derive Armor pieces only from accepted full-set sources.
 
 The material cohort sheets are design anchors, not item assets. They must never be cropped into
 individual files. The final candidate library still contains one dedicated rendering for every item
-and, for Armour, one full-set source plus four dedicated piece renderings.
+and, for Armor, one full-set source plus four dedicated piece renderings.
 
 The accepted Dagger calibration sheet is a creative-direction benchmark for silhouette ambition and
 rank escalation. It is not an approved source and its pictured designs are not production assets.
@@ -30,8 +30,8 @@ rank escalation. It is not an approved source and its pictured designs are not p
 
 - Generate and review by material first. Every material gets a coherent construction language,
   finish, wear, ornament vocabulary, and supernatural intensity.
-- Review by class second. Sword, Dagger, Spear, Bow, Axe, Mace, Shield, Staff, Heavy Armour, Light
-  Armour, and Robes must each remain readable while changing visibly across materials.
+- Review by class second. Sword, Dagger, Spear, Bow, Axe, Mace, Shield, Staff, Heavy Armor, Light
+  Armor, and Robes must each remain readable while changing visibly across materials.
 - Camera, pose, framing, and normalized footprint are comparison anchors. Exact geometry is not.
 - Material identity must alter silhouette, construction, proportion, or ornament. Palette alone is
   insufficient.
@@ -47,16 +47,16 @@ rank escalation. It is not an approved source and its pictured designs are not p
 
 ### Production candidates
 
-| Family | Root forms per material | Materials | Root images | Armour pieces | Candidate total |
+| Family | Root forms per material | Materials | Root images | Armor pieces | Candidate total |
 | --- | ---: | ---: | ---: | ---: | ---: |
-| Metal | Sword, Dagger, Spear, Axe, Mace, Shield, Heavy Armour set: 7 | 7 | 49 | 28 | 77 |
+| Metal | Sword, Dagger, Spear, Axe, Mace, Shield, Heavy Armor set: 7 | 7 | 49 | 28 | 77 |
 | Wood | Bow, Staff: 2 | 7 | 14 | 0 | 14 |
-| Hide or scale | Light Armour set: 1 | 7 | 7 | 28 | 35 |
-| Cloth or fibre | Robes set: 1 | 7 | 7 | 28 | 35 |
+| Hide or scale | Light Armor set: 1 | 7 | 7 | 28 | 35 |
+| Cloth or fiber | Robes set: 1 | 7 | 7 | 28 | 35 |
 | **Total** |  | **28** | **77** | **84** | **161** |
 
 The 21 full-set images are production evidence and design sources, not equippable items. The 84
-separate Armour-piece images are the equippable Head, Torso, Legs, and Boots assets.
+separate Armor-piece images are the equippable Head, Torso, Legs, and Boots assets.
 
 ### Additional production evidence
 
@@ -77,8 +77,8 @@ reported separately rather than hidden in the baseline.
 Every candidate is generated as its own complete image:
 
 - isolated item: 1024×1024 master;
-- full Armour set: 1024×1536 master;
-- separate Armour piece: 1024×1024 master;
+- full Armor set: 1024×1536 master;
+- separate Armor piece: 1024×1024 master;
 - no crops from a concept sheet or contact sheet;
 - no multi-item image used as a runtime item;
 - paired Boots remain one item image containing the matching pair;
@@ -101,8 +101,8 @@ separate authorization.
 | Mace | weighted striking head on a practical haft | flange count, crown profile, head mass, haft fittings |
 | Shield | one-hand defensive face and grip | outline, boss, ribs, rim, apertures, surface construction |
 | Staff | full-length wood-led magical focus | crown gesture, branching, rings, growth, fittings, inlay |
-| Heavy Armour | broad articulated metal protection | plate cut, overlap, helm, shoulder and skirt silhouette |
-| Light Armour | mobile hide- or scale-led protection | paneling, scale direction, closures, hood or helm, layering |
+| Heavy Armor | broad articulated metal protection | plate cut, overlap, helm, shoulder and skirt silhouette |
+| Light Armor | mobile hide- or scale-led protection | paneling, scale direction, closures, hood or helm, layering |
 | Robes | cloth-led draped equipment | hem, sleeves, collar or hood, layers, weave behavior, trim |
 
 These are variation levers, not requirements to maximize every feature. Each candidate should have
@@ -122,7 +122,7 @@ material-equipment-v3/
 ├── results/<family>/<rank>/<material>/
 ├── reviews/material-cohorts/
 ├── reviews/class-progressions/
-├── reviews/armour-piece-audits/
+├── reviews/armor-piece-audits/
 └── runs/<run-id>/
 ```
 
@@ -148,7 +148,7 @@ anchor. Do not introduce another general runner or shared catalog.
    - one construction motif;
    - one silhouette objective per mapped class;
    - explicit avoid-list for neighboring materials.
-4. Validate that all 161 candidate targets exist exactly once and all 84 Armour pieces depend on one
+4. Validate that all 161 candidate targets exist exactly once and all 84 Armor pieces depend on one
    full-set target.
 
 Exit condition: deterministic plan, zero candidate images, and no shared integration changes.
@@ -157,14 +157,14 @@ Exit condition: deterministic plan, zero candidate images, and no shared integra
 
 Generate seven Metal sheets and seven Wood sheets. Each material sheet is one coherent concept pass:
 
-- Metal: Sword, Dagger, Spear, Axe, Mace, Shield, and empty Heavy Armour set.
+- Metal: Sword, Dagger, Spear, Axe, Mace, Shield, and empty Heavy Armor set.
 - Wood: Bow and Staff.
 
 Review the 14 sheets together for material separation. Reject a sheet before individual rendering if
 its family could be mistaken for a neighboring material or if its classes are not readable.
 
-Hide/scale and cloth/fibre proceed directly to their full-set root images in Phase 3 because one
-Armour set already functions as the complete material anchor.
+Hide/scale and cloth/fiber proceed directly to their full-set root images in Phase 3 because one
+Armor set already functions as the complete material anchor.
 
 **Owner checkpoint 1:** one hosted gallery containing all 14 cohort sheets, organized by rank and
 family. The owner accepts, revises, or defers each material direction.
@@ -185,24 +185,24 @@ Axe, Mace, Shield, Bow, and Staff. Compare all seven materials per class at full
 If two ranks collide visually, revise the weaker individual candidate without redesigning the whole
 material cohort.
 
-### Phase 3 — Full Armour-set roots
+### Phase 3 — Full Armor-set roots
 
 Generate all 21 full sets:
 
-- seven Heavy Armour sets, already guided by accepted Metal cohort sheets;
-- seven Light Armour sets, one per hide/scale material;
-- seven Robes sets, one per cloth/fibre material.
+- seven Heavy Armor sets, already guided by accepted Metal cohort sheets;
+- seven Light Armor sets, one per hide/scale material;
+- seven Robes sets, one per cloth/fiber material.
 
 Every set must show exactly Head, Torso, Legs, and paired Boots; use the locked three-quarter camera;
 remain empty and self-supporting; and use natural cavity shadow without a mannequin or void figure.
 
-Compose Heavy Armour, Light Armour, and Robes progression sheets across their seven materials. Check
+Compose Heavy Armor, Light Armor, and Robes progression sheets across their seven materials. Check
 that each set is internally coherent and that different materials do not reuse one cut.
 
 **Owner checkpoint 2:** one hosted gallery containing the eight isolated-class progression sheets
-and three Armour progression sheets. No Armour children unlock until their source set is accepted.
+and three Armor progression sheets. No Armor children unlock until their source set is accepted.
 
-### Phase 4 — Individual Armour pieces
+### Phase 4 — Individual Armor pieces
 
 For each accepted full set, generate four dedicated candidates: Head, Torso, Legs, and Boots. The
 accepted full set must be the first visual reference, and the piece prompt forbids redesign.
@@ -223,8 +223,8 @@ The candidate run is complete only when:
 
 - all 14 cohort sheets have terminal provenance and review decisions;
 - all 77 root candidates exist with verified hashes and dimensions;
-- all 84 Armour-piece candidates exist and bind to accepted full sets;
-- all 11 class progression sheets and 21 Armour audit sheets are reproducible;
+- all 84 Armor-piece candidates exist and bind to accepted full sets;
+- all 11 class progression sheets and 21 Armor audit sheets are reproducible;
 - every candidate has a terminal status and no silent retry or replacement occurred;
 - the Equipment wiki records the accepted direction and remaining revisions;
 - approved and runtime directories remain unchanged unless separately authorized.
@@ -237,8 +237,8 @@ branch, commits, validation commands, and any integration request.
 - Fix a weak material concept before generating its individual roots.
 - During class review, revise only the candidates that repeat another rank or fail material identity.
 - Keep successful siblings immutable; never rerun a whole rank merely for symmetry.
-- If a full Armour set fails, do not generate its four pieces.
-- If one Armour piece fails to match, revise that piece against the same accepted source.
+- If a full Armor set fails, do not generate its four pieces.
+- If one Armor piece fails to match, revise that piece against the same accepted source.
 - Preserve every unsuccessful terminal result as provenance evidence.
 - Promotion is always a separate human decision; `candidate` never means approved.
 
@@ -254,7 +254,7 @@ accepted material cohort
 → different materials run in parallel, up to 16 workers
 → deterministic class sheets expose cross-material repetition
 → targeted revisions only
-→ accepted full Armour set unlocks four bounded child jobs
+→ accepted full Armor set unlocks four bounded child jobs
 ```
 
 The orchestrator may use fewer than 16 workers when a single material lane would otherwise be split
@@ -264,8 +264,8 @@ across contexts. Creative continuity takes priority over filling every slot.
 
 1. **v3 plan and material briefs** — manifest, paths, validators, and review evidence only.
 2. **cohort production** — 14 concept sheets and owner checkpoint 1.
-3. **root production** — 63 isolated Metal/Wood roots plus 21 Armour roots and owner checkpoint 2.
-4. **piece production** — 84 Armour children and owner checkpoint 3.
+3. **root production** — 63 isolated Metal/Wood roots plus 21 Armor roots and owner checkpoint 2.
+4. **piece production** — 84 Armor children and owner checkpoint 3.
 5. **candidate closeout** — provenance reconciliation, final report, and proposed promotion list.
 
 Each batch is independently reviewable, committed, and pushed. Activating image generation requires

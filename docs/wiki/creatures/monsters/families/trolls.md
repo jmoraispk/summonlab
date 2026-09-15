@@ -16,7 +16,7 @@ Wiki ID: `monster-family.trolls`
 ## Visual constants
 
 - Tall, stooped, potbellied humanoid silhouette with a small head on a thick neck and disproportionately long arms hanging past the knees.
-- Bog green, liver-brown, sallow grey, bruise purple, and wet glistening highlights keep living hide distinct from mud and scavenged rags.
+- Bog green, liver-brown, sallow gray, bruise purple, and wet glistening highlights keep living hide distinct from mud and scavenged rags.
 - Rubbery skin, scar tissue, bark-hard callus, mud, rope, and half-swallowed equipment remain visibly bodily rather than worn as deliberate finery.
 - Healed-over piercings, embedded bones, lodged weapons, misplaced limbs, stray jaws, and layered scars record prior injury as readable construction history.
 - Escalation adds accumulated misregrowth rather than simple size: open gashes become knots, alternate organs, defensive scar architecture, and finally a walking archive of incompatible healing.

@@ -2,7 +2,7 @@
 	"schemaVersion": "equipment-material-brief-v3",
 	"materialId": "starcloth",
 	"displayName": "Starcloth",
-	"family": "cloth-fibre",
+	"family": "cloth-fiber",
 	"rank": "A",
 	"palette": "Deep indigo-black, radiant blue-violet, silver-white constellations, and sparse gold points.",
 	"valueRange": "Very dark cloth carrying crisp luminous accents.",

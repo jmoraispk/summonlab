@@ -12,7 +12,7 @@
 
 ## Global Constraints
 
-- Keep exactly 161 approved masters: 140 items plus 21 armour-set references.
+- Keep exactly 161 approved masters: 140 items plus 21 armor-set references.
 - Keep all 280 runtime WebPs and current content bindings.
 - Keep accepted calibration/direction PNGs and the review-pending Greatsword campaign.
 - Delete completed/superseded campaign pixels only; retain compact v3 approval provenance.

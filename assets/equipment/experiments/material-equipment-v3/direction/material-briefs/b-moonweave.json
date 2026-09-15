@@ -2,7 +2,7 @@
 	"schemaVersion": "equipment-material-brief-v3",
 	"materialId": "moonweave",
 	"displayName": "Moonweave",
-	"family": "cloth-fibre",
+	"family": "cloth-fiber",
 	"rank": "B",
 	"palette": "Midnight blue, cool silver, smoky lavender, and moon-pale trim.",
 	"valueRange": "Deep nocturnal folds with soft silver highlights.",

@@ -459,13 +459,13 @@ const myPoint = new Point(100, 200);
 
 ## API Reference
 
-- [Point](https://pixijs.download/release/docs/maths.Point.html.md)
-- [ObservablePoint](https://pixijs.download/release/docs/maths.ObservablePoint.html.md)
-- [Matrix](https://pixijs.download/release/docs/maths.Matrix.html.md)
-- [Rectangle](https://pixijs.download/release/docs/maths.Rectangle.html.md)
-- [Circle](https://pixijs.download/release/docs/maths.Circle.html.md)
-- [Ellipse](https://pixijs.download/release/docs/maths.Ellipse.html.md)
-- [Polygon](https://pixijs.download/release/docs/maths.Polygon.html.md)
-- [RoundedRectangle](https://pixijs.download/release/docs/maths.RoundedRectangle.html.md)
-- [Triangle](https://pixijs.download/release/docs/maths.Triangle.html.md)
-- [DEG_TO_RAD](https://pixijs.download/release/docs/maths.DEG_TO_RAD.html.md)
+- [Point](https://pixijs.download/release/docs/math.Point.html.md)
+- [ObservablePoint](https://pixijs.download/release/docs/math.ObservablePoint.html.md)
+- [Matrix](https://pixijs.download/release/docs/math.Matrix.html.md)
+- [Rectangle](https://pixijs.download/release/docs/math.Rectangle.html.md)
+- [Circle](https://pixijs.download/release/docs/math.Circle.html.md)
+- [Ellipse](https://pixijs.download/release/docs/math.Ellipse.html.md)
+- [Polygon](https://pixijs.download/release/docs/math.Polygon.html.md)
+- [RoundedRectangle](https://pixijs.download/release/docs/math.RoundedRectangle.html.md)
+- [Triangle](https://pixijs.download/release/docs/math.Triangle.html.md)
+- [DEG_TO_RAD](https://pixijs.download/release/docs/math.DEG_TO_RAD.html.md)

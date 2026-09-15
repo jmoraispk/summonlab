@@ -24,7 +24,7 @@
 			"references/affinity-grammar.md": "2678f74337cef276b3a72f75d07a9c7323589ace2ddbf0831ac663644237cbda",
 			"references/result-schema.md": "ad16064c563e18cbdb7ce0697680d6032f8485a37504b2940d3dafd4fe91c8ce",
 			"references/review-rubric.md": "4fb40db3476979ae7bf47c24477b4897159264dfaf08aa4fb4e58da5afaf72d3",
-			"references/species-grammar.md": "1d5598222a0af38c8ba848f648645bc734e98b4a5493acdf78a888f33eef2c57",
+			"references/species-grammar.md": "4971ebab6410fd251b002e43357ecffd892ce7456765b8f124e1ffa092a26c3f",
 			"references/target-schema.md": "ebd0afd360e83eda95d374f2145c9ea2a302aae017302d43434cccec44ed7494",
 			"scripts/anchored_io.py": "da56c248bc23798a86b2de778fa763b17d340be05d3d05b856d636ee614419de",
 			"scripts/family_dispatch_gate.mjs": "9dd8399999d3f8bb1b5c2387888e773cb59d5faa669500b0abb529f684a4c8a4",
@@ -66,11 +66,7 @@
 				"sha256": "2f70076d0367960ed139c0dff49b93777009ad7fed2dd13a31ac9d0abaa47d02"
 			}
 		],
-		"environment": {
-			"LANG": "C.UTF-8",
-			"LC_ALL": "C.UTF-8",
-			"TZ": "UTC"
-		}
+		"environment": { "LANG": "C.UTF-8", "LC_ALL": "C.UTF-8", "TZ": "UTC" }
 	},
 	"profiles": {
 		"image-production-family-target-v1": {

@@ -193,7 +193,7 @@ export const SKILL_DOMAINS: SkillTreeDomain[] = [
 			{
 				name: 'Forging',
 				href: `${craftHref}#forging`,
-				description: 'Weapons, armour, tools, alloys, and runic foundations.',
+				description: 'Weapons, armor, tools, alloys, and runic foundations.',
 				labels: [],
 				skills: [
 					skill('Ore Sense', `${craftHref}#forging`),

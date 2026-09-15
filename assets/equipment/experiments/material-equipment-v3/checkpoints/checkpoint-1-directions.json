@@ -3,7 +3,7 @@
 	"checkpointId": "equipment-v3-checkpoint-1-directions",
 	"createdAt": "2026-09-03T13:19:35.000Z",
 	"decidedBy": "equipment-owner",
-	"manifestCanonicalSha256": "ab8a0bac557322c97597fdaca21c08a19f5287fb4d4196bf86f593ef61d6980a",
+	"manifestCanonicalSha256": "d2899a27dccd95b91c12f0d5f8b8856321bbe969620fd9f82e2181cbb3dae12c",
 	"galleryPath": "assets/equipment/experiments/material-equipment-v3/reviews/checkpoint-1/index.html",
 	"decisions": [
 		{
@@ -21,15 +21,15 @@
 			"notes": "Owner accepted all checkpoint-1 directions."
 		},
 		{
-			"subjectId": "equipment-v3-light-armour-rank-progression",
-			"imagePath": "assets/equipment/experiments/material-equipment-v3/direction/class-progressions/light-armour-hide-scale-ranks-v3.png",
+			"subjectId": "equipment-v3-light-armor-rank-progression",
+			"imagePath": "assets/equipment/experiments/material-equipment-v3/direction/class-progressions/light-armor-hide-scale-ranks-v3.png",
 			"imageSha256": "4aeead1698bd2e6ba26e8c007c92248288c452b0254c4bb16fc09f4ca5e7a4a9",
 			"decision": "accept",
 			"notes": "Owner accepted corrected empty, self-supporting set direction."
 		},
 		{
 			"subjectId": "equipment-v3-robes-rank-progression",
-			"imagePath": "assets/equipment/experiments/material-equipment-v3/direction/class-progressions/robes-cloth-fibre-ranks-v3.png",
+			"imagePath": "assets/equipment/experiments/material-equipment-v3/direction/class-progressions/robes-cloth-fiber-ranks-v3.png",
 			"imageSha256": "3f982275114ec66f36a3d22a4a18da4cd39a0467804c6e07ecb5e470954b9c3c",
 			"decision": "accept",
 			"notes": "Owner accepted all checkpoint-1 directions."

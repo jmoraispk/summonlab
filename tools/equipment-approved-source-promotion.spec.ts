@@ -18,7 +18,7 @@ describe('Equipment approved-source validation', () => {
 		expect(validation).toMatchObject({
 			verified: 161,
 			items: 140,
-			armourSetReferences: 21,
+			armorSetReferences: 21,
 			totalBytes: 224_157_513,
 			retiredCandidateCount: 161,
 			unexpectedFiles: 0

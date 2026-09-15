@@ -39,7 +39,7 @@ References define only premium realistic dark-fantasy creature rendering, neutra
 
 Show exactly four original giant arachnids, fully visible and separated, ordered left to right with credible relative scale and anatomically coherent eight-legged bodies: 1) Tunnel Spider — MEDIUM low fast flanker: flat dust-colored body, long sprinting legs, stone camouflage, soft abdomen visibly vulnerable during a turn. 2) Web Caster — MEDIUM ranged restraint specialist: high raised abdomen, braced rear legs, clearly visible pale spinnerets and stored silk, designed to fire a line from range. 3) Armored Brood Guard — LARGE chokepoint tank: broad plated cephalothorax, short shield-like front legs, dense stone-dark armor, side leg joints visibly less protected. 4) Giant Broodmother — BOSS scale spawner: enormous suspended abdomen, several restrained egg clusters, lower guarded nest posture, underside vulnerability readable without gore.
 
-Each silhouette must communicate battlefield duty before labels. Shared floor and camera, realistic chitin, hairs, joints, weight, and contact shadows; restrained midnight, grey, brown, and pale-silk palette with cold gate light and warm rim. Premium painterly key-art quality, intimidating rather than grotesque gore.
+Each silhouette must communicate battlefield duty before labels. Shared floor and camera, realistic chitin, hairs, joints, weight, and contact shadows; restrained midnight, gray, brown, and pale-silk palette with cold gate light and warm rim. Premium painterly key-art quality, intimidating rather than grotesque gore.
 
 No text, labels, numerals, UI, panel dividers, frame, logo, watermark, humans, extra monster, fewer or more than four featured creatures, fantasy insect wings, humanoid faces, cropped legs, overlap that hides silhouettes, rainbow colors, excessive web covering, or bright background.
 ```
@@ -57,7 +57,7 @@ Input images: Image 1 is the incomplete failed render and design reference only;
 
 Scene/backdrop: cracked near-black stone floor, charcoal-to-midnight studio backdrop, subtle cold gate haze, no scenery clutter.
 Subject: exactly four original giant arachnids, fully visible and separated in a clean left-to-right lineup, each with an anatomically coherent cephalothorax, abdomen, and exactly eight legs:
-1) Tunnel Spider — medium, low and fast flanker; flat dust-grey stone-camouflaged body, long sprinting legs, soft abdomen readable as vulnerable during a turn.
+1) Tunnel Spider — medium, low and fast flanker; flat dust-gray stone-camouflaged body, long sprinting legs, soft abdomen readable as vulnerable during a turn.
 2) Web Caster — medium ranged restraint specialist; raised pale-silk-wrapped abdomen, braced rear legs, clearly visible pale spinnerets and stored silk, one restrained silk line.
 3) Armored Brood Guard — large chokepoint tank; broad plated cephalothorax, short shield-like front legs, dense stone-dark armor, visibly less-protected side leg joints.
 4) Giant Broodmother — boss scale spawner; much larger suspended abdomen, restrained egg clusters under the body, low guarded nest posture, readable underside vulnerability without gore.
@@ -65,7 +65,7 @@ Subject: exactly four original giant arachnids, fully visible and separated in a
 Style/medium: premium realistic painterly dark-fantasy creature key art; coherent chitin plates, hairs, joints, believable weight and contact shadows; intimidating, grounded, and original.
 Composition/framing: landscape 3:2 taxonomy plate. Pull the camera back substantially. Place all four creatures entirely inside a generous safe area. Every abdomen, head, spinneret, egg cluster, all eight legs, and every leg tip must be visible. Leave at least 8% empty margin on the left, right, top, and bottom. Keep clear negative space between silhouettes; no overlap. Shared ground plane and eye-level comparison camera. The broodmother may be tallest but must not touch any edge. Render the entire canvas with finished image detail—no black or blank bands, missing regions, abrupt cutoffs, or unpainted areas.
 Lighting/mood: neutral comparison lighting with cool overhead/gate light and restrained warm rim; dark but legible.
-Color palette: midnight charcoal, stone grey, muted brown, black chitin, pale silk; no rainbow colors.
+Color palette: midnight charcoal, stone gray, muted brown, black chitin, pale silk; no rainbow colors.
 Constraints: exactly four featured creatures; correct relative scale; exactly eight visible legs per creature; complete bodies; complete floor and background across the entire canvas; no crop.
 Avoid: text, labels, numerals, UI, panel dividers, frame, logo, watermark, humans, extra monsters, fewer or more than four spiders, missing or duplicate limbs, cropped legs, cropped abdomens, overlap, fantasy insect wings, humanoid faces, excessive web covering, gore, bright background, blank space rendered as pure black, or published-character resemblance.
 ```

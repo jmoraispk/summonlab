@@ -47,11 +47,11 @@ designation and an apex pack hunt.
 
 | Tier | Form | Archetype | Battlefield duty and mechanic | Telegraph and counterplay | Visual progression |
 | --- | --- | --- | --- | --- | --- |
-| T1 | Grey Wolf | Flank-Probe Initiate | Circles toward an exposed side, then commits to one tripping bite when the target turns away. | Shoulders drop and the outside forepaw crosses inward; face it or step across the approach, then punish the missed bite. | Lean ordinary wolf, grey coat, long legs, intact ears, no equipment. |
+| T1 | Gray Wolf | Flank-Probe Initiate | Circles toward an exposed side, then commits to one tripping bite when the target turns away. | Shoulders drop and the outside forepaw crosses inward; face it or step across the approach, then punish the missed bite. | Lean ordinary wolf, gray coat, long legs, intact ears, no equipment. |
 | T2 | Dire Wolf | Hamstring Pursuer | Alternates pursuit with a packmate; its low rear-leg bite briefly slows isolated prey. | Head flattens beside the shoulder and the partner widens formation; break their angle or stagger the committed biter. | Heavier chest and jaws, darker coarse coat, old flank scars, still unmistakably lupine. |
 | T3 | Howler | Pack-Tempo Specialist | A directional command howl advances allies on one side while wolves on the opposite side hold, changing the pack's attack rhythm. | Throat ruff expands and the muzzle points toward the advancing wing; interrupt the inhale or cross through the temporarily stationary wing. | Tall narrow-chested wolf with a pale throat ruff, resonant chest cavity expressed physically, and no magical instrument. |
 | T4 | Pack Alpha | Prey-Marking Champion | Fixes one target with a scent mark, intercepts attacks aimed at lesser wolves, and swaps the active pursuit wing after every lunge. | Tail locks level, nose paints a visible scent trail, and one foreleg braces; cleanse distance across terrain or bait the intercept away from the pack. | Broad mature wolf with torn ear, neck mantle, dominant upright posture, and accumulated scars rather than armor. |
-| T5 | Greatwolf | Hunt-Circle Sovereign | Establishes a tightening hunt circle with four readable breach points, calling Grey Wolves to probe, Dire Wolves to pin, the Howler to change tempo, and the Alpha to close the weakest exit. | Hackles rise in sequence around the circle before the Greatwolf commits to one breach; defeat or displace the assigned lower form and escape through its opening. | Monumental but anatomical wolf, deep mane, long scarred muzzle, distinctive broken upper canine, and arena-command posture. |
+| T5 | Greatwolf | Hunt-Circle Sovereign | Establishes a tightening hunt circle with four readable breach points, calling Gray Wolves to probe, Dire Wolves to pin, the Howler to change tempo, and the Alpha to close the weakest exit. | Hackles rise in sequence around the circle before the Greatwolf commits to one breach; defeat or displace the assigned lower form and escape through its opening. | Monumental but anatomical wolf, deep mane, long scarred muzzle, distinctive broken upper canine, and arena-command posture. |
 
 ## 32 · Bears
 
@@ -168,7 +168,7 @@ variant of the form, not another tier or species.
 
 | Legacy class | Decision | New destination | Existing pixels |
 | --- | --- | --- | --- |
-| Grey Wolf | Promote the identity into the new family | Wolves T1 — Grey Wolf | Candidate/reference only; no automatic reuse or approval |
+| Gray Wolf | Promote the identity into the new family | Wolves T1 — Gray Wolf | Candidate/reference only; no automatic reuse or approval |
 | Dire Wolf | Promote the identity into the new family | Wolves T2 — Dire Wolf | Candidate/reference only; no automatic reuse or approval |
 | Cave Bear | Promote the identity into the new family | Bears T2 — Cave Bear | Candidate/reference only; no automatic reuse or approval |
 | Tunnel Boar | Promote the identity into the new family | Boars T2 — Tunnel Boar | Candidate/reference only; no automatic reuse or approval |

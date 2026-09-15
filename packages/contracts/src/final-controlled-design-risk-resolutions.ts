@@ -25,11 +25,11 @@ export const FinalControlledEligibleOriginalCandidateTargetIds = [
 	'affinity-workflow-v1-elemental-water',
 	'affinity-workflow-v1-elemental-wind',
 	'affinity-workflow-v1-elemental-wood',
-	'affinity-workflow-v1-grey-wolf-metal',
-	'affinity-workflow-v1-grey-wolf-normal',
-	'affinity-workflow-v1-grey-wolf-water',
-	'affinity-workflow-v1-grey-wolf-wind',
-	'affinity-workflow-v1-grey-wolf-wood'
+	'affinity-workflow-v1-gray-wolf-metal',
+	'affinity-workflow-v1-gray-wolf-normal',
+	'affinity-workflow-v1-gray-wolf-water',
+	'affinity-workflow-v1-gray-wolf-wind',
+	'affinity-workflow-v1-gray-wolf-wood'
 ] as const;
 
 export const FinalControlledOriginalReviseResults = [
@@ -42,8 +42,8 @@ export const FinalControlledOriginalReviseResults = [
 		targetId: 'affinity-workflow-v1-cave-bear-wood'
 	},
 	{
-		id: 'result-affinity-workflow-v1-grey-wolf-fire',
-		targetId: 'affinity-workflow-v1-grey-wolf-fire'
+		id: 'result-affinity-workflow-v1-gray-wolf-fire',
+		targetId: 'affinity-workflow-v1-gray-wolf-fire'
 	}
 ] as const;
 
@@ -60,10 +60,10 @@ export const FinalControlledDesignRiskStagedTargetPaths = [
 	'assets/enemies/experiments/affinity-workflow-v1/review/activation-staging/targets/elemental/normal-v4.json',
 	'assets/enemies/experiments/affinity-workflow-v1/review/activation-staging/targets/elemental/water-v4.json',
 	'assets/enemies/experiments/affinity-workflow-v1/review/activation-staging/targets/elemental/wind-v4.json',
-	'assets/enemies/experiments/affinity-workflow-v1/review/activation-staging/targets/grey-wolf/normal-v3.json',
+	'assets/enemies/experiments/affinity-workflow-v1/review/activation-staging/targets/gray-wolf/normal-v3.json',
 	'assets/enemies/experiments/affinity-workflow-v1/review/activation-staging/targets/elemental/wood-v4.json',
-	'assets/enemies/experiments/affinity-workflow-v1/review/activation-staging/targets/grey-wolf/wood-v3.json',
-	'assets/enemies/experiments/affinity-workflow-v1/review/activation-staging/targets/grey-wolf/water-v3.json'
+	'assets/enemies/experiments/affinity-workflow-v1/review/activation-staging/targets/gray-wolf/wood-v3.json',
+	'assets/enemies/experiments/affinity-workflow-v1/review/activation-staging/targets/gray-wolf/water-v3.json'
 ] as const;
 
 const EligibleCandidateTargetIdSchema = z.enum(FinalControlledEligibleOriginalCandidateTargetIds);

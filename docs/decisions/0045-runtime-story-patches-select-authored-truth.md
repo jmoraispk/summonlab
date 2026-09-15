@@ -11,7 +11,7 @@ places one bounded aperture on each floor. That content model did not yet answer
 question: how can a StoryDirector react to the actual cast and player behavior without acquiring
 authority over causality, mission geometry, rewards, or game state?
 
-A free-form model response is not a safe command. Even a catalogued proposal becomes unsafe when
+A free-form model response is not a safe command. Even a cataloged proposal becomes unsafe when
 it was assembled against stale history, exceeds the slot maximum, assigns knowledge to the wrong
 hero, or arrives after the closing anchor. A readable narrative choice also needs the same
 append-only event and strict replay guarantees as combat and progression.
@@ -21,7 +21,7 @@ append-only event and strict replay guarantees as combat and progression.
 - Add opt-in `engine-v21` state that binds `runtime-band-story-v1` to the exact
   `tower-band-01-story-v1` content hash. Historical engine versions remain immutable.
 - Treat `StoryPatchCandidate` as a strict selection contract, not generated world state. It may
-  name one or more catalogued proposals within a slot, bind a role-expression proposal to a hero,
+  name one or more cataloged proposals within a slot, bind a role-expression proposal to a hero,
   and carry public intent. Unknown fields are rejected.
 - Validate 17 explicit boundaries against the current canonical history and cast: envelope,
   causal history, freshness, known/open slot, cumulative selection maximum, proposal catalog and

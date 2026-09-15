@@ -71,7 +71,7 @@ describe('deterministic character generation', () => {
 
 		expect(ember.manifest.generationVersion).toBe('human-v3');
 		expect(ember.manifestHash).toBe(
-			'0fb2a131596cf063839bf6946f15844a2b748c5578215c4ffcbc69c8a36c8a0a'
+			'77c69da6cd98dc92376e8da91745b5636be5d8459ee197f4b7fcbf8d82dab0de'
 		);
 		expect(cohort.manifestHash).toBe(
 			'810c16959d6d711c7a211e3d9f94106ee1af38b0997428de10992c0eedc8ef62'
@@ -266,10 +266,10 @@ describe('deterministic character generation', () => {
 		expect(pilot.map((draft) => draft.manifestHash)).toEqual([
 			'a956efa2c469631198800eaeb2cd0dd3abfc14b2c1ad14522f39def3de65071a',
 			'238108f3c85f44ab008b1d47396e2183972fcfc46d82b076ae035487f9cc8e0d',
-			'369bc4ceae6e301cb96ebcb929be298f094c02ba1ba52517ba1d8b05f211f89d',
-			'98cda01d112db3888b1ee08bb35989b07d9e4d2026c82f92774056e9bd67804c',
-			'7aef986aba4a4d20a5fc7e9e34b01182969a34af9e5e822d54027bdb9cb2a178',
-			'7bff542bd71c23cc9e4616d727a9fe29a4ecf98063524d9787dc4c1a1b13c183'
+			'1feeac12b948bfa30d91cf8be2ad4eb4f7880bd1510a2ed5f5b05a571a63f74f',
+			'd6ad6c862670da42158a4d02fcf6111390667d09c26db147f542c9c0d716c7a3',
+			'9fc6e16f0dbc23d9e64681304ff90382dcc1061ff4ede2143f1fa8b209b2f29f',
+			'b588607c9f54f675078738401ccbae4f1ae79b9ce119fd6c8b63d91851ced00a'
 		]);
 		expect(manifests.map((manifest) => manifest.genderPresentation).sort()).toEqual([
 			'androgynous',
@@ -318,7 +318,7 @@ describe('deterministic character generation', () => {
 			'53c7ca65afaec9304260a92db4faded048043d191d80e0f8b04e4f1a2bd80d18',
 			'869dd30ece536159788b1bdf00c5a476714d61f6e1db7e33413b3fbc352665fe',
 			'37c7e563ef87630dc50459138760a5b75af5d275c1fd04af03b58dcd9bed479f',
-			'e54fac542c36094de70256deb83841e9097597655d7c4c89f05b0497ea1bd213',
+			'99b5f020171014c55c1739b919654e30d2ddfef51996d3cc55759c8bf2ce7fa8',
 			'147a67d7a5efc9dff329e8366b8c5719764992d27af9dcfef499d8eec69ecf91',
 			'12c6a7d26b12581e53f5939e3249898af5d4f15231af2085cf896168c37aeb4b',
 			'8b87697357f60b7a7b26e8a798e64ba8a9fb4a15ee9ccd1eaf08b84b60b0da1f',

@@ -123,7 +123,7 @@
 				<span>StoryDirector proposals</span>
 				<h2>Choose how truth enters the room.</h2>
 				<p>
-					The authored confrontation remains next. The agent may activate one catalogued route into
+					The authored confrontation remains next. The agent may activate one cataloged route into
 					it.
 				</p>
 			</div>

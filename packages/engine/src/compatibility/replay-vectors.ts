@@ -395,9 +395,9 @@ const EXPECTATIONS = {
 		eventTypes: ['run.initialized', 'story.patch.applied'],
 		afterHashes: [
 			'471249dfbcb42670fdfcca84abfe226325222bb7db5b709f8751b835478e606e',
-			'acce5c28ebffc0420c00484277f17a22888fdfae723acce6160d091263168c91'
+			'1c3c4e490c9c05e5d34af613d8b968e1031edc8df471b02d72ed536b10710850'
 		],
-		finalStateHash: 'acce5c28ebffc0420c00484277f17a22888fdfae723acce6160d091263168c91',
+		finalStateHash: '1c3c4e490c9c05e5d34af613d8b968e1031edc8df471b02d72ed536b10710850',
 		legalActionIds: [
 			'master.inspect.gate',
 			'simulation.damage.hero.15500000-0000-4000-8000-000000000002',

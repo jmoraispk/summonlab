@@ -1620,7 +1620,7 @@ describe('Wave E family packets', () => {
 		{
 			fileName: '30-doppelgangers.json',
 			motifs: [
-				/clay-grey skin/iu,
+				/clay-gray skin/iu,
 				/copied colors/iu,
 				/borrowed colors/iu,
 				/shapeshifting/iu,
@@ -2249,7 +2249,7 @@ describe('current class reconciliation', () => {
 				'ward-mage',
 				'cave-bear',
 				'dire-wolf',
-				'grey-wolf',
+				'gray-wolf',
 				'tunnel-boar',
 				'bone-mage',
 				'death-knight',

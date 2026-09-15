@@ -192,16 +192,16 @@
 					"resultPath": "assets/enemies/experiments/affinity-workflow-v1/results/final-controlled/elemental-normal-v4.json"
 				},
 				{
-					"key": "final-grey-wolf-fire-v3",
-					"speciesId": "grey-wolf",
+					"key": "final-gray-wolf-fire-v3",
+					"speciesId": "gray-wolf",
 					"affinity": "fire",
 					"version": "v3",
 					"cohort": "controlled",
 					"manifestState": "gated-final-controlled",
-					"targetPath": "assets/enemies/experiments/affinity-workflow-v1/targets/final-controlled/grey-wolf/fire-v3.json",
-					"assignmentPath": "assets/enemies/experiments/affinity-workflow-v1/assignments/final-controlled/grey-wolf/fire-v3.json",
-					"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/final-controlled/grey-wolf/fire-v3.png",
-					"resultPath": "assets/enemies/experiments/affinity-workflow-v1/results/final-controlled/grey-wolf-fire-v3.json"
+					"targetPath": "assets/enemies/experiments/affinity-workflow-v1/targets/final-controlled/gray-wolf/fire-v3.json",
+					"assignmentPath": "assets/enemies/experiments/affinity-workflow-v1/assignments/final-controlled/gray-wolf/fire-v3.json",
+					"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/final-controlled/gray-wolf/fire-v3.png",
+					"resultPath": "assets/enemies/experiments/affinity-workflow-v1/results/final-controlled/gray-wolf-fire-v3.json"
 				},
 				{
 					"key": "final-cave-bear-water-v3",
@@ -251,28 +251,28 @@
 					"resultPath": "assets/enemies/experiments/affinity-workflow-v1/results/final-controlled/elemental-fire-v4.json"
 				},
 				{
-					"key": "final-grey-wolf-water-v3",
-					"speciesId": "grey-wolf",
+					"key": "final-gray-wolf-water-v3",
+					"speciesId": "gray-wolf",
 					"affinity": "water",
 					"version": "v3",
 					"cohort": "controlled",
 					"manifestState": "gated-final-controlled",
-					"targetPath": "assets/enemies/experiments/affinity-workflow-v1/targets/final-controlled/grey-wolf/water-v3.json",
-					"assignmentPath": "assets/enemies/experiments/affinity-workflow-v1/assignments/final-controlled/grey-wolf/water-v3.json",
-					"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/final-controlled/grey-wolf/water-v3.png",
-					"resultPath": "assets/enemies/experiments/affinity-workflow-v1/results/final-controlled/grey-wolf-water-v3.json"
+					"targetPath": "assets/enemies/experiments/affinity-workflow-v1/targets/final-controlled/gray-wolf/water-v3.json",
+					"assignmentPath": "assets/enemies/experiments/affinity-workflow-v1/assignments/final-controlled/gray-wolf/water-v3.json",
+					"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/final-controlled/gray-wolf/water-v3.png",
+					"resultPath": "assets/enemies/experiments/affinity-workflow-v1/results/final-controlled/gray-wolf-water-v3.json"
 				},
 				{
-					"key": "final-grey-wolf-wind-v3",
-					"speciesId": "grey-wolf",
+					"key": "final-gray-wolf-wind-v3",
+					"speciesId": "gray-wolf",
 					"affinity": "wind",
 					"version": "v3",
 					"cohort": "controlled",
 					"manifestState": "gated-final-controlled",
-					"targetPath": "assets/enemies/experiments/affinity-workflow-v1/targets/final-controlled/grey-wolf/wind-v3.json",
-					"assignmentPath": "assets/enemies/experiments/affinity-workflow-v1/assignments/final-controlled/grey-wolf/wind-v3.json",
-					"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/final-controlled/grey-wolf/wind-v3.png",
-					"resultPath": "assets/enemies/experiments/affinity-workflow-v1/results/final-controlled/grey-wolf-wind-v3.json"
+					"targetPath": "assets/enemies/experiments/affinity-workflow-v1/targets/final-controlled/gray-wolf/wind-v3.json",
+					"assignmentPath": "assets/enemies/experiments/affinity-workflow-v1/assignments/final-controlled/gray-wolf/wind-v3.json",
+					"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/final-controlled/gray-wolf/wind-v3.png",
+					"resultPath": "assets/enemies/experiments/affinity-workflow-v1/results/final-controlled/gray-wolf-wind-v3.json"
 				},
 				{
 					"key": "final-cave-bear-normal-v3",
@@ -322,16 +322,16 @@
 					"resultPath": "assets/enemies/experiments/affinity-workflow-v1/results/final-controlled/elemental-wind-v4.json"
 				},
 				{
-					"key": "final-grey-wolf-normal-v3",
-					"speciesId": "grey-wolf",
+					"key": "final-gray-wolf-normal-v3",
+					"speciesId": "gray-wolf",
 					"affinity": "normal",
 					"version": "v3",
 					"cohort": "controlled",
 					"manifestState": "gated-final-controlled",
-					"targetPath": "assets/enemies/experiments/affinity-workflow-v1/targets/final-controlled/grey-wolf/normal-v3.json",
-					"assignmentPath": "assets/enemies/experiments/affinity-workflow-v1/assignments/final-controlled/grey-wolf/normal-v3.json",
-					"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/final-controlled/grey-wolf/normal-v3.png",
-					"resultPath": "assets/enemies/experiments/affinity-workflow-v1/results/final-controlled/grey-wolf-normal-v3.json"
+					"targetPath": "assets/enemies/experiments/affinity-workflow-v1/targets/final-controlled/gray-wolf/normal-v3.json",
+					"assignmentPath": "assets/enemies/experiments/affinity-workflow-v1/assignments/final-controlled/gray-wolf/normal-v3.json",
+					"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/final-controlled/gray-wolf/normal-v3.png",
+					"resultPath": "assets/enemies/experiments/affinity-workflow-v1/results/final-controlled/gray-wolf-normal-v3.json"
 				},
 				{
 					"key": "final-cave-bear-fire-v3",
@@ -548,16 +548,16 @@
 					"resultPath": "assets/enemies/experiments/affinity-workflow-v1/results/concurrency-sentinels/elemental-normal-v5.json"
 				},
 				{
-					"key": "sentinel-grey-wolf-fire-v4",
-					"speciesId": "grey-wolf",
+					"key": "sentinel-gray-wolf-fire-v4",
+					"speciesId": "gray-wolf",
 					"affinity": "fire",
 					"version": "v4",
 					"cohort": "regression",
 					"manifestState": "future-sentinel",
-					"targetPath": "assets/enemies/experiments/affinity-workflow-v1/targets/concurrency-sentinels/grey-wolf/fire-v4.json",
-					"assignmentPath": "assets/enemies/experiments/affinity-workflow-v1/assignments/concurrency-sentinels/grey-wolf/fire-v4.json",
-					"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/concurrency-sentinels/grey-wolf/fire-v4.png",
-					"resultPath": "assets/enemies/experiments/affinity-workflow-v1/results/concurrency-sentinels/grey-wolf-fire-v4.json"
+					"targetPath": "assets/enemies/experiments/affinity-workflow-v1/targets/concurrency-sentinels/gray-wolf/fire-v4.json",
+					"assignmentPath": "assets/enemies/experiments/affinity-workflow-v1/assignments/concurrency-sentinels/gray-wolf/fire-v4.json",
+					"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/concurrency-sentinels/gray-wolf/fire-v4.png",
+					"resultPath": "assets/enemies/experiments/affinity-workflow-v1/results/concurrency-sentinels/gray-wolf-fire-v4.json"
 				}
 			]
 		},
@@ -656,16 +656,16 @@
 					"resultPath": "assets/enemies/experiments/affinity-workflow-v1/results/concurrency-sentinels/elemental-water-v5.json"
 				},
 				{
-					"key": "sentinel-grey-wolf-normal-v4",
-					"speciesId": "grey-wolf",
+					"key": "sentinel-gray-wolf-normal-v4",
+					"speciesId": "gray-wolf",
 					"affinity": "normal",
 					"version": "v4",
 					"cohort": "regression",
 					"manifestState": "future-sentinel",
-					"targetPath": "assets/enemies/experiments/affinity-workflow-v1/targets/concurrency-sentinels/grey-wolf/normal-v4.json",
-					"assignmentPath": "assets/enemies/experiments/affinity-workflow-v1/assignments/concurrency-sentinels/grey-wolf/normal-v4.json",
-					"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/concurrency-sentinels/grey-wolf/normal-v4.png",
-					"resultPath": "assets/enemies/experiments/affinity-workflow-v1/results/concurrency-sentinels/grey-wolf-normal-v4.json"
+					"targetPath": "assets/enemies/experiments/affinity-workflow-v1/targets/concurrency-sentinels/gray-wolf/normal-v4.json",
+					"assignmentPath": "assets/enemies/experiments/affinity-workflow-v1/assignments/concurrency-sentinels/gray-wolf/normal-v4.json",
+					"candidatePath": "assets/enemies/experiments/affinity-workflow-v1/candidates/concurrency-sentinels/gray-wolf/normal-v4.png",
+					"resultPath": "assets/enemies/experiments/affinity-workflow-v1/results/concurrency-sentinels/gray-wolf-normal-v4.json"
 				},
 				{
 					"key": "sentinel-cave-bear-fire-v4",

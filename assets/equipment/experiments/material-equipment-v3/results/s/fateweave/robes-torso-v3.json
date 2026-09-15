@@ -12,7 +12,7 @@
 	"promptSha256": "017ae169c07cec7ff8b474732dda6392fe92e7522c1409a85e717df164fe2b13",
 	"references": [
 		{
-			"path": "assets/equipment/experiments/material-equipment-v3/direction/class-progressions/robes-cloth-fibre-ranks-v3.png",
+			"path": "assets/equipment/experiments/material-equipment-v3/direction/class-progressions/robes-cloth-fiber-ranks-v3.png",
 			"sha256": "3f982275114ec66f36a3d22a4a18da4cd39a0467804c6e07ecb5e470954b9c3c",
 			"purpose": "Requires owner checkpoint 1 acceptance for rank escalation, silhouettes, finish, camera, and empty-set treatment."
 		},
@@ -24,7 +24,7 @@
 		{
 			"path": "assets/equipment/experiments/material-equipment-v3/candidates/s/fateweave/robes-full-set-v3.png",
 			"sha256": "3078f7535252d48efafa76efa7bcf006bd11a8f7f7b7e441a2bb9b6e24c2db73",
-			"purpose": "Owner-accepted full Armour set; authoritative source for piece reconstruction."
+			"purpose": "Owner-accepted full Armor set; authoritative source for piece reconstruction."
 		}
 	],
 	"source": {

@@ -7,7 +7,7 @@
 	"classificationNotes": "Source-draft Wraiths are treated as hostile incorporeal dead-person spirits for encounter production, not as a biological species or a universal statement about the dead, memory, autonomy, morality, or afterlife. Cold light, frost, and chill are family-native signs of deathly condensation in the source and remain explicitly non-affinity unless an authored elemental construction changes material and behavior.",
 	"visualConstants": [
 		"A hooded or robed humanoid upper body becomes progressively defined while the lower body always trails into smoke or cold vapor without visible feet.",
-		"Black, charcoal, deep indigo, and ash grey carry one cold eye accent in pale blue, white, or sickly green; this family-native cold light is not an elemental affinity by itself.",
+		"Black, charcoal, deep indigo, and ash gray carry one cold eye accent in pale blue, white, or sickly green; this family-native cold light is not an elemental affinity by itself.",
 		"Smoke, tattered shroud-cloth, cold vapor, rusted chain, and hollow armor preserve incorporeality through negative space and incomplete edges.",
 		"Chains, funeral shrouds, spectral crowns, and localized rings of source-native frost become anchors that explain when and where an otherwise incorporeal form can be opposed.",
 		"Escalation condenses a faint outline into a sharply defined regal silhouette while retaining a vapor tail, empty interior, and one readable anchor for every phase-through action."
@@ -92,7 +92,7 @@
 			"signatureMechanic": "Held Look: one cold point fixes on a target while the second drifts through the fog; when the two align, a faint shoulder-and-hand outline condenses for a single touch before smearing away again.",
 			"telegraph": "The wandering point slows, the two lights level like eyes, and nearby vapor draws inward to sketch one raised shoulder and hand.",
 			"counterplay": "Move across the drifting point to delay alignment, then strike between the two lights during the brief complete outline rather than attacking the surrounding fog.",
-			"visualDelta": "A faint smear of ash-grey cold vapor with two pale points of light and only the suggestion of a hooded humanoid upper body, never feet.",
+			"visualDelta": "A faint smear of ash-gray cold vapor with two pale points of light and only the suggestion of a hooded humanoid upper body, never feet.",
 			"lowerFormInteraction": null,
 			"sourceReferences": ["Shade"]
 		},

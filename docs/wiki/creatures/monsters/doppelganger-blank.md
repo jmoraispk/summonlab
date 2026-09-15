@@ -27,7 +27,7 @@ Shared visual constants and the complete T1–T5 comparison live on the [Doppelg
 
 **Escalation axis:** Copy fidelity and the number of simultaneous borrowed identities advance from blank smooth flesh to a body-wide sovereign mask procession.
 
-**This form's visual delta:** Blank smooth grey humanoid with no face, no hair, no clothing, and an unfinished mannequin-like surface.
+**This form's visual delta:** Blank smooth gray humanoid with no face, no hair, no clothing, and an unfinished mannequin-like surface.
 
 ## Combat reading
 
@@ -41,7 +41,7 @@ Teach that the blank wrist briefly creases before featureless fingers extend.
 
 ### Signature mechanic
 
-Unpainted Reach: one clay-grey arm lengthens without a shoulder turn, then returns through a visible wrist crease.
+Unpainted Reach: one clay-gray arm lengthens without a shoulder turn, then returns through a visible wrist crease.
 
 ### Telegraph
 

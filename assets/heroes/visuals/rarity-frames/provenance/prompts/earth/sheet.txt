@@ -18,7 +18,7 @@ Fixed geometry and rarity invariants:
 - ONLY RANK 7 has both mouths clearly open, with visible jaw gaps, teeth, dark mouth cavities, and affinity-lit breath.
 
 Earth affinity language:
-- Palette: ochre-gold, umber stone, dark mineral brown, and restrained amber crystal.
+- Palette: ocher-gold, umber stone, dark mineral brown, and restrained amber crystal.
 - Material behavior: layered stone grain, compact geometric strata, weight-bearing blocks, small amber crystal seams, and sparse settled dust.
 - Ranks 1–2: 0% affinity, unchanged neutral charcoal/bronze low-rank frames.
 - Rank 3: 15% affinity, only a small material hint in narrow recesses and the tiny crest.

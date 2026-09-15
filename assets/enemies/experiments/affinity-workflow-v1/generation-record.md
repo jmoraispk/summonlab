@@ -9,7 +9,7 @@ Date: **2026-08-29**
 
 The check-only `report:affinity-final-controlled-activation` gate now records explicit blockers without writing files. Current activation remains unauthorized: the 21 original controlled candidates have no blind-review records and no 16-record human resolution ledger exists. Revise results and risk rationale are evidence inputs only and cannot count as blind acceptance. No staged target, activation receipt, live manifest, candidate, or result was created by this work.
 
-The receipt-last activation command is now implemented and failure-tested, but has not been run against the live experiment. It requires explicit acknowledgement and recomputes the complete authorization while holding its exclusive lock. Completion and Forge require its verified 48-manifest receipt, so manual or partial target copies cannot become a review round or satisfy the plan.
+The receipt-last activation command is now implemented and failure-tested, but has not been run against the live experiment. It requires explicit acknowledgment and recomputes the complete authorization while holding its exclusive lock. Completion and Forge require its verified 48-manifest receipt, so manual or partial target copies cannot become a review round or satisfy the plan.
 
 Forge now keeps `baseline-v1` and `final-controlled-v1` as exact, non-overlapping review rounds. The final round stays unavailable until the activation receipt matches the rerun plan and all 48 receipt-bound target and assignment manifests verify; media and submitted reviews must belong to the selected round. The exact-concurrency allocation is likewise checked in as `executable: false`: it reserves collision-free work through 16 workers without claiming that unavailable capacity was measured. Only the prior two- and three-worker evidence is currently eligible.
 
@@ -82,7 +82,7 @@ unapproved and awaits human blind review; image generation is complete.
 | --- | ---: | ---: | ---: | --- |
 | Death Knight | 6 | 0 | 0 | All canonical-v1 first attempts needed framing correction; Metal and several other affinities remain vulnerable to armor-plus-overlay readings. |
 | Bound Vanguard Elemental v1 | 6 | 0 | 5 | The original stone anchor biased non-stone variants toward stone, ice, or surface effects despite polished output. |
-| Grey Wolf | 5 | 1 | 2 | Fire is visually strong but quarantined for prompt-provenance mismatch; other variants preserve wolf anatomy, with Wood less legible at thumbnail size. |
+| Gray Wolf | 5 | 1 | 2 | Fire is visually strong but quarantined for prompt-provenance mismatch; other variants preserve wolf anatomy, with Wood less legible at thumbnail size. |
 | Cave Bear | 4 | 2 | 3 | Wood and Wind exhausted the retry ceiling with the far hind paw still occluded; v4 Metal and Water passed framing on their first attempts. |
 
 The controlled workflow threshold of at least 20 first-attempt candidates is not met: the measured
@@ -113,7 +113,7 @@ weaknesses found in the independent audit:
 
 | Target | Status | Attempts | Outcome |
 | --- | --- | ---: | --- |
-| Fire Grey Wolf v2 | Candidate | 1 | Restored exact canonical prompt provenance while preserving the strong integrated Fire design. |
+| Fire Gray Wolf v2 | Candidate | 1 | Restored exact canonical prompt provenance while preserving the strong integrated Fire design. |
 | Wood Cave Bear v2 | Candidate | 2 | A targeted stance correction produced four independently readable grounded paws. |
 | Wind Cave Bear v2 | Revise | 2 | Safe framing and affinity passed, but the far hind paw remained occluded in both attempts. |
 | Fire Elemental v3 | Candidate | 1 | Preserved the substance-bodied v2 chassis and contained every combustion extent inside the safe frame. |
@@ -127,7 +127,7 @@ findings, but not byte-level persistence receipts. There were no collisions, sha
 throttles, or integration errors. The Wind Bear result is kept as evidence of repeated
 target/generator variance rather than accepted with hidden anatomy.
 
-The immutable Grey Wolf and Fire Elemental correction prompts use `approved` and `accepted` to mean
+The immutable Gray Wolf and Fire Elemental correction prompts use `approved` and `accepted` to mean
 producer-retained designs from earlier runs, not human approval or shared-catalog promotion. Future
 manifests use `retained` explicitly; these completed prompt records remain unchanged so their hashes
 continue to match the submitted generation requests.

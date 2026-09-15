@@ -1,0 +1,26 @@
+{
+	"targetId": "material-equipment-v3-coarse-hide-light-armor-legs-v3",
+	"productionOrder": 17,
+	"rank": "F",
+	"materialId": "coarse-hide",
+	"materialName": "Coarse Hide",
+	"materialFamily": "hide-scale",
+	"materialBriefPath": "assets/equipment/experiments/material-equipment-v3/direction/material-briefs/f-coarse-hide.json",
+	"classId": "light-armor",
+	"classDirectionId": "equipment-v3-light-armor-rank-progression",
+	"artifactId": "light-armor-legs",
+	"artifactRole": "armor-piece",
+	"slot": "legs",
+	"setId": "coarse-hide-light-armor",
+	"dependsOnTargetId": "material-equipment-v3-coarse-hide-light-armor-full-set-v3",
+	"width": 1024,
+	"height": 1024,
+	"output": {
+		"targetPath": "assets/equipment/experiments/material-equipment-v3/targets/f/coarse-hide/light-armor-legs-v3.json",
+		"assignmentPath": "assets/equipment/experiments/material-equipment-v3/assignments/f/coarse-hide/light-armor-legs-v3.json",
+		"promptPath": "assets/equipment/experiments/material-equipment-v3/assignments/f/coarse-hide/light-armor-legs-v3.prompt.txt",
+		"candidatePath": "assets/equipment/experiments/material-equipment-v3/candidates/f/coarse-hide/light-armor-legs-v3.png",
+		"provenanceResultPath": "assets/equipment/experiments/material-equipment-v3/results/f/coarse-hide/light-armor-legs-v3.json",
+		"reviewReceiptPath": "assets/equipment/experiments/material-equipment-v3/reviews/decisions/f/coarse-hide/light-armor-legs-v3.json"
+	}
+}

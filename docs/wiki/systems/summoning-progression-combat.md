@@ -27,7 +27,7 @@ state. See [progression](../mechanics/progression/README.md) and
 - immutable 1★ levels 1–10 using the shared level-999 schema;
 - four visible combat attributes and the explicit Unaligned affinity state;
 - 8–12 runtime skills from the complete compendium;
-- 12–20 runtime equipment definitions across weapon, armour, and accessory;
+- 12–20 runtime equipment definitions across weapon, armor, and accessory;
 - direct attribute or owned-skill training;
 - a versioned seeded combat request/receipt with explanatory trace;
 - reward claims committed by their owning progression, inventory, and floor systems.

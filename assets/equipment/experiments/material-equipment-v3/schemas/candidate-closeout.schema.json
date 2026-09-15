@@ -178,7 +178,7 @@
 					"type": "number",
 					"const": 77
 				},
-				"armourPieceCandidateCount": {
+				"armorPieceCandidateCount": {
 					"type": "number",
 					"const": 84
 				},
@@ -190,7 +190,7 @@
 					"type": "number",
 					"const": 28
 				},
-				"armourAuditCount": {
+				"armorAuditCount": {
 					"type": "number",
 					"const": 21
 				},
@@ -227,10 +227,10 @@
 			"required": [
 				"directionSheetCount",
 				"rootCandidateCount",
-				"armourPieceCandidateCount",
+				"armorPieceCandidateCount",
 				"classAuditCount",
 				"materialAuditCount",
-				"armourAuditCount",
+				"armorAuditCount",
 				"baseAssignmentCount",
 				"revisionAssignmentCount",
 				"terminalResultCount",

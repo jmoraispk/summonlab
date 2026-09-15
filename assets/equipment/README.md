@@ -14,7 +14,7 @@ Equipment visuals use three deliberately separate lifecycle areas:
   from the approved manifest and may be replaced deterministically by the Equipment runtime
   exporter. Runtime generation must never read directly from `experiments/`.
 
-The `armour-set-references/` images preserve the accepted visual identity of each complete set for
+The `armor-set-references/` images preserve the accepted visual identity of each complete set for
 review and future production. They are reference-only: only the four individual Head, Torso, Legs,
 and Boots sources under `items/` are eligible for runtime export and equipment definitions.
 

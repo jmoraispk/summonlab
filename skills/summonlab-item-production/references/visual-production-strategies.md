@@ -7,7 +7,7 @@ ranked materials, sets, or individual assets.
 
 Apply this gate before the first pixel call whenever an item is derived from recognizable physical
 construction and wrong anatomy would change how it reads or works. Typical triggers include weapon
-blade/haft/hilt relationships, armour coverage and articulation, tool head-to-handle balance,
+blade/haft/hilt relationships, armor coverage and articulation, tool head-to-handle balance,
 container openings and grips, footwear fit, and garment body proportions.
 
 ### Establish evidence before prompting
@@ -74,7 +74,7 @@ This board answers: “Does this material have a reusable construction language?
 - supernatural behavior at ranks where it is warranted.
 
 Material consistency does not mean identical geometry. A material should leave a recognizable
-signature on each form while every sword remains a sword, every bow a bow, and every armour piece a
+signature on each form while every sword remains a sword, every bow a bow, and every armor piece a
 member of its set.
 
 ### Priority when the axes disagree
@@ -146,7 +146,7 @@ Avoid both extremes:
 - **Template swapping:** every material is the same mesh with a color change.
 - **Unbounded variants:** every image invents another mechanical class or unrelated pose.
 
-Visual shield shapes, bow constructions, blade profiles, and armour cuts may vary while their
+Visual shield shapes, bow constructions, blade profiles, and armor cuts may vary while their
 mechanical class stays stable. Do not multiply catalogs solely to explain visual variation.
 
 ## Set strategy
@@ -154,7 +154,7 @@ mechanical class stays stable. Do not multiply catalogs solely to explain visual
 Generate the complete set first in one image. That anchor fixes camera, silhouette, material, cut,
 trim, articulation, and member relationships. Only after acceptance generate individual pieces.
 
-Current Armour expects exactly Head, Torso, Legs, and Boots. The full set must show all four,
+Current Armor expects exactly Head, Torso, Legs, and Boots. The full set must show all four,
 including paired boots, as an empty self-supporting presentation with natural cavity shadow. Reject
 visible wearers, skin, faces, mannequins, black-void characters, weapons, cropped members, floating
 parts, and a cape or scenery that hides required construction.

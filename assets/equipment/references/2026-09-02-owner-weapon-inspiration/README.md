@@ -30,7 +30,7 @@ than source attribution.
   combination of those qualities.
 - Weapons, Shields, Bows, and Staffs may vary substantially across materials while retaining an
   immediately readable mechanical class.
-- Armour must remain internally consistent as a full set and four derived pieces. Separate Armour
+- Armor must remain internally consistent as a full set and four derived pieces. Separate Armor
   materials do not need to reuse the same cut or silhouette.
 - The completed v2 root images remain review evidence. They are not approved or runtime assets.
 
