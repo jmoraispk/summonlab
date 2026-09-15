@@ -28,358 +28,86 @@ test('replays the same seeded-random identity and first choice', async ({ reques
 	expect(left.storyBranch).toBe(right.storyBranch);
 });
 
-test('uses honest non-character states when a generated hero has no approved art', async ({
-	page
+test('retains witnessed communication, replies, directives, and redacted decisions without the legacy summon page', async ({
+	request
 }) => {
-	const created = await page.request.post('/api/runs', {
-		data: {
-			recipe: { ...emberRecipe, seed: 'unpainted-proof' },
-			controlMode: 'random',
-			directive: ''
-		}
+	const created = await request.post('/api/runs', {
+		data: { recipe: emberRecipe, controlMode: 'wait', directive: '' }
 	});
 	expect(created.status()).toBe(201);
 	const { runId } = (await created.json()) as { runId: string };
+	const runResponse = await request.get(`/api/runs/${runId}`);
+	expect(runResponse.ok()).toBe(true);
+	const run = (await runResponse.json()) as { manifest: { characterId: string } };
+	const heroId = run.manifest.characterId;
 
-	await page.goto(`/summon/${runId}`);
-	await expect(page.getByTestId('hero-art-placeholder')).toHaveAttribute(
-		'aria-label',
-		/portrait pending$/u
-	);
-
-	await page.goto(`/play/${runId}`);
-	await expect(page.getByTestId('hero-art-placeholder')).toHaveCount(2);
-	await expect(page.getByTestId('living-settlement')).toBeVisible({ timeout: 6_000 });
-	await expect(page.getByTestId('settlement-occupant')).toBeVisible();
-
-	await page.goto(`/mission/${runId}`);
-	await expect(page.getByTestId('hero-art-placeholder')).toHaveAttribute(
-		'aria-label',
-		/portrait pending$/u
-	);
-});
-
-test('forges, summons, directs, and follows one persistent hero', async ({ page }) => {
-	test.setTimeout(60_000);
-	const created = await page.request.post('/api/runs', {
+	const communication = await request.post(`/api/runs/${runId}/communications`, {
 		data: {
-			recipe: emberRecipe,
-			controlMode: 'wait',
-			directive: 'Train, exercise, and prepare to fight in the tower.'
+			targetHeroId: heroId,
+			kind: 'explain',
+			topic: 'tower-mission',
+			exactText: 'The tower is real, but how we climb it is not yet written.',
+			tone: 'reassuring',
+			delivery: 'private'
 		}
 	});
-	expect(created.status()).toBe(201);
-	const { runId } = (await created.json()) as { runId: string };
-	await page.goto(`/summon/${runId}`);
-
-	await page.getByRole('button', { name: /Break the seal/ }).click();
-	await expect(page.getByRole('heading', { name: 'The hero is waiting to choose.' })).toBeVisible({
-		timeout: 5_000
+	expect(communication.ok()).toBe(true);
+	const communicationView = (await communication.json()) as {
+		acts: ReadonlyArray<{ exactText: string; witnesses: readonly unknown[] }>;
+	};
+	expect(communicationView.acts.at(-1)).toMatchObject({
+		exactText: 'The tower is real, but how we climb it is not yet written.'
 	});
-	await expect(page.getByRole('heading', { name: 'Speak into a clean slate.' })).toBeVisible();
-	await page
-		.getByLabel('Exact words to the summoned hero')
-		.fill(
-			'I am the Master of Hearth 01. You were summoned here, but you are free to ask what this place demands.'
-		);
-	await page.getByRole('button', { name: 'Speak', exact: true }).click();
-	await expect(page.getByText('1 witnessed')).toBeVisible();
-	await expect(page.getByText('1 learned a claim')).toBeVisible();
-	await expect(page.getByTestId('decision-context')).toContainText(
-		'2 legal · 2 memories · 3 beliefs'
-	);
-	await page.getByTestId('decision-context').locator('summary').click();
-	await expect(page.getByTestId('decision-context')).toContainText(
-		'I am the Master of Hearth 01. You were summoned here'
-	);
-	await expect(page.getByTestId('decision-context')).toContainText('hero.choose.kitchen');
-	const heroConversation = page.getByTestId('hero-conversation');
-	await heroConversation.getByRole('button', { name: 'order', exact: true }).click();
-	await heroConversation
-		.getByLabel('Free text for the hero')
-		.fill('Train at the practice ring before we enter the tower.');
-	await heroConversation.getByRole('button', { name: 'Send and hear reply' }).click();
-	await expect(page.getByTestId('hero-reply')).toContainText('negotiated');
-	await expect(page.getByTestId('hero-reply')).toContainText('+12 preference');
-	await expect(page.getByTestId('conversation-influence')).toContainText(
-		'Train at the practice ring before we enter the tower.'
-	);
-	await expect(page.getByTestId('conversation-influence')).toContainText('conversation-weight-12');
-	await page.getByRole('button', { name: 'Record witnessed direction' }).click();
-	await expect(page.getByText('Recorded as decision · witnessed delivery')).toBeVisible();
-	await expect(page.getByTestId('conversation-influence')).toContainText(
-		'Train, exercise, and prepare to fight in the tower.'
-	);
-	if (process.env.CAPTURE_PHASE5_SCOPED_DIRECTIVES) {
-		await page.setViewportSize({ width: 1440, height: 1200 });
-		await page.getByText('Recorded as decision · witnessed delivery').scrollIntoViewIfNeeded();
-		await page.screenshot({ path: process.env.CAPTURE_PHASE5_SCOPED_DIRECTIVES, fullPage: true });
-	}
-	if (process.env.CAPTURE_PHASE5_CONVERSATION_ORDERS) {
-		await page.setViewportSize({ width: 1440, height: 1200 });
-		await heroConversation.scrollIntoViewIfNeeded();
-		await heroConversation.screenshot({ path: process.env.CAPTURE_PHASE5_CONVERSATION_ORDERS });
-	}
-	await expect(page.getByTestId('policy-baselines')).toContainText('Personality script');
-	await expect(page.getByTestId('policy-baselines')).toContainText('Seeded random');
-	await expect(page.getByTestId('policy-baselines')).toContainText('0 model calls');
-	await expect(page.getByTestId('policy-baselines').getByText('result')).toHaveCount(2);
-	await expect(page.getByTestId('model-policy-bench')).toContainText('Live model bench');
-	await expect(page.getByTestId('model-policy-bench')).toContainText('gpt-5-nano');
-	await expect(page.getByTestId('model-policy-bench')).toContainText(
-		'No provider request is sent in scripted mode.'
-	);
-	await expect(page.getByRole('button', { name: /Ask gpt-5-nano once/ })).toHaveCount(0);
-	await expect(page.getByTestId('decision-job-bench')).toContainText('Durable decision job');
-	await expect(page.getByTestId('decision-job-bench')).toContainText(
-		'scripted fallback · stale state never applies'
-	);
-	await expect(page.getByRole('button', { name: /Queue scripted \+ apply/ })).toBeVisible();
-	await expect(page.getByTestId('decision-context')).toContainText('witnessed knowledge only');
-	if (process.env.CAPTURE_PHASE5_DECISION_JOBS) {
-		await page.setViewportSize({ width: 1440, height: 1120 });
-		await page.getByTestId('decision-job-bench').scrollIntoViewIfNeeded();
-		await page.screenshot({ path: process.env.CAPTURE_PHASE5_DECISION_JOBS, fullPage: true });
-	}
-	if (process.env.CAPTURE_PHASE5_MODEL_ADAPTER) {
-		await page.setViewportSize({ width: 1440, height: 1050 });
-		await page.getByTestId('model-policy-bench').scrollIntoViewIfNeeded();
-		await page.evaluate(() => window.scrollTo(0, 0));
-		await page.screenshot({ path: process.env.CAPTURE_PHASE5_MODEL_ADAPTER, fullPage: true });
-	}
-	if (process.env.CAPTURE_PHASE5_POLICIES) {
-		await page.setViewportSize({ width: 1440, height: 1050 });
-		await page.screenshot({ path: process.env.CAPTURE_PHASE5_POLICIES, fullPage: true });
-	}
-	if (process.env.CAPTURE_PHASE5_COMMUNICATION) {
-		await page.setViewportSize({ width: 1440, height: 1050 });
-		await page.screenshot({ path: process.env.CAPTURE_PHASE5_COMMUNICATION, fullPage: true });
-	}
-	await page.getByRole('button', { name: /Queue scripted \+ apply/ }).click();
-	const traceLink = page.getByRole('link', { name: /Open redacted decision trace/ });
-	await expect(traceLink).toBeVisible();
-	const traceHref = await traceLink.getAttribute('href');
-	if (!traceHref) throw new Error('Decision trace link had no href');
-	const inspector = await page.context().newPage();
-	await inspector.goto(traceHref);
-	await expect(inspector).toHaveURL(/\/debug\/decisions\/[a-f0-9-]+$/u);
-	await expect(inspector.getByTestId('decision-inspector')).toContainText('The choice,');
-	await expect(inspector.getByTestId('privacy-boundary')).toContainText('Absent by construction');
-	await expect(inspector.getByTestId('privacy-boundary')).toContainText('Raw private text');
-	await expect(inspector.getByTestId('provider-boundary')).toContainText(
-		'This decision did not request an external model.'
-	);
-	await expect(inspector.getByTestId('validation-boundaries')).toContainText('packet hash');
-	await expect(inspector.getByTestId('redacted-packet')).not.toContainText(
-		'Train at the practice ring before we enter the tower.'
-	);
-	if (process.env.CAPTURE_PHASE5_DECISION_INSPECTOR) {
-		await inspector.setViewportSize({ width: 1440, height: 1200 });
-		await inspector.screenshot({
-			path: process.env.CAPTURE_PHASE5_DECISION_INSPECTOR,
-			fullPage: true
-		});
-	}
-	await inspector.close();
-	const decideNow = page.getByRole('button', { name: /Let Mara decide now/ });
-	if (await decideNow.isVisible()) await decideNow.click();
-	await expect(
-		page.getByText(
-			/Show me somewhere I can test what this body remembers|I intend to choose the training ground/
-		)
-	).toBeVisible();
-	await expect(page.getByText(/steel before trust → the training ground/i)).toBeVisible();
+	expect(communicationView.acts.at(-1)?.witnesses.length).toBeGreaterThan(0);
 
-	if (process.env.CAPTURE_PHASE1_SUMMON) {
-		await page.waitForTimeout(800);
-		await page.screenshot({ path: process.env.CAPTURE_PHASE1_SUMMON, fullPage: true });
-	}
+	const conversation = await request.post(`/api/runs/${runId}/conversations`, {
+		data: {
+			targetHeroId: heroId,
+			kind: 'ask',
+			exactText: 'What do you need before we enter the tower?',
+			tone: 'reassuring',
+			delivery: 'private',
+			orderIntent: null
+		}
+	});
+	expect(conversation.ok()).toBe(true);
+	const conversationView = (await conversation.json()) as {
+		turns: ReadonlyArray<{ heroResponse: { exactText: string } }>;
+	};
+	expect(conversationView.turns.at(-1)?.heroResponse.exactText.length).toBeGreaterThan(0);
 
-	await page.getByRole('link', { name: /Follow to the training ground/ }).click();
-	await expect(page).toHaveURL(/\/play\/[a-f0-9-]+$/u);
-	await expect(page.getByText('Arrived · Training Ground')).toBeVisible({ timeout: 6_000 });
-	await expect(page.getByTestId('living-settlement')).toBeVisible();
-	await expect(page.getByTestId('living-settlement')).toHaveAttribute('data-hero-pose', 'idle');
-	await page.getByRole('button', { name: /Return from Floor 01/ }).click();
-	await expect(page.getByRole('heading', { name: 'One core. Three promises.' })).toBeVisible();
-	await page.getByRole('button', { name: /The Tempered Yard/ }).click();
-	await expect(page.getByRole('dialog')).toContainText('The Tempered Yard');
-	await page.getByRole('button', { name: /Bind the First Ember/ }).click();
-	await expect(page.locator('.ember-council')).toContainText('safer training');
-	await expect(page.locator('.ember-council')).toContainText('Mara Vey');
-	await expect(page.locator('.ember-council')).toContainText('Immediate response');
-	await expect(page.getByTestId('hero-social-ledger')).toContainText('5 held beliefs');
-	await expect(page.getByTestId('hero-social-ledger')).toContainText('provisional authority');
-	await expect(page.getByTestId('hero-social-ledger')).toContainText(
-		'I will prepare this company for the tower as our founding priority.'
+	const directive = await request.post(`/api/runs/${runId}/directives`, {
+		data: {
+			action: 'issue',
+			text: 'Protect the company and prepare for the tower.',
+			scope: 'until_revoked',
+			recipientIds: [heroId],
+			priorities: ['protect', 'prepare'],
+			tone: 'firm',
+			delivery: 'private'
+		}
+	});
+	expect(directive.ok()).toBe(true);
+	const directiveView = (await directive.json()) as {
+		directives: ReadonlyArray<{ text: string; witnessObservationIds: readonly string[] }>;
+	};
+	expect(directiveView.directives.at(-1)).toMatchObject({
+		text: 'Protect the company and prepare for the tower.'
+	});
+	expect(directiveView.directives.at(-1)?.witnessObservationIds.length).toBeGreaterThan(0);
+
+	const preview = await request.get(`/api/runs/${runId}/decision-preview?heroId=${heroId}`);
+	expect(preview.ok()).toBe(true);
+	const previewView = (await preview.json()) as {
+		packet: {
+			activeDirectives: ReadonlyArray<{ text: string }>;
+			knowledge: unknown;
+			legalActions: readonly unknown[];
+		};
+	};
+	expect(previewView.packet.activeDirectives).toContainEqual(
+		expect.objectContaining({ text: 'Protect the company and prepare for the tower.' })
 	);
-	if (process.env.CAPTURE_PHASE5_SOCIAL) {
-		await page.setViewportSize({ width: 1440, height: 1050 });
-		await page.screenshot({ path: process.env.CAPTURE_PHASE5_SOCIAL, fullPage: true });
-	}
-	if (process.env.CAPTURE_PHASE4_EMBER) {
-		await page.setViewportSize({ width: 1440, height: 1050 });
-		await page.screenshot({ path: process.env.CAPTURE_PHASE4_EMBER, fullPage: true });
-	}
-	if (process.env.CAPTURE_PHASE1_PLAY) {
-		await page.screenshot({ path: process.env.CAPTURE_PHASE1_PLAY, fullPage: true });
-	}
-
-	await page.getByRole('button', { name: /Journal/ }).click();
-	await expect(page.getByText('5 events')).toBeVisible();
-	await expect(page.getByText('hero.arrived')).toBeVisible();
-	await page.getByRole('button', { name: /Close journal/ }).click();
-	await page.getByRole('link', { name: 'Replay' }).click();
-	await expect(page).toHaveURL(/\/replay\/[a-f0-9-]+$/u);
-	await expect(page.getByTestId('replay-status')).toContainText('Verified');
-	await expect(page.getByText('snapshot agrees')).toBeVisible();
-	await expect(page.getByText('hero.destination.selected')).toBeVisible();
-	await expect(page.getByText('hero.travel.started')).toBeVisible();
-	await expect(page.getByText('simulation.advanced')).toBeVisible();
-	await expect(page.getByTestId('travel-proof')).toContainText('training-ring');
-	await expect(page.getByTestId('first-ember-proof')).toContainText('committed');
-	await expect(page.getByTestId('social-cognition-proof')).toContainText(
-		'Hero cognition · provenance ledger'
-	);
-	await expect(page.getByTestId('social-cognition-proof')).toContainText('first-ember-commitment');
-	await expect(page.getByTestId('social-cognition-proof')).toContainText('made-founding-promise');
-	await expect(page.getByTestId('social-cognition-proof')).toContainText('consistency 7');
-	await expect(page.getByTestId('communication-witness-ledger')).toContainText(
-		'Communicative acts · witness chains'
-	);
-	await expect(page.getByTestId('communication-witness-ledger')).toContainText(
-		'I am the Master of Hearth 01.'
-	);
-	await expect(page.getByTestId('communication-witness-ledger')).toContainText(
-		'intended / addressed'
-	);
-	await expect(page.getByTestId('conversation-replay-turn')).toContainText('negotiated');
-	await expect(page.getByTestId('conversation-replay-turn')).toContainText('preference +12');
-	await expect(page.getByTestId('directive-replay-record')).toContainText('consumed direction');
-	await expect(page.getByTestId('directive-replay-record')).toContainText(
-		'Train, exercise, and prepare to fight in the tower.'
-	);
-	await expect(page.getByTestId('directive-influence-record')).toContainText('advanced');
-	await page
-		.getByTestId('building-training-ground')
-		.getByRole('button', { name: 'assign', exact: true })
-		.click();
-	await expect(page.getByTestId('hero-assignment')).toContainText('training-ground');
-	await expect(page.getByTestId('building-training-ground')).toContainText('powered');
-	await expect(page.getByTestId('building-workshop')).toContainText('unpowered');
-	await expect(page.getByTestId('pending-schedule')).toHaveText('No pending work');
-
-	if (process.env.CAPTURE_PHASE4_OPERATIONS) {
-		await page.screenshot({ path: process.env.CAPTURE_PHASE4_OPERATIONS, fullPage: true });
-	}
-
-	await expect(page.getByTestId('routine-profile')).toContainText('Stable mind');
-	await page.getByRole('button', { name: 'Plan day', exact: true }).click();
-	await expect(page.getByTestId('daily-plan')).toContainText('Four intentions');
-	await expect(page.getByTestId('daily-plan')).toContainText('pending');
-	await page.getByRole('button', { name: /Follow next intention/ }).click();
-	await expect(page.getByTestId('routine-resolution')).toContainText('Resolver trace');
-	await expect(page.getByTestId('pending-schedule')).toContainText('hero.routine.complete');
-	await expect(page.getByTestId('daily-plan')).toContainText('active');
-	if (process.env.CAPTURE_PHASE4_ROUTINES) {
-		await page.screenshot({ path: process.env.CAPTURE_PHASE4_ROUTINES, fullPage: true });
-	}
-	await page.getByRole('button', { name: /Advance to outcome/ }).click();
-	await expect(page.getByTestId('daily-plan')).toContainText('completed');
-	await expect(page.getByText(/one daily routine resolved/i)).toBeVisible();
-	await expect(page.getByTestId('replay-status')).toContainText('Verified');
-	await expect(page.getByTestId('simulation-clock')).toContainText('4× real time');
-	await page.getByRole('button', { name: /Simulate 6h away/ }).click();
-	await expect(page.getByTestId('command-result')).toContainText('3 schedules');
-	await expect(page.getByTestId('simulation-clock')).toContainText('2000-01-02');
-	await expect(page.getByTestId('daily-plan')).toContainText('Day 2');
-	await expect(page.getByTestId('pending-schedule')).toContainText('hero.routine.complete');
-	await expect(page.getByText('simulation.clock.synced')).toBeVisible();
-	if (process.env.CAPTURE_PHASE4_CATCHUP) {
-		await page.screenshot({ path: process.env.CAPTURE_PHASE4_CATCHUP, fullPage: true });
-	}
-	await page.getByRole('link', { name: /Return to settlement/ }).click();
-	await expect(page.getByTestId('return-recap')).toBeVisible();
-	await expect(page.getByTestId('return-recap')).toContainText('authoritative changes');
-	await expect(page.getByTestId('return-recap')).toContainText('routines completed');
-	if (process.env.CAPTURE_PHASE4_RECAP) {
-		await page.setViewportSize({ width: 1280, height: 960 });
-		await page.screenshot({ path: process.env.CAPTURE_PHASE4_RECAP });
-	}
-	await page.reload();
-	await expect(page.getByTestId('return-recap')).toBeVisible();
-	await page.getByRole('button', { name: /Continue to settlement/ }).click();
-	await expect(page.getByTestId('run-connection')).toContainText('Live');
-	await page.getByRole('link', { name: 'Replay' }).click();
-	await expect(page.getByTestId('replay-status')).toContainText('Verified');
-	await page.getByRole('button', { name: /Advance to outcome/ }).click();
-	await expect(page.getByTestId('pending-schedule')).toHaveText('No pending work');
-
-	await page.getByRole('button', { name: /Draw gate resonance/ }).click();
-	await expect(page.getByTestId('entropy-cursor')).toHaveText('1');
-	await expect(page.getByText('master.gate.inspected')).toBeVisible();
-	await page.getByRole('button', { name: /Prove stale guard/ }).click();
-	await expect(page.getByTestId('command-result')).toHaveText('1 accepted · 1 rejected stale');
-	await expect(page.getByTestId('entropy-cursor')).toHaveText('2');
-	await expect(page.getByTestId('replay-status')).toContainText('Verified');
-
-	if (process.env.CAPTURE_PHASE2_REPLAY) {
-		await page.screenshot({ path: process.env.CAPTURE_PHASE2_REPLAY, fullPage: true });
-	}
-
-	await page.getByRole('button', { name: 'kitchen', exact: true }).click();
-	await expect(page.getByTestId('travel-proof')).toContainText('training-ring → kitchen-table');
-	await expect(page.getByTestId('travel-proof')).toContainText(
-		'training-ring remains current until'
-	);
-	await expect(page.getByTestId('pending-schedule')).toContainText('hero.travel.arrive');
-	if (process.env.CAPTURE_PHASE4_TRAVEL) {
-		await page.screenshot({ path: process.env.CAPTURE_PHASE4_TRAVEL, fullPage: true });
-	}
-	await page.getByRole('button', { name: /Advance to outcome/ }).click();
-	await expect(page.getByTestId('travel-proof')).toContainText('kitchen-table');
-	await page.getByRole('button', { name: 'training', exact: true }).click();
-	await page.getByRole('button', { name: /Advance to outcome/ }).click();
-	await expect(page.getByTestId('travel-proof')).toContainText('training-ring');
-
-	await page.getByRole('button', { name: 'train', exact: true }).click();
-	await expect(page.getByTestId('pending-schedule')).toContainText('hero.activity.complete');
-	await page.getByRole('link', { name: /Return to settlement/ }).click();
-	await expect(page.getByTestId('return-recap')).toBeVisible();
-	await page.getByRole('button', { name: /Continue to settlement/ }).click();
-	await expect(page.getByTestId('living-settlement')).toHaveAttribute('data-hero-pose', 'train');
-	if (process.env.CAPTURE_PHASE4_LIVING) {
-		await page.setViewportSize({ width: 1440, height: 1050 });
-		await page.screenshot({ path: process.env.CAPTURE_PHASE4_LIVING });
-	}
-	await page.getByRole('link', { name: 'Replay' }).click();
-	await expect(page.getByTestId('pending-schedule')).toContainText('hero.activity.complete');
-	await page.getByRole('button', { name: /Advance to outcome/ }).click();
-	await expect(page.getByTestId('hero-xp')).toHaveText('2 / 12');
-	await expect(page.getByTestId('item-durability')).toHaveText('5/6');
-	await expect(page.getByText(/one train activity resolved/i)).toBeVisible();
-
-	await page.getByRole('button', { name: 'repair', exact: true }).click();
-	await expect(page.getByTestId('resource-iron-ore')).toHaveText('1');
-	await page.getByRole('button', { name: /Advance to outcome/ }).click();
-	await expect(page.getByTestId('item-durability')).toHaveText('6/6');
-	await expect(page.getByTestId('replay-status')).toContainText('Verified');
-
-	if (process.env.CAPTURE_PHASE2_SURVIVAL) {
-		await page.screenshot({ path: process.env.CAPTURE_PHASE2_SURVIVAL, fullPage: true });
-	}
-
-	await page.getByRole('button', { name: 'rest', exact: true }).click();
-	await page.getByRole('button', { name: /Fatal hero proof/ }).click();
-	await expect(page.getByText(/Summoned hero/).locator('..')).toContainText('dead');
-	await expect(page.getByTestId('hero-assignment')).toHaveCount(0);
-	await expect(page.getByTestId('building-training-ground')).toContainText('0/8');
-	await expect(page.getByTestId('pending-schedule')).toHaveText('No pending work');
-	await page.getByRole('button', { name: /End run proof/ }).click();
-	await expect(page.getByTestId('game-over')).toContainText('This history is sealed');
-	await expect(page.getByTestId('replay-status')).toContainText('Verified');
-
-	if (process.env.CAPTURE_PHASE2_GAMEOVER) {
-		await page.screenshot({ path: process.env.CAPTURE_PHASE2_GAMEOVER, fullPage: true });
-	}
+	expect(previewView.packet.legalActions.length).toBeGreaterThan(0);
+	expect(JSON.stringify(previewView.packet.knowledge)).toContain('tower');
 });

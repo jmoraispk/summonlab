@@ -64,16 +64,16 @@ const startKey = entryKeyByName('entry/start');
 const appKey = entryKeyByName('entry/app');
 const layoutKey = await routeNodeKey('src/routes/+layout.svelte');
 const homeKey = await routeNodeKey('src/routes/+page.svelte');
-const settlementRouteKey = await routeNodeKey('src/routes/settlement-lab/+page.svelte');
+const villageRouteKey = await routeNodeKey('src/routes/(city)/[mode=city]/+page.svelte');
 const missionPackageKey = await routeNodeKey('src/routes/mission-lab/+page.svelte');
 const missionLifecycleKey = await routeNodeKey('src/routes/mission/[runId]/+page.svelte');
 const initialEntries = collect([startKey, appKey, layoutKey, homeKey], false);
 const shellEntries = collect([startKey, appKey, layoutKey], false);
-const settlementRouteEntries = new Set([...shellEntries, ...collect([settlementRouteKey], true)]);
+const villageRouteEntries = new Set([...shellEntries, ...collect([villageRouteKey], true)]);
 const missionPackageEntries = new Set([...shellEntries, ...collect([missionPackageKey], true)]);
 const missionLifecycleEntries = new Set([...shellEntries, ...collect([missionLifecycleKey], true)]);
 const lazyEntries = [
-	...new Set([...settlementRouteEntries, ...missionPackageEntries, ...missionLifecycleEntries])
+	...new Set([...villageRouteEntries, ...missionPackageEntries, ...missionLifecycleEntries])
 ].filter((key) => !initialEntries.has(key));
 const lazySizes = await Promise.all(
 	lazyEntries.map(async (key) => ({ key, bytes: await gzipBytes(new Set([key])) }))
@@ -83,20 +83,20 @@ const report = {
 	schemaVersion: 'web-build-budget-v1',
 	budgets: {
 		initialJavaScriptGzipBytes: JAVASCRIPT_BUDGET_BYTES,
-		settlementRouteLabLoadedJavaScriptGzipBytes: JAVASCRIPT_BUDGET_BYTES,
+		villageRouteLoadedJavaScriptGzipBytes: JAVASCRIPT_BUDGET_BYTES,
 		missionPackageLabLoadedJavaScriptGzipBytes: JAVASCRIPT_BUDGET_BYTES,
 		missionLifecycleLoadedJavaScriptGzipBytes: JAVASCRIPT_BUDGET_BYTES
 	},
 	measurements: {
 		initialJavaScriptGzipBytes: await gzipBytes(initialEntries),
-		settlementRouteLabLoadedJavaScriptGzipBytes: await gzipBytes(settlementRouteEntries),
+		villageRouteLoadedJavaScriptGzipBytes: await gzipBytes(villageRouteEntries),
 		missionPackageLabLoadedJavaScriptGzipBytes: await gzipBytes(missionPackageEntries),
 		missionLifecycleLoadedJavaScriptGzipBytes: await gzipBytes(missionLifecycleEntries),
 		largestRuntimeLazyChunkGzipBytes: Math.max(...lazySizes.map(({ bytes }) => bytes))
 	},
 	status: {
 		initialJavaScript: 'within-budget',
-		settlementRouteLabLoadedJavaScript: 'within-budget',
+		villageRouteLoadedJavaScript: 'within-budget',
 		missionPackageLabLoadedJavaScript: 'within-budget',
 		missionLifecycleLoadedJavaScript: 'within-budget'
 	}
@@ -106,10 +106,10 @@ if (report.measurements.initialJavaScriptGzipBytes > report.budgets.initialJavaS
 	throw new Error('Initial JavaScript exceeds the 700 KB compressed budget');
 }
 if (
-	report.measurements.settlementRouteLabLoadedJavaScriptGzipBytes >
-	report.budgets.settlementRouteLabLoadedJavaScriptGzipBytes
+	report.measurements.villageRouteLoadedJavaScriptGzipBytes >
+	report.budgets.villageRouteLoadedJavaScriptGzipBytes
 ) {
-	throw new Error('Loaded settlement route lab JavaScript exceeds the 700 KB compressed budget');
+	throw new Error('Loaded Village route JavaScript exceeds the 700 KB compressed budget');
 }
 if (
 	report.measurements.missionPackageLabLoadedJavaScriptGzipBytes >
@@ -140,7 +140,7 @@ if (process.argv.includes('--write')) {
 		JSON.stringify(storedReport.status) === JSON.stringify(report.status);
 	const javascriptEvidenceIsCurrent = [
 		'initialJavaScriptGzipBytes',
-		'settlementRouteLabLoadedJavaScriptGzipBytes',
+		'villageRouteLoadedJavaScriptGzipBytes',
 		'missionPackageLabLoadedJavaScriptGzipBytes',
 		'missionLifecycleLoadedJavaScriptGzipBytes',
 		'largestRuntimeLazyChunkGzipBytes'

@@ -18,7 +18,7 @@
 			});
 			const body = (await response.json()) as { runId?: string; message?: string };
 			if (!response.ok || !body.runId) throw new Error(body.message ?? 'The seal held shut.');
-			await goto(resolve('/mission/[runId]', { runId: body.runId }));
+			await goto(resolve('/tower'));
 		} catch (error) {
 			failure = error instanceof Error ? error.message : 'The seal held shut.';
 			opening = false;

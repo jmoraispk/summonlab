@@ -1393,7 +1393,7 @@ Expected: every command exits 0; typecheck has 0 errors and 0 warnings; all four
 pnpm --filter @summonlab/web dev --host 0.0.0.0 --port 5173
 ```
 
-Open `http://10.110.24.218:5173/living-village-lab/realtime-combat` and verify:
+Open `http://10.110.24.122:5173/living-village-lab/realtime-combat` and verify:
 
 1. Let the fight finish; confirm the current autonomous timing and animation still read as the same encounter, and inspect all three heroes' final Health/Mana in the receipt.
 2. Pause mid-fight, switch through 2D, 2.5D, and 2.5D V2, then resume; confirm combat time and target decisions did not restart.

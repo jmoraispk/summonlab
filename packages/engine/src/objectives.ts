@@ -47,9 +47,9 @@ export function projectCampaignObjectives(
 			detail:
 				'Call three adult heroes into Hearth 01. They arrive without shared memories or allegiance.',
 			evidence:
-				campaign.onboardingStep >= 2 && heroIds.length === 3
+				campaign.summonedHeroCount === 3
 					? [`Three stable identities are bound to ${campaign.campaignSeed}.`]
-					: []
+					: [`${campaign.summonedHeroCount} of 3 heroes have arrived.`]
 		},
 		{
 			objectiveId: 'hear-each-first-voice',
@@ -61,14 +61,12 @@ export function projectCampaignObjectives(
 				: [`${heardHeroIds.size} of ${heroIds.length} heroes have answered.`]
 		},
 		{
-			objectiveId: 'follow-the-first-choice',
-			chapter: 'Prologue · Agency begins',
-			title: 'Follow the company’s first choice',
+			objectiveId: 'forge-the-starter-arms',
+			chapter: 'Prologue · A company needs tools',
+			title: 'Make the starter gear',
 			detail:
-				'Give the first summon room to choose where preparation begins, then enter Hearth 01.',
-			evidence: input.firstDestinationChosen
-				? ['The first autonomous destination is canonical.']
-				: []
+				'Use the Forge to make a spear, a bow, and a sword with shield for the first company.',
+			evidence: []
 		},
 		{
 			objectiveId: 'recover-the-first-ember',
@@ -100,9 +98,9 @@ export function projectCampaignObjectives(
 	];
 	const completion = [
 		campaign.onboardingStep >= 1,
-		campaign.onboardingStep >= 2 && heroIds.length === 3,
+		campaign.summonedHeroCount === 3,
 		heardEveryHero,
-		input.firstDestinationChosen,
+		false,
 		firstEmberRecovered,
 		state.settlement.firstEmber.status === 'committed',
 		state.mission.attempt !== null

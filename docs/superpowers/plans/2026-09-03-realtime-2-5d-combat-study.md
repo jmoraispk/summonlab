@@ -108,5 +108,5 @@ decoration.
   if the installation still cannot supply them.
 - Inspect phone and desktop screenshots, reduced motion, keyboard controls, loading, retry, pause,
   replay, and both presentation modes.
-- Bind the preview server to `0.0.0.0` and publish the collaborator URL with `10.110.24.218`.
+- Bind the preview server to `0.0.0.0` and publish the collaborator URL with `10.110.24.122`.
 - Commit only this worktree's in-scope changes and push `codex/realtime-combat-study`.

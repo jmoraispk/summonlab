@@ -6,10 +6,8 @@
 	const titleDesktop = playerVisualManifest.assets.find(
 		(asset) => asset.usage === 'title-desktop'
 	)!;
-	const openingPath = resolve('/living-village-lab/opening');
 
-	let { data } = $props();
-	let villagePath = $derived(data.resumePath ?? openingPath);
+	let { form }: { form: { entryError?: string } | null } = $props();
 </script>
 
 <svelte:head>
@@ -44,9 +42,14 @@
 
 	<section class="entry">
 		<h1>Summonlab</h1>
-		<a class="enter-village" href={villagePath} data-testid="enter-village" data-sound-cue="gate">
-			Enter Village
-		</a>
+		<form method="POST">
+			<button class="enter-village" type="submit" data-testid="enter-village" data-sound-cue="gate"
+				>Enter Village</button
+			>
+		</form>
+		{#if form?.entryError}
+			<p class="entry-error" role="status" aria-live="polite">{form.entryError}</p>
+		{/if}
 	</section>
 </main>
 
@@ -155,6 +158,10 @@
 		margin: 0 1.5rem clamp(2.8rem, 7vh, 5.5rem) clamp(1.5rem, 7.5vw, 7rem);
 	}
 
+	form {
+		margin: 0;
+	}
+
 	h1 {
 		position: absolute;
 		width: 1px;
@@ -166,6 +173,7 @@
 	}
 
 	.enter-village {
+		appearance: none;
 		display: grid;
 		width: min(28rem, calc(100vw - 3rem));
 		min-height: 6.5rem;
@@ -182,11 +190,20 @@
 		text-decoration: none;
 		text-shadow: 0 1px 0.8rem rgba(255, 209, 139, 0.22);
 		text-transform: uppercase;
+		cursor: pointer;
 		transition:
 			border-color 180ms ease,
 			background 180ms ease,
 			box-shadow 180ms ease,
 			color 180ms ease;
+	}
+
+	.entry-error {
+		max-width: 28rem;
+		margin: 0.8rem 0 0;
+		color: #f2b59b;
+		font-size: 0.9rem;
+		text-shadow: 0 1px 0.5rem #000;
 	}
 
 	.enter-village:hover,

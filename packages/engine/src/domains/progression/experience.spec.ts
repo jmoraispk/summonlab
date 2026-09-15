@@ -109,7 +109,9 @@ describe('v27 experience progression', () => {
 			occurredAt: NOW
 		};
 		expect(applyExperienceClaim(input)).toStrictEqual(applyExperienceClaim(input));
-		expect(() => applyExperienceClaim({ ...input, claim: { ...input.claim, amount: 0 } })).toThrow();
+		expect(() =>
+			applyExperienceClaim({ ...input, claim: { ...input.claim, amount: 0 } })
+		).toThrow();
 	});
 
 	it('does not refill Health when a maximum rises and clamps only when it falls', () => {

@@ -5,47 +5,47 @@ import {
 
 import { HEARTH_01_CONTENT_VERSION } from './hearth-01.js';
 
-export const HEARTH_01_SCENE_VERSION = 'hearth-01-scene-v1';
+export const HEARTH_01_SCENE_VERSION = 'hearth-01-scene-v3';
 
 const HEARTH_01_SCENE_SOURCE = {
-	schemaVersion: 'settlement-scene-v1',
+	schemaVersion: 'settlement-scene-v2',
 	sceneVersion: HEARTH_01_SCENE_VERSION,
 	status: 'approval-candidate',
 	settlementContentVersion: HEARTH_01_CONTENT_VERSION,
 	settlementContentHash: '83e2d404fa3e119bc02ff6ff1f82896ea8ffb10a2661f8c7b0e858a35eeb89b9',
 	camera: 'high-three-quarter',
-	createdAt: '2026-08-24T08:50:00Z',
+	createdAt: '2026-09-09T22:21:03Z',
 	generation: {
 		mode: 'built-in-imagegen',
 		prompt:
-			"Use case: stylized-concept\nAsset type: layered 2.5D game environment base plate for Summonlab Hearth 01\nInput images: Image 1 is the visual-quality, camera, material, palette, and lighting reference only; Image 2 is the authoritative spatial-layout reference only, specifically its five-place route map near the top.\nPrimary request: generate a new hero-free Hearth 01 settlement environment whose building arrangement matches the route topology exactly.\nScene/backdrop: compact hexagonal walled refuge at blue hour. The monumental cyan-and-ember summoning gate is at the north/top center. The common kitchen is west/upper-left. The dormant workshop is east/upper-right. The north dormitory is southwest/lower-left. The open training court is southeast/lower-right. A broad shared courtyard occupies the center, with visibly continuous cobblestone walking paths connecting all five places and no central obstruction.\nSubject: all five buildings must have distinct silhouettes and readable entrances: kitchen with hearth chimney and warm service windows; workshop with cold forge flue, repair awning, and tool racks; dormitory as a long quieter bunkhouse with curtained windows; training court as open sand with targets and practice racks; gate as monumental arcane machinery.\nStyle/medium: original premium painterly dark-fantasy game environment, manhwa-like clarity and controlled linework, matching Image 1's material richness without copying characters or UI.\nComposition/framing: wide 3:2 high-three-quarter view, full settlement inside the walls, enough clear ground for route overlays and small code-rendered hero sprites, strong depth separation between distant wall/gate, inhabited midground buildings, and foreground fence/props.\nLighting/mood: deep midnight navy stone, worn wood and soot, cool cyan rim light at the gate, localized amber habitation light at kitchen and dormitory, workshop mostly cold/dormant, training court readable but restrained, subtle mist and atmospheric depth.\nConstraints: no people, no characters, no monsters, no UI, no labels, no text, no logo, no watermark; exactly five functional places in the specified positions; do not place the dormitory at upper right or workshop at lower left; keep the central courtyard and path network unobstructed.",
+			'Use case: precise-object-edit\nAsset type: Summonlab Hearth 01 Village environment revision\nInput image: Image 1 is the edit target and authoritative reference for every unaffected feature.\nPrimary request: At the fully zoomed-out fitted view, make the Village outer perimeter wall read as one continuous rough circle or perspective ellipse. Remove the inward dent in the upper-left wall behind the Summoning Circle. Continue that wall as an uninterrupted outward-convex arc from the left side through the upper-left district toward the rear Portal, matching the smooth circular character of the right wall. The Summoning Circle must not push, dent, notch, or bulge the perimeter wall. Move the Summoning Circle slightly inward and toward the foreground only as much as needed to leave clear ground between it and the circular wall, then reconnect its short path and immediate lamps, vegetation, and retaining stones.\nConstraints: Preserve the camera, framing, mountains, moon, Portal, central road, Residence, Training Grounds, Forge, lighting, palette, scale, paths, props, and all pixels outside the necessary upper-left correction as closely as possible. Keep the full perimeter readable at fitted zoom. Do not add or remove buildings, people, characters, animals, labels, text, UI, icons, panels, or watermarks.',
 		references: [
 			{
-				file: 'assets/heroes/visuals/hearth-settlement-scale-v1.png',
-				contentHash: '555bd154e5914663dfdd7c4b37e97d1b68207f42f859af916b895eb0ed41a870',
+				file: 'assets/settlements/hearth-01/experiments/city-circular-wall-v1/hearth-01-circular-wall-candidate.png',
+				contentHash: '26a092776068692022986907e363fab0ab738b8b8da3408aecfe114460169e1e',
 				role: 'visual-style'
 			},
 			{
-				file: 'docs/evidence/phase-4-settlement-route-lab-mobile.png',
-				contentHash: 'c665d80fcd09137aff660d100e5180a6e47dc183da62bc5344ab6434a52f7652',
+				file: 'assets/settlements/hearth-01/hearth-01-threshold-v2.png',
+				contentHash: '816d32574f07f55b58b42f19347831e8ce040463022756646b5d0f0c62a5c748',
 				role: 'spatial-layout'
 			}
 		]
 	},
 	source: {
-		file: 'assets/settlements/hearth-01/hearth-01-environment-v1.png',
+		file: 'assets/settlements/hearth-01/hearth-01-threshold-v3.png',
 		width: 1536,
 		height: 1024,
-		bytes: 2_722_235,
-		contentHash: '2913be0a1cabf22002baadccd1eed42bffee86e5bfa06ed06e5f09cdc6674f2e'
+		bytes: 3_092_258,
+		contentHash: '02bb8a592627641e400d56fd94863aca52f2d45f9244475f9319b343a89fa1d1'
 	},
 	runtime: {
-		file: 'apps/web/static/runtime/settlements/hearth-01/environment.96cbb666f3d9.webp',
-		publicPath: '/runtime/settlements/hearth-01/environment.96cbb666f3d9.webp',
+		file: 'apps/web/static/runtime/settlements/hearth-01/environment.bce003169755.webp',
+		publicPath: '/runtime/settlements/hearth-01/environment.bce003169755.webp',
 		width: 1536,
 		height: 1024,
-		bytes: 296_168,
-		contentHash: '96cbb666f3d97e661be6ab6422309136d5071c78a35917c53c15515b326258c5',
+		bytes: 447_374,
+		contentHash: 'bce003169755e70b215698ba5f68b513802b410ca7e46592b21d425882d9f595',
 		budgetBytes: 1_500_000,
 		budgetStatus: 'within-budget',
 		decodedRgbaBytes: 6_291_456,
@@ -112,57 +112,93 @@ const HEARTH_01_SCENE_SOURCE = {
 	],
 	hotspots: [
 		{
-			buildingId: 'summoning-gate',
-			entranceNodeId: 'gate-court',
-			center: { x: 0.5, y: 0.28 },
-			bounds: { x: 0.36, y: 0.02, width: 0.28, height: 0.31 }
+			facilityId: 'summoning-circle',
+			label: 'Summoning Circle',
+			target: {
+				kind: 'settlement-buildings',
+				buildingIds: ['summoning-gate'],
+				entranceNodeIds: ['gate-court']
+			},
+			center: { x: 0.27, y: 0.3 },
+			bounds: { x: 0.15, y: 0.21, width: 0.24, height: 0.2 },
+			labelAnchor: { x: 0.18, y: 0.24 },
+			labelPlacement: 'above-right',
+			labelPriority: 4
 		},
 		{
-			buildingId: 'kitchen',
-			entranceNodeId: 'kitchen-entry',
-			center: { x: 0.32, y: 0.4 },
-			bounds: { x: 0.05, y: 0.14, width: 0.36, height: 0.34 }
+			facilityId: 'residence',
+			label: 'Residence',
+			target: {
+				kind: 'settlement-buildings',
+				buildingIds: ['kitchen', 'dormitory'],
+				entranceNodeIds: ['kitchen-entry', 'dormitory-entry']
+			},
+			center: { x: 0.25, y: 0.68 },
+			bounds: { x: 0.03, y: 0.46, width: 0.39, height: 0.36 },
+			labelAnchor: { x: 0.12, y: 0.52 },
+			labelPlacement: 'above-right',
+			labelPriority: 2
 		},
 		{
-			buildingId: 'workshop',
-			entranceNodeId: 'workshop-entry',
-			center: { x: 0.67, y: 0.4 },
-			bounds: { x: 0.62, y: 0.15, width: 0.32, height: 0.34 }
+			facilityId: 'training-grounds',
+			label: 'Training Grounds',
+			target: {
+				kind: 'settlement-buildings',
+				buildingIds: ['training-ground'],
+				entranceNodeIds: ['training-entry']
+			},
+			center: { x: 0.77, y: 0.34 },
+			bounds: { x: 0.62, y: 0.17, width: 0.34, height: 0.3 },
+			labelAnchor: { x: 0.87, y: 0.21 },
+			labelPlacement: 'above-left',
+			labelPriority: 3
 		},
 		{
-			buildingId: 'dormitory',
-			entranceNodeId: 'dormitory-entry',
-			center: { x: 0.35, y: 0.68 },
-			bounds: { x: 0.01, y: 0.48, width: 0.4, height: 0.37 }
+			facilityId: 'forge',
+			label: 'Forge',
+			target: {
+				kind: 'settlement-buildings',
+				buildingIds: ['workshop'],
+				entranceNodeIds: ['workshop-entry']
+			},
+			center: { x: 0.76, y: 0.69 },
+			bounds: { x: 0.59, y: 0.47, width: 0.38, height: 0.36 },
+			labelAnchor: { x: 0.89, y: 0.54 },
+			labelPlacement: 'above-left',
+			labelPriority: 1
 		},
 		{
-			buildingId: 'training-ground',
-			entranceNodeId: 'training-entry',
-			center: { x: 0.72, y: 0.68 },
-			bounds: { x: 0.56, y: 0.49, width: 0.4, height: 0.37 }
+			facilityId: 'tower-portal',
+			label: 'Portal',
+			target: { kind: 'village-mode', mode: 'tower' },
+			center: { x: 0.5, y: 0.2 },
+			bounds: { x: 0.4, y: 0.06, width: 0.2, height: 0.24 },
+			labelAnchor: { x: 0.5, y: 0.17 },
+			labelPlacement: 'below-right',
+			labelPriority: 5
 		}
 	],
 	nodeProjections: [
-		{ nodeId: 'gate-dais', point: { x: 0.5, y: 0.25 } },
-		{ nodeId: 'gate-court', point: { x: 0.5, y: 0.35 } },
-		{ nodeId: 'gate-rail', point: { x: 0.47, y: 0.33 } },
-		{ nodeId: 'courtyard-heart', point: { x: 0.5, y: 0.52 } },
-		{ nodeId: 'cistern-steps', point: { x: 0.42, y: 0.56 } },
-		{ nodeId: 'wall-overlook', point: { x: 0.56, y: 0.57 } },
-		{ nodeId: 'kitchen-entry', point: { x: 0.34, y: 0.45 } },
-		{ nodeId: 'kitchen-hearth', point: { x: 0.2, y: 0.35 } },
-		{ nodeId: 'kitchen-table', point: { x: 0.28, y: 0.4 } },
-		{ nodeId: 'dormitory-entry', point: { x: 0.36, y: 0.68 } },
-		{ nodeId: 'dormitory-bunks', point: { x: 0.23, y: 0.7 } },
-		{ nodeId: 'dormitory-nook', point: { x: 0.34, y: 0.75 } },
-		{ nodeId: 'training-entry', point: { x: 0.58, y: 0.63 } },
-		{ nodeId: 'training-ring', point: { x: 0.72, y: 0.7 } },
-		{ nodeId: 'training-rack', point: { x: 0.86, y: 0.58 } },
-		{ nodeId: 'workshop-entry', point: { x: 0.65, y: 0.43 } },
-		{ nodeId: 'workshop-bench', point: { x: 0.75, y: 0.36 } },
-		{ nodeId: 'workshop-forge', point: { x: 0.85, y: 0.3 } }
+		{ nodeId: 'gate-dais', point: { x: 0.27, y: 0.29 } },
+		{ nodeId: 'gate-court', point: { x: 0.33, y: 0.41 } },
+		{ nodeId: 'gate-rail', point: { x: 0.22, y: 0.35 } },
+		{ nodeId: 'courtyard-heart', point: { x: 0.5, y: 0.53 } },
+		{ nodeId: 'cistern-steps', point: { x: 0.45, y: 0.58 } },
+		{ nodeId: 'wall-overlook', point: { x: 0.55, y: 0.42 } },
+		{ nodeId: 'kitchen-entry', point: { x: 0.36, y: 0.63 } },
+		{ nodeId: 'kitchen-hearth', point: { x: 0.2, y: 0.68 } },
+		{ nodeId: 'kitchen-table', point: { x: 0.27, y: 0.72 } },
+		{ nodeId: 'dormitory-entry', point: { x: 0.33, y: 0.67 } },
+		{ nodeId: 'dormitory-bunks', point: { x: 0.2, y: 0.72 } },
+		{ nodeId: 'dormitory-nook', point: { x: 0.29, y: 0.76 } },
+		{ nodeId: 'training-entry', point: { x: 0.66, y: 0.44 } },
+		{ nodeId: 'training-ring', point: { x: 0.77, y: 0.34 } },
+		{ nodeId: 'training-rack', point: { x: 0.86, y: 0.31 } },
+		{ nodeId: 'workshop-entry', point: { x: 0.64, y: 0.64 } },
+		{ nodeId: 'workshop-bench', point: { x: 0.75, y: 0.7 } },
+		{ nodeId: 'workshop-forge', point: { x: 0.82, y: 0.67 } }
 	],
-	sceneHash: 'c88d39611eee5b3939008da8353e3625ac97615c01e24cd9de5c191e80eb06bc'
+	sceneHash: '4dea1551545f6820778eed52e7fd37396124874d2c49b3252ec6a2c307d4d313'
 } as const;
 
 function canonicalJson(value: unknown): string {

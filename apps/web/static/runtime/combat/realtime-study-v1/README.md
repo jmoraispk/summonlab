@@ -1,6 +1,14 @@
 # Realtime combat study v1
 
-Original, prototype-only runtime art produced with the built-in Codex image generator on 2026-09-03.
+Original runtime art produced with the built-in Codex image generator on 2026-09-03. Most actors
+remain prototype-only historical fixtures. The Ruined Threshold environment and well foreground
+are approved for the canonical Floor One automated battlefield; this approval changes metadata,
+not either raster.
+
+Canonical approval IDs:
+
+- `ruined-threshold-automated-combat-approved`
+- `ruined-threshold-well-occluder-approved`
 
 | File | Role | Generation original |
 | --- | --- | --- |

@@ -40,9 +40,7 @@ export const load = (({ params }) => {
 				? {
 						heroes: visualPacketHeroes.map(([name, fileName]) => ({
 							name,
-							image: getWikiAsset(
-								`apps/web/src/routes/living-village-lab/village/cutouts/${fileName}`
-							),
+							image: getWikiAsset(`docs/evidence/living-village-lab-cutouts-v1/${fileName}`),
 							status: 'Retained lab cutout · source in Git history'
 						})),
 						environment: getWikiAsset('assets/settlements/hearth-01/hearth-01-environment-v1.png')

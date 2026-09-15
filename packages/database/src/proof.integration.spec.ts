@@ -70,12 +70,12 @@ describe('summon proof persistence', () => {
 			await privateSql.end({ timeout: 5 });
 		}
 		const engine = await getEngineSnapshot(databaseUrl, runId);
-		if (engine?.state.schemaVersion !== 25) throw new Error('Expected engine-v25 state');
+		if (engine?.state.schemaVersion !== 27) throw new Error('Expected engine-v27 state');
 		expect(engine.state.seed).toBe(derivePrivateEngineSeed(draft.recipe, capabilityEntropy));
 		expect(engine.state.seed).not.toBe(draft.recipe.seed);
 		expect(engine.state).toMatchObject({
-			schemaVersion: 25,
-			contentVersion: 'engine-v25',
+			schemaVersion: 27,
+			contentVersion: 'engine-v27',
 			heroes: {
 				[draft.manifest.characterId]: {
 					mind: draft.mind,
@@ -86,7 +86,7 @@ describe('summon proof persistence', () => {
 		expect(engine.state.heroes[draft.manifest.characterId]?.mind).not.toHaveProperty('aptitudes');
 		await markProofArrival(databaseUrl, runId);
 		const arrived = await getEngineSnapshot(databaseUrl, runId);
-		if (arrived?.state.schemaVersion !== 25) throw new Error('Expected arrived engine-v25 state');
+		if (arrived?.state.schemaVersion !== 27) throw new Error('Expected arrived engine-v27 state');
 		expect(arrived.state.heroes[draft.manifest.characterId]).toMatchObject({
 			location: choice.destination,
 			capabilityProfile: draft.capabilityProfile

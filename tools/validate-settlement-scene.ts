@@ -27,13 +27,17 @@ if (
 	throw new Error('Settlement scene is bound to stale topology');
 }
 
+const settlementHotspots = scene.hotspots.filter(
+	(hotspot) => hotspot.target.kind === 'settlement-buildings'
+);
+
 assertSameSet(
-	scene.hotspots.map((hotspot) => hotspot.buildingId),
+	settlementHotspots.flatMap((hotspot) => hotspot.target.buildingIds),
 	settlement.buildings.map((building) => building.buildingId),
 	'Building hotspot'
 );
 assertSameSet(
-	scene.hotspots.map((hotspot) => hotspot.entranceNodeId),
+	settlementHotspots.flatMap((hotspot) => hotspot.target.entranceNodeIds),
 	settlement.buildings.map((building) => building.entranceNodeId),
 	'Building entrance'
 );
@@ -43,21 +47,22 @@ assertSameSet(
 	'Route node projection'
 );
 
-const hotspotByBuildingId = new Map(scene.hotspots.map((hotspot) => [hotspot.buildingId, hotspot]));
-const gate = hotspotByBuildingId.get('summoning-gate')!;
-const kitchen = hotspotByBuildingId.get('kitchen')!;
-const workshop = hotspotByBuildingId.get('workshop')!;
-const dormitory = hotspotByBuildingId.get('dormitory')!;
-const training = hotspotByBuildingId.get('training-ground')!;
+const hotspotByFacilityId = new Map(scene.hotspots.map((hotspot) => [hotspot.facilityId, hotspot]));
+const circle = hotspotByFacilityId.get('summoning-circle')!;
+const residence = hotspotByFacilityId.get('residence')!;
+const training = hotspotByFacilityId.get('training-grounds')!;
+const forge = hotspotByFacilityId.get('forge')!;
+const portal = hotspotByFacilityId.get('tower-portal')!;
 if (
-	gate.center.y >= kitchen.center.y ||
-	gate.center.y >= workshop.center.y ||
-	kitchen.center.x >= workshop.center.x ||
-	dormitory.center.y <= kitchen.center.y ||
-	training.center.y <= workshop.center.y ||
-	dormitory.center.x >= training.center.x
+	circle.center.x >= 0.5 ||
+	residence.center.y <= circle.center.y ||
+	training.center.x <= 0.5 ||
+	forge.center.y <= training.center.y ||
+	portal.center.y >=
+		Math.min(circle.center.y, residence.center.y, training.center.y, forge.center.y) ||
+	Math.abs(portal.center.x - 0.5) > 0.08
 ) {
-	throw new Error('Settlement scene no longer matches the reviewed five-place compass layout');
+	throw new Error('Settlement scene no longer matches the accepted five-place threshold layout');
 }
 
 for (const reference of scene.generation.references) {

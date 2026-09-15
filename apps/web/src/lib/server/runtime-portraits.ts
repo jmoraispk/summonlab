@@ -1,5 +1,7 @@
 import { SummonableHeroRuntimeManifestSchema, type RuntimeVisualUsage } from '@summonlab/contracts';
 
+export { runtimeCombatBindingFor } from '../tower-combat-content';
+
 import summonableHeroRuntimeManifestSource from '../../../static/runtime/summonable-heroes-v1/manifest.json';
 
 const summonableHeroRuntimeManifest = SummonableHeroRuntimeManifestSchema.parse(

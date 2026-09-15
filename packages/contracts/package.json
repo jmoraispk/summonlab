@@ -6,6 +6,7 @@
 	"sideEffects": false,
 	"exports": {
 		".": "./src/index.ts",
+		"./exploration": "./src/exploration.ts",
 		"./exploration-combat": "./src/exploration-combat.ts"
 	},
 	"scripts": {

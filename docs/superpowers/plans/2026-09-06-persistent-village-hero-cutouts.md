@@ -658,7 +658,7 @@
   ```
 
   Verify the server listens on `0.0.0.0`. Share the matching
-  collaborator URL by replacing only `localhost` with `10.110.24.218` in the exact preview URL,
+  collaborator URL by replacing only `localhost` with `10.110.24.122` in the exact preview URL,
   preserving the actual port, path, query string, and run ID printed by the setup flow.
 
 - [ ] **Step 7: Commit and push approved runtime integration**

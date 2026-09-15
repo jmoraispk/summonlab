@@ -4,11 +4,13 @@ import type {
 	SettlementSceneDefinition
 } from '@summonlab/contracts';
 
-import type { VillageResident } from './village-shell';
+import type { CityFacility } from './city';
 
-export interface VillageSceneResident {
+export interface VillageSceneResidentProjection<
+	TResident extends { readonly heroId: string; readonly name: string }
+> {
 	readonly occupant: SettlementPresentation['occupants'][number];
-	readonly resident: VillageResident | null;
+	readonly resident: TResident | null;
 	readonly point: NormalizedScenePoint;
 	readonly clusterOffsetRem: number;
 	readonly clusterHalfRem: number;
@@ -19,11 +21,74 @@ const MINIMUM_SCENE_X = 0.08;
 const MAXIMUM_SCENE_X = 0.92;
 const CLUSTER_SLOT_REM = 7.5;
 
-export function projectVillageSceneResidents(
+export function projectVillageFacilities(
+	scene: SettlementSceneDefinition,
+	presentation: SettlementPresentation
+): readonly CityFacility[] {
+	const buildings = new Map(
+		presentation.buildings.map((building) => [building.buildingId, building])
+	);
+
+	return scene.hotspots.map((hotspot) => {
+		if (hotspot.target.kind === 'village-mode') {
+			return {
+				hotspot,
+				facilityId: hotspot.facilityId,
+				label: hotspot.facilityId === 'tower-portal' ? 'Portal' : hotspot.label,
+				buildingIds: [],
+				occupantHeroIds: [],
+				occupantCount: 0,
+				assignmentCount: 0,
+				assignmentCapacity: 0,
+				powerState: 'destination',
+				hrefMode: hotspot.target.mode
+			};
+		}
+
+		const boundBuildings = hotspot.target.buildingIds.map((buildingId) =>
+			buildings.get(buildingId)
+		);
+		const missingBinding = boundBuildings.some((building) => building === undefined);
+		const knownBuildings = boundBuildings.filter((building) => building !== undefined);
+		const occupantHeroIds = [
+			...new Set(knownBuildings.flatMap((building) => building.occupantHeroIds))
+		];
+		const powerState = missingBinding
+			? 'unknown'
+			: knownBuildings.some((building) => building.powerState === 'powered')
+				? 'powered'
+				: knownBuildings.some((building) => building.powerState === 'reserve')
+					? 'reserve'
+					: 'unpowered';
+
+		return {
+			hotspot,
+			facilityId: hotspot.facilityId,
+			label: hotspot.facilityId === 'tower-portal' ? 'Portal' : hotspot.label,
+			buildingIds: hotspot.target.buildingIds,
+			occupantHeroIds,
+			occupantCount: occupantHeroIds.length,
+			assignmentCount: knownBuildings.reduce(
+				(total, building) => total + building.assignmentCount,
+				0
+			),
+			assignmentCapacity: knownBuildings.reduce(
+				(total, building) => total + building.assignmentCapacity,
+				0
+			),
+			powerState,
+			hrefMode: null
+		};
+	});
+}
+
+export function projectVillageSceneResidents<
+	TResident extends { readonly heroId: string; readonly name: string }
+>(
 	scene: SettlementSceneDefinition,
 	presentation: SettlementPresentation,
-	residents: readonly VillageResident[]
-): readonly VillageSceneResident[] {
+	residents: readonly TResident[]
+): readonly VillageSceneResidentProjection<TResident>[] {
 	const points = new Map(scene.nodeProjections.map((entry) => [entry.nodeId, entry.point]));
 	const residentsByHeroId = new Map(residents.map((resident) => [resident.heroId, resident]));
 	const basePoints = presentation.occupants.map((occupant) => pointAlongRoute(occupant, points));

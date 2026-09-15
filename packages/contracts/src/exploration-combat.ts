@@ -3,7 +3,7 @@ import { z } from 'zod';
 import { ContentVersionSchema, IsoDateTimeSchema, StateHashSchema } from './shared.js';
 
 const SlugSchema = z.string().regex(/^[a-z][a-z0-9-]{2,119}$/u);
-const UnitIdSchema = z.string().regex(/^[a-z][a-z0-9-]{2,119}$/u);
+const UnitIdSchema = z.union([SlugSchema, z.string().uuid()]);
 export const AssetStatusSchema = z.enum(['production', 'fixture']);
 export const CombatAssetApprovalStatusSchema = z.enum(['approved', 'fixture-only']);
 
@@ -82,7 +82,7 @@ export const DeploymentSchema = z
 export const CombatPresentationBindingSchema = z
 	.object({
 		combatAssetBinding: CombatRasterBindingSchema,
-		motionPackBinding: CombatMotionPackBindingSchema,
+		motionPackBinding: CombatMotionPackBindingSchema.nullable(),
 		visualTuning: z
 			.object({
 				bodyOffsetY: z.number().finite().min(-200).max(200),
@@ -224,7 +224,7 @@ const ExplorationEncounterRequestBaseSchema = z
 function hasFixtureBinding(presentation: z.infer<typeof CombatPresentationBindingSchema>) {
 	return (
 		presentation.combatAssetBinding.approvalStatus === 'fixture-only' ||
-		presentation.motionPackBinding.approvalStatus === 'fixture-only'
+		presentation.motionPackBinding?.approvalStatus === 'fixture-only'
 	);
 }
 

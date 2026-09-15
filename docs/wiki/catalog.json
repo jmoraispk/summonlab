@@ -1,6 +1,6 @@
 {
   "schemaVersion": "summonlab-wiki-catalog-v1",
-  "lastReviewed": "2026-09-04",
+  "lastReviewed": "2026-09-12",
   "entries": [
     {
       "wikiId": "wiki.root",
@@ -382,8 +382,8 @@
       "spoilerScope": "internal"
     },
     {
-      "wikiId": "research.attribute-systems.overgeared.equipment-catalog",
-      "path": "docs/wiki/research/attribute-systems/overgeared/equipment-catalog.md",
+      "wikiId": "research.attribute-systems.overgeared.equipment-catalogue",
+      "path": "docs/wiki/research/attribute-systems/overgeared/equipment-catalogue.md",
       "pageType": "research",
       "owner": "inventory",
       "designStatus": "accepted",
@@ -634,8 +634,8 @@
       "spoilerScope": "discoverable"
     },
     {
-      "wikiId": "mechanics.equipment.armor-shields",
-      "path": "docs/wiki/mechanics/equipment/armor-and-shields.md",
+      "wikiId": "mechanics.equipment.armour-shields",
+      "path": "docs/wiki/mechanics/equipment/armour-and-shields.md",
       "pageType": "equipment-catalog",
       "owner": "inventory",
       "designStatus": "accepted",
@@ -750,8 +750,8 @@
       "owner": "skill-catalog",
       "designStatus": "accepted",
       "implementationStatus": "implemented",
-      "visualStatus": "approved",
-      "spoilerScope": "public"
+			"visualStatus": "approved",
+			"spoilerScope": "public"
     },
     {
       "wikiId": "art.hero-rarity-frames",
@@ -789,34 +789,34 @@
           "status": "candidate"
         },
         {
-          "assetKey": "dara-zev-lab-cutout-v1",
-          "file": "apps/web/src/routes/living-village-lab/village/cutouts/dara-zev.png",
-          "status": "candidate"
+		  "assetKey": "dara-zev-lab-cutout-v1",
+		  "file": "docs/evidence/living-village-lab-cutouts-v1/dara-zev.png",
+		  "status": "candidate"
         },
         {
-          "assetKey": "mara-vey-lab-cutout-v1",
-          "file": "apps/web/src/routes/living-village-lab/village/cutouts/mara-vey.png",
-          "status": "candidate"
+		  "assetKey": "mara-vey-lab-cutout-v1",
+		  "file": "docs/evidence/living-village-lab-cutouts-v1/mara-vey.png",
+		  "status": "candidate"
         },
         {
-          "assetKey": "jori-daro-lab-cutout-v1",
-          "file": "apps/web/src/routes/living-village-lab/village/cutouts/jori-daro.png",
-          "status": "candidate"
+		  "assetKey": "jori-daro-lab-cutout-v1",
+		  "file": "docs/evidence/living-village-lab-cutouts-v1/jori-daro.png",
+		  "status": "candidate"
         },
         {
-          "assetKey": "kira-toren-lab-cutout-v1",
-          "file": "apps/web/src/routes/living-village-lab/village/cutouts/kira-toren.png",
-          "status": "candidate"
+		  "assetKey": "kira-toren-lab-cutout-v1",
+		  "file": "docs/evidence/living-village-lab-cutouts-v1/kira-toren.png",
+		  "status": "candidate"
         },
         {
-          "assetKey": "iven-orra-lab-cutout-v1",
-          "file": "apps/web/src/routes/living-village-lab/village/cutouts/iven-orra.png",
-          "status": "candidate"
+		  "assetKey": "iven-orra-lab-cutout-v1",
+		  "file": "docs/evidence/living-village-lab-cutouts-v1/iven-orra.png",
+		  "status": "candidate"
         },
         {
-          "assetKey": "remy-nahl-lab-cutout-v1",
-          "file": "apps/web/src/routes/living-village-lab/village/cutouts/remy-nahl.png",
-          "status": "candidate"
+		  "assetKey": "remy-nahl-lab-cutout-v1",
+		  "file": "docs/evidence/living-village-lab-cutouts-v1/remy-nahl.png",
+		  "status": "candidate"
         }
       ]
     },
@@ -1236,8 +1236,8 @@
       "pageType": "monster-reference",
       "owner": "visuals-content",
       "designStatus": "accepted",
-      "implementationStatus": "complete",
-      "visualStatus": "not-required",
+		"implementationStatus": "verified",
+		"visualStatus": "none",
       "spoilerScope": "discoverable"
     },
     {
@@ -2741,8 +2741,8 @@
       "spoilerScope": "discoverable"
     },
     {
-      "wikiId": "monster.wolf-gray-wolf",
-      "path": "docs/wiki/creatures/monsters/wolf-gray-wolf.md",
+      "wikiId": "monster.wolf-grey-wolf",
+      "path": "docs/wiki/creatures/monsters/wolf-grey-wolf.md",
       "pageType": "monster-entry",
       "owner": "visuals-content",
       "designStatus": "accepted",

@@ -1005,7 +1005,7 @@ Run from the repository root:
 pnpm --filter @summonlab/web dev --host 0.0.0.0 --port 5173
 ```
 
-Open `http://10.110.24.218:5173/wiki/mechanics/skills`. Capture desktop (1440×1000) and mobile
+Open `http://10.110.24.122:5173/wiki/mechanics/skills`. Capture desktop (1440×1000) and mobile
 (390×844) screenshots. Inspect Martial, Magical, and Craft states and verify family cards, labels,
 Two Blades ownership, Elemental filtering, canonical Markdown placement, focus rings, and overflow.
 

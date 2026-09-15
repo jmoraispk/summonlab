@@ -1,0 +1,98 @@
+import { describe, expect, it } from 'vitest';
+
+import {
+	WELL_OBSTACLE,
+	arenaBounds,
+	clampToArena,
+	engagementPoint,
+	engagementRange,
+	isInsideObstacle,
+	pushOutsideObstacle,
+	routeAroundObstacle,
+	segmentCrossesObstacle,
+	type SpatialActor
+} from './combat-spatial';
+
+const rat = (id: string, x: number, y: number): SpatialActor => ({
+	id,
+	team: 'enemies',
+	role: 'swarm',
+	range: 0.062,
+	health: 58,
+	x,
+	y
+});
+
+const hero: SpatialActor = {
+	id: 'iron-guardian',
+	team: 'heroes',
+	role: 'guardian',
+	range: 0.072,
+	health: 190,
+	x: 0.5,
+	y: 0.6
+};
+
+describe('combat spatial layout', () => {
+	it('routes a direct crossing toward a deterministic side waypoint', () => {
+		const start = { x: WELL_OBSTACLE.centerX, y: 0.2 };
+		const goal = { x: WELL_OBSTACLE.centerX, y: 0.7 };
+		expect(segmentCrossesObstacle(start, goal)).toBe(true);
+
+		const waypoint = routeAroundObstacle(start, goal, 'plague-rat-1');
+		expect(waypoint).toEqual(routeAroundObstacle(start, goal, 'plague-rat-1'));
+		expect(Math.abs(waypoint.x - WELL_OBSTACLE.centerX)).toBeGreaterThan(WELL_OBSTACLE.radiusX);
+	});
+
+	it('projects an actor out of the solid well footprint', () => {
+		const inside = { x: WELL_OBSTACLE.centerX, y: WELL_OBSTACLE.centerY };
+		expect(isInsideObstacle(inside)).toBe(true);
+		expect(isInsideObstacle(pushOutsideObstacle(inside, 0.01))).toBe(false);
+	});
+
+	it('reserves visual clearance beyond the well stone rim', () => {
+		expect(
+			isInsideObstacle({
+				x: WELL_OBSTACLE.centerX + 0.12,
+				y: WELL_OBSTACLE.centerY
+			})
+		).toBe(true);
+		expect(
+			isInsideObstacle({
+				x: WELL_OBSTACLE.centerX,
+				y: WELL_OBSTACLE.centerY + 0.085
+			})
+		).toBe(true);
+	});
+
+	it('assigns distinct engagement positions around one target', () => {
+		const points = [1, 2, 3, 4].map((index) =>
+			engagementPoint(rat(`plague-rat-${index}`, 0, 0), hero)
+		);
+		expect(new Set(points.map((point) => `${point.x.toFixed(3)}:${point.y.toFixed(3)}`)).size).toBe(
+			4
+		);
+	});
+
+	it('reserves more contact space when a brute engages a hero', () => {
+		const brute: SpatialActor = {
+			...rat('rat-brute', 0.5, 0.4),
+			role: 'brute',
+			range: 0.082
+		};
+		expect(engagementRange(brute, hero)).toBeGreaterThan(hero.range);
+	});
+
+	it('keeps large actors farther inside the visible stage than small rats', () => {
+		const brute: SpatialActor = {
+			...rat('rat-brute', 0.99, 0.99),
+			role: 'brute'
+		};
+		const clampedBrute = clampToArena(brute, brute);
+		const clampedRat = clampToArena(rat('plague-rat-1', 0.99, 0.99), { x: 0.99, y: 0.99 });
+
+		expect(clampedBrute.x).toBe(arenaBounds(brute).maximumX);
+		expect(clampedRat.x).toBe(arenaBounds(rat('plague-rat-1', 0, 0)).maximumX);
+		expect(clampedBrute.x).toBeLessThan(clampedRat.x);
+	});
+});

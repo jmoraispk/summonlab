@@ -267,7 +267,12 @@ async function insertRun(runId: string): Promise<void> {
 	);
 	const draft = await draftPromise;
 	const initial = EngineGameStateV25Schema.parse(
-		createBootstrapEngine({ runId, seed: `database-readiness-${runId}`, draft }).snapshot.state
+		createBootstrapEngine({
+			runId,
+			seed: `database-readiness-${runId}`,
+			draft,
+			developmentEngineVersion: 25
+		}).snapshot.state
 	);
 	const heroId = Object.keys(initial.heroes)[0]!;
 	const prepared = applyCommand(initial, {

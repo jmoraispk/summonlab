@@ -27,7 +27,7 @@
 			"references/species-grammar.md": "4971ebab6410fd251b002e43357ecffd892ce7456765b8f124e1ffa092a26c3f",
 			"references/target-schema.md": "ebd0afd360e83eda95d374f2145c9ea2a302aae017302d43434cccec44ed7494",
 			"scripts/anchored_io.py": "da56c248bc23798a86b2de778fa763b17d340be05d3d05b856d636ee614419de",
-			"scripts/family_dispatch_gate.mjs": "9dd8399999d3f8bb1b5c2387888e773cb59d5faa669500b0abb529f684a4c8a4",
+			"scripts/family_dispatch_gate.mjs": "7ae45abe005f6a0bf1a40be26ab3fc41c9a4fa425627fc1c7179294c622d83e9",
 			"scripts/persist_family_candidate.py": "5d1872e4c4a79d014867bff6138026b27d960237bbb749e2d764b825c68b143b",
 			"scripts/render_prompt.py": "5e6ca7c0dc4f0578c81fac1b910a299fba4072596b404c926ee565961baf303f",
 			"scripts/validate_target.py": "6934a01efbb18fcf9b1188ce105fa9d8414f1358505f899778e71e7f8d7c07c0",
@@ -41,12 +41,12 @@
 	},
 	"sealedLauncher": {
 		"node": {
-			"path": "/home/joao/.nvm/versions/node/v24.19.0/bin/node",
-			"sha256": "bc17c508ffeed0ec622934f9b7fa72f8e78da65350e63c3eceb56fa688aa5e12"
+			"path": "/home/joao/.npm/_npx/20e0a4402818d491/node_modules/node/bin/node",
+			"sha256": "bf9112eb83a827dc9f9c8d19bb7bddcbf00f7b2fedae18fdcaee05406981f20a"
 		},
 		"bundle": {
 			"path": "scripts/family_dispatch_gate.mjs",
-			"sha256": "9dd8399999d3f8bb1b5c2387888e773cb59d5faa669500b0abb529f684a4c8a4"
+			"sha256": "7ae45abe005f6a0bf1a40be26ab3fc41c9a4fa425627fc1c7179294c622d83e9"
 		},
 		"sources": [
 			{
@@ -55,11 +55,11 @@
 			},
 			{
 				"path": "tools/family-affinity-production-lib.ts",
-				"sha256": "aa1441ce539ddc92af377ffc96abffd7bc2a574fede999f4ff9c1d8d408d5251"
+				"sha256": "50d9bb35dbbf802698db31c63ae4b7ba5211c9510c01df504af37726d663b863"
 			},
 			{
 				"path": "package.json",
-				"sha256": "b6ade079ae627659b519ed89228239df6c63a9c31a7d9fac72c6d16308b9fc53"
+				"sha256": "5f5c1e6e079173f47586f712adcf059788cdef2bc590e2fc01d5f325667ee030"
 			},
 			{
 				"path": "pnpm-lock.yaml",

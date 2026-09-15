@@ -23,7 +23,7 @@
 - Keep status `approved-visual-source` distinct from runtime status `not-runtime-ready`.
 - Do not change engine contracts, affinity contracts, application code, or shared runtime catalogs.
 - Delete the five versioned packet roots only after the canonical 48-image checksum and structural validation passes.
-- Bind preview servers to `0.0.0.0` and publish links with `10.110.24.218`.
+- Bind preview servers to `0.0.0.0` and publish links with `10.110.24.122`.
 
 ## File map
 
@@ -421,7 +421,7 @@ python3 -m http.server 4177 --bind 0.0.0.0
 Verify HTTP 200 for:
 
 ```text
-http://10.110.24.218:4177/assets/heroes/visuals/rarity-frames/review/
+http://10.110.24.122:4177/assets/heroes/visuals/rarity-frames/review/
 ```
 
 Inspect Legacy Neutral first, six full sheets, all seven individuals per family, legible badges,
@@ -544,7 +544,7 @@ the approved design/plan, and the asset-specific validator/tests.
 - [ ] **Step 4: Verify the remote review URL**
 
 Confirm HTTP 200 for the canonical review page and all 48 canonical PNG URLs through
-`10.110.24.218:4177`. Keep the server bound to `0.0.0.0` for owner inspection.
+`10.110.24.122:4177`. Keep the server bound to `0.0.0.0` for owner inspection.
 
 - [ ] **Step 5: Push and report integration readiness**
 

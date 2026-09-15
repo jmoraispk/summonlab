@@ -17,3 +17,4 @@ export * from './progression-rules.js';
 export * from './tower-band-01.js';
 export * from './tower-band-01-story.js';
 export * from './tower-floor-01.js';
+export * from './tower-floor-01-exploration.js';

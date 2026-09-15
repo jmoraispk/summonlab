@@ -1,6 +1,11 @@
 # Observatory art pilot provenance
 
-Status: runtime visual pilot; not an approved production animation pack.
+Status: runtime visual pilot; not an approved production animation pack. The existing Sprout Goblin
+raster is approved as the initial shared Floor One goblin presentation for canonical automated
+combat. It has no approved motion pack, so the runtime must use whole-sprite motion. This approval
+changes metadata only and preserves the recorded SHA-256.
+
+Canonical approval ID: `floor-one-goblin-automated-combat-approved`.
 
 Generated with the built-in Codex image-generation tool on 2026-09-02. The accepted phone combat
 direction was the visual reference for all four assets. Dara Zev's owner-playtest identity anchor
