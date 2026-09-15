@@ -686,6 +686,15 @@ describe('integrity binding classification', () => {
 		expect(
 			runtimeAndEngineIntegrityOwner.owns('packages/engine/src/compatibility/replay-vectors.ts', '')
 		).toBe(true);
+		expect(
+			runtimeAndEngineIntegrityOwner.owns('apps/web/src/lib/server/tower-encounter-request.ts', '')
+		).toBe(true);
+		expect(
+			runtimeAndEngineIntegrityOwner.owns(
+				'packages/database/src/exploration.integration.spec.ts',
+				''
+			)
+		).toBe(true);
 		expect(runtimeAndEngineIntegrityOwner.owns('packages/policies/src/openai.spec.ts', '')).toBe(
 			true
 		);
