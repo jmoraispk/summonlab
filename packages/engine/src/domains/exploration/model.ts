@@ -1,6 +1,7 @@
 import type {
 	ExplorationAttemptState,
 	ExplorationFloorDefinition,
+	ExplorationTravelResult,
 	ExplorationTileDefinition,
 	ExplorationTileProjection
 } from '@summonlab/contracts/exploration';
@@ -24,12 +25,10 @@ export type ExplorationReachableDestination = Readonly<{
 	pathTileIds: readonly string[];
 }>;
 
-export type ExplorationTravelPlan = Readonly<{
-	requestedTileId: string;
-	destinationTileId: string;
-	pathTileIds: readonly string[];
-	stopReason: 'destination' | 'interaction';
-}>;
+export type ExplorationTravelPlan = ExplorationTravelResult;
+
+export type SafeExplorationDestination = ExplorationReachableDestination &
+	Readonly<{ intent: 'travel' | 'encounter' }>;
 
 export type ExplorationWindowProjection = Readonly<{
 	floorId: string;
@@ -72,6 +71,23 @@ function neighboringTiles(
 		byCoordinate.get(coordinateKey(tile.row + 1, tile.column)),
 		byCoordinate.get(coordinateKey(tile.row, tile.column - 1))
 	].filter((candidate): candidate is ExplorationTileDefinition => candidate !== undefined);
+}
+
+function touchingTileIds(
+	floor: ExplorationFloorDefinition,
+	tile: ExplorationTileDefinition
+): ReadonlySet<string> {
+	const { byCoordinate } = tileIndexes(floor);
+	const touching = new Set<string>();
+	for (let rowOffset = -1; rowOffset <= 1; rowOffset += 1) {
+		for (let columnOffset = -1; columnOffset <= 1; columnOffset += 1) {
+			const candidate = byCoordinate.get(
+				coordinateKey(tile.row + rowOffset, tile.column + columnOffset)
+			);
+			if (candidate) touching.add(candidate.tileId);
+		}
+	}
+	return touching;
 }
 
 function revealRadius(
@@ -191,13 +207,108 @@ export function planExplorationTravel(
 	requestedTileId: string,
 	maxSteps = 5
 ): ExplorationTravelPlan {
-	const destination = reachableExplorationDestinations(floor, state, maxSteps).find(
-		(candidate) => candidate.tileId === requestedTileId
-	);
-	if (!destination) throw new Error(`Exploration destination is not reachable: ${requestedTileId}`);
+	if (maxSteps < 1 || (state.status !== 'exploring' && state.status !== 'returning')) {
+		throw new Error(`No safe route to this tile: ${requestedTileId}`);
+	}
+	const { byId } = tileIndexes(floor);
+	const start = byId.get(state.positionTileId);
+	const requested = byId.get(requestedTileId);
+	const revealed = new Set(state.revealedTileIds);
+	if (!start || !requested?.walkable || !revealed.has(requestedTileId) || start === requested) {
+		throw new Error(`No safe route to this tile: ${requestedTileId}`);
+	}
 
-	const firstInteractionIndex = destination.pathTileIds.findIndex(
-		(tileId) => floor.tiles.find((tile) => tile.tileId === tileId)?.interaction !== null
+	const resolved = new Set(state.resolvedInteractionTileIds);
+	const unresolvedEncounters = floor.tiles.filter(
+		(tile) => tile.interaction?.kind === 'encounter' && !resolved.has(tile.tileId)
+	);
+	const requestedEncounter =
+		requested.interaction?.kind === 'encounter' && !resolved.has(requested.tileId)
+			? requested
+			: null;
+	const targetDanger = requestedEncounter ? touchingTileIds(floor, requestedEncounter) : new Set();
+	const blockedDanger = new Set<string>();
+	for (const encounter of unresolvedEncounters) {
+		if (encounter.tileId === requestedEncounter?.tileId) continue;
+		for (const tileId of touchingTileIds(floor, encounter)) blockedDanger.add(tileId);
+	}
+	if (!requestedEncounter) {
+		for (const encounter of unresolvedEncounters) {
+			for (const tileId of touchingTileIds(floor, encounter)) blockedDanger.add(tileId);
+		}
+	}
+
+	type SearchNode = {
+		tile: ExplorationTileDefinition;
+		pathTileIds: string[];
+		lastDirection: ExplorationLegalStep['direction'] | null;
+		turns: number;
+		dangerSteps: number;
+		directionTrace: string;
+	};
+	const directionRank: Record<ExplorationLegalStep['direction'], string> = {
+		north: '0',
+		east: '1',
+		south: '2',
+		west: '3'
+	};
+	const compare = (left: SearchNode, right: SearchNode) =>
+		left.pathTileIds.length - right.pathTileIds.length ||
+		left.dangerSteps - right.dangerSteps ||
+		left.turns - right.turns ||
+		left.directionTrace.localeCompare(right.directionTrace);
+	const frontier: SearchNode[] = [
+		{
+			tile: start,
+			pathTileIds: [],
+			lastDirection: null,
+			turns: 0,
+			dangerSteps: 0,
+			directionTrace: ''
+		}
+	];
+	const best = new Map<string, SearchNode>();
+	let destination: SearchNode | undefined;
+
+	while (frontier.length > 0) {
+		frontier.sort(compare);
+		const current = frontier.shift()!;
+		if (current.tile.tileId === requestedTileId) {
+			destination = current;
+			break;
+		}
+		if (current.pathTileIds.length >= maxSteps) continue;
+
+		for (const neighbor of neighboringTiles(floor, current.tile)) {
+			if (!neighbor.walkable || !revealed.has(neighbor.tileId) || blockedDanger.has(neighbor.tileId)) {
+				continue;
+			}
+			const direction = directionBetween(current.tile, neighbor);
+			const candidate: SearchNode = {
+				tile: neighbor,
+				pathTileIds: [...current.pathTileIds, neighbor.tileId],
+				lastDirection: direction,
+				turns:
+					current.turns +
+					(current.lastDirection !== null && current.lastDirection !== direction ? 1 : 0),
+				dangerSteps: current.dangerSteps + (targetDanger.has(neighbor.tileId) ? 1 : 0),
+				directionTrace: `${current.directionTrace}${directionRank[direction]}`
+			};
+			const key = `${neighbor.tileId}:${direction}`;
+			const previous = best.get(key);
+			if (!previous || compare(candidate, previous) < 0) {
+				best.set(key, candidate);
+				frontier.push(candidate);
+			}
+		}
+	}
+
+	if (!destination) throw new Error(`No safe route to this tile: ${requestedTileId}`);
+
+	const firstInteractionIndex = destination.pathTileIds.findIndex((tileId) => {
+		const tile = byId.get(tileId);
+		return tile?.interaction !== null && tile?.interaction !== undefined && !resolved.has(tileId);
+	}
 	);
 	const pathTileIds =
 		firstInteractionIndex === -1
@@ -210,6 +321,58 @@ export function planExplorationTravel(
 		pathTileIds,
 		stopReason: firstInteractionIndex === -1 ? 'destination' : 'interaction'
 	};
+}
+
+export function safeExplorationDestinations(
+	floor: ExplorationFloorDefinition,
+	state: ExplorationAttemptState
+): readonly SafeExplorationDestination[] {
+	if (state.status !== 'exploring' && state.status !== 'returning') return [];
+	const revealed = new Set(state.revealedTileIds);
+	return floor.tiles.flatMap((tile) => {
+		if (!tile.walkable || !revealed.has(tile.tileId) || tile.tileId === state.positionTileId) return [];
+		try {
+			const plan = planExplorationTravel(floor, state, tile.tileId, floor.tiles.length);
+			return [
+				{
+					tileId: tile.tileId,
+					row: tile.row,
+					column: tile.column,
+					zoneLabel: tile.zoneLabel,
+					distance: plan.pathTileIds.length,
+					pathTileIds: plan.pathTileIds,
+					intent:
+						tile.interaction?.kind === 'encounter' &&
+						!state.resolvedInteractionTileIds.includes(tile.tileId)
+							? ('encounter' as const)
+							: ('travel' as const)
+				}
+			];
+		} catch {
+			return [];
+		}
+	});
+}
+
+export function applyExplorationTravel(
+	floor: ExplorationFloorDefinition,
+	state: ExplorationAttemptState,
+	pathTileIds: readonly string[]
+): ExplorationAttemptState {
+	if (pathTileIds.length === 0) throw new Error('Exploration travel requires at least one tile');
+	let next = state;
+	for (const [index, tileId] of pathTileIds.entries()) {
+		const tile = floor.tiles.find((candidate) => candidate.tileId === tileId);
+		const unresolvedInteraction =
+			tile?.interaction !== null &&
+			tile?.interaction !== undefined &&
+			!next.resolvedInteractionTileIds.includes(tileId);
+		next = stepExploration(floor, next, tileId);
+		if (unresolvedInteraction && index < pathTileIds.length - 1) {
+			throw new Error('Exploration travel must stop at the first unresolved interaction');
+		}
+	}
+	return next;
 }
 
 export function stepExploration(

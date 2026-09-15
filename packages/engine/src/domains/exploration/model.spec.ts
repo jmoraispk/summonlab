@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest';
 
 import {
 	createExplorationAttempt,
+	applyExplorationTravel,
 	legalExplorationSteps,
 	planExplorationTravel,
 	projectExplorationWindow,
@@ -21,6 +22,16 @@ function attempt() {
 		partyHeroIds: ['hero-dara-zev', 'hero-mara-vey'],
 		leaderHeroId: 'hero-dara-zev'
 	});
+}
+
+function revealedAttempt() {
+	return {
+		...attempt(),
+		revealedTileIds: floor.tiles.map((tile) => tile.tileId),
+		resolvedInteractionTileIds: floor.tiles
+			.filter((tile) => tile.interaction !== null && tile.interaction.kind !== 'encounter')
+			.map((tile) => tile.tileId)
+	};
 }
 
 describe('exploration movement model', () => {
@@ -55,6 +66,47 @@ describe('exploration movement model', () => {
 			pathTileIds: ['f001-r015-c005', 'f001-r014-c005', 'f001-r013-c005'],
 			stopReason: 'interaction'
 		});
+	});
+
+	it('rejects ordinary destinations touching an unresolved encounter', () => {
+		for (const tileId of ['f001-r006-c005', 'f001-r006-c004']) {
+			expect(() => planExplorationTravel(floor, revealedAttempt(), tileId, 99)).toThrow(
+				'No safe route to this tile'
+			);
+		}
+	});
+
+	it('allows the minimum final approach when the encounter itself is clicked', () => {
+		const plan = planExplorationTravel(floor, revealedAttempt(), 'f001-r005-c005', 99);
+
+		expect(plan).toMatchObject({
+			requestedTileId: 'f001-r005-c005',
+			destinationTileId: 'f001-r005-c005',
+			stopReason: 'interaction'
+		});
+		expect(plan.pathTileIds.slice(-2)).toEqual(['f001-r006-c005', 'f001-r005-c005']);
+	});
+
+	it('applies an accepted route exactly like repeated legal steps', () => {
+		const path = ['f001-r015-c005', 'f001-r014-c005', 'f001-r013-c005'];
+		const applied = applyExplorationTravel(floor, attempt(), path);
+		const repeated = path.reduce(
+			(state, tileId) => stepExploration(floor, state, tileId),
+			attempt()
+		);
+
+		expect(applied).toEqual(repeated);
+	});
+
+	it('rejects accepted route suffixes after an unresolved interaction', () => {
+		expect(() =>
+			applyExplorationTravel(floor, attempt(), [
+				'f001-r015-c005',
+				'f001-r014-c005',
+				'f001-r013-c005',
+				'f001-r012-c005'
+			])
+		).toThrow('Exploration travel must stop at the first unresolved interaction');
 	});
 
 	it('moves one orthogonal tile and rejects blocked, hidden, or non-adjacent destinations', () => {
