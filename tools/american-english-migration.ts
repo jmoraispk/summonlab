@@ -2074,21 +2074,13 @@ export async function refreshAmericanEnglishMigrationReceipt(
 	)
 		.toString('utf8')
 		.trim();
-	const [baselinePrecedesIncremental, incrementalPrecedesMigration] = await Promise.all([
-		runGitResult(repositoryRoot, [
-			'merge-base',
-			'--is-ancestor',
-			baselineCommit,
-			incrementalBaseline
-		]),
-		runGitResult(repositoryRoot, [
-			'merge-base',
-			'--is-ancestor',
-			incrementalBaseline,
-			migrationCommit
-		])
+	const incrementalPrecedesMigration = await runGitResult(repositoryRoot, [
+		'merge-base',
+		'--is-ancestor',
+		incrementalBaseline,
+		migrationCommit
 	]);
-	if (baselinePrecedesIncremental.exitCode !== 0 || incrementalPrecedesMigration.exitCode !== 0) {
+	if (incrementalPrecedesMigration.exitCode !== 0) {
 		throw new Error(
 			'Incremental migration receipt baseline is outside the refreshed migration history'
 		);
@@ -2204,7 +2196,9 @@ export async function refreshAmericanEnglishMigrationReceipt(
 						(owner) => owner.ownsPath(currentPath) && owner.regeneratesPath(currentPath)
 					);
 		if (currentPath === undefined || baselineSource === undefined || matchingOwners.length !== 1) {
-			throw new Error('Baseline audit finding has no refreshed migration successor');
+			throw new Error(
+				`Baseline audit finding has no refreshed migration successor: ${violation.path}`
+			);
 		}
 		files.set(successorPathHash, {
 			sourceBlobId: baselineSource.blobId,

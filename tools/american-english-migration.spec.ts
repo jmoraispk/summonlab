@@ -250,8 +250,12 @@ describe('rebased migration receipt refresh', () => {
 		await mkdir(path.dirname(path.join(repository.root, rebasedOwnerPath)), { recursive: true });
 		await writeFile(path.join(repository.root, rebasedOwnerPath), `${oldGray} owner output\n`);
 		const newBaseline = commitAll(repository.root, 'new integration base');
+		git(repository.root, ['checkout', '--quiet', '--detach', oldBaseline]);
 		await writeFile(path.join(repository.root, 'support.txt'), 'integration support\n');
+		await writeFile(path.join(repository.root, incomingPath), `${oldVigor} incoming\n`);
 		const incrementalBaseline = commitAll(repository.root, 'integration support');
+		git(repository.root, ['checkout', '--quiet', '--detach', newBaseline]);
+		git(repository.root, ['merge', '--quiet', '--no-edit', incrementalBaseline]);
 		git(repository.root, ['mv', sourcePath, successorPath]);
 		await writeFile(path.join(repository.root, successorPath), 'color upstream\n');
 		await writeFile(path.join(repository.root, incomingPath), 'vigor incoming\n');
