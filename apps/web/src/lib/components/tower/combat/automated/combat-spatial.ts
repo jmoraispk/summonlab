@@ -3,7 +3,7 @@ export type CombatPoint = Readonly<{ x: number; y: number }>;
 export type SpatialActor = CombatPoint &
 	Readonly<{
 		id: string;
-		team: 'heroes' | 'rats';
+		team: 'heroes' | 'enemies';
 		role: 'brawler' | 'guardian' | 'archer' | 'brute' | 'swarm';
 		range: number;
 		health: number;

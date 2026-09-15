@@ -1,6 +1,6 @@
 # Canonical Tower and Combat Retirement
 
-**Status:** Route consolidation implemented; combat presentation integration pending
+**Status:** Route consolidation and canonical automated combat implemented
 
 **Decision date:** 2026-09-14
 
@@ -62,8 +62,9 @@ or Tower. Obsolete entries are deleted instead of redirected.
   presentation, and the combat feed—not its proxy encounter ownership.
 - Ruined Threshold contributes autonomous action playback, pause, speed, detail, replay verification,
   and approved 2.5D staging—not its fixture encounter ownership.
-- Both combat presentations consume and settle the same authoritative encounter. Their outputs may
-  not diverge in actions, result, rewards, or replay hash.
+- Automated combat consumes and settles the authoritative encounter. The preserved turn-based
+  adapter is not a player route and remains unmounted until the product decides whether a second
+  presentation is worth keeping.
 
 ## Completion evidence
 
@@ -71,9 +72,9 @@ or Tower. Obsolete entries are deleted instead of redirected.
 | --- | --- |
 | Tower Threshold and Mission Lab pages | `apps/web/src/lib/server/tower.spec.ts` proves the first five authored floors project from `@summonlab/content`; `apps/web/src/lib/city.spec.ts` proves both routes are absent |
 | Floor One branch shell | `packages/contracts/src/exploration.spec.ts`, `packages/content/src/tower-floor-01-exploration.spec.ts`, and `packages/engine/src/domains/exploration/model.spec.ts` own the selectively ported model |
-| Ruined Observatory page | Turn-based playback, board projection, and tests moved under `components/tower/combat/turn-based`; its approved battlefield is bound in `TowerEncounter.svelte`, while the full adapter remains to be mounted |
-| Ruined Threshold page | Automated simulation, spatial, animation, replay, asset validation, and tests moved under `components/tower/combat/automated`; its approved battlefield is bound in `TowerEncounter.svelte`, while `RealtimeCombatStage` remains to be mounted |
-| Separate combat engines | `tower-encounter.spec.ts` currently proves that both placeholder choices produce the same synthetic receipt hash; the canonical request and validated receipt integration is specified in `docs/superpowers/specs/2026-09-14-canonical-tower-travel-and-automated-combat-design.md` |
+| Ruined Observatory page | Turn-based playback, board projection, tests, and approved Observatory art remain under `components/tower/combat/turn-based` as unmounted source material; no route or synthetic settlement owns them |
+| Ruined Threshold page | Automated simulation, spatial behavior, replay, asset validation, and approved staging moved under `components/tower/combat/automated`; `TowerEncounter.svelte` mounts `RealtimeCombatStage` with the persisted production request |
+| Separate combat engines | `tower-encounter.spec.ts` proves the production receipt is deterministically replayed against the active request; the former `resolveTowerEncounter` synthetic shortcut is deleted |
 | Legacy mission page | Typed Tower start, move, encounter, and extraction endpoints plus `exploration.integration.spec.ts`; page route deleted |
 | Lab root and route fixtures | `tower-screen.spec.ts` and the canonical campaign E2E own the surviving journey assertions; all lab route trees are deleted |
 
@@ -93,11 +94,12 @@ After
    └─ /missions
 ```
 
-Floor selection, exploration, both combat choices, loot report, and extraction change server-owned
+Floor selection, exploration, automated combat, loot report, and extraction change server-owned
 state while the browser remains on `/tower`. The internal run ID appears only in command URLs.
 Historical evidence and the approved Observatory/Threshold raster assets remain; they no longer own
 routes.
 
-The route retirement is complete, but the combat migration is not. Until the follow-up design is
-implemented, `TowerEncounter.svelte` changes backgrounds and asks the server for a synthetic result;
-it does not mount the preserved turn-based or automated combat stage.
+The route and automated-combat migration are complete. `TowerEncounter.svelte` runs the exact
+summoned party and submits the engine's full receipt. The encounter API parses, request-binds, and
+deterministically replays that receipt before exploration resumes. The old fixture party remains
+test-only, and the old mode button can no longer fabricate a victory.

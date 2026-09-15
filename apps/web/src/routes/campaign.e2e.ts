@@ -6,7 +6,7 @@ test('enters the canonical Village and summons the first company in place', asyn
 	page,
 	request
 }) => {
-	test.setTimeout(120_000);
+	test.setTimeout(180_000);
 	await page.setViewportSize({ width: 1440, height: 1000 });
 	await page.addInitScript(() => {
 		localStorage.setItem(
@@ -136,26 +136,35 @@ test('enters the canonical Village and summons the first company in place', asyn
 
 	await page.reload();
 	await expect(page.getByText(/Position f001-r016-c005/u)).toBeVisible();
-	for (let step = 0; step < 11; step += 1) {
-		await page.getByRole('button', { name: /north to/u }).click();
-	}
+	await page.locator('[data-tile-id="f001-r011-c005"]').click();
+	await expect(page.getByText(/Position f001-r013-c005/u)).toBeVisible();
+	await page.locator('[data-tile-id="f001-r008-c005"]').click();
+	await expect(page.getByText(/Position f001-r008-c005/u)).toBeVisible();
+	await page.locator('[data-tile-id="f001-r005-c005"]').click();
 	await expect(page.getByRole('heading', { name: /Opposition in/u })).toBeVisible();
 	await expect(page.getByText(/f001-r005-c005/u)).toBeVisible();
-	await page.getByRole('button', { name: 'Automated' }).click();
-	await page.getByRole('button', { name: 'Run encounter' }).click();
-	await expect(page.getByText(/Position f001-r005-c005/u)).toBeVisible();
+	await page.getByRole('button', { name: 'Start automated fight' }).click();
+	const automatedStage = page.getByTestId('realtime-combat-pixi-host');
+	await expect(automatedStage).toBeVisible();
+	await expect(automatedStage).toHaveAttribute(
+		'data-party-ids',
+		campaignView.heroes
+			.slice(0, 3)
+			.map((hero) => hero.draft.manifest.characterId)
+			.join(',')
+	);
+	await expect(page.getByText(/Position f001-r005-c005/u)).toBeVisible({ timeout: 60_000 });
 
-	for (let step = 0; step < 4; step += 1) {
-		await page.getByRole('button', { name: /north to/u }).click();
-	}
+	await page.locator('[data-tile-id="f001-r001-c005"]').click();
 	await expect(page.getByRole('heading', { name: /Opposition in/u })).toBeVisible();
 	await expect(page.getByText(/f001-r001-c005/u)).toBeVisible();
-	await page.getByRole('button', { name: 'Resolve turn' }).click();
-	await page.getByRole('button', { name: /north to/u }).click();
+	await page.getByRole('button', { name: 'Start automated fight' }).click();
+	await expect(page.getByText(/Position f001-r001-c005/u)).toBeVisible({ timeout: 60_000 });
+	await page.locator('[data-tile-id="f001-r000-c005"]').click();
 	await expect(page.getByText(/Position f001-r000-c005/u)).toBeVisible();
 
-	for (let step = 0; step < 16; step += 1) {
-		await page.getByRole('button', { name: /south to/u }).click();
+	for (const tileId of ['f001-r005-c005', 'f001-r010-c005', 'f001-r015-c005', 'f001-r016-c005']) {
+		await page.locator(`[data-tile-id="${tileId}"]`).click();
 	}
 	await page.getByRole('button', { name: 'Extract to Village' }).click();
 	await expect(page.getByRole('heading', { name: /returned to Hearth 01/u })).toBeVisible();

@@ -60,9 +60,9 @@ describe('exploration contracts', () => {
 		};
 
 		expect(ExplorationTravelResultSchema.parse(result)).toEqual(result);
-		expect(
-			ExplorationTravelResultSchema.safeParse({ ...result, pathTileIds: [] }).success
-		).toBe(false);
+		expect(ExplorationTravelResultSchema.safeParse({ ...result, pathTileIds: [] }).success).toBe(
+			false
+		);
 		expect(
 			ExplorationTravelResultSchema.safeParse({ ...result, clientPath: result.pathTileIds }).success
 		).toBe(false);

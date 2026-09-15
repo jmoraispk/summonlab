@@ -9,7 +9,7 @@ import {
 	routeAroundObstacle
 } from './combat-spatial';
 
-export type CombatTeam = 'heroes' | 'rats';
+export type CombatTeam = 'heroes' | 'enemies';
 export type CombatPhase = 'running' | 'victory' | 'defeat';
 export type CombatIntent = 'advance' | 'attack' | 'down';
 type CombatPresentation = ExplorationEncounterRequest['party'][number]['presentation'];
@@ -139,7 +139,7 @@ function actorFromEnemy(enemy: ExplorationEncounterRequest['enemies'][number]): 
 		id: enemy.enemyInstanceId,
 		label: enemy.displayName,
 		sourceKind: 'enemy',
-		team: 'rats',
+		team: 'enemies',
 		role: enemy.combatRole,
 		x: enemy.deployment.x,
 		y: enemy.deployment.y,
@@ -163,7 +163,7 @@ export function createRealtimeCombat(request: ExplorationEncounterRequest): Real
 		elapsedSeconds: 0,
 		phase: 'running',
 		defeatedEnemies: 0,
-		lastEvent: 'The rat pack breaks from the ruined gate.',
+		lastEvent: 'The opposing force advances from the ruined gate.',
 		actors: [...request.party.map(actorFromHero), ...request.enemies.map(actorFromEnemy)]
 	};
 }
@@ -357,7 +357,7 @@ export function stepRealtimeCombat(
 	).length;
 	if (livingRequiredEnemies.length === 0) {
 		state.phase = 'victory';
-		state.lastEvent = 'The Rat Brute falls. The surviving vermin scatter into the fog.';
+		state.lastEvent = 'The opposing force breaks and scatters into the fog.';
 	} else if (livingHeroes.length === 0) {
 		state.phase = 'defeat';
 		state.lastEvent = 'The threshold is lost to the plague pack.';

@@ -280,7 +280,11 @@ export function planExplorationTravel(
 		if (current.pathTileIds.length >= maxSteps) continue;
 
 		for (const neighbor of neighboringTiles(floor, current.tile)) {
-			if (!neighbor.walkable || !revealed.has(neighbor.tileId) || blockedDanger.has(neighbor.tileId)) {
+			if (
+				!neighbor.walkable ||
+				!revealed.has(neighbor.tileId) ||
+				blockedDanger.has(neighbor.tileId)
+			) {
 				continue;
 			}
 			const direction = directionBetween(current.tile, neighbor);
@@ -308,8 +312,7 @@ export function planExplorationTravel(
 	const firstInteractionIndex = destination.pathTileIds.findIndex((tileId) => {
 		const tile = byId.get(tileId);
 		return tile?.interaction !== null && tile?.interaction !== undefined && !resolved.has(tileId);
-	}
-	);
+	});
 	const pathTileIds =
 		firstInteractionIndex === -1
 			? destination.pathTileIds
@@ -330,7 +333,8 @@ export function safeExplorationDestinations(
 	if (state.status !== 'exploring' && state.status !== 'returning') return [];
 	const revealed = new Set(state.revealedTileIds);
 	return floor.tiles.flatMap((tile) => {
-		if (!tile.walkable || !revealed.has(tile.tileId) || tile.tileId === state.positionTileId) return [];
+		if (!tile.walkable || !revealed.has(tile.tileId) || tile.tileId === state.positionTileId)
+			return [];
 		try {
 			const plan = planExplorationTravel(floor, state, tile.tileId, floor.tiles.length);
 			return [

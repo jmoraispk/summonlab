@@ -1,6 +1,6 @@
 # Canonical Tower Travel and Automated Combat Design
 
-**Status:** Approved in conversation on 2026-09-14; implementation pending
+**Status:** Implemented and accepted by canonical browser journey on 2026-09-14
 
 **Governing specification:**
 `docs/superpowers/specs/2026-09-10-single-village-progression-design.md`
@@ -15,21 +15,19 @@ revealed destination, watch the summoned company travel there by a safe determin
 an encounter deliberately, and watch that same company fight in automated mode.
 
 This work does not restore a lab route or create another exploration or combat system. Floor
-selection, exploration, both combat modes, receipt settlement, and extraction remain states inside
+selection, exploration, automated combat, receipt settlement, and extraction remain states inside
 the singleton campaign's `/tower` destination.
 
-## Current gap
+## Resolved gap
 
-The current exploration screen exposes only adjacent legal steps even though the engine already
-contains an incomplete multi-step travel planner. The map contains no party artwork and the move
-endpoint accepts only one adjacent destination. Reaching a distant tile therefore requires repeated
-direction-button clicks.
+The exploration screen now exposes server-approved destinations, renders the summoned party's
+approved combat chibis, and animates only the authoritative path returned by atomic multi-step
+travel. Repeated adjacent direction buttons were removed.
 
-The current encounter projection persists only a request ID and request hash. `TowerEncounter`
-changes a background and immediately asks the server for a synthetic victory receipt. It never
-mounts `RealtimeCombatStage`, and it does not provide the complete party, enemy, battlefield,
-policy, and artwork request that the preserved automated runtime requires. Consequently, selecting
-**Automated** resolves state without showing heroes fighting.
+The encounter projection persists the complete request. `TowerEncounter` mounts
+`RealtimeCombatStage` with the exact party, enemies, battlefield, policy, and approved artwork.
+The server no longer creates a synthetic result; it accepts only a complete receipt that matches
+and deterministically replays against the active request.
 
 The prior retirement record described the preserved renderer as if it were already integrated. It
 was moved under canonical source ownership, but only its background was mounted. This design makes
@@ -140,7 +138,7 @@ when the duty definition calls for a group.
 
 ## Automated combat presentation
 
-Selecting **Automated** mounts the preserved PixiJS autonomous runtime inside `TowerEncounter` with
+Starting the fight mounts the preserved PixiJS autonomous runtime inside `TowerEncounter` with
 the persisted canonical request. The current campaign heroes enter the battlefield, choose targets,
 move, attack, receive hits, and reach a terminal result while the player watches. The existing pause,
 speed, status detail, and reduced-motion behaviors are retained where they consume the same session.
@@ -185,8 +183,8 @@ server victory shortcut after the shared receipt endpoint becomes authoritative.
 - the Tower move endpoint validates and executes requested travel; it does not accept a client path.
 - the Tower encounter endpoint validates and settles a combat receipt; it does not invent a result.
 - `TowerExplorationMap` owns accessible destination input and accepted-route animation.
-- `TowerEncounter` owns presentation selection and mounts the canonical turn-based or automated
-  adapter.
+- `TowerEncounter` mounts the canonical automated adapter. The preserved turn-based adapter is not
+  player-mounted while the product evaluates whether a second presentation should survive.
 - `RealtimeCombatStage` remains the automated presentation and simulation owner; its fixture
   defaults are removed from production entry.
 
@@ -199,8 +197,8 @@ No component or API redirects to `living-village-lab`, `mission-lab`, or a run-I
 - A missing or hash-mismatched encounter request blocks combat and preserves the active encounter
   for diagnosis or retry.
 - A missing approved combat raster names the participant and does not render a procedural stand-in.
-- Asset-load or WebGL initialization failure offers retry and may use PixiJS's supported renderer
-  fallback, but cannot auto-resolve the fight.
+- Asset-load or WebGL initialization failure exposes a named unavailable state and cannot
+  auto-resolve the fight.
 - Navigating away destroys the ticker, renderer resources, object URLs, subscriptions, and decoded
   textures owned by that stage.
 
@@ -236,7 +234,7 @@ No component or API redirects to `living-village-lab`, `mission-lab`, or a run-I
 ### End-to-end acceptance
 
 One canonical campaign test summons three heroes, opens `/tower`, clicks a distant safe tile, observes
-party movement, deliberately clicks the first enemy, chooses **Automated**, observes all three named
+party movement, deliberately clicks the first enemy, starts automated combat, observes all three named
 heroes on the battlefield, waits for a terminal result, refreshes, and confirms exploration resumes
 from the exact encounter tile. A second assertion confirms that no lab or fixture route is used.
 

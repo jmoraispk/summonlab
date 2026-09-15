@@ -15,7 +15,7 @@ import {
 
 const rat = (id: string, x: number, y: number): SpatialActor => ({
 	id,
-	team: 'rats',
+	team: 'enemies',
 	role: 'swarm',
 	range: 0.062,
 	health: 58,

@@ -528,7 +528,11 @@
 					healthContainer.addChild(healthTrack, healthFill);
 					const impact = new Graphics({ label: `${entry.id}-impact` })
 						.circle(0, -54, entry.role === 'brute' ? 62 : 38)
-						.stroke({ color: entry.team === 'rats' ? 0xffd072 : 0xe95a4c, alpha: 0.88, width: 5 });
+						.stroke({
+							color: entry.team === 'enemies' ? 0xffd072 : 0xe95a4c,
+							alpha: 0.88,
+							width: 5
+						});
 					impact.alpha = 0;
 					container.addChild(body, impact);
 					worldLayer.addChild(shadow, container);
@@ -620,7 +624,7 @@
 						view.container.position.set(renderedPoint.x, renderedPoint.y);
 						view.container.scale.set(renderedPoint.scale);
 						view.container.zIndex =
-							activeMode === '2d' ? (entry.team === 'rats' ? 10 : 20) : renderedPoint.depth;
+							activeMode === '2d' ? (entry.team === 'enemies' ? 10 : 20) : renderedPoint.depth;
 						view.shadow.position.set(
 							renderedPoint.x - (activeMode === '2.5d-v2' ? 4.5 * renderedPoint.scale : 0),
 							renderedPoint.y + 3 * renderedPoint.scale
@@ -628,7 +632,7 @@
 						view.shadow.zIndex = view.container.zIndex - 1;
 						view.container.alpha = entry.health <= 0 ? (view.motion ? 0.72 : 0.22) : 1;
 						view.container.rotation =
-							entry.health <= 0 && !view.motion ? (entry.team === 'rats' ? 0.92 : -0.92) : 0;
+							entry.health <= 0 && !view.motion ? (entry.team === 'enemies' ? 0.92 : -0.92) : 0;
 						view.healthFill.scale.x = Math.max(0, entry.health / entry.maximumHealth);
 						const healthLayout = layoutHealthBar(renderedPoint, view.displaySize, {
 							anchorY: view.bodyAnchorY,
@@ -639,7 +643,7 @@
 						view.healthContainer.alpha =
 							entry.health <= 0
 								? entry.hitPulse
-								: entry.team === 'rats' || entry.health < entry.maximumHealth
+								: entry.team === 'enemies' || entry.health < entry.maximumHealth
 									? 1
 									: 0;
 						view.impact.alpha = entry.hitPulse * 0.9;
@@ -766,6 +770,7 @@
 	data-testid="realtime-combat-pixi-host"
 	data-presentation-mode={mode}
 	data-motion-pack-versions={motionPackVersions}
+	data-party-ids={request.party.map((hero) => hero.heroRef.heroId).join(',')}
 	data-static-actor-count="0"
 >
 	<canvas bind:this={canvas} data-testid="realtime-combat-pixi-canvas" aria-hidden="true"></canvas>

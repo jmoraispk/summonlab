@@ -106,6 +106,7 @@
 				{@const destination = destinations.get(tile.tileId)}
 				<button
 					type="button"
+					data-tile-id={tile.tileId}
 					class:unknown={tile.knowledge === 'hidden'}
 					class:wall={tile.knowledge === 'revealed' && tile.walkable === false}
 					class:current={tile.tileId === effectiveVisualTileId}
