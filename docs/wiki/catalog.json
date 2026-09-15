@@ -382,8 +382,8 @@
       "spoilerScope": "internal"
     },
     {
-      "wikiId": "research.attribute-systems.overgeared.equipment-catalogue",
-      "path": "docs/wiki/research/attribute-systems/overgeared/equipment-catalogue.md",
+      "wikiId": "research.attribute-systems.overgeared.equipment-catalog",
+      "path": "docs/wiki/research/attribute-systems/overgeared/equipment-catalog.md",
       "pageType": "research",
       "owner": "inventory",
       "designStatus": "accepted",
@@ -634,8 +634,8 @@
       "spoilerScope": "discoverable"
     },
     {
-      "wikiId": "mechanics.equipment.armour-shields",
-      "path": "docs/wiki/mechanics/equipment/armour-and-shields.md",
+      "wikiId": "mechanics.equipment.armor-shields",
+      "path": "docs/wiki/mechanics/equipment/armor-and-shields.md",
       "pageType": "equipment-catalog",
       "owner": "inventory",
       "designStatus": "accepted",
@@ -2741,8 +2741,8 @@
       "spoilerScope": "discoverable"
     },
     {
-      "wikiId": "monster.wolf-grey-wolf",
-      "path": "docs/wiki/creatures/monsters/wolf-grey-wolf.md",
+      "wikiId": "monster.wolf-gray-wolf",
+      "path": "docs/wiki/creatures/monsters/wolf-gray-wolf.md",
       "pageType": "monster-entry",
       "owner": "visuals-content",
       "designStatus": "accepted",

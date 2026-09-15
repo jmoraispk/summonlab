@@ -131,7 +131,7 @@ function encounterRequest(input: { runId: string; attemptId: string; requestId?:
 					movementUnitsPerSecond: 2,
 					attackRange: 1,
 					attackPower: 12,
-					armour: 2,
+					armor: 2,
 					attackIntervalTicks: 30
 				},
 				deployment: { x: 0.2, y: 0.7 },
@@ -169,7 +169,7 @@ function encounterRequest(input: { runId: string; attemptId: string; requestId?:
 					movementUnitsPerSecond: 2,
 					attackRange: 1,
 					attackPower: 4,
-					armour: 0,
+					armor: 0,
 					attackIntervalTicks: 45
 				},
 				deployment: { x: 0.8, y: 0.3 },

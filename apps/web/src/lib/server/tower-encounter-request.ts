@@ -105,7 +105,7 @@ function projectHero(
 			movementUnitsPerSecond: role === 'guardian' ? 0.063 : role === 'archer' ? 0.071 : 0.082,
 			attackRange: role === 'archer' ? 0.25 : 0.08,
 			attackPower: 10 + level * 2,
-			armour: role === 'guardian' ? 4 + Math.floor(level / 2) : Math.floor(level / 3),
+			armor: role === 'guardian' ? 4 + Math.floor(level / 2) : Math.floor(level / 3),
 			attackIntervalTicks: role === 'guardian' ? 57 : role === 'archer' ? 65 : 47
 		},
 		deployment: HERO_DEPLOYMENTS[index] ?? { x: 0.5, y: 0.9 },
@@ -161,7 +161,7 @@ export function buildTowerEncounterRequest(
 			movementUnitsPerSecond: 0.09,
 			attackRange: 0.065,
 			attackPower: 8,
-			armour: 0,
+			armor: 0,
 			attackIntervalTicks: 58 + index * 3
 		},
 		deployment: ENEMY_DEPLOYMENTS[index] ?? { x: 0.5, y: 0.16 },
