@@ -527,10 +527,10 @@ Compare the hashes with Task 1. Inspect the final v2 image again.
 pnpm --filter @summonlab/web dev --host 0.0.0.0
 ```
 
-Report the exact reachable URL using server IP `10.110.24.218` and Vite's displayed port, normally:
+Report the exact reachable URL using server IP `10.110.24.122` and Vite's displayed port, normally:
 
 ```text
-http://10.110.24.218:5173/wiki/mechanics/skills
+http://10.110.24.122:5173/wiki/mechanics/skills
 ```
 
 Ask the user to test:

@@ -4,10 +4,7 @@ test('presents the locked title gateway', async ({ page }) => {
 	await page.goto('/');
 
 	await expect(page.getByTestId('campaign-title')).toBeVisible();
-	await expect(page.getByRole('link', { name: 'Enter Village' })).toHaveAttribute(
-		'href',
-		/^\/(?:living-village-lab\/opening|onboarding\/[a-f0-9-]+|play\/[a-f0-9-]+)$/u
-	);
+	await expect(page.getByRole('button', { name: 'Enter Village' })).toBeVisible();
 	await expect(page.getByRole('link', { name: 'Wiki', exact: true })).toHaveAttribute(
 		'href',
 		'/wiki'

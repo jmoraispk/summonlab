@@ -41,6 +41,7 @@ describe('campaign objectives', () => {
 			lifecycle: 'active',
 			engineStatus: 'active',
 			onboardingStep: 2,
+			summonedHeroCount: 3,
 			restartedFromRunId: null,
 			heroes: drafts.map((draft, index) => ({ ordinal: index + 1, draft })),
 			createdAt: '2000-01-01T00:00:00.000Z',
@@ -54,6 +55,13 @@ describe('campaign objectives', () => {
 		});
 		expect(initial.completedCount).toBe(2);
 		expect(initial.activeObjectiveId).toBe('hear-each-first-voice');
+		expect(
+			projectCampaignObjectives({
+				campaign: { ...campaign, summonedHeroCount: 2 },
+				snapshot: bootstrap.snapshot,
+				firstDestinationChosen: false
+			}).activeObjectiveId
+		).toBe('summon-the-first-company');
 		expect(
 			projectCampaignObjectives({
 				campaign,
@@ -96,7 +104,7 @@ describe('campaign objectives', () => {
 			firstDestinationChosen: false
 		});
 		expect(heard.completedCount).toBe(3);
-		expect(heard.activeObjectiveId).toBe('follow-the-first-choice');
+		expect(heard.activeObjectiveId).toBe('forge-the-starter-arms');
 		expect(heard.objectives[2]?.evidence).toHaveLength(3);
 		expect(Object.keys(snapshot.state.heroes)).toHaveLength(3);
 	});

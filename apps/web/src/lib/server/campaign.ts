@@ -25,6 +25,12 @@ export async function generateCampaignCompany(
 	return [first, second, third];
 }
 
+export function campaignHeroIsSummoned(campaign: CampaignRun, heroId: string): boolean {
+	return campaign.heroes
+		.slice(0, campaign.summonedHeroCount)
+		.some((hero) => hero.draft.manifest.characterId === heroId);
+}
+
 export async function createPlayerCampaign(input: {
 	readonly databaseUrl: string;
 	readonly campaignSeed: string;
@@ -106,5 +112,6 @@ export async function campaignExperienceView(databaseUrl: string, runId: string)
 }
 
 export function campaignResumePath(campaign: CampaignRun): string {
-	return campaign.onboardingStep < 3 ? `/onboarding/${campaign.runId}` : `/play/${campaign.runId}`;
+	void campaign;
+	return '/village';
 }

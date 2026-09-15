@@ -237,8 +237,7 @@ describe('skill taxonomy migration inventory', () => {
 			...(await authoredSourcePaths('docs/decisions', ['.md'])),
 			...(await authoredSourcePaths('docs/evidence', ['.md'])),
 			'apps/web/src/lib/components/wiki/SkillTree.svelte',
-			'apps/web/src/lib/components/wiki/skill-tree-data.ts',
-			'apps/web/src/routes/living-village-lab/summon/fixtures.ts'
+			'apps/web/src/lib/components/wiki/skill-tree-data.ts'
 		];
 		const sources = await Promise.all(
 			sourcePaths.map(async (sourcePath) => ({

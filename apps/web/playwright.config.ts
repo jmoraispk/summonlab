@@ -3,6 +3,7 @@ import { defineConfig } from '@playwright/test';
 const serverPort = Number.parseInt(process.env.PLAYWRIGHT_PORT ?? '4173', 10);
 
 export default defineConfig({
+	workers: 1,
 	webServer: {
 		command: `pnpm build && pnpm preview --host 127.0.0.1 --port ${serverPort}`,
 		port: serverPort,

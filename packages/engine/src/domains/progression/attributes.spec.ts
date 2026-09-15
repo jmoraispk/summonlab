@@ -44,7 +44,10 @@ function hero(unallocatedAttributePoints = 3) {
 	};
 }
 
-function claim(attribute: 'strength' | 'agility' | 'vitality' | 'magic', sourceKind = 'allocation') {
+function claim(
+	attribute: 'strength' | 'agility' | 'vitality' | 'magic',
+	sourceKind = 'allocation'
+) {
 	return AttributeGrowthClaimSchema.parse({
 		claimId: deterministicUuid(`attribute-growth:${attribute}:${sourceKind}`),
 		heroId: HERO_ID,

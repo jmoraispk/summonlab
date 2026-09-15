@@ -12,7 +12,7 @@
 			const response = await fetch('/api/dev/iron-moon-runs', { method: 'POST' });
 			const body = (await response.json()) as { runId?: string; message?: string };
 			if (!response.ok || !body.runId) throw new Error(body.message ?? 'The scar would not open.');
-			await goto(resolve('/mission/[runId]', { runId: body.runId }));
+			await goto(resolve('/tower'));
 		} catch (error) {
 			failure = error instanceof Error ? error.message : 'The scar would not open.';
 			opening = false;
@@ -32,7 +32,7 @@
 	<nav>
 		<a href={resolve('/')}>summonlab</a>
 		<span>MIS-007 / portal mission checkpoint</span>
-		<a href={resolve('/mission-lab')}>mission atlas</a>
+		<a href={resolve('/tower')}>tower</a>
 	</nav>
 	<section>
 		<div class="moon" aria-hidden="true"><i></i><i></i><i></i></div>

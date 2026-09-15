@@ -18,10 +18,10 @@
 
 ## Remote preview links
 
-- The collaborator connects to this remote server through `10.110.24.218`; Cursor does not
+- The collaborator connects to this remote server through `10.110.24.122`; Cursor does not
   automatically forward ports.
 - Bind every user-facing local preview or development server to `0.0.0.0` and publish its URL with
-  `10.110.24.218` instead of `localhost` or `127.0.0.1`.
+  `10.110.24.122` instead of `localhost` or `127.0.0.1`.
 - Preserve the full port, path, query string, and session key when rewriting a preview URL for the
   collaborator. Verify the listening interface before sharing the link.
 

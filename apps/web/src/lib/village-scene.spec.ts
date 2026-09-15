@@ -1,8 +1,8 @@
 import type { SettlementPresentation, SettlementSceneDefinition } from '@summonlab/contracts';
 import { describe, expect, it } from 'vitest';
 
-import type { VillageResident } from './village-shell';
-import { projectVillageSceneResidents } from './village-scene';
+import type { CityResident } from './city';
+import { projectVillageFacilities, projectVillageSceneResidents } from './village-scene';
 
 const heroIds = [
 	'00000000-0000-4000-8000-000000000001',
@@ -30,7 +30,7 @@ const presentation = {
 	occupants: heroIds.map(occupant)
 } as SettlementPresentation;
 
-function resident(heroId: string): VillageResident {
+function resident(heroId: string): CityResident {
 	return {
 		heroId,
 		ordinal: 1,
@@ -45,8 +45,15 @@ function resident(heroId: string): VillageResident {
 		beliefCount: 0,
 		latestObservation: null,
 		firstReply: null,
+		health: null,
+		level: null,
+		detailRows: [],
 		portrait: null,
-		sceneArt: null
+		sceneArt: null,
+		combatArt: null,
+		nodeId: 'gate-dais',
+		readiness: 'available',
+		availableActions: ['court-training', 'rest', 'details']
 	};
 }
 
@@ -75,3 +82,132 @@ describe('Village scene residents', () => {
 		});
 	});
 });
+
+describe('Village facility projections', () => {
+	const facilityScene = {
+		hotspots: [
+			{
+				facilityId: 'summoning-circle',
+				label: 'Summoning Circle',
+				target: {
+					kind: 'settlement-buildings',
+					buildingIds: ['summoning-gate'],
+					entranceNodeIds: ['gate-court']
+				}
+			},
+			{
+				facilityId: 'residence',
+				label: 'Residence',
+				target: {
+					kind: 'settlement-buildings',
+					buildingIds: ['kitchen', 'dormitory'],
+					entranceNodeIds: ['kitchen-entry', 'dormitory-entry']
+				}
+			},
+			{
+				facilityId: 'training-grounds',
+				label: 'Training Grounds',
+				target: {
+					kind: 'settlement-buildings',
+					buildingIds: ['training-ground'],
+					entranceNodeIds: ['training-entry']
+				}
+			},
+			{
+				facilityId: 'forge',
+				label: 'Forge',
+				target: {
+					kind: 'settlement-buildings',
+					buildingIds: ['workshop'],
+					entranceNodeIds: ['workshop-entry']
+				}
+			},
+			{
+				facilityId: 'tower-portal',
+				label: 'Tower Portal',
+				target: { kind: 'village-mode', mode: 'tower' }
+			}
+		]
+	} as SettlementSceneDefinition;
+
+	const facilityPresentation = {
+		buildings: [
+			building('summoning-gate', 'reserve', [], 0, 8),
+			building('kitchen', 'powered', [heroIds[0]], 1, 3),
+			building('dormitory', 'reserve', [heroIds[0], heroIds[1]], 2, 6),
+			building('training-ground', 'reserve', [], 0, 8),
+			building('workshop', 'unpowered', [], 0, 3)
+		]
+	} as SettlementPresentation;
+
+	it('aggregates authoritative buildings into the five visual facilities', () => {
+		const facilities = projectVillageFacilities(facilityScene, facilityPresentation);
+
+		expect(facilities).toEqual([
+			expect.objectContaining({
+				facilityId: 'summoning-circle',
+				occupantCount: 0,
+				powerState: 'reserve'
+			}),
+			expect.objectContaining({
+				facilityId: 'residence',
+				buildingIds: ['kitchen', 'dormitory'],
+				occupantHeroIds: [heroIds[0], heroIds[1]],
+				occupantCount: 2,
+				assignmentCount: 3,
+				assignmentCapacity: 9,
+				powerState: 'powered'
+			}),
+			expect.objectContaining({ facilityId: 'training-grounds', powerState: 'reserve' }),
+			expect.objectContaining({ facilityId: 'forge', powerState: 'unpowered' }),
+			expect.objectContaining({
+				facilityId: 'tower-portal',
+				buildingIds: [],
+				occupantCount: 0,
+				powerState: 'destination',
+				hrefMode: 'tower'
+			})
+		]);
+	});
+
+	it('presents the stable tower destination as Portal', () => {
+		const facilities = projectVillageFacilities(facilityScene, facilityPresentation);
+
+		expect(facilities.at(-1)).toMatchObject({
+			facilityId: 'tower-portal',
+			label: 'Portal',
+			hrefMode: 'tower'
+		});
+	});
+
+	it('marks a facility unknown when an authoritative building binding is missing', () => {
+		const presentationWithoutDormitory = {
+			...facilityPresentation,
+			buildings: facilityPresentation.buildings.filter(
+				(building) => building.buildingId !== 'dormitory'
+			)
+		};
+
+		expect(
+			projectVillageFacilities(facilityScene, presentationWithoutDormitory).find(
+				(facility) => facility.facilityId === 'residence'
+			)?.powerState
+		).toBe('unknown');
+	});
+});
+
+function building(
+	buildingId: string,
+	powerState: 'unpowered' | 'reserve' | 'powered',
+	occupantHeroIds: readonly string[],
+	assignmentCount: number,
+	assignmentCapacity: number
+): SettlementPresentation['buildings'][number] {
+	return {
+		buildingId,
+		powerState,
+		occupantHeroIds: [...occupantHeroIds],
+		assignmentCount,
+		assignmentCapacity
+	};
+}

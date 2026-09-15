@@ -175,7 +175,7 @@ Start the app with:
 pnpm --filter @summonlab/web dev --host 0.0.0.0 --port 5173
 ```
 
-At `http://10.110.24.218:5173/living-village-lab/realtime-combat`, pause while Nessa is idle and
+At `http://10.110.24.122:5173/living-village-lab/realtime-combat`, pause while Nessa is idle and
 inspect desktop and 390×844 viewports in 2D, 2.5D, and 2.5D V2. Confirm both boots retain a visible
 contact edge, the shadow center stays at the actor world point, idle does not read as hovering, and
 idle ↔ advance does not create a conspicuous pop.
@@ -556,7 +556,7 @@ Expected: all checks pass.
 
 - [ ] **Step 5: Perform the owner-facing motion review**
 
-At `http://10.110.24.218:5173/living-village-lab/realtime-combat`, watch at least three complete
+At `http://10.110.24.122:5173/living-village-lab/realtime-combat`, watch at least three complete
 Toma run loops in 2D, 2.5D, and 2.5D V2 at desktop and 390×844 widths. Exercise idle → run → attack
 and run → idle. Confirm alternating contacts, low flight, stable torso/scale, restrained shield lag,
 compact mace motion, clean 5→1 seam, no collision-regression impression, and unchanged non-run
@@ -665,6 +665,6 @@ Expected: all implementation commits reach `origin/codex/realtime-combat-study`.
 - [ ] **Step 5: Deliver the candidate checkpoint**
 
 Report every commit hash and subject, push destination, clean-tree status, exact verification
-results, and `http://10.110.24.218:5173/living-village-lab/realtime-combat`. Ask the owner to decide
+results, and `http://10.110.24.122:5173/living-village-lab/realtime-combat`. Ask the owner to decide
 whether Toma's opposite contacts, low flight, heavy equipment rhythm, and loop seam now deserve
 approval, and whether Nessa's idle reads grounded without hovering in all three modes.

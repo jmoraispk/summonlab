@@ -4,7 +4,8 @@ import {
 	ExplorationCombatReceiptSchema,
 	ExplorationCombatRejectionSchema,
 	ExplorationCombatReplayRefSchema,
-	ExplorationEncounterRequestSchema
+	ExplorationEncounterRequestSchema,
+	type ExplorationCombatHero
 } from './exploration-combat.js';
 
 const hash = 'a'.repeat(64);
@@ -36,7 +37,9 @@ function parse(schemaName: keyof typeof contract, input: unknown) {
 	return contract[schemaName].safeParse(input);
 }
 
-function validPresentation(approvalStatus: 'approved' | 'fixture-only' = 'approved') {
+function validPresentation(
+	approvalStatus: 'approved' | 'fixture-only' = 'approved'
+): ExplorationCombatHero['presentation'] {
 	return {
 		combatAssetBinding: {
 			assetKey: 'rat-combat-raster',
@@ -297,6 +300,13 @@ function validVictoryReceipt() {
 }
 
 describe('exploration combat contracts', () => {
+	it('accepts the campaign UUID as the authoritative combat hero id', () => {
+		const request = validRequest();
+		request.party[0]!.heroRef.heroId = '704e4a8e-714e-4c21-ae4e-47686f4e48fb';
+
+		expect(ExplorationEncounterRequestSchema.safeParse(request).success).toBe(true);
+	});
+
 	it('accepts one frozen bounded encounter request', () => {
 		const parsed = parse('ExplorationEncounterRequestSchema', validRequest());
 
@@ -306,6 +316,13 @@ describe('exploration combat contracts', () => {
 			maximumSimulationTicks: 3_600,
 			maximumTraceEvents: 500
 		});
+	});
+
+	it('allows an approved combat raster without a motion pack', () => {
+		const request = validRequest();
+		request.party[0]!.presentation.motionPackBinding = null;
+
+		expect(parse('ExplorationEncounterRequestSchema', request)?.success).toBe(true);
 	});
 
 	it.each(['explorationPosition', 'fog', 'tileInteractions', 'lootCache', 'rewardBalance'])(

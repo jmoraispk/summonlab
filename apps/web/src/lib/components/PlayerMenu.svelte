@@ -55,7 +55,7 @@
 		if (!wasOpen) {
 			void trackPlaytestEvent({
 				eventType: 'pause_opened',
-				route: window.location.pathname.startsWith('/play/') ? 'hearth' : 'onboarding',
+				route: 'hearth',
 				runId,
 				completedObjectiveCount: objectives.completedCount
 			});
@@ -97,11 +97,11 @@
 			if (!response.ok || !body.campaign) throw new Error(body.message ?? 'Restart failed.');
 			await trackPlaytestEvent({
 				eventType: 'campaign_restarted',
-				route: window.location.pathname.startsWith('/play/') ? 'hearth' : 'onboarding',
+				route: 'hearth',
 				runId,
 				seedMode: 'same'
 			});
-			await goto(resolve('/onboarding/[runId]', { runId: body.campaign.runId }));
+			await goto(resolve('/village'));
 		} catch (error) {
 			errorMessage = error instanceof Error ? error.message : 'Restart failed.';
 			restarting = false;

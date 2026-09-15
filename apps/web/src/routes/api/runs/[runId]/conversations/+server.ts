@@ -6,6 +6,7 @@ import {
 	IdempotencyConflictError,
 	StaleRunVersionError,
 	commitEngineCommand,
+	getCampaignRun,
 	getEngineSnapshot
 } from '@summonlab/database';
 import {
@@ -14,6 +15,8 @@ import {
 	supportsConversationApi
 } from '@summonlab/engine';
 import { json } from '@sveltejs/kit';
+
+import { campaignHeroIsSummoned } from '$lib/server/campaign';
 
 import type { RequestHandler } from './$types';
 
@@ -44,8 +47,14 @@ export const POST: RequestHandler = async ({ params, request }) => {
 	}
 	try {
 		const config = getConfig();
-		const snapshot = await getEngineSnapshot(config.databaseUrl, params.runId);
+		const [snapshot, campaign] = await Promise.all([
+			getEngineSnapshot(config.databaseUrl, params.runId),
+			getCampaignRun(config.databaseUrl, params.runId)
+		]);
 		if (!snapshot) return json({ message: 'Engine run not found.' }, { status: 404 });
+		if (campaign && !campaignHeroIsSummoned(campaign, parsed.data.targetHeroId)) {
+			return json({ message: 'The requested hero has not been summoned.' }, { status: 409 });
+		}
 		if (!supportsConversationApi(snapshot.state)) {
 			return json(
 				{ message: 'This history predates hero conversation outcomes.' },

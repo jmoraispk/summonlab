@@ -10,6 +10,7 @@ export * from './decision-jobs.js';
 export * from './proof.js';
 export * from './engine.js';
 export * from './events.js';
+export * from './exploration.js';
 export * from './final-controlled-design-risk-decisions.js';
 export * from './later-pack-rule-decisions.js';
 export * from './playtest.js';

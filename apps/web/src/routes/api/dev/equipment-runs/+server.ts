@@ -1,8 +1,13 @@
 import { randomUUID } from 'node:crypto';
 
-import { generateCharacterDraft, recipeFromSeed } from '@summonlab/characters';
+import { generateSummonableCompany } from '@summonlab/characters';
 import { getConfig } from '@summonlab/config';
-import { createProofRun, getEngineSnapshot } from '@summonlab/database';
+import {
+	advanceCampaignOnboarding,
+	createProofRun,
+	getEngineSnapshot,
+	registerCampaignRun
+} from '@summonlab/database';
 import { json } from '@sveltejs/kit';
 
 import type { RequestHandler } from './$types';
@@ -17,7 +22,8 @@ export const POST: RequestHandler = async ({ request }) => {
 			typeof body.seed === 'string' && body.seed.trim()
 				? body.seed.trim().slice(0, 128)
 				: `equipment-workshop-${runId}`;
-		const draft = await generateCharacterDraft(recipeFromSeed(seed));
+		const [draft, second, third] = await generateSummonableCompany(seed, 3);
+		if (!draft || !second || !third) throw new Error('The Equipment company was incomplete.');
 		await createProofRun(config.databaseUrl, {
 			runId,
 			draft,
@@ -27,12 +33,27 @@ export const POST: RequestHandler = async ({ request }) => {
 				'The forge ledger opens beside one measured Bronze lot and an already powered assay plate.',
 			choice: null,
 			clockSpeed: 8,
+			additionalHeroes: [second, third].map((hero) => ({
+				heroId: hero.manifest.characterId,
+				manifestHash: hero.manifestHash,
+				rarityStars: hero.manifest.rarityStars,
+				mind: hero.mind
+			})),
 			developmentEquipmentScenario: {
 				enabled: true,
 				forgeReady: true,
 				materialLots: { bronze: 1 }
 			}
 		});
+		await registerCampaignRun(config.databaseUrl, {
+			runId,
+			campaignSeed: seed,
+			controlMode: 'wait',
+			heroes: [draft, second, third]
+		});
+		for (const step of [1, 2, 3]) {
+			await advanceCampaignOnboarding(config.databaseUrl, runId, step);
+		}
 		const snapshot = await getEngineSnapshot(config.databaseUrl, runId);
 		if (!snapshot || snapshot.state.schemaVersion !== 24) {
 			throw new Error('The Equipment workshop fixture did not create engine-v24 state.');

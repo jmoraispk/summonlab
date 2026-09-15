@@ -790,32 +790,32 @@
         },
         {
 		  "assetKey": "dara-zev-lab-cutout-v1",
-		  "file": "apps/web/src/routes/living-village-lab/village/cutouts/dara-zev.png",
+		  "file": "docs/evidence/living-village-lab-cutouts-v1/dara-zev.png",
 		  "status": "candidate"
         },
         {
 		  "assetKey": "mara-vey-lab-cutout-v1",
-		  "file": "apps/web/src/routes/living-village-lab/village/cutouts/mara-vey.png",
+		  "file": "docs/evidence/living-village-lab-cutouts-v1/mara-vey.png",
 		  "status": "candidate"
         },
         {
 		  "assetKey": "jori-daro-lab-cutout-v1",
-		  "file": "apps/web/src/routes/living-village-lab/village/cutouts/jori-daro.png",
+		  "file": "docs/evidence/living-village-lab-cutouts-v1/jori-daro.png",
 		  "status": "candidate"
         },
         {
 		  "assetKey": "kira-toren-lab-cutout-v1",
-		  "file": "apps/web/src/routes/living-village-lab/village/cutouts/kira-toren.png",
+		  "file": "docs/evidence/living-village-lab-cutouts-v1/kira-toren.png",
 		  "status": "candidate"
         },
         {
 		  "assetKey": "iven-orra-lab-cutout-v1",
-		  "file": "apps/web/src/routes/living-village-lab/village/cutouts/iven-orra.png",
+		  "file": "docs/evidence/living-village-lab-cutouts-v1/iven-orra.png",
 		  "status": "candidate"
         },
         {
 		  "assetKey": "remy-nahl-lab-cutout-v1",
-		  "file": "apps/web/src/routes/living-village-lab/village/cutouts/remy-nahl.png",
+		  "file": "docs/evidence/living-village-lab-cutouts-v1/remy-nahl.png",
 		  "status": "candidate"
         }
       ]

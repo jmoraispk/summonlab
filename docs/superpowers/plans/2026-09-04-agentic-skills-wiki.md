@@ -578,6 +578,6 @@ Expected: push succeeds and the server listens on `0.0.0.0:5173`.
 
 - [ ] **Step 5: Deliver the wiki checkpoint**
 
-Share `http://10.110.24.218:5173/wiki/systems/agentic-skills`. Ask the owner to verify that the
+Share `http://10.110.24.122:5173/wiki/systems/agentic-skills`. Ask the owner to verify that the
 first-party/external split is understandable, the action-to-animation handoff is useful, and the
 source/discovery links communicate where skills are maintained versus discovered.

@@ -1,36 +1,7 @@
-import { expect, test, type APIRequestContext, type Locator } from '@playwright/test';
+import { expect, test, type APIRequestContext } from '@playwright/test';
 
 const campaignSeed = 'village-shell-19aa1947-bcad-4fab-b2f8-e0e34a9b7eb3';
 const expectedHeroNames = ['Yaso Dreno', 'Oren Sorin', 'Joror Pelleth'] as const;
-
-interface Box {
-	readonly x: number;
-	readonly y: number;
-	readonly width: number;
-	readonly height: number;
-}
-
-function boxesIntersect(left: Box, right: Box): boolean {
-	return (
-		left.x < right.x + right.width &&
-		left.x + left.width > right.x &&
-		left.y < right.y + right.height &&
-		left.y + left.height > right.y
-	);
-}
-
-async function expectPairwiseNonIntersecting(locator: Locator, label: string) {
-	const boxes = await Promise.all((await locator.all()).map((entry) => entry.boundingBox()));
-	for (const [index, box] of boxes.entries()) {
-		expect(box, `${label} ${index + 1} must have rendered bounds`).not.toBeNull();
-		for (let other = index + 1; other < boxes.length; other += 1) {
-			expect(
-				boxesIntersect(box!, boxes[other]!),
-				`${label} ${index + 1} ${JSON.stringify(box)} and ${other + 1} ${JSON.stringify(boxes[other])} must not intersect`
-			).toBe(false);
-		}
-	}
-}
 
 async function prepareArrivedCampaign(request: APIRequestContext) {
 	const creation = await request.post('/api/campaigns', {
@@ -39,9 +10,9 @@ async function prepareArrivedCampaign(request: APIRequestContext) {
 	expect(creation.status()).toBe(201);
 	const { campaign } = (await creation.json()) as { campaign: { runId: string } };
 
-	for (const step of [1, 2]) {
-		const response = await request.post(`/api/campaigns/${campaign.runId}/onboarding`, {
-			data: { step }
+	for (const [index, ordinal] of [1, 2, 3].entries()) {
+		const response = await request.post(`/api/campaigns/${campaign.runId}/summons`, {
+			data: { ordinal, expectedSummonedHeroCount: index }
 		});
 		expect(response.ok()).toBe(true);
 	}
@@ -93,159 +64,191 @@ async function prepareArrivedCampaign(request: APIRequestContext) {
 	};
 }
 
-test('persistent Village shell connects campaign destinations on desktop and phone', async ({
+test('campaign City uses the shared shell, authoritative actions, and responsive dock', async ({
 	page,
 	request
 }) => {
 	test.setTimeout(90_000);
 	const { runId, heroes, currentMission } = await prepareArrivedCampaign(request);
-	await page.goto(`/play/${runId}`);
+	await page.goto('/village');
+	await expect(page).toHaveURL('/village');
 
-	const desktopNav = page.getByRole('navigation', { name: 'Village destinations' });
-	await expect(desktopNav.getByRole('link')).toHaveCount(4);
+	await expect(page.getByTestId('city-screen')).toHaveCount(1);
+	await expect(page.getByTestId('run-connection')).toContainText('Live');
+	await expect(page.getByTestId('living-settlement')).toHaveCount(0);
+	await expect(page.locator('main > header')).toHaveCount(0);
+	const desktopNav = page.getByRole('navigation', { name: 'City destinations' });
+	await expect(desktopNav.getByRole('link')).toHaveCount(5);
+	await expect(desktopNav.getByRole('link', { name: 'Village', exact: true })).toHaveAttribute(
+		'href',
+		'/village'
+	);
+	await expect(desktopNav.getByRole('link', { name: 'Residents', exact: true })).toHaveAttribute(
+		'href',
+		'/residents'
+	);
+	await expect(desktopNav.getByRole('link', { name: 'Tower', exact: true })).toHaveAttribute(
+		'href',
+		'/tower'
+	);
+	await expect(desktopNav.getByRole('link', { name: 'Inventory', exact: true })).toHaveAttribute(
+		'href',
+		'/inventory'
+	);
+	await expect(desktopNav.getByRole('link', { name: 'Missions', exact: true })).toHaveAttribute(
+		'href',
+		'/missions'
+	);
 	await expect(desktopNav.getByRole('link', { name: 'Village', exact: true })).toHaveAttribute(
 		'aria-current',
 		'page'
 	);
-	await expect(page.getByRole('link', { name: 'summonlab' })).toBeVisible();
-	await expect(page.getByRole('button', { name: /Journal/u })).toBeVisible();
-	await expect(page.getByRole('link', { name: 'Replay', exact: true })).toBeVisible();
-	await expect(page.getByRole('link', { name: 'New seed', exact: true })).toBeVisible();
-	const sensoryControls = page.getByTestId('sensory-controls');
-	await expect(sensoryControls).toBeVisible();
-	await expect(sensoryControls.getByRole('button', { name: /sound/u })).toBeVisible();
+	await expect(page.getByRole('link', { name: 'summonlab' })).toHaveCount(0);
+	await expect(page.getByRole('button', { name: /Journal/u })).toHaveCount(0);
 	await expect(page.getByTestId('campaign-status-header')).toHaveCount(0);
-	const desktopScene = page.getByTestId('living-settlement');
-	const sceneResidents = desktopScene.getByTestId('village-scene-resident');
-	await expect(sceneResidents).toHaveCount(3);
-	const residentArt = desktopScene.locator('img.village-resident-art');
-	await expect(residentArt).toHaveCount(3);
-	await expect(desktopScene).not.toContainText('Art pending');
-	for (const hero of heroes) {
-		await expect(desktopScene.getByText(hero.name, { exact: true })).toBeVisible();
-	}
-	await expectPairwiseNonIntersecting(sceneResidents, 'desktop resident link');
-	await expectPairwiseNonIntersecting(
-		desktopScene.locator('.activity-tag'),
-		'desktop resident tag'
+	await expect(page.getByTestId('city-clock')).toContainText(/Day \d+/u);
+	const desktopScene = page.getByTestId('city-village-viewport');
+	const desktopWorld = desktopScene.getByTestId('city-world');
+	const [desktopViewportBox, desktopWorldBox] = await Promise.all([
+		desktopScene.boundingBox(),
+		desktopWorld.boundingBox()
+	]);
+	expect(desktopWorldBox!.x).toBeLessThanOrEqual(desktopViewportBox!.x + 1);
+	expect(desktopWorldBox!.y).toBeLessThanOrEqual(desktopViewportBox!.y + 1);
+	expect(desktopWorldBox!.x + desktopWorldBox!.width).toBeGreaterThanOrEqual(
+		desktopViewportBox!.x + desktopViewportBox!.width - 1
 	);
-	for (const art of await residentArt.all()) {
-		await expect(art).toBeVisible();
-		const cornerAlpha = await art.evaluate(async (element) => {
-			const image = element as HTMLImageElement;
-			if (!image.complete) {
-				await new Promise<void>((resolve, reject) => {
-					image.addEventListener('load', () => resolve(), { once: true });
-					image.addEventListener('error', () => reject(new Error('Resident art failed to load')), {
-						once: true
-					});
-				});
-			}
-			const canvas = document.createElement('canvas');
-			canvas.width = image.naturalWidth;
-			canvas.height = image.naturalHeight;
-			const context = canvas.getContext('2d', { willReadFrequently: true });
-			if (!context) throw new Error('Canvas 2D context unavailable');
-			context.drawImage(image, 0, 0);
-			return context.getImageData(0, 0, 1, 1).data[3];
-		});
-		expect(cornerAlpha).toBe(0);
-	}
-	await expect(desktopScene).not.toContainText('Dara Zev');
-	await expect(desktopScene).not.toContainText('Mara Vey');
-	await expect(desktopScene.locator('img.environment')).toBeVisible();
-	await expect(desktopScene.locator('.building-chip')).toHaveCount(5);
-	await expect(desktopScene.locator('.time-plaque')).toBeVisible();
-	await expect(desktopScene.getByText('Authoritative world')).toBeVisible();
-	await expect(
-		desktopScene.locator('[aria-label="Settlement occupancy and assignment capacity"]')
-	).toBeVisible();
-	if (process.env.CAPTURE_VILLAGE_SHELL_DIR) {
-		await page.screenshot({
-			path: `${process.env.CAPTURE_VILLAGE_SHELL_DIR}/village-desktop.png`,
-			fullPage: true
-		});
-	}
-
+	expect(desktopWorldBox!.y + desktopWorldBox!.height).toBeGreaterThanOrEqual(
+		desktopViewportBox!.y + desktopViewportBox!.height - 1
+	);
+	const sceneResidents = desktopScene.getByTestId('city-scene-resident');
+	await expect(sceneResidents).toHaveCount(3);
+	const residentArt = sceneResidents.locator('img');
+	await expect(residentArt).toHaveCount(3);
 	for (const hero of heroes) {
-		await page.goto(`/play/${runId}`);
-		await page
-			.getByTestId('living-settlement')
-			.getByRole('link', { name: new RegExp(`^${hero.name}:`, 'u') })
-			.click();
-		await expect(page).toHaveURL(
-			new RegExp(`/play/${runId}\\?mode=residents#resident-${hero.heroId}$`, 'u')
-		);
-		const residents = page.getByTestId('village-residents');
-		await expect(residents.getByTestId('village-resident')).toHaveCount(3);
-		await expect(page.locator(`#resident-${hero.heroId}`)).toBeVisible();
-		await expect(residents).toContainText(hero.name);
+		await expect(page.locator(`#city-resident-${hero.heroId}`)).toBeVisible();
 	}
+	await expect(page.getByLabel('Find a resident')).toHaveCount(0);
+	await expect(desktopScene.getByRole('group', { name: 'Village camera controls' })).toBeVisible();
+	await expect(desktopScene.locator('img.environment')).toBeVisible();
+	const desktopFacilities = desktopScene.getByTestId('city-facility');
+	const desktopFacilityLabels = desktopScene.getByTestId('city-facility-label');
+	await expect(desktopFacilities).toHaveCount(5);
+	await expect(desktopFacilityLabels).toHaveCount(5);
+	for (const label of ['Summoning Circle', 'Residence', 'Training Grounds', 'Forge', 'Portal']) {
+		await expect(desktopFacilityLabels.getByText(label, { exact: true })).toBeVisible();
+	}
+	await expect(desktopFacilityLabels.getByText('Tower Portal', { exact: true })).toHaveCount(0);
+	const occupancy = page.getByLabel('People in each place');
+	for (const label of ['Dorm', 'Kitchen', 'Gate', 'Training', 'Forge']) {
+		await expect(occupancy.getByText(label, { exact: true })).toBeVisible();
+	}
+	await expect(occupancy.locator('li b')).toHaveCount(5);
+	await page.getByRole('button', { name: 'Zoom in' }).click();
+	await expect(desktopScene).toHaveAttribute('data-zoom-percent', '125');
+	await page.getByRole('button', { name: 'Fit Village' }).click();
+	await expect(desktopScene).toHaveAttribute('data-zoom-percent', '100');
+	await desktopScene.focus();
+	await page.keyboard.press('+');
+	await expect(desktopScene).toHaveAttribute('data-zoom-percent', '120');
+	await page.keyboard.press('Home');
+	await expect(desktopScene).toHaveAttribute('data-zoom-percent', '100');
 
-	await page.goto(`/play/${runId}`);
+	await page.locator(`#city-resident-${heroes[0]!.heroId}`).click();
+	const quickView = page.getByTestId('resident-quick-view');
+	await expect(quickView).toContainText(heroes[0]!.name);
+	await quickView.getByRole('button', { name: 'Details' }).click();
+	await expect(quickView).toHaveCount(0);
+	await expect(page.getByTestId('resident-details')).toContainText(heroes[0]!.name);
+	await page.getByRole('button', { name: 'Close resident details' }).click();
+
+	const availableResident = page
+		.locator('[data-testid="city-scene-resident"][data-availability="available"]')
+		.first();
+	await availableResident.click();
+	const actionResponse = page.waitForResponse(
+		(response) =>
+			response.url().includes(`/api/runs/${runId}/city-actions`) &&
+			response.request().method() === 'POST'
+	);
+	await page
+		.getByTestId('resident-quick-view')
+		.getByRole('button', { name: 'Court training' })
+		.click();
+	const committedAction = await actionResponse;
+	expect(committedAction.ok()).toBe(true);
+	expect((await committedAction.json()).assignment).toMatchObject({
+		buildingId: 'training-ground',
+		role: 'trainee'
+	});
+	await expect(page.getByLabel('People in each place')).toContainText('Training');
+
+	const restingResident = page
+		.locator('[data-testid="city-scene-resident"][data-availability="available"]')
+		.first();
+	await restingResident.click();
+	const restResponse = page.waitForResponse(
+		(response) =>
+			response.url().includes(`/api/runs/${runId}/city-actions`) &&
+			response.request().method() === 'POST'
+	);
+	await page.getByTestId('resident-quick-view').getByRole('button', { name: 'Rest' }).click();
+	const committedRest = await restResponse;
+	expect(committedRest.ok()).toBe(true);
+	expect((await committedRest.json()).assignment).toMatchObject({
+		buildingId: 'dormitory',
+		role: 'resident'
+	});
+
 	await page.getByRole('link', { name: 'Missions', exact: true }).click();
+	await expect(page).toHaveURL('/missions');
 	await expect(page.getByTestId('village-missions')).toContainText(currentMission.title);
 
 	await page.getByRole('link', { name: 'Inventory', exact: true }).click();
+	await expect(page).toHaveURL('/inventory');
 	await expect(page.getByTestId('village-inventory')).toContainText(
 		'Shared Village Inventory is not established for this campaign yet.'
 	);
 
+	await page.getByRole('link', { name: 'Tower', exact: true }).click();
+	await expect(page).toHaveURL('/tower');
+	await expect(page.getByTestId('village-tower')).toContainText(
+		'Expedition controls are not connected yet.'
+	);
+	await expect(page.getByRole('button', { name: /Depart|Repeat|Prepare/u })).toHaveCount(0);
+
 	await page.setViewportSize({ width: 390, height: 844 });
-	await page.goto(`/play/${runId}`);
-	const phoneScene = page.getByTestId('living-settlement');
-	const phoneResidents = phoneScene.getByTestId('village-scene-resident');
-	const phoneResidentArt = phoneScene.locator('img.village-resident-art');
+	await page.goto('/village');
+	const phoneScene = page.getByTestId('city-village-viewport');
+	const phoneWorld = phoneScene.getByTestId('city-world');
+	const [phoneViewportBox, phoneWorldBox] = await Promise.all([
+		phoneScene.boundingBox(),
+		phoneWorld.boundingBox()
+	]);
+	expect(phoneWorldBox!.x).toBeLessThanOrEqual(phoneViewportBox!.x + 1);
+	expect(phoneWorldBox!.y).toBeLessThanOrEqual(phoneViewportBox!.y + 1);
+	expect(phoneWorldBox!.x + phoneWorldBox!.width).toBeGreaterThanOrEqual(
+		phoneViewportBox!.x + phoneViewportBox!.width - 1
+	);
+	expect(phoneWorldBox!.y + phoneWorldBox!.height).toBeGreaterThanOrEqual(
+		phoneViewportBox!.y + phoneViewportBox!.height - 1
+	);
+	const phoneResidents = phoneScene.getByTestId('city-scene-resident');
 	await expect(phoneResidents).toHaveCount(3);
-	await expect(phoneResidentArt).toHaveCount(3);
-	for (const [index, hero] of heroes.entries()) {
-		await expect(phoneResidentArt.nth(index)).toBeVisible();
-		await expect(phoneScene.getByText(hero.name, { exact: true })).toBeVisible();
-		await expect(
-			phoneScene.getByRole('link', { name: new RegExp(`^${hero.name}:`, 'u') })
-		).toBeVisible();
-	}
 	for (const resident of await phoneResidents.all()) {
 		const box = await resident.boundingBox();
 		expect(box?.height).toBeGreaterThanOrEqual(44);
 		expect(box?.width).toBeGreaterThanOrEqual(44);
 	}
-	await expectPairwiseNonIntersecting(phoneResidents, 'phone resident link');
-	await expectPairwiseNonIntersecting(phoneScene.locator('.activity-tag'), 'phone resident tag');
-	await expect(page.getByRole('button', { name: /Journal/u })).toBeVisible();
-	await expect(page.getByRole('link', { name: 'Replay', exact: true })).toBeVisible();
-	await expect(page.getByRole('link', { name: 'New seed', exact: true })).toBeVisible();
-	await expect(sensoryControls).toBeVisible();
-	await expect(sensoryControls.getByRole('button', { name: /sound/u })).toBeVisible();
-	const soundBox = await sensoryControls.boundingBox();
-	const timeBox = await phoneScene.locator('.time-plaque').boundingBox();
-	expect(soundBox).not.toBeNull();
-	expect(timeBox).not.toBeNull();
-	expect(
-		boxesIntersect(soundBox!, timeBox!),
-		`phone sound ${JSON.stringify(soundBox)} and time ${JSON.stringify(timeBox)} controls must not intersect`
-	).toBe(false);
-	const phoneNav = page.getByRole('navigation', { name: 'Village destinations' });
+	const phoneNav = page.getByRole('navigation', { name: 'City destinations' });
 	const phoneLinks = phoneNav.getByRole('link');
-	await expect(phoneLinks).toHaveCount(4);
-	const approvedIconPaths = [
-		'/ui/village-nav/village.png',
-		'/ui/village-nav/residents.png',
-		'/ui/village-nav/inventory.png',
-		'/ui/village-nav/missions.png'
-	];
-	for (const [index, link] of (await phoneLinks.all()).entries()) {
+	await expect(phoneLinks).toHaveCount(5);
+	for (const link of await phoneLinks.all()) {
 		const box = await link.boundingBox();
 		expect(box?.height).toBeGreaterThanOrEqual(44);
 		expect(box?.width).toBeGreaterThanOrEqual(44);
-		await expect(link.getByTestId('plan-nav-icon')).toHaveAttribute(
-			'src',
-			approvedIconPaths[index]!
-		);
 	}
-	const navBox = await phoneNav.boundingBox();
-	const objectiveBox = await page.getByTestId('active-objective').boundingBox();
-	expect(objectiveBox!.y + objectiveBox!.height).toBeLessThanOrEqual(navBox!.y);
+	expect(await phoneNav.evaluate((element) => getComputedStyle(element).position)).toBe('fixed');
 	expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(
 		true
 	);

@@ -19,7 +19,7 @@
 			if (!response.ok || !body.runId) {
 				throw new Error(body.detail ?? body.message ?? 'Run creation failed.');
 			}
-			await goto(resolve('/mission/[runId]', { runId: body.runId }));
+			await goto(resolve('/tower'));
 		} catch (error) {
 			errorMessage = error instanceof Error ? error.message : 'Run creation failed.';
 		} finally {

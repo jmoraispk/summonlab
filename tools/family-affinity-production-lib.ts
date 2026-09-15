@@ -1046,7 +1046,7 @@ const FamilyAffinitySealedLauncherSchema = z
 	.object({
 		node: z
 			.object({
-				path: z.literal('/home/joao/.nvm/versions/node/v24.19.0/bin/node'),
+				path: z.literal('/home/joao/.npm/_npx/20e0a4402818d491/node_modules/node/bin/node'),
 				sha256: Sha256Schema
 			})
 			.strict(),

@@ -444,7 +444,7 @@
 			<span>Development instrument</span>
 			<strong>Deterministic replay</strong>
 		</div>
-		<a href={resolve('/play/[runId]', { runId: report.runId })}>Return to settlement</a>
+		<a href={resolve('/village')}>Return to Village</a>
 	</header>
 
 	<section class="hero">
