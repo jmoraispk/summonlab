@@ -294,7 +294,6 @@ function heroReadinessProjection(
 	state: EngineReadinessState,
 	heroId: string
 ): HeroReadinessProjection {
-	const hero = state.heroes[heroId]!;
 	const intrinsic =
 		state.schemaVersion === 27
 			? progressionIntrinsicAttributes(
