@@ -1,0 +1,118 @@
+import { readFile, writeFile } from 'node:fs/promises';
+import path from 'node:path';
+import { pathToFileURL } from 'node:url';
+
+import { AGENT_READINESS_CONTENT_BINDING_V2 } from '../packages/content/src/agent-readiness-content-binding.js';
+import {
+	calculateCombatContentAggregateHash,
+	COMBAT_CONTENT_BINDING
+} from '../packages/content/src/combat-content-binding.js';
+
+const COMBAT_BINDING_PATH = 'packages/content/src/combat-content-binding.ts';
+const READINESS_BINDING_PATH = 'packages/content/src/agent-readiness-content-binding.ts';
+const READINESS_CONTRACT_PATH = 'packages/contracts/src/readiness-combat.ts';
+
+function replaceNamedHash(source: string, name: string, contentHash: string): string {
+	const pattern = new RegExp(`(const ${name} =\\n?\\s*')[0-9a-f]{64}(';?)`, 'u');
+	const matches = [...source.matchAll(new RegExp(pattern.source, 'gu'))];
+	if (matches.length !== 1) {
+		throw new Error(`Expected exactly one ${name} hash binding`);
+	}
+	return source.replace(pattern, `$1${contentHash}$2`);
+}
+
+function replaceObjectContentHash(
+	source: string,
+	declaration: string,
+	contentHash: string
+): string {
+	const start = source.indexOf(`export const ${declaration}`);
+	if (start === -1) throw new Error(`Missing ${declaration} declaration`);
+	const next = source.indexOf('\nexport const ', start + declaration.length);
+	const end = next === -1 ? source.length : next;
+	const declarationSource = source.slice(start, end);
+	const pattern = /contentHash: '[0-9a-f]{64}'/gu;
+	if ([...declarationSource.matchAll(pattern)].length !== 1) {
+		throw new Error(`Expected exactly one ${declaration} content hash binding`);
+	}
+	return `${source.slice(0, start)}${declarationSource.replace(
+		pattern,
+		`contentHash: '${contentHash}'`
+	)}${source.slice(end)}`;
+}
+
+export function resealCombatContentSources(
+	combatBindingSource: string,
+	readinessBindingSource: string,
+	readinessContractSource: string,
+	combatContentHash: string,
+	readinessContentHash: string
+): {
+	readonly combatBindingSource: string;
+	readonly readinessBindingSource: string;
+	readonly readinessContractSource: string;
+} {
+	return {
+		combatBindingSource: replaceObjectContentHash(
+			combatBindingSource,
+			'COMBAT_CONTENT_BINDING',
+			combatContentHash
+		),
+		readinessBindingSource: replaceObjectContentHash(
+			readinessBindingSource,
+			'AGENT_READINESS_CONTENT_BINDING_V2',
+			readinessContentHash
+		),
+		readinessContractSource: replaceNamedHash(
+			replaceNamedHash(
+				readinessContractSource,
+				'LEGACY_AND_READINESS_V1_CONTENT_HASH',
+				combatContentHash
+			),
+			'READINESS_V2_CONTENT_HASH',
+			readinessContentHash
+		)
+	};
+}
+
+async function main(): Promise<void> {
+	const repositoryRoot = process.cwd();
+	const paths = [COMBAT_BINDING_PATH, READINESS_BINDING_PATH, READINESS_CONTRACT_PATH] as const;
+	const [combatBindingSource, readinessBindingSource, readinessContractSource] = await Promise.all(
+		paths.map((repositoryPath) =>
+			readFile(path.join(repositoryRoot, ...repositoryPath.split('/')), 'utf8')
+		)
+	);
+	const [combatContentHash, readinessContentHash] = await Promise.all([
+		calculateCombatContentAggregateHash(COMBAT_CONTENT_BINDING.components),
+		calculateCombatContentAggregateHash(AGENT_READINESS_CONTENT_BINDING_V2.components)
+	]);
+	const resealed = resealCombatContentSources(
+		combatBindingSource,
+		readinessBindingSource,
+		readinessContractSource,
+		combatContentHash,
+		readinessContentHash
+	);
+	await Promise.all([
+		writeFile(
+			path.join(repositoryRoot, ...COMBAT_BINDING_PATH.split('/')),
+			resealed.combatBindingSource
+		),
+		writeFile(
+			path.join(repositoryRoot, ...READINESS_BINDING_PATH.split('/')),
+			resealed.readinessBindingSource
+		),
+		writeFile(
+			path.join(repositoryRoot, ...READINESS_CONTRACT_PATH.split('/')),
+			resealed.readinessContractSource
+		)
+	]);
+}
+
+if (process.argv[1] !== undefined && import.meta.url === pathToFileURL(process.argv[1]).href) {
+	main().catch((error: unknown) => {
+		process.stderr.write(`${error instanceof Error ? error.message : String(error)}\n`);
+		process.exitCode = 1;
+	});
+}

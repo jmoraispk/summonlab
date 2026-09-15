@@ -22,6 +22,7 @@ export const RUNTIME_AND_ENGINE_INTEGRITY_PATH_PATTERNS = [
 	/^docs\/superpowers\/(?:plans\/(?:2026-09-07-exploration-combat-contract|2026-09-12-awakening-and-multi-path-progression)|specs\/2026-09-07-exploration-combat-contract-design)\.md$/u,
 	/^docs\/wiki\/mechanics\/skills\//u,
 	/^packages\/content\/src\/progression-rules\.ts$/u,
+	/^packages\/content\/src\/(?:agent-readiness-content-binding|combat-content-binding)\.ts$/u,
 	/^packages\/content\/src\/(?:tower-|story)/u,
 	/^packages\/contracts\/src\/(?:combat-loadout|engine-compatibility|exploration-combat|readiness-combat)(?:\.spec)?\.ts$/u,
 	/^packages\/contracts\/src\/(?:contracts\.spec\.ts$|engine\/|final-controlled-)/u,
@@ -38,6 +39,7 @@ export const RUNTIME_AND_ENGINE_FILE_BINDING_PATH_PATTERNS = [
 	/^docs\/(?:evidence\/(?:agent-readiness-v1|combat-balance-v1)\.json|evidence\/living-village-(?:tower-handoff|village-plan)\.md|private-playtest-release\.md|system-architecture\/integration-contracts\.md)$/u,
 	/^docs\/superpowers\/(?:plans\/(?:2026-09-07-exploration-combat-contract|2026-09-12-awakening-and-multi-path-progression)|specs\/2026-09-07-exploration-combat-contract-design)\.md$/u,
 	/^packages\/content\/src\/progression-rules\.ts$/u,
+	/^packages\/content\/src\/(?:agent-readiness-content-binding|combat-content-binding)\.ts$/u,
 	/^packages\/content\/src\/tower-band-01-story\.ts$/u,
 	/^packages\/contracts\/src\/(?:combat-loadout|engine-compatibility|exploration-combat|readiness-combat)(?:\.spec)?\.ts$/u,
 	/^packages\/contracts\/src\/(?:contracts\.spec\.ts|engine\/settlement-state\.ts|final-controlled-design-risk-(?:decisions|resolutions)\.ts)$/u,
@@ -66,6 +68,7 @@ export const runtimeAndEngineIntegrityOwner: AmericanEnglishIntegrityOwner = {
 	id: 'runtime-and-engine',
 	intentMaterialization: {
 		commands: [
+			['pnpm', 'tsx', 'tools/reseal-combat-content-expectations.ts'],
 			['pnpm', 'tsx', 'tools/combat-balance-harness.ts', '--write'],
 			['pnpm', 'tsx', 'tools/reseal-skill-taxonomy-expectations.ts'],
 			['pnpm', 'tsx', 'tools/export-skill-taxonomy-migration.ts', '--write'],
@@ -77,6 +80,9 @@ export const runtimeAndEngineIntegrityOwner: AmericanEnglishIntegrityOwner = {
 		paths: [
 			'docs/evidence/agent-readiness-v1.json',
 			'docs/evidence/combat-balance-v1.json',
+			'packages/content/src/agent-readiness-content-binding.ts',
+			'packages/content/src/combat-content-binding.ts',
+			'packages/contracts/src/readiness-combat.ts',
 			'tools/package-playtest-release.ts',
 			'packages/engine/src/compatibility/replay-vectors.ts',
 			'docs/evidence/phase-6-story-envelope.json',
@@ -88,7 +94,7 @@ export const runtimeAndEngineIntegrityOwner: AmericanEnglishIntegrityOwner = {
 	},
 	regeneration: {
 		writeCommand:
-			'pnpm tsx tools/combat-balance-harness.ts --write && pnpm tsx tools/export-skill-taxonomy-migration.ts --write && pnpm export:story-envelope && pnpm export:story-patch && pnpm export:story-workshop && pnpm export:moderated-playtest && pnpm export:playtest-release && pnpm package:playtest -- --acknowledge-private-release',
+			'pnpm tsx tools/reseal-combat-content-expectations.ts && pnpm tsx tools/combat-balance-harness.ts --write && pnpm tsx tools/export-skill-taxonomy-migration.ts --write && pnpm export:story-envelope && pnpm export:story-patch && pnpm export:story-workshop && pnpm export:moderated-playtest && pnpm export:playtest-release && pnpm package:playtest -- --acknowledge-private-release',
 		checkCommand:
 			'pnpm tsx tools/combat-balance-harness.ts --check && pnpm tsx tools/export-skill-taxonomy-migration.ts --check && pnpm validate:story-envelope && pnpm validate:story-patch && pnpm validate:story-workshop && pnpm validate:moderated-playtest && pnpm validate:playtest-release && pnpm rehearse:playtest-package && pnpm --filter @summonlab/engine test'
 	},
