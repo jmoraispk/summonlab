@@ -74,6 +74,7 @@ export const equipmentIntegrityOwner: AmericanEnglishIntegrityOwner = {
 			'assets/equipment/approved/material-equipment-v1/integration-report.json',
 			'assets/equipment/approved/material-equipment-v1/reviews/runtime-v1/index.html',
 			'packages/content/src/equipment.ts',
+			'packages/content/src/equipment.spec.ts',
 			'tools/equipment-approved-source-contract.ts',
 			'assets/equipment/approved/material-equipment-v1/manifest.json',
 			'assets/equipment/approved/material-equipment-v1/receipts/promotion-v1.json',
