@@ -50,6 +50,7 @@ function resident(heroId: string): CityResident {
 		detailRows: [],
 		portrait: null,
 		sceneArt: null,
+		combatArt: null,
 		nodeId: 'gate-dais',
 		readiness: 'available',
 		availableActions: ['court-training', 'rest', 'details']

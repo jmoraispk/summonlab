@@ -26,7 +26,7 @@ export type TrustedHeroCombatContent = Readonly<{
 	heroId: string;
 	characterManifestHash: string;
 	combatAssetBinding: TrustedRasterBinding;
-	motionPackBinding: TrustedMotionPackBinding;
+	motionPackBinding: TrustedMotionPackBinding | null;
 }>;
 
 export type TrustedEnemyCombatContent = Readonly<{
@@ -36,7 +36,7 @@ export type TrustedEnemyCombatContent = Readonly<{
 		contentHash: string;
 	}>;
 	combatAssetBinding: TrustedRasterBinding;
-	motionPackBinding: TrustedMotionPackBinding;
+	motionPackBinding: TrustedMotionPackBinding | null;
 }>;
 
 export type TrustedBattlefieldCombatContent = Readonly<{
@@ -81,7 +81,7 @@ const CombatContentCatalogSchema = z
 					heroId: z.string().min(1),
 					characterManifestHash: ContentHashSchema,
 					combatAssetBinding: TrustedRasterBindingSchema,
-					motionPackBinding: TrustedMotionPackBindingSchema
+					motionPackBinding: TrustedMotionPackBindingSchema.nullable()
 				})
 				.strict()
 		),
@@ -96,7 +96,7 @@ const CombatContentCatalogSchema = z
 						})
 						.strict(),
 					combatAssetBinding: TrustedRasterBindingSchema,
-					motionPackBinding: TrustedMotionPackBindingSchema
+					motionPackBinding: TrustedMotionPackBindingSchema.nullable()
 				})
 				.strict()
 		),
@@ -150,9 +150,10 @@ function sameRasterBinding(actual: CombatRasterBinding, expected: TrustedRasterB
 }
 
 function sameMotionPackBinding(
-	actual: CombatMotionPackBinding,
-	expected: TrustedMotionPackBinding
+	actual: CombatMotionPackBinding | null,
+	expected: TrustedMotionPackBinding | null
 ): boolean {
+	if (!actual || !expected) return actual === expected;
 	return (
 		actual.approvalStatus === 'approved' &&
 		actual.motionPackId === expected.motionPackId &&
@@ -168,10 +169,13 @@ function sameMotionPackBinding(
 function pushBindingFailure(
 	fieldPaths: string[],
 	path: string,
-	actual: { combatAssetBinding: CombatRasterBinding; motionPackBinding: CombatMotionPackBinding },
+	actual: {
+		combatAssetBinding: CombatRasterBinding;
+		motionPackBinding: CombatMotionPackBinding | null;
+	},
 	expected: {
 		combatAssetBinding: TrustedRasterBinding;
-		motionPackBinding: TrustedMotionPackBinding;
+		motionPackBinding: TrustedMotionPackBinding | null;
 	}
 ) {
 	if (!sameRasterBinding(actual.combatAssetBinding, expected.combatAssetBinding)) {

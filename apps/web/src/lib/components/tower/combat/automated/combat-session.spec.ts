@@ -1,6 +1,7 @@
 import {
 	ExplorationCombatReceiptSchema,
 	ExplorationEncounterRequestSchema,
+	type CombatMotionPackBinding,
 	type ExplorationEncounterRequest
 } from '@summonlab/contracts';
 import { describe, expect, it, vi } from 'vitest';
@@ -26,6 +27,21 @@ const dependencies = {
 	fixtureRequestHash: RAT_ENCOUNTER_REQUEST.requestHash
 };
 
+function requiredFixtureMotion(
+	presentation: ExplorationEncounterRequest['party'][number]['presentation']
+): CombatMotionPackBinding {
+	if (!presentation.motionPackBinding) throw new Error('Fixture motion pack is missing');
+	return presentation.motionPackBinding;
+}
+
+function trustedFixtureMotion(
+	presentation: ExplorationEncounterRequest['party'][number]['presentation']
+) {
+	const { approvalStatus, ...binding } = requiredFixtureMotion(presentation);
+	void approvalStatus;
+	return binding;
+}
+
 function testOnlyRatProductionCatalog() {
 	return createCombatContentCatalog({
 		heroes: RAT_ENCOUNTER_REQUEST.party.map((hero) => ({
@@ -37,15 +53,7 @@ function testOnlyRatProductionCatalog() {
 				contentHash: hero.presentation.combatAssetBinding.contentHash,
 				approvalId: hero.presentation.combatAssetBinding.approvalId
 			},
-			motionPackBinding: {
-				motionPackId: hero.presentation.motionPackBinding.motionPackId,
-				source: hero.presentation.motionPackBinding.source,
-				atlasImageSource: hero.presentation.motionPackBinding.atlasImageSource,
-				version: hero.presentation.motionPackBinding.version,
-				contentHash: hero.presentation.motionPackBinding.contentHash,
-				atlasImageHash: hero.presentation.motionPackBinding.atlasImageHash,
-				approvalId: hero.presentation.motionPackBinding.approvalId
-			}
+			motionPackBinding: trustedFixtureMotion(hero.presentation)
 		})),
 		enemies: RAT_ENCOUNTER_REQUEST.enemies
 			.filter(
@@ -63,15 +71,7 @@ function testOnlyRatProductionCatalog() {
 					contentHash: enemy.presentation.combatAssetBinding.contentHash,
 					approvalId: enemy.presentation.combatAssetBinding.approvalId
 				},
-				motionPackBinding: {
-					motionPackId: enemy.presentation.motionPackBinding.motionPackId,
-					source: enemy.presentation.motionPackBinding.source,
-					atlasImageSource: enemy.presentation.motionPackBinding.atlasImageSource,
-					version: enemy.presentation.motionPackBinding.version,
-					contentHash: enemy.presentation.motionPackBinding.contentHash,
-					atlasImageHash: enemy.presentation.motionPackBinding.atlasImageHash,
-					approvalId: enemy.presentation.motionPackBinding.approvalId
-				}
+				motionPackBinding: trustedFixtureMotion(enemy.presentation)
 			})),
 		battlefields: [
 			{
@@ -145,7 +145,10 @@ function withProductionApprovals(
 			presentation: {
 				...hero.presentation,
 				combatAssetBinding: { ...hero.presentation.combatAssetBinding, approvalStatus: 'approved' },
-				motionPackBinding: { ...hero.presentation.motionPackBinding, approvalStatus: 'approved' }
+				motionPackBinding: {
+					...requiredFixtureMotion(hero.presentation),
+					approvalStatus: 'approved'
+				}
 			}
 		})),
 		enemies: request.enemies.map((enemy) => ({
@@ -156,7 +159,10 @@ function withProductionApprovals(
 					...enemy.presentation.combatAssetBinding,
 					approvalStatus: 'approved'
 				},
-				motionPackBinding: { ...enemy.presentation.motionPackBinding, approvalStatus: 'approved' }
+				motionPackBinding: {
+					...requiredFixtureMotion(enemy.presentation),
+					approvalStatus: 'approved'
+				}
 			}
 		})),
 		battlefieldBinding: {
@@ -772,10 +778,10 @@ describe('combat session', () => {
 										approvalId: 'forged-hero-approval'
 									},
 									motionPackBinding: {
-										...hero.presentation.motionPackBinding,
+										...requiredFixtureMotion(hero.presentation),
 										motionPackId: 'forged-hero-motion',
 										source: '/runtime/combat/forged-hero-motion.json',
-										version: hero.presentation.motionPackBinding.version + 1,
+										version: requiredFixtureMotion(hero.presentation).version + 1,
 										contentHash: '2'.repeat(64),
 										atlasImageSource: '/runtime/combat/forged-atlas.png',
 										atlasImageHash: '3'.repeat(64),

@@ -43,6 +43,13 @@ describe('RealtimeCombatStage session boundary', () => {
 		expect(stageSource).not.toContain('Assets.load(source)');
 	});
 
+	it('uses a whole-sprite fallback when an approved actor has no motion pack', () => {
+		expect(stageSource).toContain('const motionBinding = entry.presentation.motionPackBinding;');
+		expect(stageSource).toContain('new Sprite({');
+		expect(stageSource).toContain('rasterTexture.width / rasterTexture.height');
+		expect(stageSource).toContain('data-static-actor-count');
+	});
+
 	it('advances only the session fixed step and keeps replay completion separate', () => {
 		expect(stageSource).toContain(
 			'advanceStageSession(activeSession, paused, accumulator, frameSeconds)'

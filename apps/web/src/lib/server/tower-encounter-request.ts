@@ -243,7 +243,10 @@ export function buildTowerEncounterRequest(
 		visualStatus: 'production' as const,
 		party: input.heroes.map((hero, index) => projectHero(hero, index, input.attempt.version)),
 		enemies,
-		battlefieldBinding: RUINED_THRESHOLD,
+		battlefieldBinding: {
+			...RUINED_THRESHOLD,
+			occluderAssetBindings: [...RUINED_THRESHOLD.occluderAssetBindings]
+		},
 		bounds: {
 			maximumCombatants: input.heroes.length + enemies.length,
 			maximumSimulationTicks: 3_600,

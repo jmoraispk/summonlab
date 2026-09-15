@@ -388,20 +388,21 @@ export function combatFixtureAssetBindings(
 			source: binding.source,
 			contentHash: binding.contentHash
 		})),
-		...[...request.party, ...request.enemies].flatMap((participant) => [
-			{
-				source: participant.presentation.combatAssetBinding.source,
-				contentHash: participant.presentation.combatAssetBinding.contentHash
-			},
-			{
-				source: participant.presentation.motionPackBinding.source,
-				contentHash: participant.presentation.motionPackBinding.contentHash
-			},
-			{
-				source: participant.presentation.motionPackBinding.atlasImageSource,
-				contentHash: participant.presentation.motionPackBinding.atlasImageHash
-			}
-		])
+		...[...request.party, ...request.enemies].flatMap((participant) => {
+			const motion = participant.presentation.motionPackBinding;
+			return [
+				{
+					source: participant.presentation.combatAssetBinding.source,
+					contentHash: participant.presentation.combatAssetBinding.contentHash
+				},
+				...(motion
+					? [
+							{ source: motion.source, contentHash: motion.contentHash },
+							{ source: motion.atlasImageSource, contentHash: motion.atlasImageHash }
+						]
+					: [])
+			];
+		})
 	];
 	return [...new Map(sources.map((binding) => [binding.source, binding])).values()].map(
 		(binding) => ({

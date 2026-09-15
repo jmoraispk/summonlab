@@ -27,7 +27,7 @@ import {
 	type RealtimeMechanicsEvent
 } from './realtime-combat';
 const SUPPORTED_RULESET_VERSION = TOWER_COMBAT_RULESET_BINDING.version;
-const CANONICAL_ACTION_BINDINGS = new Map(
+const CANONICAL_ACTION_BINDINGS = new Map<string, { version: string; contentHash: string }>(
 	TOWER_COMBAT_ACTION_BINDINGS.map((binding) => [
 		binding.contentId,
 		{ version: binding.version, contentHash: binding.contentHash }
@@ -293,7 +293,7 @@ function fixtureOnlyArt(request: ExplorationEncounterRequest): boolean {
 		...request.battlefieldBinding.occluderAssetBindings
 	];
 	return [...participantBindings, ...battlefieldBindings].some(
-		(binding) => binding.approvalStatus === 'fixture-only'
+		(binding) => binding?.approvalStatus === 'fixture-only'
 	);
 }
 

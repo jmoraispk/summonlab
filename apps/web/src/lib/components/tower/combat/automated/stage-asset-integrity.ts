@@ -53,14 +53,11 @@ export function requestAssetBindings(
 			participant.presentation.combatAssetBinding.source,
 			participant.presentation.combatAssetBinding.contentHash
 		);
-		addBinding(
-			participant.presentation.motionPackBinding.source,
-			participant.presentation.motionPackBinding.contentHash
-		);
-		addBinding(
-			participant.presentation.motionPackBinding.atlasImageSource,
-			participant.presentation.motionPackBinding.atlasImageHash
-		);
+		const motion = participant.presentation.motionPackBinding;
+		if (motion) {
+			addBinding(motion.source, motion.contentHash);
+			addBinding(motion.atlasImageSource, motion.atlasImageHash);
+		}
 	}
 
 	return Object.freeze([...bindings.values()]);

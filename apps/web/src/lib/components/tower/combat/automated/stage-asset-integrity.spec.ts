@@ -30,6 +30,7 @@ describe('request-bound stage asset integrity', () => {
 
 	it('collects every declared raster, motion JSON, and motion atlas byte binding', () => {
 		const bindings = requestAssetBindings(RAT_ENCOUNTER_REQUEST);
+		const motion = RAT_ENCOUNTER_REQUEST.party[0]!.presentation.motionPackBinding!;
 
 		expect(bindings).toHaveLength(17);
 		expect(bindings).toContainEqual({
@@ -37,12 +38,25 @@ describe('request-bound stage asset integrity', () => {
 			contentHash: RAT_ENCOUNTER_REQUEST.party[0]!.presentation.combatAssetBinding.contentHash
 		});
 		expect(bindings).toContainEqual({
-			source: RAT_ENCOUNTER_REQUEST.party[0]!.presentation.motionPackBinding.source,
-			contentHash: RAT_ENCOUNTER_REQUEST.party[0]!.presentation.motionPackBinding.contentHash
+			source: motion.source,
+			contentHash: motion.contentHash
 		});
 		expect(bindings).toContainEqual({
-			source: RAT_ENCOUNTER_REQUEST.party[0]!.presentation.motionPackBinding.atlasImageSource,
-			contentHash: RAT_ENCOUNTER_REQUEST.party[0]!.presentation.motionPackBinding.atlasImageHash
+			source: motion.atlasImageSource,
+			contentHash: motion.atlasImageHash
+		});
+	});
+
+	it('collects the approved raster without inventing motion assets for a static actor', () => {
+		const request = structuredClone(RAT_ENCOUNTER_REQUEST);
+		request.party[0]!.presentation.motionPackBinding = null;
+
+		const bindings = requestAssetBindings(request);
+
+		expect(bindings).toHaveLength(15);
+		expect(bindings).toContainEqual({
+			source: request.party[0]!.presentation.combatAssetBinding.source,
+			contentHash: request.party[0]!.presentation.combatAssetBinding.contentHash
 		});
 	});
 

@@ -5,9 +5,9 @@ import { RAT_ENCOUNTER_REQUEST } from './rat-encounter-fixture';
 
 describe('realtime combat motion-pack configuration', () => {
 	it('derives the diagnostic versions from request bindings in actor order', () => {
-		const bindings = [...RAT_ENCOUNTER_REQUEST.party, ...RAT_ENCOUNTER_REQUEST.enemies].map(
-			(participant) => participant.presentation.motionPackBinding
-		);
+		const bindings = [...RAT_ENCOUNTER_REQUEST.party, ...RAT_ENCOUNTER_REQUEST.enemies]
+			.map((participant) => participant.presentation.motionPackBinding)
+			.filter((binding) => binding !== null);
 		expect(motionPackVersionDiagnostic(bindings)).toBe(
 			'asha:2,iron-guardian:5,moss-archer:4,rat-brute:1,lesser-rat:2'
 		);

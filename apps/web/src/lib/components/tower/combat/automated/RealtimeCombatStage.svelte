@@ -2,6 +2,7 @@
 	import { onMount, untrack } from 'svelte';
 	import { SvelteMap } from 'svelte/reactivity';
 	import type {
+		CombatMotionPackBinding,
 		ExplorationCombatReceipt,
 		ExplorationCombatRejection,
 		ExplorationEncounterRequest
@@ -110,10 +111,14 @@
 		]);
 	}
 
-	function combatMotionBindings(encounter: ExplorationEncounterRequest) {
+	function combatMotionBindings(
+		encounter: ExplorationEncounterRequest
+	): readonly CombatMotionPackBinding[] {
 		return uniqueBySource(
-			[...encounter.party, ...encounter.enemies].map(
-				(participant) => participant.presentation.motionPackBinding
+			[...encounter.party, ...encounter.enemies].flatMap((participant) =>
+				participant.presentation.motionPackBinding
+					? [participant.presentation.motionPackBinding]
+					: []
 			)
 		);
 	}
@@ -208,6 +213,7 @@
 					Application: PixiApplication,
 					Assets,
 					Container,
+					Filter,
 					Graphics,
 					Sprite,
 					Spritesheet,
@@ -421,6 +427,46 @@
 					};
 				};
 				const actorViews: Record<string, ActorView> = {};
+				const makeBlackFieldFilter = () =>
+					Filter.from({
+						gl: {
+							vertex: `
+								in vec2 aPosition;
+								out vec2 vTextureCoord;
+								uniform vec4 uInputSize;
+								uniform vec4 uOutputFrame;
+								uniform vec4 uOutputTexture;
+
+								vec4 filterVertexPosition(void) {
+									vec2 position = aPosition * uOutputFrame.zw + uOutputFrame.xy;
+									position.x = position.x * (2.0 / uOutputTexture.x) - 1.0;
+									position.y = position.y * (2.0 * uOutputTexture.z / uOutputTexture.y) - uOutputTexture.z;
+									return vec4(position, 0.0, 1.0);
+								}
+
+								vec2 filterTextureCoord(void) {
+									return aPosition * (uOutputFrame.zw * uInputSize.zw);
+								}
+
+								void main(void) {
+									gl_Position = filterVertexPosition();
+									vTextureCoord = filterTextureCoord();
+								}
+							`,
+							fragment: `
+								in vec2 vTextureCoord;
+								out vec4 finalColor;
+								uniform sampler2D uTexture;
+
+								void main(void) {
+									vec4 color = texture(uTexture, vTextureCoord);
+									float brightest = max(color.r, max(color.g, color.b));
+									float keyedAlpha = smoothstep(0.005, 0.025, brightest);
+									finalColor = vec4(color.rgb * keyedAlpha, keyedAlpha);
+								}
+							`
+						}
+					});
 
 				const initialAnimatorState = (entry: RealtimeActor): ActorAnimatorState => {
 					return createActorAnimator(entry);
@@ -437,22 +483,33 @@
 						.ellipse(0, 0, registration.shadowRadiusX, registration.shadowRadiusY)
 						.fill({ color: 0x010305, alpha: 0.62 });
 					const rasterTexture = textureFor(entry.presentation.combatAssetBinding.source);
-					const motionSheet = sheetFor(entry.presentation.motionPackBinding.source);
-					if (!rasterTexture || !motionSheet.animations.idle) {
+					const motionBinding = entry.presentation.motionPackBinding;
+					const motionSheet = motionBinding ? sheetFor(motionBinding.source) : null;
+					if (!rasterTexture || (motionSheet && !motionSheet.animations.idle)) {
 						throw new Error(`Missing declared combat visual for ${entry.id}`);
 					}
-					const body = new AnimatedSprite({
-						textures: motionSheet.animations.idle,
-						autoPlay: false,
-						autoUpdate: false,
-						loop: true,
-						label: `${entry.id}-motion-pack`
-					});
-					const bodyAnchorY = 246 / 256;
+					const body: Sprite | AnimatedSprite = motionSheet
+						? new AnimatedSprite({
+								textures: motionSheet.animations.idle,
+								autoPlay: false,
+								autoUpdate: false,
+								loop: true,
+								label: `${entry.id}-motion-pack`
+							})
+						: new Sprite({
+								texture: rasterTexture,
+								label: `${entry.id}-static-combat-raster`
+							});
+					if (entry.presentation.combatAssetBinding.assetKey === 'floor-one-sprout-goblin') {
+						body.filters = [makeBlackFieldFilter()];
+					}
+					const bodyAnchorY = motionSheet ? 246 / 256 : 0.9;
 					body.anchor.set(0.5, bodyAnchorY);
 					const displaySize = registration.displaySize;
-					body.width = displaySize;
 					body.height = displaySize;
+					body.width = motionSheet
+						? displaySize
+						: displaySize * (rasterTexture.width / rasterTexture.height);
 					const healthWidth = entry.role === 'brute' ? 92 : entry.role === 'swarm' ? 44 : 64;
 					const healthContainer = new Container({ label: `${entry.id}-health-bar` });
 					const healthTrack = new Graphics()
@@ -483,16 +540,22 @@
 						displaySize,
 						bodyAnchorY,
 						healthWidth,
-						motion: {
-							sprite: body,
-							sheet: motionSheet,
-							state: initialAnimatorState(entry),
-							clip: 'idle'
-						}
+						motion:
+							body instanceof AnimatedSprite && motionSheet
+								? {
+										sprite: body,
+										sheet: motionSheet,
+										state: initialAnimatorState(entry),
+										clip: 'idle'
+									}
+								: undefined
 					};
 				}
 				host.dataset.animatedActorCount = String(
 					Object.values(actorViews).filter((view) => view.motion).length
+				);
+				host.dataset.staticActorCount = String(
+					Object.values(actorViews).filter((view) => !view.motion).length
 				);
 
 				const updateAnimations = (snapshot: RealtimeCombatState, frameSeconds: number) => {
@@ -698,6 +761,7 @@
 	data-testid="realtime-combat-pixi-host"
 	data-presentation-mode={mode}
 	data-motion-pack-versions={motionPackVersions}
+	data-static-actor-count="0"
 >
 	<canvas bind:this={canvas} data-testid="realtime-combat-pixi-canvas" aria-hidden="true"></canvas>
 </div>

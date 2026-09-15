@@ -26,16 +26,21 @@ describe('rat encounter fixture', () => {
 
 	it('pins fixture assets, approvals, bounds, profiles, and frozen request data', () => {
 		const participants = [...RAT_ENCOUNTER_REQUEST.party, ...RAT_ENCOUNTER_REQUEST.enemies];
+		const motionBindings = participants.map((participant) => {
+			const motion = participant.presentation.motionPackBinding;
+			if (!motion) throw new Error('Fixture motion pack is missing');
+			return motion;
+		});
 		const bindings = [
 			RAT_ENCOUNTER_REQUEST.battlefieldBinding.environmentAssetBinding,
 			...RAT_ENCOUNTER_REQUEST.battlefieldBinding.occluderAssetBindings,
-			...participants.flatMap((participant) => [
+			...participants.flatMap((participant, index) => [
 				participant.presentation.combatAssetBinding,
-				participant.presentation.motionPackBinding,
+				motionBindings[index]!,
 				{
-					source: participant.presentation.motionPackBinding.atlasImageSource,
-					contentHash: participant.presentation.motionPackBinding.atlasImageHash,
-					approvalStatus: participant.presentation.motionPackBinding.approvalStatus
+					source: motionBindings[index]!.atlasImageSource,
+					contentHash: motionBindings[index]!.atlasImageHash,
+					approvalStatus: motionBindings[index]!.approvalStatus
 				}
 			])
 		];
