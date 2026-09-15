@@ -2185,6 +2185,7 @@ export async function refreshAmericanEnglishMigrationReceipt(
 			currentPath === undefined ||
 			currentEntries.get(currentPath)?.blobId !== file.successorBlobId
 		) {
+			if (files.has(file.successorPathHash)) continue;
 			throw new Error(
 				'Incremental migration receipt successor does not match the migration commit'
 			);
