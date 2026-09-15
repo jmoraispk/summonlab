@@ -691,6 +691,12 @@ describe('integrity binding classification', () => {
 		).toBe(true);
 		expect(
 			runtimeAndEngineIntegrityOwner.owns(
+				'apps/web/src/lib/components/tower/combat/automated/rat-encounter-fixture.spec.ts',
+				''
+			)
+		).toBe(true);
+		expect(
+			runtimeAndEngineIntegrityOwner.owns(
 				'packages/database/src/exploration.integration.spec.ts',
 				''
 			)
