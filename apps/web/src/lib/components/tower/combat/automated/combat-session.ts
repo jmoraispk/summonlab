@@ -9,6 +9,11 @@ import {
 } from '@summonlab/contracts/exploration-combat';
 import { z } from 'zod';
 
+import {
+	TOWER_COMBAT_ACTION_BINDINGS,
+	TOWER_COMBAT_RULESET_BINDING
+} from '$lib/tower-combat-policy';
+
 import { combatDeterministicId, combatRequestHash, combatValueHash } from './combat-hash';
 import {
 	createCombatContentCatalog,
@@ -21,15 +26,12 @@ import {
 	type RealtimeCombatState,
 	type RealtimeMechanicsEvent
 } from './realtime-combat';
-import { RAT_ENCOUNTER_REQUEST } from './rat-encounter-fixture';
-
-const SUPPORTED_RULESET_VERSION = 'realtime-rat-combat-v1';
+const SUPPORTED_RULESET_VERSION = TOWER_COMBAT_RULESET_BINDING.version;
 const CANONICAL_ACTION_BINDINGS = new Map(
-	RAT_ENCOUNTER_REQUEST.contentBindings.flatMap((binding) =>
-		binding.kind === 'action'
-			? [[binding.contentId, { version: binding.version, contentHash: binding.contentHash }]]
-			: []
-	)
+	TOWER_COMBAT_ACTION_BINDINGS.map((binding) => [
+		binding.contentId,
+		{ version: binding.version, contentHash: binding.contentHash }
+	])
 );
 
 export type CombatSessionStatus =
@@ -312,7 +314,7 @@ function validateBindings(
 	if (
 		rulesetBindings.length !== 1 ||
 		!rulesetBinding ||
-		rulesetBinding.contentId !== 'realtime-rat-combat' ||
+		rulesetBinding.contentId !== TOWER_COMBAT_RULESET_BINDING.contentId ||
 		rulesetBinding.version !== request.rulesetVersion ||
 		rulesetBinding.contentHash !== combatValueHash({ ruleset: SUPPORTED_RULESET_VERSION })
 	) {
@@ -471,15 +473,12 @@ function validateRequest(
 	const bindingRejection = validateBindings(request, trustedDependencies.claimPolicyBinding);
 	if (bindingRejection) return { rejection: bindingRejection };
 	if (request.visualStatus === 'fixture') {
-		if (
-			trustedDependencies.fixtureRequestHash !== RAT_ENCOUNTER_REQUEST.requestHash ||
-			request.requestHash !== RAT_ENCOUNTER_REQUEST.requestHash
-		) {
+		if (trustedDependencies.fixtureRequestHash !== request.requestHash) {
 			return {
 				rejection: createRejection(
 					request.requestId,
 					'unapproved-character-art',
-					'Fixture encounters are permitted only for the canonical rat fixture request.',
+					'Fixture encounters require an explicitly trusted fixture request hash.',
 					['requestHash']
 				)
 			};

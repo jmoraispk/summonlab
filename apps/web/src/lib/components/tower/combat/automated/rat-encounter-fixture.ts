@@ -5,6 +5,12 @@ import {
 	type ExplorationEncounterRequest
 } from '@summonlab/contracts/exploration-combat';
 
+import {
+	TOWER_COMBAT_CLAIM_POLICY,
+	TOWER_COMBAT_CLAIM_POLICY_BINDING,
+	TOWER_COMBAT_RULESET_BINDING
+} from '$lib/tower-combat-policy';
+
 import { combatValueHash } from './combat-hash';
 
 const ART_ROOT = '/runtime/combat/realtime-study-v1';
@@ -42,27 +48,8 @@ const FIXTURE_MOTION_HASHES = {
 	}
 } as const;
 
-const RAT_CLAIM_VALUES = {
-	xpPerDefeatedEnemy: 4,
-	practicePerAction: 1,
-	materialByEnemyDefinitionId: {
-		'rat-brute': { materialDefinitionId: 'plague-rat-tail', quantity: 1 },
-		'plague-rat': { materialDefinitionId: 'plague-rat-tail', quantity: 1 }
-	}
-} as const;
-
-export const RAT_ENCOUNTER_CLAIM_POLICY = {
-	contentId: 'rat-study-claims',
-	version: 'rat-study-claims-v1',
-	contentHash: combatValueHash(RAT_CLAIM_VALUES),
-	...RAT_CLAIM_VALUES
-} as const;
-
-export const RAT_ENCOUNTER_CLAIM_POLICY_BINDING = Object.freeze({
-	contentId: RAT_ENCOUNTER_CLAIM_POLICY.contentId,
-	version: RAT_ENCOUNTER_CLAIM_POLICY.version,
-	contentHash: RAT_ENCOUNTER_CLAIM_POLICY.contentHash
-});
+export const RAT_ENCOUNTER_CLAIM_POLICY = TOWER_COMBAT_CLAIM_POLICY;
+export const RAT_ENCOUNTER_CLAIM_POLICY_BINDING = TOWER_COMBAT_CLAIM_POLICY_BINDING;
 
 function fixtureRaster(assetKey: string, source: string, contentHash: string) {
 	return {
@@ -120,7 +107,7 @@ const asha = {
 		characterManifestHash: combatValueHash({ heroId: 'saffron-braid', visual: 'ready-v1' }),
 		lifeState: 'combat-capable' as const,
 		availabilityRevision: 0,
-		rulesetVersion: 'realtime-rat-combat-v1'
+		rulesetVersion: TOWER_COMBAT_RULESET_BINDING.version
 	},
 	displayName: 'Asha',
 	resources: { health: 168, maximumHealth: 168, mana: 0, maximumMana: 0 },
@@ -154,7 +141,7 @@ const toma = {
 		characterManifestHash: combatValueHash({ heroId: 'iron-guardian', visual: 'ready-v1' }),
 		lifeState: 'combat-capable' as const,
 		availabilityRevision: 0,
-		rulesetVersion: 'realtime-rat-combat-v1'
+		rulesetVersion: TOWER_COMBAT_RULESET_BINDING.version
 	},
 	displayName: 'Toma',
 	resources: { health: 238, maximumHealth: 238, mana: 0, maximumMana: 0 },
@@ -188,7 +175,7 @@ const nessa = {
 		characterManifestHash: combatValueHash({ heroId: 'moss-archer', visual: 'ready-v1' }),
 		lifeState: 'combat-capable' as const,
 		availabilityRevision: 0,
-		rulesetVersion: 'realtime-rat-combat-v1'
+		rulesetVersion: TOWER_COMBAT_RULESET_BINDING.version
 	},
 	displayName: 'Nessa',
 	resources: { health: 126, maximumHealth: 126, mana: 40, maximumMana: 40 },
@@ -290,9 +277,7 @@ const lesserRats = lesserRatDeployments.map(
 const RAT_CONTENT_BINDINGS = [
 	{
 		kind: 'ruleset' as const,
-		contentId: 'realtime-rat-combat',
-		version: 'realtime-rat-combat-v1',
-		contentHash: combatValueHash({ ruleset: 'realtime-rat-combat-v1' })
+		...TOWER_COMBAT_RULESET_BINDING
 	},
 	...[
 		'saffron-strike-v1',
@@ -359,7 +344,7 @@ const RAT_REQUEST_BODY = {
 	explorationAttemptId: '6b348baf-af20-4cf3-bba2-2c365ddcccf0',
 	observedGameTime: '2026-09-07T12:00:00.000-07:00',
 	expectedExplorationStateHash: 'd'.repeat(64),
-	rulesetVersion: 'realtime-rat-combat-v1',
+	rulesetVersion: TOWER_COMBAT_RULESET_BINDING.version,
 	seed: 'rat-study-seed-v1',
 	entropyCursor: 0,
 	visualStatus: 'fixture',

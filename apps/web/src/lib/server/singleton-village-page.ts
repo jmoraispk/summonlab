@@ -134,6 +134,11 @@ async function loadCampaignPage(databaseUrl: string, campaign: CampaignRun, mode
 							hero.draft.manifestHash,
 							hero.draft.manifest.artKey,
 							'village-cutout'
+						),
+						combatArt: runtimePortraitFor(
+							hero.draft.manifestHash,
+							hero.draft.manifest.artKey,
+							'combat-chibi'
 						)
 					};
 				})

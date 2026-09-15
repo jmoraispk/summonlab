@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import summonableCatalogSource from '../../../../../assets/heroes/approved/summonable-roster-v1/catalog.json';
 
-import { runtimePortraitFor } from './runtime-portraits';
+import { runtimeCombatBindingFor, runtimePortraitFor } from './runtime-portraits';
 
 describe('runtime portraits', () => {
 	it('resolves canonical heroes by immutable manifest hash', () => {
@@ -45,6 +45,17 @@ describe('runtime portraits', () => {
 		expect(
 			runtimePortraitFor(hero.draft.manifestHash, hero.draft.manifest.artKey, 'village-cutout')
 		).toBeNull();
+	});
+
+	it('resolves the approved combat chibi with its hash and approval identity', () => {
+		const hero = summonableCatalogSource.entries[0]!;
+		const binding = runtimeCombatBindingFor(hero.draft.manifestHash, hero.draft.manifest.artKey);
+
+		expect(binding).toMatchObject({
+			approvalStatus: 'approved',
+			contentHash: expect.stringMatching(/^[a-f0-9]{64}$/u)
+		});
+		expect(binding?.source).toContain('/combat-chibi.');
 	});
 
 	it('resolves the three approved current-company Village cutouts', () => {

@@ -155,6 +155,7 @@ export interface CityResidentSource {
 	readonly detailRows: readonly { readonly label: string; readonly value: string }[];
 	readonly portrait: CityResidentArt | null;
 	readonly sceneArt: CityResidentArt | null;
+	readonly combatArt: CityResidentArt | null;
 }
 
 export interface CityResident extends CityResidentSource {

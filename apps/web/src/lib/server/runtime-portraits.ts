@@ -1,4 +1,8 @@
-import { SummonableHeroRuntimeManifestSchema, type RuntimeVisualUsage } from '@summonlab/contracts';
+import {
+	SummonableHeroRuntimeManifestSchema,
+	type CombatRasterBinding,
+	type RuntimeVisualUsage
+} from '@summonlab/contracts';
 
 import summonableHeroRuntimeManifestSource from '../../../static/runtime/summonable-heroes-v1/manifest.json';
 
@@ -13,6 +17,28 @@ export interface RuntimePortrait {
 	readonly publicPath: string;
 	readonly width: number;
 	readonly height: number;
+}
+
+export function runtimeCombatBindingFor(
+	manifestHash: string,
+	artKey: string | null
+): CombatRasterBinding | null {
+	const asset = runtimePortraits.find(
+		(candidate) =>
+			candidate.usage === 'combat-chibi' &&
+			candidate.sourceStatus === 'approved' &&
+			(candidate.manifestHashes.includes(manifestHash) ||
+				(artKey !== null && candidate.sourceAssetKey === artKey))
+	);
+	return asset
+		? {
+				assetKey: asset.sourceAssetKey,
+				source: asset.publicPath,
+				contentHash: asset.contentHash,
+				approvalStatus: 'approved',
+				approvalId: `${asset.sourceAssetKey}-runtime-approved`
+			}
+		: null;
 }
 
 export function runtimePortraitFor(

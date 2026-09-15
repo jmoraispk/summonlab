@@ -337,6 +337,7 @@ function residentSource(heroId: string, ordinal: number, name: string): CityResi
 		level: ordinal,
 		detailRows: [],
 		portrait: null,
-		sceneArt: null
+		sceneArt: null,
+		combatArt: null
 	};
 }
