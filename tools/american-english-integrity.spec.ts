@@ -137,23 +137,20 @@ describe('canonical serializer characterization', () => {
 });
 
 describe('integrity owner successor planning', () => {
-	it('registers the ordered skill successor writers and cleanup closure checks', () => {
+	it('registers the ordered live skill successor writers without the retired v1 pipeline', () => {
 		const regeneration = visualProductionIntegrityOwner.regeneration!;
 		const writeSteps = regeneration.writeCommand.split(' && ');
-		const finalizeMass = writeSteps.indexOf('pnpm finalize:skill-icon-mass-production');
-		const resealCleanup = writeSteps.indexOf(
-			'pnpm tsx tools/reseal-skill-icon-content-bindings.ts'
-		);
+		const exportCatalog = writeSteps.indexOf('pnpm export:skill-icons');
+		const exportAssets = writeSteps.indexOf('pnpm export:skill-icon-assets');
 		const exportWiki = writeSteps.indexOf('pnpm export:wiki-skill-visual-catalog');
 
-		expect(finalizeMass).toBeGreaterThanOrEqual(0);
-		expect(resealCleanup).toBeGreaterThan(finalizeMass);
-		expect(exportWiki).toBeGreaterThan(resealCleanup);
-		expect(regeneration.checkCommand).toEqual(
-			expect.stringContaining(
-				'pnpm check:skill-icon-mass-production && pnpm check:skill-icon-quality-cleanup && pnpm check:skill-icon-cleanup-v2-packets && pnpm check:skill-icon-cleanup-v3-packets && pnpm check:skill-icon-cleanup-v2 && pnpm check:skill-icon-cleanup-v3'
-			)
-		);
+		expect(exportCatalog).toBeGreaterThanOrEqual(0);
+		expect(exportAssets).toBeGreaterThan(exportCatalog);
+		expect(exportWiki).toBeGreaterThan(exportAssets);
+		expect(regeneration.writeCommand).not.toContain('skill-icon-mass-production');
+		expect(regeneration.writeCommand).not.toContain('skill-icon-content-bindings');
+		expect(regeneration.checkCommand).toContain('pnpm validate:skill-icons');
+		expect(regeneration.checkCommand).not.toContain('skill-icon-cleanup');
 	});
 
 	it('preserves a manifest-relative asset reference when the asset path spelling changes', async () => {
@@ -680,30 +677,25 @@ describe('integrity binding classification', () => {
 		);
 	});
 
-	it('materializes the wiki skill visual manifest self-inclusive byte budget', () => {
+	it('materializes the live v2 skill catalog closure', () => {
 		expect(visualProductionIntegrityOwner.intentMaterialization?.commands).toContainEqual([
 			'pnpm',
-			'tsx',
-			'tools/reseal-wiki-skill-visual-manifest.ts'
+			'export:skill-icons'
 		]);
 		expect(visualProductionIntegrityOwner.intentMaterialization?.paths).toContain(
-			'apps/web/static/wiki-media/skills/visual-catalog-v1/manifest.json'
+			'assets/wiki/skills/icon-production-v2/catalog.json'
 		);
 		expect(visualProductionIntegrityOwner.intentMaterialization?.paths).toContain(
-			'assets/wiki/skills/icon-production-v1/mass-production-v1/manifest.json'
+			'assets/wiki/skills/icon-production-v2/asset-manifest.json'
+		);
+		expect(visualProductionIntegrityOwner.intentMaterialization?.paths).toContain(
+			'apps/web/static/wiki-media/skills/visual-catalog-v2/manifest.json'
 		);
 		expect(
-			visualProductionIntegrityOwner.intentMaterialization?.selectPaths?.([
-				'assets/wiki/skills/icon-production-v1/mass-production-v1/results/skills/martial-polearm-rend-armor.json',
-				'assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions-v3/craft-gathering-taming-v3.json',
-				'assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/completion-audits/craft-gathering-taming-v3.json',
-				'assets/wiki/skills/icon-production-v1/catalog.json'
-			])
-		).toEqual([
-			'assets/wiki/skills/icon-production-v1/mass-production-v1/results/skills/martial-polearm-rend-armor.json',
-			'assets/wiki/skills/icon-production-v1/quality-cleanup-v1/prompts/revisions-v3/craft-gathering-taming-v3.json',
-			'assets/wiki/skills/icon-production-v1/quality-cleanup-v1/results/completion-audits/craft-gathering-taming-v3.json'
-		]);
+			visualProductionIntegrityOwner.intentMaterialization?.paths.some(
+				(path) => path.includes('icon-production-v1') || path.includes('visual-catalog-v1')
+			)
+		).toBe(false);
 	});
 
 	it('materializes family production compatibility seals from the migrated skill surface', () => {

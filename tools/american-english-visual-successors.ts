@@ -15,14 +15,14 @@ import {
 import { OWNER_DIGEST_POINTER_PATTERNS } from './american-english-integrity-pointers.js';
 import { selectFamilyAffinitySourceLineagePaths } from './reseal-family-affinity-source-lineage.js';
 
-const SKILL_ICON_LINEAGE_PATH =
-	/^assets\/wiki\/skills\/icon-production-v1\/(?:mass-production-v1\/results\/(?:families|skills)|quality-cleanup-v1\/(?:prompts\/revisions(?:-v[23])?|results\/(?:revisions|completion-audits)))\/[^/]+\.json$/u;
+const SKILL_ICON_V2_GENERATED_PATH =
+	/^(?:assets\/wiki\/skills\/icon-production-v2\/(?:asset-manifest\.json|catalog\.json|interiors\/[^/]+\.png)|apps\/web\/static\/wiki-media\/skills\/visual-catalog-v2\/(?:manifest\.json|icons\/[^/]+\.webp))$/u;
 
 export function selectVisualProductionIntentPaths(paths: readonly string[]): readonly string[] {
 	return [
 		...new Set([
 			...selectFamilyAffinitySourceLineagePaths(paths),
-			...paths.filter((repositoryPath) => SKILL_ICON_LINEAGE_PATH.test(repositoryPath))
+			...paths.filter((repositoryPath) => SKILL_ICON_V2_GENERATED_PATH.test(repositoryPath))
 		])
 	].sort((left, right) => (left < right ? -1 : left > right ? 1 : 0));
 }
@@ -108,8 +108,9 @@ export const visualProductionIntegrityOwner: AmericanEnglishIntegrityOwner = {
 			['pnpm', 'export:wiki-monster-visuals'],
 			['pnpm', 'export:player-visuals'],
 			['pnpm', 'export:summonable-hero-runtime'],
-			['pnpm', 'tsx', 'tools/reseal-skill-icon-content-bindings.ts'],
-			['pnpm', 'tsx', 'tools/reseal-wiki-skill-visual-manifest.ts'],
+			['pnpm', 'export:skill-icons'],
+			['pnpm', 'export:skill-icon-assets'],
+			['pnpm', 'export:wiki-skill-visual-catalog'],
 			['pnpm', 'prettier', '--write', 'packages/contracts/src/character.ts']
 		],
 		paths: [
@@ -122,31 +123,21 @@ export const visualProductionIntegrityOwner: AmericanEnglishIntegrityOwner = {
 			'assets/enemies/approved/fauna-family-v1/receipts/promotion-v1.json',
 			'assets/enemies/runtime/fauna-family-v1/catalog.json',
 			'assets/enemies/runtime/fauna-family-v1/receipt-v1.json',
-			'assets/wiki/skills/icon-production-v1/mass-production-v1/manifest.json',
-			'apps/web/static/wiki-media/skills/visual-catalog-v1/manifest.json',
+			'assets/wiki/skills/icon-production-v2/catalog.json',
+			'assets/wiki/skills/icon-production-v2/asset-manifest.json',
+			'apps/web/static/wiki-media/skills/visual-catalog-v2/manifest.json',
 			'skills/summonlab-image-production/references/contract-v3.json',
 			'skills/summonlab-image-production/scripts/family_dispatch_gate.mjs',
 			'packages/contracts/src/character.ts',
-			'packages/characters/src/characters.spec.ts',
-			'assets/wiki/skills/icon-production-v2/overlay.json',
-			'assets/wiki/skills/icon-production-v2/runs/reversal-cut-v1/manifest.json',
-			'assets/wiki/skills/icon-production-v2/runs/reversal-cut-v2/completion.json',
-			'assets/wiki/skills/icon-production-v2/runs/reversal-cut-v2/guard-flow-ancestor-authority.json',
-			'assets/wiki/skills/icon-production-v2/runs/reversal-cut-v2/individual-attempt-v1.json',
-			'assets/wiki/skills/icon-production-v2/runs/reversal-cut-v2/manifest.json',
-			'assets/wiki/skills/icon-production-v2/runs/reversal-cut-v3/activation.json',
-			'assets/wiki/skills/icon-production-v2/runs/reversal-cut-v3/owner-review.json',
-			'assets/wiki/skills/icon-production-v2/runs/reversal-cut-v4/correction.json',
-			'assets/wiki/skills/icon-production-v2/runs/reversal-cut-v4/owner-frame-feedback.json',
-			'assets/wiki/skills/icon-production-v2/runs/reversal-cut-v7/activation.json'
+			'packages/characters/src/characters.spec.ts'
 		],
 		selectPaths: selectVisualProductionIntentPaths
 	},
 	regeneration: {
 		writeCommand:
-			'pnpm export:family-affinity-production && pnpm tsx tools/reseal-fauna-family-promotion-lineage.ts --write && pnpm export:affinity-workflow && pnpm tsx tools/reseal-retained-enemy-pack-lineage.ts --write && pnpm tsx tools/reseal-affinity-wiki-provenance.ts --write && pnpm export:enemy-affinity-expansion && pnpm export:wiki-monsters && pnpm export:wiki-monster-visuals && pnpm finalize:skill-icon-mass-production && pnpm tsx tools/reseal-skill-icon-content-bindings.ts && pnpm export:wiki-skill-visual-catalog && pnpm export:player-visuals && pnpm export:summonable-hero-runtime && pnpm export:skill-icon-runtime',
+			'pnpm export:family-affinity-production && pnpm tsx tools/reseal-fauna-family-promotion-lineage.ts --write && pnpm export:affinity-workflow && pnpm tsx tools/reseal-retained-enemy-pack-lineage.ts --write && pnpm tsx tools/reseal-affinity-wiki-provenance.ts --write && pnpm export:enemy-affinity-expansion && pnpm export:wiki-monsters && pnpm export:wiki-monster-visuals && pnpm export:skill-icons && pnpm export:skill-icon-assets && pnpm export:wiki-skill-visual-catalog && pnpm export:player-visuals && pnpm export:summonable-hero-runtime',
 		checkCommand:
-			'pnpm tsx tools/reseal-retained-enemy-pack-lineage.ts --check && pnpm tsx tools/reseal-affinity-wiki-provenance.ts --check && pnpm check:family-affinity-production && pnpm tsx tools/reseal-fauna-family-promotion-lineage.ts --check && pnpm validate:affinity-workflow && pnpm check:enemy-affinity-expansion-review && pnpm validate:wiki-monsters && pnpm validate:wiki-monster-visuals && pnpm check:skill-icon-mass-production && pnpm check:skill-icon-quality-cleanup && pnpm check:skill-icon-cleanup-v2-packets && pnpm check:skill-icon-cleanup-v3-packets && pnpm check:skill-icon-cleanup-v2 && pnpm check:skill-icon-cleanup-v3 && pnpm validate:wiki-skill-visual-catalog && pnpm validate:player-visuals && pnpm validate:summonable-hero-runtime && pnpm check:skill-icon-runtime && pnpm validate:skill-icons'
+			'pnpm tsx tools/reseal-retained-enemy-pack-lineage.ts --check && pnpm tsx tools/reseal-affinity-wiki-provenance.ts --check && pnpm check:family-affinity-production && pnpm tsx tools/reseal-fauna-family-promotion-lineage.ts --check && pnpm validate:affinity-workflow && pnpm check:enemy-affinity-expansion-review && pnpm validate:wiki-monsters && pnpm validate:wiki-monster-visuals && pnpm validate:skill-icons && pnpm validate:player-visuals && pnpm validate:summonable-hero-runtime'
 	},
 	serializerFor(path, kind) {
 		if (kind === 'raw-file')
