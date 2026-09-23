@@ -12,6 +12,7 @@ export type AshaDecompositionAssets = Readonly<{
 	braidMask: string;
 	recomposed: string;
 	keyedRepair: string;
+	reviewDescriptor: string;
 }>;
 
 export function decompositionAssets(version: 2): AshaDecompositionAssets {
@@ -24,6 +25,7 @@ export function decompositionAssets(version: 2): AshaDecompositionAssets {
 		nearArmMask: `${REVIEW_ROOT}/near-arm-mask.png`,
 		braidMask: `${REVIEW_ROOT}/braid-mask.png`,
 		recomposed: `${REVIEW_ROOT}/asha-setup-v2-r2.png`,
-		keyedRepair: `${REVIEW_ROOT}/body-repair-v2-rgba.png`
+		keyedRepair: `${REVIEW_ROOT}/body-repair-v2-rgba.png`,
+		reviewDescriptor: `${REVIEW_ROOT}/review.json`
 	};
 }

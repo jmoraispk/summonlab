@@ -1,5 +1,5 @@
 import { createHash } from 'node:crypto';
-import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
+import { mkdir, mkdtemp, readFile, rm, symlink, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
@@ -11,6 +11,7 @@ import {
 	materializeGate2BCandidate,
 	parseGate2BCliArgs,
 	preflightGate2B,
+	publishAbsentArtifact,
 	rasterizeSourceMasks,
 	resolveGate2BPaths,
 	validateGate2BCandidate,
@@ -225,6 +226,45 @@ describe('Asha Spine Gate 2B contract and preflight', () => {
 		);
 	});
 
+	it('rejects a symlinked output parent before production', async () => {
+		const fixture = await workspaceFixture();
+		const external = await mkdtemp(join(tmpdir(), 'asha-gate2b-external-'));
+		workspaces.push(external);
+		await symlink(external, join(fixture.workspace, 'assets'), 'dir');
+		await expect(preflightGate2B(fixture.contract, fixture.workspace, 'write')).rejects.toThrow(
+			'symbolic link'
+		);
+	});
+
+	it('rejects a symlinked authority parent before reading source evidence', async () => {
+		const fixture = await workspaceFixture();
+		const external = await mkdtemp(join(tmpdir(), 'asha-gate2b-authority-'));
+		workspaces.push(external);
+		await Promise.all([
+			writeFile(join(external, 'brief.json'), '{}\n'),
+			writeFile(join(external, 'cutout.png'), fixture.cutout),
+			writeFile(join(external, 'board-v1.png'), fixture.v1Board),
+			writeFile(join(external, 'result-v1.json'), fixture.v1Result)
+		]);
+		await rm(join(fixture.workspace, 'authority'), { recursive: true });
+		await symlink(external, join(fixture.workspace, 'authority'), 'dir');
+		await expect(preflightGate2B(fixture.contract, fixture.workspace, 'write')).rejects.toThrow(
+			'symbolic link'
+		);
+	});
+
+	it('publishes without replacing a race-time collision', async () => {
+		const fixture = await workspaceFixture();
+		const staged = join(fixture.workspace, 'staged');
+		const destination = join(fixture.workspace, 'destination');
+		await writeFile(staged, 'candidate');
+		await writeFile(destination, 'existing-owner');
+		await expect(publishAbsentArtifact(staged, destination)).rejects.toMatchObject({
+			code: 'EEXIST'
+		});
+		expect(await readFile(destination, 'utf8')).toBe('existing-owner');
+	});
+
 	it('proves deterministic mask safety before provider access', async () => {
 		const fixture = await workspaceFixture();
 		const unsafe: AshaSpineGate2BContract = {
@@ -378,6 +418,33 @@ describe('Asha Spine Gate 2B materialization', () => {
 		await writeFile(paths.nearArm, await rgbaPng());
 		await expect(validateGate2BCandidate(fixture.contract, fixture.workspace)).rejects.toThrow(
 			'nearArm output hash mismatch'
+		);
+	});
+
+	it('rejects forged receipt paths and claimed measurements', async () => {
+		const fixture = await workspaceFixture();
+		const provider = await providerFixture(fixture);
+		await materializeGate2BCandidate({
+			contract: fixture.contract,
+			workspaceRoot: fixture.workspace,
+			providerOutputPath: provider.raw,
+			keyedOutputPath: provider.keyed
+		});
+		const paths = resolveGate2BPaths(fixture.contract, fixture.workspace);
+		const original = JSON.parse(await readFile(paths.result, 'utf8'));
+		const forgedPath = structuredClone(original);
+		forgedPath.outputs.nearArm.path = fixture.contract.acceptedCutout;
+		forgedPath.outputs.nearArm.sha256 = fixture.contract.acceptedCutoutSha256;
+		await writeFile(paths.result, `${JSON.stringify(forgedPath)}\n`);
+		await expect(validateGate2BCandidate(fixture.contract, fixture.workspace)).rejects.toThrow(
+			'nearArm output path mismatch'
+		);
+
+		const forgedMeasurements = structuredClone(original);
+		forgedMeasurements.measurements.nearArmMaskPixels += 1;
+		await writeFile(paths.result, `${JSON.stringify(forgedMeasurements)}\n`);
+		await expect(validateGate2BCandidate(fixture.contract, fixture.workspace)).rejects.toThrow(
+			'candidate measurements mismatch'
 		);
 	});
 

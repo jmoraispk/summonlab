@@ -1,12 +1,13 @@
 import { createHash } from 'node:crypto';
 import { constants as fsConstants } from 'node:fs';
 import {
+	link,
 	lstat,
 	mkdir,
 	mkdtemp,
 	open,
 	readFile,
-	rename,
+	realpath,
 	rm,
 	writeFile,
 	type FileHandle
@@ -204,6 +205,31 @@ function containedPath(workspaceRoot: string, repositoryPath: string): string {
 	return path;
 }
 
+async function assertNoSymlinkedComponents(
+	workspaceRoot: string,
+	absolutePath: string
+): Promise<void> {
+	const lexicalRoot = resolve(workspaceRoot);
+	const lexicalPath = resolve(absolutePath);
+	const offset = relative(lexicalRoot, lexicalPath);
+	if (offset === '..' || offset.startsWith(`..${sep}`) || isAbsolute(offset)) {
+		throw new Error(`path escapes workspace: ${absolutePath}`);
+	}
+	let current = await realpath(lexicalRoot);
+	for (const component of offset.split(sep).filter(Boolean)) {
+		current = join(current, component);
+		try {
+			const stats = await lstat(current);
+			if (stats.isSymbolicLink()) {
+				throw new Error(`path component must not be a symbolic link: ${current}`);
+			}
+		} catch (error) {
+			if ((error as NodeJS.ErrnoException).code === 'ENOENT') return;
+			throw error;
+		}
+	}
+}
+
 async function secureRead(path: string): Promise<Buffer> {
 	if (process.platform !== 'linux') return readFile(path);
 	const handle: FileHandle = await open(path, fsConstants.O_RDONLY | fsConstants.O_NOFOLLOW);
@@ -270,31 +296,34 @@ async function verifyAuthority(
 	workspaceRoot: string
 ): Promise<Buffer> {
 	const originalBrief = containedPath(workspaceRoot, contract.originalBrief);
+	await assertNoSymlinkedComponents(workspaceRoot, originalBrief);
 	const briefStats = await lstat(originalBrief);
 	if (briefStats.isSymbolicLink() || !briefStats.isFile()) {
 		throw new Error('original brief must be a regular non-symbolic file');
 	}
+	const cutoutPath = containedPath(workspaceRoot, contract.acceptedCutout);
+	await assertNoSymlinkedComponents(workspaceRoot, cutoutPath);
 	const cutout = await checkedAuthority(
 		'accepted cutout',
-		containedPath(workspaceRoot, contract.acceptedCutout),
+		cutoutPath,
 		contract.acceptedCutoutSha256
 	);
 	const metadata = await sharp(cutout, { failOn: 'error' }).metadata();
 	if (metadata.width !== 768 || metadata.height !== 768 || metadata.channels !== 4) {
 		throw new Error('accepted cutout must be 768x768 RGBA');
 	}
+	const v1ResultPath = containedPath(workspaceRoot, contract.v1Failure.result);
+	await assertNoSymlinkedComponents(workspaceRoot, v1ResultPath);
 	const v1Result = await checkedAuthority(
 		'v1 failure result',
-		containedPath(workspaceRoot, contract.v1Failure.result),
+		v1ResultPath,
 		contract.v1Failure.resultSha256
 	);
 	const parsedV1 = JSON.parse(v1Result.toString('utf8')) as { disposition?: unknown };
 	if (parsedV1.disposition !== 'failed') throw new Error('v1 evidence must remain failed');
-	await checkedAuthority(
-		'v1 failure board',
-		containedPath(workspaceRoot, contract.v1Failure.board),
-		contract.v1Failure.boardSha256
-	);
+	const v1BoardPath = containedPath(workspaceRoot, contract.v1Failure.board);
+	await assertNoSymlinkedComponents(workspaceRoot, v1BoardPath);
+	await checkedAuthority('v1 failure board', v1BoardPath, contract.v1Failure.boardSha256);
 	return cutout;
 }
 
@@ -308,6 +337,9 @@ export async function preflightGate2B(
 	const cutout = await verifyAuthority(contract, workspaceRoot);
 	await rasterizeSourceMasks(contract, cutout);
 	const paths = resolveGate2BPaths(contract, workspaceRoot, materializationRevision);
+	await Promise.all(
+		Object.values(paths).map((path) => assertNoSymlinkedComponents(workspaceRoot, path))
+	);
 	if (materializationRevision === 2) {
 		const first = await validateGate2BCandidate(contract, workspaceRoot, 1);
 		if (
@@ -670,11 +702,18 @@ function resultBaseFields(
 	};
 }
 
+export async function publishAbsentArtifact(staged: string, destination: string): Promise<void> {
+	await link(staged, destination);
+}
+
 async function persistArtifacts(
+	workspaceRoot: string,
 	root: string,
 	artifacts: readonly { destination: string; bytes: Buffer }[]
 ): Promise<void> {
+	await assertNoSymlinkedComponents(workspaceRoot, root);
 	await mkdir(root, { recursive: true });
+	await assertNoSymlinkedComponents(workspaceRoot, root);
 	const staging = await mkdtemp(join(root, '.gate2b-'));
 	const staged = artifacts.map((item, index) => ({
 		...item,
@@ -684,8 +723,10 @@ async function persistArtifacts(
 	try {
 		await Promise.all(staged.map((item) => writeFile(item.staged, item.bytes, { flag: 'wx' })));
 		for (const item of staged) {
+			await assertNoSymlinkedComponents(workspaceRoot, item.destination);
 			await mkdir(dirname(item.destination), { recursive: true });
-			await rename(item.staged, item.destination);
+			await assertNoSymlinkedComponents(workspaceRoot, dirname(item.destination));
+			await publishAbsentArtifact(item.staged, item.destination);
 			finalized.push(item.destination);
 		}
 	} catch (error) {
@@ -775,7 +816,7 @@ export async function materializeGate2BCandidate(input: {
 						{ destination: paths.keyedProvider, bytes: keyedBytes }
 					]
 				: [];
-		await persistArtifacts(root, [
+		await persistArtifacts(input.workspaceRoot, root, [
 			...providerArtifacts,
 			{ destination: paths.nearArmMask, bytes: built.masks.nearArmPng },
 			{ destination: paths.braidMask, bytes: built.masks.braidPng },
@@ -822,7 +863,7 @@ export async function materializeGate2BCandidate(input: {
 						{ destination: paths.keyedProvider, bytes: keyedBytes }
 					]
 				: [];
-		await persistArtifacts(root, [
+		await persistArtifacts(input.workspaceRoot, root, [
 			...providerArtifacts,
 			{ destination: paths.result, bytes: Buffer.from(stableJson(failed), 'utf8') }
 		]);
@@ -833,15 +874,41 @@ export async function materializeGate2BCandidate(input: {
 async function validatedArtifact(
 	workspaceRoot: string,
 	expected: z.infer<typeof artifactSchema>,
-	label: string
+	label: string,
+	constraints?: Readonly<{ width?: number; height?: number; channels?: number }>
 ): Promise<Buffer> {
-	const bytes = await secureRead(containedPath(workspaceRoot, expected.path));
+	const path = containedPath(workspaceRoot, expected.path);
+	await assertNoSymlinkedComponents(workspaceRoot, path);
+	const bytes = await secureRead(path);
 	if (rawSha256(bytes) !== expected.sha256) throw new Error(`${label} hash mismatch`);
 	const metadata = await sharp(bytes, { failOn: 'error' }).metadata();
+	if (metadata.format !== 'png') throw new Error(`${label} must be PNG`);
 	if (metadata.width !== expected.width || metadata.height !== expected.height) {
 		throw new Error(`${label} dimensions mismatch`);
 	}
+	if (
+		(constraints?.width !== undefined && metadata.width !== constraints.width) ||
+		(constraints?.height !== undefined && metadata.height !== constraints.height) ||
+		(constraints?.channels !== undefined && metadata.channels !== constraints.channels)
+	) {
+		throw new Error(`${label} raster contract mismatch`);
+	}
 	return bytes;
+}
+
+function repositoryPath(workspaceRoot: string, absolutePath: string): string {
+	return relative(resolve(workspaceRoot), resolve(absolutePath)).split(sep).join('/');
+}
+
+function requireArtifactPath(
+	workspaceRoot: string,
+	artifactValue: z.infer<typeof artifactSchema>,
+	expectedPath: string,
+	label: string
+): void {
+	if (artifactValue.path !== repositoryPath(workspaceRoot, expectedPath)) {
+		throw new Error(`${label} path mismatch`);
+	}
 }
 
 export async function validateGate2BCandidate(
@@ -850,8 +917,11 @@ export async function validateGate2BCandidate(
 	materializationRevision: Gate2BMaterializationRevision = 1
 ): Promise<AshaSpineGate2BResult> {
 	const contract = gate2bContractSchema.parse(contractInput);
-	await verifyAuthority(contract, workspaceRoot);
+	const cutoutBytes = await verifyAuthority(contract, workspaceRoot);
 	const paths = resolveGate2BPaths(contract, workspaceRoot, materializationRevision);
+	await Promise.all(
+		Object.values(paths).map((path) => assertNoSymlinkedComponents(workspaceRoot, path))
+	);
 	const result = resultSchema.parse(JSON.parse((await secureRead(paths.result)).toString('utf8')));
 	if (result.prompt !== contract.repairPrompt) throw new Error('Gate 2B prompt mismatch');
 	if (result.promptSha256 !== rawSha256(Buffer.from(contract.repairPrompt, 'utf8'))) {
@@ -862,8 +932,12 @@ export async function validateGate2BCandidate(
 	if (result.v1FailureResultSha256 !== contract.v1Failure.resultSha256) {
 		throw new Error('v1 failure authority mismatch');
 	}
-	await validatedArtifact(workspaceRoot, result.provider.raw, 'raw provider');
-	await validatedArtifact(workspaceRoot, result.provider.keyed, 'keyed provider');
+	requireArtifactPath(workspaceRoot, result.provider.raw, paths.rawProvider, 'raw provider');
+	requireArtifactPath(workspaceRoot, result.provider.keyed, paths.keyedProvider, 'keyed provider');
+	const [rawBytes, keyedBytes] = await Promise.all([
+		validatedArtifact(workspaceRoot, result.provider.raw, 'raw provider', { channels: 3 }),
+		validatedArtifact(workspaceRoot, result.provider.keyed, 'keyed provider', { channels: 4 })
+	]);
 	if (result.disposition === 'failed') {
 		for (const path of [
 			paths.nearArmMask,
@@ -878,13 +952,73 @@ export async function validateGate2BCandidate(
 		}
 		return result;
 	}
-	await Promise.all([
-		validatedArtifact(workspaceRoot, result.masks.nearArm, 'nearArm mask'),
-		validatedArtifact(workspaceRoot, result.masks.braid, 'braid mask'),
-		validatedArtifact(workspaceRoot, result.outputs.bodyCore, 'bodyCore output'),
-		validatedArtifact(workspaceRoot, result.outputs.nearArm, 'nearArm output'),
-		validatedArtifact(workspaceRoot, result.outputs.braid, 'braid output'),
-		validatedArtifact(workspaceRoot, result.outputs.recomposed, 'recomposed output')
+	for (const [artifactValue, expectedPath, label] of [
+		[result.masks.nearArm, paths.nearArmMask, 'nearArm mask'],
+		[result.masks.braid, paths.braidMask, 'braid mask'],
+		[result.outputs.bodyCore, paths.bodyCore, 'bodyCore output'],
+		[result.outputs.nearArm, paths.nearArm, 'nearArm output'],
+		[result.outputs.braid, paths.braid, 'braid output'],
+		[result.outputs.recomposed, paths.recomposed, 'recomposed output']
+	] as const) {
+		requireArtifactPath(workspaceRoot, artifactValue, expectedPath, label);
+	}
+	const rebuilt = await buildCandidate(contract, cutoutBytes, rawBytes, keyedBytes);
+	const checked = await Promise.all([
+		validatedArtifact(workspaceRoot, result.masks.nearArm, 'nearArm mask', {
+			width: 768,
+			height: 768,
+			channels: 4
+		}),
+		validatedArtifact(workspaceRoot, result.masks.braid, 'braid mask', {
+			width: 768,
+			height: 768,
+			channels: 4
+		}),
+		validatedArtifact(workspaceRoot, result.outputs.bodyCore, 'bodyCore output', {
+			width: 768,
+			height: 768,
+			channels: 4
+		}),
+		validatedArtifact(workspaceRoot, result.outputs.nearArm, 'nearArm output', {
+			width: 768,
+			height: 768,
+			channels: 4
+		}),
+		validatedArtifact(workspaceRoot, result.outputs.braid, 'braid output', {
+			width: 768,
+			height: 768,
+			channels: 4
+		}),
+		validatedArtifact(workspaceRoot, result.outputs.recomposed, 'recomposed output', {
+			width: 768,
+			height: 768,
+			channels: 4
+		})
 	]);
+	const rebuiltArtifacts = [
+		rebuilt.masks.nearArmPng,
+		rebuilt.masks.braidPng,
+		rebuilt.bodyCore,
+		rebuilt.nearArm,
+		rebuilt.braid,
+		rebuilt.recomposed
+	];
+	if (
+		checked.some((bytes, index) => {
+			const rebuiltBytes = rebuiltArtifacts[index];
+			return rebuiltBytes === undefined || !bytes.equals(rebuiltBytes);
+		})
+	) {
+		throw new Error('candidate artifacts do not match deterministic rematerialization');
+	}
+	if (stableJson(result.measurements) !== stableJson(rebuilt.measurements)) {
+		throw new Error('candidate measurements mismatch');
+	}
+	if (
+		result.masks.nearArm.pixels !== rebuilt.measurements.nearArmMaskPixels ||
+		result.masks.braid.pixels !== rebuilt.measurements.braidMaskPixels
+	) {
+		throw new Error('candidate mask pixel counts mismatch');
+	}
 	return result;
 }

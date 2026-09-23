@@ -473,6 +473,9 @@ preserved as failed `result-v2.json`. After a test-first materializer correction
 bytes were rematerialized without another provider call into collision-safe `v2-r2` sibling paths.
 `result-v2-r2.json` is technically valid and remains candidate-only; original-resolution inspection
 found transparent gaps and retained arm pixels in `body-core`, which require owner disposition.
+Post-review hardening makes `check` compare every receipt path to its owned path, enforce PNG channel
+contracts, deterministically rebuild all candidate rasters and measurements, reject symlinked parent
+components, and publish staged artifacts through no-replace hard links.
 
 ---
 
@@ -552,6 +555,8 @@ Capture 1440×1000 and 390×844 screenshots. Inspect both for clipping, opaque r
 Captured full-page `desktop-v2-r2.png` and `mobile-v2-r2.png` after the Spine runtime reached
 `ready`. Both layouts are unclipped and preserve the exact 84 px review scale; the body/core defects
 remain intentionally visible for owner review rather than being hidden by the setup-pose recomposition.
+The review also removes all character layers and displays a labeled non-character failure state if
+any checked candidate raster fails to load; a browser test exercises that path.
 
 - [x] **Step 6: Commit**
 

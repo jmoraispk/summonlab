@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
+
 	import {
 		ASHA_EXPLORATION_VISIBLE_HEIGHT,
 		ASHA_SPINE_DECOMPOSITION_STATUS,
@@ -40,6 +42,37 @@
 	] as const;
 
 	let comparison = $state<'source' | 'recomposed'>('recomposed');
+	let reviewState = $state<'loading' | 'candidate' | 'failed'>('loading');
+	let failedAsset = $state<string | null>(null);
+
+	onMount(() => {
+		let disposed = false;
+		const loadDescriptor = async () => {
+			try {
+				const response = await fetch(assets.reviewDescriptor, { cache: 'no-store' });
+				if (!response.ok) throw new Error(`HTTP ${response.status}`);
+				const descriptor = (await response.json()) as {
+					schemaVersion?: unknown;
+					disposition?: unknown;
+				};
+				if (
+					descriptor.schemaVersion !== 'asha-spine-decomposition-review-v1' ||
+					descriptor.disposition !== 'candidate'
+				) {
+					throw new Error('checked result is not a candidate');
+				}
+				if (!disposed) reviewState = 'candidate';
+			} catch (error) {
+				if (disposed) return;
+				reviewState = 'failed';
+				failedAsset = `checked review descriptor (${error instanceof Error ? error.message : String(error)})`;
+			}
+		};
+		void loadDescriptor();
+		return () => {
+			disposed = true;
+		};
+	});
 </script>
 
 <section
@@ -52,7 +85,13 @@
 			<p class="eyebrow">Gate 2B · {ASHA_SPINE_DECOMPOSITION_STATUS}</p>
 			<h2 id="decomposition-heading">Three source-bound layers, one owner decision.</h2>
 		</div>
-		<p class="status">Technical checks passed · not approved art</p>
+		<p class="status" class:failed={failedAsset !== null}>
+			{reviewState === 'loading'
+				? 'Checking candidate receipt'
+				: failedAsset === null
+					? 'Technical checks passed · not approved art'
+					: 'Candidate raster unavailable'}
+		</p>
 	</header>
 
 	<aside class="review-focus" aria-label="Required visual review focus">
@@ -63,52 +102,70 @@
 		</span>
 	</aside>
 
-	<div class="layer-grid" aria-label="Asha decomposition layers">
-		{#each layers as layer}
-			<article>
-				<div class="raster checkerboard">
-					<img src={layer.src} alt={layer.name} data-testid={layer.testId} />
-				</div>
-				<h3>{layer.name}</h3>
-				<p>{layer.note}</p>
-			</article>
-		{/each}
-	</div>
+	{#if failedAsset !== null || reviewState === 'failed'}
+		<div class="missing-art" role="status" data-testid="asha-decomposition-failure">
+			<strong>Asha decomposition unavailable</strong>
+			<p>
+				The checked candidate could not load {failedAsset}. This is a non-character missing-art
+				state; no layer or gameplay preview is being substituted.
+			</p>
+		</div>
+	{:else if reviewState === 'loading'}
+		<div class="review-loading" role="status">Checking the Gate 2B review descriptor…</div>
+	{:else}
+		<div class="layer-grid" aria-label="Asha decomposition layers">
+			{#each layers as layer}
+				<article>
+					<div class="raster checkerboard">
+						<img
+							src={layer.src}
+							alt={layer.name}
+							data-testid={layer.testId}
+							onerror={() => (failedAsset = layer.name)}
+						/>
+					</div>
+					<h3>{layer.name}</h3>
+					<p>{layer.note}</p>
+				</article>
+			{/each}
+		</div>
 
-	<div class="comparison">
-		<div class="comparison-copy">
-			<p class="eyebrow">Gameplay calibration</p>
-			<h3>
-				<span data-testid="asha-selected-scale">{ASHA_EXPLORATION_VISIBLE_HEIGHT} px</span>
-				owner-selected default
-			</h3>
-			<p>Configurable · shown over the same 62 px diamond used by the transport canary.</p>
-			<div class="toggle" aria-label="Choose the calibration raster">
-				<button
-					type="button"
-					class:active={comparison === 'source'}
-					onclick={() => (comparison = 'source')}>Source</button
-				>
-				<button
-					type="button"
-					class:active={comparison === 'recomposed'}
-					onclick={() => (comparison = 'recomposed')}>Recomposed</button
-				>
+		<div class="comparison">
+			<div class="comparison-copy">
+				<p class="eyebrow">Gameplay calibration</p>
+				<h3>
+					<span data-testid="asha-selected-scale">{ASHA_EXPLORATION_VISIBLE_HEIGHT} px</span>
+					owner-selected default
+				</h3>
+				<p>Configurable · shown over the same 62 px diamond used by the transport canary.</p>
+				<div class="toggle" aria-label="Choose the calibration raster">
+					<button
+						type="button"
+						class:active={comparison === 'source'}
+						onclick={() => (comparison = 'source')}>Source</button
+					>
+					<button
+						type="button"
+						class:active={comparison === 'recomposed'}
+						onclick={() => (comparison = 'recomposed')}>Recomposed</button
+					>
+				</div>
+			</div>
+
+			<div class="scale-stage" data-testid="asha-84px-stage">
+				<div class="tile" aria-hidden="true"></div>
+				<img
+					src={comparison === 'source' ? assets.source : assets.recomposed}
+					alt={comparison === 'source'
+						? 'Approved Asha source at 84 pixels'
+						: 'Recomposed Asha at 84 pixels'}
+					style:height={`${ASHA_EXPLORATION_VISIBLE_HEIGHT}px`}
+					data-testid="asha-84px-raster"
+					onerror={() => (failedAsset = 'gameplay calibration raster')}
+				/>
 			</div>
 		</div>
-
-		<div class="scale-stage" data-testid="asha-84px-stage">
-			<div class="tile" aria-hidden="true"></div>
-			<img
-				src={comparison === 'source' ? assets.source : assets.recomposed}
-				alt={comparison === 'source'
-					? 'Approved Asha source at 84 pixels'
-					: 'Recomposed Asha at 84 pixels'}
-				style:height={`${ASHA_EXPLORATION_VISIBLE_HEIGHT}px`}
-				data-testid="asha-84px-raster"
-			/>
-		</div>
-	</div>
+	{/if}
 </section>
 
 <style>
@@ -162,6 +219,46 @@
 		letter-spacing: 0.08em;
 		text-transform: uppercase;
 		white-space: nowrap;
+	}
+
+	.status.failed {
+		border-color: rgba(223, 112, 112, 0.55);
+		color: #ffd0d0;
+	}
+
+	.missing-art {
+		display: grid;
+		gap: 0.45rem;
+		min-height: 13rem;
+		place-content: center;
+		padding: 1.5rem;
+		border: 1px dashed rgba(223, 112, 112, 0.5);
+		border-radius: 0.9rem;
+		background: rgba(91, 29, 38, 0.2);
+		text-align: center;
+	}
+
+	.review-loading {
+		display: grid;
+		min-height: 13rem;
+		place-content: center;
+		color: #91a5b2;
+		font-size: 0.8rem;
+		letter-spacing: 0.06em;
+		text-transform: uppercase;
+	}
+
+	.missing-art strong {
+		color: #ffd0d0;
+		font-family: Georgia, 'Times New Roman', serif;
+		font-size: 1.35rem;
+	}
+
+	.missing-art p {
+		max-width: 42rem;
+		color: #aebcc5;
+		font-size: 0.8rem;
+		line-height: 1.55;
 	}
 
 	.review-focus {

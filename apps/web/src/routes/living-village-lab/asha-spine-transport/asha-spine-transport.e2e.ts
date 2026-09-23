@@ -52,6 +52,35 @@ test('keeps reduced motion visible but pauses the probe', async ({ page }) => {
 	await expect(page.getByTestId('asha-decomposition-review')).toBeVisible();
 });
 
+test('shows a labeled non-character state when a candidate raster is missing', async ({ page }) => {
+	await page.route('**/review/asha-spine-decomposition/v2-r2/body-core.png', (route) =>
+		route.abort('failed')
+	);
+	await page.goto(transportUrl);
+	await expect(page.getByTestId('asha-decomposition-failure')).toBeVisible();
+	await expect(page.getByTestId('asha-decomposition-failure')).toContainText(
+		'Asha decomposition unavailable'
+	);
+	await expect(page.getByTestId('asha-decomposition-body-core')).toHaveCount(0);
+});
+
+test('does not render candidate art for a failed review descriptor', async ({ page }) => {
+	await page.route('**/review/asha-spine-decomposition/v2-r2/review.json', (route) =>
+		route.fulfill({
+			contentType: 'application/json',
+			body: JSON.stringify({
+				schemaVersion: 'asha-spine-decomposition-review-v1',
+				disposition: 'failed'
+			})
+		})
+	);
+	await page.goto(transportUrl);
+	await expect(page.getByTestId('asha-decomposition-failure')).toContainText(
+		'Asha decomposition unavailable'
+	);
+	await expect(page.getByTestId('asha-decomposition-source')).toHaveCount(0);
+});
+
 test('tears down cleanly when leaving the isolated route', async ({ page }) => {
 	const errors: string[] = [];
 	page.on('pageerror', (error) => errors.push(error.message));
