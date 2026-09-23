@@ -399,6 +399,20 @@ describe('Asha Spine Gate 2B materialization', () => {
 		);
 	});
 
+	it('accepts a contract-valid RGBA raw provider return through post-publication validation', async () => {
+		const fixture = await workspaceFixture();
+		const provider = await providerFixture(fixture);
+		await writeFile(provider.raw, await rgbaPng(1024, 1024, { r: 0, g: 255, b: 0, alpha: 1 }));
+		await expect(
+			materializeGate2BCandidate({
+				contract: fixture.contract,
+				workspaceRoot: fixture.workspace,
+				providerOutputPath: provider.raw,
+				keyedOutputPath: provider.keyed
+			})
+		).resolves.toMatchObject({ disposition: 'candidate' });
+	});
+
 	it('detects keyed-repair and materialized-output tampering', async () => {
 		const fixture = await workspaceFixture();
 		const provider = await providerFixture(fixture);

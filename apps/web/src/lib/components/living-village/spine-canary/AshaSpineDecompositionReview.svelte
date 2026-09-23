@@ -82,7 +82,13 @@
 >
 	<header>
 		<div>
-			<p class="eyebrow">Gate 2B · {ASHA_SPINE_DECOMPOSITION_STATUS}</p>
+			<p class="eyebrow" data-testid="asha-decomposition-gate-status">
+				Gate 2B · {failedAsset !== null || reviewState === 'failed'
+					? 'failed'
+					: reviewState === 'loading'
+						? 'checking'
+						: ASHA_SPINE_DECOMPOSITION_STATUS}
+			</p>
 			<h2 id="decomposition-heading">Three source-bound layers, one owner decision.</h2>
 		</div>
 		<p class="status" class:failed={failedAsset !== null}>

@@ -61,6 +61,7 @@ test('shows a labeled non-character state when a candidate raster is missing', a
 	await expect(page.getByTestId('asha-decomposition-failure')).toContainText(
 		'Asha decomposition unavailable'
 	);
+	await expect(page.getByTestId('asha-decomposition-gate-status')).toContainText('failed');
 	await expect(page.getByTestId('asha-decomposition-body-core')).toHaveCount(0);
 });
 
@@ -78,6 +79,7 @@ test('does not render candidate art for a failed review descriptor', async ({ pa
 	await expect(page.getByTestId('asha-decomposition-failure')).toContainText(
 		'Asha decomposition unavailable'
 	);
+	await expect(page.getByTestId('asha-decomposition-gate-status')).toContainText('failed');
 	await expect(page.getByTestId('asha-decomposition-source')).toHaveCount(0);
 });
 

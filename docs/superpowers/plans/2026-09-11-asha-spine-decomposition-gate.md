@@ -475,7 +475,8 @@ bytes were rematerialized without another provider call into collision-safe `v2-
 found transparent gaps and retained arm pixels in `body-core`, which require owner disposition.
 Post-review hardening makes `check` compare every receipt path to its owned path, enforce PNG channel
 contracts, deterministically rebuild all candidate rasters and measurements, reject symlinked parent
-components, and publish staged artifacts through no-replace hard links.
+components, and publish staged artifacts through no-replace hard links. Raw provider validation keeps
+the producer's RGB-or-RGBA contract, with a regression covering RGBA post-publication validation.
 
 ---
 

@@ -875,7 +875,7 @@ async function validatedArtifact(
 	workspaceRoot: string,
 	expected: z.infer<typeof artifactSchema>,
 	label: string,
-	constraints?: Readonly<{ width?: number; height?: number; channels?: number }>
+	constraints?: Readonly<{ width?: number; height?: number; channels?: number | number[] }>
 ): Promise<Buffer> {
 	const path = containedPath(workspaceRoot, expected.path);
 	await assertNoSymlinkedComponents(workspaceRoot, path);
@@ -886,10 +886,15 @@ async function validatedArtifact(
 	if (metadata.width !== expected.width || metadata.height !== expected.height) {
 		throw new Error(`${label} dimensions mismatch`);
 	}
+	const channelsMatch =
+		constraints?.channels === undefined ||
+		(Array.isArray(constraints.channels)
+			? constraints.channels.includes(metadata.channels)
+			: metadata.channels === constraints.channels);
 	if (
 		(constraints?.width !== undefined && metadata.width !== constraints.width) ||
 		(constraints?.height !== undefined && metadata.height !== constraints.height) ||
-		(constraints?.channels !== undefined && metadata.channels !== constraints.channels)
+		!channelsMatch
 	) {
 		throw new Error(`${label} raster contract mismatch`);
 	}
@@ -935,7 +940,7 @@ export async function validateGate2BCandidate(
 	requireArtifactPath(workspaceRoot, result.provider.raw, paths.rawProvider, 'raw provider');
 	requireArtifactPath(workspaceRoot, result.provider.keyed, paths.keyedProvider, 'keyed provider');
 	const [rawBytes, keyedBytes] = await Promise.all([
-		validatedArtifact(workspaceRoot, result.provider.raw, 'raw provider', { channels: 3 }),
+		validatedArtifact(workspaceRoot, result.provider.raw, 'raw provider', { channels: [3, 4] }),
 		validatedArtifact(workspaceRoot, result.provider.keyed, 'keyed provider', { channels: 4 })
 	]);
 	if (result.disposition === 'failed') {
