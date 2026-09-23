@@ -47,7 +47,7 @@ visible near-arm and braid parts and from every pixel outside the mask union.
 - `apps/web/src/lib/components/living-village/spine-canary/asha-spine-decomposition.ts` — candidate asset paths and 84 px configuration.
 - `apps/web/src/lib/components/living-village/spine-canary/AshaSpineDecompositionReview.svelte` — raster-only source/layer/recomposition review.
 - `apps/web/src/routes/living-village-lab/asha-spine-transport/+page.svelte` — mounts Gate 2 below the unchanged Gate 1 calibration.
-- `docs/evidence/asha-spine-decomposition/desktop-vN.png` and `mobile-vN.png` — browser evidence for the reviewable candidate.
+- `docs/evidence/asha-spine-decomposition/desktop-v2-r2.png` and `mobile-v2-r2.png` — browser evidence for the reviewable candidate.
 
 ---
 
@@ -422,13 +422,13 @@ git commit -m "feat(art): produce Asha decomposition candidate"
 - Produces: collision-safe v2 masks, source-only visible parts, bounded repaired body/core,
   recomposition, and a strict `candidate` or `failed` receipt.
 
-- [ ] **Step 1: Commit the exact recovery authority before provider access**
+- [x] **Step 1: Commit the exact recovery authority before provider access**
 
 `gate-2b.json` records schema/status, approval date and exact approval sentence, source and v1 receipt
 hashes, 768×768 canvas/feet anchor, `#00ff00`, deterministic polygons, exact repair prompt, and all
 owned v2 paths. Unknown keys fail. The original brief, v1 board, and v1 receipt remain byte-identical.
 
-- [ ] **Step 2: Write failing contract, mask, materialization, and collision tests**
+- [x] **Step 2: Write failing contract, mask, materialization, and collision tests**
 
 Prove unknown contract keys fail; changed source or v1 evidence fails; any occupied v2 path fails;
 polygon masks are deterministic and clipped by source alpha; masks do not overlap or touch protected
@@ -436,7 +436,7 @@ feet; visible parts contain only source pixels; provider pixels are used only un
 changed keyed repair or output invalidates the receipt. Watch the focused test fail before creating
 the implementation.
 
-- [ ] **Step 3: Implement and verify the Gate 2B CLI**
+- [x] **Step 3: Implement and verify the Gate 2B CLI**
 
 Support only `preflight`, `materialize`, and `check` for v2. `materialize` requires normalized absolute
 paths for the exact raw provider return and keyed RGBA derivative. Use secure source reads,
@@ -449,7 +449,7 @@ npx --yes -p node@24.14.1 -p pnpm@10.33.0 -- pnpm typecheck:asha-spine-gate2b
 npx --yes -p node@24.14.1 -p pnpm@10.33.0 -- pnpm preflight:asha-spine-gate2b
 ```
 
-- [ ] **Step 4: Make exactly one body-repair edit and remove chroma locally**
+- [x] **Step 4: Make exactly one body-repair edit and remove chroma locally**
 
 Load the accepted cutout into the built-in editor and use the exact prompt committed in
 `gate-2b.json`. Request one full-canvas setup-pose body/core repair on perfectly flat `#00ff00`, with
@@ -457,7 +457,7 @@ the near arm and long image-left braid removed and no other redesign. Copy the e
 scratch path, run the installed `remove_chroma_key.py` helper once, and inspect raw/keyed alpha before
 materialization. Do not request variants or retry.
 
-- [ ] **Step 5: Materialize, validate, inspect, and commit v2**
+- [x] **Step 5: Materialize, validate, inspect, and commit v2**
 
 ```bash
 npx --yes node@24.14.1 node_modules/tsx/dist/cli.mjs tools/asha-spine-gate2b.ts materialize --provider-output "$PROVIDER_OUTPUT_PATH" --keyed-output "$KEYED_OUTPUT_PATH"
@@ -466,6 +466,13 @@ npx --yes -p node@24.14.1 -p pnpm@10.33.0 -- pnpm validate:asha-spine-gate2b
 
 Inspect both masks, three parts, keyed repair, and recomposition at original resolution. A valid result
 remains `candidate`, never approved. Commit contract, implementation, and immutable v2 evidence.
+
+Execution note: the one provider call produced the immutable `body-repair-v2` pair. The first
+technical materialization exposed hidden RGB normalization under transparent pixels and was
+preserved as failed `result-v2.json`. After a test-first materializer correction, the same provider
+bytes were rematerialized without another provider call into collision-safe `v2-r2` sibling paths.
+`result-v2-r2.json` is technically valid and remains candidate-only; original-resolution inspection
+found transparent gaps and retained arm pixels in `body-core`, which require owner disposition.
 
 ---
 
@@ -479,15 +486,15 @@ remains `candidate`, never approved. Commit contract, implementation, and immuta
 - Modify: `apps/web/src/lib/components/living-village/spine-canary/AshaSpineTransportStage.svelte`
 - Modify: `apps/web/src/routes/living-village-lab/asha-spine-transport/+page.svelte`
 - Modify: `apps/web/src/routes/living-village-lab/asha-spine-transport/asha-spine-transport.e2e.ts`
-- Create: `docs/evidence/asha-spine-decomposition/desktop-v1.png`
-- Create: `docs/evidence/asha-spine-decomposition/mobile-v1.png`
+- Create: `docs/evidence/asha-spine-decomposition/desktop-v2-r2.png`
+- Create: `docs/evidence/asha-spine-decomposition/mobile-v2-r2.png`
 
 **Interfaces:**
 
 - Consumes: checked v2 Gate 2B result and raster outputs; a failed result shows a named failure state instead of parts.
 - Produces: `ASHA_EXPLORATION_VISIBLE_HEIGHT = 84`, `decompositionAssets(version)`, and a review panel with no production state.
 
-- [ ] **Step 1: Write failing configuration and browser tests**
+- [x] **Step 1: Write failing configuration and browser tests**
 
 ```ts
 import { describe, expect, it } from 'vitest';
@@ -499,14 +506,14 @@ import {
 describe('Asha decomposition review configuration', () => {
 	it('keeps the owner-selected scale configurable at 84 px', () => {
 		expect(ASHA_EXPLORATION_VISIBLE_HEIGHT).toBe(84);
-		expect(decompositionAssets(2).recomposed).toEndWith('asha-setup-v2.png');
+		expect(decompositionAssets(2).recomposed).toEndWith('asha-setup-v2-r2.png');
 	});
 });
 ```
 
 Extend Playwright to assert `data-testid="asha-selected-scale"` contains `84 px`, each candidate image has `naturalWidth === 768`, the 84 px overlay is visible, reduced motion keeps the review visible, and route teardown produces no page error.
 
-- [ ] **Step 2: Run the focused test and observe the red state**
+- [x] **Step 2: Run the focused test and observe the red state**
 
 ```bash
 npx --yes -p node@24.14.1 -p pnpm@10.33.0 -- pnpm --dir apps/web test -- src/lib/components/living-village/spine-canary/asha-spine-decomposition.spec.ts
@@ -514,7 +521,7 @@ npx --yes -p node@24.14.1 -p pnpm@10.33.0 -- pnpm --dir apps/web test -- src/lib
 
 Expected: FAIL because the configuration module does not exist.
 
-- [ ] **Step 3: Implement a raster-only layer review**
+- [x] **Step 3: Implement a raster-only layer review**
 
 Use approved/candidate `<img>` assets only. Show immutable source, body/core on checkerboard, near arm on checkerboard, braid on checkerboard, recomposition, and a source/recomposition toggle.
 
@@ -522,7 +529,7 @@ Below source-resolution views, place the recomposed candidate at exactly 84 px v
 
 Read the result through a build-owned module or page data; never fetch arbitrary filesystem paths in the browser. Missing or failed outputs show a labeled non-character failure state.
 
-- [ ] **Step 4: Run unit, Svelte, and browser checks**
+- [x] **Step 4: Run unit, Svelte, and browser checks**
 
 ```bash
 npx --yes -p node@24.14.1 -p pnpm@10.33.0 -- pnpm --dir apps/web test -- src/lib/components/living-village/spine-canary/asha-spine-decomposition.spec.ts
@@ -532,7 +539,7 @@ PLAYWRIGHT_PORT=42792 npx --yes -p node@24.14.1 -p pnpm@10.33.0 -- pnpm --dir ap
 
 Expected: unit tests pass, Svelte reports zero errors/warnings, and browser tests pass. If port 42792 is occupied, verify a free high port and record it.
 
-- [ ] **Step 5: Capture and inspect evidence**
+- [x] **Step 5: Capture and inspect evidence**
 
 Serve from `apps/web`:
 
@@ -542,7 +549,11 @@ npx --yes node@24.14.1 node_modules/vite/bin/vite.js dev --host 0.0.0.0 --port 5
 
 Capture 1440×1000 and 390×844 screenshots. Inspect both for clipping, opaque rectangles, label overlap, missing parts, wrong 84 px scale, and mobile overflow.
 
-- [ ] **Step 6: Commit**
+Captured full-page `desktop-v2-r2.png` and `mobile-v2-r2.png` after the Spine runtime reached
+`ready`. Both layouts are unclipped and preserve the exact 84 px review scale; the body/core defects
+remain intentionally visible for owner review rather than being hidden by the setup-pose recomposition.
+
+- [x] **Step 6: Commit**
 
 ```bash
 git add apps/web/src/lib/components/living-village/spine-canary apps/web/src/routes/living-village-lab/asha-spine-transport docs/evidence/asha-spine-decomposition

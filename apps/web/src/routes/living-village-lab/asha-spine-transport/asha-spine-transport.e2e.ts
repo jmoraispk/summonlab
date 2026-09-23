@@ -15,12 +15,41 @@ test('loads the transport probe at three exploration scales', async ({ page }) =
 	expect(errors).toEqual([]);
 });
 
+test('presents the candidate decomposition and exact 84 px calibration', async ({ page }) => {
+	await page.goto(transportUrl);
+	const review = page.getByTestId('asha-decomposition-review');
+	await expect(review).toBeVisible();
+	await expect(page.getByTestId('asha-selected-scale')).toHaveText('84 px');
+
+	for (const testId of [
+		'asha-decomposition-source',
+		'asha-decomposition-body-core',
+		'asha-decomposition-near-arm',
+		'asha-decomposition-braid',
+		'asha-decomposition-recomposed'
+	]) {
+		const dimensions = await page.getByTestId(testId).evaluate((image: HTMLImageElement) => ({
+			width: image.naturalWidth,
+			height: image.naturalHeight
+		}));
+		expect(dimensions).toEqual({ width: 768, height: 768 });
+	}
+
+	await expect(page.getByTestId('asha-84px-raster')).toHaveCSS('height', '84px');
+	await page.getByRole('button', { name: 'Source' }).click();
+	await expect(page.getByTestId('asha-84px-raster')).toHaveAttribute(
+		'src',
+		'/runtime/combat/realtime-study-v1/hero-saffron-braid-ready-v1.png'
+	);
+});
+
 test('keeps reduced motion visible but pauses the probe', async ({ page }) => {
 	await page.emulateMedia({ reducedMotion: 'reduce' });
 	await page.goto(transportUrl);
 	await expect(page.getByTestId('spine-transport-status')).toHaveText('ready');
 	await expect(page.getByTestId('spine-transport-motion')).toHaveText('paused');
 	await expect(page.getByTestId('spine-transport-canvas')).toBeVisible();
+	await expect(page.getByTestId('asha-decomposition-review')).toBeVisible();
 });
 
 test('tears down cleanly when leaving the isolated route', async ({ page }) => {

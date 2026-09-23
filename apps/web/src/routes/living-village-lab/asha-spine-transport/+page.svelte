@@ -1,5 +1,6 @@
 <script lang="ts">
 	import AshaSpineTransportStage from '$lib/components/living-village/spine-canary/AshaSpineTransportStage.svelte';
+	import AshaSpineDecompositionReview from '$lib/components/living-village/spine-canary/AshaSpineDecompositionReview.svelte';
 	import LabBackLink from '$lib/components/living-village/LabBackLink.svelte';
 </script>
 
@@ -23,6 +24,7 @@
 	</header>
 
 	<AshaSpineTransportStage />
+	<AshaSpineDecompositionReview />
 
 	<section class="facts" aria-label="Transport contract">
 		<article>

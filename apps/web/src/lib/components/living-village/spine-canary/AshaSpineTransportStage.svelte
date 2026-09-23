@@ -2,6 +2,7 @@
 	import { onMount } from 'svelte';
 	import type { Spine } from '@esotericsoftware/spine-pixi-v8';
 	import type { Application } from 'pixi.js';
+	import { ASHA_EXPLORATION_VISIBLE_HEIGHT } from './asha-spine-decomposition.js';
 
 	type Status = 'loading' | 'ready' | 'error' | 'disposed';
 	type TransportBinding = typeof import('./asha-spine-transport.js');
@@ -128,7 +129,7 @@
 				const placements = [
 					{ x: 270, visibleHeight: SOURCE_VISIBLE_HEIGHT },
 					{ x: 670, visibleHeight: 72 },
-					{ x: 950, visibleHeight: 84 },
+					{ x: 950, visibleHeight: ASHA_EXPLORATION_VISIBLE_HEIGHT },
 					{ x: 1_240, visibleHeight: 96 }
 				] as const;
 				instances = placements.map(({ x, visibleHeight }) => {
@@ -185,7 +186,9 @@
 				<strong>Source inspection</strong><span>unmodified approved cutout</span>
 			</div>
 			<div data-testid="asha-spine-72"><strong>72 px</strong><span>compact</span></div>
-			<div data-testid="asha-spine-84"><strong>84 px</strong><span>balanced</span></div>
+			<div class="selected" data-testid="asha-spine-84">
+				<strong>{ASHA_EXPLORATION_VISIBLE_HEIGHT} px</strong><span>balanced · selected</span>
+			</div>
 			<div data-testid="asha-spine-96"><strong>96 px</strong><span>readable</span></div>
 		</div>
 	</div>
@@ -269,6 +272,15 @@
 	.labels span {
 		color: #8098a8;
 		font-size: 0.72em;
+	}
+
+	.labels .selected strong {
+		color: #d4f5dc;
+		text-shadow: 0 0 1.2rem rgba(168, 217, 191, 0.65);
+	}
+
+	.labels .selected span {
+		color: #a8d9bf;
 	}
 
 	.error {
