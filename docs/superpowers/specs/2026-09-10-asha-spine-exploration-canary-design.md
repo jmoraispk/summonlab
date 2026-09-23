@@ -152,6 +152,27 @@ resolution. Fail on face or marking drift, braid-side reversal, silhouette chang
 redesign, missing or duplicate anatomy, dirty alpha, visible shoulder holes, or unusable overlap.
 Failed candidates remain evidence and never reach the rig generator.
 
+#### Approved Gate 2B recovery (2026-09-22)
+
+The first provider attempt is immutable failed evidence: it painted a checkerboard into an RGB board
+and independently changed scale and registration between quadrants. The owner approved one recovery
+attempt with the exact direction: **deterministic source masks plus one chroma-key body-reconstruction
+attempt**.
+
+Gate 2B therefore separates responsibilities. The near-arm and braid masks are deterministic,
+versioned geometry in source-canvas coordinates and may select only decoded pixels from the locked
+768×768 cutout; provider pixels can never enter either visible part. The one remaining provider call
+edits only the locked cutout into a body/core repair with the near arm and long left braid removed on
+a flat `#00ff00` background. Local chroma removal is deterministic and its raw and keyed inputs are
+both hash-recorded. The materializer may consume repair pixels only inside the deterministic mask
+union; every source pixel outside that union remains decoded-RGBA identical.
+
+The failed v1 board and receipt are never rewritten or reclassified. Gate 2B uses v2 sibling paths,
+records the owner's approval and v1 failure hash, rejects mask overlap or protected feet, and emits no
+reviewable candidate unless masks, alpha, provenance, recomposition, and collision checks all pass.
+The same correction ceiling remains in force: Gate 2B is the final provider attempt before Gate 2
+fails.
+
 ### Gate 3: Minimum rigid rig
 
 Only after Gate 2 passes, complete this rigid part set:

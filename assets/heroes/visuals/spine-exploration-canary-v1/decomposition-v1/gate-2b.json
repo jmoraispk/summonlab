@@ -1,0 +1,59 @@
+{
+  "schemaVersion": "asha-spine-gate2b-v1",
+  "status": "owner-approved",
+  "version": 2,
+  "approval": {
+    "date": "2026-09-22",
+    "statement": "Approve Gate 2B: deterministic source masks plus one chroma-key body-reconstruction attempt."
+  },
+  "originalBrief": "assets/heroes/visuals/spine-exploration-canary-v1/decomposition-v1/brief.json",
+  "acceptedCutout": "apps/web/static/runtime/combat/realtime-study-v1/hero-saffron-braid-ready-v1.png",
+  "acceptedCutoutSha256": "9f6704c825a642c1664cc34573a2e2264a9d3d2f0cf85c5f65ee6c09f4bb5a2b",
+  "v1Failure": {
+    "result": "assets/heroes/visuals/spine-exploration-canary-v1/decomposition-v1/results/result-v1.json",
+    "resultSha256": "e3fd7c45bba0fcaa78f09cafc75896873d3b265250160efb48da35f5c5a70cd7",
+    "board": "assets/heroes/visuals/spine-exploration-canary-v1/decomposition-v1/provider/board-v1.png",
+    "boardSha256": "1c614e5dda0ab6cd616a448f5d9c1e1b500eb0f24a901184ab878e54034d39d6"
+  },
+  "sourceCanvas": { "width": 768, "height": 768 },
+  "feetAnchor": { "x": 384, "y": 738 },
+  "protectedFeet": { "left": 218, "top": 554, "width": 359, "height": 214 },
+  "chromaKey": "#00ff00",
+  "masks": {
+    "nearArm": {
+      "polygons": [
+        [
+          [434, 238], [445, 229], [460, 224], [478, 229], [493, 242],
+          [505, 261], [515, 282], [518, 302], [512, 324], [507, 346],
+          [517, 371], [524, 397], [543, 414], [552, 432], [548, 447],
+          [540, 452], [532, 461], [520, 469], [505, 472], [491, 473], [475, 469],
+          [463, 456], [455, 442], [457, 428], [465, 416], [471, 405],
+          [470, 391], [463, 376], [457, 361], [453, 347], [448, 334],
+          [439, 319], [428, 307], [419, 291], [413, 272], [413, 251],
+          [421, 254], [427, 244]
+        ]
+      ]
+    },
+    "braid": {
+      "polygons": [
+        [
+          [240, 145], [252, 136], [272, 132], [290, 136], [307, 145],
+          [320, 158], [325, 175], [322, 193], [314, 214], [306, 236],
+          [306, 258], [292, 280], [281, 302], [270, 324], [259, 346],
+          [249, 368], [239, 390], [229, 412], [220, 431], [218, 444],
+          [232, 451], [241, 466], [240, 484], [231, 499], [218, 509],
+          [202, 513], [186, 508], [173, 499], [165, 485], [163, 471],
+          [170, 457], [182, 446], [191, 437], [202, 431], [191, 421],
+          [182, 409], [176, 398],
+          [177, 382], [183, 361], [190, 340], [196, 320], [202, 300],
+          [207, 280], [213, 260], [217, 240], [220, 220], [220, 201],
+          [224, 181], [231, 160]
+        ]
+      ]
+    }
+  },
+  "repairPrompt": "Use case: precise-object-edit. Asset type: Asha Spine Gate 2B concealed-body reconstruction. Image 1 is the only edit target and identity authority. Preserve the exact square full-body setup pose, camera, scale, orientation, bottom-center feet registration, face, shaved image-right temple and marking, saffron-and-cream costume, adult proportions, palette, and lighting. Remove only the complete image-right foreground arm from beneath the shoulder ring through the fist and the complete long image-left braid from its head overlap through the tassel. Reconstruct only the shoulder, sleeve opening, clothing, short under-hair, and silhouette pixels those two foreground pieces concealed. Put the resulting otherwise-complete body/core alone on a perfectly flat solid #00ff00 chroma-key background. The background must be one uniform color with no shadows, gradients, texture, reflections, floor plane, or lighting variation. Keep the character fully separated from the background with crisp edges and generous padding. Do not use #00ff00 anywhere in the character. No cast shadow, contact shadow, reflection, text, label, divider, border, alternate pose, mirroring, extra anatomy, equipment, redesign, crop, or change outside the two removals.",
+  "outputs": {
+    "root": "assets/heroes/visuals/spine-exploration-canary-v1/decomposition-v1"
+  }
+}

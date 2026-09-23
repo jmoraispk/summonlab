@@ -23,6 +23,16 @@
 - If decomposition fails after one correction, record `failed` and stop before Gate 3.
 - Keep `Spine/`, activation material, provider credentials, launcher settings, and license identity ignored and out of logs, manifests, commits, and evidence.
 
+## Gate 2B recovery ruling (owner-approved 2026-09-22)
+
+The immutable v1 attempt failed because the provider returned RGB with a painted checkerboard and
+used inconsistent registration between quadrants. The owner approved: **deterministic source masks
+plus one chroma-key body-reconstruction attempt**. Preserve v1 exactly. Gate 2B owns v2 sibling paths,
+uses deterministic polygon masks multiplied by the accepted cutout alpha, and spends the final
+provider call only on concealed body/core reconstruction over flat `#00ff00`. Persist and hash both
+the raw provider return and locally keyed RGBA derivative. Provider pixels remain forbidden from the
+visible near-arm and braid parts and from every pixel outside the mask union.
+
 ## File and ownership map
 
 - `assets/heroes/visuals/spine-exploration-canary-v1/decomposition-v1/brief.json` — immutable authority, prompt, attempt ceiling, layer semantics, protected regions, and owned paths.
@@ -388,6 +398,77 @@ git commit -m "feat(art): produce Asha decomposition candidate"
 
 ---
 
+### Task 3B: Produce the owner-approved deterministic-mask recovery candidate
+
+**Files:**
+
+- Create: `assets/heroes/visuals/spine-exploration-canary-v1/decomposition-v1/gate-2b.json`
+- Create: `tools/asha-spine-gate2b-lib.ts`
+- Create: `tools/asha-spine-gate2b-lib.spec.ts`
+- Create: `tools/asha-spine-gate2b.ts`
+- Create: `tools/tsconfig.asha-spine-gate2b.json`
+- Modify: `package.json`
+- Generate: `assets/heroes/visuals/spine-exploration-canary-v1/decomposition-v1/provider/body-repair-v2.png`
+- Generate: `assets/heroes/visuals/spine-exploration-canary-v1/decomposition-v1/provider/body-repair-v2-rgba.png`
+- Generate: `assets/heroes/visuals/spine-exploration-canary-v1/decomposition-v1/masks/v2/*.png`
+- Generate: `assets/heroes/visuals/spine-exploration-canary-v1/decomposition-v1/parts/v2/*.png`
+- Generate: `assets/heroes/visuals/spine-exploration-canary-v1/decomposition-v1/recomposed/asha-setup-v2.png`
+- Generate: `assets/heroes/visuals/spine-exploration-canary-v1/decomposition-v1/results/result-v2.json`
+
+**Interfaces:**
+
+- Consumes: immutable accepted cutout/hash, immutable failed v1 receipt/hash, owner-approved polygon
+  coordinates, exact v2 repair prompt, one raw provider return, and one locally chroma-keyed derivative.
+- Produces: collision-safe v2 masks, source-only visible parts, bounded repaired body/core,
+  recomposition, and a strict `candidate` or `failed` receipt.
+
+- [ ] **Step 1: Commit the exact recovery authority before provider access**
+
+`gate-2b.json` records schema/status, approval date and exact approval sentence, source and v1 receipt
+hashes, 768×768 canvas/feet anchor, `#00ff00`, deterministic polygons, exact repair prompt, and all
+owned v2 paths. Unknown keys fail. The original brief, v1 board, and v1 receipt remain byte-identical.
+
+- [ ] **Step 2: Write failing contract, mask, materialization, and collision tests**
+
+Prove unknown contract keys fail; changed source or v1 evidence fails; any occupied v2 path fails;
+polygon masks are deterministic and clipped by source alpha; masks do not overlap or touch protected
+feet; visible parts contain only source pixels; provider pixels are used only under the union; and a
+changed keyed repair or output invalidates the receipt. Watch the focused test fail before creating
+the implementation.
+
+- [ ] **Step 3: Implement and verify the Gate 2B CLI**
+
+Support only `preflight`, `materialize`, and `check` for v2. `materialize` requires normalized absolute
+paths for the exact raw provider return and keyed RGBA derivative. Use secure source reads,
+repository-contained owned paths, exclusive writes in a staging directory, atomic finalization, stable
+JSON, redacted provider-source paths, and immutable failure evidence.
+
+```bash
+npx --yes -p node@24.14.1 -p pnpm@10.33.0 -- pnpm test:asha-spine-gate2b
+npx --yes -p node@24.14.1 -p pnpm@10.33.0 -- pnpm typecheck:asha-spine-gate2b
+npx --yes -p node@24.14.1 -p pnpm@10.33.0 -- pnpm preflight:asha-spine-gate2b
+```
+
+- [ ] **Step 4: Make exactly one body-repair edit and remove chroma locally**
+
+Load the accepted cutout into the built-in editor and use the exact prompt committed in
+`gate-2b.json`. Request one full-canvas setup-pose body/core repair on perfectly flat `#00ff00`, with
+the near arm and long image-left braid removed and no other redesign. Copy the exact return into a
+scratch path, run the installed `remove_chroma_key.py` helper once, and inspect raw/keyed alpha before
+materialization. Do not request variants or retry.
+
+- [ ] **Step 5: Materialize, validate, inspect, and commit v2**
+
+```bash
+npx --yes node@24.14.1 node_modules/tsx/dist/cli.mjs tools/asha-spine-gate2b.ts materialize --provider-output "$PROVIDER_OUTPUT_PATH" --keyed-output "$KEYED_OUTPUT_PATH"
+npx --yes -p node@24.14.1 -p pnpm@10.33.0 -- pnpm validate:asha-spine-gate2b
+```
+
+Inspect both masks, three parts, keyed repair, and recomposition at original resolution. A valid result
+remains `candidate`, never approved. Commit contract, implementation, and immutable v2 evidence.
+
+---
+
 ### Task 4: Add the 84 px decomposition review
 
 **Files:**
@@ -403,7 +484,7 @@ git commit -m "feat(art): produce Asha decomposition candidate"
 
 **Interfaces:**
 
-- Consumes: checked v1 result and raster outputs; a failed result shows a named failure state instead of parts.
+- Consumes: checked v2 Gate 2B result and raster outputs; a failed result shows a named failure state instead of parts.
 - Produces: `ASHA_EXPLORATION_VISIBLE_HEIGHT = 84`, `decompositionAssets(version)`, and a review panel with no production state.
 
 - [ ] **Step 1: Write failing configuration and browser tests**
@@ -418,7 +499,7 @@ import {
 describe('Asha decomposition review configuration', () => {
 	it('keeps the owner-selected scale configurable at 84 px', () => {
 		expect(ASHA_EXPLORATION_VISIBLE_HEIGHT).toBe(84);
-		expect(decompositionAssets(1).recomposed).toEndWith('asha-setup-v1.png');
+		expect(decompositionAssets(2).recomposed).toEndWith('asha-setup-v2.png');
 	});
 });
 ```
