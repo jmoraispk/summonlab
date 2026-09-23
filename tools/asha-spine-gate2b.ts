@@ -19,17 +19,23 @@ async function main(): Promise<void> {
 			contract,
 			workspaceRoot,
 			providerOutputPath: parsed.providerOutputPath,
-			keyedOutputPath: parsed.keyedOutputPath
+			keyedOutputPath: parsed.keyedOutputPath,
+			materializationRevision: parsed.materializationRevision
 		});
-		process.stdout.write(`Asha Spine Gate 2B materialized v2: ${result.disposition}.\n`);
+		process.stdout.write(
+			`Asha Spine Gate 2B materialized v2-r${parsed.materializationRevision}: ${result.disposition}.\n`
+		);
 		return;
 	}
 	await preflightGate2B(
 		contract,
 		workspaceRoot,
-		parsed.command === 'preflight' ? 'write' : 'check'
+		parsed.command === 'preflight' ? 'write' : 'check',
+		parsed.materializationRevision
 	);
-	process.stdout.write(`Asha Spine Gate 2B ${parsed.command} passed for v2.\n`);
+	process.stdout.write(
+		`Asha Spine Gate 2B ${parsed.command} passed for v2-r${parsed.materializationRevision}.\n`
+	);
 }
 
 void main().catch((error: unknown) => {

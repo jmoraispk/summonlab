@@ -25,6 +25,7 @@
 		"typecheck:asha-spine-decomposition": "tsc -p tools/tsconfig.asha-spine-decomposition.json",
 		"preflight:asha-spine-gate2b": "tsx tools/asha-spine-gate2b.ts preflight",
 		"validate:asha-spine-gate2b": "tsx tools/asha-spine-gate2b.ts check",
+		"validate:asha-spine-gate2b:r2": "tsx tools/asha-spine-gate2b.ts check --materialization-revision 2",
 		"test:asha-spine-gate2b": "vitest run tools/asha-spine-gate2b-lib.spec.ts",
 		"typecheck:asha-spine-gate2b": "tsc -p tools/tsconfig.asha-spine-gate2b.json",
 		"validate:asha-spine-transport": "tsx tools/asha-spine-transport.ts --check",

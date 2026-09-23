@@ -168,7 +168,8 @@ describe('Asha Spine Gate 2B contract and preflight', () => {
 		).toEqual({
 			command: 'materialize',
 			providerOutputPath: '/tmp/raw.png',
-			keyedOutputPath: '/tmp/keyed.png'
+			keyedOutputPath: '/tmp/keyed.png',
+			materializationRevision: 1
 		});
 		expect(() =>
 			parseGate2BCliArgs([
@@ -179,6 +180,27 @@ describe('Asha Spine Gate 2B contract and preflight', () => {
 				'/tmp/keyed.png'
 			])
 		).toThrow('provider and keyed output paths must be absolute and normalized');
+		expect(
+			parseGate2BCliArgs([
+				'materialize',
+				'--materialization-revision',
+				'2',
+				'--provider-output',
+				'/tmp/raw.png',
+				'--keyed-output',
+				'/tmp/keyed.png'
+			])
+		).toMatchObject({ materializationRevision: 2 });
+	});
+
+	it('isolates a technical rematerialization without duplicating provider evidence', async () => {
+		const fixture = await workspaceFixture();
+		const first = resolveGate2BPaths(fixture.contract, fixture.workspace);
+		const second = resolveGate2BPaths(fixture.contract, fixture.workspace, 2);
+		expect(second.rawProvider).toBe(first.rawProvider);
+		expect(second.keyedProvider).toBe(first.keyedProvider);
+		expect(second.result.endsWith('result-v2-r2.json')).toBe(true);
+		expect(second.recomposed.endsWith('asha-setup-v2-r2.png')).toBe(true);
 	});
 
 	it('hash-locks the cutout and immutable v1 failure evidence', async () => {
@@ -283,6 +305,30 @@ describe('Asha Spine Gate 2B deterministic masks', () => {
 });
 
 describe('Asha Spine Gate 2B materialization', () => {
+	it('preserves decoded RGB beneath transparent source pixels outside the mask union', async () => {
+		const fixture = await workspaceFixture();
+		const pixels = Buffer.alloc(768 * 768 * 4, 255);
+		const transparent = (100 * 768 + 100) * 4;
+		pixels.set([19, 37, 73, 0], transparent);
+		const cutout = await sharp(pixels, { raw: { width: 768, height: 768, channels: 4 } })
+			.png()
+			.toBuffer();
+		await writeFile(join(fixture.workspace, 'authority/cutout.png'), cutout);
+		const contract: AshaSpineGate2BContract = {
+			...fixture.contract,
+			acceptedCutoutSha256: sha256(cutout)
+		};
+		const provider = await providerFixture(fixture);
+		const result = await materializeGate2BCandidate({
+			contract,
+			workspaceRoot: fixture.workspace,
+			providerOutputPath: provider.raw,
+			keyedOutputPath: provider.keyed
+		});
+		expect(result.disposition).toBe('candidate');
+		expect(result.measurements?.recompositionOutsideRepairMismatchPixels).toBe(0);
+	});
+
 	it('uses source-only parts and provider pixels only inside the mask union', async () => {
 		const fixture = await workspaceFixture();
 		const provider = await providerFixture(fixture);
@@ -333,5 +379,54 @@ describe('Asha Spine Gate 2B materialization', () => {
 		await expect(validateGate2BCandidate(fixture.contract, fixture.workspace)).rejects.toThrow(
 			'nearArm output hash mismatch'
 		);
+	});
+
+	it('rematerializes an eligible pipeline-only failure without changing first-pass evidence', async () => {
+		const fixture = await workspaceFixture();
+		const provider = await providerFixture(fixture);
+		const first = await materializeGate2BCandidate({
+			contract: fixture.contract,
+			workspaceRoot: fixture.workspace,
+			providerOutputPath: provider.raw,
+			keyedOutputPath: provider.keyed
+		});
+		expect(first.disposition).toBe('candidate');
+		const firstPaths = resolveGate2BPaths(fixture.contract, fixture.workspace);
+		const failed = {
+			...first,
+			disposition: 'failed',
+			failure: {
+				stage: 'gate-2b',
+				reason: 'recompositionOutsideRepairMismatchPixels expected 0'
+			},
+			masks: null,
+			outputs: null,
+			measurements: null,
+			reconstructedRegions: []
+		};
+		await Promise.all([
+			rm(firstPaths.nearArmMask),
+			rm(firstPaths.braidMask),
+			rm(firstPaths.bodyCore),
+			rm(firstPaths.nearArm),
+			rm(firstPaths.braid),
+			rm(firstPaths.recomposed)
+		]);
+		await writeFile(firstPaths.result, `${JSON.stringify(failed)}\n`);
+
+		const second = await materializeGate2BCandidate({
+			contract: fixture.contract,
+			workspaceRoot: fixture.workspace,
+			providerOutputPath: provider.raw,
+			keyedOutputPath: provider.keyed,
+			materializationRevision: 2
+		});
+		expect(second.disposition).toBe('candidate');
+		expect(JSON.parse((await readFile(firstPaths.result)).toString('utf8')).disposition).toBe(
+			'failed'
+		);
+		await expect(
+			validateGate2BCandidate(fixture.contract, fixture.workspace, 2)
+		).resolves.toMatchObject({ disposition: 'candidate' });
 	});
 });

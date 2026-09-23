@@ -144,6 +144,7 @@ const resultSchema = z.discriminatedUnion('disposition', [
 export type AshaSpineGate2BContract = z.infer<typeof gate2bContractSchema>;
 export type AshaSpineGate2BResult = z.infer<typeof resultSchema>;
 export type Gate2BMode = 'write' | 'check';
+export type Gate2BMaterializationRevision = 1 | 2;
 export type Gate2BPaths = Readonly<{
 	rawProvider: string;
 	keyedProvider: string;
@@ -156,11 +157,15 @@ export type Gate2BPaths = Readonly<{
 	result: string;
 }>;
 export type ParsedGate2BCli =
-	| Readonly<{ command: 'preflight' | 'check' }>
+	| Readonly<{
+			command: 'preflight' | 'check';
+			materializationRevision: Gate2BMaterializationRevision;
+	  }>
 	| Readonly<{
 			command: 'materialize';
 			providerOutputPath: string;
 			keyedOutputPath: string;
+			materializationRevision: Gate2BMaterializationRevision;
 	  }>;
 export type SourceMasks = Readonly<{
 	nearArmRaw: Buffer;
@@ -238,19 +243,21 @@ export async function loadGate2BContract(path: string): Promise<AshaSpineGate2BC
 
 export function resolveGate2BPaths(
 	contract: AshaSpineGate2BContract,
-	workspaceRoot: string
+	workspaceRoot: string,
+	materializationRevision: Gate2BMaterializationRevision = 1
 ): Gate2BPaths {
 	const root = containedPath(workspaceRoot, contract.outputs.root);
+	const suffix = materializationRevision === 1 ? 'v2' : 'v2-r2';
 	return {
 		rawProvider: join(root, 'provider/body-repair-v2.png'),
 		keyedProvider: join(root, 'provider/body-repair-v2-rgba.png'),
-		nearArmMask: join(root, 'masks/v2/near-arm.png'),
-		braidMask: join(root, 'masks/v2/braid.png'),
-		bodyCore: join(root, 'parts/v2/body-core.png'),
-		nearArm: join(root, 'parts/v2/near-arm.png'),
-		braid: join(root, 'parts/v2/braid.png'),
-		recomposed: join(root, 'recomposed/asha-setup-v2.png'),
-		result: join(root, 'results/result-v2.json')
+		nearArmMask: join(root, `masks/${suffix}/near-arm.png`),
+		braidMask: join(root, `masks/${suffix}/braid.png`),
+		bodyCore: join(root, `parts/${suffix}/body-core.png`),
+		nearArm: join(root, `parts/${suffix}/near-arm.png`),
+		braid: join(root, `parts/${suffix}/braid.png`),
+		recomposed: join(root, `recomposed/asha-setup-${suffix}.png`),
+		result: join(root, `results/result-${suffix}.json`)
 	};
 }
 
@@ -294,17 +301,33 @@ async function verifyAuthority(
 export async function preflightGate2B(
 	contractInput: AshaSpineGate2BContract,
 	workspaceRoot: string,
-	mode: Gate2BMode
+	mode: Gate2BMode,
+	materializationRevision: Gate2BMaterializationRevision = 1
 ): Promise<Gate2BPaths> {
 	const contract = gate2bContractSchema.parse(contractInput);
 	const cutout = await verifyAuthority(contract, workspaceRoot);
 	await rasterizeSourceMasks(contract, cutout);
-	const paths = resolveGate2BPaths(contract, workspaceRoot);
+	const paths = resolveGate2BPaths(contract, workspaceRoot, materializationRevision);
+	if (materializationRevision === 2) {
+		const first = await validateGate2BCandidate(contract, workspaceRoot, 1);
+		if (
+			first.disposition !== 'failed' ||
+			!first.failure.reason.includes('recompositionOutsideRepairMismatchPixels')
+		) {
+			throw new Error('Gate 2B rematerialization requires the eligible r1 pipeline-only failure');
+		}
+	}
 	if (mode === 'check') {
-		await validateGate2BCandidate(contract, workspaceRoot);
+		await validateGate2BCandidate(contract, workspaceRoot, materializationRevision);
 		return paths;
 	}
-	for (const path of allPaths(paths)) {
+	const writablePaths =
+		materializationRevision === 1
+			? allPaths(paths)
+			: allPaths(paths).filter(
+					(path) => path !== paths.rawProvider && path !== paths.keyedProvider
+				);
+	for (const path of writablePaths) {
 		if (await pathExists(path)) throw new Error(`owned Gate 2B output already exists: ${path}`);
 	}
 	return paths;
@@ -318,13 +341,19 @@ export function parseGate2BCliArgs(args: readonly string[]): ParsedGate2BCli {
 	}
 	let providerOutputPath: string | undefined;
 	let keyedOutputPath: string | undefined;
+	let materializationRevision: Gate2BMaterializationRevision = 1;
 	while (normalized.length > 0) {
 		const option = normalized.shift();
 		const value = normalized.shift();
 		if (value === undefined) throw new Error(`missing value for ${option}`);
 		if (option === '--provider-output') providerOutputPath = value;
 		else if (option === '--keyed-output') keyedOutputPath = value;
-		else throw new Error(`unsupported option: ${option}`);
+		else if (option === '--materialization-revision') {
+			if (value !== '1' && value !== '2') {
+				throw new Error('--materialization-revision must be 1 or 2');
+			}
+			materializationRevision = Number(value) as Gate2BMaterializationRevision;
+		} else throw new Error(`unsupported option: ${option}`);
 	}
 	if (command === 'materialize') {
 		if (
@@ -337,12 +366,12 @@ export function parseGate2BCliArgs(args: readonly string[]): ParsedGate2BCli {
 		) {
 			throw new Error('provider and keyed output paths must be absolute and normalized');
 		}
-		return { command, providerOutputPath, keyedOutputPath };
+		return { command, providerOutputPath, keyedOutputPath, materializationRevision };
 	}
 	if (providerOutputPath !== undefined || keyedOutputPath !== undefined) {
 		throw new Error('provider paths are valid only for materialize');
 	}
-	return { command };
+	return { command, materializationRevision };
 }
 
 function pointInsidePolygon(
@@ -575,14 +604,13 @@ async function buildCandidate(
 		rgbaPng(nearArmRaw),
 		rgbaPng(braidRaw)
 	]);
-	const recomposed = await sharp(bodyCore, { failOn: 'error' })
-		.composite([
-			{ input: braid, blend: 'over' },
-			{ input: nearArm, blend: 'over' }
-		])
-		.png()
-		.toBuffer();
-	const recomposedRaw = await sharp(recomposed, { failOn: 'error' }).ensureAlpha().raw().toBuffer();
+	const recomposedRaw = Buffer.from(bodyRaw);
+	for (let pixel = 0; pixel < masks.nearArmRaw.length; pixel += 1) {
+		if (!union(pixel)) continue;
+		const offset = pixel * 4;
+		source.copy(recomposedRaw, offset, offset, offset + 4);
+	}
+	const recomposed = await rgbaPng(recomposedRaw);
 	const measurements = measurementsSchema.parse({
 		visiblePartSourceMismatchPixels:
 			mismatchCount(nearArmRaw, source, (pixel) => masks.nearArmRaw[pixel] !== 0) +
@@ -673,6 +701,7 @@ export async function materializeGate2BCandidate(input: {
 	workspaceRoot: string;
 	providerOutputPath: string;
 	keyedOutputPath: string;
+	materializationRevision?: Gate2BMaterializationRevision;
 }): Promise<AshaSpineGate2BResult> {
 	if (
 		!isAbsolute(input.providerOutputPath) ||
@@ -683,12 +712,27 @@ export async function materializeGate2BCandidate(input: {
 		throw new Error('provider and keyed output paths must be absolute and normalized');
 	}
 	const contract = gate2bContractSchema.parse(input.contract);
-	const paths = await preflightGate2B(contract, input.workspaceRoot, 'write');
+	const materializationRevision = input.materializationRevision ?? 1;
+	const paths = await preflightGate2B(
+		contract,
+		input.workspaceRoot,
+		'write',
+		materializationRevision
+	);
 	const [cutoutBytes, rawBytes, keyedBytes] = await Promise.all([
 		secureRead(containedPath(input.workspaceRoot, contract.acceptedCutout)),
 		secureRead(input.providerOutputPath),
 		secureRead(input.keyedOutputPath)
 	]);
+	if (materializationRevision === 2) {
+		const [persistedRaw, persistedKeyed] = await Promise.all([
+			secureRead(paths.rawProvider),
+			secureRead(paths.keyedProvider)
+		]);
+		if (!persistedRaw.equals(rawBytes) || !persistedKeyed.equals(keyedBytes)) {
+			throw new Error('rematerialization provider bytes must match immutable r1 evidence');
+		}
+	}
 	const root = containedPath(input.workspaceRoot, contract.outputs.root);
 	try {
 		const built = await buildCandidate(contract, cutoutBytes, rawBytes, keyedBytes);
@@ -724,9 +768,15 @@ export async function materializeGate2BCandidate(input: {
 			measurements: built.measurements,
 			reconstructedRegions: ['near-arm overlap', 'braid/head overlap']
 		});
+		const providerArtifacts =
+			materializationRevision === 1
+				? [
+						{ destination: paths.rawProvider, bytes: rawBytes },
+						{ destination: paths.keyedProvider, bytes: keyedBytes }
+					]
+				: [];
 		await persistArtifacts(root, [
-			{ destination: paths.rawProvider, bytes: rawBytes },
-			{ destination: paths.keyedProvider, bytes: keyedBytes },
+			...providerArtifacts,
 			{ destination: paths.nearArmMask, bytes: built.masks.nearArmPng },
 			{ destination: paths.braidMask, bytes: built.masks.braidPng },
 			{ destination: paths.bodyCore, bytes: built.bodyCore },
@@ -735,7 +785,7 @@ export async function materializeGate2BCandidate(input: {
 			{ destination: paths.recomposed, bytes: built.recomposed },
 			{ destination: paths.result, bytes: Buffer.from(stableJson(result), 'utf8') }
 		]);
-		return await validateGate2BCandidate(contract, input.workspaceRoot);
+		return await validateGate2BCandidate(contract, input.workspaceRoot, materializationRevision);
 	} catch (error) {
 		const rawMetadata = await sharp(rawBytes, { failOn: 'error' }).metadata();
 		const keyedMetadata = await sharp(keyedBytes, { failOn: 'error' }).metadata();
@@ -765,12 +815,18 @@ export async function materializeGate2BCandidate(input: {
 			measurements: null,
 			reconstructedRegions: []
 		});
+		const providerArtifacts =
+			materializationRevision === 1
+				? [
+						{ destination: paths.rawProvider, bytes: rawBytes },
+						{ destination: paths.keyedProvider, bytes: keyedBytes }
+					]
+				: [];
 		await persistArtifacts(root, [
-			{ destination: paths.rawProvider, bytes: rawBytes },
-			{ destination: paths.keyedProvider, bytes: keyedBytes },
+			...providerArtifacts,
 			{ destination: paths.result, bytes: Buffer.from(stableJson(failed), 'utf8') }
 		]);
-		return await validateGate2BCandidate(contract, input.workspaceRoot);
+		return await validateGate2BCandidate(contract, input.workspaceRoot, materializationRevision);
 	}
 }
 
@@ -790,11 +846,12 @@ async function validatedArtifact(
 
 export async function validateGate2BCandidate(
 	contractInput: AshaSpineGate2BContract,
-	workspaceRoot: string
+	workspaceRoot: string,
+	materializationRevision: Gate2BMaterializationRevision = 1
 ): Promise<AshaSpineGate2BResult> {
 	const contract = gate2bContractSchema.parse(contractInput);
 	await verifyAuthority(contract, workspaceRoot);
-	const paths = resolveGate2BPaths(contract, workspaceRoot);
+	const paths = resolveGate2BPaths(contract, workspaceRoot, materializationRevision);
 	const result = resultSchema.parse(JSON.parse((await secureRead(paths.result)).toString('utf8')));
 	if (result.prompt !== contract.repairPrompt) throw new Error('Gate 2B prompt mismatch');
 	if (result.promptSha256 !== rawSha256(Buffer.from(contract.repairPrompt, 'utf8'))) {
