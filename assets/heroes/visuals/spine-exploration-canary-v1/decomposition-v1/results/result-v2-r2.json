@@ -1,0 +1,84 @@
+{
+  "approval": {
+    "date": "2026-09-22",
+    "statement": "Approve Gate 2B: deterministic source masks plus one chroma-key body-reconstruction attempt."
+  },
+  "disposition": "candidate",
+  "failure": null,
+  "masks": {
+    "braid": {
+      "height": 768,
+      "path": "assets/heroes/visuals/spine-exploration-canary-v1/decomposition-v1/masks/v2-r2/braid.png",
+      "pixels": 19807,
+      "sha256": "2231174567ee5b42b672f0d92675d2519d1676e8c77cfa7482116b319b0b9d37",
+      "width": 768
+    },
+    "nearArm": {
+      "height": 768,
+      "path": "assets/heroes/visuals/spine-exploration-canary-v1/decomposition-v1/masks/v2-r2/near-arm.png",
+      "pixels": 15875,
+      "sha256": "19744c5c089179acfe3799dd99c4e74366fe18033c3fc4ce6d8220b9b0d444bd",
+      "width": 768
+    }
+  },
+  "measurements": {
+    "bodyOutsideMaskMismatchPixels": 0,
+    "braidMaskPixels": 19807,
+    "nearArmMaskPixels": 15875,
+    "recompositionOutsideRepairMismatchPixels": 0,
+    "visiblePartSourceMismatchPixels": 0
+  },
+  "outputs": {
+    "bodyCore": {
+      "height": 768,
+      "path": "assets/heroes/visuals/spine-exploration-canary-v1/decomposition-v1/parts/v2-r2/body-core.png",
+      "sha256": "9c9ce9f4dc4e5797a07ded98c61aa5eedb01c506b00805ce4bebb436ad14eba5",
+      "width": 768
+    },
+    "braid": {
+      "height": 768,
+      "path": "assets/heroes/visuals/spine-exploration-canary-v1/decomposition-v1/parts/v2-r2/braid.png",
+      "sha256": "4a86cb096e6d0d839d0a4e98db7f521ebc614bdd22bb8f5dc72c3ffd5ffab318",
+      "width": 768
+    },
+    "nearArm": {
+      "height": 768,
+      "path": "assets/heroes/visuals/spine-exploration-canary-v1/decomposition-v1/parts/v2-r2/near-arm.png",
+      "sha256": "1f86b0c5f2cf19c2e7897266bc0eb81243b3c43254222e9392946835ae997ea1",
+      "width": 768
+    },
+    "recomposed": {
+      "height": 768,
+      "path": "assets/heroes/visuals/spine-exploration-canary-v1/decomposition-v1/recomposed/asha-setup-v2-r2.png",
+      "sha256": "9f6704c825a642c1664cc34573a2e2264a9d3d2f0cf85c5f65ee6c09f4bb5a2b",
+      "width": 768
+    }
+  },
+  "prompt": "Use case: precise-object-edit. Asset type: Asha Spine Gate 2B concealed-body reconstruction. Image 1 is the only edit target and identity authority. Preserve the exact square full-body setup pose, camera, scale, orientation, bottom-center feet registration, face, shaved image-right temple and marking, saffron-and-cream costume, adult proportions, palette, and lighting. Remove only the complete image-right foreground arm from beneath the shoulder ring through the fist and the complete long image-left braid from its head overlap through the tassel. Reconstruct only the shoulder, sleeve opening, clothing, short under-hair, and silhouette pixels those two foreground pieces concealed. Put the resulting otherwise-complete body/core alone on a perfectly flat solid #00ff00 chroma-key background. The background must be one uniform color with no shadows, gradients, texture, reflections, floor plane, or lighting variation. Keep the character fully separated from the background with crisp edges and generous padding. Do not use #00ff00 anywhere in the character. No cast shadow, contact shadow, reflection, text, label, divider, border, alternate pose, mirroring, extra anatomy, equipment, redesign, crop, or change outside the two removals.",
+  "promptSha256": "e268ea51e839fef32534cf9d8be0c6df11b9c9c448df1ed564428aeb6a39a37f",
+  "provider": {
+    "chromaKey": "#00ff00",
+    "keyed": {
+      "height": 1254,
+      "path": "assets/heroes/visuals/spine-exploration-canary-v1/decomposition-v1/provider/body-repair-v2-rgba.png",
+      "sha256": "d4ab2e15938794ea5ec4018d4114ecc77f327e50038cdda053b67f1711a24029",
+      "width": 1254
+    },
+    "mode": "edit-chroma",
+    "raw": {
+      "height": 1254,
+      "path": "assets/heroes/visuals/spine-exploration-canary-v1/decomposition-v1/provider/body-repair-v2.png",
+      "sha256": "db30678adb5fb6cf0d972ebdb7c719236805536c8b6cb17f97e0d85004bd1831",
+      "width": 1254
+    },
+    "returnedSourcePath": "$PROVIDER_OUTPUT_ROOT/asha-gate2b-body-repair-v2-raw.png"
+  },
+  "reconstructedRegions": [
+    "near-arm overlap",
+    "braid/head overlap"
+  ],
+  "schemaVersion": "asha-spine-gate2b-result-v1",
+  "sourceSha256": "9f6704c825a642c1664cc34573a2e2264a9d3d2f0cf85c5f65ee6c09f4bb5a2b",
+  "v1FailureResultSha256": "e3fd7c45bba0fcaa78f09cafc75896873d3b265250160efb48da35f5c5a70cd7",
+  "version": 2
+}

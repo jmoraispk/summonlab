@@ -1,0 +1,15 @@
+{
+	"extends": "../tsconfig.base.json",
+	"compilerOptions": {
+		"declaration": false,
+		"declarationMap": false,
+		"noEmit": true,
+		"sourceMap": false,
+		"types": ["node", "vitest/globals"]
+	},
+	"include": [
+		"asha-spine-transport-lib.ts",
+		"asha-spine-transport-lib.spec.ts",
+		"asha-spine-transport.ts"
+	]
+}

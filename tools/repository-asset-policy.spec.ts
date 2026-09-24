@@ -177,8 +177,8 @@ describe('repository asset retention policy', () => {
 
 	it('protects the complete canonical family-affinity pack with Git LFS', async () => {
 		await expect(validateRepositoryAssets(process.cwd())).resolves.toMatchObject({
-			retainedHeroVisualImageCount: 61,
-			retainedHeroVisualBytes: 120_449_565,
+			retainedHeroVisualImageCount: 71,
+			retainedHeroVisualBytes: 126_735_389,
 			approvedFaunaImageCount: 200,
 			approvedFaunaBytes: 560_162_021,
 			approvedEquipmentImageCount: 168,

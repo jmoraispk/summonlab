@@ -1,0 +1,30 @@
+{
+  "schemaVersion": "asha-spine-transport-v1",
+  "status": "candidate",
+  "editorVersion": "4.3.26",
+  "runtimeVersion": "4.3.13",
+  "pixiVersion": "8.20.0",
+  "direction": "up-field",
+  "mirrored": false,
+  "identitySource": "assets/heroes/visuals/realtime-combat-study-v1/saffron-braid-source-v1.png",
+  "identitySourceSha256": "3cc917c4b0b15bfce012bb2fcdbf01d1cb4977871fdc222b4db3afd32120fa77",
+  "acceptedCutout": "apps/web/static/runtime/combat/realtime-study-v1/hero-saffron-braid-ready-v1.png",
+  "acceptedCutoutSha256": "9f6704c825a642c1664cc34573a2e2264a9d3d2f0cf85c5f65ee6c09f4bb5a2b",
+  "comparisonMotionSheet": "assets/heroes/visuals/realtime-combat-study-v1/animation-canary-v1/asha/asha-motion-sheet-source-v2.png",
+  "comparisonMotionSheetSha256": "3a8ebfd62479c95aec94b934e5cebb24770ad9bea019b96f7388d5bdd0e4902f",
+  "sourceCanvas": { "width": 768, "height": 768 },
+  "transportCanvas": { "width": 1024, "height": 1024, "left": 128, "top": 128 },
+  "feetAnchor": {
+    "sourceX": 384,
+    "sourceY": 738,
+    "normalizedX": 0.5,
+    "normalizedY": 0.845703125
+  },
+  "animation": { "name": "idle_transport_probe", "durationSeconds": 1, "loop": true },
+  "outputs": {
+    "image": "assets/heroes/visuals/spine-exploration-canary-v1/transport/images/asha-transport-v1.png",
+    "importJson": "assets/heroes/visuals/spine-exploration-canary-v1/transport/asha-transport-import-v1.json",
+    "project": "assets/heroes/visuals/spine-exploration-canary-v1/transport/asha-transport-v1.spine",
+    "runtimeDirectory": "apps/web/static/runtime/exploration/spine-canary-v1/asha"
+  }
+}

@@ -1,0 +1,29 @@
+{
+	"skeleton": {
+		"hash": "G62EYj2IcVU",
+		"spine": "4.3.26",
+		"x": -512,
+		"y": -158,
+		"width": 1024,
+		"height": 1024,
+		"images": "./images/",
+		"audio": "./audio"
+	},
+	"bones": [{ "name": "root" }, { "name": "body", "parent": "root" }],
+	"slots": [{ "name": "body", "bone": "body", "attachment": "asha_transport" }],
+	"skins": [
+		{
+			"name": "default",
+			"attachments": {
+				"body": {
+					"asha_transport": { "path": "asha-transport-v1", "y": 354, "width": 1024, "height": 1024 }
+				}
+			}
+		}
+	],
+	"animations": {
+		"idle_transport_probe": {
+			"bones": { "body": { "rotate": [{}, { "time": 0.5, "value": 0.35 }, { "time": 1 }] } }
+		}
+	}
+}

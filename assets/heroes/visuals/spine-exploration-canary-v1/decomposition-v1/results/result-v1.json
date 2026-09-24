@@ -1,0 +1,20 @@
+{
+  "disposition": "failed",
+  "failure": {
+    "reason": "provider board must be square RGBA",
+    "stage": "provider-board"
+  },
+  "measurements": null,
+  "outputs": null,
+  "prompt": "Edit only the supplied Asha raster into a strict square 2-by-2 technical decomposition board on transparency. Every quadrant uses the identical full-body framing, scale, orientation, and bottom-center feet registration as the reference. Top-left: Asha's otherwise complete setup-pose body/core with the image-right foreground arm and the long image-left braid removed; reconstruct only the shoulder, clothing, head hair, and silhouette pixels hidden behind those two pieces. Top-right: only an opaque white semantic matte for the complete image-right foreground arm from shoulder overlap through fist, at its original coordinates; everything else transparent. Bottom-left: only an opaque white semantic matte for the complete long image-left braid and its head overlap, at its original coordinates; do not include face, eyebrow, eye, ear, temple marking, torso, or robe. Bottom-right: a registration preview of the three pieces recomposed into the original setup pose. Preserve Asha's face, shaved right temple and marking, left braid, saffron-and-cream costume, adult proportions, palette, lighting, up-field presentation, and anatomy. No labels, dividers, borders, background, shadow, alternate pose, mirroring, extra anatomy, equipment, redesign, or crop.",
+  "promptSha256": "6bee41946b13dec926777992e26f4932d985ad3869be984d5e8ec5e64919f2e9",
+  "provider": {
+    "boardPath": "assets/heroes/visuals/spine-exploration-canary-v1/decomposition-v1/provider/board-v1.png",
+    "boardSha256": "1c614e5dda0ab6cd616a448f5d9c1e1b500eb0f24a901184ab878e54034d39d6",
+    "mode": "edit",
+    "returnedSourcePath": "$PROVIDER_OUTPUT_ROOT/exec-5f90332f-76b1-49a2-93d1-1ad88861a2ac.png"
+  },
+  "reconstructedRegions": [],
+  "schemaVersion": "asha-spine-decomposition-result-v1",
+  "version": 1
+}
