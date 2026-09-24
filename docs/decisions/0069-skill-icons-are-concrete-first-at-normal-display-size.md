@@ -23,9 +23,10 @@ the intended interface can present skill icons at approximately 300–400 pixels
   ancestry; S does not automatically mean abstract.
 - Every rarity frame permanently includes its own crest and F–S letter.
 - The current frame-shape authority is the owner-selected seven-empty-frame RGB reference with
-  SHA-256 `4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266`. Its checkerboard is
-  depicted rather than transparent, so implementation reconstructs the frames against shared
-  regular geometry instead of promoting enlarged crops.
+  path `assets/wiki/skills/icon-production-v2/frame-shape-authority.png` and SHA-256
+  `4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266`. Its checkerboard is depicted
+  rather than transparent, so implementation reconstructs the frames against shared regular
+  geometry instead of promoting enlarged crops.
 - Retained skill-art and frame masters remain 1024×1024. Required owner review uses the full master
   and a 384×384 composite representing the intended 300–400-pixel display range.
 - A 96-pixel thumbnail is optional diagnostic evidence for new skill art, never an approval gate.

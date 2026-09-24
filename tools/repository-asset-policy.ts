@@ -155,7 +155,7 @@ export function findRepositoryAssetPathViolations(paths: readonly string[]): str
 		if (
 			path.startsWith('assets/wiki/skills/') &&
 			path.endsWith('.png') &&
-			!/^assets\/wiki\/skills\/icon-production-v2\/(?:interiors\/[a-z0-9-]+|frames\/rarity-frame-[fedcbas]|backing|geometry-guide)\.png$/u.test(
+			!/^assets\/wiki\/skills\/icon-production-v2\/(?:interiors\/[a-z0-9-]+|frames\/rarity-frame-[fedcbas]|backing|geometry-guide|frame-shape-authority)\.png$/u.test(
 				path
 			)
 		) {

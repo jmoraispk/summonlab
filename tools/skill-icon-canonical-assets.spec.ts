@@ -35,6 +35,10 @@ describe('canonical skill icon assets', () => {
 		expect(assets.frames.map((frame) => frame.rarity)).toEqual(['F', 'E', 'D', 'C', 'B', 'A', 'S']);
 		expect(assets.backing.path).toBe('assets/wiki/skills/icon-production-v2/backing.png');
 		expect(assets.geometry.path).toBe('assets/wiki/skills/icon-production-v2/geometry.json');
+		expect(assets.frameShapeAuthority).toEqual({
+			path: 'assets/wiki/skills/icon-production-v2/frame-shape-authority.png',
+			contentHash: '4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266'
+		});
 		expect(assets.layerOrder).toEqual(['backing', 'interior', 'rarity-frame']);
 		expect(assets.sourcePolicy).toBe('exact-frameless-source');
 		expect(assets.interiorTransform).toBe('identity');

@@ -5,7 +5,10 @@ import path from 'node:path';
 import sharp from 'sharp';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
-import { writeCanonicalSkillAssets } from './skill-icon-canonical-assets.js';
+import {
+	SKILL_FRAME_SHAPE_AUTHORITY_PATH,
+	writeCanonicalSkillAssets
+} from './skill-icon-canonical-assets.js';
 import { renderSkillIconReview } from './render-skill-icon-review.js';
 
 const repositoryRoot = path.resolve(import.meta.dirname, '..');
@@ -123,6 +126,10 @@ describe('temporary skill icon review renderer', () => {
 		await writeFile(path.join(assetRoot, 'backing.png'), transparent);
 		await writeFile(path.join(assetRoot, 'geometry.json'), '{}');
 		await writeFile(path.join(assetRoot, 'geometry-guide.png'), transparent);
+		await writeFile(
+			path.join(root, SKILL_FRAME_SHAPE_AUTHORITY_PATH),
+			await readFile(path.join(repositoryRoot, SKILL_FRAME_SHAPE_AUTHORITY_PATH))
+		);
 		await writeCanonicalSkillAssets(root);
 
 		const target = {

@@ -23,6 +23,10 @@
 		"path": "assets/wiki/skills/icon-production-v2/geometry-guide.png",
 		"contentHash": "8f1c01435f3e32de07560b154d9e3becba3ca2a38773ca74c3115d66ba28094e"
 	},
+	"frameShapeAuthority": {
+		"path": "assets/wiki/skills/icon-production-v2/frame-shape-authority.png",
+		"contentHash": "4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266"
+	},
 	"frames": [
 		{
 			"rarity": "F",

@@ -25,6 +25,8 @@ standalone production history and do not use it as an agent-skill example.
   `F E D C B A S`;
 - `backing.png` is the shared charcoal backing;
 - `geometry.json` and `geometry-guide.png` define composition geometry;
+- `frame-shape-authority.png` is the owner-selected RGB reference that fixes the approved seven
+  frame silhouettes without serving as a compositing source;
 - `asset-manifest.json` binds every retained raster to its target and SHA-256 hash.
 
 The manifest records `sourcePolicy: 'exact-frameless-source'` and an identity interior transform.
@@ -49,6 +51,7 @@ catalog state.
 
 - exactly 457 canonical frameless interiors;
 - exactly seven reusable complete rarity frames;
+- exactly one hash-bound frame-shape authority;
 - exactly one shared backing and one geometry authority;
 - exactly 457 wiki runtime icons, including Reversal Cut;
 - no separate Reversal Cut runtime or example;

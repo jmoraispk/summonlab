@@ -10,6 +10,10 @@ export const CANONICAL_SKILL_ROOT = 'assets/wiki/skills/icon-production-v2' as c
 export const CANONICAL_SKILL_CATALOG_PATH = `${CANONICAL_SKILL_ROOT}/catalog.json` as const;
 export const CANONICAL_SKILL_ASSET_MANIFEST_PATH =
 	`${CANONICAL_SKILL_ROOT}/asset-manifest.json` as const;
+export const SKILL_FRAME_SHAPE_AUTHORITY_PATH =
+	`${CANONICAL_SKILL_ROOT}/frame-shape-authority.png` as const;
+export const SKILL_FRAME_SHAPE_AUTHORITY_HASH =
+	'4ee72c8ecbdf6fb997d63480a3a1ca14cae4cbc8278fca3db97f9d0d756d0266' as const;
 export const SKILL_RARITIES = ['F', 'E', 'D', 'C', 'B', 'A', 'S'] as const;
 
 type SkillRarity = (typeof SKILL_RARITIES)[number];
@@ -43,6 +47,7 @@ interface StoredCanonicalSkillAssets {
 	readonly backing: HashedAsset;
 	readonly geometry: HashedAsset;
 	readonly geometryGuide: HashedAsset;
+	readonly frameShapeAuthority: HashedAsset;
 	readonly frames: readonly CanonicalSkillFrame[];
 	readonly records: readonly CanonicalSkillInterior[];
 	readonly summary: {
@@ -102,6 +107,14 @@ async function regularFile(root: string, relativePath: string): Promise<Buffer> 
 async function hashedAsset(root: string, relativePath: string): Promise<HashedAsset> {
 	const bytes = await regularFile(root, relativePath);
 	return { path: relativePath, contentHash: sha256(bytes) };
+}
+
+async function frameShapeAuthority(root: string): Promise<HashedAsset> {
+	const authority = await hashedAsset(root, SKILL_FRAME_SHAPE_AUTHORITY_PATH);
+	if (authority.contentHash !== SKILL_FRAME_SHAPE_AUTHORITY_HASH) {
+		throw new Error(`Frame-shape authority hash drift: ${authority.path}`);
+	}
+	return authority;
 }
 
 async function assertPng(root: string, asset: HashedAsset, label: string): Promise<void> {
@@ -215,6 +228,7 @@ export async function buildCanonicalSkillAssets(
 		backing: await hashedAsset(root, `${CANONICAL_SKILL_ROOT}/backing.png`),
 		geometry: await hashedAsset(root, `${CANONICAL_SKILL_ROOT}/geometry.json`),
 		geometryGuide: await hashedAsset(root, `${CANONICAL_SKILL_ROOT}/geometry-guide.png`),
+		frameShapeAuthority: await frameShapeAuthority(root),
 		frames,
 		records,
 		summary: {
@@ -271,7 +285,9 @@ async function readPromotedCanonicalSkillAssets(root: string): Promise<StoredCan
 		JSON.stringify(stored.composition.layerOrder) !==
 			JSON.stringify(['backing', 'interior', 'rarity-frame']) ||
 		!Array.isArray(stored.records) ||
-		!Array.isArray(stored.frames)
+		!Array.isArray(stored.frames) ||
+		stored.frameShapeAuthority?.path !== SKILL_FRAME_SHAPE_AUTHORITY_PATH ||
+		stored.frameShapeAuthority.contentHash !== SKILL_FRAME_SHAPE_AUTHORITY_HASH
 	) {
 		throw new Error('Invalid canonical skill asset manifest');
 	}
@@ -289,6 +305,7 @@ async function readPromotedCanonicalSkillAssets(root: string): Promise<StoredCan
 		)
 	]);
 	await Promise.all([
+		frameShapeAuthority(root),
 		assertPng(root, stored.backing, 'Canonical backing'),
 		...stored.frames.map((frame) => assertPng(root, frame, `Canonical ${frame.rarity} frame`)),
 		...stored.records.map((record) =>

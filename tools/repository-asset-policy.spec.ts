@@ -109,6 +109,7 @@ describe('repository asset retention policy', () => {
 			findRepositoryAssetPathViolations([
 				'assets/wiki/skills/icon-production-v2/interiors/martial-blade-measured-cut.png',
 				'assets/wiki/skills/icon-production-v2/frames/rarity-frame-f.png',
+				'assets/wiki/skills/icon-production-v2/frame-shape-authority.png',
 				'assets/wiki/skills/icon-production-v2/review/contact-sheet.png',
 				'assets/wiki/skills/rarity-frame-v6/review/old.png',
 				'apps/web/static/skill-icons/v1/512/old.webp'
