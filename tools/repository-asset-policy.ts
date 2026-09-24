@@ -636,9 +636,9 @@ export async function validateRepositoryAssets(
 		}
 		retainedHeroVisualBytes += (await stat(resolve(workspaceRoot, path))).size;
 	}
-	if (retainedHeroVisualPaths.length !== 61 || retainedHeroVisualBytes !== 120_449_565) {
+	if (retainedHeroVisualPaths.length !== 71 || retainedHeroVisualBytes !== 126_735_389) {
 		violations.push(
-			`Retained hero visual set must contain exactly 61 PNGs and 120449565 bytes, found ${retainedHeroVisualPaths.length} PNGs and ${retainedHeroVisualBytes} bytes`
+			`Retained hero visual set must contain exactly 71 PNGs and 126735389 bytes, found ${retainedHeroVisualPaths.length} PNGs and ${retainedHeroVisualBytes} bytes`
 		);
 	}
 	const approvedFaunaManifest = JSON.parse(
