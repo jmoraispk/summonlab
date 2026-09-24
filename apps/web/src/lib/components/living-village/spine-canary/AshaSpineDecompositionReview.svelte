@@ -120,7 +120,7 @@
 		<div class="review-loading" role="status">Checking the Gate 2B review descriptor…</div>
 	{:else}
 		<div class="layer-grid" aria-label="Asha decomposition layers">
-			{#each layers as layer}
+			{#each layers as layer (layer.testId)}
 				<article>
 					<div class="raster checkerboard">
 						<img

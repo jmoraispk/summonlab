@@ -1,7 +1,7 @@
 <script lang="ts">
+	import { resolve } from '$app/paths';
 	import AshaSpineTransportStage from '$lib/components/living-village/spine-canary/AshaSpineTransportStage.svelte';
 	import AshaSpineDecompositionReview from '$lib/components/living-village/spine-canary/AshaSpineDecompositionReview.svelte';
-	import LabBackLink from '$lib/components/living-village/LabBackLink.svelte';
 </script>
 
 <svelte:head>
@@ -13,7 +13,7 @@
 </svelte:head>
 
 <main>
-	<LabBackLink placement="top" />
+	<a class="back-link" href={resolve('/')}>← Back to Summonlab</a>
 	<header>
 		<p class="eyebrow">Candidate · transport-only</p>
 		<h1>Asha survived the pipeline.</h1>
@@ -73,6 +73,23 @@
 		margin: 0 auto;
 		padding: clamp(4.5rem, 8vw, 7rem) 0 4rem;
 		font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+	}
+
+	.back-link {
+		position: fixed;
+		z-index: 90;
+		top: 0.65rem;
+		left: 0.65rem;
+		padding: 0.55rem 0.7rem;
+		border: 1px solid rgba(131, 205, 211, 0.3);
+		border-radius: 999px;
+		background: rgba(7, 11, 15, 0.86);
+		color: #bce6e8;
+		font-size: 0.64rem;
+		font-weight: 800;
+		letter-spacing: 0.08em;
+		text-decoration: none;
+		text-transform: uppercase;
 	}
 
 	header {

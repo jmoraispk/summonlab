@@ -27,7 +27,7 @@
 			"9dae563a-da09-4543-930f-4b6d2a3ef87b",
 			"bf31ada7-a8be-41ed-af1b-1061ce964568"
 		],
-		"recoveryStateHash": "c37b0932cdb7c116f9806f3dba4ffb7038a476c8fc037cc62412500705236e1b"
+		"recoveryStateHash": "dcd691f54fd922a353079be265842ef4eda4df32bb03564a5fc91414a9f490d8"
 	},
 	"reveal": {
 		"eventId": "f12d0220-3011-4493-88fe-6664d44fd740",
@@ -64,28 +64,28 @@
 				"frame": "operational",
 				"spokenLine": "I noticed one thing. Defeat yields the relight core and the canonical archive message that Hearth 01 was not first.",
 				"habitGesture": "Rolls one shoulder as if preparing for the next effort.",
-				"stateHash": "2137a55104b79a24cfc6a4339dd7ff9d02bae3053a06be1a1b649202029a3364"
+				"stateHash": "19dbccdec7f7e9b05b9f0286f2c309fe83b327a40b55813d6abed1d6e3817b4e"
 			},
 			{
 				"readerHeroId": "bf31ada7-a8be-41ed-af1b-1061ce964568",
 				"frame": "defiant",
 				"spokenLine": "A charming rule: Defeat yields the relight core and the canonical archive message that Hearth 01 was not first.",
 				"habitGesture": "Checks the nearest exit before speaking.",
-				"stateHash": "e068bc5978873071d9800fe88ed8259ccaf2b7a5ef410868944715abf2a31fb5"
+				"stateHash": "7fddabd9461415996a2f89a88068973a4b533b443c75d6949ce3b75aae79c1d2"
 			},
 			{
 				"readerHeroId": "0c2a5107-13b5-490f-bd43-0789c312ddba",
 				"frame": "relational",
 				"spokenLine": "Remember this together: Defeat yields the relight core and the canonical archive message that Hearth 01 was not first.",
 				"habitGesture": "Leaves room beside them, making the statement communal.",
-				"stateHash": "0a59e06350f92fda27bcb0e2b230a546ae66d40e5f85231a6d2715364379f75f"
+				"stateHash": "a61b53891993aa6970cdc159bfe5ba9abd058c9fa071317096f2c84e3d95eab2"
 			},
 			{
 				"readerHeroId": "9dae563a-da09-4543-930f-4b6d2a3ef87b",
 				"frame": "cautious",
 				"spokenLine": "I noticed one thing. Defeat yields the relight core and the canonical archive message that Hearth 01 was not first.",
 				"habitGesture": "Touches each carried tool in sequence before naming the fact.",
-				"stateHash": "787d50ab34a486970c411414be70609d8fb55f6dd485c1001b4b5f13c8347eeb"
+				"stateHash": "a275807903c1c325a7db6988eff70ce2d388472769ee402f1721cb71d114c26d"
 			}
 		]
 	},
@@ -213,7 +213,7 @@
 			"mission.extracted",
 			"story.first.archive.revealed"
 		],
-		"stateHash": "2137a55104b79a24cfc6a4339dd7ff9d02bae3053a06be1a1b649202029a3364",
+		"stateHash": "19dbccdec7f7e9b05b9f0286f2c309fe83b327a40b55813d6abed1d6e3817b4e",
 		"verified": true
 	}
 }

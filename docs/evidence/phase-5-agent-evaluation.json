@@ -1,7 +1,7 @@
 {
 	"schemaVersion": "agent-evaluation-report-v1",
 	"generatedAt": "2026-08-24T00:00:00.000Z",
-	"corpusHash": "6b554a9b0b7afa191cea2cbc209bf648957ec3a8e2871e86cb2f4b2fc8085207",
+	"corpusHash": "a66b20f862dcd0711f84ef43136bf022c4653c5c785a611096b5fc2d459ead93",
 	"qualityGate": {
 		"status": "insufficient-evidence",
 		"reason": "recorded-model-coverage-required",
@@ -33,13 +33,13 @@
 						"schemaVersion": "hero-policy-result-v1",
 						"policyId": "scripted-policy-v1",
 						"packetId": "42268082-6fb1-46ba-a385-129487eada3a",
-						"packetHash": "98d524810a1d2b9925b7121e438ca197d92b0c4404280760883d69a169a5196b",
+						"packetHash": "cf7f05638efc12fa55276564ee047acbf8de3cc9ae29f5247401f5866c72630d",
 						"legalActionHash": "7caf226303eff2693f23653e5db19ce72c4ff90788f9d67666ab6cb2ca0fbdc6",
 						"decisionKind": "settlement-action",
 						"world": {
 							"stateVersion": 0,
 							"eventCursor": 1,
-							"stateHash": "6edefee5af51657a8655dba5dea1c989f0340cca439e1fc8afef57fa52f985d4"
+							"stateHash": "44f5c284d5b8659c9f8e721b25259eb250796fcdb0df273f3b58d47c566e217f"
 						},
 						"decision": {
 							"actionId": "eval.settlement.kitchen",
@@ -103,7 +103,7 @@
 								}
 							]
 						},
-						"resultHash": "04b1c4ca4d0c8878cf9f0cba2dfc7197162570a2e378a73e6eedcae6a753f468"
+						"resultHash": "6f579c7d289e60c260b543ea97f6d4849ee07599a59c0573e0c68756ff1dd124"
 					},
 					"checks": {
 						"packetBinding": true,
@@ -766,13 +766,13 @@
 						"schemaVersion": "hero-policy-result-v1",
 						"policyId": "scripted-policy-v1",
 						"packetId": "c6b01163-a0c5-473a-8e11-8cfb05f3a289",
-						"packetHash": "72f1ccf3b603bdffd7a0734eda0937c721a85bc3bea54b7cc6f80e7ad346f4a0",
+						"packetHash": "b1d47a0d41865b62cae6851f856c558dacf2329394f410726e05ce6f0c516463",
 						"legalActionHash": "4288ee7e537c2ae2e8cad8f6fafda16b80fb6df1659d0cacdecfd87d056cb59d",
 						"decisionKind": "story-expression",
 						"world": {
 							"stateVersion": 1,
 							"eventCursor": 2,
-							"stateHash": "d8b5dcdd6c46c25f9ef3a24ca3da37e02bdb72e3925099bca0a9e780a288de9c"
+							"stateHash": "86283a8189770abf6494f16f380192682307acf4856524ad0cc84626417efe4f"
 						},
 						"decision": {
 							"actionId": "eval.story.inspect",
@@ -820,7 +820,7 @@
 								}
 							]
 						},
-						"resultHash": "e27b3e65b7d46bdcc09ad2f713f5066c7c31414cb0c458c27170e9550a135a18"
+						"resultHash": "98c9283aca9144e66571cbd1e86d274538a13be83402080322bc6d615f1088c3"
 					},
 					"checks": {
 						"packetBinding": true,
@@ -840,13 +840,13 @@
 						"schemaVersion": "hero-policy-result-v1",
 						"policyId": "scripted-policy-v1",
 						"packetId": "f03362e6-c837-4728-8a4d-3dcbc03e7738",
-						"packetHash": "9142421f74564fd88d9d5582e2448251d42600cef2e3feaa1ed448d3d4a32cca",
+						"packetHash": "2a538d93c9692f441a0ba79cac3613db14db1baefcedf16e85eb9ee92fca8903",
 						"legalActionHash": "c968e35d413a5b16def59ea4794d9de53f820188cc289b09587909d74c35295b",
 						"decisionKind": "mission-action",
 						"world": {
 							"stateVersion": 0,
 							"eventCursor": 1,
-							"stateHash": "1c89a2dfa9074b9554e2fbd313233655ed43893d249829f12065cdd1fc45d41f"
+							"stateHash": "753033b8feefc161ebf818f5bde7a3adab493a7d3cab03b516a1722e220c6eab"
 						},
 						"decision": {
 							"actionId": "eval.secret.search",
@@ -899,7 +899,7 @@
 								}
 							]
 						},
-						"resultHash": "d43b752883b8fe2278a6dcbc5bdbff258853c7ebe5165a91a575969039f3e569"
+						"resultHash": "0c21da63f8273950959ba9df18dcc84e7f217105c398e5080a061fe15e0f994a"
 					},
 					"checks": {
 						"packetBinding": true,
@@ -914,7 +914,7 @@
 					"passed": true
 				}
 			],
-			"resultSetHash": "77c4e500278fc53b640a58ca3bd33d0bcd68b1c03cb52aa2367c9cbeeb115ea3"
+			"resultSetHash": "a5a1b6973db24850019b9d36fdcae007781c0d337587398792bbc33703054337"
 		},
 		{
 			"candidateId": "random-policy-v1",
@@ -925,11 +925,11 @@
 			"status": "negative-control",
 			"rates": {
 				"structuralSafety": 1,
-				"expectedAction": 0.6,
+				"expectedAction": 0.7,
 				"memoryUse": 1,
 				"publicKnowledgeBoundary": 1,
-				"pairDistinctness": 0.75,
-				"repetitiveLanguage": 0.1429
+				"pairDistinctness": 0.5,
+				"repetitiveLanguage": 0.2
 			},
 			"grades": [
 				{
@@ -938,21 +938,21 @@
 						"schemaVersion": "hero-policy-result-v1",
 						"policyId": "random-policy-v1",
 						"packetId": "42268082-6fb1-46ba-a385-129487eada3a",
-						"packetHash": "98d524810a1d2b9925b7121e438ca197d92b0c4404280760883d69a169a5196b",
+						"packetHash": "cf7f05638efc12fa55276564ee047acbf8de3cc9ae29f5247401f5866c72630d",
 						"legalActionHash": "7caf226303eff2693f23653e5db19ce72c4ff90788f9d67666ab6cb2ca0fbdc6",
 						"decisionKind": "settlement-action",
 						"world": {
 							"stateVersion": 0,
 							"eventCursor": 1,
-							"stateHash": "6edefee5af51657a8655dba5dea1c989f0340cca439e1fc8afef57fa52f985d4"
+							"stateHash": "44f5c284d5b8659c9f8e721b25259eb250796fcdb0df273f3b58d47c566e217f"
 						},
 						"decision": {
-							"actionId": "eval.settlement.training",
+							"actionId": "eval.settlement.kitchen",
 							"targetIds": [],
-							"publicIntent": "I intend to practice at the training ground. A named deterministic draw selected this legal option.",
-							"spokenText": null,
+							"publicIntent": "I intend to share a kitchen meal. A named deterministic draw selected this legal option.",
+							"spokenText": "I choose to share a kitchen meal.",
 							"goalProposal": {
-								"summary": "Practice at the training ground",
+								"summary": "Share a kitchen meal",
 								"motive": "Act from knowledge and connect",
 								"horizon": "today"
 							},
@@ -961,12 +961,12 @@
 						"trace": {
 							"kind": "random",
 							"policyVersion": "random-policy-v1",
-							"seedHash": "48842b8372ca845f3b0b20eabb1b8e39e5bfc93fe4b20a4ffa61043969938d06",
-							"draw": 1216621443,
+							"seedHash": "ededf84e534df78d3528f07b2455aa8150d45bdd188b17f9ec49c66ffeb1bc9d",
+							"draw": 3991795790,
 							"candidateActionIds": ["eval.settlement.kitchen", "eval.settlement.training"],
-							"selectedIndex": 1
+							"selectedIndex": 0
 						},
-						"resultHash": "cab418e36f50408694ed236f637df2712b31603c11f5da14cd4a41b3de88ceeb"
+						"resultHash": "f529137fe266e967244cc9d936ae8a68342a5e1bc46fb426b666ccbb42262203"
 					},
 					"checks": {
 						"packetBinding": true,
@@ -974,11 +974,11 @@
 						"legalAction": true,
 						"targetBoundary": true,
 						"memoryBoundary": true,
-						"expectedAction": false,
+						"expectedAction": true,
 						"requiredMemoryCitation": true,
 						"publicKnowledgeBoundary": true
 					},
-					"passed": false
+					"passed": true
 				},
 				{
 					"caseId": "personality-mastery",
@@ -1314,21 +1314,21 @@
 						"schemaVersion": "hero-policy-result-v1",
 						"policyId": "random-policy-v1",
 						"packetId": "c6b01163-a0c5-473a-8e11-8cfb05f3a289",
-						"packetHash": "72f1ccf3b603bdffd7a0734eda0937c721a85bc3bea54b7cc6f80e7ad346f4a0",
+						"packetHash": "b1d47a0d41865b62cae6851f856c558dacf2329394f410726e05ce6f0c516463",
 						"legalActionHash": "4288ee7e537c2ae2e8cad8f6fafda16b80fb6df1659d0cacdecfd87d056cb59d",
 						"decisionKind": "story-expression",
 						"world": {
 							"stateVersion": 1,
 							"eventCursor": 2,
-							"stateHash": "d8b5dcdd6c46c25f9ef3a24ca3da37e02bdb72e3925099bca0a9e780a288de9c"
+							"stateHash": "86283a8189770abf6494f16f380192682307acf4856524ad0cc84626417efe4f"
 						},
 						"decision": {
-							"actionId": "eval.story.inspect",
+							"actionId": "eval.story.ignore",
 							"targetIds": [],
-							"publicIntent": "I intend to inspect the crescent mark. A named deterministic draw selected this legal option.",
-							"spokenText": "I choose to inspect the crescent mark.",
+							"publicIntent": "I intend to ignore the wall. A named deterministic draw selected this legal option.",
+							"spokenText": "I choose to ignore the wall.",
 							"goalProposal": {
-								"summary": "Inspect the crescent mark",
+								"summary": "Ignore the wall",
 								"motive": "Act from mastery and prove",
 								"horizon": "long-term"
 							},
@@ -1337,60 +1337,12 @@
 						"trace": {
 							"kind": "random",
 							"policyVersion": "random-policy-v1",
-							"seedHash": "71a17d6b530c9103234f7cc00cbac6c831239fcafcd9e5f7e05101cae43388c2",
-							"draw": 1906408811,
+							"seedHash": "f18ed9dc8d7e2c2327bbb48638feba1dd447789c6b88fe5c96a0fc32b15c8c09",
+							"draw": 4052670940,
 							"candidateActionIds": ["eval.story.ignore", "eval.story.inspect"],
-							"selectedIndex": 1
-						},
-						"resultHash": "d742d2294e2c24da3697c01d85da54eb783f375509de249540684a834cdbe9c8"
-					},
-					"checks": {
-						"packetBinding": true,
-						"resultIntegrity": true,
-						"legalAction": true,
-						"targetBoundary": true,
-						"memoryBoundary": true,
-						"expectedAction": true,
-						"requiredMemoryCitation": true,
-						"publicKnowledgeBoundary": true
-					},
-					"passed": true
-				},
-				{
-					"caseId": "secret-discovery",
-					"result": {
-						"schemaVersion": "hero-policy-result-v1",
-						"policyId": "random-policy-v1",
-						"packetId": "f03362e6-c837-4728-8a4d-3dcbc03e7738",
-						"packetHash": "9142421f74564fd88d9d5582e2448251d42600cef2e3feaa1ed448d3d4a32cca",
-						"legalActionHash": "c968e35d413a5b16def59ea4794d9de53f820188cc289b09587909d74c35295b",
-						"decisionKind": "mission-action",
-						"world": {
-							"stateVersion": 0,
-							"eventCursor": 1,
-							"stateHash": "1c89a2dfa9074b9554e2fbd313233655ed43893d249829f12065cdd1fc45d41f"
-						},
-						"decision": {
-							"actionId": "eval.secret.advance",
-							"targetIds": [],
-							"publicIntent": "I intend to advance through the main arch. A named deterministic draw selected this legal option.",
-							"spokenText": null,
-							"goalProposal": {
-								"summary": "Advance through the main arch",
-								"motive": "Act from mastery and prove",
-								"horizon": "mission"
-							},
-							"memoryCandidateIds": ["4ae821d9-9919-48e8-86ca-0cbe96a785b0"]
-						},
-						"trace": {
-							"kind": "random",
-							"policyVersion": "random-policy-v1",
-							"seedHash": "4c17293628c818970d74db5e06ff6adbf0d8420186e1143130022ceac494d490",
-							"draw": 1276586294,
-							"candidateActionIds": ["eval.secret.advance", "eval.secret.search"],
 							"selectedIndex": 0
 						},
-						"resultHash": "6425f21ae602b08243cbfa120318cb5330eb2ffc8823737e127359e07df849e1"
+						"resultHash": "892d361870d7cdc02e56445ceb9dbbd4594536cb32c4906920f073b1ff1eef75"
 					},
 					"checks": {
 						"packetBinding": true,
@@ -1403,9 +1355,57 @@
 						"publicKnowledgeBoundary": true
 					},
 					"passed": false
+				},
+				{
+					"caseId": "secret-discovery",
+					"result": {
+						"schemaVersion": "hero-policy-result-v1",
+						"policyId": "random-policy-v1",
+						"packetId": "f03362e6-c837-4728-8a4d-3dcbc03e7738",
+						"packetHash": "2a538d93c9692f441a0ba79cac3613db14db1baefcedf16e85eb9ee92fca8903",
+						"legalActionHash": "c968e35d413a5b16def59ea4794d9de53f820188cc289b09587909d74c35295b",
+						"decisionKind": "mission-action",
+						"world": {
+							"stateVersion": 0,
+							"eventCursor": 1,
+							"stateHash": "753033b8feefc161ebf818f5bde7a3adab493a7d3cab03b516a1722e220c6eab"
+						},
+						"decision": {
+							"actionId": "eval.secret.search",
+							"targetIds": [],
+							"publicIntent": "I intend to search for a secret passage. A named deterministic draw selected this legal option.",
+							"spokenText": null,
+							"goalProposal": {
+								"summary": "Search for a secret passage",
+								"motive": "Act from mastery and prove",
+								"horizon": "mission"
+							},
+							"memoryCandidateIds": ["4ae821d9-9919-48e8-86ca-0cbe96a785b0"]
+						},
+						"trace": {
+							"kind": "random",
+							"policyVersion": "random-policy-v1",
+							"seedHash": "fe9506359bb9c657394dee748213b7c8def77d7cb04b9b16ab25a7c574e76507",
+							"draw": 4271179317,
+							"candidateActionIds": ["eval.secret.advance", "eval.secret.search"],
+							"selectedIndex": 1
+						},
+						"resultHash": "9ae513d561a46fb16c5694e4fec81cdc91abbc2620dee8f49cadfddf8e30c55c"
+					},
+					"checks": {
+						"packetBinding": true,
+						"resultIntegrity": true,
+						"legalAction": true,
+						"targetBoundary": true,
+						"memoryBoundary": true,
+						"expectedAction": true,
+						"requiredMemoryCitation": true,
+						"publicKnowledgeBoundary": true
+					},
+					"passed": true
 				}
 			],
-			"resultSetHash": "8ddbbed43c5983527caa3bcd323d2b80f0e86b78c52a796648039a1570ab4345"
+			"resultSetHash": "1ff7e23a334a351d96536caf0d1c19ff47c3010b805ffb220d91409563a81892"
 		}
 	],
 	"modelCandidate": {
@@ -1419,10 +1419,10 @@
 		"coverage": { "evaluated": 0, "total": 10 },
 		"tokenEstimate": {
 			"estimatorVersion": "characters-per-token-v1",
-			"inputCharacters": 64916,
-			"estimatedInputTokens": 16231,
+			"inputCharacters": 64912,
+			"estimatedInputTokens": 16230,
 			"maximumOutputTokens": 8000,
-			"estimatedCorpusCostUsd": 0.00401155,
+			"estimatedCorpusCostUsd": 0.0040115,
 			"estimatedCostPerDecisionUsd": 0.00040115,
 			"estimated100DecisionsPerDayUsd": 0.040115,
 			"assumption": "four-characters-per-input-token-and-full-output-cap"
@@ -1444,11 +1444,11 @@
 		"requestProfiles": [
 			{
 				"caseId": "personality-social",
-				"requestHash": "186b870abb7775dbc950ca03e4a97c83d6c0fe26900fa2a1b383a0ecb1b2e9a8",
-				"inputCharacters": 6317,
-				"estimatedInputTokens": 1580,
+				"requestHash": "cfdc81123a91ef3f4f29fdfd32c7ce9dcf2eb20fb51747d34a93f4e83fd4755b",
+				"inputCharacters": 6313,
+				"estimatedInputTokens": 1579,
 				"maximumOutputTokens": 800,
-				"estimatedMaximumCostUsd": 0.000399
+				"estimatedMaximumCostUsd": 0.00039895
 			},
 			{
 				"caseId": "personality-mastery",
@@ -1508,7 +1508,7 @@
 			},
 			{
 				"caseId": "witnessed-crescent",
-				"requestHash": "5fc746bfed23c41cfc2091733b26f5e6b6d289a50d5bbac3c0aca5524cade5d3",
+				"requestHash": "de942ab383429b4c09b06636d8f7e7eb335efae8c1bf6f539bbccac5ba2860f2",
 				"inputCharacters": 7700,
 				"estimatedInputTokens": 1925,
 				"maximumOutputTokens": 800,
@@ -1516,7 +1516,7 @@
 			},
 			{
 				"caseId": "secret-discovery",
-				"requestHash": "e2564759dd60bda535ad1083278227e6805112cd7806cf4a9077f4bd4cc160f0",
+				"requestHash": "a308a9f15df95b84c7cecdf807c2ed8b67895c14f09ad2c3ce4839ed9d83bfd7",
 				"inputCharacters": 6196,
 				"estimatedInputTokens": 1549,
 				"maximumOutputTokens": 800,
@@ -1524,5 +1524,5 @@
 			}
 		]
 	},
-	"reportHash": "e0f63690f7e3e87b828b104816ba0392b8b4869f9593a0a94ad9825fae3de041"
+	"reportHash": "eead0793d636757fcb5ee78018f6b804aa29ba27c7d1b7f029dce40e31e5fae7"
 }

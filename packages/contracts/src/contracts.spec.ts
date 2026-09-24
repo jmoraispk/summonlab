@@ -591,31 +591,16 @@ describe('foundation contracts', () => {
 			schemaVersion: 'web-build-budget-v1' as const,
 			budgets: {
 				initialJavaScriptGzipBytes: 700_000,
-				runtimeInspectorLoadedJavaScriptGzipBytes: 700_000,
-				recognitionAuditLoadedJavaScriptGzipBytes: 700_000,
-				settlementRouteLabLoadedJavaScriptGzipBytes: 700_000,
-				missionPackageLabLoadedJavaScriptGzipBytes: 700_000,
-				missionLifecycleLoadedJavaScriptGzipBytes: 700_000,
-				runtimeVisualPayloadBytes: 8_000_000
+				villageRouteLoadedJavaScriptGzipBytes: 700_000
 			},
 			measurements: {
 				initialJavaScriptGzipBytes: 36_788,
-				runtimeInspectorLoadedJavaScriptGzipBytes: 371_947,
-				recognitionAuditLoadedJavaScriptGzipBytes: 48_000,
-				settlementRouteLabLoadedJavaScriptGzipBytes: 52_000,
-				missionPackageLabLoadedJavaScriptGzipBytes: 45_000,
-				missionLifecycleLoadedJavaScriptGzipBytes: 57_000,
-				largestRuntimeLazyChunkGzipBytes: 174_947,
-				runtimeVisualPayloadBytes: 47_758
+				villageRouteLoadedJavaScriptGzipBytes: 70_517,
+				largestRuntimeLazyChunkGzipBytes: 26_828
 			},
 			status: {
 				initialJavaScript: 'within-budget' as const,
-				runtimeInspectorLoadedJavaScript: 'within-budget' as const,
-				recognitionAuditLoadedJavaScript: 'within-budget' as const,
-				settlementRouteLabLoadedJavaScript: 'within-budget' as const,
-				missionPackageLabLoadedJavaScript: 'within-budget' as const,
-				missionLifecycleLoadedJavaScript: 'within-budget' as const,
-				runtimeVisualPayload: 'within-budget' as const
+				villageRouteLoadedJavaScript: 'within-budget' as const
 			}
 		};
 

@@ -65,16 +65,10 @@ const appKey = entryKeyByName('entry/app');
 const layoutKey = await routeNodeKey('src/routes/+layout.svelte');
 const homeKey = await routeNodeKey('src/routes/+page.svelte');
 const villageRouteKey = await routeNodeKey('src/routes/(city)/[mode=city]/+page.svelte');
-const missionPackageKey = await routeNodeKey('src/routes/mission-lab/+page.svelte');
-const missionLifecycleKey = await routeNodeKey('src/routes/mission/[runId]/+page.svelte');
 const initialEntries = collect([startKey, appKey, layoutKey, homeKey], false);
 const shellEntries = collect([startKey, appKey, layoutKey], false);
 const villageRouteEntries = new Set([...shellEntries, ...collect([villageRouteKey], true)]);
-const missionPackageEntries = new Set([...shellEntries, ...collect([missionPackageKey], true)]);
-const missionLifecycleEntries = new Set([...shellEntries, ...collect([missionLifecycleKey], true)]);
-const lazyEntries = [
-	...new Set([...villageRouteEntries, ...missionPackageEntries, ...missionLifecycleEntries])
-].filter((key) => !initialEntries.has(key));
+const lazyEntries = [...villageRouteEntries].filter((key) => !initialEntries.has(key));
 const lazySizes = await Promise.all(
 	lazyEntries.map(async (key) => ({ key, bytes: await gzipBytes(new Set([key])) }))
 );
@@ -83,22 +77,16 @@ const report = {
 	schemaVersion: 'web-build-budget-v1',
 	budgets: {
 		initialJavaScriptGzipBytes: JAVASCRIPT_BUDGET_BYTES,
-		villageRouteLoadedJavaScriptGzipBytes: JAVASCRIPT_BUDGET_BYTES,
-		missionPackageLabLoadedJavaScriptGzipBytes: JAVASCRIPT_BUDGET_BYTES,
-		missionLifecycleLoadedJavaScriptGzipBytes: JAVASCRIPT_BUDGET_BYTES
+		villageRouteLoadedJavaScriptGzipBytes: JAVASCRIPT_BUDGET_BYTES
 	},
 	measurements: {
 		initialJavaScriptGzipBytes: await gzipBytes(initialEntries),
 		villageRouteLoadedJavaScriptGzipBytes: await gzipBytes(villageRouteEntries),
-		missionPackageLabLoadedJavaScriptGzipBytes: await gzipBytes(missionPackageEntries),
-		missionLifecycleLoadedJavaScriptGzipBytes: await gzipBytes(missionLifecycleEntries),
 		largestRuntimeLazyChunkGzipBytes: Math.max(...lazySizes.map(({ bytes }) => bytes))
 	},
 	status: {
 		initialJavaScript: 'within-budget',
-		villageRouteLoadedJavaScript: 'within-budget',
-		missionPackageLabLoadedJavaScript: 'within-budget',
-		missionLifecycleLoadedJavaScript: 'within-budget'
+		villageRouteLoadedJavaScript: 'within-budget'
 	}
 };
 
@@ -110,18 +98,6 @@ if (
 	report.budgets.villageRouteLoadedJavaScriptGzipBytes
 ) {
 	throw new Error('Loaded Village route JavaScript exceeds the 700 KB compressed budget');
-}
-if (
-	report.measurements.missionPackageLabLoadedJavaScriptGzipBytes >
-	report.budgets.missionPackageLabLoadedJavaScriptGzipBytes
-) {
-	throw new Error('Loaded mission package lab JavaScript exceeds the 700 KB compressed budget');
-}
-if (
-	report.measurements.missionLifecycleLoadedJavaScriptGzipBytes >
-	report.budgets.missionLifecycleLoadedJavaScriptGzipBytes
-) {
-	throw new Error('Loaded mission lifecycle JavaScript exceeds the 700 KB compressed budget');
 }
 const reportText = await format(JSON.stringify(report), {
 	parser: 'json',
@@ -141,8 +117,6 @@ if (process.argv.includes('--write')) {
 	const javascriptEvidenceIsCurrent = [
 		'initialJavaScriptGzipBytes',
 		'villageRouteLoadedJavaScriptGzipBytes',
-		'missionPackageLabLoadedJavaScriptGzipBytes',
-		'missionLifecycleLoadedJavaScriptGzipBytes',
 		'largestRuntimeLazyChunkGzipBytes'
 	].every((key) => {
 		const storedBytes = storedReport.measurements?.[key];

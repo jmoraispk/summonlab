@@ -24,9 +24,9 @@
   },
   "measurements": {
     "interactiveShellMs": 779.8,
-    "initialJavaScriptGzipBytes": 49376,
+		"initialJavaScriptGzipBytes": 43318,
     "playerTitleVisualBytes": 51714,
-    "firstSettlementVisualBytes": 296168,
+		"firstSettlementVisualBytes": 447374,
     "activeSceneFramesPerSecond": 60,
     "interfaceResponseP95Ms": 38.7,
     "reconnectMs": 2779.4,

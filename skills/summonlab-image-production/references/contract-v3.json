@@ -59,11 +59,11 @@
 			},
 			{
 				"path": "package.json",
-				"sha256": "5f5c1e6e079173f47586f712adcf059788cdef2bc590e2fc01d5f325667ee030"
+				"sha256": "95a9851f0d9c975e6d7b7b00ef4ac436afe62112aedeb9155940f81a9bd9600e"
 			},
 			{
 				"path": "pnpm-lock.yaml",
-				"sha256": "2f70076d0367960ed139c0dff49b93777009ad7fed2dd13a31ac9d0abaa47d02"
+				"sha256": "efa3c4657561c6660c2bda1d265d2518724a0f68b5877f2a5ded98685adbb014"
 			}
 		],
 		"environment": { "LANG": "C.UTF-8", "LC_ALL": "C.UTF-8", "TZ": "UTC" }

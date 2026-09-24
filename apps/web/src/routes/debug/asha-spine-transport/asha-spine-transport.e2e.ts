@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 
-const transportUrl = '/living-village-lab/asha-spine-transport';
+const transportUrl = '/debug/asha-spine-transport';
 
 test('loads the transport probe at three exploration scales', async ({ page }) => {
 	const errors: string[] = [];
@@ -88,7 +88,7 @@ test('tears down cleanly when leaving the isolated route', async ({ page }) => {
 	page.on('pageerror', (error) => errors.push(error.message));
 	await page.goto(transportUrl);
 	await expect(page.getByTestId('spine-transport-status')).toHaveText('ready');
-	await page.getByRole('link', { name: 'All prototype screens' }).click();
-	await expect(page).toHaveURL(/\/living-village-lab\/?$/u);
+	await page.getByRole('link', { name: 'Back to Summonlab' }).click();
+	await expect(page).toHaveURL(/\/$/u);
 	expect(errors).toEqual([]);
 });

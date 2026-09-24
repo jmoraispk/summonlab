@@ -646,35 +646,20 @@ export const WebBuildBudgetReportSchema = z
 		budgets: z
 			.object({
 				initialJavaScriptGzipBytes: z.number().int().positive(),
-				runtimeInspectorLoadedJavaScriptGzipBytes: z.number().int().positive(),
-				recognitionAuditLoadedJavaScriptGzipBytes: z.number().int().positive(),
-				settlementRouteLabLoadedJavaScriptGzipBytes: z.number().int().positive(),
-				missionPackageLabLoadedJavaScriptGzipBytes: z.number().int().positive(),
-				missionLifecycleLoadedJavaScriptGzipBytes: z.number().int().positive(),
-				runtimeVisualPayloadBytes: z.number().int().positive()
+				villageRouteLoadedJavaScriptGzipBytes: z.number().int().positive()
 			})
 			.strict(),
 		measurements: z
 			.object({
 				initialJavaScriptGzipBytes: z.number().int().nonnegative(),
-				runtimeInspectorLoadedJavaScriptGzipBytes: z.number().int().nonnegative(),
-				recognitionAuditLoadedJavaScriptGzipBytes: z.number().int().nonnegative(),
-				settlementRouteLabLoadedJavaScriptGzipBytes: z.number().int().nonnegative(),
-				missionPackageLabLoadedJavaScriptGzipBytes: z.number().int().nonnegative(),
-				missionLifecycleLoadedJavaScriptGzipBytes: z.number().int().nonnegative(),
-				largestRuntimeLazyChunkGzipBytes: z.number().int().nonnegative(),
-				runtimeVisualPayloadBytes: z.number().int().nonnegative()
+				villageRouteLoadedJavaScriptGzipBytes: z.number().int().nonnegative(),
+				largestRuntimeLazyChunkGzipBytes: z.number().int().nonnegative()
 			})
 			.strict(),
 		status: z
 			.object({
 				initialJavaScript: z.literal('within-budget'),
-				runtimeInspectorLoadedJavaScript: z.literal('within-budget'),
-				recognitionAuditLoadedJavaScript: z.literal('within-budget'),
-				settlementRouteLabLoadedJavaScript: z.literal('within-budget'),
-				missionPackageLabLoadedJavaScript: z.literal('within-budget'),
-				missionLifecycleLoadedJavaScript: z.literal('within-budget'),
-				runtimeVisualPayload: z.literal('within-budget')
+				villageRouteLoadedJavaScript: z.literal('within-budget')
 			})
 			.strict()
 	})
@@ -682,12 +667,7 @@ export const WebBuildBudgetReportSchema = z
 	.superRefine((report, context) => {
 		for (const key of [
 			'initialJavaScriptGzipBytes',
-			'runtimeInspectorLoadedJavaScriptGzipBytes',
-			'recognitionAuditLoadedJavaScriptGzipBytes',
-			'settlementRouteLabLoadedJavaScriptGzipBytes',
-			'missionPackageLabLoadedJavaScriptGzipBytes',
-			'missionLifecycleLoadedJavaScriptGzipBytes',
-			'runtimeVisualPayloadBytes'
+			'villageRouteLoadedJavaScriptGzipBytes'
 		] as const) {
 			if (report.measurements[key] > report.budgets[key]) {
 				context.addIssue({ code: 'custom', message: `Web build budget exceeded: ${key}` });

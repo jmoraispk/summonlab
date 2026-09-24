@@ -13,7 +13,7 @@
 				"packetVersion": "hero-decision-packet-v1",
 				"contextPolicyVersion": "hero-context-v1",
 				"packetId": "42268082-6fb1-46ba-a385-129487eada3a",
-				"packetHash": "98d524810a1d2b9925b7121e438ca197d92b0c4404280760883d69a169a5196b",
+				"packetHash": "cf7f05638efc12fa55276564ee047acbf8de3cc9ae29f5247401f5866c72630d",
 				"runId": "6b71b076-c764-4ff7-a12e-ab5347040017",
 				"heroId": "f3006562-f400-46f5-a100-623cf20063cf",
 				"decisionKind": "settlement-action",
@@ -21,7 +21,7 @@
 				"world": {
 					"stateVersion": 0,
 					"eventCursor": 1,
-					"stateHash": "6edefee5af51657a8655dba5dea1c989f0340cca439e1fc8afef57fa52f985d4",
+					"stateHash": "44f5c284d5b8659c9f8e721b25259eb250796fcdb0df273f3b58d47c566e217f",
 					"contentVersion": "engine-v13"
 				},
 				"identity": {
@@ -2339,7 +2339,7 @@
 				"packetVersion": "hero-decision-packet-v1",
 				"contextPolicyVersion": "hero-context-v1",
 				"packetId": "c6b01163-a0c5-473a-8e11-8cfb05f3a289",
-				"packetHash": "72f1ccf3b603bdffd7a0734eda0937c721a85bc3bea54b7cc6f80e7ad346f4a0",
+				"packetHash": "b1d47a0d41865b62cae6851f856c558dacf2329394f410726e05ce6f0c516463",
 				"runId": "ac82f75d-2cfb-4d67-b744-d555666a87c1",
 				"heroId": "5b3385c3-5a33-4430-ad33-88e95c338756",
 				"decisionKind": "story-expression",
@@ -2347,7 +2347,7 @@
 				"world": {
 					"stateVersion": 1,
 					"eventCursor": 2,
-					"stateHash": "d8b5dcdd6c46c25f9ef3a24ca3da37e02bdb72e3925099bca0a9e780a288de9c",
+					"stateHash": "86283a8189770abf6494f16f380192682307acf4856524ad0cc84626417efe4f",
 					"contentVersion": "engine-v13"
 				},
 				"identity": {
@@ -2685,7 +2685,7 @@
 				"packetVersion": "hero-decision-packet-v1",
 				"contextPolicyVersion": "hero-context-v1",
 				"packetId": "f03362e6-c837-4728-8a4d-3dcbc03e7738",
-				"packetHash": "9142421f74564fd88d9d5582e2448251d42600cef2e3feaa1ed448d3d4a32cca",
+				"packetHash": "2a538d93c9692f441a0ba79cac3613db14db1baefcedf16e85eb9ee92fca8903",
 				"runId": "ac82f75d-2cfb-4d67-b744-d555666a87c1",
 				"heroId": "5b3385c3-5a33-4430-ad33-88e95c338756",
 				"decisionKind": "mission-action",
@@ -2693,7 +2693,7 @@
 				"world": {
 					"stateVersion": 0,
 					"eventCursor": 1,
-					"stateHash": "1c89a2dfa9074b9554e2fbd313233655ed43893d249829f12065cdd1fc45d41f",
+					"stateHash": "753033b8feefc161ebf818f5bde7a3adab493a7d3cab03b516a1722e220c6eab",
 					"contentVersion": "engine-v13"
 				},
 				"identity": {
@@ -2967,5 +2967,5 @@
 			}
 		}
 	],
-	"corpusHash": "6b554a9b0b7afa191cea2cbc209bf648957ec3a8e2871e86cb2f4b2fc8085207"
+	"corpusHash": "a66b20f862dcd0711f84ef43136bf022c4653c5c785a611096b5fc2d459ead93"
 }
