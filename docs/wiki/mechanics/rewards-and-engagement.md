@@ -143,6 +143,15 @@ Minimum v1 reward surfaces:
 - a reviewed daily-return benefit;
 - visible progress toward an occasional special summon if that channel is enabled.
 
+## Future work
+
+- Add daily rewards and clear check-in updates that show current eligibility, claimed benefits, and
+  what becomes available next without relying on hidden or punishing streak pressure.
+- Create a strong sense of fast progress from the start through frequent visible improvements,
+  useful unlocks, and clearly explained next opportunities.
+- Break onboarding into many incremental goals, and use contextual tutorial pointers to direct the
+  player toward the relevant controls, heroes, facilities, and next actions.
+
 ## Open decisions
 
 - Are Advanced summons active in Living Village v1, and what can daily gems buy there?
