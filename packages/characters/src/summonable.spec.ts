@@ -6,6 +6,7 @@ import {
 	generateLegacySummonableCharacterDraft,
 	generateSummonableCharacterDraft,
 	generateSummonableCompany,
+	hashManifest,
 	listSummonableHeroDrafts,
 	parseCapabilityEntropy,
 	recipeFromSeed
@@ -18,6 +19,21 @@ const capabilityScores = (draft: Awaited<ReturnType<typeof generateSummonableCha
 ];
 
 describe('approved summonable hero pool', () => {
+	it('binds all 200 approved identities to their canonical manifest hashes', async () => {
+		const drafts = listSummonableHeroDrafts();
+		expect(drafts).toHaveLength(200);
+		const mismatches = (
+			await Promise.all(
+				drafts.map(async (draft) => ({
+					name: draft.manifest.displayName,
+					stored: draft.manifestHash,
+					actual: await hashManifest(draft.manifest)
+				}))
+			)
+		).filter(({ stored, actual }) => stored !== actual);
+		expect(mismatches).toEqual([]);
+	});
+
 	it('requires private entropy for every new v2 capability profile', async () => {
 		const callWithoutPrivateEntropy = generateSummonableCharacterDraft as unknown as (
 			recipe: ReturnType<typeof recipeFromSeed>
