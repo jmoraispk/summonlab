@@ -12,6 +12,20 @@ Summon heroes, build a home around them, prepare parties, and climb a randomized
 one-hundred-floor tower. Heroes develop through experience, relationships, habits, training, and
 the systems the player creates around them.
 
+## Home
+
+<img src="docs/evidence/direct-village-summoning-house/village-desktop.png" alt="Prototype Village at night, with the Summoning Circle, Residence, Training Grounds, Forge, and Tower Portal connected by paths" width="100%">
+
+*Village screenshot from the prototype.*
+
+The Hearth is where summoned heroes become neighbors. The Residence offers a place to rest and share
+meals. The Training Grounds give practice a rhythm. The Forge turns preparation into something a hero
+can carry. The Summoning Circle brings someone new into a town that already has a history.
+
+The vision is a settlement that keeps living between expeditions: work, friendships, rivalries,
+mentorship, and habits. Your choices shape the conditions around those lives. A building matters
+because it changes what people can do and whom they meet.
+
 ## Heroes
 
 <table>
@@ -41,6 +55,18 @@ These nine portraits include eight from the [200 approved heroes](docs/readme-ga
 and Brinia Ulenai from the historical collection. The [complete visual archive](docs/readme-gallery/hero-archive.md)
 also includes earlier studies and combat prototypes.
 
+### Combat prototypes
+
+<table>
+  <tr>
+    <td align="center" width="33%"><a href="apps/web/static/runtime/combat/realtime-study-v1/hero-saffron-braid-ready-v1.png"><img src="docs/readme-gallery/combat-prototypes/asha.webp" alt="Asha, combat prototype character" width="200"></a><br><strong>Asha</strong></td>
+    <td align="center" width="33%"><a href="apps/web/static/runtime/combat/realtime-study-v1/hero-moss-archer-ready-v1.png"><img src="docs/readme-gallery/combat-prototypes/nessa.webp" alt="Nessa, combat prototype character" width="200"></a><br><strong>Nessa</strong></td>
+    <td align="center" width="33%"><a href="apps/web/static/runtime/combat/realtime-study-v1/hero-iron-guardian-ready-v1.png"><img src="docs/readme-gallery/combat-prototypes/toma.webp" alt="Toma, combat prototype character" width="200"></a><br><strong>Toma</strong></td>
+  </tr>
+</table>
+
+*Early combat prototypes. Select a character to see the full-size original.*
+
 ### Legacy portraits
 
 <table>
@@ -53,20 +79,6 @@ also includes earlier studies and combat prototypes.
 </table>
 
 *Earlier character artwork, selected for the legacy pack. Select a portrait to see the full-size original.*
-
-## Home
-
-<img src="docs/evidence/direct-village-summoning-house/village-desktop.png" alt="Prototype Village at night, with the Summoning Circle, Residence, Training Grounds, Forge, and Tower Portal connected by paths" width="100%">
-
-*Village screenshot from the prototype.*
-
-The Hearth is where those strangers become neighbors. The Residence offers a place to rest and share
-meals. The Training Grounds give practice a rhythm. The Forge turns preparation into something a hero
-can carry. The Summoning Circle brings someone new into a town that already has a history.
-
-The vision is a settlement that keeps living between expeditions: work, friendships, rivalries,
-mentorship, and habits. Your choices shape the conditions around those lives. A building matters
-because it changes what people can do and whom they meet.
 
 ## Enemies
 

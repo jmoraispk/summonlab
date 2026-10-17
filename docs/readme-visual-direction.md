@@ -4,14 +4,16 @@ Review date: 2026-10-17.
 
 ## Accepted direction
 
-- Use exactly five story sections: Heroes, Home, Enemies, Equipment, and Skills.
-- Lead with heroes and village life, then show representative selections from the other catalogs.
+- Use exactly five story sections, in this order: Home, Heroes, Enemies, Equipment, and Skills.
+- Lead with village life, then heroes, followed by representative selections from the other catalogs.
 - Tell the intended game story through existing approved artwork and short narrative passages.
 - Keep the first Village screenshot, including its existing interface overlay. Remove the second
   resident-detail screenshot.
 - Show several enemy families and selected progression stages together in one overview image.
 - Show equipment sets and selected rank/material progressions together in one overview image.
-- Add a small representative skill overview. Remove the combat chibis and expedition aftermath section.
+- Add a small representative skill overview. Keep the expedition aftermath section removed.
+- Include Asha, Nessa, and Toma as a labeled combat prototype row within Heroes, in screenshot
+  order. This accepted revision supersedes the earlier request to omit combat chibis.
 - Omit catalog links from the Enemies and Equipment sections; the images should stand on their own.
 - Keep a small notice at the very end: the website is no longer available and development is paused
   for now. Do not physically archive the GitHub repository.
@@ -20,13 +22,14 @@ Review date: 2026-10-17.
 ## Current proposal
 
 The owner selected Meiis Eshel, Zelyn Eshun, Belia Corin, Peria Halo, Oren Sorin, Lorar Amaren,
-Delyn Nethai, Brinia Ulenai, and Calon Vesha for the opening gallery, in that order.
+Delyn Nethai, Brinia Ulenai, and Calon Vesha for the portrait gallery, in that order.
 Belu Uleno was removed in the latest selection revision. The nine portraits use three rows of three;
 eight are approved roster portraits, and Brinia Ulenai retains her historical candidate status.
-The single Village capture introduces the Hearth. Three compact image galleries follow: enemy
-families, equipment sets, and skills.
+The single Village capture introduces the Hearth before the Heroes section. The gallery of nine portraits,
+combat prototype row, and legacy portrait pack sit together within Heroes. Enemy families,
+equipment sets, and skills follow.
 
-Eight opening hero images come from the approved summonable roster runtime manifest. Brinia Ulenai
+Eight hero portrait images come from the approved summonable roster runtime manifest. Brinia Ulenai
 uses a compact preview of her exact archived source; its immutable source binding and derivative
 hash are recorded in [selected portrait provenance](readme-gallery/selected-heroes/provenance.json).
 The legacy row preserves the four exact portraits subsequently supplied by the owner. Enemy images use
@@ -69,7 +72,7 @@ prototype people. All are available in the [complete archive](readme-gallery/her
 searchable `/wiki/heroes` page, with original status and source bindings preserved.
 
 The owner supplied four exact legacy portraits and requested a side-by-side legacy pack. These
-now appear together within Heroes, beneath the nine selected opening portraits. The first is
+now appear together within Heroes, beneath the nine selected portraits and the combat prototype row. The first is
 Asha: its source SHA-256 exactly matches the existing owned saffron-braid source. The other three
 canonical names remain unverified; descriptive labels do not invent identities. Zuri Pell remains
 rejected as the remembered heroine.
@@ -77,3 +80,11 @@ rejected as the remembered heroine.
 The legacy pack uses compact WebP previews linked to the unchanged full-size originals. Its
 [source and preview hashes](readme-gallery/legacy-pack/provenance.json) preserve attachment order
 and provenance. This is archival presentation and does not change the approved runtime roster.
+
+## Combat prototype selection
+
+The owner requested the three combat prototypes shown in the supplied archive screenshot: Asha,
+Nessa, and Toma. Their transparent runtime study cutouts are presented side-by-side using compact
+WebP previews linked to the exact existing originals. [Source and preview hashes](readme-gallery/combat-prototypes/provenance.json)
+preserve their existing prototype status; this README selection does not promote a summonable
+identity or change gameplay artwork.

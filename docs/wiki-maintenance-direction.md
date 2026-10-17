@@ -17,8 +17,9 @@ Accepted owner feedback, 2026-10-17:
 The nine selected README heroes are Meiis Eshel, Zelyn Eshun, Belia Corin, Peria Halo, Oren Sorin,
 Lorar Amaren, Delyn Nethai, Brinia Ulenai, and Calon Vesha. Brinia retains her historical candidate
 status; the other eight are approved roster portraits. Belu Uleno was removed from the README
-selection. The README retains Heroes, Home, Enemies, Equipment, and Skills, one Village screenshot,
-and the paused-development notice at the bottom.
+selection. The README now orders Home, Heroes, Enemies, Equipment, and Skills, with one Village screenshot
+and the paused-development notice at the bottom. Heroes also includes the owner-selected Asha,
+Nessa, and Toma combat prototype row, followed by the four legacy portraits.
 
 Deliver the wiki and image inventory updates on `codex/public-archive-readme`. Main CI repair
 continues independently. Use approved raster artwork in player-facing character views.
