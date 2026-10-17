@@ -30,3 +30,11 @@ The audit covers the tracked tree and locally reachable Git history; it cannot a
 ## Navigation revision
 
 The owner rejected the three-level index after browsing the preview. Use only peer collapsible headings and their direct page links, with aligned left edges. Preserve readable overview links, search context, active-page expansion, and phone controls. Treat the earlier nested presentation as superseded.
+
+## Delivered structure and evidence
+
+The flat index is implemented with peer collapsible headings and direct page links. Headings and
+page labels share the same left edge; no collapsible heading contains another. The
+[phone screenshot](evidence/public-archive-wiki/flat-index-phone.png) records the reviewed layout.
+The searchable 736-person archive remains at `/wiki/heroes`. Final unit, production browser,
+build-budget, source-hash, and language checks passed; main CI is green at `109688f41`.
