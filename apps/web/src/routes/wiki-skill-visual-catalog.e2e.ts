@@ -16,7 +16,7 @@ test('filters, shares, expands, and clears the complete skill catalog', async ({
 	await page.goto(catalogPath);
 
 	const catalog = page.getByRole('region', { name: 'Skill visual catalog' });
-	await expect(catalog.getByRole('status')).toHaveText('456 skills · Showing 1–120');
+	await expect(catalog.getByRole('status')).toHaveText('457 skills · Showing 1–120');
 	await expect(catalog.locator('.skill-card')).toHaveCount(120);
 	await expect(catalog.locator('.skill-card img')).toHaveCount(120);
 	expect(
@@ -31,7 +31,7 @@ test('filters, shares, expands, and clears the complete skill catalog', async ({
 	await expect(catalog.locator('.skill-card dt').filter({ hasText: /^Rarity$/u })).toHaveCount(0);
 
 	await catalog.getByLabel('Domain').selectOption('Martial');
-	await expect(catalog.getByRole('status')).toHaveText('258 skills · Showing 1–120');
+	await expect(catalog.getByRole('status')).toHaveText('259 skills · Showing 1–120');
 	await familySelect(catalog).selectOption('Blade');
 	await catalog.getByRole('searchbox').fill('parry');
 	await expect(page).toHaveURL(/domain=Martial/u);
@@ -39,14 +39,14 @@ test('filters, shares, expands, and clears the complete skill catalog', async ({
 	await expect(page).toHaveURL(/q=parry/u);
 
 	await catalog.getByRole('button', { name: /clear filters/i }).click();
-	await expect(catalog.getByRole('status')).toHaveText('456 skills · Showing 1–120');
+	await expect(catalog.getByRole('status')).toHaveText('457 skills · Showing 1–120');
 	await expect(catalog.getByRole('searchbox')).toHaveValue('');
 	await expect(catalog.getByLabel('Domain')).toHaveValue('');
 	await expect(page).toHaveURL(catalogPath);
 
 	await catalog.getByRole('button', { name: /load 120 more/i }).click();
 	await expect(catalog.locator('.skill-card')).toHaveCount(240);
-	await expect(catalog.getByRole('status')).toHaveText('456 skills · Showing 1–240');
+	await expect(catalog.getByRole('status')).toHaveText('457 skills · Showing 1–240');
 });
 
 test('hydrates a shared query and keeps dependent filters compatible', async ({ page }) => {
@@ -92,14 +92,14 @@ test('recovers from no results and exposes provenance to pointer and keyboard us
 	const recovery = catalog.locator('.no-results').getByRole('button', { name: /clear filters/i });
 	await recovery.focus();
 	await page.keyboard.press('Enter');
-	await expect(catalog.getByRole('status')).toHaveText('456 skills · Showing 1–120');
+	await expect(catalog.getByRole('status')).toHaveText('457 skills · Showing 1–120');
 
 	await search.focus();
 	await page.keyboard.press('Tab');
 	await expect(catalog.getByLabel('Domain')).toBeFocused();
 	await page.keyboard.press('ArrowDown');
 	await expect(catalog.getByLabel('Domain')).toHaveValue('Martial');
-	await expect(catalog.getByRole('status')).toHaveText('258 skills · Showing 1–120');
+	await expect(catalog.getByRole('status')).toHaveText('259 skills · Showing 1–120');
 	await page.keyboard.press('Tab');
 	await expect(familySelect(catalog)).toBeFocused();
 	await page.keyboard.press('ArrowDown');
@@ -110,7 +110,7 @@ test('recovers from no results and exposes provenance to pointer and keyboard us
 	const keyboardClear = catalog.getByRole('button', { name: /clear filters/i });
 	await expect(keyboardClear).toBeFocused();
 	await page.keyboard.press('Enter');
-	await expect(catalog.getByRole('status')).toHaveText('456 skills · Showing 1–120');
+	await expect(catalog.getByRole('status')).toHaveText('457 skills · Showing 1–120');
 
 	const provenance = catalog.locator('.skill-card').first().getByText('Production provenance');
 	await provenance.focus();
@@ -120,7 +120,7 @@ test('recovers from no results and exposes provenance to pointer and keyboard us
 		''
 	);
 	await expect(catalog.locator('.skill-card').first()).toContainText('martial:blade:swordsmanship');
-	await expect(catalog.locator('.skill-card').first()).toContainText('candidate');
+	await expect(catalog.locator('.skill-card').first()).toContainText('approved');
 	await expect(catalog.locator('.skill-card').first()).toContainText('Source PNG');
 	await expect(catalog.locator('.skill-card').first()).toContainText('Runtime derivative');
 
@@ -137,7 +137,7 @@ test('moves focus without scrolling through every appended result window', async
 	for (const [before, after] of [
 		[120, 240],
 		[240, 360],
-		[360, 456]
+		[360, 457]
 	] as const) {
 		const firstAppendedHeading = catalog.locator('.skill-card h2').nth(before);
 		const loadMore = catalog.getByRole('button', { name: /load \d+ more/i });
@@ -147,7 +147,7 @@ test('moves focus without scrolling through every appended result window', async
 		await expect(catalog.locator('.skill-card')).toHaveCount(after);
 		await expect(firstAppendedHeading).toBeFocused();
 		expect(await page.evaluate(() => window.scrollY)).toBe(scrollBefore);
-		await expect(catalog.getByRole('status')).toHaveText(`456 skills · Showing 1–${after}`);
+		await expect(catalog.getByRole('status')).toHaveText(`457 skills · Showing 1–${after}`);
 	}
 
 	await expect(catalog.getByRole('button', { name: /load \d+ more/i })).toHaveCount(0);
@@ -167,7 +167,7 @@ test('settles production hydration promptly without browser errors', async ({ pa
 	const domContentLoadedMs = Date.now() - startedAt;
 	const ssrHtml = await response?.text();
 	expect(ssrHtml).toMatch(
-		/class="result-count[^>]*" role="status" aria-live="polite"[^>]*>\s*456\s+skills\s+·\s+Showing\s+1–120/u
+		/class="result-count[^>]*" role="status" aria-live="polite"[^>]*>\s*457\s+skills\s+·\s+Showing\s+1–120/u
 	);
 	expect(ssrHtml?.match(/class="skill-card\b/gu)).toHaveLength(120);
 
@@ -213,7 +213,7 @@ test('settles production hydration promptly without browser errors', async ({ pa
 test('renders four non-overlapping desktop cards on a solid image well', async ({ page }) => {
 	await page.setViewportSize({ width: 1440, height: 1000 });
 	await page.goto(catalogPath);
-	await expect(page.getByRole('status')).toHaveText('456 skills · Showing 1–120');
+	await expect(page.getByRole('status')).toHaveText('457 skills · Showing 1–120');
 
 	const cards = page.locator('.skill-card');
 	const boxes = await Promise.all([0, 1, 2, 3, 4].map((index) => cards.nth(index).boundingBox()));
@@ -256,7 +256,7 @@ test('bases catalog density on shell-aware available width', async ({ page }) =>
 	]) {
 		await page.setViewportSize({ width, height: 900 });
 		await page.goto(catalogPath);
-		await expect(page.getByRole('status')).toHaveText('456 skills · Showing 1–120');
+		await expect(page.getByRole('status')).toHaveText('457 skills · Showing 1–120');
 		const cards = page.locator('.skill-card');
 		const boxes = await Promise.all(
 			Array.from({ length: columns + 1 }, (_, index) => cards.nth(index).boundingBox())
@@ -272,7 +272,7 @@ test('bases catalog density on shell-aware available width', async ({ page }) =>
 test('stacks wrapped controls and cards without phone overflow', async ({ page }) => {
 	await page.setViewportSize({ width: 390, height: 844 });
 	await page.goto(catalogPath);
-	await expect(page.getByRole('status')).toHaveText('456 skills · Showing 1–120');
+	await expect(page.getByRole('status')).toHaveText('457 skills · Showing 1–120');
 
 	const controlBoxes = await page.locator('.catalog-controls label').evaluateAll((labels) =>
 		labels.map((label) => {

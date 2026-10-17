@@ -475,7 +475,10 @@
   | --- | --- | --- | --- | --- |
   | Yaso Dreno | `yaso-dreno-summon-v1` | `assets/heroes/experiments/one-star-overnight-200-001/waves/wave-07/candidates/yaso-dreno/summon-v1.png` | `2c757553d089e409e79cdf403b4c170de5e47b84d2f48a25cba57fa8838537e0` | `6cec5db614ec93fab229d7b24bd4d83bb9255c9ea52bcfadd7ca84bcfcfe1db4` |
   | Oren Sorin | `oren-sorin-summon-v1` | `assets/heroes/experiments/one-star-overnight-200-001/waves/wave-05/candidates/oren-sorin/summon-v2.png` | `00b1cee63c25ce4590afea39e5539c4b1aeb4e63a2dc61ace2bdc830c10a9b4b` | `1532dbdc8342ee47453c748bdebfabe684ce3208d30231ba46d189425fb1e249` |
-  | Joror Pelleth | `joror-pelleth-summon-v1` | `assets/heroes/experiments/one-star-overnight-200-001/waves/wave-09/candidates/joror-pelleth/summon-v1.png` | `130360a4f48dff40971d9039a6a813fa549549f03627cdb87422cd400864819f` | `97667fed1d0ec5be0ca326ef9e364a2bd301ff44f1921656c401295f007ca04b` |
+  | Joror Pelleth | `joror-pelleth-summon-v1` | `assets/heroes/experiments/one-star-overnight-200-001/waves/wave-09/candidates/joror-pelleth/summon-v1.png` | `130360a4f48dff40971d9039a6a813fa549549f03627cdb87422cd400864819f` | `06bce9b38e0afc0b05cafca56eef7122796b823ebe97d09b86ea1efee50e8acc` |
+
+  Joror Pelleth's manifest hash reflects the American English spelling migration. The source image
+  hash and approval remain the original values recorded for this cutout plan.
 
   Fail closed if any value differs. Then use one task-specific model directory and do not install rembg
   into the application workspace:

@@ -5,8 +5,8 @@
 		"villageRouteLoadedJavaScriptGzipBytes": 700000
 	},
 	"measurements": {
-		"initialJavaScriptGzipBytes": 43318,
-		"villageRouteLoadedJavaScriptGzipBytes": 365671,
+		"initialJavaScriptGzipBytes": 43393,
+		"villageRouteLoadedJavaScriptGzipBytes": 366741,
 		"largestRuntimeLazyChunkGzipBytes": 171033
 	},
 	"status": {
