@@ -81,6 +81,9 @@ jobs:
         run: pnpm typecheck
 
       - name: Unit tests
+        env:
+          # Database suites run in the dedicated integration stage below.
+          TEST_DATABASE_URL: ''
         run: |
           # Art-production receipts seal this executable's exact path and bytes.
           sealed_node_path=$(node -p "require('./skills/summonlab-image-production/references/contract-v3.json').sealedLauncher.node.path")
