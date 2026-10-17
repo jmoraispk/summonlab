@@ -9,9 +9,9 @@ Review date: 2026-10-17.
 - Tell the intended game story through existing approved artwork and short narrative passages.
 - Keep the first Village screenshot, including its existing interface overlay. Remove the second
   resident-detail screenshot.
-- Show several enemy families and selected progression stages together in one overview image.
-- Show equipment sets and selected rank/material progressions together in one overview image.
-- Add a small representative skill overview. Keep the expedition aftermath section removed.
+- Show several enemy families and selected progression stages in a native README image table.
+- Show complete equipment sets and selected rank/material progressions in a native README image table.
+- Show representative skills in a native README image table. Keep the expedition aftermath section removed.
 - Include Asha, Nessa, and Toma as a labeled combat prototype row within Heroes, in screenshot
   order. This accepted revision supersedes the earlier request to omit combat chibis.
 - Omit catalog links from the Enemies and Equipment sections; the images should stand on their own.
@@ -28,16 +28,17 @@ Belu Uleno and Coryn Pellor were removed from the README selection. Seven portra
 approved roster; Brinia Ulenai retains her historical candidate status.
 The single Village capture introduces the Hearth before the Heroes section. The gallery of eight portraits,
 combat prototype row, and legacy portrait pack sit together within Heroes. Enemy families,
-equipment sets, and skills follow.
+equipment sets, and skills follow in native image tables.
 
 Seven hero portrait images come from the approved summonable roster runtime manifest. Brinia Ulenai
 uses a compact preview of her exact archived source; its immutable source binding and derivative
 hash are recorded in [selected portrait provenance](readme-gallery/selected-heroes/provenance.json).
 The legacy row preserves the four exact portraits subsequently supplied by the owner. Enemy images use
 `approved-review` normal forms. Equipment images use the approved runtime manifest; skill icons use
-the approved skill visual catalog. Gallery source layouts and input hashes are recorded in
-`readme-gallery/gallery.html` and `readme-gallery/provenance.json`. Existing artwork is presented
-without inventing or revising character depictions.
+the approved skill visual catalog. The current README embeds individual raster exports and links each image to its original full-size
+source. Input hashes and table layouts are recorded in `readme-gallery/provenance.json`. The earlier
+JPEG contact sheets and their `readme-gallery/gallery.html` capture source remain historical artifacts.
+Existing artwork is presented without inventing or revising character depictions.
 
 The Village image is a prototype screenshot. The prose distinguishes the intended experience from
 implementation coverage, and local setup instructions are collapsed beneath the five story sections.
@@ -89,3 +90,13 @@ Nessa, and Toma. Their transparent runtime study cutouts are presented side-by-s
 WebP previews linked to the exact existing originals. [Source and preview hashes](readme-gallery/combat-prototypes/provenance.json)
 preserve their existing prototype status; this README selection does not promote a summonable
 identity or change gameplay artwork.
+
+## Native artwork tables
+
+The owner rejected the low-resolution JPEG collages and requested actual images in README tables.
+The README now embeds all 15 previously selected monster forms, 45 equipment pieces across nine
+complete sets, and 16 skill images individually. Text labels remain readable document text, and
+each image links to its exact original PNG. The existing 512-pixel equipment and skill exports and
+up-to-640-pixel monster exports provide sharper previews than images flattened into contact sheets.
+This revision changes only README presentation and its supporting documentation; wiki pages and
+game assets stay unchanged.

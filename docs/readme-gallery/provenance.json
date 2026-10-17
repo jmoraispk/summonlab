@@ -935,5 +935,33 @@
 	],
 	"htmlSourceSha256": "2c0f10ca108fd36e1c04c9e241672b5c612ba979b2402f938501625b677bd780",
 	"captureScript": "docs/readme-gallery/capture.mjs",
-	"captureScriptSha256": "1cb577e0eec9430ebc976660fb09d0b7d102abcf7368ca3ac1e599632129c4b8"
+	"captureScriptSha256": "1cb577e0eec9430ebc976660fb09d0b7d102abcf7368ca3ac1e599632129c4b8",
+	"readmePresentation": {
+		"type": "native-html-tables",
+		"document": "README.md",
+		"description": "The README embeds each existing individual raster export directly and links it to the unchanged full-size source. The earlier JPEG contact sheets below are retained only as historical capture artifacts.",
+		"sections": [
+			{
+				"heading": "Enemies",
+				"inputSection": "enemies",
+				"images": 15,
+				"layout": "Five family rows; three selected progression forms per row.",
+				"imageWidth": 180
+			},
+			{
+				"heading": "Equipment",
+				"inputSection": "equipment",
+				"images": 45,
+				"layout": "Nine complete five-piece sets grouped by armor class; ranks F, D, and S.",
+				"imageWidth": 104
+			},
+			{
+				"heading": "Skills",
+				"inputSection": "skills",
+				"images": 16,
+				"layout": "Four categories with four skills each.",
+				"imageWidth": 160
+			}
+		]
+	}
 }
