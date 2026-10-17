@@ -18,7 +18,7 @@
 	const sectionOrder = [
 		'Systems',
 		'Mechanics',
-		'Creatures',
+		'Monsters',
 		'Art book',
 		'Milestones',
 		'Roadmap',
@@ -84,7 +84,9 @@
 	});
 
 	function matchesQuery(entry: NavigationEntry, term: string): boolean {
-		return `${entry.section} ${entry.group ?? ''} ${entry.title}`.toLowerCase().includes(term);
+		return `${entry.section} ${entry.group ?? ''} ${entry.title} ${entry.searchTerms}`
+			.toLowerCase()
+			.includes(term);
 	}
 
 	function sectionEntries(section: NavigationSection): NavigationEntry[] {
@@ -97,7 +99,12 @@
 	}
 
 	function containsCurrent(entries: NavigationEntry[]): boolean {
-		return entries.some((entry) => page.url.pathname === entry.href);
+		return entries.some(
+			(entry) =>
+				page.url.pathname === entry.href ||
+				(entry.href === '/wiki/creatures/monsters' &&
+					page.url.pathname.startsWith(`${entry.href}/`))
+		);
 	}
 
 	function compareEntries(left: NavigationEntry, right: NavigationEntry): number {

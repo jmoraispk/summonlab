@@ -120,7 +120,7 @@
       "designStatus": "draft",
       "implementationStatus": "partial",
       "visualStatus": "candidate",
-      "spoilerScope": "public"
+      "spoilerScope": "internal"
     },
     {
       "wikiId": "creatures.monster-families",
@@ -130,7 +130,14 @@
       "designStatus": "draft",
       "implementationStatus": "partial",
       "visualStatus": "candidate",
-      "spoilerScope": "discoverable"
+      "spoilerScope": "discoverable",
+      "assets": [
+        {
+          "assetKey": "goblinoids-v1",
+          "file": "assets/enemies/review/goblinoids-v1.webp",
+          "status": "candidate"
+        }
+      ]
     },
     {
       "wikiId": "monster-family.goblinoids",
@@ -140,7 +147,7 @@
       "designStatus": "draft",
       "implementationStatus": "partial",
       "visualStatus": "candidate",
-      "spoilerScope": "discoverable",
+      "spoilerScope": "internal",
       "assets": [
         {
           "assetKey": "goblinoids-v1",
@@ -681,7 +688,7 @@
       "designStatus": "seed",
       "implementationStatus": "none",
       "visualStatus": "brief",
-      "spoilerScope": "discoverable"
+      "spoilerScope": "internal"
     },
     {
       "wikiId": "monster-seed.generator-bestiary-02",
@@ -691,7 +698,7 @@
       "designStatus": "seed",
       "implementationStatus": "none",
       "visualStatus": "brief",
-      "spoilerScope": "discoverable"
+      "spoilerScope": "internal"
     },
     {
       "wikiId": "monster-seed.generator-bestiary-03",
@@ -701,7 +708,7 @@
       "designStatus": "seed",
       "implementationStatus": "none",
       "visualStatus": "brief",
-      "spoilerScope": "discoverable"
+      "spoilerScope": "internal"
     },
     {
       "wikiId": "monster-seed.generator-bestiary-04",
@@ -711,7 +718,7 @@
       "designStatus": "seed",
       "implementationStatus": "none",
       "visualStatus": "brief",
-      "spoilerScope": "discoverable"
+      "spoilerScope": "internal"
     },
     {
       "wikiId": "monster-seed.generator-bestiary-05",
@@ -721,7 +728,7 @@
       "designStatus": "seed",
       "implementationStatus": "none",
       "visualStatus": "brief",
-      "spoilerScope": "discoverable"
+      "spoilerScope": "internal"
     },
     {
       "wikiId": "sources.design-drafts-2026-08-29",

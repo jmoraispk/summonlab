@@ -39,13 +39,14 @@ replay evidence make that claim verifiable rather than aspirational.
 - [Attributes](mechanics/attributes.md) — the shared mechanical vocabulary behind capability.
 - [Affinities](mechanics/affinities/README.md) — hero/monster affinities, attribute expression, and
   typed effects.
-- [Creature taxonomy](creatures/taxonomy.md) — family, race/species, archetype, variant, and faction.
+- [Creature taxonomy](creatures/monster-races/README.md#classification-axes) — family, race/species, archetype, variant, and faction.
 - [Monster database](creatures/monsters/README.md) — 38 families, 190 canonical T1–T5 forms, 950
   Normal/Fire/Earth/Wind/Water coordinates, including the approved fauna runtime set.
 - [Fauna family expansion](creatures/fauna-family-expansion.md) — eight accepted expedition
   families and 40 T1–T5 forms; all 200 images are approved and wired to the wiki runtime, while the
   original 750 images remain untouched.
-- [Monster families](creatures/monster-races/README.md) — the growing textual bestiary.
+- [Monster Races](creatures/monster-races/README.md) — thirty race briefs, visual progressions,
+  taxonomy, and first-wave Goblinoid encounter notes in one page.
 - [Monster visual gallery](art/monster-gallery.md) — current review plates and their actual status.
 - [Skill rarity frames](art/skill-rarity-frames.md) — the accepted F–S material and ornament
   grammar for hexagonal skill displays.

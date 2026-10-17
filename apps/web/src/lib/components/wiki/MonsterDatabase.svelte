@@ -89,7 +89,8 @@
 	{/each}
 
 	<footer class="reference-links">
-		<a href={resolve('/wiki/creatures/taxonomy')}>Creature taxonomy</a>
+		<a href={resolve('/wiki/creatures/monster-races')}>Monster Races</a>
+		<a href={resolve('/wiki/creatures/monster-races#creature-taxonomy')}>Creature taxonomy</a>
 		<a href={resolve('/wiki/creatures/monsters/reconciliation')}>Historical reconciliation</a>
 		<a href={resolve('/wiki/creatures/fauna-family-expansion')}>Fauna expansion</a>
 	</footer>

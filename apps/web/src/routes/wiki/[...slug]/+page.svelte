@@ -302,6 +302,11 @@
 		font-size: 1.16rem;
 		line-height: 1.75;
 	}
+	.article-body :global(h2),
+	.article-body :global(h3) {
+		scroll-margin-top: 6rem;
+	}
+
 	.article-body :global(strong) {
 		color: #f3ead9;
 	}

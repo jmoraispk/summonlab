@@ -54,6 +54,7 @@ export interface WikiNavigationEntry {
 	group: string | null;
 	designStatus: string;
 	pageType: string;
+	searchTerms: string;
 }
 
 export interface WikiPage {
@@ -98,11 +99,26 @@ function routeFromWikiPath(sourcePath: string): string {
 	return `/wiki/${normalized}`;
 }
 
+// Preserve source-bound records while publishing one reader page for their shared content.
+const consolidatedMonsterSources = new Map([
+	['creatures/taxonomy', 'creature-taxonomy'],
+	['creatures/monster-races/goblinoids', 'goblinoid-warbands'],
+	['creatures/monster-races/generator-bestiary-01', '1-goblins'],
+	['creatures/monster-races/generator-bestiary-02', '7-rotwalkers'],
+	['creatures/monster-races/generator-bestiary-03', '13-harpies'],
+	['creatures/monster-races/generator-bestiary-04', '19-slimes'],
+	['creatures/monster-races/generator-bestiary-05', '25-werebeasts']
+]);
+
+export function getWikiConsolidationRedirect(slug: string): string | null {
+	return consolidatedMonsterSources.has(slug) ? '/wiki/creatures/monster-races' : null;
+}
+
 function sectionFromPath(sourcePath: string): string {
 	const first = sourcePath.split('/')[0];
 	const labels: Record<string, string> = {
 		art: 'Art book',
-		creatures: 'Creatures',
+		creatures: 'Monsters',
 		mechanics: 'Mechanics',
 		milestones: 'Milestones',
 		principles: 'Principles',
@@ -116,10 +132,7 @@ function sectionFromPath(sourcePath: string): string {
 
 function navigationGroupFromPath(sourcePath: string): string | null {
 	const segments = sourcePath.split('/');
-	if (segments.length < 3) return null;
-	if (segments[0] === 'creatures' && segments[1] === 'monster-races') {
-		return 'Monster Families and Races';
-	}
+	if (segments.length < 3 || segments[0] === 'creatures') return null;
 	return segments[1].replaceAll('-', ' ').replace(/\b\w/gu, (character) => character.toUpperCase());
 }
 
@@ -160,7 +173,18 @@ function resolveTarget(target: string, sourcePath: string): string {
 	);
 
 	if (repositoryPath.startsWith('docs/wiki/') && repositoryPath.endsWith('.md')) {
-		return `${routeFromWikiPath(repositoryPath.replace('docs/wiki/', ''))}${suffix}`;
+		const route = routeFromWikiPath(repositoryPath.replace('docs/wiki/', ''));
+		const consolidated = getWikiConsolidationRedirect(route.replace('/wiki/', ''));
+		if (consolidated) {
+			let fragment = suffix;
+			if (suffix === '#open-questions') {
+				if (route.endsWith('/goblinoids')) fragment = '#goblinoid-open-questions';
+				if (route.endsWith('/taxonomy')) fragment = '#taxonomy-open-questions';
+			}
+			const defaultFragment = `#${consolidatedMonsterSources.get(route.replace('/wiki/', ''))}`;
+			return `${consolidated}${fragment || defaultFragment}`;
+		}
+		return `${route}${suffix}`;
 	}
 
 	const assetUrl = assetsByPath.get(repositoryPath);
@@ -228,16 +252,48 @@ const pages = catalog.entries
 
 const pagesByHref = new Map(pages.map((page) => [page.href, page]));
 
+function navigationSearchTerms(sourcePath: string): string {
+	if (sourcePath === 'creatures/monster-races/README.md') {
+		const headings = [...(wikiByPath.get(sourcePath) ?? '').matchAll(/^#{2,3}\s+(.+)$/gmu)].map(
+			(match) => match[1]
+		);
+		const absorbedTitles = [...consolidatedMonsterSources.keys()].map(
+			(slug) => pagesByHref.get(`/wiki/${slug}`)?.title ?? ''
+		);
+		return [...headings, ...absorbedTitles].join(' ');
+	}
+	if (sourcePath === 'creatures/monsters/README.md') {
+		return pages
+			.filter(
+				(page) =>
+					page.sourcePath.startsWith('creatures/monsters/') &&
+					['monster-family', 'monster-entry'].includes(page.pageType)
+			)
+			.map((page) => `${page.title} ${path.basename(page.sourcePath, '.md').replaceAll('-', ' ')}`)
+			.join(' ');
+	}
+	return '';
+}
+
 export function getWikiNavigation(): WikiNavigationEntry[] {
 	return pages
-		.filter((page) => page.spoilerScope !== 'internal' && page.href !== '/wiki')
+		.filter(
+			(page) =>
+				page.spoilerScope !== 'internal' &&
+				page.href !== '/wiki' &&
+				!(
+					page.sourcePath.startsWith('creatures/monsters/') &&
+					['monster-family', 'monster-entry'].includes(page.pageType)
+				)
+		)
 		.map(({ title, href, sourcePath, section, designStatus, pageType }) => ({
 			title,
 			href,
 			section,
 			group: navigationGroupFromPath(sourcePath),
 			designStatus,
-			pageType
+			pageType,
+			searchTerms: navigationSearchTerms(sourcePath)
 		}))
 		.sort((left, right) =>
 			left.section === right.section

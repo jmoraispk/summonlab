@@ -3,10 +3,9 @@
 Accepted owner feedback, 2026-10-17:
 
 - Give the wiki a clear desktop index and phone menu with one level of collapsible headings, then pages.
-- Do not nest collapsible sections or indent page groups. Monster Families and Races is a peer heading, not a subgroup inside Creatures.
-- Nest the five monster race volumes and Goblinoids inside **Monster Families and Races**.
-- Replace the reader-facing “Generator bestiary seed” titles with **Monster Races**, qualified by
-  the races covered so the five volumes remain distinguishable.
+- Do not nest collapsible sections or indent page groups.
+- Consolidate the five monster race volumes, Goblinoid notes, and taxonomy into one **Monster Races** page under **Monsters**. Remove the separate Creatures and Monster Families and Races headings.
+- Keep the original source-bound draft files as internal reference records and redirect former reader URLs to the consolidated page. Preserve unique authored content and distinguish source proposals from accepted combat rules.
 - Preserve canonical wiki IDs, source paths, links, authored monster rules, and review status.
 - Search the complete repository and its history for hero identity images, including other game
   prototypes. The 200-person summonable pool is not the complete visual archive.
@@ -39,3 +38,20 @@ page labels share the same left edge; no collapsible heading contains another. T
 [phone screenshot](evidence/public-archive-wiki/flat-index-phone.png) records the reviewed layout.
 The searchable 736-person archive remains at `/wiki/heroes`. Final unit, production browser,
 build-budget, source-hash, and language checks passed; main CI is green at `109688f41`.
+
+## Consolidation revision
+
+The owner accepted the flat index and requested fewer overlapping pages. The single Monster Races page replaces the public race-volume, Goblinoid, and taxonomy pages. All remaining creature pages belong to Monsters. The canonical 38-family/190-form database retains its distinct artwork and combat detail views; source-bound historical drafts remain internal references, not additional public race pages.
+
+The Monsters heading contains four entry points: Monster bestiary, Monster Races, Fauna family
+expansion, and the historical reconciliation. The 38 family and 190 form pages remain available
+through the bestiary instead of appearing as hundreds of global index links. Visiting a family or
+form still opens its Monsters context in the index. This keeps the accepted flat structure compact.
+
+The consolidated page retains all thirty source race entries and their 150 visual progression
+rows, plus the unique taxonomy and Goblinoid encounter evidence. Original source files and wiki IDs
+remain unchanged; their catalog visibility is internal. Former reader URLs permanently redirect
+to the consolidated page, preserving numbered race fragments. Internal source guidance remains a
+separate reference. Current links go directly to the relevant consolidated section.
+
+The [compact Monsters phone index](evidence/public-archive-wiki/consolidated-monsters-phone.png) records the consolidated layout. Search includes absorbed race, taxonomy, Goblinoid, and form names and returns their containing reader page or bestiary. Legacy question-section bookmarks reach a shared questions section with both original lists.
