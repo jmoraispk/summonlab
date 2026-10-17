@@ -114,7 +114,7 @@ describe('mandatory family affinity production dispatch gate', () => {
 			const receipt = JSON.parse(await readFile(join(repositoryRoot, receiptPath), 'utf8'));
 			await expect(
 				validateFamilyAffinityProductionSurface({
-					compatibility: receipt,
+					compatibility: { ...receipt, approvedSkillRoot: trackedSkillRoot },
 					trackedSkillRoot,
 					installedSkillRoot: copiedSkill,
 					repositoryRoot
