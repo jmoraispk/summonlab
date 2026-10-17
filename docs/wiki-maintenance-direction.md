@@ -19,3 +19,9 @@ and Skills, one Village screenshot, and the paused-development notice at the bot
 
 Deliver the wiki and image inventory updates on `codex/public-archive-readme`. Main CI repair
 continues independently. Use approved raster artwork in player-facing character views.
+
+## Complete image archive
+
+The repository audit found 736 named identities: 200 approved heroes, 62 older study and lab identities, 471 additional historical candidates, and three realtime prototype people. Publish them in a searchable, paginated wiki image archive and linked GitHub galleries. Thumbnails derive from the exact recorded raster sources; collection labels preserve original approval boundaries. The active runtime roster stays at 200.
+
+The audit covers the tracked tree and locally reachable Git history; it cannot account for images never committed here or unreachable history. Favorite identification remains open.

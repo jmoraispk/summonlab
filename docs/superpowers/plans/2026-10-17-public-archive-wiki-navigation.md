@@ -44,7 +44,9 @@ Consumes existing `WikiNavigationEntry` fields: title, href, section, group, des
 
 ## Task 3: Complete hero image inventory
 
-Files: `docs/readme-gallery/`, an inventory tool only if needed for reproducibility.
+Files: `docs/readme-gallery/`, a reproducible thumbnail export tool, a dedicated `/wiki/heroes` archive route, static portrait thumbnails, and wiki home/index links.
+
+Audit handoff: 736 named identities (200 approved, 62 older studies, 471 additional candidates, three prototype people). Publish a searchable, paginated archive with source links and explicit collection status. Keep the current runtime roster unchanged. Use small derivatives of the exact existing raster sources; preserve aspect ratios and source hashes. Add paginated GitHub galleries so the pushed branch remains browseable without the preview server. The initial archive opens on all collections; searches cover names and recorded hair/wardrobe descriptions, with a collection filter. Correct the wiki home card that currently describes a six-image historical packet as the 200-hero gallery.
 
 - [ ] Audit tracked image paths, manifests, runtime bindings, older prototypes, and historical identity sources. Exclude animation frames and rarity borders from identity counts.
 - [ ] Record every source collection, identity/variant counts, source commits, approval status, and the limits of any identification.
