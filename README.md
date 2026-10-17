@@ -16,10 +16,18 @@ the systems the player creates around them.
 
 <table>
   <tr>
-    <td align="center" width="25%"><img src="apps/web/static/runtime/summonable-heroes-v1/aear-soro/summon.166b800dc912.webp" alt="Approved full-body summon portrait of Aear Soro" width="200"><br><strong>Aear Soro</strong></td>
-    <td align="center" width="25%"><img src="apps/web/static/runtime/summonable-heroes-v1/senia-lorel/summon.7e03bfdf78e6.webp" alt="Approved full-body summon portrait of Senia Lorel" width="200"><br><strong>Senia Lorel</strong></td>
-    <td align="center" width="25%"><img src="apps/web/static/runtime/summonable-heroes-v1/nelan-mora/summon.58927db381c4.webp" alt="Approved full-body summon portrait of Nelan Mora" width="200"><br><strong>Nelan Mora</strong></td>
-    <td align="center" width="25%"><img src="apps/web/static/runtime/summonable-heroes-v1/ori-loran/summon.36e350872ed6.webp" alt="Approved full-body summon portrait of Ori Loran" width="200"><br><strong>Ori Loran</strong></td>
+    <td align="center" width="25%"><img src="apps/web/static/runtime/summonable-heroes-v1/meiis-eshel/summon.0e91d31d95ff.webp" alt="Approved full-body summon portrait of Meiis Eshel" width="200"><br><strong>Meiis Eshel</strong></td>
+    <td align="center" width="25%"><img src="apps/web/static/runtime/summonable-heroes-v1/zelyn-eshun/summon.0b6e0ec9dfbf.webp" alt="Approved full-body summon portrait of Zelyn Eshun" width="200"><br><strong>Zelyn Eshun</strong></td>
+    <td align="center" width="25%"><img src="apps/web/static/runtime/summonable-heroes-v1/belu-uleno/summon.8e6032f6013d.webp" alt="Approved full-body summon portrait of Belu Uleno" width="200"><br><strong>Belu Uleno</strong></td>
+    <td align="center" width="25%"><img src="apps/web/static/runtime/summonable-heroes-v1/peria-halo/summon.dca538d455d7.webp" alt="Approved full-body summon portrait of Peria Halo" width="200"><br><strong>Peria Halo</strong></td>
+  </tr>
+</table>
+
+<table>
+  <tr>
+    <td align="center" width="33%"><img src="apps/web/static/runtime/summonable-heroes-v1/oren-sorin/summon.6233321998e5.webp" alt="Approved full-body summon portrait of Oren Sorin" width="200"><br><strong>Oren Sorin</strong></td>
+    <td align="center" width="33%"><img src="apps/web/static/runtime/summonable-heroes-v1/lorar-amaren/summon.56966a6cefb7.webp" alt="Approved full-body summon portrait of Lorar Amaren" width="200"><br><strong>Lorar Amaren</strong></td>
+    <td align="center" width="33%"><img src="apps/web/static/runtime/summonable-heroes-v1/delyn-nethai/summon.625bdf7817fa.webp" alt="Approved full-body summon portrait of Delyn Nethai" width="200"><br><strong>Delyn Nethai</strong></td>
   </tr>
 </table>
 
@@ -28,7 +36,7 @@ and where they might find purpose. You are the Master, the nonphysical presence 
 settlement. Heroes interpret your directions and make their own choices.
 
 A quiet craftsperson, a patient teacher, and a capable fighter can each become essential to the town.
-These four portraits are a small selection from the [200 approved heroes](docs/readme-gallery/heroes.md).
+These seven portraits are a small selection from the [200 approved heroes](docs/readme-gallery/heroes.md).
 
 ## Home
 

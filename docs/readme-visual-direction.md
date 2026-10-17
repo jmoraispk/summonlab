@@ -19,8 +19,9 @@ Review date: 2026-10-17.
 
 ## Current proposal
 
-The opening features approved summon portraits of Aear Soro, Senia Lorel, Nelan Mora, and Ori Loran.
-These are provisional selections while the owner identifies the preferred heroine.
+The owner selected Meiis Eshel (20), Zelyn Eshun (66), Belu Uleno (73), Peria Halo (74),
+Oren Sorin (84), Lorar Amaren (85), and Delyn Nethai (186) from the approved hero gallery.
+These seven approved portraits now form the opening gallery.
 The single Village capture introduces the Hearth. Three compact image galleries follow: enemy
 families, equipment sets, and skills.
 
@@ -41,3 +42,7 @@ in [Approved hero gallery](readme-gallery/heroes.md).
 
 Visual review identified Iani Morel, Raar Keshai, Lana Grelor, and Brinis Drenin as possible matches.
 These remain suggestions; the owner has not confirmed an identity.
+
+The owner also confirmed that additional remembered heroes are absent from the 200-person gallery.
+Search the older identity and wiki artwork separately; do not treat legacy or candidate art as part of
+the approved summonable pool without checking its recorded status.
