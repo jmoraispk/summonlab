@@ -1,0 +1,34 @@
+{
+  "schemaVersion": "readme-selected-hero-preview-v1",
+  "selectionDate": "2026-10-17",
+  "displayName": "Brinia Ulenai",
+  "status": "Historical production candidate",
+  "selectionScope": "Owner-selected README presentation; historical source status and the playable roster are unchanged.",
+  "source": {
+    "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
+    "path": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-04/candidates/brinia-ulenai/summon-v1.png",
+    "gitBlob": "f02142504b168c88652b30aec69f61be8da5c7ee",
+    "gitLfs": true,
+    "sha256": "221c9d3e2e98022c33f3097dcecead312b42999d81acbf0ecc585da1f1404a2d",
+    "imageUrl": "https://media.githubusercontent.com/media/jmoraispk/summonlab/ae01c4f5578d260335442534f11fda8b2a0ba615/assets/heroes/experiments/one-star-overnight-200-001/waves/wave-04/candidates/brinia-ulenai/summon-v1.png"
+  },
+  "preview": {
+    "path": "docs/readme-gallery/selected-heroes/brinia-ulenai.webp",
+    "sha256": "ee496cc3caa9805cbb541c2eb696baf7efae4c72fc0aa97c3d789fb605eb2028",
+    "bytes": 35378,
+    "width": 512,
+    "height": 768
+  },
+  "recipe": {
+    "tool": "Pillow",
+    "version": "10.2.0",
+    "maximumDimensions": [
+      512,
+      768
+    ],
+    "resampling": "LANCZOS",
+    "format": "WebP",
+    "quality": 85,
+    "method": 6
+  }
+}

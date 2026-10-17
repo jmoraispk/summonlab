@@ -19,13 +19,16 @@ Review date: 2026-10-17.
 
 ## Current proposal
 
-The owner selected Meiis Eshel (20), Zelyn Eshun (66), Belu Uleno (73), Peria Halo (74),
-Oren Sorin (84), Lorar Amaren (85), and Delyn Nethai (186) from the approved hero gallery.
-These seven approved portraits now form the opening gallery.
+The owner selected Meiis Eshel, Zelyn Eshun, Belia Corin, Peria Halo, Oren Sorin, Lorar Amaren,
+Delyn Nethai, Brinia Ulenai, and Calon Vesha for the opening gallery, in that order.
+Belu Uleno was removed in the latest selection revision. The nine portraits use three rows of three;
+eight are approved roster portraits, and Brinia Ulenai retains her historical candidate status.
 The single Village capture introduces the Hearth. Three compact image galleries follow: enemy
 families, equipment sets, and skills.
 
-The seven opening hero images come from the approved summonable roster runtime manifest.
+Eight opening hero images come from the approved summonable roster runtime manifest. Brinia Ulenai
+uses a compact preview of her exact archived source; its immutable source binding and derivative
+hash are recorded in [selected portrait provenance](readme-gallery/selected-heroes/provenance.json).
 The legacy row preserves the four exact portraits subsequently supplied by the owner. Enemy images use
 `approved-review` normal forms. Equipment images use the approved runtime manifest; skill icons use
 the approved skill visual catalog. Gallery source layouts and input hashes are recorded in
@@ -66,7 +69,7 @@ prototype people. All are available in the [complete archive](readme-gallery/her
 searchable `/wiki/heroes` page, with original status and source bindings preserved.
 
 The owner supplied four exact legacy portraits and requested a side-by-side legacy pack. These
-now appear together within Heroes, beneath the seven selected approved portraits. The first is
+now appear together within Heroes, beneath the nine selected opening portraits. The first is
 Asha: its source SHA-256 exactly matches the existing owned saffron-braid source. The other three
 canonical names remain unverified; descriptive labels do not invent identities. Zuri Pell remains
 rejected as the remembered heroine.
