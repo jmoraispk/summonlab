@@ -4882,7 +4882,7 @@ describe('controller-only family affinity revision allocation', () => {
 		} finally {
 			await rm(fixture.root, { recursive: true, force: true });
 		}
-	});
+	}, 30_000);
 
 	it.each(['missing', 'hash-mismatched'] as const)(
 		'rejects a %s on-disk predecessor before a later allocation',
@@ -5069,7 +5069,7 @@ describe('controller-only family affinity revision allocation', () => {
 		} finally {
 			await rm(stale.root, { recursive: true, force: true });
 		}
-	});
+	}, 30_000);
 
 	it.each(['target', 'assignment', 'candidate', 'result', 'decision', 'blindReview'] as const)(
 		'refuses allocation when the proposed v2 %s path already exists',

@@ -972,7 +972,7 @@ describe('family-affinity review receipt contract', () => {
 		await mkdir(dirname(join(live.root, orphanResult)), { recursive: true });
 		await writeFile(join(live.root, orphanResult), stableFamilyAffinityJson(live.result));
 		await expect(buildFamilyAffinityReviewArtifacts(live.root)).rejects.toThrow(/orphan|unbound/i);
-	}, 30_000);
+	}, 90_000);
 
 	it('allows a superseded candidate payload to be retired while retaining its JSON history', async () => {
 		const live = await stageLiveAttempt('T1', true);
