@@ -213,6 +213,7 @@ test('campaign City uses the shared shell, authoritative actions, and responsive
 		buildingId: 'dormitory',
 		role: 'resident'
 	});
+	await expect(page.getByTestId('resident-quick-view').locator('button:disabled')).toHaveCount(0);
 
 	await page.getByRole('link', { name: 'Missions', exact: true }).click();
 	await expect(page).toHaveURL('/missions');
@@ -226,10 +227,11 @@ test('campaign City uses the shared shell, authoritative actions, and responsive
 
 	await page.getByRole('link', { name: 'Tower', exact: true }).click();
 	await expect(page).toHaveURL('/tower');
-	await expect(page.getByTestId('village-tower')).toContainText(
-		'Expedition controls are not connected yet.'
-	);
-	await expect(page.getByRole('button', { name: /Depart|Repeat|Prepare/u })).toHaveCount(0);
+	await expect(page.getByTestId('tower-screen')).toBeVisible();
+	await expect(page.getByRole('heading', { name: 'Choose a floor' })).toBeVisible();
+	await expect(
+		page.locator('[data-floor="1"]').getByRole('button', { name: 'Explore', exact: true })
+	).toBeEnabled();
 
 	await page.setViewportSize({ width: 390, height: 844 });
 	await page.goto('/village');

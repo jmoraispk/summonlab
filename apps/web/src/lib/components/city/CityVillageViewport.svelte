@@ -11,6 +11,7 @@
 	} from '$lib/city';
 
 	import CityResidentDetails from './CityResidentDetails.svelte';
+	import phoneEnvironment from '../../../../static/runtime/settlements/hearth-01/environment-phone.json';
 
 	const WORLD_WIDTH = 1536;
 	const WORLD_HEIGHT = 1024;
@@ -288,16 +289,24 @@
 				data-testid="city-world"
 				style={`transform:translate(${baseX + offsetX}px, ${baseY + offsetY}px) scale(${sceneScale});--scene-scale:${sceneScale};--hero-counter-scale:${heroCounterScale}`}
 			>
-				<img
-					class="environment"
-					src={view.scene.runtime.publicPath}
-					alt="Hearth Village with a rear Portal, Summoning Circle and Residence to the left, and Training Grounds and Forge to the right"
-					width={view.scene.runtime.width}
-					height={view.scene.runtime.height}
-					draggable="false"
-					fetchpriority="high"
-					decoding="async"
-				/>
+				<picture>
+					<source
+						media="(max-width: 600px)"
+						srcset={phoneEnvironment.sourceContentHash === view.scene.source.contentHash
+							? phoneEnvironment.publicPath
+							: view.scene.runtime.publicPath}
+					/>
+					<img
+						class="environment"
+						src={view.scene.runtime.publicPath}
+						alt="Hearth Village with a rear Portal, Summoning Circle and Residence to the left, and Training Grounds and Forge to the right"
+						width={view.scene.runtime.width}
+						height={view.scene.runtime.height}
+						draggable="false"
+						fetchpriority="high"
+						decoding="async"
+					/>
+				</picture>
 				<div class="scene-grade" aria-hidden="true"></div>
 
 				{#each view.facilities as facility (facility.facilityId)}

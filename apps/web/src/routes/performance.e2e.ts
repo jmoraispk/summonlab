@@ -1,4 +1,3 @@
-import { randomUUID } from 'node:crypto';
 import { writeFile } from 'node:fs/promises';
 
 import { expect, test, type APIRequestContext, type Page } from '@playwright/test';
@@ -30,13 +29,16 @@ const budgets = {
 
 async function prepareArrivedCampaign(request: APIRequestContext): Promise<string> {
 	const creation = await request.post('/api/campaigns', {
-		data: { seed: `fin005-${randomUUID()}`, controlMode: 'wait' }
+		data: {
+			seed: 'village-shell-19aa1947-bcad-4fab-b2f8-e0e34a9b7eb3',
+			controlMode: 'wait'
+		}
 	});
 	expect(creation.ok()).toBe(true);
 	const { campaign } = (await creation.json()) as { campaign: { runId: string } };
-	for (const step of [1, 2]) {
-		const response = await request.post(`/api/campaigns/${campaign.runId}/onboarding`, {
-			data: { step }
+	for (const [index, ordinal] of [1, 2, 3].entries()) {
+		const response = await request.post(`/api/campaigns/${campaign.runId}/summons`, {
+			data: { ordinal, expectedSummonedHeroCount: index }
 		});
 		expect(response.ok()).toBe(true);
 	}
@@ -187,6 +189,8 @@ test('meets the complete target-phone performance budget', async ({ browser, req
 		resource.name.includes('/runtime/settlements/hearth-01/')
 	);
 	expect(settlementResources.some((resource) => resource.name.includes('/hearth-01/'))).toBe(true);
+	expect(settlementResources).toHaveLength(1);
+	expect(settlementResources[0]!.name).toContain('/environment-phone.');
 	expect(
 		playResources.some(
 			(resource) =>

@@ -1,0 +1,16 @@
+{
+	"sourceFile": "assets/settlements/hearth-01/hearth-01-threshold-v3.png",
+	"sourceContentHash": "02bb8a592627641e400d56fd94863aca52f2d45f9244475f9319b343a89fa1d1",
+	"file": "apps/web/static/runtime/settlements/hearth-01/environment-phone.eaed1a7a9076.webp",
+	"publicPath": "/runtime/settlements/hearth-01/environment-phone.eaed1a7a9076.webp",
+	"contentHash": "eaed1a7a9076e3a7fbea3a930ff7959f32437fd17d0fbde3717c7ece988c5a81",
+	"width": 1536,
+	"height": 1024,
+	"bytes": 275294,
+	"encoder": {
+		"quality": 72,
+		"effort": 6,
+		"preset": "picture",
+		"smartSubsample": true
+	}
+}

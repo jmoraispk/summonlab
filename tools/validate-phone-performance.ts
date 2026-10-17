@@ -1,6 +1,10 @@
+import { createHash } from 'node:crypto';
 import { readFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import sharp from 'sharp';
+
+import phoneEnvironment from '../apps/web/static/runtime/settlements/hearth-01/environment-phone.json' with { type: 'json' };
 
 import { loadHearth01Scene } from '../packages/content/src/index.js';
 import {
@@ -35,8 +39,35 @@ if (
 if (report.measurements.playerTitleVisualBytes !== titlePhone.bytes) {
 	throw new Error('Phone performance evidence references a stale title visual');
 }
-if (report.measurements.firstSettlementVisualBytes !== scene.runtime.bytes) {
+if (report.measurements.firstSettlementVisualBytes !== phoneEnvironment.bytes) {
 	throw new Error('Phone performance evidence references a stale first-settlement visual payload');
+}
+
+const phoneBytes = await readFile(resolve(workspaceRoot, phoneEnvironment.file));
+const phoneSourceBytes = await readFile(resolve(workspaceRoot, scene.source.file));
+const phoneMetadata = await sharp(phoneBytes).metadata();
+if (
+	phoneEnvironment.sourceFile !== scene.source.file ||
+	phoneEnvironment.sourceContentHash !== scene.source.contentHash ||
+	createHash('sha256').update(phoneSourceBytes).digest('hex') !== scene.source.contentHash ||
+	phoneEnvironment.file !== `apps/web/static${phoneEnvironment.publicPath}` ||
+	!phoneEnvironment.publicPath.includes(phoneEnvironment.contentHash.slice(0, 12)) ||
+	createHash('sha256').update(phoneBytes).digest('hex') !== phoneEnvironment.contentHash ||
+	phoneBytes.length !== phoneEnvironment.bytes ||
+	phoneBytes.length > 300_000 ||
+	phoneEnvironment.encoder.preset !== 'picture' ||
+	phoneEnvironment.width !== phoneMetadata.width ||
+	phoneEnvironment.height !== phoneMetadata.height ||
+	phoneMetadata.width !== scene.runtime.width ||
+	phoneMetadata.height !== scene.runtime.height
+) {
+	throw new Error('Phone Village artwork does not match its source, runtime binding, or budget');
+}
+const reproducedPhoneBytes = await sharp(phoneSourceBytes)
+	.webp({ ...phoneEnvironment.encoder, preset: 'picture' })
+	.toBuffer();
+if (!reproducedPhoneBytes.equals(phoneBytes)) {
+	throw new Error('Phone Village artwork is not reproducible from its approved source');
 }
 
 process.stdout.write(

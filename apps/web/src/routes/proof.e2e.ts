@@ -31,11 +31,18 @@ test('replays the same seeded-random identity and first choice', async ({ reques
 test('retains witnessed communication, replies, directives, and redacted decisions without the legacy summon page', async ({
 	request
 }) => {
-	const created = await request.post('/api/runs', {
-		data: { recipe: emberRecipe, controlMode: 'wait', directive: '' }
+	const created = await request.post('/api/campaigns', {
+		data: { seed: 'proof-witnessed-communication', controlMode: 'wait' }
 	});
 	expect(created.status()).toBe(201);
-	const { runId } = (await created.json()) as { runId: string };
+	const { campaign } = (await created.json()) as { campaign: { runId: string } };
+	const { runId } = campaign;
+	for (const [index, ordinal] of [1, 2, 3].entries()) {
+		const summoned = await request.post(`/api/campaigns/${runId}/summons`, {
+			data: { ordinal, expectedSummonedHeroCount: index }
+		});
+		expect(summoned.ok()).toBe(true);
+	}
 	const runResponse = await request.get(`/api/runs/${runId}`);
 	expect(runResponse.ok()).toBe(true);
 	const run = (await runResponse.json()) as { manifest: { characterId: string } };
@@ -97,8 +104,9 @@ test('retains witnessed communication, replies, directives, and redacted decisio
 	expect(directiveView.directives.at(-1)?.witnessObservationIds.length).toBeGreaterThan(0);
 
 	const preview = await request.get(`/api/runs/${runId}/decision-preview?heroId=${heroId}`);
-	expect(preview.ok()).toBe(true);
-	const previewView = (await preview.json()) as {
+	const previewBody = await preview.json();
+	expect(preview.status(), JSON.stringify(previewBody)).toBe(200);
+	const previewView = previewBody as {
 		packet: {
 			activeDirectives: ReadonlyArray<{ text: string }>;
 			knowledge: unknown;

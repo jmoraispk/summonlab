@@ -7,14 +7,15 @@ test('forges, equips, and reloads one source-bound Standard item on phone', asyn
 	const creation = await page.request.post('/api/dev/equipment-runs', {
 		data: { seed: 'equipment-forging-phone-e2e' }
 	});
-	expect(creation.ok()).toBe(true);
+	expect(creation.status(), await creation.text()).toBe(201);
 	const fixture = (await creation.json()) as {
 		runId: string;
 		heroId: string;
 	};
 
-	await page.goto('/village', { waitUntil: 'domcontentloaded' });
-	await expect(page).toHaveURL('/village');
+	const workshopPath = `/debug/equipment/${fixture.runId}`;
+	await page.goto(workshopPath, { waitUntil: 'domcontentloaded' });
+	await expect(page).toHaveURL(workshopPath);
 	await expect(page.locator('html')).toHaveAttribute('data-player-ready', 'true');
 	const workshop = page.getByTestId('equipment-workshop');
 	await expect(workshop).toBeVisible();

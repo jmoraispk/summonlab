@@ -2,12 +2,8 @@ import { randomUUID } from 'node:crypto';
 
 import { generateSummonableCompany } from '@summonlab/characters';
 import { getConfig } from '@summonlab/config';
-import {
-	advanceCampaignOnboarding,
-	createProofRun,
-	getEngineSnapshot,
-	registerCampaignRun
-} from '@summonlab/database';
+import { createProofRun, getEngineSnapshot } from '@summonlab/database';
+import { supportsEquipmentApi } from '@summonlab/engine';
 import { json } from '@sveltejs/kit';
 
 import type { RequestHandler } from './$types';
@@ -45,17 +41,8 @@ export const POST: RequestHandler = async ({ request }) => {
 				materialLots: { bronze: 1 }
 			}
 		});
-		await registerCampaignRun(config.databaseUrl, {
-			runId,
-			campaignSeed: seed,
-			controlMode: 'wait',
-			heroes: [draft, second, third]
-		});
-		for (const step of [1, 2, 3]) {
-			await advanceCampaignOnboarding(config.databaseUrl, runId, step);
-		}
 		const snapshot = await getEngineSnapshot(config.databaseUrl, runId);
-		if (!snapshot || snapshot.state.schemaVersion !== 24) {
+		if (!snapshot || !supportsEquipmentApi(snapshot.state)) {
 			throw new Error('The Equipment workshop fixture did not create engine-v24 state.');
 		}
 		return json(

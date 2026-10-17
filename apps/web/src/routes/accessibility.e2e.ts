@@ -18,5 +18,5 @@ test('exposes a keyboard-first title and honors system motion preferences', asyn
 	await page.keyboard.press('Tab');
 	await expect(page.getByRole('link', { name: 'Wiki', exact: true })).toBeFocused();
 	await page.keyboard.press('Tab');
-	await expect(page.getByRole('link', { name: 'Enter Village' })).toBeFocused();
+	await expect(page.getByRole('button', { name: 'Enter Village' })).toBeFocused();
 });
