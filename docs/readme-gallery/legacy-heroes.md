@@ -5,9 +5,8 @@ They include retired Forge and playtest portraits, production candidates, and re
 experiments. Historical approval labels below describe their original use; they do not add these
 heroes to the current playable roster. Select a portrait to open its historical source file.
 
-For the remembered dark-skinned hero with textured hair and an ivory outfit, compare **L01. Zuri
-Pell** and **L02. Oren Dae** first. Zuri also has painted and photographic variants linked below.
-Oren's original brief identifies him as a man; he is included for the hairstyle and outfit match.
+The owner has ruled out Zuri Pell as the missing heroine. Her variants remain indexed as part of
+the archive. Oren Dae's original brief identifies him as a man.
 
 [Current game wiki](../wiki/README.md) · [README proposal](../../README.md) ·
 [Retained Ocher Braid style reference](../../assets/heroes/visuals/style-references/current-hero-rendering/ocher-braid-progression-reference.png)
