@@ -25,7 +25,8 @@ These seven approved portraits now form the opening gallery.
 The single Village capture introduces the Hearth. Three compact image galleries follow: enemy
 families, equipment sets, and skills.
 
-Hero images come from the approved summonable roster runtime manifest. Enemy images use
+The seven opening hero images come from the approved summonable roster runtime manifest.
+The legacy row preserves the four exact portraits subsequently supplied by the owner. Enemy images use
 `approved-review` normal forms. Equipment images use the approved runtime manifest; skill icons use
 the approved skill visual catalog. Gallery source layouts and input hashes are recorded in
 `readme-gallery/gallery.html` and `readme-gallery/provenance.json`. Existing artwork is presented
@@ -34,14 +35,14 @@ without inventing or revising character depictions.
 The Village image is a prototype screenshot. The prose distinguishes the intended experience from
 implementation coverage, and local setup instructions are collapsed beneath the five story sections.
 
-## Open hero selection
+## Hero search history
 
 The owner described a Black woman with tangled hair, possibly wearing white. None of the four
 portraits in the first proposal is the intended heroine. The full 200-portrait gallery is available
 in [Approved hero gallery](readme-gallery/heroes.md).
 
 Visual review identified Iani Morel, Raar Keshai, Lana Grelor, and Brinis Drenin as possible matches.
-These remain suggestions; the owner has not confirmed an identity.
+These were unconfirmed suggestions and were not selected.
 
 The owner also confirmed that additional remembered heroes are absent from the 200-person gallery.
 Search the older identity and wiki artwork separately; do not treat legacy or candidate art as part of
@@ -64,6 +65,12 @@ The full tracked-tree and reachable-history audit found 736 named identities: 20
 prototype people. All are available in the [complete archive](readme-gallery/hero-archive.md) and the
 searchable `/wiki/heroes` page, with original status and source bindings preserved.
 
-The owner reports finding the favorite heroine and plans to send the exact portrait or name. Keep
-the seven selected opening heroes until that identity arrives; do not infer a selection from the
-shortlist. Zuri Pell remains rejected.
+The owner supplied four exact legacy portraits and requested a side-by-side legacy pack. These
+now appear together within Heroes, beneath the seven selected approved portraits. The first is
+Asha: its source SHA-256 exactly matches the existing owned saffron-braid source. The other three
+canonical names remain unverified; descriptive labels do not invent identities. Zuri Pell remains
+rejected as the remembered heroine.
+
+The legacy pack uses compact WebP previews linked to the unchanged full-size originals. Its
+[source and preview hashes](readme-gallery/legacy-pack/provenance.json) preserve attachment order
+and provenance. This is archival presentation and does not change the approved runtime roster.

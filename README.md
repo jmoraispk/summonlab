@@ -40,6 +40,19 @@ These seven portraits are a small selection from the [200 approved heroes](docs/
 The [complete visual archive](docs/readme-gallery/hero-archive.md) also includes historical candidates,
 earlier studies, and combat prototypes.
 
+### Legacy portraits
+
+<table>
+  <tr>
+    <td align="center" width="25%"><a href="assets/heroes/visuals/realtime-combat-study-v1/saffron-braid-source-v1.png"><img src="docs/readme-gallery/legacy-pack/asha.webp" alt="Asha, with a long side braid and gold-and-cream coat" width="200"></a></td>
+    <td align="center" width="25%"><a href="docs/readme-gallery/legacy-pack/bearded-villager.png"><img src="docs/readme-gallery/legacy-pack/bearded-villager.webp" alt="Legacy bearded hero in a green vest and patchwork apron" width="200"></a></td>
+    <td align="center" width="25%"><a href="docs/readme-gallery/legacy-pack/blue-robed-hero.png"><img src="docs/readme-gallery/legacy-pack/blue-robed-hero.webp" alt="Legacy hero in a light robe with blue trim" width="200"></a></td>
+    <td align="center" width="25%"><a href="docs/readme-gallery/legacy-pack/burgundy-coated-hero.png"><img src="docs/readme-gallery/legacy-pack/burgundy-coated-hero.webp" alt="Legacy gray-haired heroine in a burgundy coat" width="200"></a></td>
+  </tr>
+</table>
+
+*Earlier character artwork, selected for the legacy pack. Select a portrait to see the full-size original.*
+
 ## Home
 
 <img src="docs/evidence/direct-village-summoning-house/village-desktop.png" alt="Prototype Village at night, with the Summoning Circle, Residence, Training Grounds, Forge, and Tower Portal connected by paths" width="100%">

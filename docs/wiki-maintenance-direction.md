@@ -12,7 +12,8 @@ Accepted owner feedback, 2026-10-17:
   prototypes. The 200-person summonable pool is not the complete visual archive.
 - Keep approved roster portraits, historical identity anchors, candidate work, style studies, and
   animation frames distinguishable in the image inventory. Count identities separately from variants.
-- Zuri Pell is not the missing heroine. Continue searching older portraits.
+- Zuri Pell was ruled out as the missing heroine. The owner subsequently supplied four legacy
+  portraits; the braided heroine exactly matches Asha’s existing owned source.
 
 The seven selected README heroes remain Meiis Eshel, Zelyn Eshun, Belu Uleno, Peria Halo,
 Oren Sorin, Lorar Amaren, and Delyn Nethai. The README retains Heroes, Home, Enemies, Equipment,
@@ -25,7 +26,7 @@ continues independently. Use approved raster artwork in player-facing character 
 
 The repository audit found 736 named identities: 200 approved heroes, 62 older study and lab identities, 471 additional historical candidates, and three realtime prototype people. Publish them in a searchable, paginated wiki image archive and linked GitHub galleries. Thumbnails derive from the exact recorded raster sources; collection labels preserve original approval boundaries. The active runtime roster stays at 200.
 
-The audit covers the tracked tree and locally reachable Git history; it cannot account for images never committed here or unreachable history. Favorite identification remains open.
+The audit covers the tracked tree and locally reachable Git history; it cannot account for images never committed here or unreachable history. The owner has supplied the four legacy portraits for the README; the first is Asha. The other three canonical names remain unverified.
 
 ## Navigation revision
 

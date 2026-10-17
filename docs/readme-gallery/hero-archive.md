@@ -32,6 +32,10 @@ The original [200-hero gallery](heroes.md) preserves catalog order. The
 links. Zuri Pell remains ruled out as the remembered heroine. Identification and selection for the
 README require the owner's confirmation; appearance in this archive is not approval.
 
+The owner-selected [legacy portrait pack](../../README.md#legacy-portraits) also shows Asha’s
+original portrait and three newly supplied portraits with unverified canonical names. Those three
+are preserved as artwork without inventing additional named identities for this inventory.
+
 ## Sources and reproduction
 
 The durable [inventory](hero-archive.json) records every selected source commit, repository path,
