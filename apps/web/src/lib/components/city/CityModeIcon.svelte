@@ -2,7 +2,7 @@
 	import type { CityMode } from '$lib/city';
 
 	let { mode }: { mode: CityMode } = $props();
-	const source = $derived(`/ui/village-nav/${mode}.png`);
+	const source = $derived(`/ui/village-nav/${mode}.webp`);
 </script>
 
 <!-- Raster artwork derived from the approved five-mode navigation reference. -->
