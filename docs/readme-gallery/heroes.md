@@ -3,6 +3,8 @@
 The 200 approved summon portraits, in catalog order. Select a portrait to view it at full size.
 Tell us the name or number of a hero to choose them for the README.
 
+For earlier designs outside this roster, browse the [62 historical heroes](legacy-heroes.md).
+
 [Game wiki](../wiki/README.md) · [README proposal](../../README.md)
 
 ## Heroes 1–20

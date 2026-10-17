@@ -46,3 +46,13 @@ These remain suggestions; the owner has not confirmed an identity.
 The owner also confirmed that additional remembered heroes are absent from the 200-person gallery.
 Search the older identity and wiki artwork separately; do not treat legacy or candidate art as part of
 the approved summonable pool without checking its recorded status.
+
+The historical search found 62 additional identities from retired Forge, playtest, and selection
+experiments. They are indexed separately in [Historical hero gallery](readme-gallery/legacy-heroes.md),
+with original source commits and review status. Zuri Pell is the strongest white-coat and locs match;
+the owner has not yet confirmed her identity.
+
+The six retained Village cutouts had moved to `docs/evidence/living-village-lab-cutouts-v1`, but their
+Git LFS attribute rule still covered only the retired application path. The proposal adds the new
+path rule. All six existing images now load in the live wiki; their image bytes and approval history
+are unchanged.
