@@ -55,7 +55,7 @@ if (
 	createHash('sha256').update(phoneBytes).digest('hex') !== phoneEnvironment.contentHash ||
 	phoneBytes.length !== phoneEnvironment.bytes ||
 	phoneBytes.length > 300_000 ||
-	phoneEnvironment.encoder.preset !== 'picture' ||
+	phoneMetadata.format !== 'heif' ||
 	phoneEnvironment.width !== phoneMetadata.width ||
 	phoneEnvironment.height !== phoneMetadata.height ||
 	phoneMetadata.width !== scene.runtime.width ||
@@ -64,10 +64,30 @@ if (
 	throw new Error('Phone Village artwork does not match its source, runtime binding, or budget');
 }
 const reproducedPhoneBytes = await sharp(phoneSourceBytes)
-	.webp({ ...phoneEnvironment.encoder, preset: 'picture' })
+	.avif(phoneEnvironment.encoder)
 	.toBuffer();
 if (!reproducedPhoneBytes.equals(phoneBytes)) {
 	throw new Error('Phone Village artwork is not reproducible from its approved source');
+}
+
+let navigationBytes = 0;
+for (const navigation of phoneEnvironment.navigation) {
+	const source = await readFile(resolve(workspaceRoot, navigation.sourceFile));
+	const bytes = await readFile(resolve(workspaceRoot, navigation.file));
+	const reproduced = await sharp(source).webp(phoneEnvironment.navigationEncoder).toBuffer();
+	if (
+		createHash('sha256').update(source).digest('hex') !== navigation.sourceContentHash ||
+		createHash('sha256').update(bytes).digest('hex') !== navigation.contentHash ||
+		navigation.file !== `apps/web/static${navigation.publicPath}` ||
+		bytes.length !== navigation.bytes ||
+		!reproduced.equals(bytes)
+	) {
+		throw new Error('Village navigation artwork is not reproducible from its approved source');
+	}
+	navigationBytes += bytes.length;
+}
+if (navigationBytes > 128 * 1_024) {
+	throw new Error('Village navigation artwork exceeds its payload budget');
 }
 
 process.stdout.write(

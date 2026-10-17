@@ -290,12 +290,13 @@
 				style={`transform:translate(${baseX + offsetX}px, ${baseY + offsetY}px) scale(${sceneScale});--scene-scale:${sceneScale};--hero-counter-scale:${heroCounterScale}`}
 			>
 				<picture>
-					<source
-						media="(max-width: 600px)"
-						srcset={phoneEnvironment.sourceContentHash === view.scene.source.contentHash
-							? phoneEnvironment.publicPath
-							: view.scene.runtime.publicPath}
-					/>
+					{#if phoneEnvironment.sourceContentHash === view.scene.source.contentHash}
+						<source
+							media="(max-width: 600px)"
+							type="image/avif"
+							srcset={phoneEnvironment.publicPath}
+						/>
+					{/if}
 					<img
 						class="environment"
 						src={view.scene.runtime.publicPath}

@@ -1,16 +1,60 @@
 {
 	"sourceFile": "assets/settlements/hearth-01/hearth-01-threshold-v3.png",
 	"sourceContentHash": "02bb8a592627641e400d56fd94863aca52f2d45f9244475f9319b343a89fa1d1",
-	"file": "apps/web/static/runtime/settlements/hearth-01/environment-phone.eaed1a7a9076.webp",
-	"publicPath": "/runtime/settlements/hearth-01/environment-phone.eaed1a7a9076.webp",
-	"contentHash": "eaed1a7a9076e3a7fbea3a930ff7959f32437fd17d0fbde3717c7ece988c5a81",
+	"file": "apps/web/static/runtime/settlements/hearth-01/environment-phone.bc30805627b4.avif",
+	"publicPath": "/runtime/settlements/hearth-01/environment-phone.bc30805627b4.avif",
+	"contentHash": "bc30805627b417102ee2420cba1b1188953bc802e1a8690dbe448ad10683fb0a",
 	"width": 1536,
 	"height": 1024,
-	"bytes": 275294,
+	"bytes": 123051,
 	"encoder": {
-		"quality": 72,
-		"effort": 6,
-		"preset": "picture",
-		"smartSubsample": true
-	}
+		"quality": 40,
+		"effort": 6
+	},
+	"navigationEncoder": {
+		"quality": 85,
+		"effort": 6
+	},
+	"navigation": [
+		{
+			"sourceFile": "apps/web/static/ui/village-nav/tower.png",
+			"sourceContentHash": "f71415545153d25b2b75fcc8cc3e9c251f438f383a0f46900e121f488fb51805",
+			"file": "apps/web/static/ui/village-nav/tower.webp",
+			"publicPath": "/ui/village-nav/tower.webp",
+			"contentHash": "1d870fa96aed75e830dd8c5eb77d0dad37001dd3a4421d86d8f45fd2d601232e",
+			"bytes": 3024
+		},
+		{
+			"sourceFile": "apps/web/static/ui/village-nav/missions.png",
+			"sourceContentHash": "49333669bfa7e9048ffdffd5a3d919ac73f0fc97e51c43d3dc56057723ab4bb8",
+			"file": "apps/web/static/ui/village-nav/missions.webp",
+			"publicPath": "/ui/village-nav/missions.webp",
+			"contentHash": "46e7774d4583fcd84a58abb35862162cea0f767f1c98a7beb8753202bf6daa3c",
+			"bytes": 2350
+		},
+		{
+			"sourceFile": "apps/web/static/ui/village-nav/village.png",
+			"sourceContentHash": "a8e40a15967eb208f6684aeff408d12f2e063d824d1cfb2df1861beeece36ebe",
+			"file": "apps/web/static/ui/village-nav/village.webp",
+			"publicPath": "/ui/village-nav/village.webp",
+			"contentHash": "45dd50f85e942f66d81e3df719c01bc0e056f33aeda8cbae7d671a56de776483",
+			"bytes": 2524
+		},
+		{
+			"sourceFile": "apps/web/static/ui/village-nav/residents.png",
+			"sourceContentHash": "19234ea3a3f98f83750c1878bafb094b0fcf15b7a932e9ff0b843ec53f468bdf",
+			"file": "apps/web/static/ui/village-nav/residents.webp",
+			"publicPath": "/ui/village-nav/residents.webp",
+			"contentHash": "52dbb4f63e622e85668e47c77009c77bf0c0bb57dd6197d3d6d274d4f1d6cd23",
+			"bytes": 2778
+		},
+		{
+			"sourceFile": "apps/web/static/ui/village-nav/inventory.png",
+			"sourceContentHash": "45daa33c1ba90fcd03c5cf2944abbc4ddf903d65be6076d4e7cb480e6e14fb1c",
+			"file": "apps/web/static/ui/village-nav/inventory.webp",
+			"publicPath": "/ui/village-nav/inventory.webp",
+			"contentHash": "0b00d3e2e245f81be44979730ec85123aaf97e8f7ccd1bdbd208b2ec3a69b813",
+			"bytes": 2734
+		}
+	]
 }
