@@ -21,7 +21,7 @@ Review date: 2026-10-17.
 
 ## Current proposal
 
-The owner selected Meiis Eshel, Zelyn Eshun, Belia Corin, Peria Halo, Oren Sorin, Lorar Amaren,
+The owner selected Meiis Eshel, Zelyn Eshun, Belia Corin, Peria Halo, Coryn Pellor, Lorar Amaren,
 Delyn Nethai, Brinia Ulenai, and Calon Vesha for the portrait gallery, in that order.
 Belu Uleno was removed in the latest selection revision. The nine portraits use three rows of three;
 eight are approved roster portraits, and Brinia Ulenai retains her historical candidate status.

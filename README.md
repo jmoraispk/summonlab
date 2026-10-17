@@ -36,7 +36,7 @@ because it changes what people can do and whom they meet.
   </tr>
   <tr>
     <td align="center" width="33%"><img src="apps/web/static/runtime/summonable-heroes-v1/peria-halo/summon.dca538d455d7.webp" alt="Approved full-body summon portrait of Peria Halo" width="200"><br><strong>Peria Halo</strong></td>
-    <td align="center" width="33%"><img src="apps/web/static/runtime/summonable-heroes-v1/oren-sorin/summon.6233321998e5.webp" alt="Approved full-body summon portrait of Oren Sorin" width="200"><br><strong>Oren Sorin</strong></td>
+    <td align="center" width="33%"><img src="apps/web/static/runtime/summonable-heroes-v1/coryn-pellor/summon.2b7917a69383.webp" alt="Approved full-body summon portrait of Coryn Pellor" width="200"><br><strong>Coryn Pellor</strong></td>
     <td align="center" width="33%"><img src="apps/web/static/runtime/summonable-heroes-v1/lorar-amaren/summon.56966a6cefb7.webp" alt="Approved full-body summon portrait of Lorar Amaren" width="200"><br><strong>Lorar Amaren</strong></td>
   </tr>
   <tr>
