@@ -8,18 +8,11 @@
 	let query = $state('');
 	let indexToggle: HTMLButtonElement;
 
-	type NavigationGroup = {
-		name: string;
-		overview: NavigationEntry | undefined;
-		entries: NavigationEntry[];
-	};
-
 	type NavigationEntry = (typeof data.navigation)[number];
 	type NavigationSection = {
 		name: string;
-		direct: NavigationEntry[];
-		groups: NavigationGroup[];
-		allEntries: NavigationEntry[];
+		overview: NavigationEntry | undefined;
+		entries: NavigationEntry[];
 	};
 
 	const sectionOrder = [
@@ -55,12 +48,17 @@
 		}
 
 		return [...buckets.entries()]
-			.map(([name, bucket]): NavigationSection => {
+			.sort(([left], [right]) => {
+				const leftIndex = sectionOrder.indexOf(left);
+				const rightIndex = sectionOrder.indexOf(right);
+				return (leftIndex < 0 ? 99 : leftIndex) - (rightIndex < 0 ? 99 : rightIndex);
+			})
+			.flatMap(([name, bucket]): NavigationSection[] => {
 				const direct = bucket.direct
 					.filter((entry) => matchesQuery(entry, term))
 					.sort(compareEntries);
 				const groups = [...bucket.groups.entries()]
-					.map(([groupName, allEntries]): NavigationGroup => {
+					.map(([groupName, allEntries]): NavigationSection => {
 						const overview = allEntries.find(
 							(candidate) =>
 								allEntries.length > 1 &&
@@ -78,18 +76,10 @@
 							group.entries.length > 0 || (group.overview && matchesQuery(group.overview, term))
 					)
 					.sort((left, right) => left.name.localeCompare(right.name));
-				return {
-					name,
-					direct,
-					groups,
-					allEntries: [...direct, ...groups.flatMap(groupEntries)]
-				};
-			})
-			.filter((section) => section.allEntries.length > 0)
-			.sort((left, right) => {
-				const leftIndex = sectionOrder.indexOf(left.name);
-				const rightIndex = sectionOrder.indexOf(right.name);
-				return (leftIndex < 0 ? 99 : leftIndex) - (rightIndex < 0 ? 99 : rightIndex);
+				return [
+					...(direct.length > 0 ? [{ name, overview: undefined, entries: direct }] : []),
+					...groups
+				];
 			});
 	});
 
@@ -97,8 +87,8 @@
 		return `${entry.section} ${entry.group ?? ''} ${entry.title}`.toLowerCase().includes(term);
 	}
 
-	function groupEntries(group: NavigationGroup): NavigationEntry[] {
-		return group.overview ? [group.overview, ...group.entries] : group.entries;
+	function sectionEntries(section: NavigationSection): NavigationEntry[] {
+		return section.overview ? [section.overview, ...section.entries] : section.entries;
 	}
 
 	function closeIndex(restoreFocus = false): void {
@@ -190,14 +180,23 @@
 				<details
 					class="nav-section"
 					open={query.trim().length > 0 ||
-						containsCurrent(section.allEntries) ||
+						containsCurrent(sectionEntries(section)) ||
 						(section.name === 'Systems' && page.url.pathname === '/wiki')}
 				>
 					<summary>
-						<span>{section.name}</span><i>{section.allEntries.length}</i>
+						<span>{section.name}</span><i>{sectionEntries(section).length}</i>
 					</summary>
 					<div class="section-entries">
-						{#each section.direct as entry (entry.href)}
+						{#if section.overview}
+							<a
+								class="group-overview"
+								href={section.overview.href}
+								aria-label={`${section.name} overview`}
+								aria-current={page.url.pathname === section.overview.href ? 'page' : undefined}
+								onclick={() => closeIndex()}><span>Overview</span></a
+							>
+						{/if}
+						{#each section.entries as entry (entry.href)}
 							<a
 								href={entry.href}
 								aria-current={page.url.pathname === entry.href ? 'page' : undefined}
@@ -205,36 +204,6 @@
 							>
 								<span>{entry.title}</span>
 							</a>
-						{/each}
-						{#each section.groups as group (group.name)}
-							<details
-								class="nav-subsection"
-								open={query.trim().length > 0 || containsCurrent(groupEntries(group))}
-							>
-								<summary><span>{group.name}</span><i>{groupEntries(group).length}</i></summary>
-								<div>
-									{#if group.overview}
-										<a
-											class="group-overview"
-											href={group.overview.href}
-											aria-label={`${group.name} overview`}
-											aria-current={page.url.pathname === group.overview.href ? 'page' : undefined}
-											onclick={() => closeIndex()}>Overview</a
-										>
-									{/if}
-									<div class="group-pages">
-										{#each group.entries as entry (entry.href)}
-											<a
-												href={entry.href}
-												aria-current={page.url.pathname === entry.href ? 'page' : undefined}
-												onclick={() => closeIndex()}
-											>
-												<span>{entry.title}</span>
-											</a>
-										{/each}
-									</div>
-								</div>
-							</details>
 						{/each}
 					</div>
 				</details>
@@ -380,15 +349,13 @@
 		border-bottom: 1px solid var(--line);
 	}
 	.nav-shortcuts a,
-	.section-entries > a,
-	.nav-subsection a {
+	.section-entries > a {
 		display: flex;
 		align-items: center;
 		gap: 0.75rem;
 		justify-content: space-between;
 		min-height: 2.75rem;
 		padding: 0.65rem 0.65rem;
-		border-left: 2px solid transparent;
 		color: rgba(243, 234, 217, 0.78);
 		font-family: Georgia, serif;
 		font-size: 0.96rem;
@@ -407,10 +374,8 @@
 	.nav-shortcuts a:hover,
 	.nav-shortcuts a[aria-current='page'],
 	.section-entries > a:hover,
-	.section-entries > a[aria-current='page'],
-	.nav-subsection a:hover,
-	.nav-subsection a[aria-current='page'] {
-		border-left-color: var(--ember);
+	.section-entries > a[aria-current='page'] {
+		box-shadow: inset 2px 0 var(--ember);
 		color: var(--paper);
 		background: linear-gradient(90deg, rgba(212, 119, 61, 0.09), transparent);
 	}
@@ -440,8 +405,7 @@
 	.nav-section:last-of-type {
 		border-bottom: 1px solid rgba(231, 206, 164, 0.08);
 	}
-	.nav-section summary,
-	.nav-subsection summary {
+	.nav-section summary {
 		position: relative;
 		display: flex;
 		align-items: center;
@@ -452,12 +416,10 @@
 		cursor: pointer;
 		user-select: none;
 	}
-	.nav-section summary::-webkit-details-marker,
-	.nav-subsection summary::-webkit-details-marker {
+	.nav-section summary::-webkit-details-marker {
 		display: none;
 	}
-	.nav-section > summary::after,
-	.nav-subsection > summary::after {
+	.nav-section > summary::after {
 		position: absolute;
 		right: 0.45rem;
 		content: '›';
@@ -466,8 +428,7 @@
 		transform: rotate(0deg);
 		transition: transform 140ms ease;
 	}
-	.nav-section[open] > summary::after,
-	.nav-subsection[open] > summary::after {
+	.nav-section[open] > summary::after {
 		transform: rotate(90deg);
 	}
 	.nav-section > summary span {
@@ -490,35 +451,14 @@
 	.section-entries {
 		padding: 0 0 0.55rem;
 	}
-	.nav-subsection {
-		margin: 0.15rem 0 0.15rem 0.4rem;
-		border-left: 1px solid rgba(231, 206, 164, 0.1);
-	}
-	.nav-subsection > summary {
-		padding-top: 0.55rem;
-		padding-bottom: 0.55rem;
-	}
-	.nav-subsection > summary span {
-		color: var(--paper);
-		font-family: Georgia, serif;
-		font-size: 0.96rem;
-		line-height: 1.4;
-	}
-	.nav-subsection > div {
-		padding: 0 0 0.4rem 0.25rem;
-	}
-	.group-pages {
-		margin-left: 0.65rem;
-		border-left: 1px solid var(--line);
-	}
-	.nav-subsection .group-overview {
+	.section-entries .group-overview {
 		color: var(--muted);
 		font:
 			0.72rem ui-monospace,
 			monospace;
 		letter-spacing: 0.04em;
 	}
-	.nav-subsection a[aria-current='page'] {
+	.section-entries a[aria-current='page'] {
 		background: rgba(212, 119, 61, 0.14);
 	}
 	a:focus-visible,

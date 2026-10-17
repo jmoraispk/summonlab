@@ -8,7 +8,39 @@ for (const width of [1400, 390]) {
 	test.describe(`wiki index at ${width}px`, () => {
 		test.use({ viewport: { width, height: 900 } });
 
-		test('opens the active race hierarchy with an explicit overview and working child links', async ({
+		test('keeps every collapsible heading at the same level', async ({ page }) => {
+			await page.goto(firstVolume, { waitUntil: 'networkidle' });
+			if (width === 390) await page.getByRole('button', { name: 'Open index' }).click();
+			const index = page.getByRole('complementary', { name: 'Wiki index' });
+			await expect(index.locator('details details')).toHaveCount(0);
+			await expect(
+				index.locator('.nav-scroll > details > summary').filter({ hasText: raceGroup })
+			).toHaveCount(1);
+		});
+
+		test('aligns heading and page labels without inset indentation', async ({ page }) => {
+			await page.goto(firstVolume, { waitUntil: 'networkidle' });
+			if (width === 390) await page.getByRole('button', { name: 'Open index' }).click();
+			const index = page.getByRole('complementary', { name: 'Wiki index' });
+			for (const heading of await index.locator('summary').all()) {
+				await heading.evaluate((element) => {
+					if (!element.parentElement?.hasAttribute('open')) (element as HTMLElement).click();
+				});
+			}
+			const labels = await index
+				.locator('details summary > span, details a')
+				.evaluateAll((elements) =>
+					elements.map((element) => {
+						const range = document.createRange();
+						range.selectNodeContents(element);
+						return range.getBoundingClientRect().left;
+					})
+				);
+			expect(labels.length).toBeGreaterThan(10);
+			expect(Math.max(...labels) - Math.min(...labels)).toBeLessThanOrEqual(1);
+		});
+
+		test('opens the active race heading with an explicit overview and working page links', async ({
 			page
 		}) => {
 			await page.goto(firstVolume, { waitUntil: 'networkidle' });
@@ -30,6 +62,7 @@ for (const width of [1400, 390]) {
 			).toHaveAttribute('href', '/wiki/creatures/monster-races');
 			await expect(group.locator('a[aria-current="page"]')).toHaveAttribute('href', firstVolume);
 			await expect(group.getByRole('link', { name: /^Monster Races —/ })).toHaveCount(5);
+			await expect(group.getByRole('link')).toHaveCount(7);
 			for (const volume of ['01', '02', '03', '04', '05']) {
 				await expect(
 					group.locator(`a[href="/wiki/creatures/monster-races/generator-bestiary-${volume}"]`)
