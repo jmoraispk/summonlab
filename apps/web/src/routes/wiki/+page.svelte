@@ -50,12 +50,15 @@
 			<h2 id="collections-title">Read the systems. See the world.</h2>
 		</header>
 		<div class="collection-grid">
-			<a class="collection visual" href={resolve('/wiki/art/living-village-heroes')}>
+			<a class="collection visual" href={resolve('/wiki/heroes')}>
 				<img src={rosterHero} alt="Approved summonable hero Aear Soro" width="1024" height="1536" />
 				<div>
 					<span>Art book · human identity</span>
-					<h3>Living Village visual packet</h3>
-					<p>The approved 200-hero roster and its cross-surface production requirements.</p>
+					<h3>The hero archive</h3>
+					<p>
+						736 named identities: 200 approved heroes, historical candidates, earlier studies, and
+						combat prototypes.
+					</p>
 				</div>
 			</a>
 			<a class="collection" href={resolve('/wiki/mechanics/progression')}>

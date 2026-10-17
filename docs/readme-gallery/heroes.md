@@ -1,5 +1,7 @@
 # Approved hero gallery
 
+Browse all **736 named identities** in the [complete, paginated hero archive](hero-archive.md).
+
 The 200 approved summon portraits, in catalog order. Select a portrait to view it at full size.
 Tell us the name or number of a hero to choose them for the README.
 

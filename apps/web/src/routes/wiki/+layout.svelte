@@ -171,6 +171,13 @@
 				>
 					<span>Archive home</span><i>Start</i>
 				</a>
+				<a
+					href={resolve('/wiki/heroes')}
+					onclick={() => closeIndex()}
+					aria-current={page.url.pathname === '/wiki/heroes' ? 'page' : undefined}
+				>
+					<span>Hero archive</span><i>736 identities</i>
+				</a>
 				<a href={resolve('/wiki/art/living-village-heroes')} onclick={() => closeIndex()}>
 					<span>Living Village</span><i>Visual packet</i>
 				</a>

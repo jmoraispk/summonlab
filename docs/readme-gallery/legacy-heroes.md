@@ -1,5 +1,7 @@
 # Historical hero gallery
 
+Browse all **736 named identities** in the [complete, paginated hero archive](hero-archive.md).
+
 These 62 older identities are separate from the [200 approved summonable heroes](heroes.md).
 They include retired Forge and playtest portraits, production candidates, and rejected rendering
 experiments. Historical approval labels below describe their original use; they do not add these
