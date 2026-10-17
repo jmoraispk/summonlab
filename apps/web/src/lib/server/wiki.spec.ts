@@ -262,6 +262,37 @@ describe('online wiki registry', () => {
 		expect(progression).toMatchObject({ section: 'Mechanics', group: 'Progression' });
 	});
 
+	it.each([
+		['', 'creatures.monster-families'],
+		['goblinoids', 'monster-family.goblinoids'],
+		['generator-bestiary-01', 'monster-seed.generator-bestiary-01'],
+		['generator-bestiary-02', 'monster-seed.generator-bestiary-02'],
+		['generator-bestiary-03', 'monster-seed.generator-bestiary-03'],
+		['generator-bestiary-04', 'monster-seed.generator-bestiary-04'],
+		['generator-bestiary-05', 'monster-seed.generator-bestiary-05']
+	])('groups monster family source route %s without changing its identity', (slug, wikiId) => {
+		const route = `creatures/monster-races${slug ? `/${slug}` : ''}`;
+		const href = `/wiki/${route}`;
+
+		expect(getWikiNavigation().find((entry) => entry.href === href)).toMatchObject({
+			section: 'Creatures',
+			group: 'Monster Families and Races'
+		});
+		expect(getWikiPage(route)).toMatchObject({ wikiId, href });
+	});
+
+	it('keeps the monster source guide linked without promoting its internal visibility', () => {
+		const href = '/wiki/creatures/monster-races/generator-bestiary-guide';
+
+		expect(getWikiPage('creatures/monster-races/generator-bestiary-guide')).toMatchObject({
+			wikiId: 'monster-seed.generator-guidance',
+			href,
+			spoilerScope: 'internal'
+		});
+		expect(getWikiPage('creatures/monster-races')?.html).toContain(`href="${href}"`);
+		expect(getWikiNavigation().some((entry) => entry.href === href)).toBe(false);
+	});
+
 	it('provides title-free body HTML for promoted canonical headings', () => {
 		const skills = getWikiPage('mechanics/skills');
 

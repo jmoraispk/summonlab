@@ -1,4 +1,4 @@
-# Generator bestiary seed — races 13–18
+# Monster Races — Harpies through Arachnids
 
 Wiki ID: `monster-seed.generator-bestiary-03`
 

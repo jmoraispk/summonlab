@@ -1,4 +1,4 @@
-# Monster families and races
+# Monster Families and Races
 
 Wiki ID: `creatures.monster-families`
 
@@ -7,6 +7,8 @@ production database now contains 38 families, exactly five T1–T5 forms per fam
 coordinates per form: Normal, Fire, Earth, Wind, and Water.
 
 Read the [creature taxonomy](../taxonomy.md) before treating every family as a “race.”
+
+The [Goblinoids family page](goblinoids.md) describes the first-wave warbands and their encounter roles.
 
 ## Canonical family/form database
 
@@ -28,16 +30,16 @@ lore.
 All family floor slots remain unassigned. This database does not invent tower order, numerical
 difficulty, region, release grouping, or level scaling.
 
-## Supplied thirty-race generator bestiary
+## Monster race source volumes
 
 The complete visual seed draft is preserved as five six-race volumes:
 
-- [Volume 1 — Goblins through Skeletons](generator-bestiary-01.md)
-- [Volume 2 — Rotwalkers through Celestials](generator-bestiary-02.md)
-- [Volume 3 — Harpies through Arachnids](generator-bestiary-03.md)
-- [Volume 4 — Slimes through Deep Ones](generator-bestiary-04.md)
-- [Volume 5 — Werebeasts through Doppelgangers](generator-bestiary-05.md)
-- [Generator guidance, audit, and conflicts](generator-bestiary-guide.md)
+- [Monster Races — Goblins through Skeletons](generator-bestiary-01.md)
+- [Monster Races — Rotwalkers through Celestials](generator-bestiary-02.md)
+- [Monster Races — Harpies through Arachnids](generator-bestiary-03.md)
+- [Monster Races — Slimes through Deep Ones](generator-bestiary-04.md)
+- [Monster Races — Werebeasts through Doppelgangers](generator-bestiary-05.md)
+- [Monster Races — Source Guide](generator-bestiary-guide.md)
 
 These remain **source briefs**, not accepted species canon or runtime statistics. Their 150 source
 positions have now been consolidated into explicit Initiate, Soldier, Specialist, Champion, and

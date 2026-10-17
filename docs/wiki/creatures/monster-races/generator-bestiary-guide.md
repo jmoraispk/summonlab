@@ -1,4 +1,4 @@
-# Monster Race Bestiary — 30 Races with Visual Progression Tiers
+# Monster Races — Source Guide
 
 Wiki ID: `monster-seed.generator-guidance`
 
@@ -70,13 +70,13 @@ ledger maps each one to a final family form and combat archetype.
 | 29 | Void Horrors | Cosmic wrongness | Subtraction — coherence lost, not gained |
 | 30 | Doppelgangers | Stolen identity | Quality of the disguise and what leaks through |
 
-The complete seed entries are preserved in five volumes:
+The complete source entries are preserved in five volumes:
 
-- [Races 1–6](generator-bestiary-01.md)
-- [Races 7–12](generator-bestiary-02.md)
-- [Races 13–18](generator-bestiary-03.md)
-- [Races 19–24](generator-bestiary-04.md)
-- [Races 25–30](generator-bestiary-05.md)
+- [Monster Races — Goblins through Skeletons](generator-bestiary-01.md)
+- [Monster Races — Rotwalkers through Celestials](generator-bestiary-02.md)
+- [Monster Races — Harpies through Arachnids](generator-bestiary-03.md)
+- [Monster Races — Slimes through Deep Ones](generator-bestiary-04.md)
+- [Monster Races — Werebeasts through Doppelgangers](generator-bestiary-05.md)
 
 ## Prompting cheat sheet
 

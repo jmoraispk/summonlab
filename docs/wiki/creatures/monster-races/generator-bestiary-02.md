@@ -1,4 +1,4 @@
-# Generator bestiary seed — races 7–12
+# Monster Races — Rotwalkers through Celestials
 
 Wiki ID: `monster-seed.generator-bestiary-02`
 

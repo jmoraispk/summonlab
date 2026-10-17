@@ -117,6 +117,9 @@ function sectionFromPath(sourcePath: string): string {
 function navigationGroupFromPath(sourcePath: string): string | null {
 	const segments = sourcePath.split('/');
 	if (segments.length < 3) return null;
+	if (segments[0] === 'creatures' && segments[1] === 'monster-races') {
+		return 'Monster Families and Races';
+	}
 	return segments[1].replaceAll('-', ' ').replace(/\b\w/gu, (character) => character.toUpperCase());
 }
 
