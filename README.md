@@ -30,19 +30,16 @@ because it changes what people can do and whom they meet.
 
 <table>
   <tr>
-    <td align="center" width="33%"><img src="apps/web/static/runtime/summonable-heroes-v1/meiis-eshel/summon.0e91d31d95ff.webp" alt="Approved full-body summon portrait of Meiis Eshel" width="200"><br><strong>Meiis Eshel</strong></td>
-    <td align="center" width="33%"><img src="apps/web/static/runtime/summonable-heroes-v1/zelyn-eshun/summon.0b6e0ec9dfbf.webp" alt="Approved full-body summon portrait of Zelyn Eshun" width="200"><br><strong>Zelyn Eshun</strong></td>
-    <td align="center" width="33%"><img src="apps/web/static/runtime/summonable-heroes-v1/belia-corin/summon.77fc8f45129b.webp" alt="Approved full-body summon portrait of Belia Corin" width="200"><br><strong>Belia Corin</strong></td>
+    <td align="center" width="25%"><img src="apps/web/static/runtime/summonable-heroes-v1/meiis-eshel/summon.0e91d31d95ff.webp" alt="Approved full-body summon portrait of Meiis Eshel" width="200"><br><strong>Meiis Eshel</strong></td>
+    <td align="center" width="25%"><img src="apps/web/static/runtime/summonable-heroes-v1/zelyn-eshun/summon.0b6e0ec9dfbf.webp" alt="Approved full-body summon portrait of Zelyn Eshun" width="200"><br><strong>Zelyn Eshun</strong></td>
+    <td align="center" width="25%"><img src="apps/web/static/runtime/summonable-heroes-v1/belia-corin/summon.77fc8f45129b.webp" alt="Approved full-body summon portrait of Belia Corin" width="200"><br><strong>Belia Corin</strong></td>
+    <td align="center" width="25%"><img src="apps/web/static/runtime/summonable-heroes-v1/calon-vesha/summon.4000c94a5a47.webp" alt="Approved full-body summon portrait of Calon Vesha" width="200"><br><strong>Calon Vesha</strong></td>
   </tr>
   <tr>
-    <td align="center" width="33%"><img src="apps/web/static/runtime/summonable-heroes-v1/peria-halo/summon.dca538d455d7.webp" alt="Approved full-body summon portrait of Peria Halo" width="200"><br><strong>Peria Halo</strong></td>
-    <td align="center" width="33%"><img src="apps/web/static/runtime/summonable-heroes-v1/coryn-pellor/summon.2b7917a69383.webp" alt="Approved full-body summon portrait of Coryn Pellor" width="200"><br><strong>Coryn Pellor</strong></td>
-    <td align="center" width="33%"><img src="apps/web/static/runtime/summonable-heroes-v1/lorar-amaren/summon.56966a6cefb7.webp" alt="Approved full-body summon portrait of Lorar Amaren" width="200"><br><strong>Lorar Amaren</strong></td>
-  </tr>
-  <tr>
-    <td align="center" width="33%"><img src="apps/web/static/runtime/summonable-heroes-v1/delyn-nethai/summon.625bdf7817fa.webp" alt="Approved full-body summon portrait of Delyn Nethai" width="200"><br><strong>Delyn Nethai</strong></td>
-    <td align="center" width="33%"><a href="https://media.githubusercontent.com/media/jmoraispk/summonlab/ae01c4f5578d260335442534f11fda8b2a0ba615/assets/heroes/experiments/one-star-overnight-200-001/waves/wave-04/candidates/brinia-ulenai/summon-v1.png"><img src="docs/readme-gallery/selected-heroes/brinia-ulenai.webp" alt="Historical full-body summon portrait of Brinia Ulenai" width="200"></a><br><strong>Brinia Ulenai</strong></td>
-    <td align="center" width="33%"><img src="apps/web/static/runtime/summonable-heroes-v1/calon-vesha/summon.4000c94a5a47.webp" alt="Approved full-body summon portrait of Calon Vesha" width="200"><br><strong>Calon Vesha</strong></td>
+    <td align="center" width="25%"><img src="apps/web/static/runtime/summonable-heroes-v1/peria-halo/summon.dca538d455d7.webp" alt="Approved full-body summon portrait of Peria Halo" width="200"><br><strong>Peria Halo</strong></td>
+    <td align="center" width="25%"><img src="apps/web/static/runtime/summonable-heroes-v1/lorar-amaren/summon.56966a6cefb7.webp" alt="Approved full-body summon portrait of Lorar Amaren" width="200"><br><strong>Lorar Amaren</strong></td>
+    <td align="center" width="25%"><img src="apps/web/static/runtime/summonable-heroes-v1/delyn-nethai/summon.625bdf7817fa.webp" alt="Approved full-body summon portrait of Delyn Nethai" width="200"><br><strong>Delyn Nethai</strong></td>
+    <td align="center" width="25%"><a href="https://media.githubusercontent.com/media/jmoraispk/summonlab/ae01c4f5578d260335442534f11fda8b2a0ba615/assets/heroes/experiments/one-star-overnight-200-001/waves/wave-04/candidates/brinia-ulenai/summon-v1.png"><img src="docs/readme-gallery/selected-heroes/brinia-ulenai.webp" alt="Historical full-body summon portrait of Brinia Ulenai" width="200"></a><br><strong>Brinia Ulenai</strong></td>
   </tr>
 </table>
 
@@ -51,7 +48,7 @@ and where they might find purpose. You are the Master, the nonphysical presence 
 settlement. Heroes interpret your directions and make their own choices.
 
 A quiet craftsperson, a patient teacher, and a capable fighter can each become essential to the town.
-These nine portraits include eight from the [200 approved heroes](docs/readme-gallery/heroes.md)
+These eight portraits include seven from the [200 approved heroes](docs/readme-gallery/heroes.md)
 and Brinia Ulenai from the historical collection. The [complete visual archive](docs/readme-gallery/hero-archive.md)
 also includes earlier studies and combat prototypes.
 

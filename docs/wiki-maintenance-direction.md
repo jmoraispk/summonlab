@@ -14,10 +14,11 @@ Accepted owner feedback, 2026-10-17:
 - Zuri Pell was ruled out as the missing heroine. The owner subsequently supplied four legacy
   portraits; the braided heroine exactly matches Asha’s existing owned source.
 
-The nine selected README heroes are Meiis Eshel, Zelyn Eshun, Belia Corin, Peria Halo, Coryn Pellor,
-Lorar Amaren, Delyn Nethai, Brinia Ulenai, and Calon Vesha. Brinia retains her historical candidate
-status; the other eight are approved roster portraits. Belu Uleno was removed from the README
-selection. The README now orders Home, Heroes, Enemies, Equipment, and Skills, with one Village screenshot
+The eight selected README heroes use two rows of four: Meiis Eshel, Zelyn Eshun, Belia Corin,
+and Calon Vesha in the men's row, followed by Peria Halo, Lorar Amaren, Delyn Nethai, and Brinia
+Ulenai in the women's row. The arrangement follows their recorded identities. Brinia retains her
+historical candidate status; the other seven are approved roster portraits. Belu Uleno and Coryn
+Pellor were removed from the README selection. The README now orders Home, Heroes, Enemies, Equipment, and Skills, with one Village screenshot
 and the paused-development notice at the bottom. Heroes also includes the owner-selected Asha,
 Nessa, and Toma combat prototype row, followed by the four legacy portraits.
 

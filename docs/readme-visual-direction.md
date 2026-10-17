@@ -21,15 +21,16 @@ Review date: 2026-10-17.
 
 ## Current proposal
 
-The owner selected Meiis Eshel, Zelyn Eshun, Belia Corin, Peria Halo, Coryn Pellor, Lorar Amaren,
-Delyn Nethai, Brinia Ulenai, and Calon Vesha for the portrait gallery, in that order.
-Belu Uleno was removed in the latest selection revision. The nine portraits use three rows of three;
-eight are approved roster portraits, and Brinia Ulenai retains her historical candidate status.
-The single Village capture introduces the Hearth before the Heroes section. The gallery of nine portraits,
+The owner selected eight portraits in two rows of four. The first row contains men: Meiis Eshel,
+Zelyn Eshun, Belia Corin, and Calon Vesha. The second contains women: Peria Halo, Lorar Amaren,
+Delyn Nethai, and Brinia Ulenai. These labels follow the recorded identities in the hero archive.
+Belu Uleno and Coryn Pellor were removed from the README selection. Seven portraits are from the
+approved roster; Brinia Ulenai retains her historical candidate status.
+The single Village capture introduces the Hearth before the Heroes section. The gallery of eight portraits,
 combat prototype row, and legacy portrait pack sit together within Heroes. Enemy families,
 equipment sets, and skills follow.
 
-Eight hero portrait images come from the approved summonable roster runtime manifest. Brinia Ulenai
+Seven hero portrait images come from the approved summonable roster runtime manifest. Brinia Ulenai
 uses a compact preview of her exact archived source; its immutable source binding and derivative
 hash are recorded in [selected portrait provenance](readme-gallery/selected-heroes/provenance.json).
 The legacy row preserves the four exact portraits subsequently supplied by the owner. Enemy images use
@@ -72,7 +73,7 @@ prototype people. All are available in the [complete archive](readme-gallery/her
 searchable `/wiki/heroes` page, with original status and source bindings preserved.
 
 The owner supplied four exact legacy portraits and requested a side-by-side legacy pack. These
-now appear together within Heroes, beneath the nine selected portraits and the combat prototype row. The first is
+now appear together within Heroes, beneath the eight selected portraits and the combat prototype row. The first is
 Asha: its source SHA-256 exactly matches the existing owned saffron-braid source. The other three
 canonical names remain unverified; descriptive labels do not invent identities. Zuri Pell remains
 rejected as the remembered heroine.
