@@ -56,3 +56,14 @@ The six retained Village cutouts had moved to `docs/evidence/living-village-lab-
 Git LFS attribute rule still covered only the retired application path. The proposal adds the new
 path rule. All six existing images now load in the live wiki; their image bytes and approval history
 are unchanged.
+
+## Complete archive follow-through
+
+The full tracked-tree and reachable-history audit found 736 named identities: 200 approved heroes,
+471 additional historical candidates, 62 earlier study and playtest identities, and three combat
+prototype people. All are available in the [complete archive](readme-gallery/hero-archive.md) and the
+searchable `/wiki/heroes` page, with original status and source bindings preserved.
+
+The owner reports finding the favorite heroine and plans to send the exact portrait or name. Keep
+the seven selected opening heroes until that identity arrives; do not infer a selection from the
+shortlist. Zuri Pell remains rejected.

@@ -4,6 +4,10 @@ The tracked tree and locally reachable Git history contain **736 named hero iden
 
 Asha uses the same base visual as the retained Ocher Braid style reference and is counted once as a named prototype person. Toma and Nessa complete the three-person combat prototype collection. No animation frame, enemy, unnamed figure, or rarity border adds another hero.
 
+Source-tree counts below describe the checkout before the new archive thumbnails were added.
+Thumbnails and other runtime derivatives do not create additional named identities. A remote branch
+check found only `main` and `codex/public-archive-readme`; both histories are reachable here.
+
 ## Source collections
 
 The immutable overnight source snapshot is `ae01c4f5578d260335442534f11fda8b2a0ba615`. The earlier Forge/owner gallery snapshot is `cc2a3427f27948f16fcf6b6226e1e069cd47b5af`. Retained current/prototype bindings are recorded against `634d48644ec41d2a8ff3c9f839b8fec2b2830617`.

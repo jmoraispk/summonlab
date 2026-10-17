@@ -53,6 +53,16 @@ Audit handoff: 736 named identities (200 approved, 62 older studies, 471 additio
 - [ ] Publish browsable image references and examine additional candidates for the missing heroine; retain the owner's rejection of Zuri Pell.
 - [ ] Verify image references, run the English audit, and present the inventories for identification.
 
+## Task 4: Flatten the index after owner review
+
+Files: `apps/web/src/routes/wiki/+layout.svelte`, `navigation.e2e.ts`.
+
+- [ ] Replace nested section/group details with peer collapsible headings and direct page links only.
+- [ ] Align heading and page text; remove nested indentation and decorative inset lines.
+- [ ] Make Monster Families and Races a peer heading containing its overview, five race volumes, and Goblinoids.
+- [ ] Preserve search matching children and their overview, direct-route expansion, shortcuts, and phone menu controls.
+- [ ] Add a regression that no details element contains another details element, verify aligned page labels, and rerun desktop/phone browser checks plus typecheck and lint.
+
 ## Delivery
 
 - [ ] Review combined changes; run relevant unit/browser checks, lint, typechecking, formatting, wiki validation, and the English audit.

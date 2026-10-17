@@ -37,6 +37,8 @@ settlement. Heroes interpret your directions and make their own choices.
 
 A quiet craftsperson, a patient teacher, and a capable fighter can each become essential to the town.
 These seven portraits are a small selection from the [200 approved heroes](docs/readme-gallery/heroes.md).
+The [complete visual archive](docs/readme-gallery/hero-archive.md) also includes historical candidates,
+earlier studies, and combat prototypes.
 
 ## Home
 

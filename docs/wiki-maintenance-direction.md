@@ -2,7 +2,8 @@
 
 Accepted owner feedback, 2026-10-17:
 
-- Give the wiki a clearer, readable navigation hierarchy, with a useful desktop index and phone menu.
+- Give the wiki a clear desktop index and phone menu with one level of collapsible headings, then pages.
+- Do not nest collapsible sections or indent page groups. Monster Families and Races is a peer heading, not a subgroup inside Creatures.
 - Nest the five monster race volumes and Goblinoids inside **Monster Families and Races**.
 - Replace the reader-facing “Generator bestiary seed” titles with **Monster Races**, qualified by
   the races covered so the five volumes remain distinguishable.
@@ -25,3 +26,7 @@ continues independently. Use approved raster artwork in player-facing character 
 The repository audit found 736 named identities: 200 approved heroes, 62 older study and lab identities, 471 additional historical candidates, and three realtime prototype people. Publish them in a searchable, paginated wiki image archive and linked GitHub galleries. Thumbnails derive from the exact recorded raster sources; collection labels preserve original approval boundaries. The active runtime roster stays at 200.
 
 The audit covers the tracked tree and locally reachable Git history; it cannot account for images never committed here or unreachable history. Favorite identification remains open.
+
+## Navigation revision
+
+The owner rejected the three-level index after browsing the preview. Use only peer collapsible headings and their direct page links, with aligned left edges. Preserve readable overview links, search context, active-page expansion, and phone controls. Treat the earlier nested presentation as superseded.
