@@ -6,12 +6,19 @@
 	let { data, children } = $props();
 	let navigationOpen = $state(false);
 	let query = $state('');
+	let indexToggle: HTMLButtonElement;
+
+	type NavigationGroup = {
+		name: string;
+		overview: NavigationEntry | undefined;
+		entries: NavigationEntry[];
+	};
 
 	type NavigationEntry = (typeof data.navigation)[number];
 	type NavigationSection = {
 		name: string;
 		direct: NavigationEntry[];
-		groups: { name: string; entries: NavigationEntry[] }[];
+		groups: NavigationGroup[];
 		allEntries: NavigationEntry[];
 	};
 
@@ -33,9 +40,6 @@
 		>();
 
 		for (const entry of data.navigation) {
-			const searchable = `${entry.section} ${entry.group ?? ''} ${entry.title}`.toLowerCase();
-			if (term && !searchable.includes(term)) continue;
-
 			const bucket = buckets.get(entry.section) ?? {
 				direct: [] as NavigationEntry[],
 				groups: new SvelteMap<string, NavigationEntry[]>()
@@ -51,23 +55,56 @@
 		}
 
 		return [...buckets.entries()]
-			.map(([name, bucket]): NavigationSection => ({
-				name,
-				direct: bucket.direct.sort(compareEntries),
-				groups: [...bucket.groups.entries()]
-					.map(([groupName, entries]) => ({
-						name: groupName,
-						entries: entries.sort(compareEntries)
-					}))
-					.sort((left, right) => left.name.localeCompare(right.name)),
-				allEntries: [...bucket.direct, ...bucket.groups.values()].flat()
-			}))
+			.map(([name, bucket]): NavigationSection => {
+				const direct = bucket.direct
+					.filter((entry) => matchesQuery(entry, term))
+					.sort(compareEntries);
+				const groups = [...bucket.groups.entries()]
+					.map(([groupName, allEntries]): NavigationGroup => {
+						const overview = allEntries.find(
+							(candidate) =>
+								allEntries.length > 1 &&
+								allEntries.every(
+									(entry) => entry === candidate || entry.href.startsWith(`${candidate.href}/`)
+								)
+						);
+						const entries = allEntries
+							.filter((entry) => entry !== overview && matchesQuery(entry, term))
+							.sort(compareEntries);
+						return { name: groupName, overview, entries };
+					})
+					.filter(
+						(group) =>
+							group.entries.length > 0 || (group.overview && matchesQuery(group.overview, term))
+					)
+					.sort((left, right) => left.name.localeCompare(right.name));
+				return {
+					name,
+					direct,
+					groups,
+					allEntries: [...direct, ...groups.flatMap(groupEntries)]
+				};
+			})
+			.filter((section) => section.allEntries.length > 0)
 			.sort((left, right) => {
 				const leftIndex = sectionOrder.indexOf(left.name);
 				const rightIndex = sectionOrder.indexOf(right.name);
 				return (leftIndex < 0 ? 99 : leftIndex) - (rightIndex < 0 ? 99 : rightIndex);
 			});
 	});
+
+	function matchesQuery(entry: NavigationEntry, term: string): boolean {
+		return `${entry.section} ${entry.group ?? ''} ${entry.title}`.toLowerCase().includes(term);
+	}
+
+	function groupEntries(group: NavigationGroup): NavigationEntry[] {
+		return group.overview ? [group.overview, ...group.entries] : group.entries;
+	}
+
+	function closeIndex(restoreFocus = false): void {
+		navigationOpen = false;
+		if (restoreFocus) indexToggle?.focus();
+	}
 
 	function containsCurrent(entries: NavigationEntry[]): boolean {
 		return entries.some((entry) => page.url.pathname === entry.href);
@@ -78,6 +115,12 @@
 		return depthDifference || left.title.localeCompare(right.title);
 	}
 </script>
+
+<svelte:window
+	onkeydown={(event) => {
+		if (event.key === 'Escape' && navigationOpen) closeIndex(true);
+	}}
+/>
 
 <svelte:head>
 	<meta
@@ -96,6 +139,8 @@
 			<a href={resolve('/')}>Enter the game</a>
 			<button
 				type="button"
+				bind:this={indexToggle}
+				aria-controls="wiki-index"
 				aria-expanded={navigationOpen}
 				onclick={() => (navigationOpen = !navigationOpen)}
 			>
@@ -104,7 +149,15 @@
 		</nav>
 	</header>
 
-	<aside class:open={navigationOpen} aria-label="Wiki index">
+	{#if navigationOpen}
+		<button
+			class="index-backdrop"
+			type="button"
+			aria-label="Dismiss wiki index"
+			onclick={() => closeIndex(true)}
+		></button>
+	{/if}
+	<aside id="wiki-index" class:open={navigationOpen} aria-label="Wiki index">
 		<label>
 			<span>Search the archive</span>
 			<input bind:value={query} type="search" placeholder="Heroes, skills, monsters…" />
@@ -113,14 +166,15 @@
 			<nav class="nav-shortcuts" aria-label="Wiki shortcuts">
 				<a
 					href={resolve('/wiki')}
+					onclick={() => closeIndex()}
 					aria-current={page.url.pathname === '/wiki' ? 'page' : undefined}
 				>
 					<span>Archive home</span><i>Start</i>
 				</a>
-				<a href={resolve('/wiki/art/living-village-heroes')}>
+				<a href={resolve('/wiki/art/living-village-heroes')} onclick={() => closeIndex()}>
 					<span>Living Village</span><i>Visual packet</i>
 				</a>
-				<a href={resolve('/wiki/creatures/monsters')}>
+				<a href={resolve('/wiki/creatures/monsters')} onclick={() => closeIndex()}>
 					<span>Monster database</span><i>190 forms</i>
 				</a>
 			</nav>
@@ -140,27 +194,38 @@
 							<a
 								href={entry.href}
 								aria-current={page.url.pathname === entry.href ? 'page' : undefined}
-								onclick={() => (navigationOpen = false)}
+								onclick={() => closeIndex()}
 							>
-								<span>{entry.title}</span><i>{entry.designStatus}</i>
+								<span>{entry.title}</span>
 							</a>
 						{/each}
 						{#each section.groups as group (group.name)}
 							<details
 								class="nav-subsection"
-								open={query.trim().length > 0 || containsCurrent(group.entries)}
+								open={query.trim().length > 0 || containsCurrent(groupEntries(group))}
 							>
-								<summary><span>{group.name}</span><i>{group.entries.length}</i></summary>
+								<summary><span>{group.name}</span><i>{groupEntries(group).length}</i></summary>
 								<div>
-									{#each group.entries as entry (entry.href)}
+									{#if group.overview}
 										<a
-											href={entry.href}
-											aria-current={page.url.pathname === entry.href ? 'page' : undefined}
-											onclick={() => (navigationOpen = false)}
+											class="group-overview"
+											href={group.overview.href}
+											aria-label={`${group.name} overview`}
+											aria-current={page.url.pathname === group.overview.href ? 'page' : undefined}
+											onclick={() => closeIndex()}>Overview</a
 										>
-											<span>{entry.title}</span><i>{entry.designStatus}</i>
-										</a>
-									{/each}
+									{/if}
+									<div class="group-pages">
+										{#each group.entries as entry (entry.href)}
+											<a
+												href={entry.href}
+												aria-current={page.url.pathname === entry.href ? 'page' : undefined}
+												onclick={() => closeIndex()}
+											>
+												<span>{entry.title}</span>
+											</a>
+										{/each}
+									</div>
 								</div>
 							</details>
 						{/each}
@@ -263,8 +328,10 @@
 		bottom: 0;
 		left: 0;
 		z-index: 20;
+		display: flex;
+		flex-direction: column;
 		width: 22rem;
-		padding: 1.25rem 0 2rem;
+		padding: 1.25rem 0 0;
 		border-right: 1px solid var(--line);
 		background: #0c0b08;
 	}
@@ -292,8 +359,10 @@
 		font-size: 0.9rem;
 	}
 	.nav-scroll {
-		height: calc(100% - 4.5rem);
+		min-height: 0;
+		flex: 1;
 		overflow: auto;
+		overscroll-behavior: contain;
 		padding: 0 0.7rem 3rem;
 	}
 	.nav-shortcuts {
@@ -307,15 +376,17 @@
 	.section-entries > a,
 	.nav-subsection a {
 		display: flex;
-		align-items: baseline;
+		align-items: center;
 		gap: 0.75rem;
 		justify-content: space-between;
-		padding: 0.55rem 0.45rem;
+		min-height: 2.75rem;
+		padding: 0.65rem 0.65rem;
 		border-left: 2px solid transparent;
-		color: rgba(243, 234, 217, 0.68);
+		color: rgba(243, 234, 217, 0.78);
 		font-family: Georgia, serif;
-		font-size: 0.9rem;
-		line-height: 1.25;
+		font-size: 0.96rem;
+		line-height: 1.45;
+		overflow-wrap: anywhere;
 		text-decoration: none;
 	}
 	.nav-shortcuts a {
@@ -336,9 +407,7 @@
 		color: var(--paper);
 		background: linear-gradient(90deg, rgba(212, 119, 61, 0.09), transparent);
 	}
-	.nav-shortcuts a i,
-	.section-entries > a i,
-	.nav-subsection a i {
+	.nav-shortcuts a i {
 		flex: 0 0 auto;
 		color: rgba(243, 234, 217, 0.28);
 		font:
@@ -370,7 +439,8 @@
 		display: flex;
 		align-items: center;
 		gap: 0.65rem;
-		padding: 0.75rem 1.5rem 0.75rem 0.45rem;
+		min-height: 2.75rem;
+		padding: 0.8rem 1.6rem 0.8rem 0.65rem;
 		list-style: none;
 		cursor: pointer;
 		user-select: none;
@@ -422,18 +492,37 @@
 		padding-bottom: 0.55rem;
 	}
 	.nav-subsection > summary span {
-		color: rgba(243, 234, 217, 0.52);
-		font:
-			0.65rem ui-monospace,
-			monospace;
-		letter-spacing: 0.09em;
-		text-transform: uppercase;
+		color: var(--paper);
+		font-family: Georgia, serif;
+		font-size: 0.96rem;
+		line-height: 1.4;
 	}
 	.nav-subsection > div {
 		padding: 0 0 0.4rem 0.25rem;
 	}
-	.nav-subsection a {
-		font-size: 0.84rem;
+	.group-pages {
+		margin-left: 0.65rem;
+		border-left: 1px solid var(--line);
+	}
+	.nav-subsection .group-overview {
+		color: var(--muted);
+		font:
+			0.72rem ui-monospace,
+			monospace;
+		letter-spacing: 0.04em;
+	}
+	.nav-subsection a[aria-current='page'] {
+		background: rgba(212, 119, 61, 0.14);
+	}
+	a:focus-visible,
+	button:focus-visible,
+	input:focus-visible,
+	summary:focus-visible {
+		outline: 2px solid var(--ember);
+		outline-offset: -2px;
+	}
+	.index-backdrop {
+		display: none;
 	}
 	.nav-empty {
 		margin: 1.2rem 0.45rem;
@@ -459,13 +548,20 @@
 			display: block;
 		}
 		aside {
-			width: min(22rem, 88vw);
-			transform: translateX(-102%);
-			transition: transform 180ms ease;
+			display: none;
+			width: min(22rem, 90vw);
 			box-shadow: 1rem 0 4rem rgba(0, 0, 0, 0.55);
 		}
 		aside.open {
-			transform: translateX(0);
+			display: flex;
+		}
+		.index-backdrop {
+			position: fixed;
+			inset: 4.5rem 0 0;
+			z-index: 19;
+			display: block;
+			border: 0;
+			background: rgba(0, 0, 0, 0.65);
 		}
 		.wiki-page {
 			padding-left: 0;
