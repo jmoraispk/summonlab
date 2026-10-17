@@ -11,11 +11,34 @@
 Run `pnpm validate:playtest-release` at any time. A held report is valid evidence: it explains why
 packaging is forbidden. It does not mean FIN-008 is complete.
 
-## Package rehearsal
+## Current production build rehearsal
 
-Run `pnpm rehearse:playtest-package` before the owner playthrough is complete. Rehearsal uses the
-current held report only as an assembly input and is structurally separate from release
-authorization:
+After `pnpm build`, run `pnpm exec tsx tools/rehearse-production-build.ts`. CI runs this check against
+the generated Vercel Build Output API version 3 artifact. It discovers the catchall function and its
+configured Fetch handler, copies the traced function outside the repository while preserving its
+internal dependency symlinks, and imports that copy in a separate production process.
+
+The rehearsal creates a temporary PostgreSQL database, applies the built database migrations, and
+requires the isolated web function and built worker to report the tested commit and an available
+database. It checks the current player title, verifies that its referenced immutable JavaScript and
+artwork exist inside the static output, and requires the development release desk to return 404.
+The worker and migrations run from temporary copies of the compiled workspace packages, with
+temporary package exports pointing to those bundles and third-party dependencies linked from the
+installed workspace. The web function uses only its own isolated traced dependency tree.
+It removes the temporary function copy and database and stops the worker after success or failure.
+Its `production-build-rehearsal-report-v1` reports these artifact checks only; it does not verify a
+private archive, production dependency installation, archive determinism, or release authorization.
+
+## Historical Node package rehearsal
+
+The Node archive procedure below requires an adapter-node build at `apps/web/build`. The current
+Vercel adapter does not produce that directory, so `pnpm rehearse:playtest-package` and the private
+archive packaging procedure are unsupported for the current production adapter. Their tooling,
+tests, and human release gates are retained; a passing production build rehearsal does not qualify
+or restore that archive workflow.
+
+With an adapter-node build, `pnpm rehearse:playtest-package` uses the held report only as an assembly
+input and is structurally separate from release authorization:
 
 - its receipt mode is `rehearsal`, never `release`;
 - its archive is named `summonlab-fin008-package-rehearsal.tar.gz`, while the receipt schema reserves
@@ -29,9 +52,9 @@ extracts it, performs a frozen production-only install, migrates a newly created
 the extracted web and worker processes, and requires both `/health` responses to report the tested
 commit and an available database. It also renders the extracted player title and requires the
 development release desk to return 404. A dirty local run says `sourceTreeStatus: dirty` and
-`commitBound: false`; CI rehearses a clean checked-out commit after the production build.
+`commitBound: false`. Current CI uses the Vercel production build rehearsal described above.
 
-## Packaging procedure
+## Historical Node packaging procedure
 
 After an owner retest reaches every checkpoint, Codex updates the checked owner evidence, fixes and
 verifies every P0/P1 finding, and commits those inputs:
