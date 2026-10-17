@@ -46,6 +46,10 @@ The vision is a settlement that keeps living between expeditions: work, friendsh
 mentorship, and habits. Your choices shape the conditions around those lives. A building matters
 because it changes what people can do and whom they meet.
 
+<img src="docs/evidence/village-city-convergence-resident-details.png" alt="Prototype resident detail view showing Yaso Dreno's portrait, current activity, health, rarity, and readiness beside the Village" width="100%">
+
+*Resident detail view from a prototype review scene.*
+
 ## The monsters beyond the threshold
 
 <table>
