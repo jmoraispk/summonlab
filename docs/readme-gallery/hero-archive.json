@@ -134,7 +134,7 @@
           "condition": "meticulous daily maintenance",
           "description": "a cloth longcoat with a readable waist, split hem, plain underlayer, and fitted shoes; low-profile toggles and articulated knee folds.",
           "family": "tailored-longcoat",
-          "paletteFamily": "ochre-cream"
+          "paletteFamily": "ocher-cream"
         },
         "targetPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-03/targets/adar-belo/summon-v1.json",
         "targetGitBlob": "8e34afb527c7f7ea37154d6953115b5fe6d0d2a9",
@@ -886,7 +886,7 @@
           "condition": "deliberately tousled but clean",
           "description": "a cloth longcoat with a readable waist, split hem, plain underlayer, and fitted shoes; a high soft collar and uneven layered hems.",
           "family": "tailored-longcoat",
-          "paletteFamily": "ochre-cream"
+          "paletteFamily": "ocher-cream"
         },
         "targetPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-06/targets/aean-amarel/summon-v1.json",
         "targetGitBlob": "f47f27f61cad3d0dc6a1c22e65d18d72093bba6e",
@@ -2087,7 +2087,7 @@
           "condition": "low-maintenance grooming with highly polished footwear",
           "description": "lightly quilted cloth outerwear over a simple fitted layer and tapered trousers; a high soft collar and uneven layered hems.",
           "family": "quilted-outerwear",
-          "paletteFamily": "ochre-cream"
+          "paletteFamily": "ocher-cream"
         },
         "targetPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-06/targets/belar-corin/summon-v1.json",
         "targetGitBlob": "2b4d7cde6b7256f5b6e26727321bde54db3db4f8",
@@ -2686,7 +2686,7 @@
           "condition": "immaculate clothes over weathered hands",
           "description": "a fitted cloth vest system over a soft shirt, high-waist trousers, and flexible boots; rolled sleeves and one architectural lapel.",
           "family": "fitted-vest-system",
-          "paletteFamily": "ochre-cream"
+          "paletteFamily": "ocher-cream"
         },
         "targetPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-04/targets/belu-uleno/summon-v1.json",
         "targetGitBlob": "122a75476dca0cc5a6d9b0eaef9d2206e6b62802",
@@ -4218,7 +4218,7 @@
           "condition": "immaculate clothes over weathered hands",
           "description": "a cloth longcoat with a readable waist, split hem, plain underlayer, and fitted shoes; a high soft collar and uneven layered hems.",
           "family": "tailored-longcoat",
-          "paletteFamily": "ochre-cream"
+          "paletteFamily": "ocher-cream"
         },
         "targetPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-06/targets/calan-resheth/summon-v1.json",
         "targetGitBlob": "7ff51e9568691f735bc6beb609eaf5557649c488",
@@ -4359,7 +4359,7 @@
           "condition": "ornate hair maintenance with plain clothing care",
           "description": "a fitted cloth vest system over a soft shirt, high-waist trousers, and flexible boots; offset closures and narrow reinforced cuffs.",
           "family": "fitted-vest-system",
-          "paletteFamily": "ochre-cream"
+          "paletteFamily": "ocher-cream"
         },
         "targetPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-06/targets/calel-vesha/summon-v1.json",
         "targetGitBlob": "067969e829f291026c0c0199f3f860042895bfc1",
@@ -5805,7 +5805,7 @@
           "condition": "severe grooming softened by one unruly feature",
           "description": "a cloth longcoat with a readable waist, split hem, plain underlayer, and fitted shoes; a high soft collar and uneven layered hems.",
           "family": "tailored-longcoat",
-          "paletteFamily": "ochre-cream"
+          "paletteFamily": "ocher-cream"
         },
         "targetPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-06/targets/coris-vesha/summon-v1.json",
         "targetGitBlob": "a8df4827bf27c8f965f8571b143fa4801a16f2a1",
@@ -6047,7 +6047,7 @@
           "condition": "ornate hair maintenance with plain clothing care",
           "description": "a draped robe whose belting and openings keep the body construction legible; offset closures and narrow reinforced cuffs.",
           "family": "draped-robe",
-          "paletteFamily": "ochre-cream"
+          "paletteFamily": "ocher-cream"
         },
         "targetPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-04/targets/coron-faleth/summon-v1.json",
         "targetGitBlob": "f950d04b1bc4fb7d8de57f8d1e4a5ac36cb32a7f",
@@ -6928,7 +6928,7 @@
           "condition": "low-maintenance grooming with highly polished footwear",
           "description": "a shaped short jacket, practical closures, generous trousers, and low boots; a divided hem and broad folded collar.",
           "family": "short-jacket-trousers",
-          "paletteFamily": "ochre-cream"
+          "paletteFamily": "ocher-cream"
         },
         "targetPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-06/targets/daion-moran/summon-v1.json",
         "targetGitBlob": "75f3442629a8e25f408ad6862120e00f42426c9a",
@@ -7330,7 +7330,7 @@
           "condition": "visible mending treated as prideful craft",
           "description": "a draped robe whose belting and openings keep the body construction legible; visible hand repairs and contrasting inner edges.",
           "family": "draped-robe",
-          "paletteFamily": "ochre-cream"
+          "paletteFamily": "ocher-cream"
         },
         "targetPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-10/targets/delar-nethai/summon-v1.json",
         "targetGitBlob": "0d99368b7d4312ca6d18c1e6015dbb3966bb6e68",
@@ -7713,7 +7713,7 @@
           "condition": "immaculate clothes over weathered hands",
           "description": "a cloth longcoat with a readable waist, split hem, plain underlayer, and fitted shoes; a high soft collar and uneven layered hems.",
           "family": "tailored-longcoat",
-          "paletteFamily": "ochre-cream"
+          "paletteFamily": "ocher-cream"
         },
         "targetPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-06/targets/delon-loran/summon-v1.json",
         "targetGitBlob": "7df185034e3fffc785b9f1908b848ced2b2ba7e2",
@@ -9638,7 +9638,7 @@
           "condition": "severe grooming softened by one unruly feature",
           "description": "a cloth longcoat with a readable waist, split hem, plain underlayer, and fitted shoes; a divided hem and broad folded collar.",
           "family": "tailored-longcoat",
-          "paletteFamily": "ochre-cream"
+          "paletteFamily": "ocher-cream"
         },
         "targetPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-09/targets/elor-mori/summon-v1.json",
         "targetGitBlob": "064619064092d53d086070adc533603b80f6b0ff",
@@ -9692,7 +9692,7 @@
           "condition": "practical grooming with one carefully perfected detail",
           "description": "a small mantle or short cape over an unarmored tunic and divided lower layers; visible hand repairs and contrasting inner edges.",
           "family": "mantle-short-cape",
-          "paletteFamily": "ochre-cream"
+          "paletteFamily": "ocher-cream"
         },
         "targetPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-07/targets/elor-tavin/summon-v1.json",
         "targetGitBlob": "b7d65760f2d32bfb43f12fb153a3fbb1d6393453",
@@ -9786,7 +9786,7 @@
           "condition": "deliberately tousled but clean",
           "description": "a cloth longcoat with a readable waist, split hem, plain underlayer, and fitted shoes; a high soft collar and uneven layered hems.",
           "family": "tailored-longcoat",
-          "paletteFamily": "ochre-cream"
+          "paletteFamily": "ocher-cream"
         },
         "targetPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-06/targets/elyn-ivero/summon-v1.json",
         "targetGitBlob": "2796b2d12299ce541f7fc859b8849106ee7932fb",
@@ -10332,7 +10332,7 @@
           "condition": "low-maintenance grooming with highly polished footwear",
           "description": "a small mantle or short cape over an unarmored tunic and divided lower layers; visible hand repairs and contrasting inner edges.",
           "family": "mantle-short-cape",
-          "paletteFamily": "ochre-cream"
+          "paletteFamily": "ocher-cream"
         },
         "targetPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-07/targets/fenia-greli/summon-v1.json",
         "targetGitBlob": "1fcaa178481a591c9c49872087803aa7cbe52f0a",
@@ -11350,7 +11350,7 @@
           "condition": "visible mending treated as prideful craft",
           "description": "a shaped short jacket, practical closures, generous trousers, and low boots; visible hand repairs and contrasting inner edges.",
           "family": "short-jacket-trousers",
-          "paletteFamily": "ochre-cream"
+          "paletteFamily": "ocher-cream"
         },
         "targetPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-05/targets/gali-uleneth/summon-v2.json",
         "targetGitBlob": "8b54f780c54aba0b27e95ee8c2269c3479f00fa3",
@@ -12029,7 +12029,7 @@
           "condition": "meticulous daily maintenance",
           "description": "a shaped short jacket, practical closures, generous trousers, and low boots; a divided hem and broad folded collar.",
           "family": "short-jacket-trousers",
-          "paletteFamily": "ochre-cream"
+          "paletteFamily": "ocher-cream"
         },
         "targetPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-06/targets/halan-nethek/summon-v1.json",
         "targetGitBlob": "6b87ee018f189377726625b6e59b5ba41d40aa21",
@@ -12170,7 +12170,7 @@
           "condition": "low-maintenance grooming with highly polished footwear",
           "description": "a small mantle or short cape over an unarmored tunic and divided lower layers; visible hand repairs and contrasting inner edges.",
           "family": "mantle-short-cape",
-          "paletteFamily": "ochre-cream"
+          "paletteFamily": "ocher-cream"
         },
         "targetPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-07/targets/hali-eshan/summon-v2.json",
         "targetGitBlob": "7de2ec04ee6990cf9ff61c10115948016fcac35a",
@@ -12466,7 +12466,7 @@
           "condition": "meticulous daily maintenance",
           "description": "a fitted cloth vest system over a soft shirt, high-waist trousers, and flexible boots; visible hand repairs and contrasting inner edges.",
           "family": "fitted-vest-system",
-          "paletteFamily": "ochre-cream"
+          "paletteFamily": "ocher-cream"
         },
         "targetPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-07/targets/halon-esha/summon-v1.json",
         "targetGitBlob": "f4bb8a0c1cbdcb2f3b1e29dfb8da29f33a14eb78",
@@ -12513,7 +12513,7 @@
           "condition": "meticulous daily maintenance",
           "description": "a cloth longcoat with a readable waist, split hem, plain underlayer, and fitted shoes; a high soft collar and uneven layered hems.",
           "family": "tailored-longcoat",
-          "paletteFamily": "ochre-cream"
+          "paletteFamily": "ocher-cream"
         },
         "targetPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-06/targets/halon-pellen/summon-v1.json",
         "targetGitBlob": "504b26fa5e42365db8654c8bae844b9cc51b5238",
@@ -13181,7 +13181,7 @@
           "condition": "practical grooming with one carefully perfected detail",
           "description": "a fitted cloth vest system over a soft shirt, high-waist trousers, and flexible boots; offset closures and narrow reinforced cuffs.",
           "family": "fitted-vest-system",
-          "paletteFamily": "ochre-cream"
+          "paletteFamily": "ocher-cream"
         },
         "targetPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-06/targets/iani-morel/summon-v1.json",
         "targetGitBlob": "4fb67ded6e18f841fa0dba55a42de875f9f75f51",
@@ -13228,7 +13228,7 @@
           "condition": "practical grooming with one carefully perfected detail",
           "description": "a cloth longcoat with a readable waist, split hem, plain underlayer, and fitted shoes; a high soft collar and uneven layered hems.",
           "family": "tailored-longcoat",
-          "paletteFamily": "ochre-cream"
+          "paletteFamily": "ocher-cream"
         },
         "targetPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-06/targets/iania-uleno/summon-v1.json",
         "targetGitBlob": "f90372c3d0986ac5e22f9b1b3ab5b6daba5c2329",
@@ -13719,7 +13719,7 @@
           "condition": "visible mending treated as prideful craft",
           "description": "overlapping wrap panels, an off-center waist tie, divided trousers, and soft boots; low-profile toggles and articulated knee folds.",
           "family": "layered-wrap",
-          "paletteFamily": "ochre-cream"
+          "paletteFamily": "ocher-cream"
         },
         "targetPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-08/targets/ianu-keshi/summon-v1.json",
         "targetGitBlob": "4a3b2088a6f59a767f32a2020883ec433c1a5087",
@@ -13958,7 +13958,7 @@
           "condition": "deliberately tousled but clean",
           "description": "a cloth longcoat with a readable waist, split hem, plain underlayer, and fitted shoes; visible hand repairs and contrasting inner edges.",
           "family": "tailored-longcoat",
-          "paletteFamily": "ochre-cream"
+          "paletteFamily": "ocher-cream"
         },
         "targetPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-06/targets/isen-amarin/summon-v1.json",
         "targetGitBlob": "fc72c3f52569ac3a140869a01440357a6f75dd1d",
@@ -14005,7 +14005,7 @@
           "condition": "deliberately tousled but clean",
           "description": "a long tunic and split tabard over loose trousers with wrapped ankles; rolled sleeves and one architectural lapel.",
           "family": "tunic-tabard",
-          "paletteFamily": "ochre-cream"
+          "paletteFamily": "ocher-cream"
         },
         "targetPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-02/targets/isen-coreth/summon-v2.json",
         "targetGitBlob": "4269913289c2261e7a71f699fd345ac4e5101d66",
@@ -14099,7 +14099,7 @@
           "condition": "ornate hair maintenance with plain clothing care",
           "description": "a shaped short jacket, practical closures, generous trousers, and low boots; visible hand repairs and contrasting inner edges.",
           "family": "short-jacket-trousers",
-          "paletteFamily": "ochre-cream"
+          "paletteFamily": "ocher-cream"
         },
         "targetPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-05/targets/isia-vesho/summon-v1.json",
         "targetGitBlob": "2a854350b0bd22c1e7d37d1a9fb501fcbb84115d",
@@ -14688,7 +14688,7 @@
           "condition": "low-maintenance grooming with highly polished footwear",
           "description": "a small mantle or short cape over an unarmored tunic and divided lower layers; visible hand repairs and contrasting inner edges.",
           "family": "mantle-short-cape",
-          "paletteFamily": "ochre-cream"
+          "paletteFamily": "ocher-cream"
         },
         "targetPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-07/targets/jorar-belo/summon-v1.json",
         "targetGitBlob": "3d85994061c7ecf1325896431a41a6cfe78694b7",
@@ -14742,7 +14742,7 @@
           "condition": "low-maintenance grooming with highly polished footwear",
           "description": "a cloth longcoat with a readable waist, split hem, plain underlayer, and fitted shoes; a high soft collar and uneven layered hems.",
           "family": "tailored-longcoat",
-          "paletteFamily": "ochre-cream"
+          "paletteFamily": "ocher-cream"
         },
         "targetPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-06/targets/jorar-ulenan/summon-v2.json",
         "targetGitBlob": "6da6cd844f4397e776b78f9511dfb5eff2e18c96",
@@ -15465,7 +15465,7 @@
           "condition": "visible mending treated as prideful craft",
           "description": "a cloth longcoat with a readable waist, split hem, plain underlayer, and fitted shoes; a high soft collar and uneven layered hems.",
           "family": "tailored-longcoat",
-          "paletteFamily": "ochre-cream"
+          "paletteFamily": "ocher-cream"
         },
         "targetPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-06/targets/joron-lorai/summon-v1.json",
         "targetGitBlob": "0b7351a3487bee63804280baffc7dc51ef51d79b",
@@ -15667,7 +15667,7 @@
           "condition": "visible mending treated as prideful craft",
           "description": "a cloth longcoat with a readable waist, split hem, plain underlayer, and fitted shoes; a high soft collar and uneven layered hems.",
           "family": "tailored-longcoat",
-          "paletteFamily": "ochre-cream"
+          "paletteFamily": "ocher-cream"
         },
         "targetPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-06/targets/joru-keshen/summon-v1.json",
         "targetGitBlob": "76ac3c5feb338994632bb57933a8c4da11103223",
@@ -15761,7 +15761,7 @@
           "condition": "low-maintenance grooming with highly polished footwear",
           "description": "a fitted cloth vest system over a soft shirt, high-waist trousers, and flexible boots; offset closures and narrow reinforced cuffs.",
           "family": "fitted-vest-system",
-          "paletteFamily": "ochre-cream"
+          "paletteFamily": "ocher-cream"
         },
         "targetPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-06/targets/joryn-haleth/summon-v1.json",
         "targetGitBlob": "9e0ae63da4bba6d16dd84b035dfa7408b5898ee3",
@@ -15949,7 +15949,7 @@
           "condition": "severe grooming softened by one unruly feature",
           "description": "a cloth longcoat with a readable waist, split hem, plain underlayer, and fitted shoes; a divided hem and broad folded collar.",
           "family": "tailored-longcoat",
-          "paletteFamily": "ochre-cream"
+          "paletteFamily": "ocher-cream"
         },
         "targetPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-09/targets/kaan-orai/summon-v1.json",
         "targetGitBlob": "66abeacf49caab0266f5d0d7afcc5a269bfff594",
@@ -17610,7 +17610,7 @@
           "condition": "practical grooming with one carefully perfected detail",
           "description": "a small mantle or short cape over an unarmored tunic and divided lower layers; visible hand repairs and contrasting inner edges.",
           "family": "mantle-short-cape",
-          "paletteFamily": "ochre-cream"
+          "paletteFamily": "ocher-cream"
         },
         "targetPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-01/targets/kelu-grelun/summon-v1.json",
         "targetGitBlob": "a1392bef9913392992add1d16325f347e50b901d",
@@ -18894,7 +18894,7 @@
           "condition": "severe grooming softened by one unruly feature",
           "description": "a shaped short jacket, practical closures, generous trousers, and low boots; offset closures and narrow reinforced cuffs.",
           "family": "short-jacket-trousers",
-          "paletteFamily": "ochre-cream"
+          "paletteFamily": "ocher-cream"
         },
         "targetPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-08/targets/loran-halai/summon-v1.json",
         "targetGitBlob": "a2bd7e763c932e77890d08b2b27e4b1fe4717cca",
@@ -19479,7 +19479,7 @@
           "condition": "ornate hair maintenance with plain clothing care",
           "description": "a cloth longcoat with a readable waist, split hem, plain underlayer, and fitted shoes; a high soft collar and uneven layered hems.",
           "family": "tailored-longcoat",
-          "paletteFamily": "ochre-cream"
+          "paletteFamily": "ocher-cream"
         },
         "targetPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-06/targets/lorin-pelleth/summon-v1.json",
         "targetGitBlob": "bd2c5e68e35c2ec68be7f9f55b3c16db3326bba7",
@@ -19620,7 +19620,7 @@
           "condition": "immaculate clothes over weathered hands",
           "description": "a cloth longcoat with a readable waist, split hem, plain underlayer, and fitted shoes; a high soft collar and uneven layered hems.",
           "family": "tailored-longcoat",
-          "paletteFamily": "ochre-cream"
+          "paletteFamily": "ocher-cream"
         },
         "targetPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-06/targets/loris-haleth/summon-v1.json",
         "targetGitBlob": "c50bd5533cdd81b8e107ec2e11d4bb124e3b105d",
@@ -20516,7 +20516,7 @@
           "condition": "deliberately tousled but clean",
           "description": "a shaped short jacket, practical closures, generous trousers, and low boots; a divided hem and broad folded collar.",
           "family": "short-jacket-trousers",
-          "paletteFamily": "ochre-cream"
+          "paletteFamily": "ocher-cream"
         },
         "targetPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-06/targets/meii-falek/summon-v2.json",
         "targetGitBlob": "23932906f737c4ab4f904c2f7bd1775d372298fe",
@@ -21068,7 +21068,7 @@
           "condition": "low-maintenance grooming with highly polished footwear",
           "description": "a long tunic and split tabard over loose trousers with wrapped ankles; rolled sleeves and one architectural lapel.",
           "family": "tunic-tabard",
-          "paletteFamily": "ochre-cream"
+          "paletteFamily": "ocher-cream"
         },
         "targetPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-02/targets/meio-ivereth/summon-v1.json",
         "targetGitBlob": "52e3310a6f3adb219f198e54b5bd607f3ac177b3",
@@ -21433,7 +21433,7 @@
           "condition": "meticulous daily maintenance",
           "description": "a long tunic and split tabard over loose trousers with wrapped ankles; a high soft collar and uneven layered hems.",
           "family": "tunic-tabard",
-          "paletteFamily": "ochre-cream"
+          "paletteFamily": "ocher-cream"
         },
         "targetPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-08/targets/nelia-soran/summon-v2.json",
         "targetGitBlob": "9f84b3fae9f7b49f7b1a670c3c7e4072d512c00f",
@@ -22411,7 +22411,7 @@
           "condition": "meticulous daily maintenance",
           "description": "a shaped short jacket, practical closures, generous trousers, and low boots; a divided hem and broad folded collar.",
           "family": "short-jacket-trousers",
-          "paletteFamily": "ochre-cream"
+          "paletteFamily": "ocher-cream"
         },
         "targetPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-06/targets/ori-beli/summon-v1.json",
         "targetGitBlob": "718a11e5dbfcbe088643576eea5a82d32e488c5b",
@@ -22566,7 +22566,7 @@
           "condition": "deliberately tousled but clean",
           "description": "overlapping wrap panels, an off-center waist tie, divided trousers, and soft boots; low-profile toggles and articulated knee folds.",
           "family": "layered-wrap",
-          "paletteFamily": "ochre-cream"
+          "paletteFamily": "ocher-cream"
         },
         "targetPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-08/targets/ori-wyren/summon-v1.json",
         "targetGitBlob": "abe1bdc5820b8870b363dbe8a5119a3e75afb62a",
@@ -22956,7 +22956,7 @@
           "condition": "practical grooming with one carefully perfected detail",
           "description": "a small mantle or short cape over an unarmored tunic and divided lower layers; visible hand repairs and contrasting inner edges.",
           "family": "mantle-short-cape",
-          "paletteFamily": "ochre-cream"
+          "paletteFamily": "ocher-cream"
         },
         "targetPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-07/targets/oro-eshin/summon-v2.json",
         "targetGitBlob": "82b6def4abe7167633b45685929f48ca32ec4d31",
@@ -23003,7 +23003,7 @@
           "condition": "meticulous daily maintenance",
           "description": "lightly quilted cloth outerwear over a simple fitted layer and tapered trousers; a high soft collar and uneven layered hems.",
           "family": "quilted-outerwear",
-          "paletteFamily": "ochre-cream"
+          "paletteFamily": "ocher-cream"
         },
         "targetPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-06/targets/oron-iverin/summon-v1.json",
         "targetGitBlob": "485e041befb68160e0c31a28bc6af470bd5ed95b",
@@ -23360,7 +23360,7 @@
           "condition": "practical grooming with one carefully perfected detail",
           "description": "a shaped short jacket, practical closures, generous trousers, and low boots; visible hand repairs and contrasting inner edges.",
           "family": "short-jacket-trousers",
-          "paletteFamily": "ochre-cream"
+          "paletteFamily": "ocher-cream"
         },
         "targetPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-05/targets/oryn-soro/summon-v1.json",
         "targetGitBlob": "bb2ae1330f40eac316e3b251fe1916fbb0a3619a",
@@ -23685,7 +23685,7 @@
           "condition": "deliberately tousled but clean",
           "description": "lightly quilted cloth outerwear over a simple fitted layer and tapered trousers; a high soft collar and uneven layered hems.",
           "family": "quilted-outerwear",
-          "paletteFamily": "ochre-cream"
+          "paletteFamily": "ocher-cream"
         },
         "targetPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-06/targets/peri-tava/summon-v1.json",
         "targetGitBlob": "4aa2b86560adaf9ebb8d9e22854854316457ab90",
@@ -23739,7 +23739,7 @@
           "condition": "immaculate clothes over weathered hands",
           "description": "a draped robe whose belting and openings keep the body construction legible; offset closures and narrow reinforced cuffs.",
           "family": "draped-robe",
-          "paletteFamily": "ochre-cream"
+          "paletteFamily": "ocher-cream"
         },
         "targetPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-04/targets/peria-halo/summon-v2.json",
         "targetGitBlob": "9f7a6ee1771ca3fb58f7090bed1653495d427ce4",
@@ -24115,7 +24115,7 @@
           "condition": "severe grooming softened by one unruly feature",
           "description": "a cloth longcoat with a readable waist, split hem, plain underlayer, and fitted shoes; a high soft collar and uneven layered hems.",
           "family": "tailored-longcoat",
-          "paletteFamily": "ochre-cream"
+          "paletteFamily": "ocher-cream"
         },
         "targetPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-06/targets/peror-tavin/summon-v2.json",
         "targetGitBlob": "5210b3dd57b181ae354a44c8c1bc1e8e2f1131e4",
@@ -25144,7 +25144,7 @@
           "condition": "ornate hair maintenance with plain clothing care",
           "description": "a draped robe whose belting and openings keep the body construction legible; offset closures and narrow reinforced cuffs.",
           "family": "draped-robe",
-          "paletteFamily": "ochre-cream"
+          "paletteFamily": "ocher-cream"
         },
         "targetPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-04/targets/quinu-grelek/summon-v2.json",
         "targetGitBlob": "a4cdc719f372ef9033f903ed2285d43b48bf342b",
@@ -26389,7 +26389,7 @@
           "condition": "deliberately tousled but clean",
           "description": "a fitted cloth vest system over a soft shirt, high-waist trousers, and flexible boots; a divided hem and broad folded collar.",
           "family": "fitted-vest-system",
-          "paletteFamily": "ochre-cream"
+          "paletteFamily": "ocher-cream"
         },
         "targetPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-01/targets/rain-ulenen/summon-v1.json",
         "targetGitBlob": "0fd09a7c4dd35053fe4a87b60d5cc3ea64015477",
@@ -26685,7 +26685,7 @@
           "condition": "severe grooming softened by one unruly feature",
           "description": "a long tunic and split tabard over loose trousers with wrapped ankles; rolled sleeves and one architectural lapel.",
           "family": "tunic-tabard",
-          "paletteFamily": "ochre-cream"
+          "paletteFamily": "ocher-cream"
         },
         "targetPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-02/targets/rau-drenun/summon-v2.json",
         "targetGitBlob": "1d69bd6e6673fa73a7fe0653a07996ac573c3d1e",
@@ -26801,7 +26801,7 @@
           "condition": "ornate hair maintenance with plain clothing care",
           "description": "a shaped short jacket, practical closures, generous trousers, and low boots; visible hand repairs and contrasting inner edges.",
           "family": "short-jacket-trousers",
-          "paletteFamily": "ochre-cream"
+          "paletteFamily": "ocher-cream"
         },
         "targetPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-05/targets/rayn-grelin/summon-v1.json",
         "targetGitBlob": "0fe533f392740af38b9ef3f7ea0b3e1ea5ef9e70",
@@ -27608,7 +27608,7 @@
           "condition": "low-maintenance grooming with highly polished footwear",
           "description": "a cloth longcoat with a readable waist, split hem, plain underlayer, and fitted shoes; visible hand repairs and contrasting inner edges.",
           "family": "tailored-longcoat",
-          "paletteFamily": "ochre-cream"
+          "paletteFamily": "ocher-cream"
         },
         "targetPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-06/targets/senon-wyrai/summon-v2.json",
         "targetGitBlob": "c833a1c9fe0c76f5a258ba34b05e144ae11083d9",
@@ -27854,7 +27854,7 @@
           "condition": "practical grooming with one carefully perfected detail",
           "description": "a shaped short jacket, practical closures, generous trousers, and low boots; visible hand repairs and contrasting inner edges.",
           "family": "short-jacket-trousers",
-          "paletteFamily": "ochre-cream"
+          "paletteFamily": "ocher-cream"
         },
         "targetPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-05/targets/talan-amarai/summon-v2.json",
         "targetGitBlob": "be43479b5dae0bfa7d4f665a5bdb29f9f1fe8eb3",
@@ -28244,7 +28244,7 @@
           "condition": "low-maintenance grooming with highly polished footwear",
           "description": "lightly quilted cloth outerwear over a simple fitted layer and tapered trousers; a high soft collar and uneven layered hems.",
           "family": "quilted-outerwear",
-          "paletteFamily": "ochre-cream"
+          "paletteFamily": "ocher-cream"
         },
         "targetPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-06/targets/talia-greleth/summon-v2.json",
         "targetGitBlob": "ad56fe69be4dfd476a75680b479780b2cace78a5",
@@ -28540,7 +28540,7 @@
           "condition": "low-maintenance grooming with highly polished footwear",
           "description": "a cloth longcoat with a readable waist, split hem, plain underlayer, and fitted shoes; a high soft collar and uneven layered hems.",
           "family": "tailored-longcoat",
-          "paletteFamily": "ochre-cream"
+          "paletteFamily": "ocher-cream"
         },
         "targetPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-06/targets/talis-cora/summon-v1.json",
         "targetGitBlob": "6a91dc2e2b03b97ded2ade10e3eea153a3a2df55",
@@ -28641,7 +28641,7 @@
           "condition": "meticulous daily maintenance",
           "description": "a cloth longcoat with a readable waist, split hem, plain underlayer, and fitted shoes; a high soft collar and uneven layered hems.",
           "family": "tailored-longcoat",
-          "paletteFamily": "ochre-cream"
+          "paletteFamily": "ocher-cream"
         },
         "targetPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-06/targets/talis-pella/summon-v1.json",
         "targetGitBlob": "9623acd91a95eddb3aa9733a3574d5af8c7c54a7",
@@ -29698,7 +29698,7 @@
           "condition": "meticulous daily maintenance",
           "description": "a shaped short jacket, practical closures, generous trousers, and low boots; visible hand repairs and contrasting inner edges.",
           "family": "short-jacket-trousers",
-          "paletteFamily": "ochre-cream"
+          "paletteFamily": "ocher-cream"
         },
         "targetPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-05/targets/ulin-tavor/summon-v1.json",
         "targetGitBlob": "ef914166ddcd229fe8f5019c667b615c829cae42",
@@ -29940,7 +29940,7 @@
           "condition": "ornate hair maintenance with plain clothing care",
           "description": "a draped robe whose belting and openings keep the body construction legible; offset closures and narrow reinforced cuffs.",
           "family": "draped-robe",
-          "paletteFamily": "ochre-cream"
+          "paletteFamily": "ocher-cream"
         },
         "targetPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-04/targets/ulon-netheth/summon-v2.json",
         "targetGitBlob": "c6cefd5bb2e1f10012ebe106b8e1660f03f956b1",
@@ -30814,7 +30814,7 @@
           "condition": "practical grooming with one carefully perfected detail",
           "description": "a draped robe whose belting and openings keep the body construction legible; visible hand repairs and contrasting inner edges.",
           "family": "draped-robe",
-          "paletteFamily": "ochre-cream"
+          "paletteFamily": "ocher-cream"
         },
         "targetPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-10/targets/valor-soren/summon-v2.json",
         "targetGitBlob": "fea2b34937efce830c3f04d188090546725703e2",
@@ -30908,7 +30908,7 @@
           "condition": "immaculate clothes over weathered hands",
           "description": "a shaped short jacket, practical closures, generous trousers, and low boots; visible hand repairs and contrasting inner edges.",
           "family": "short-jacket-trousers",
-          "paletteFamily": "ochre-cream"
+          "paletteFamily": "ocher-cream"
         },
         "targetPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-05/targets/valu-pellen/summon-v2.json",
         "targetGitBlob": "d3e8d5d6422126638b87749d46a3cbf5737ff87c",
@@ -31486,7 +31486,7 @@
           "condition": "meticulous daily maintenance",
           "description": "a shaped short jacket, practical closures, generous trousers, and low boots; visible hand repairs and contrasting inner edges.",
           "family": "short-jacket-trousers",
-          "paletteFamily": "ochre-cream"
+          "paletteFamily": "ocher-cream"
         },
         "targetPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-05/targets/wenia-moran/summon-v2.json",
         "targetGitBlob": "a612f7eb4930940a05c198cdaf1848561e75de06",
@@ -33399,7 +33399,7 @@
           "condition": "immaculate clothes over weathered hands",
           "description": "a shaped short jacket, practical closures, generous trousers, and low boots; visible hand repairs and contrasting inner edges.",
           "family": "short-jacket-trousers",
-          "paletteFamily": "ochre-cream"
+          "paletteFamily": "ocher-cream"
         },
         "targetPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-05/targets/zelel-pelli/summon-v2.json",
         "targetGitBlob": "5a845e657e8fc75c4128278a8ca85422300283ce",
@@ -33554,7 +33554,7 @@
           "condition": "practical grooming with one carefully perfected detail",
           "description": "a small mantle or short cape over an unarmored tunic and divided lower layers; a divided hem and broad folded collar.",
           "family": "mantle-short-cape",
-          "paletteFamily": "ochre-cream"
+          "paletteFamily": "ocher-cream"
         },
         "targetPath": "assets/heroes/experiments/one-star-overnight-200-001/waves/wave-09/targets/zeli-orel/summon-v2.json",
         "targetGitBlob": "810b35fd899a160e40e64b435252cb10f23d004c",

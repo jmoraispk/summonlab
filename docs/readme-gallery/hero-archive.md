@@ -41,6 +41,10 @@ hair and wardrobe descriptions, target path and Git blob, and portrait/combat va
 200 approved entries use their current approved runtime portraits; their historical candidate
 portrait bindings remain separately recorded. Earlier study labels retain their original meaning.
 
+Search metadata is a reader-facing excerpt normalized to American English. Exact historical
+schema literals remain in the immutable source target documents. This archive does not rename
+those source identifiers, recompute their identity signatures, or change their original bindings.
+
 The [audit and collection summary](hero-archive-audit.md) describes the complete scan, source
 collections, counting rules, and limits. The archive is separate from the canonical wiki document
 catalog and does not add a design-document ID or change runtime summon bindings.
