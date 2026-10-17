@@ -15,9 +15,10 @@ const repositoryRoot = path.resolve(import.meta.dirname, '..');
 describe('wiki skill visual catalog exporter', () => {
 	let built: Awaited<ReturnType<typeof buildWikiSkillVisualCatalog>>;
 
+	// Rebuilding all 457 icons takes over a minute on GitHub-hosted runners.
 	beforeAll(async () => {
 		built = await buildWikiSkillVisualCatalog(repositoryRoot);
-	}, 30_000);
+	}, 180_000);
 
 	it('deterministically composes all 457 interiors with their reusable rarity frames', async () => {
 		expect(built.manifest.schemaVersion).toBe('wiki-skill-visual-catalog-v2');
