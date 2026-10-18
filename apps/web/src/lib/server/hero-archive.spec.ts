@@ -1,7 +1,19 @@
 import { describe, expect, it } from 'vitest';
 import { searchHeroArchive } from './hero-archive';
+import { load } from '../../routes/wiki/heroes/+page.server';
 
 describe('public hero archive', () => {
+	it('can prerender the complete search index without reading a request URL', async () => {
+		const data = await load({
+			get url(): URL {
+				throw new Error('Static archive data cannot depend on a request URL');
+			}
+		} as Parameters<typeof load>[0]);
+		expect(data).toHaveProperty('index.length', 736);
+		expect(data).toHaveProperty('initial.heroes.length', 24);
+		expect(data).toHaveProperty('initial.pageCount', 31);
+		expect(JSON.stringify(data)).not.toMatch(/identitySignature|sha256|targetGitBlob/);
+	});
 	it('keeps all 736 identities separate from the 200 approved roster', () => {
 		const all = searchHeroArchive(new URLSearchParams());
 		expect(all.total).toBe(736);

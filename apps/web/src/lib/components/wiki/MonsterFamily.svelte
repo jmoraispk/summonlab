@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
 	import MonsterArtwork from './MonsterArtwork.svelte';
+	import type { MonsterArtworkImage } from './monster-artwork';
 
 	type Affinity = 'normal' | 'fire' | 'earth' | 'wind' | 'water';
 
@@ -43,6 +44,20 @@
 
 	const affinities = ['normal', 'fire', 'earth', 'wind', 'water'] as const;
 	const label = (value: string) => value[0]?.toUpperCase() + value.slice(1);
+	const gallery = $derived<MonsterArtworkImage[]>(
+		family.forms.flatMap((form) => {
+			const variant = form.variants.find(({ affinity }) => affinity === selectedAffinity);
+			return variant
+				? [
+						{
+							src: variant.thumbnailPath,
+							sourcePath: variant.sourcePath,
+							alt: `${form.name}, ${label(variant.affinity)} affinity`
+						}
+					]
+				: [];
+		})
+	);
 	const detail = (value: string | null) => value ?? 'Not applicable for this form.';
 	const roleName = (role: string) => role.replace(/\s+\([^)]*\)$/u, '');
 	const mechanicName = (mechanic: string | null) => mechanic?.split(':', 1)[0]?.trim() ?? null;
@@ -90,6 +105,7 @@
 					<article class="family-form-card">
 						<div class="image-wrap">
 							<MonsterArtwork
+								{gallery}
 								src={variant.thumbnailPath}
 								sourcePath={variant.sourcePath}
 								alt={`${form.name}, ${label(variant.affinity)} affinity`}

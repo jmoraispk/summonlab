@@ -12,6 +12,9 @@ Summon heroes, build a home around them, prepare parties, and climb a randomized
 one-hundred-floor tower. Heroes develop through experience, relationships, habits, training, and
 the systems the player creates around them.
 
+[Explore the wiki →](https://jmoraispk.github.io/summonlab/wiki/) Browse the full hero archive,
+monster families, equipment sets, skills, and game design.
+
 ## Home
 
 <img src="docs/evidence/direct-village-summoning-house/village-desktop.png" alt="Prototype Village at night, with the Summoning Circle, Residence, Training Grounds, Forge, and Tower Portal connected by paths" width="100%">
@@ -402,12 +405,13 @@ pnpm test:e2e  # browser tests
 pnpm db:stop   # stop local PostgreSQL
 ```
 
-[Game wiki](docs/wiki/README.md) · [System architecture](docs/system-architecture/README.md) ·
+[Game wiki](https://jmoraispk.github.io/summonlab/wiki/) · [Wiki source](docs/wiki/README.md) · [System architecture](docs/system-architecture/README.md) ·
 [Web application and deployment](apps/web/README.md)
 
 </details>
 
 ---
 
-**Archive notice:** The website is no longer available, and development is paused for now.
-This repository preserves Summonlab's prototype, artwork, and intended game design.
+**Archive notice:** The game website is no longer available, and development is paused for now.
+The [wiki remains available](https://jmoraispk.github.io/summonlab/wiki/). This repository preserves
+Summonlab's prototype, artwork, and intended game design.

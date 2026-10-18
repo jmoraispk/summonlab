@@ -1,0 +1,21 @@
+{
+	"name": "@summonlab/wiki",
+	"private": true,
+	"version": "0.0.1",
+	"type": "module",
+	"scripts": {
+		"build": "node scripts/prepare.mjs && vite build",
+		"preview": "node scripts/preview.mjs",
+		"verify": "node scripts/verify.mjs",
+		"test:e2e": "playwright test"
+	},
+	"devDependencies": {
+		"@playwright/test": "^1.60.0",
+		"@sveltejs/adapter-static": "3.0.10",
+		"@sveltejs/kit": "^2.63.0",
+		"@sveltejs/vite-plugin-svelte": "^7.1.2",
+		"svelte": "^5.56.1",
+		"typescript": "^6.0.3",
+		"vite": "^8.0.16"
+	}
+}

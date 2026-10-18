@@ -1,11 +1,13 @@
 <script lang="ts">
 	import { page } from '$app/state';
-	import { resolve } from '$app/paths';
+	import { base, resolve } from '$app/paths';
 	import { SvelteMap } from 'svelte/reactivity';
 
 	let { data, children } = $props();
 	let navigationOpen = $state(false);
 	let query = $state('');
+	const staticWiki = import.meta.env.VITE_WIKI_STATIC === 'true';
+	const currentPath = $derived(page.url.pathname.slice(base.length).replace(/\/$/u, '') || '/');
 	let indexToggle: HTMLButtonElement;
 
 	type NavigationEntry = (typeof data.navigation)[number];
@@ -101,9 +103,8 @@
 	function containsCurrent(entries: NavigationEntry[]): boolean {
 		return entries.some(
 			(entry) =>
-				page.url.pathname === entry.href ||
-				(entry.href === '/wiki/creatures/monsters' &&
-					page.url.pathname.startsWith(`${entry.href}/`))
+				currentPath === entry.href ||
+				(entry.href === '/wiki/creatures/monsters' && currentPath.startsWith(`${entry.href}/`))
 		);
 	}
 
@@ -133,7 +134,9 @@
 		</a>
 		<p>{data.pageCount} living documents</p>
 		<nav aria-label="Summonlab destinations">
-			<a href={resolve('/')}>Enter the game</a>
+			{#if staticWiki}<a href="https://github.com/jmoraispk/summonlab">Repository ↗</a>{:else}<a
+					href={resolve('/')}>Enter the game</a
+				>{/if}
 			<button
 				type="button"
 				bind:this={indexToggle}
@@ -164,14 +167,14 @@
 				<a
 					href={resolve('/wiki')}
 					onclick={() => closeIndex()}
-					aria-current={page.url.pathname === '/wiki' ? 'page' : undefined}
+					aria-current={currentPath === '/wiki' ? 'page' : undefined}
 				>
 					<span>Archive home</span><i>Start</i>
 				</a>
 				<a
 					href={resolve('/wiki/heroes')}
 					onclick={() => closeIndex()}
-					aria-current={page.url.pathname === '/wiki/heroes' ? 'page' : undefined}
+					aria-current={currentPath === '/wiki/heroes' ? 'page' : undefined}
 				>
 					<span>Hero archive</span><i>736 identities</i>
 				</a>
@@ -185,7 +188,7 @@
 					class="nav-section"
 					open={query.trim().length > 0 ||
 						containsCurrent(sectionEntries(section)) ||
-						(section.name === 'Systems' && page.url.pathname === '/wiki')}
+						(section.name === 'Systems' && currentPath === '/wiki')}
 				>
 					<summary>
 						<span>{section.name}</span><i>{sectionEntries(section).length}</i>
@@ -194,16 +197,18 @@
 						{#if section.overview}
 							<a
 								class="group-overview"
-								href={section.overview.href}
+								href={resolve('/wiki/[...slug]', {
+									slug: section.overview.href.slice('/wiki/'.length)
+								})}
 								aria-label={`${section.name} overview`}
-								aria-current={page.url.pathname === section.overview.href ? 'page' : undefined}
+								aria-current={currentPath === section.overview.href ? 'page' : undefined}
 								onclick={() => closeIndex()}><span>Overview</span></a
 							>
 						{/if}
 						{#each section.entries as entry (entry.href)}
 							<a
-								href={entry.href}
-								aria-current={page.url.pathname === entry.href ? 'page' : undefined}
+								href={resolve('/wiki/[...slug]', { slug: entry.href.slice('/wiki/'.length) })}
+								aria-current={currentPath === entry.href ? 'page' : undefined}
 								onclick={() => closeIndex()}
 							>
 								<span>{entry.title}</span>

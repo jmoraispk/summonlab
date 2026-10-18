@@ -1,5 +1,29 @@
 import { expect, test } from '@playwright/test';
 
+test('filters shareable URLs and navigates history without a server data endpoint', async ({
+	page
+}) => {
+	await page.goto('/wiki/heroes?collection=candidates&q=locs&page=2', { waitUntil: 'networkidle' });
+	await page.route('**/__data.json*', (route) => route.abort());
+	await expect(page.locator('.results-heading')).toContainText('matching “locs”');
+	await expect(page.locator('.results-heading')).toContainText('Page 2');
+	const secondPageName = await page.locator('main article h2').first().textContent();
+	await page.getByRole('link', { name: '← Previous', exact: true }).first().click();
+	await expect(page).toHaveURL(/q=locs&collection=candidates&page=1/);
+	await expect(page.locator('.results-heading')).toContainText('Page 1');
+	await expect(page.locator('main article h2').first()).not.toHaveText(secondPageName ?? '');
+	await page.goBack();
+	await expect(page.locator('.results-heading')).toContainText('Page 2');
+	await page.getByLabel('Collection', { exact: true }).selectOption('approved');
+	await page.getByLabel('Name, hair, or wardrobe').fill('Adar Belo');
+	await page.getByRole('button', { name: 'Find heroes', exact: true }).click();
+	await expect(page.locator('main article h2').first()).toContainText('Adar Belo');
+	await expect(page.locator('.results-heading')).toContainText('Page 1');
+	await page.reload({ waitUntil: 'networkidle' });
+	await expect(page.locator('main article h2').first()).toContainText('Adar Belo');
+	await expect(page.getByLabel('Collection', { exact: true })).toHaveValue('approved');
+});
+
 for (const width of [1400, 390]) {
 	test.describe(`hero archive at ${width}px`, () => {
 		test.use({ viewport: { width, height: 900 } });

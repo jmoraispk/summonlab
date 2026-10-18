@@ -12,6 +12,8 @@ build/
 coverage/
 playwright-report/
 test-results/
+apps/wiki/src/routes/
+apps/wiki/static/
 __pycache__/
 *.py[cod]
 

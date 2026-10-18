@@ -1,6 +1,26 @@
 <script lang="ts">
 	import { base, resolve } from '$app/paths';
+	import { goto } from '$app/navigation';
+	import { page } from '$app/state';
+	import { onMount } from 'svelte';
+	import { SvelteURLSearchParams } from 'svelte/reactivity';
+	import { searchHeroArchive } from '$lib/hero-archive';
 	let { data } = $props();
+	let mounted = $state(false);
+	const results = $derived(
+		mounted ? searchHeroArchive(data.index, page.url.searchParams) : data.initial
+	);
+	onMount(() => {
+		mounted = true;
+	});
+
+	function submitSearch(event: SubmitEvent) {
+		event.preventDefault();
+		const form = event.currentTarget as HTMLFormElement;
+		const params = new SvelteURLSearchParams();
+		for (const [key, value] of new FormData(form)) params.set(key, String(value));
+		void goto(resolve(`/wiki/heroes?${params}`), { keepFocus: true, noScroll: true });
+	}
 </script>
 
 <svelte:head>
@@ -25,12 +45,18 @@
 		</p>
 	</header>
 
-	<form method="GET" action={resolve('/wiki/heroes')} role="search" aria-label="Find a hero">
+	<form
+		onsubmit={submitSearch}
+		method="GET"
+		action={resolve('/wiki/heroes')}
+		role="search"
+		aria-label="Find a hero"
+	>
 		<label class="search-field"
 			><span>Name, hair, or wardrobe</span><input
 				type="search"
 				name="q"
-				value={data.query}
+				value={results.query}
 				placeholder="Try Eirar, locs, or patchwork…"
 				maxlength="160"
 			/></label
@@ -39,8 +65,8 @@
 			><span id="hero-collection-label">Collection</span><select
 				name="collection"
 				aria-labelledby="hero-collection-label"
-				value={data.collection}
-				>{#each data.collections as collection (collection.id)}<option value={collection.id}
+				value={results.collection}
+				>{#each results.collections as collection (collection.id)}<option value={collection.id}
 						>{collection.label} ({collection.count})</option
 					>{/each}</select
 			></label
@@ -50,25 +76,26 @@
 
 	<div class="results-heading" aria-live="polite">
 		<p>
-			<strong>{data.total}</strong>
-			{data.total === 1 ? 'hero' : 'heroes'}{data.query ? ` matching “${data.query}”` : ''}
+			<strong>{results.total}</strong>
+			{results.total === 1 ? 'hero' : 'heroes'}{results.query ? ` matching “${results.query}”` : ''}
 		</p>
-		<span>{data.first}–{data.last} · Page {data.page} of {data.pageCount}</span>
+		<span>{results.first}–{results.last} · Page {results.page} of {results.pageCount}</span>
 	</div>
 
 	{#snippet pagination()}
 		<nav class="pagination" aria-label="Hero archive pages">
-			{#if data.previousHref}<a href={data.previousHref} rel="prev">← Previous</a>{:else}<span
+			{#if results.previousHref}<a href={results.previousHref} rel="prev">← Previous</a>{:else}<span
 					>← Previous</span
 				>{/if}
-			<span>Page {data.page} / {data.pageCount}</span>
-			{#if data.nextHref}<a href={data.nextHref} rel="next">Next →</a>{:else}<span>Next →</span
+			<span>Page {results.page} / {results.pageCount}</span>
+			{#if results.nextHref}<a href={results.nextHref} rel="next">Next →</a>{:else}<span
+					>Next →</span
 				>{/if}
 		</nav>
 	{/snippet}
 	{@render pagination()}
 	<div class="portraits">
-		{#each data.heroes as hero (hero.heroId)}
+		{#each results.heroes as hero (hero.heroId)}
 			<article>
 				<a
 					class="portrait"
@@ -92,7 +119,7 @@
 			</article>
 		{/each}
 	</div>
-	{#if data.total === 0}<div class="empty">
+	{#if results.total === 0}<div class="empty">
 			<h2>No heroes match this search.</h2>
 			<p>Try a shorter name, another hair or wardrobe detail, or all collections.</p>
 			<a href={resolve('/wiki/heroes')}>Show all 736 heroes →</a>

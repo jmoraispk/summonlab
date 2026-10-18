@@ -1,0 +1,57 @@
+name: Publish wiki
+
+on:
+  push:
+    branches: [main, codex/public-archive-readme]
+    paths:
+      - 'apps/wiki/**'
+      - 'apps/web/src/**'
+      - 'apps/web/static/**'
+      - 'assets/**'
+      - 'docs/wiki/**'
+      - 'docs/readme-gallery/hero-archive.json'
+      - 'pnpm-lock.yaml'
+      - '.github/workflows/wiki-pages.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: wiki-pages
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Fetch wiki image masters
+        run: >-
+          git lfs pull --include="assets/wiki/skills/icon-production-v2/frames/*.png,assets/heroes/approved/summonable-roster-v1/sources/aear-soro/summon.png,docs/evidence/living-village-lab-cutouts-v1/*.png"
+
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .node-version
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+      - uses: actions/configure-pages@v6
+      - name: Build wiki only
+        run: pnpm --filter @summonlab/wiki build
+      - name: Verify static pages and local media
+        run: node apps/wiki/scripts/verify.mjs
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          path: apps/wiki/build
+      - name: Publish wiki
+        id: deployment
+        uses: actions/deploy-pages@v5

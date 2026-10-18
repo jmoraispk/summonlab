@@ -31,6 +31,16 @@ function thrownRouteResult(slug: string): { status: number; location?: string } 
 }
 
 describe('online wiki registry', () => {
+	it('preserves consolidation and legacy redirects with static-host trailing slashes', () => {
+		expect(thrownRouteResult('creatures/monsters/armored-brood-guard/')).toEqual({
+			status: 308,
+			location: '/wiki/creatures/monsters/reconciliation'
+		});
+		expect(thrownRouteResult('mechanics/affinities/')).toEqual({
+			status: 308,
+			location: '/wiki/mechanics/progression/affinities'
+		});
+	});
 	it('puts the selected monster families first without changing the canonical catalog', () => {
 		const families = getMonsterVisualDatabase();
 		expect(families.slice(0, 8).map(({ familyId }) => familyId)).toEqual([

@@ -72,6 +72,98 @@ for (const width of [1440, 390]) {
 	});
 }
 
+for (const width of [1440, 390]) {
+	test(`browses the bestiary gallery while preserving zoom controls and opener focus at ${width}px`, async ({
+		page
+	}) => {
+		await page.setViewportSize({ width, height: 900 });
+		await page.route('https://media.githubusercontent.com/**', (route) => route.abort());
+		await page.goto('/wiki/creatures/monsters', { waitUntil: 'networkidle' });
+		const triggers = page.getByRole('button', { name: /^Enlarge /u });
+		const opener = triggers.first();
+		const secondName = (await triggers.nth(1).getAttribute('aria-label'))!.replace('Enlarge ', '');
+		const nextFamilyName = (await triggers.nth(5).getAttribute('aria-label'))!.replace(
+			'Enlarge ',
+			''
+		);
+		await expect(opener).not.toContainText('Zoom');
+		await opener.click();
+		const dialog = page.getByRole('dialog');
+		await expect(dialog.getByRole('button', { name: 'Previous image' })).toBeDisabled();
+		await expect(dialog.getByText('1 / 190', { exact: true })).toBeVisible();
+		const next = dialog.getByRole('button', { name: 'Next image' });
+		const box = await next.boundingBox();
+		expect(box!.width).toBeGreaterThanOrEqual(44);
+		expect(box!.height).toBeGreaterThanOrEqual(44);
+		await dialog.getByRole('button', { name: 'Zoom in', exact: true }).click();
+		await next.click();
+		await expect(dialog).toHaveAttribute('aria-label', secondName);
+		await expect(dialog.getByRole('img')).toHaveAttribute('alt', secondName);
+		await expect(dialog.getByRole('status')).toHaveText('100%');
+		await expect(dialog.getByText('2 / 190', { exact: true })).toBeVisible();
+		await expect(dialog).toContainText('Original image unavailable');
+		expect(
+			await dialog.getByRole('region').evaluate((area) => area.scrollLeft + area.scrollTop)
+		).toBe(0);
+		await next.press('ArrowLeft');
+		await expect(dialog.getByText('1 / 190', { exact: true })).toBeVisible();
+		await next.press('ArrowRight');
+		await expect(dialog.getByText('2 / 190', { exact: true })).toBeVisible();
+		await dialog.getByRole('button', { name: 'Zoom in', exact: true }).click();
+		const viewport = dialog.getByRole('region');
+		await viewport.focus();
+		await viewport.press('ArrowRight');
+		await expect(dialog.getByText('2 / 190', { exact: true })).toBeVisible();
+		await expect.poll(() => viewport.evaluate((area) => area.scrollLeft)).toBeGreaterThan(0);
+		for (let step = 0; step < 4; step++) await next.click();
+		await expect(dialog).toHaveAttribute('aria-label', nextFamilyName);
+		await expect(dialog.getByText('6 / 190', { exact: true })).toBeVisible();
+		await page.keyboard.press('Escape');
+		await expect(opener).toBeFocused();
+		await triggers.last().click();
+		await expect(dialog.getByText('190 / 190', { exact: true })).toBeVisible();
+		await expect(dialog.getByRole('button', { name: 'Next image' })).toBeDisabled();
+		await dialog.getByRole('button', { name: 'Close image' }).click();
+		await expect(triggers.last()).toBeFocused();
+	});
+}
+
+test('keeps family browsing in the selected affinity and form browsing in displayed affinity order', async ({
+	page
+}) => {
+	await page.route('https://media.githubusercontent.com/**', (route) => route.abort());
+	await page.goto('/wiki/creatures/monsters/families/goblins', { waitUntil: 'networkidle' });
+	await page.getByRole('button', { name: 'Show Fire affinity' }).click();
+	const familyTriggers = page.locator('.family-atlas').getByRole('button', { name: /^Enlarge /u });
+	const secondName = (await familyTriggers.nth(1).getAttribute('aria-label'))!.replace(
+		'Enlarge ',
+		''
+	);
+	await familyTriggers.first().click();
+	const dialog = page.getByRole('dialog');
+	await expect(dialog.getByText('1 / 5', { exact: true })).toBeVisible();
+	await dialog.getByRole('button', { name: 'Next image' }).click();
+	await expect(dialog).toHaveAttribute('aria-label', secondName);
+	await expect(dialog.getByRole('img')).toHaveAttribute('alt', /Fire affinity$/u);
+	await expect(dialog.getByRole('link', { name: 'Open original image' })).toHaveAttribute(
+		'href',
+		/fire-v1\.png$/u
+	);
+	await dialog.getByRole('button', { name: 'Close image' }).click();
+	await expect(familyTriggers.first()).toBeFocused();
+	await page.goto('/wiki/creatures/monsters/goblin-runt', { waitUntil: 'networkidle' });
+	await page.getByRole('button', { name: 'Enlarge Runt, Fire affinity' }).click();
+	await expect(dialog.getByText('2 / 5', { exact: true })).toBeVisible();
+	await dialog.getByRole('button', { name: 'Next image' }).click();
+	await expect(dialog).toHaveAttribute('aria-label', 'Runt, Earth affinity');
+	await expect(dialog.getByRole('link', { name: 'Open original image' })).toHaveAttribute(
+		'href',
+		/earth-v1\.png$/u
+	);
+	await dialog.getByRole('button', { name: 'Previous image' }).click();
+	await expect(dialog).toHaveAttribute('aria-label', 'Runt, Fire affinity');
+});
+
 test('enlarges the selected affinity in family and form views, with a preview fallback', async ({
 	page
 }) => {

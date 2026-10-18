@@ -1,5 +1,6 @@
 import { marked, Renderer } from 'marked';
 import path from 'node:path';
+import { base } from '$app/paths';
 
 import catalog from '../../../../../docs/wiki/catalog.json';
 
@@ -190,6 +191,9 @@ function resolveTarget(target: string, sourcePath: string): string {
 	);
 
 	if (repositoryPath.startsWith('docs/wiki/') && repositoryPath.endsWith('.md')) {
+		if (!catalog.entries.some((entry) => entry.path === repositoryPath)) {
+			return `https://github.com/jmoraispk/summonlab/blob/main/${repositoryPath}${suffix}`;
+		}
 		const route = routeFromWikiPath(repositoryPath.replace('docs/wiki/', ''));
 		const consolidated = getWikiConsolidationRedirect(route.replace('/wiki/', ''));
 		if (consolidated) {
@@ -229,13 +233,15 @@ function renderMarkdown(source: string, sourcePath: string): string {
 	};
 
 	renderer.link = function ({ href, title, tokens }) {
-		const resolved = resolveTarget(href, sourcePath);
+		const target = resolveTarget(href, sourcePath);
+		const resolved = target.startsWith('/wiki') ? `${base}${target}` : target;
 		const titleAttribute = title ? ` title="${escapeAttribute(title)}"` : '';
 		return `<a href="${escapeAttribute(resolved)}"${titleAttribute}>${this.parser.parseInline(tokens)}</a>`;
 	};
 
 	renderer.image = ({ href, title, text }) => {
-		const resolved = resolveTarget(href, sourcePath);
+		const target = resolveTarget(href, sourcePath);
+		const resolved = target.startsWith('/wiki') ? `${base}${target}` : target;
 		const titleAttribute = title ? ` title="${escapeAttribute(title)}"` : '';
 		return `<img src="${escapeAttribute(resolved)}" alt="${escapeAttribute(text)}"${titleAttribute} loading="lazy" decoding="async">`;
 	};

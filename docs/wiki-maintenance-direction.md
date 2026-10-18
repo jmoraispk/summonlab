@@ -92,3 +92,16 @@ local preview fallback if that source is unavailable. These originals use Git LF
 media endpoint rather than its raw endpoint, which returns pointer text. Keep the viewed region
 centered when changing magnification. Keep names as links to combat detail pages.
 Show complete images with preserved proportions rather than cropping to fill square cards.
+
+## Public wiki and gallery navigation
+
+Accepted feedback: keep the enlarged viewer, replace its thumbnail label with a small magnifying
+glass, and add left/right image arrows. Browse normal forms in bestiary order, the five forms of a
+family's selected affinity, or the five affinities of an individual form. Reset zoom when changing
+images, preserve keyboard panning in a focused enlarged image, and return focus to the opener.
+
+Publish the wiki separately on GitHub Pages and link it prominently from the README. The isolated
+static app reuses the current wiki, galleries, and reader navigation. All 736 hero identities remain
+searchable with shared query URLs, collection filters, pagination, and browser history. Keep game
+routes and API endpoints out of the publication. Build and deployment details are in
+[Publishing the wiki](wiki-publishing.md).

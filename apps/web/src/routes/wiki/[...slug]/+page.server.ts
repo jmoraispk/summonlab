@@ -1,4 +1,5 @@
 import { error, redirect } from '@sveltejs/kit';
+import { base } from '$app/paths';
 
 import {
 	getLegacyMonsterWikiRedirect,
@@ -22,12 +23,13 @@ const visualPacketHeroes = [
 ] as const;
 
 export const load = (({ params }) => {
-	const consolidatedDestination = getWikiConsolidationRedirect(params.slug);
-	if (consolidatedDestination) redirect(308, consolidatedDestination);
-	const legacyMonsterId = params.slug.match(/^creatures\/monsters\/([a-z][a-z0-9-]*)$/u)?.[1];
+	const slug = params.slug.replace(/\/+$/u, '');
+	const consolidatedDestination = getWikiConsolidationRedirect(slug);
+	if (consolidatedDestination) redirect(308, `${base}${consolidatedDestination}`);
+	const legacyMonsterId = slug.match(/^creatures\/monsters\/([a-z][a-z0-9-]*)$/u)?.[1];
 	const legacyDestination = legacyMonsterId ? getLegacyMonsterWikiRedirect(legacyMonsterId) : null;
-	if (legacyDestination) redirect(308, legacyDestination);
-	const wikiPage = getWikiPage(params.slug);
+	if (legacyDestination) redirect(308, `${base}${legacyDestination}`);
+	const wikiPage = getWikiPage(slug);
 	if (!wikiPage || wikiPage.href === '/wiki') error(404, 'Wiki page not found');
 
 	return {

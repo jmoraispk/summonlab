@@ -1,5 +1,6 @@
 import { createHash } from 'node:crypto';
 import { isDeepStrictEqual } from 'node:util';
+import { base } from '$app/paths';
 
 import canonicalCatalogSource from '../../../../../assets/wiki/skills/icon-production-v2/catalog.json';
 import canonicalCatalogRaw from '../../../../../assets/wiki/skills/icon-production-v2/catalog.json?raw';
@@ -264,7 +265,7 @@ export function buildSkillVisualCatalog(
 			primaryVisualParent: parent
 				? { targetId: parentId!, name: string(parent.name, 'parent name') }
 				: null,
-			image: { publicPath, width: 512, height: 512 },
+			image: { publicPath: `${base}${publicPath}`, width: 512, height: 512 },
 			provenance: { status: 'approved', sourcePath, runtimePath: file }
 		};
 		Object.freeze(output.labels);

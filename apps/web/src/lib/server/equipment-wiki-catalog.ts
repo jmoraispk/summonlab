@@ -1,4 +1,5 @@
 import { createHash } from 'node:crypto';
+import { base } from '$app/paths';
 
 import materialRaw from '../../../../../assets/equipment/approved/material-equipment-v1/manifest.json?raw';
 import greatswordRaw from '../../../../../assets/equipment/approved/two-handed-greatsword-v1/manifest.json?raw';
@@ -205,7 +206,7 @@ export function buildEquipmentWikiCatalog(
 			sourcePath: source.approved.path,
 			sourceContentHash: source.approved.sha256,
 			image: Object.freeze({
-				publicPath: derived.publicPath,
+				publicPath: `${base}${derived.publicPath}`,
 				width: derived.width,
 				height: derived.height,
 				contentHash: derived.contentHash

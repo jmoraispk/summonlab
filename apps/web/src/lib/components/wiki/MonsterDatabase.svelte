@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
 	import MonsterArtwork from './MonsterArtwork.svelte';
+	import type { MonsterArtworkImage } from './monster-artwork';
 
 	type Variant = {
 		affinity: string;
@@ -32,6 +33,22 @@
 	const coordinateCount = $derived(formCount * 5);
 	const normalVariant = (form: Form) =>
 		form.variants.find((variant) => variant.affinity === 'normal');
+	const gallery = $derived<MonsterArtworkImage[]>(
+		families.flatMap((family) =>
+			family.forms.flatMap((form) => {
+				const variant = normalVariant(form);
+				return variant
+					? [
+							{
+								src: variant.thumbnailPath,
+								sourcePath: variant.sourcePath,
+								alt: `${form.name}, Normal affinity`
+							}
+						]
+					: [];
+			})
+		)
+	);
 	const roleName = (role: string) => role.replace(/\s+\([^)]*\)$/u, '');
 	const mechanicName = (mechanic: string | null) => mechanic?.split(':', 1)[0]?.trim() ?? null;
 </script>
@@ -69,6 +86,7 @@
 					<article class="monster-card">
 						{#if normal}
 							<MonsterArtwork
+								{gallery}
 								src={normal.thumbnailPath}
 								sourcePath={normal.sourcePath}
 								alt={`${form.name}, Normal affinity`}

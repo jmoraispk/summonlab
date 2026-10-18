@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { base } from '$app/paths';
 	import { resolve } from '$app/paths';
 
 	import { SKILL_DOMAINS, type SkillTreeFamily } from './skill-tree-data';
@@ -58,7 +59,7 @@
 				onclick={() => toggleDomain(domain.id)}
 			>
 				<span class="domain-node-image">
-					<img src={domain.image} alt="" width="900" height="900" />
+					<img src={`${base}${domain.image}`} alt="" width="900" height="900" />
 				</span>
 				<strong>{domain.name}</strong>
 				<small>{domain.families.length} families</small>
