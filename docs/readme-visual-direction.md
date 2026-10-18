@@ -16,7 +16,7 @@ Review date: 2026-10-17.
 - Include Asha, Nessa, and Toma as a labeled combat prototype row within Heroes, in screenshot
   order. This accepted revision supersedes the earlier request to omit combat chibis.
 - Omit catalog links from the Enemies and Equipment sections; the images should stand on their own.
-- Keep a small notice at the very end: the website is no longer available and development is paused
+- Show a framed GitHub Important notice at the very end: the website is no longer available and development is paused
   for now. Do not physically archive the GitHub repository.
 - Publish the proposal on `codex/public-archive-readme` for online review.
 

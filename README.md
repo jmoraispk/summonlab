@@ -412,6 +412,7 @@ pnpm db:stop   # stop local PostgreSQL
 
 ---
 
-**Archive notice:** The game website is no longer available, and development is paused for now.
-The [wiki remains available](https://jmoraispk.github.io/summonlab/wiki/). This repository preserves
-Summonlab's prototype, artwork, and intended game design.
+> [!IMPORTANT]
+> **Archive notice:** The game website is no longer available, and development is paused for now.
+> The [wiki remains available](https://jmoraispk.github.io/summonlab/wiki/). This repository preserves
+> Summonlab's prototype, artwork, and intended game design.
