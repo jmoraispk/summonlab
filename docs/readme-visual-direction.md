@@ -112,8 +112,9 @@ proposed +26 wording to match the catalog count.
 Text labels remain readable document text, and each image links to its exact original PNG. The
 existing 512-pixel equipment and skill exports provide sharp individual previews. Monster previews
 fit the full original image proportionally inside a 512 × 512 transparent canvas, without cropping
-or stretching. All monster and equipment thumbnails request 128 × 128 pixels and align to the
-top of their cells; monster captions occupy a separate row. Nonbreaking tier/form headers keep
+or stretching. Monster images fill their cells proportionally across the full table width instead
+of stopping at 128 pixels. Equipment thumbnails request 128 × 128 pixels. Both align to the top of
+their cells; monster captions occupy a separate row. Nonbreaking tier/form headers keep
 the five monster columns from shrinking unevenly in GitHub’s narrow-screen table layout. Current bindings are recorded in `readmeInputs` in the gallery provenance;
 the original `inputs` array remains the historical contact-sheet capture record.
 The reproducible monster export is `python3 tools/export-readme-monsters.py`; add `--check` to

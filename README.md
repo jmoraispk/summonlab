@@ -86,11 +86,11 @@ also includes earlier studies and combat prototypes.
   <thead><tr><th>Family</th><th>T1&nbsp;·&nbsp;Monster&nbsp;form</th><th>T2&nbsp;·&nbsp;Monster&nbsp;form</th><th>T3&nbsp;·&nbsp;Monster&nbsp;form</th><th>T4&nbsp;·&nbsp;Monster&nbsp;form</th><th>T5&nbsp;·&nbsp;Monster&nbsp;form</th></tr></thead>
   <tbody>
     <tr><th scope="rowgroup" rowspan="2">Giants</th>
-      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/giants/giant-brute/normal-v1.png"><img src="docs/readme-gallery/monsters/giant-brute.793e5ebbe3db.webp" alt="Brute" width="128" height="128"></a></td>
-      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/giants/giant-hill-giant/normal-v1.png"><img src="docs/readme-gallery/monsters/giant-hill-giant.6c59319df356.webp" alt="Hill Giant" width="128" height="128"></a></td>
-      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/giants/giant-stone-giant/normal-v2.png"><img src="docs/readme-gallery/monsters/giant-stone-giant.5a137d742354.webp" alt="Stone Giant" width="128" height="128"></a></td>
-      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/giants/giant-mountain-lord/normal-v1.png"><img src="docs/readme-gallery/monsters/giant-mountain-lord.7bfce6d243b7.webp" alt="Mountain Lord" width="128" height="128"></a></td>
-      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/giants/giant-primordial-titan/normal-v2.png"><img src="docs/readme-gallery/monsters/giant-primordial-titan.2a0cdbb4101d.webp" alt="Primordial Titan" width="128" height="128"></a></td>
+      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/giants/giant-brute/normal-v1.png"><img src="docs/readme-gallery/monsters/giant-brute.793e5ebbe3db.webp" alt="Brute" width="100%"></a></td>
+      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/giants/giant-hill-giant/normal-v1.png"><img src="docs/readme-gallery/monsters/giant-hill-giant.6c59319df356.webp" alt="Hill Giant" width="100%"></a></td>
+      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/giants/giant-stone-giant/normal-v2.png"><img src="docs/readme-gallery/monsters/giant-stone-giant.5a137d742354.webp" alt="Stone Giant" width="100%"></a></td>
+      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/giants/giant-mountain-lord/normal-v1.png"><img src="docs/readme-gallery/monsters/giant-mountain-lord.7bfce6d243b7.webp" alt="Mountain Lord" width="100%"></a></td>
+      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/giants/giant-primordial-titan/normal-v2.png"><img src="docs/readme-gallery/monsters/giant-primordial-titan.2a0cdbb4101d.webp" alt="Primordial Titan" width="100%"></a></td>
     </tr>
     <tr>
       <td align="center" width="18%"><sub><strong>Brute</strong></sub></td>
@@ -100,11 +100,11 @@ also includes earlier studies and combat prototypes.
       <td align="center" width="18%"><sub><strong>Primordial Titan</strong></sub></td>
     </tr>
     <tr><th scope="rowgroup" rowspan="2">Orcs</th>
-      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/orcs/orc-grunt/normal-v1.png"><img src="docs/readme-gallery/monsters/orc-grunt.c0bdfaf44dca.webp" alt="Grunt" width="128" height="128"></a></td>
-      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/orcs/orc-warrior/normal-v1.png"><img src="docs/readme-gallery/monsters/orc-warrior.fd9f4d050156.webp" alt="Warrior" width="128" height="128"></a></td>
-      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/orcs/orc-berserker/normal-v1.png"><img src="docs/readme-gallery/monsters/orc-berserker.05227f4b5fe8.webp" alt="Berserker" width="128" height="128"></a></td>
-      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/orcs/orc-warchief/normal-v1.png"><img src="docs/readme-gallery/monsters/orc-warchief.8e7178010c9f.webp" alt="Warchief" width="128" height="128"></a></td>
-      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/orcs/orc-overlord/normal-v2.png"><img src="docs/readme-gallery/monsters/orc-overlord.1f568d275c35.webp" alt="Overlord" width="128" height="128"></a></td>
+      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/orcs/orc-grunt/normal-v1.png"><img src="docs/readme-gallery/monsters/orc-grunt.c0bdfaf44dca.webp" alt="Grunt" width="100%"></a></td>
+      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/orcs/orc-warrior/normal-v1.png"><img src="docs/readme-gallery/monsters/orc-warrior.fd9f4d050156.webp" alt="Warrior" width="100%"></a></td>
+      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/orcs/orc-berserker/normal-v1.png"><img src="docs/readme-gallery/monsters/orc-berserker.05227f4b5fe8.webp" alt="Berserker" width="100%"></a></td>
+      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/orcs/orc-warchief/normal-v1.png"><img src="docs/readme-gallery/monsters/orc-warchief.8e7178010c9f.webp" alt="Warchief" width="100%"></a></td>
+      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/orcs/orc-overlord/normal-v2.png"><img src="docs/readme-gallery/monsters/orc-overlord.1f568d275c35.webp" alt="Overlord" width="100%"></a></td>
     </tr>
     <tr>
       <td align="center" width="18%"><sub><strong>Grunt</strong></sub></td>
@@ -114,11 +114,11 @@ also includes earlier studies and combat prototypes.
       <td align="center" width="18%"><sub><strong>Overlord</strong></sub></td>
     </tr>
     <tr><th scope="rowgroup" rowspan="2">Trolls</th>
-      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/trolls/troll-scrag/normal-v1.png"><img src="docs/readme-gallery/monsters/troll-scrag.2807d224cdde.webp" alt="Scrag" width="128" height="128"></a></td>
-      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/trolls/troll-bog-troll/normal-v1.png"><img src="docs/readme-gallery/monsters/troll-bog-troll.913bf4e5a7ad.webp" alt="Bog Troll" width="128" height="128"></a></td>
-      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/trolls/troll-mutant-troll/normal-v2.png"><img src="docs/readme-gallery/monsters/troll-mutant-troll.615e73945a81.webp" alt="Mutant Troll" width="128" height="128"></a></td>
-      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/trolls/troll-scarlord/normal-v1.png"><img src="docs/readme-gallery/monsters/troll-scarlord.225aca2e7076.webp" alt="Scarlord" width="128" height="128"></a></td>
-      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/trolls/troll-elder-troll/normal-v2.png"><img src="docs/readme-gallery/monsters/troll-elder-troll.2e18aecc2698.webp" alt="Elder Troll" width="128" height="128"></a></td>
+      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/trolls/troll-scrag/normal-v1.png"><img src="docs/readme-gallery/monsters/troll-scrag.2807d224cdde.webp" alt="Scrag" width="100%"></a></td>
+      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/trolls/troll-bog-troll/normal-v1.png"><img src="docs/readme-gallery/monsters/troll-bog-troll.913bf4e5a7ad.webp" alt="Bog Troll" width="100%"></a></td>
+      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/trolls/troll-mutant-troll/normal-v2.png"><img src="docs/readme-gallery/monsters/troll-mutant-troll.615e73945a81.webp" alt="Mutant Troll" width="100%"></a></td>
+      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/trolls/troll-scarlord/normal-v1.png"><img src="docs/readme-gallery/monsters/troll-scarlord.225aca2e7076.webp" alt="Scarlord" width="100%"></a></td>
+      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/trolls/troll-elder-troll/normal-v2.png"><img src="docs/readme-gallery/monsters/troll-elder-troll.2e18aecc2698.webp" alt="Elder Troll" width="100%"></a></td>
     </tr>
     <tr>
       <td align="center" width="18%"><sub><strong>Scrag</strong></sub></td>
@@ -128,11 +128,11 @@ also includes earlier studies and combat prototypes.
       <td align="center" width="18%"><sub><strong>Elder Troll</strong></sub></td>
     </tr>
     <tr><th scope="rowgroup" rowspan="2">Harpies</th>
-      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/harpies/harpy-screecher/normal-v1.png"><img src="docs/readme-gallery/monsters/harpy-screecher.4547b1397060.webp" alt="Screecher" width="128" height="128"></a></td>
-      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/harpies/harpy-talon/normal-v1.png"><img src="docs/readme-gallery/monsters/harpy-talon.a45a749639d7.webp" alt="Talon" width="128" height="128"></a></td>
-      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/harpies/harpy-skyrender/normal-v2.png"><img src="docs/readme-gallery/monsters/harpy-skyrender.1fa02e6ae492.webp" alt="Skyrender" width="128" height="128"></a></td>
-      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/harpies/harpy-matriarch/normal-v1.png"><img src="docs/readme-gallery/monsters/harpy-matriarch.9b6f14187349.webp" alt="Matriarch" width="128" height="128"></a></td>
-      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/harpies/harpy-sky-queen/normal-v2.png"><img src="docs/readme-gallery/monsters/harpy-sky-queen.471d01a3ba8f.webp" alt="Sky Queen" width="128" height="128"></a></td>
+      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/harpies/harpy-screecher/normal-v1.png"><img src="docs/readme-gallery/monsters/harpy-screecher.4547b1397060.webp" alt="Screecher" width="100%"></a></td>
+      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/harpies/harpy-talon/normal-v1.png"><img src="docs/readme-gallery/monsters/harpy-talon.a45a749639d7.webp" alt="Talon" width="100%"></a></td>
+      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/harpies/harpy-skyrender/normal-v2.png"><img src="docs/readme-gallery/monsters/harpy-skyrender.1fa02e6ae492.webp" alt="Skyrender" width="100%"></a></td>
+      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/harpies/harpy-matriarch/normal-v1.png"><img src="docs/readme-gallery/monsters/harpy-matriarch.9b6f14187349.webp" alt="Matriarch" width="100%"></a></td>
+      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/harpies/harpy-sky-queen/normal-v2.png"><img src="docs/readme-gallery/monsters/harpy-sky-queen.471d01a3ba8f.webp" alt="Sky Queen" width="100%"></a></td>
     </tr>
     <tr>
       <td align="center" width="18%"><sub><strong>Screecher</strong></sub></td>
@@ -142,11 +142,11 @@ also includes earlier studies and combat prototypes.
       <td align="center" width="18%"><sub><strong>Sky Queen</strong></sub></td>
     </tr>
     <tr><th scope="rowgroup" rowspan="2">Minotaurs</th>
-      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/minotaurs/minotaur-bull-kin/normal-v1.png"><img src="docs/readme-gallery/monsters/minotaur-bull-kin.6c90fd367491.webp" alt="Bull-kin" width="128" height="128"></a></td>
-      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/minotaurs/minotaur-charger/normal-v1.png"><img src="docs/readme-gallery/monsters/minotaur-charger.2fd73cf212b5.webp" alt="Charger" width="128" height="128"></a></td>
-      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/minotaurs/minotaur-labyrinth-warrior/normal-v1.png"><img src="docs/readme-gallery/monsters/minotaur-labyrinth-warrior.ffc2fae466f6.webp" alt="Labyrinth Warrior" width="128" height="128"></a></td>
-      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/minotaurs/minotaur-arena-champion/normal-v1.png"><img src="docs/readme-gallery/monsters/minotaur-arena-champion.ff11631c4c11.webp" alt="Arena Champion" width="128" height="128"></a></td>
-      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/minotaurs/minotaur-bull-emperor/normal-v2.png"><img src="docs/readme-gallery/monsters/minotaur-bull-emperor.4238d76fdc4b.webp" alt="Bull Emperor" width="128" height="128"></a></td>
+      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/minotaurs/minotaur-bull-kin/normal-v1.png"><img src="docs/readme-gallery/monsters/minotaur-bull-kin.6c90fd367491.webp" alt="Bull-kin" width="100%"></a></td>
+      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/minotaurs/minotaur-charger/normal-v1.png"><img src="docs/readme-gallery/monsters/minotaur-charger.2fd73cf212b5.webp" alt="Charger" width="100%"></a></td>
+      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/minotaurs/minotaur-labyrinth-warrior/normal-v1.png"><img src="docs/readme-gallery/monsters/minotaur-labyrinth-warrior.ffc2fae466f6.webp" alt="Labyrinth Warrior" width="100%"></a></td>
+      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/minotaurs/minotaur-arena-champion/normal-v1.png"><img src="docs/readme-gallery/monsters/minotaur-arena-champion.ff11631c4c11.webp" alt="Arena Champion" width="100%"></a></td>
+      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/minotaurs/minotaur-bull-emperor/normal-v2.png"><img src="docs/readme-gallery/monsters/minotaur-bull-emperor.4238d76fdc4b.webp" alt="Bull Emperor" width="100%"></a></td>
     </tr>
     <tr>
       <td align="center" width="18%"><sub><strong>Bull-kin</strong></sub></td>
@@ -156,11 +156,11 @@ also includes earlier studies and combat prototypes.
       <td align="center" width="18%"><sub><strong>Bull Emperor</strong></sub></td>
     </tr>
     <tr><th scope="rowgroup" rowspan="2">Golems</th>
-      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/golems/golem-clay-figure/normal-v1.png"><img src="docs/readme-gallery/monsters/golem-clay-figure.4ef42c527712.webp" alt="Clay Figure" width="128" height="128"></a></td>
-      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/golems/golem-stone-servant/normal-v1.png"><img src="docs/readme-gallery/monsters/golem-stone-servant.25470a9b3925.webp" alt="Stone Servant" width="128" height="128"></a></td>
-      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/golems/golem-rune-warrior/normal-v2.png"><img src="docs/readme-gallery/monsters/golem-rune-warrior.22e922a00af5.webp" alt="Rune Warrior" width="128" height="128"></a></td>
-      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/golems/golem-basalt-colossus/normal-v1.png"><img src="docs/readme-gallery/monsters/golem-basalt-colossus.013efcaa3996.webp" alt="Basalt Colossus" width="128" height="128"></a></td>
-      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/golems/golem-master-golem/normal-v2.png"><img src="docs/readme-gallery/monsters/golem-master-golem.b7fd82163110.webp" alt="Master Golem" width="128" height="128"></a></td>
+      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/golems/golem-clay-figure/normal-v1.png"><img src="docs/readme-gallery/monsters/golem-clay-figure.4ef42c527712.webp" alt="Clay Figure" width="100%"></a></td>
+      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/golems/golem-stone-servant/normal-v1.png"><img src="docs/readme-gallery/monsters/golem-stone-servant.25470a9b3925.webp" alt="Stone Servant" width="100%"></a></td>
+      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/golems/golem-rune-warrior/normal-v2.png"><img src="docs/readme-gallery/monsters/golem-rune-warrior.22e922a00af5.webp" alt="Rune Warrior" width="100%"></a></td>
+      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/golems/golem-basalt-colossus/normal-v1.png"><img src="docs/readme-gallery/monsters/golem-basalt-colossus.013efcaa3996.webp" alt="Basalt Colossus" width="100%"></a></td>
+      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/golems/golem-master-golem/normal-v2.png"><img src="docs/readme-gallery/monsters/golem-master-golem.b7fd82163110.webp" alt="Master Golem" width="100%"></a></td>
     </tr>
     <tr>
       <td align="center" width="18%"><sub><strong>Clay Figure</strong></sub></td>
@@ -170,11 +170,11 @@ also includes earlier studies and combat prototypes.
       <td align="center" width="18%"><sub><strong>Master Golem</strong></sub></td>
     </tr>
     <tr><th scope="rowgroup" rowspan="2">Treants</th>
-      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/treants/treant-sapling-walker/normal-v1.png"><img src="docs/readme-gallery/monsters/treant-sapling-walker.ffdfed52e888.webp" alt="Sapling-walker" width="128" height="128"></a></td>
-      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/treants/treant-young-treant/normal-v1.png"><img src="docs/readme-gallery/monsters/treant-young-treant.4396fb1cdd90.webp" alt="Young Treant" width="128" height="128"></a></td>
-      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/treants/treant-oakheart/normal-v2.png"><img src="docs/readme-gallery/monsters/treant-oakheart.6480522c76b0.webp" alt="Oakheart" width="128" height="128"></a></td>
-      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/treants/treant-elder-warden/normal-v1.png"><img src="docs/readme-gallery/monsters/treant-elder-warden.bdc488b34f8d.webp" alt="Elder Warden" width="128" height="128"></a></td>
-      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/treants/treant-world-tree-warden/normal-v1.png"><img src="docs/readme-gallery/monsters/treant-world-tree-warden.cd33c475848f.webp" alt="World-Tree Warden" width="128" height="128"></a></td>
+      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/treants/treant-sapling-walker/normal-v1.png"><img src="docs/readme-gallery/monsters/treant-sapling-walker.ffdfed52e888.webp" alt="Sapling-walker" width="100%"></a></td>
+      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/treants/treant-young-treant/normal-v1.png"><img src="docs/readme-gallery/monsters/treant-young-treant.4396fb1cdd90.webp" alt="Young Treant" width="100%"></a></td>
+      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/treants/treant-oakheart/normal-v2.png"><img src="docs/readme-gallery/monsters/treant-oakheart.6480522c76b0.webp" alt="Oakheart" width="100%"></a></td>
+      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/treants/treant-elder-warden/normal-v1.png"><img src="docs/readme-gallery/monsters/treant-elder-warden.bdc488b34f8d.webp" alt="Elder Warden" width="100%"></a></td>
+      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/treants/treant-world-tree-warden/normal-v1.png"><img src="docs/readme-gallery/monsters/treant-world-tree-warden.cd33c475848f.webp" alt="World-Tree Warden" width="100%"></a></td>
     </tr>
     <tr>
       <td align="center" width="18%"><sub><strong>Sapling-walker</strong></sub></td>
@@ -184,11 +184,11 @@ also includes earlier studies and combat prototypes.
       <td align="center" width="18%"><sub><strong>World-Tree Warden</strong></sub></td>
     </tr>
     <tr><th scope="rowgroup" rowspan="2">Dragons</th>
-      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/dragons/dragon-whelp/normal-v1.png"><img src="docs/readme-gallery/monsters/dragon-whelp.3520907faf75.webp" alt="Whelp" width="128" height="128"></a></td>
-      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/dragons/dragon-fledgling/normal-v1.png"><img src="docs/readme-gallery/monsters/dragon-fledgling.786495ae0500.webp" alt="Fledgling" width="128" height="128"></a></td>
-      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/dragons/dragon-drake/normal-v2.png"><img src="docs/readme-gallery/monsters/dragon-drake.6f901bcb97f8.webp" alt="Drake" width="128" height="128"></a></td>
-      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/dragons/dragon-elder-wyrm/normal-v1.png"><img src="docs/readme-gallery/monsters/dragon-elder-wyrm.7c38d1884f02.webp" alt="Elder Wyrm" width="128" height="128"></a></td>
-      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/dragons/dragon-emperor/normal-v2.png"><img src="docs/readme-gallery/monsters/dragon-emperor.91514b10a7e2.webp" alt="Dragon Emperor" width="128" height="128"></a></td>
+      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/dragons/dragon-whelp/normal-v1.png"><img src="docs/readme-gallery/monsters/dragon-whelp.3520907faf75.webp" alt="Whelp" width="100%"></a></td>
+      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/dragons/dragon-fledgling/normal-v1.png"><img src="docs/readme-gallery/monsters/dragon-fledgling.786495ae0500.webp" alt="Fledgling" width="100%"></a></td>
+      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/dragons/dragon-drake/normal-v2.png"><img src="docs/readme-gallery/monsters/dragon-drake.6f901bcb97f8.webp" alt="Drake" width="100%"></a></td>
+      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/dragons/dragon-elder-wyrm/normal-v1.png"><img src="docs/readme-gallery/monsters/dragon-elder-wyrm.7c38d1884f02.webp" alt="Elder Wyrm" width="100%"></a></td>
+      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/dragons/dragon-emperor/normal-v2.png"><img src="docs/readme-gallery/monsters/dragon-emperor.91514b10a7e2.webp" alt="Dragon Emperor" width="100%"></a></td>
     </tr>
     <tr>
       <td align="center" width="18%"><sub><strong>Whelp</strong></sub></td>

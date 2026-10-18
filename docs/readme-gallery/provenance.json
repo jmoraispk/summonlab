@@ -957,9 +957,9 @@
 				],
 				"catalogFamilyCount": 38,
 				"remainingFamilyCount": 30,
-				"layout": "Eight families with five T1–T5 forms. Separate image and caption rows keep images aligned. Full README width; +30 more families footer.",
-				"imageWidth": 128,
-				"imageHeight": 128,
+				"layout": "Eight families with five T1–T5 forms. Separate image and caption rows keep images aligned. Proportional square images fill the five equally requested columns across the full README width; +30 more families footer.",
+				"imageWidth": "100%",
+				"imageHeight": "auto",
 				"previewExport": {
 					"script": "tools/export-readme-monsters.py",
 					"canvas": [
