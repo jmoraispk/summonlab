@@ -8,10 +8,16 @@ server endpoints, or a database connection.
 ## Build and verify
 
 ```sh
-pnpm --filter @summonlab/wiki build
-pnpm --filter @summonlab/wiki verify
-pnpm --filter @summonlab/wiki test:e2e
+pnpm install --frozen-lockfile
+pnpm --dir apps/wiki install --frozen-lockfile
+pnpm --dir apps/wiki build
+pnpm --dir apps/wiki verify
+pnpm --dir apps/wiki test:e2e
 ```
+
+The wiki is an independent pnpm workspace with its own lockfile. This keeps static-site
+dependencies outside the game’s approved art-production dependency seal. Root workspace commands
+continue to cover the game; use the commands above for the wiki.
 
 The build prepares ignored route and asset copies in `apps/wiki/src/routes` and
 `apps/wiki/static`. Edit the originals in `apps/web`, not those generated copies.
@@ -45,3 +51,9 @@ without merging the README work into `main`. The workflow also publishes from
 `main` after integration. Both triggers use one deployment concurrency group.
 The game remains paused; the wiki is the public browsing destination linked in
 the README.
+
+The wiki’s standalone lockfile avoids changing `pnpm-lock.yaml`, which is hash-bound by the game’s
+approved art-production launcher. Adding or updating wiki-only dependencies must use
+`pnpm --dir apps/wiki add --save-dev <package>`. Do not update the game’s approval receipts for a
+static-site dependency change. The Pages workflow installs both projects with frozen lockfiles
+because the wiki reuses source modules from the game workspace.

@@ -42,11 +42,15 @@ jobs:
         with:
           node-version-file: .node-version
           cache: pnpm
+          cache-dependency-path: |
+            pnpm-lock.yaml
+            apps/wiki/pnpm-lock.yaml
 
       - run: pnpm install --frozen-lockfile
+      - run: pnpm --dir apps/wiki install --frozen-lockfile
       - uses: actions/configure-pages@v6
       - name: Build wiki only
-        run: pnpm --filter @summonlab/wiki build
+        run: pnpm --dir apps/wiki build
       - name: Verify static pages and local media
         run: node apps/wiki/scripts/verify.mjs
       - uses: actions/upload-pages-artifact@v5
