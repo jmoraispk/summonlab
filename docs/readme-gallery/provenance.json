@@ -957,7 +957,7 @@
 				],
 				"catalogFamilyCount": 38,
 				"remainingFamilyCount": 30,
-				"layout": "Eight family heading rows each span five columns above their T1–T5 forms. There is no separate family column or tier header. Optional caption line breaks keep names from forcing horizontal overflow on narrow screens. Each top-aligned image and compact raised caption share a cell. Proportional square images fill five equally requested 20% columns across the full README width; +30 more families footer.",
+				"layout": "Eight family heading rows each span five columns above their T1–T5 forms. A top header labels the five tier columns T1–T5; there is no separate family column. Optional caption line breaks keep names from forcing horizontal overflow on narrow screens. Each top-aligned image and compact raised caption share a cell. Proportional square images fill five equally requested 20% columns across the full README width; +30 more families footer.",
 				"imageWidth": "100%",
 				"imageHeight": "auto",
 				"previewExport": {

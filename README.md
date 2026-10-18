@@ -83,6 +83,7 @@ also includes earlier studies and combat prototypes.
 ## Enemies
 
 <table width="100%">
+  <thead><tr><th scope="col" width="20%">T1</th><th scope="col" width="20%">T2</th><th scope="col" width="20%">T3</th><th scope="col" width="20%">T4</th><th scope="col" width="20%">T5</th></tr></thead>
   <tbody>
     <tr><th colspan="5" align="center">Giants</th></tr>
     <tr>

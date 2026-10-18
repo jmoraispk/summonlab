@@ -176,8 +176,8 @@ same image dimensions. Both README exporters reproduce this compact layout.
 
 The owner accepted the compact captions and requested family names above their images, following
 the equipment group headings. The monster table now has five columns, with each family name in a
-full-width heading row. The extra family column and tier-header row are removed. Forms remain in
-T1–T5 order, followed by the +30 more families footer. All 40 images and original artwork links are
+full-width heading row. The extra family column is removed. The top header row labels the five
+columns T1, T2, T3, T4, and T5, as the owner explicitly requested. Forms remain in that order, followed by the +30 more families footer. All 40 images and original artwork links are
 preserved. Captions include optional zero-width line breaks so long names can wrap without forcing
 the table beyond the available width; canonical names and alt text remain unchanged.
 
