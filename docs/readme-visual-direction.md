@@ -184,3 +184,11 @@ the table beyond the available width; canonical names and alt text remain unchan
 The owner authorized merging the finished proposal into main and making the repository public.
 The repository was already public when this final request was checked. It remains unarchived, with
 the visible README notice recording that the game website is unavailable and development is paused.
+
+## Equipment caption size
+
+The owner requested smaller text for Worldtree Limb Staff so its name fits comfortably beneath
+its image. All nine equipment weapon captions now use the same small bold text as the skill and
+monster captions: 75% of the README body font size. They stay centered under their images and can
+wrap inside their cells on narrower screens. The artwork sizes, equipment names, source links,
+and set labels are preserved.

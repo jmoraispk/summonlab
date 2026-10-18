@@ -977,7 +977,7 @@
 				"heading": "Equipment",
 				"inputSection": "equipment",
 				"images": 45,
-				"layout": "Nine complete five-piece sets grouped by armor class; ranks F, D, and S. Top-aligned proportional square images fill five equally requested columns across the full README width, without a fixed pixel size limit.",
+				"layout": "Nine complete five-piece sets grouped by armor class; ranks F, D, and S. Top-aligned proportional square images fill five equally requested columns across the full README width, without a fixed pixel size limit. Weapon names use compact, centered small captions at 75% of the body font size, matching the skill and monster captions.",
 				"imageWidth": "100%",
 				"imageHeight": "auto"
 			},
