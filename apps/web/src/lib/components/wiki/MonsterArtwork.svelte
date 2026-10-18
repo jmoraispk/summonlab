@@ -258,12 +258,20 @@
 		background: #010304e6;
 	}
 	header {
-		display: flex;
+		display: grid;
+		grid-template-columns: 5.5rem minmax(0, 1fr) 5.5rem;
 		align-items: center;
-		justify-content: space-between;
-		gap: 1rem;
+		gap: 0.5rem;
+	}
+	header button {
+		grid-column: 3;
+		justify-self: end;
 	}
 	strong {
+		grid-column: 2;
+		min-width: 0;
+		text-align: center;
+		overflow-wrap: anywhere;
 		font:
 			1.25rem Georgia,
 			serif;

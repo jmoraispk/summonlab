@@ -108,7 +108,7 @@ routes and API endpoints out of the publication. Build and deployment details ar
 
 ## Viewer spacing and dismissal
 
-Accepted owner feedback: center the zoom controls, remove the original-image link and the routine
+Accepted owner feedback: center the image name and zoom controls, remove the original-image link and the routine
 zoom/scroll instruction, and close the viewer when clicking outside its image section or in empty
 image margins. Image clicks, gallery arrows, and controls remain active. A drag that begins on the
 artwork must not dismiss the viewer when released outside it. Preserve Escape and opener focus.
