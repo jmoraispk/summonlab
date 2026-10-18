@@ -1,9 +1,11 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
+	import MonsterArtwork from './MonsterArtwork.svelte';
 
 	type Variant = {
 		affinity: string;
 		thumbnailPath: string;
+		sourcePath: string;
 		width: number;
 		height: number;
 	};
@@ -40,7 +42,7 @@
 			<p>{families.length} families · {formCount} forms · {coordinateCount} images</p>
 			<h1 id="monster-database-heading">Monster bestiary</h1>
 			<span
-				>Scan each family from T1 to T5. Open a family for all affinities and combat detail.</span
+				>Scan each family from T1 to T5. Select an image to zoom, or open a name for combat detail.</span
 			>
 		</div>
 		<nav aria-label="Monster families">
@@ -64,25 +66,26 @@
 			<div class="monster-grid">
 				{#each family.forms as form (form.id)}
 					{@const normal = normalVariant(form)}
-					<a class="monster-card" href={resolve(`/wiki/creatures/monsters/${form.id}`)}>
+					<article class="monster-card">
 						{#if normal}
-							<img
+							<MonsterArtwork
 								src={normal.thumbnailPath}
+								sourcePath={normal.sourcePath}
 								alt={`${form.name}, Normal affinity`}
 								width={normal.width}
 								height={normal.height}
 								loading="lazy"
 							/>
 						{/if}
-						<div class="card-copy">
+						<a class="card-copy" href={resolve(`/wiki/creatures/monsters/${form.id}`)}>
 							<span>{form.tier}</span>
 							<strong>{form.name}</strong>
 							<small>{roleName(form.role)}</small>
 							{#if mechanicName(form.signatureMechanic)}
 								<em>{mechanicName(form.signatureMechanic)}</em>
 							{/if}
-						</div>
-					</a>
+						</a>
+					</article>
 				{/each}
 			</div>
 		</section>
@@ -225,14 +228,9 @@
 		transform: translateY(-3px);
 		border-color: rgba(112, 199, 210, 0.55);
 	}
-	.monster-card img {
-		display: block;
-		width: 100%;
-		height: auto;
-		aspect-ratio: 1;
-		object-fit: cover;
-	}
 	.card-copy {
+		color: inherit;
+		text-decoration: none;
 		display: flex;
 		min-width: 0;
 		flex-direction: column;

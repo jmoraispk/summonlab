@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
+	import MonsterArtwork from './MonsterArtwork.svelte';
 
 	type Variant = {
 		affinity: string;
@@ -43,8 +44,9 @@
 	<div class="variant-grid">
 		{#each monster.variants as variant, index (variant.affinity)}
 			<figure class:primary={index === 0}>
-				<img
+				<MonsterArtwork
 					src={variant.thumbnailPath}
+					sourcePath={variant.sourcePath}
 					alt={`${monster.name}, ${label(variant.affinity)} affinity`}
 					width={variant.width}
 					height={variant.height}
@@ -138,13 +140,6 @@
 	}
 	figure.primary {
 		border-color: rgba(112, 199, 210, 0.5);
-	}
-	img {
-		display: block;
-		width: 100%;
-		height: auto;
-		aspect-ratio: 1;
-		object-fit: cover;
 	}
 	figcaption {
 		padding: 0.8rem;

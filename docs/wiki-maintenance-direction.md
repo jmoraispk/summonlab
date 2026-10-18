@@ -76,3 +76,19 @@ previews for artwork that has no gameplay export; do not change gameplay manifes
 The README replaces Slimes with Deep Ones. Its skill images share 512-pixel source canvases, but
 GitHub column sizing and mixed caption wrapping caused unequal displayed sizes and vertical offsets.
 Use consistent icon dimensions and separate label rows, with canonical names preserved.
+
+
+## Preferred monsters and artwork zoom
+
+Accepted owner feedback: put Giants, Orcs, Trolls, Harpies, Minotaurs, Golems, and Treants near the
+start of the bestiary. Dragons remain the eighth README family. Keep all 38 families browsable;
+move Elementals, Slimes, Arachnids, and Wolves to the end of the reader index and omit them from
+the README showcase. This order is presentation only; do not reorder production authorities.
+
+Images in the bestiary, family affinity atlas, and individual form pages open an enlarged viewer.
+Provide zoom in/out, fit, scrolling, an original-image link, Escape/close support, and keyboard
+focus restoration. Load the full-resolution repository source only when opening a viewer, with a
+local preview fallback if that source is unavailable. These originals use Git LFS, so use GitHub’s
+media endpoint rather than its raw endpoint, which returns pointer text. Keep the viewed region
+centered when changing magnification. Keep names as links to combat detail pages.
+Show complete images with preserved proportions rather than cropping to fill square cards.

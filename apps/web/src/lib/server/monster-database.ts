@@ -532,6 +532,27 @@ function buildRuntimeVisuals(): {
 }
 
 const runtimeVisuals = buildRuntimeVisuals();
+// Reader presentation only: preserve canonical family identities and production order.
+const featuredFamilyIds = [
+	'giants',
+	'orcs',
+	'trolls',
+	'harpies',
+	'minotaurs',
+	'golems',
+	'treants',
+	'dragons'
+];
+const laterFamilyIds = ['elementals', 'slimes', 'arachnids', 'wolves'];
+const familyPosition = (familyId: string) => {
+	const featured = featuredFamilyIds.indexOf(familyId);
+	if (featured !== -1) return featured;
+	const later = laterFamilyIds.indexOf(familyId);
+	return later === -1 ? featuredFamilyIds.length : 100 + later;
+};
+const readerFamilies = runtimeVisuals.families.toSorted(
+	(a, b) => familyPosition(a.familyId) - familyPosition(b.familyId)
+);
 const runtimeFamilyByWikiId = new Map(
 	runtimeVisuals.families.map((family) => [`monster-family.${family.familyId}`, family])
 );
@@ -553,7 +574,7 @@ export function getLegacyMonsterWikiRedirect(currentClassId: string): string | n
 }
 
 export function getMonsterVisualDatabase(): readonly MonsterVisualFamily[] {
-	return runtimeVisuals.families;
+	return readerFamilies;
 }
 
 export function getMonsterFamilyVisualEntry(wikiId: string): MonsterVisualFamily | null {

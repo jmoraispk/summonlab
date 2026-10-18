@@ -1,11 +1,13 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
+	import MonsterArtwork from './MonsterArtwork.svelte';
 
 	type Affinity = 'normal' | 'fire' | 'earth' | 'wind' | 'water';
 
 	type Variant = {
 		affinity: Affinity;
 		thumbnailPath: string;
+		sourcePath: string;
 		width: number;
 		height: number;
 	};
@@ -85,10 +87,11 @@
 			{#each family.forms as form (form.id)}
 				{@const variant = form.variants.find(({ affinity }) => affinity === selectedAffinity)}
 				{#if variant}
-					<a class="family-form-card" href={resolve(`/wiki/creatures/monsters/${form.id}`)}>
+					<article class="family-form-card">
 						<div class="image-wrap">
-							<img
+							<MonsterArtwork
 								src={variant.thumbnailPath}
+								sourcePath={variant.sourcePath}
 								alt={`${form.name}, ${label(variant.affinity)} affinity`}
 								width={variant.width}
 								height={variant.height}
@@ -96,15 +99,15 @@
 							/>
 							<span>{label(variant.affinity)}</span>
 						</div>
-						<div class="form-copy">
+						<a class="form-copy" href={resolve(`/wiki/creatures/monsters/${form.id}`)}>
 							<span>{form.tier}</span>
 							<strong>{form.name}</strong>
 							<small>{roleName(form.role)}</small>
 							{#if mechanicName(form.signatureMechanic)}
 								<em>{mechanicName(form.signatureMechanic)}</em>
 							{/if}
-						</div>
-					</a>
+						</a>
+					</article>
 				{/if}
 			{/each}
 		</div>
@@ -285,13 +288,6 @@
 	.image-wrap {
 		position: relative;
 	}
-	.family-form-card img {
-		display: block;
-		width: 100%;
-		height: auto;
-		aspect-ratio: 1;
-		object-fit: cover;
-	}
 	.image-wrap > span {
 		position: absolute;
 		right: 0.5rem;
@@ -306,6 +302,8 @@
 		text-transform: uppercase;
 	}
 	.form-copy {
+		color: inherit;
+		text-decoration: none;
 		display: flex;
 		min-width: 0;
 		flex-direction: column;

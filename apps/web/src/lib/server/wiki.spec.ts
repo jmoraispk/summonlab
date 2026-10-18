@@ -31,6 +31,28 @@ function thrownRouteResult(slug: string): { status: number; location?: string } 
 }
 
 describe('online wiki registry', () => {
+	it('puts the selected monster families first without changing the canonical catalog', () => {
+		const families = getMonsterVisualDatabase();
+		expect(families.slice(0, 8).map(({ familyId }) => familyId)).toEqual([
+			'giants',
+			'orcs',
+			'trolls',
+			'harpies',
+			'minotaurs',
+			'golems',
+			'treants',
+			'dragons'
+		]);
+		expect(families.slice(-4).map(({ familyId }) => familyId)).toEqual([
+			'elementals',
+			'slimes',
+			'arachnids',
+			'wolves'
+		]);
+		expect(new Set(families.map(({ familyId }) => familyId)).size).toBe(38);
+		expect(monsterIndex.families[0]?.familyId).toBe('goblins');
+	});
+
 	it('publishes every public catalog route from canonical Markdown', () => {
 		const navigation = getWikiNavigation();
 

@@ -101,20 +101,24 @@ full README width. Skills use seven ascending rank columns: F, E, D, C, B, A, an
 Craft, and Support each have one catalog-ranked example per column. These are representative rank
 progressions, not an assertion that every selected skill directly unlocks the next.
 
-The monster selection preserves the original five families and adds Deep Ones, Arachnids, and Wolves.
-The owner replaced Slimes with all five normal-affinity Deep Ones forms; each selected form retains
-its recorded `approved-review` status.
-The complete eight-family progressions include reviewed, candidate, and runtime artwork; the README
+The current selection, in order, is Giants, Orcs, Trolls, Harpies, Minotaurs, Golems, Treants, and
+Dragons. The first seven reflect the owner’s preferred artwork; Dragons fill the eighth row. This
+supersedes the earlier Deep Ones selection. Elementals, Slimes, Arachnids, and Wolves are omitted
+from the README showcase. The complete eight-family progressions include reviewed and candidate artwork; the README
 caption and provenance preserve those distinctions without changing approval status. The catalog has
 38 families, so the closing row reports +30 more families after eight displayed. This corrects the
 proposed +26 wording to match the catalog count.
 
 Text labels remain readable document text, and each image links to its exact original PNG. The
-existing 512-pixel equipment and skill exports and up-to-640-pixel monster exports provide sharp
-individual previews. Current bindings are recorded in `readmeInputs` in the gallery provenance;
+existing 512-pixel equipment and skill exports provide sharp individual previews. Monster previews
+fit the full original image proportionally inside a 512 × 512 transparent canvas, without cropping
+or stretching. All monster and equipment thumbnails request 128 × 128 pixels and align to the
+top of their cells; monster captions occupy a separate row. Nonbreaking tier/form headers keep
+the five monster columns from shrinking unevenly in GitHub’s narrow-screen table layout. Current bindings are recorded in `readmeInputs` in the gallery provenance;
 the original `inputs` array remains the historical contact-sheet capture record.
-This revision changes only README presentation and its supporting documentation; wiki pages and
-game assets stay unchanged.
+The reproducible monster export is `python3 tools/export-readme-monsters.py`; add `--check` to
+verify source hashes, previews, selection, and provenance. Canonical sources, approvals, and gameplay
+assets stay unchanged.
 
 ## Skill table alignment
 

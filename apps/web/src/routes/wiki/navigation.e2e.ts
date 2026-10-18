@@ -147,7 +147,9 @@ for (const width of [1400, 390]) {
 			await expect(group.locator('a[aria-current="page"]')).toHaveCount(0);
 			if (width === 390)
 				await page.getByRole('button', { name: 'Close index', exact: true }).click();
-			await page.locator('.family-form-card[href="/wiki/creatures/monsters/goblin-runt"]').click();
+			await page
+				.locator('.family-form-card a[href="/wiki/creatures/monsters/goblin-runt"]')
+				.click();
 			await expect(page).toHaveURL(/\/wiki\/creatures\/monsters\/goblin-runt$/);
 			if (width === 390) await page.getByRole('button', { name: 'Open index' }).click();
 			await expect(group).toHaveAttribute('open', '');
