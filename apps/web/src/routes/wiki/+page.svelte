@@ -24,15 +24,18 @@
 			<p>The living archive · established 2026</p>
 			<h1>Every rule.<br /><em>Every life.</em><br />One shared world.</h1>
 			<span>
-				The rulebook, art book, bestiary, and production memory for the town beneath the
+				The rulebook, artwork, bestiary, and production memory for the town beneath the
 				hundred-floor tower.
 			</span>
 			<div class="hero-actions">
-				<a href={resolve('/wiki/art/living-village-heroes')}>Open the visual packet <b>→</b></a>
-				<a href={resolve('/wiki/roadmap/living-village-v1')}>Review Living Village v1</a>
+				<a href={resolve('/wiki/mechanics/equipment')}>Equipment artwork <b>→</b></a>
+				<a href={resolve('/wiki/mechanics/skills/visual-catalog')}>Skill artwork</a>
+				<a href={resolve('/wiki/creatures/monsters')}>Monster bestiary</a>
 			</div>
 		</div>
-		<div class="edition"><span>Current focus</span><strong>Living Village</strong><i>v1</i></div>
+		<div class="edition">
+			<span>Browse by subject</span><strong>Art and rules</strong><i>Archive</i>
+		</div>
 	</section>
 
 	<section class="manifesto">
@@ -50,12 +53,15 @@
 			<h2 id="collections-title">Read the systems. See the world.</h2>
 		</header>
 		<div class="collection-grid">
-			<a class="collection visual" href={resolve('/wiki/art/living-village-heroes')}>
+			<a class="collection visual" href={resolve('/wiki/heroes')}>
 				<img src={rosterHero} alt="Approved summonable hero Aear Soro" width="1024" height="1536" />
 				<div>
-					<span>Art book · human identity</span>
-					<h3>Living Village visual packet</h3>
-					<p>The approved 200-hero roster and its cross-surface production requirements.</p>
+					<span>Heroes · portraits</span>
+					<h3>The hero archive</h3>
+					<p>
+						736 named identities: 200 approved heroes, historical candidates, earlier studies, and
+						combat prototypes.
+					</p>
 				</div>
 			</a>
 			<a class="collection" href={resolve('/wiki/mechanics/progression')}>
@@ -64,16 +70,18 @@
 				<p>Stars, levels, attributes, affinity, training, summoning, and long-term potential.</p>
 				<b>Explore system →</b>
 			</a>
-			<a class="collection" href={resolve('/wiki/mechanics/skills')}>
-				<span>Compendium · 520 entries</span>
+			<a class="collection" href={resolve('/wiki/mechanics/skills/visual-catalog')}>
+				<span>Compendium · 457 skill images</span>
 				<h3>Skills</h3>
-				<p>The complete martial, magical, crafting, life, mastery, and merging inventory.</p>
+				<p>Browse martial, magical, crafting, and support artwork alongside the skill rules.</p>
 				<b>Open compendium →</b>
 			</a>
 			<a class="collection" href={resolve('/wiki/mechanics/equipment')}>
 				<span>Compendium · equipment</span>
 				<h3>Arms and artifacts</h3>
-				<p>Materials, weapons, armor, accessories, quality, weight, sets, and crafting seams.</p>
+				<p>
+					All 168 approved equipment images, including 21 complete armor sets and individual pieces.
+				</p>
 				<b>Browse equipment →</b>
 			</a>
 		</div>
@@ -85,7 +93,7 @@
 				<p>The bestiary</p>
 				<h2 id="bestiary-title">What waits above</h2>
 			</div>
-			<a href={resolve('/wiki/art/monster-gallery')}>Enter the gallery →</a>
+			<a href={resolve('/wiki/creatures/monsters')}>Open the monster bestiary →</a>
 		</header>
 		<div>
 			<figure>
@@ -115,8 +123,8 @@
 			<h2>The wiki remembers everything.<br />The roadmap chooses what wakes.</h2>
 		</div>
 		<p>
-			Alchemy, beast taming, synthesis, society, and the wider world remain documented even while
-			Living Village deliberately keeps them unreachable.
+			Archived prototypes and future systems remain documented with their intended scope and
+			implementation status.
 		</p>
 		<a href={resolve('/wiki/roadmap')}>View release roadmap →</a>
 	</section>

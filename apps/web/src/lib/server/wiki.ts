@@ -1,5 +1,6 @@
 import { marked, Renderer } from 'marked';
 import path from 'node:path';
+import { base } from '$app/paths';
 
 import catalog from '../../../../../docs/wiki/catalog.json';
 
@@ -54,6 +55,7 @@ export interface WikiNavigationEntry {
 	group: string | null;
 	designStatus: string;
 	pageType: string;
+	searchTerms: string;
 }
 
 export interface WikiPage {
@@ -98,15 +100,41 @@ function routeFromWikiPath(sourcePath: string): string {
 	return `/wiki/${normalized}`;
 }
 
+// Preserve source-bound records while publishing one reader page for their shared content.
+const consolidatedMonsterSources = new Map([
+	['creatures/taxonomy', 'creature-taxonomy'],
+	['creatures/monster-races/goblinoids', 'goblinoid-warbands'],
+	['creatures/monster-races/generator-bestiary-01', '1-goblins'],
+	['creatures/monster-races/generator-bestiary-02', '7-rotwalkers'],
+	['creatures/monster-races/generator-bestiary-03', '13-harpies'],
+	['creatures/monster-races/generator-bestiary-04', '19-slimes'],
+	['creatures/monster-races/generator-bestiary-05', '25-werebeasts']
+]);
+
+export function getWikiConsolidationRedirect(slug: string): string | null {
+	if (slug === 'mechanics/affinities') return '/wiki/mechanics/progression/affinities';
+	return consolidatedMonsterSources.has(slug) ? '/wiki/creatures/monster-races' : null;
+}
+
 function sectionFromPath(sourcePath: string): string {
+	if (sourcePath.startsWith('mechanics/equipment/')) return 'Equipment';
+	if (sourcePath === 'mechanics/skills/living-village.md') return 'Other';
+	if (sourcePath.startsWith('mechanics/skills/')) return 'Skills';
+	if (
+		sourcePath.startsWith('mechanics/progression/') ||
+		sourcePath.startsWith('mechanics/affinities/')
+	)
+		return 'Progression';
+	if (sourcePath === 'art/monster-gallery.md') return 'Monsters';
+	if (sourcePath === 'art/skill-rarity-frames.md') return 'Skills';
 	const first = sourcePath.split('/')[0];
 	const labels: Record<string, string> = {
-		art: 'Art book',
-		creatures: 'Creatures',
+		art: 'Other',
+		creatures: 'Monsters',
 		mechanics: 'Mechanics',
 		milestones: 'Milestones',
-		principles: 'Principles',
-		roadmap: 'Roadmap',
+		principles: 'Other',
+		roadmap: 'Other',
 		sources: 'Sources',
 		systems: 'Systems',
 		templates: 'Templates'
@@ -116,7 +144,13 @@ function sectionFromPath(sourcePath: string): string {
 
 function navigationGroupFromPath(sourcePath: string): string | null {
 	const segments = sourcePath.split('/');
-	if (segments.length < 3) return null;
+	if (
+		segments.length < 3 ||
+		['Equipment', 'Skills', 'Progression', 'Monsters', 'Other'].includes(
+			sectionFromPath(sourcePath)
+		)
+	)
+		return null;
 	return segments[1].replaceAll('-', ' ').replace(/\b\w/gu, (character) => character.toUpperCase());
 }
 
@@ -157,7 +191,22 @@ function resolveTarget(target: string, sourcePath: string): string {
 	);
 
 	if (repositoryPath.startsWith('docs/wiki/') && repositoryPath.endsWith('.md')) {
-		return `${routeFromWikiPath(repositoryPath.replace('docs/wiki/', ''))}${suffix}`;
+		if (!catalog.entries.some((entry) => entry.path === repositoryPath)) {
+			return `https://github.com/jmoraispk/summonlab/blob/main/${repositoryPath}${suffix}`;
+		}
+		const route = routeFromWikiPath(repositoryPath.replace('docs/wiki/', ''));
+		const consolidated = getWikiConsolidationRedirect(route.replace('/wiki/', ''));
+		if (consolidated) {
+			let fragment = suffix;
+			if (suffix === '#open-questions') {
+				if (route.endsWith('/goblinoids')) fragment = '#goblinoid-open-questions';
+				if (route.endsWith('/taxonomy')) fragment = '#taxonomy-open-questions';
+			}
+			const defaultAnchor = consolidatedMonsterSources.get(route.replace('/wiki/', ''));
+			const defaultFragment = defaultAnchor ? `#${defaultAnchor}` : '';
+			return `${consolidated}${fragment || defaultFragment}`;
+		}
+		return `${route}${suffix}`;
 	}
 
 	const assetUrl = assetsByPath.get(repositoryPath);
@@ -184,13 +233,15 @@ function renderMarkdown(source: string, sourcePath: string): string {
 	};
 
 	renderer.link = function ({ href, title, tokens }) {
-		const resolved = resolveTarget(href, sourcePath);
+		const target = resolveTarget(href, sourcePath);
+		const resolved = target.startsWith('/wiki') ? `${base}${target}` : target;
 		const titleAttribute = title ? ` title="${escapeAttribute(title)}"` : '';
 		return `<a href="${escapeAttribute(resolved)}"${titleAttribute}>${this.parser.parseInline(tokens)}</a>`;
 	};
 
 	renderer.image = ({ href, title, text }) => {
-		const resolved = resolveTarget(href, sourcePath);
+		const target = resolveTarget(href, sourcePath);
+		const resolved = target.startsWith('/wiki') ? `${base}${target}` : target;
 		const titleAttribute = title ? ` title="${escapeAttribute(title)}"` : '';
 		return `<img src="${escapeAttribute(resolved)}" alt="${escapeAttribute(text)}"${titleAttribute} loading="lazy" decoding="async">`;
 	};
@@ -225,16 +276,53 @@ const pages = catalog.entries
 
 const pagesByHref = new Map(pages.map((page) => [page.href, page]));
 
+function navigationSearchTerms(sourcePath: string): string {
+	if (sourcePath === 'mechanics/progression/affinities.md') {
+		return 'Fire Earth Wind Water Burn Weight Lacerate Chill Mist Lightning Sand Rot Magma Ice';
+	}
+	if (sourcePath === 'creatures/monster-races/README.md') {
+		const headings = [...(wikiByPath.get(sourcePath) ?? '').matchAll(/^#{2,3}\s+(.+)$/gmu)].map(
+			(match) => match[1]
+		);
+		const absorbedTitles = [...consolidatedMonsterSources.keys()].map(
+			(slug) => pagesByHref.get(`/wiki/${slug}`)?.title ?? ''
+		);
+		return [...headings, ...absorbedTitles].join(' ');
+	}
+	if (sourcePath === 'creatures/monsters/README.md') {
+		return pages
+			.filter(
+				(page) =>
+					page.sourcePath.startsWith('creatures/monsters/') &&
+					['monster-family', 'monster-entry'].includes(page.pageType)
+			)
+			.map((page) => `${page.title} ${path.basename(page.sourcePath, '.md').replaceAll('-', ' ')}`)
+			.join(' ');
+	}
+	return '';
+}
+
 export function getWikiNavigation(): WikiNavigationEntry[] {
 	return pages
-		.filter((page) => page.spoilerScope !== 'internal' && page.href !== '/wiki')
+		.filter(
+			(page) =>
+				page.spoilerScope !== 'internal' &&
+				page.href !== '/wiki' &&
+				!page.sourcePath.startsWith('milestones/') &&
+				!page.sourcePath.startsWith('mechanics/affinities/') &&
+				!(
+					page.sourcePath.startsWith('creatures/monsters/') &&
+					['monster-family', 'monster-entry'].includes(page.pageType)
+				)
+		)
 		.map(({ title, href, sourcePath, section, designStatus, pageType }) => ({
 			title,
 			href,
 			section,
 			group: navigationGroupFromPath(sourcePath),
 			designStatus,
-			pageType
+			pageType,
+			searchTerms: navigationSearchTerms(sourcePath)
 		}))
 		.sort((left, right) =>
 			left.section === right.section

@@ -1,4 +1,4 @@
-# Generator bestiary seed — races 1–6
+# Monster Races — Goblins through Skeletons
 
 Wiki ID: `monster-seed.generator-bestiary-01`
 

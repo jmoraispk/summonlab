@@ -1,28 +1,30 @@
 <script lang="ts">
 	import { page } from '$app/state';
-	import { resolve } from '$app/paths';
+	import { base, resolve } from '$app/paths';
 	import { SvelteMap } from 'svelte/reactivity';
 
 	let { data, children } = $props();
 	let navigationOpen = $state(false);
 	let query = $state('');
+	const staticWiki = import.meta.env.VITE_WIKI_STATIC === 'true';
+	const currentPath = $derived(page.url.pathname.slice(base.length).replace(/\/$/u, '') || '/');
+	let indexToggle: HTMLButtonElement;
 
 	type NavigationEntry = (typeof data.navigation)[number];
 	type NavigationSection = {
 		name: string;
-		direct: NavigationEntry[];
-		groups: { name: string; entries: NavigationEntry[] }[];
-		allEntries: NavigationEntry[];
+		overview: NavigationEntry | undefined;
+		entries: NavigationEntry[];
 	};
 
 	const sectionOrder = [
 		'Systems',
 		'Mechanics',
-		'Creatures',
-		'Art book',
-		'Milestones',
-		'Roadmap',
-		'Principles'
+		'Progression',
+		'Equipment',
+		'Skills',
+		'Monsters',
+		'Other'
 	];
 
 	const sections = $derived.by(() => {
@@ -33,9 +35,6 @@
 		>();
 
 		for (const entry of data.navigation) {
-			const searchable = `${entry.section} ${entry.group ?? ''} ${entry.title}`.toLowerCase();
-			if (term && !searchable.includes(term)) continue;
-
 			const bucket = buckets.get(entry.section) ?? {
 				direct: [] as NavigationEntry[],
 				groups: new SvelteMap<string, NavigationEntry[]>()
@@ -51,26 +50,62 @@
 		}
 
 		return [...buckets.entries()]
-			.map(([name, bucket]): NavigationSection => ({
-				name,
-				direct: bucket.direct.sort(compareEntries),
-				groups: [...bucket.groups.entries()]
-					.map(([groupName, entries]) => ({
-						name: groupName,
-						entries: entries.sort(compareEntries)
-					}))
-					.sort((left, right) => left.name.localeCompare(right.name)),
-				allEntries: [...bucket.direct, ...bucket.groups.values()].flat()
-			}))
-			.sort((left, right) => {
-				const leftIndex = sectionOrder.indexOf(left.name);
-				const rightIndex = sectionOrder.indexOf(right.name);
+			.sort(([left], [right]) => {
+				const leftIndex = sectionOrder.indexOf(left);
+				const rightIndex = sectionOrder.indexOf(right);
 				return (leftIndex < 0 ? 99 : leftIndex) - (rightIndex < 0 ? 99 : rightIndex);
+			})
+			.flatMap(([name, bucket]): NavigationSection[] => {
+				const direct = bucket.direct
+					.filter((entry) => matchesQuery(entry, term))
+					.sort(compareEntries);
+				const groups = [...bucket.groups.entries()]
+					.map(([groupName, allEntries]): NavigationSection => {
+						const overview = allEntries.find(
+							(candidate) =>
+								allEntries.length > 1 &&
+								allEntries.every(
+									(entry) => entry === candidate || entry.href.startsWith(`${candidate.href}/`)
+								)
+						);
+						const entries = allEntries
+							.filter((entry) => entry !== overview && matchesQuery(entry, term))
+							.sort(compareEntries);
+						return { name: groupName, overview, entries };
+					})
+					.filter(
+						(group) =>
+							group.entries.length > 0 || (group.overview && matchesQuery(group.overview, term))
+					)
+					.sort((left, right) => left.name.localeCompare(right.name));
+				return [
+					...(direct.length > 0 ? [{ name, overview: undefined, entries: direct }] : []),
+					...groups
+				];
 			});
 	});
 
+	function matchesQuery(entry: NavigationEntry, term: string): boolean {
+		return `${entry.section} ${entry.group ?? ''} ${entry.title} ${entry.searchTerms}`
+			.toLowerCase()
+			.includes(term);
+	}
+
+	function sectionEntries(section: NavigationSection): NavigationEntry[] {
+		return section.overview ? [section.overview, ...section.entries] : section.entries;
+	}
+
+	function closeIndex(restoreFocus = false): void {
+		navigationOpen = false;
+		if (restoreFocus) indexToggle?.focus();
+	}
+
 	function containsCurrent(entries: NavigationEntry[]): boolean {
-		return entries.some((entry) => page.url.pathname === entry.href);
+		return entries.some(
+			(entry) =>
+				currentPath === entry.href ||
+				(entry.href === '/wiki/creatures/monsters' && currentPath.startsWith(`${entry.href}/`))
+		);
 	}
 
 	function compareEntries(left: NavigationEntry, right: NavigationEntry): number {
@@ -79,10 +114,16 @@
 	}
 </script>
 
+<svelte:window
+	onkeydown={(event) => {
+		if (event.key === 'Escape' && navigationOpen) closeIndex(true);
+	}}
+/>
+
 <svelte:head>
 	<meta
 		name="description"
-		content="The living rulebook, art book, bestiary, and development record for Summonlab."
+		content="The rulebook, artwork, bestiary, and development record for Summonlab."
 	/>
 </svelte:head>
 
@@ -93,9 +134,13 @@
 		</a>
 		<p>{data.pageCount} living documents</p>
 		<nav aria-label="Summonlab destinations">
-			<a href={resolve('/')}>Enter the game</a>
+			{#if staticWiki}<a href="https://github.com/jmoraispk/summonlab">Repository ↗</a>{:else}<a
+					href={resolve('/')}>Enter the game</a
+				>{/if}
 			<button
 				type="button"
+				bind:this={indexToggle}
+				aria-controls="wiki-index"
 				aria-expanded={navigationOpen}
 				onclick={() => (navigationOpen = !navigationOpen)}
 			>
@@ -104,7 +149,15 @@
 		</nav>
 	</header>
 
-	<aside class:open={navigationOpen} aria-label="Wiki index">
+	{#if navigationOpen}
+		<button
+			class="index-backdrop"
+			type="button"
+			aria-label="Dismiss wiki index"
+			onclick={() => closeIndex(true)}
+		></button>
+	{/if}
+	<aside id="wiki-index" class:open={navigationOpen} aria-label="Wiki index">
 		<label>
 			<span>Search the archive</span>
 			<input bind:value={query} type="search" placeholder="Heroes, skills, monsters…" />
@@ -113,14 +166,19 @@
 			<nav class="nav-shortcuts" aria-label="Wiki shortcuts">
 				<a
 					href={resolve('/wiki')}
-					aria-current={page.url.pathname === '/wiki' ? 'page' : undefined}
+					onclick={() => closeIndex()}
+					aria-current={currentPath === '/wiki' ? 'page' : undefined}
 				>
 					<span>Archive home</span><i>Start</i>
 				</a>
-				<a href={resolve('/wiki/art/living-village-heroes')}>
-					<span>Living Village</span><i>Visual packet</i>
+				<a
+					href={resolve('/wiki/heroes')}
+					onclick={() => closeIndex()}
+					aria-current={currentPath === '/wiki/heroes' ? 'page' : undefined}
+				>
+					<span>Hero archive</span><i>736 identities</i>
 				</a>
-				<a href={resolve('/wiki/creatures/monsters')}>
+				<a href={resolve('/wiki/creatures/monsters')} onclick={() => closeIndex()}>
 					<span>Monster database</span><i>190 forms</i>
 				</a>
 			</nav>
@@ -129,40 +187,32 @@
 				<details
 					class="nav-section"
 					open={query.trim().length > 0 ||
-						containsCurrent(section.allEntries) ||
-						(section.name === 'Systems' && page.url.pathname === '/wiki')}
+						containsCurrent(sectionEntries(section)) ||
+						(section.name === 'Systems' && currentPath === '/wiki')}
 				>
 					<summary>
-						<span>{section.name}</span><i>{section.allEntries.length}</i>
+						<span>{section.name}</span><i>{sectionEntries(section).length}</i>
 					</summary>
 					<div class="section-entries">
-						{#each section.direct as entry (entry.href)}
+						{#if section.overview}
 							<a
-								href={entry.href}
-								aria-current={page.url.pathname === entry.href ? 'page' : undefined}
-								onclick={() => (navigationOpen = false)}
+								class="group-overview"
+								href={resolve('/wiki/[...slug]', {
+									slug: section.overview.href.slice('/wiki/'.length)
+								})}
+								aria-label={`${section.name} overview`}
+								aria-current={currentPath === section.overview.href ? 'page' : undefined}
+								onclick={() => closeIndex()}><span>Overview</span></a
 							>
-								<span>{entry.title}</span><i>{entry.designStatus}</i>
+						{/if}
+						{#each section.entries as entry (entry.href)}
+							<a
+								href={resolve('/wiki/[...slug]', { slug: entry.href.slice('/wiki/'.length) })}
+								aria-current={currentPath === entry.href ? 'page' : undefined}
+								onclick={() => closeIndex()}
+							>
+								<span>{entry.title}</span>
 							</a>
-						{/each}
-						{#each section.groups as group (group.name)}
-							<details
-								class="nav-subsection"
-								open={query.trim().length > 0 || containsCurrent(group.entries)}
-							>
-								<summary><span>{group.name}</span><i>{group.entries.length}</i></summary>
-								<div>
-									{#each group.entries as entry (entry.href)}
-										<a
-											href={entry.href}
-											aria-current={page.url.pathname === entry.href ? 'page' : undefined}
-											onclick={() => (navigationOpen = false)}
-										>
-											<span>{entry.title}</span><i>{entry.designStatus}</i>
-										</a>
-									{/each}
-								</div>
-							</details>
 						{/each}
 					</div>
 				</details>
@@ -263,8 +313,10 @@
 		bottom: 0;
 		left: 0;
 		z-index: 20;
+		display: flex;
+		flex-direction: column;
 		width: 22rem;
-		padding: 1.25rem 0 2rem;
+		padding: 1.25rem 0 0;
 		border-right: 1px solid var(--line);
 		background: #0c0b08;
 	}
@@ -292,8 +344,10 @@
 		font-size: 0.9rem;
 	}
 	.nav-scroll {
-		height: calc(100% - 4.5rem);
+		min-height: 0;
+		flex: 1;
 		overflow: auto;
+		overscroll-behavior: contain;
 		padding: 0 0.7rem 3rem;
 	}
 	.nav-shortcuts {
@@ -304,18 +358,18 @@
 		border-bottom: 1px solid var(--line);
 	}
 	.nav-shortcuts a,
-	.section-entries > a,
-	.nav-subsection a {
+	.section-entries > a {
 		display: flex;
-		align-items: baseline;
+		align-items: center;
 		gap: 0.75rem;
 		justify-content: space-between;
-		padding: 0.55rem 0.45rem;
-		border-left: 2px solid transparent;
-		color: rgba(243, 234, 217, 0.68);
+		min-height: 2.75rem;
+		padding: 0.65rem 0.65rem;
+		color: rgba(243, 234, 217, 0.78);
 		font-family: Georgia, serif;
-		font-size: 0.9rem;
-		line-height: 1.25;
+		font-size: 0.96rem;
+		line-height: 1.45;
+		overflow-wrap: anywhere;
 		text-decoration: none;
 	}
 	.nav-shortcuts a {
@@ -329,16 +383,12 @@
 	.nav-shortcuts a:hover,
 	.nav-shortcuts a[aria-current='page'],
 	.section-entries > a:hover,
-	.section-entries > a[aria-current='page'],
-	.nav-subsection a:hover,
-	.nav-subsection a[aria-current='page'] {
-		border-left-color: var(--ember);
+	.section-entries > a[aria-current='page'] {
+		box-shadow: inset 2px 0 var(--ember);
 		color: var(--paper);
 		background: linear-gradient(90deg, rgba(212, 119, 61, 0.09), transparent);
 	}
-	.nav-shortcuts a i,
-	.section-entries > a i,
-	.nav-subsection a i {
+	.nav-shortcuts a i {
 		flex: 0 0 auto;
 		color: rgba(243, 234, 217, 0.28);
 		font:
@@ -364,23 +414,21 @@
 	.nav-section:last-of-type {
 		border-bottom: 1px solid rgba(231, 206, 164, 0.08);
 	}
-	.nav-section summary,
-	.nav-subsection summary {
+	.nav-section summary {
 		position: relative;
 		display: flex;
 		align-items: center;
 		gap: 0.65rem;
-		padding: 0.75rem 1.5rem 0.75rem 0.45rem;
+		min-height: 2.75rem;
+		padding: 0.8rem 1.6rem 0.8rem 0.65rem;
 		list-style: none;
 		cursor: pointer;
 		user-select: none;
 	}
-	.nav-section summary::-webkit-details-marker,
-	.nav-subsection summary::-webkit-details-marker {
+	.nav-section summary::-webkit-details-marker {
 		display: none;
 	}
-	.nav-section > summary::after,
-	.nav-subsection > summary::after {
+	.nav-section > summary::after {
 		position: absolute;
 		right: 0.45rem;
 		content: '›';
@@ -389,8 +437,7 @@
 		transform: rotate(0deg);
 		transition: transform 140ms ease;
 	}
-	.nav-section[open] > summary::after,
-	.nav-subsection[open] > summary::after {
+	.nav-section[open] > summary::after {
 		transform: rotate(90deg);
 	}
 	.nav-section > summary span {
@@ -413,27 +460,25 @@
 	.section-entries {
 		padding: 0 0 0.55rem;
 	}
-	.nav-subsection {
-		margin: 0.15rem 0 0.15rem 0.4rem;
-		border-left: 1px solid rgba(231, 206, 164, 0.1);
-	}
-	.nav-subsection > summary {
-		padding-top: 0.55rem;
-		padding-bottom: 0.55rem;
-	}
-	.nav-subsection > summary span {
-		color: rgba(243, 234, 217, 0.52);
+	.section-entries .group-overview {
+		color: var(--muted);
 		font:
-			0.65rem ui-monospace,
+			0.72rem ui-monospace,
 			monospace;
-		letter-spacing: 0.09em;
-		text-transform: uppercase;
+		letter-spacing: 0.04em;
 	}
-	.nav-subsection > div {
-		padding: 0 0 0.4rem 0.25rem;
+	.section-entries a[aria-current='page'] {
+		background: rgba(212, 119, 61, 0.14);
 	}
-	.nav-subsection a {
-		font-size: 0.84rem;
+	a:focus-visible,
+	button:focus-visible,
+	input:focus-visible,
+	summary:focus-visible {
+		outline: 2px solid var(--ember);
+		outline-offset: -2px;
+	}
+	.index-backdrop {
+		display: none;
 	}
 	.nav-empty {
 		margin: 1.2rem 0.45rem;
@@ -459,13 +504,20 @@
 			display: block;
 		}
 		aside {
-			width: min(22rem, 88vw);
-			transform: translateX(-102%);
-			transition: transform 180ms ease;
+			display: none;
+			width: min(22rem, 90vw);
 			box-shadow: 1rem 0 4rem rgba(0, 0, 0, 0.55);
 		}
 		aside.open {
-			transform: translateX(0);
+			display: flex;
+		}
+		.index-backdrop {
+			position: fixed;
+			inset: 4.5rem 0 0;
+			z-index: 19;
+			display: block;
+			border: 0;
+			background: rgba(0, 0, 0, 0.65);
 		}
 		.wiki-page {
 			padding-left: 0;

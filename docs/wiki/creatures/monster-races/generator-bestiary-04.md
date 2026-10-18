@@ -1,4 +1,4 @@
-# Generator bestiary seed — races 19–24
+# Monster Races — Slimes through Deep Ones
 
 Wiki ID: `monster-seed.generator-bestiary-04`
 

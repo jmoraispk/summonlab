@@ -1,0 +1,76 @@
+{
+  "schemaVersion": "readme-combat-prototype-previews-v1",
+  "selectionDate": "2026-10-17",
+  "description": "Owner-selected combat prototypes in screenshot order. Existing raster art resized with transparency preserved; source status and runtime rosters are unchanged.",
+  "recipe": {
+    "tool": "Pillow",
+    "version": "10.2.0",
+    "maximumDimensions": [
+      512,
+      512
+    ],
+    "resampling": "LANCZOS",
+    "format": "WebP",
+    "quality": 85,
+    "method": 6
+  },
+  "portraits": [
+    {
+      "displayName": "Asha",
+      "status": "owner-authorized prototype identity; outside summonable roster",
+      "source": {
+        "sourceCommit": "634d48644ec41d2a8ff3c9f839b8fec2b2830617",
+        "path": "apps/web/static/runtime/combat/realtime-study-v1/hero-saffron-braid-ready-v1.png",
+        "gitLfs": false,
+        "sha256": "9f6704c825a642c1664cc34573a2e2264a9d3d2f0cf85c5f65ee6c09f4bb5a2b",
+        "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/combat/realtime-study-v1/hero-saffron-braid-ready-v1.png"
+      },
+      "preview": {
+        "path": "docs/readme-gallery/combat-prototypes/asha.webp",
+        "sha256": "a53d0be4ee8e13b51f3c45a55c57a8f4ae656a31830ac4efbd78b16eb4a6ffa7",
+        "bytes": 38514,
+        "width": 512,
+        "height": 512
+      },
+      "provenancePath": "assets/heroes/visuals/realtime-combat-study-v1/PROVENANCE.md"
+    },
+    {
+      "displayName": "Nessa",
+      "status": "generated prototype identity; outside summonable roster",
+      "source": {
+        "sourceCommit": "634d48644ec41d2a8ff3c9f839b8fec2b2830617",
+        "path": "apps/web/static/runtime/combat/realtime-study-v1/hero-moss-archer-ready-v1.png",
+        "gitLfs": false,
+        "sha256": "9c94401448f51dc6521c7aae3d00fa15e47bc4b27c452b666023f1d5fcd5bb36",
+        "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/combat/realtime-study-v1/hero-moss-archer-ready-v1.png"
+      },
+      "preview": {
+        "path": "docs/readme-gallery/combat-prototypes/nessa.webp",
+        "sha256": "f6dccc247cc8cbe959c03f7921e7a7df40f04cc497249ed005067e8a724201ea",
+        "bytes": 39454,
+        "width": 512,
+        "height": 512
+      },
+      "provenancePath": "assets/heroes/visuals/realtime-combat-study-v1/PROVENANCE.md"
+    },
+    {
+      "displayName": "Toma",
+      "status": "generated prototype identity; outside summonable roster",
+      "source": {
+        "sourceCommit": "634d48644ec41d2a8ff3c9f839b8fec2b2830617",
+        "path": "apps/web/static/runtime/combat/realtime-study-v1/hero-iron-guardian-ready-v1.png",
+        "gitLfs": false,
+        "sha256": "66b7017812f2bd218a221d5f19b26b861951350293e6b7692bc055d0c46ec114",
+        "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/combat/realtime-study-v1/hero-iron-guardian-ready-v1.png"
+      },
+      "preview": {
+        "path": "docs/readme-gallery/combat-prototypes/toma.webp",
+        "sha256": "504796feec95bd99899ac67d46cd9484317e2fbc3e085eb20d9330ed930ff061",
+        "bytes": 46050,
+        "width": 512,
+        "height": 512
+      },
+      "provenancePath": "assets/heroes/visuals/realtime-combat-study-v1/PROVENANCE.md"
+    }
+  ]
+}

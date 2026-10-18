@@ -1,5 +1,7 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
+	import MonsterArtwork from './MonsterArtwork.svelte';
+	import type { MonsterArtworkImage } from './monster-artwork';
 
 	type Variant = {
 		affinity: string;
@@ -22,6 +24,13 @@
 	let { monster }: { monster: Monster } = $props();
 
 	const label = (value: string) => value[0]?.toUpperCase() + value.slice(1);
+	const gallery = $derived<MonsterArtworkImage[]>(
+		monster.variants.map((variant) => ({
+			src: variant.thumbnailPath,
+			sourcePath: variant.sourcePath,
+			alt: `${monster.name}, ${label(variant.affinity)} affinity`
+		}))
+	);
 	const statusLabel = (value: string) => value.replaceAll('-', ' ');
 	const sourceUrl = (path: string) => `https://github.com/jmoraispk/summonlab/blob/main/${path}`;
 </script>
@@ -43,8 +52,10 @@
 	<div class="variant-grid">
 		{#each monster.variants as variant, index (variant.affinity)}
 			<figure class:primary={index === 0}>
-				<img
+				<MonsterArtwork
+					{gallery}
 					src={variant.thumbnailPath}
+					sourcePath={variant.sourcePath}
 					alt={`${monster.name}, ${label(variant.affinity)} affinity`}
 					width={variant.width}
 					height={variant.height}
@@ -138,13 +149,6 @@
 	}
 	figure.primary {
 		border-color: rgba(112, 199, 210, 0.5);
-	}
-	img {
-		display: block;
-		width: 100%;
-		height: auto;
-		aspect-ratio: 1;
-		object-fit: cover;
 	}
 	figcaption {
 		padding: 0.8rem;

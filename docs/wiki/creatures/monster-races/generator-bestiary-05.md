@@ -1,4 +1,4 @@
-# Generator bestiary seed — races 25–30
+# Monster Races — Werebeasts through Doppelgangers
 
 Wiki ID: `monster-seed.generator-bestiary-05`
 

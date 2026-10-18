@@ -1,0 +1,1114 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width,initial-scale=1" />
+		<title>Summonlab visual gallery</title>
+		<style>
+			* {
+				box-sizing: border-box;
+			}
+			body {
+				margin: 0;
+				background: #090b10;
+				color: #f3eadb;
+				font-family: Arial, Helvetica, sans-serif;
+			}
+			section {
+				width: 1400px;
+				padding: 42px 48px 28px;
+				background: radial-gradient(ellipse at 50% 0, #25232b 0, transparent 70%), #0b0e14;
+			}
+			section + section {
+				margin-top: 24px;
+			}
+			.eyebrow {
+				margin: 0 0 9px;
+				color: #d6a65f;
+				font-size: 13px;
+				font-weight: 700;
+				letter-spacing: 3px;
+				text-transform: uppercase;
+			}
+			.page-header {
+				display: flex;
+				justify-content: space-between;
+				align-items: end;
+				border-bottom: 1px solid #424048;
+				padding-bottom: 22px;
+				margin-bottom: 22px;
+			}
+			h1 {
+				font-family: Georgia, serif;
+				font-weight: 400;
+				font-size: 42px;
+				margin: 0;
+				letter-spacing: -1px;
+			}
+			.page-header p:last-child {
+				font-size: 16px;
+				line-height: 1.5;
+				max-width: 480px;
+				margin: 0;
+				color: #bfc0c8;
+			}
+			h3 {
+				font-size: 17px;
+				letter-spacing: 1px;
+				margin: 0 0 13px;
+				color: #d8b984;
+			}
+			figure {
+				margin: 0;
+			}
+			img {
+				display: block;
+				object-fit: contain;
+			}
+			footer {
+				display: flex;
+				justify-content: space-between;
+				color: #9296a1;
+				font-size: 12px;
+				border-top: 1px solid #34353e;
+				margin-top: 24px;
+				padding-top: 18px;
+				letter-spacing: 0.4px;
+			}
+			.enemy-grid {
+				display: grid;
+				grid-template-columns: repeat(5, 1fr);
+				gap: 20px;
+			}
+			.enemy-family h3 {
+				text-align: center;
+			}
+			.enemy-card {
+				background: #15171b;
+				border: 1px solid #45424a;
+				margin-bottom: 14px;
+				border-radius: 4px;
+				overflow: hidden;
+			}
+			.enemy-card img {
+				width: 100%;
+				height: 224px;
+				background: #161616;
+			}
+			.enemy-card figcaption {
+				display: flex;
+				align-items: center;
+				gap: 10px;
+				min-height: 40px;
+				padding: 8px 10px;
+				border-top: 1px solid #3f3c3b;
+			}
+			.enemy-card figcaption span {
+				color: #d5a663;
+				font-size: 11px;
+				font-weight: bold;
+			}
+			.enemy-card strong {
+				font-size: 14px;
+				font-weight: 500;
+			}
+			.equipment-row {
+				margin-bottom: 22px;
+			}
+			.equipment-row h3 {
+				font-size: 16px;
+			}
+			.equipment-grid {
+				display: grid;
+				grid-template-columns: repeat(3, 1fr);
+				gap: 20px;
+			}
+			.equipment-card {
+				background: #111318;
+				border: 1px solid #3e3e49;
+				border-radius: 5px;
+				overflow: hidden;
+			}
+			.equipment-card header {
+				display: flex;
+				align-items: center;
+				gap: 13px;
+				padding: 12px 16px;
+				background: #1b1c23;
+				border-bottom: 1px solid #33343c;
+			}
+			.equipment-card header b {
+				font-size: 11px;
+				letter-spacing: 1px;
+				color: #d7ad72;
+				border: 1px solid #6d5941;
+				padding: 5px 7px;
+			}
+			.equipment-card h4 {
+				font-family: Georgia, serif;
+				font-size: 19px;
+				font-weight: 400;
+				margin: 0;
+			}
+			.loadout {
+				display: grid;
+				grid-template-columns: 140px 1fr;
+				gap: 12px;
+				padding: 12px;
+			}
+			.weapon img {
+				width: 140px;
+				height: 178px;
+				object-fit: contain;
+				background: #090a0b;
+			}
+			.loadout figcaption {
+				text-align: center;
+				color: #bdc0c9;
+				font-size: 11px;
+				line-height: 1.3;
+				padding: 5px 0;
+			}
+			.armor-parts {
+				display: grid;
+				grid-template-columns: repeat(2, 1fr);
+				gap: 7px;
+			}
+			.armor-parts img {
+				width: 100%;
+				height: 78px;
+				object-fit: contain;
+				background: #090a0b;
+			}
+			.armor-parts figcaption {
+				padding: 3px 0;
+			}
+			.skill-grid {
+				display: grid;
+				grid-template-columns: repeat(4, 1fr);
+				gap: 26px;
+			}
+			.skill-group h3 {
+				text-align: center;
+			}
+			.skill-card {
+				display: flex;
+				align-items: center;
+				gap: 17px;
+				border: 1px solid #3b3c49;
+				border-radius: 5px;
+				background: #12151e;
+				margin-bottom: 14px;
+				padding: 13px;
+			}
+			.skill-card img {
+				width: 122px;
+				height: 122px;
+				flex: none;
+			}
+			.skill-card figcaption {
+				display: flex;
+				flex-direction: column;
+				gap: 9px;
+			}
+			.skill-card strong {
+				font-family: Georgia, serif;
+				font-size: 18px;
+				font-weight: 400;
+				line-height: 1.15;
+			}
+			.skill-card span {
+				font-size: 11px;
+				line-height: 1.4;
+				color: #a7aabd;
+			}
+			.skill-card {
+				display: block;
+				text-align: center;
+			}
+			.skill-card img {
+				width: 164px;
+				height: 164px;
+				margin: 0 auto 10px;
+			}
+			.skill-card figcaption {
+				gap: 5px;
+			}
+			.skill-card strong {
+				font-size: 18px;
+			}
+			.skill-card span {
+				font-size: 11px;
+			}
+		</style>
+	</head>
+	<body>
+		<section id="enemies">
+			<header class="page-header">
+				<div>
+					<p class="eyebrow">Summonlab · Visual gallery</p>
+					<h1>Enemies & their progressions</h1>
+				</div>
+				<p>Five families. Three selected stages.<br />A few of the tower’s many threats.</p>
+			</header>
+			<div class="enemy-grid">
+				<div class="enemy-family">
+					<h3>Goblins</h3>
+					<figure class="enemy-card">
+						<img
+							src="../../apps/web/static/runtime/enemies/monster-wiki-v1/goblins/goblin-runt/normal.c06d5578c7e2.webp"
+							alt="Runt"
+							loading="eager"
+							decoding="sync"
+						/>
+						<figcaption><span>T1</span><strong>Runt</strong></figcaption>
+					</figure>
+					<figure class="enemy-card">
+						<img
+							src="../../apps/web/static/runtime/enemies/monster-wiki-v1/goblins/goblin-cutter/normal.4807d13f89b9.webp"
+							alt="Cutter"
+							loading="eager"
+							decoding="sync"
+						/>
+						<figcaption><span>T2</span><strong>Cutter</strong></figcaption>
+					</figure>
+					<figure class="enemy-card">
+						<img
+							src="../../apps/web/static/runtime/enemies/monster-wiki-v1/goblins/goblin-warboss/normal.7470fdf211fa.webp"
+							alt="Warboss"
+							loading="eager"
+							decoding="sync"
+						/>
+						<figcaption><span>T4</span><strong>Warboss</strong></figcaption>
+					</figure>
+				</div>
+				<div class="enemy-family">
+					<h3>Skeletons</h3>
+					<figure class="enemy-card">
+						<img
+							src="../../apps/web/static/runtime/enemies/monster-wiki-v1/skeletons/skeleton-rattler/normal.5d260a822266.webp"
+							alt="Rattler"
+							loading="eager"
+							decoding="sync"
+						/>
+						<figcaption><span>T1</span><strong>Rattler</strong></figcaption>
+					</figure>
+					<figure class="enemy-card">
+						<img
+							src="../../apps/web/static/runtime/enemies/monster-wiki-v1/skeletons/skeleton-bonesoldier/normal.7b09d542c5df.webp"
+							alt="Bonesoldier"
+							loading="eager"
+							decoding="sync"
+						/>
+						<figcaption><span>T2</span><strong>Bonesoldier</strong></figcaption>
+					</figure>
+					<figure class="enemy-card">
+						<img
+							src="../../apps/web/static/runtime/enemies/monster-wiki-v1/skeletons/skeleton-bone-champion/normal.39358f8a6752.webp"
+							alt="Bone Champion"
+							loading="eager"
+							decoding="sync"
+						/>
+						<figcaption><span>T4</span><strong>Bone Champion</strong></figcaption>
+					</figure>
+				</div>
+				<div class="enemy-family">
+					<h3>Dragons</h3>
+					<figure class="enemy-card">
+						<img
+							src="../../apps/web/static/runtime/enemies/monster-wiki-v1/dragons/dragon-whelp/normal.29232a509f90.webp"
+							alt="Whelp"
+							loading="eager"
+							decoding="sync"
+						/>
+						<figcaption><span>T1</span><strong>Whelp</strong></figcaption>
+					</figure>
+					<figure class="enemy-card">
+						<img
+							src="../../apps/web/static/runtime/enemies/monster-wiki-v1/dragons/dragon-fledgling/normal.9d3dcee3b1ac.webp"
+							alt="Fledgling"
+							loading="eager"
+							decoding="sync"
+						/>
+						<figcaption><span>T2</span><strong>Fledgling</strong></figcaption>
+					</figure>
+					<figure class="enemy-card">
+						<img
+							src="../../apps/web/static/runtime/enemies/monster-wiki-v1/dragons/dragon-elder-wyrm/normal.c8af6e2c7261.webp"
+							alt="Elder Wyrm"
+							loading="eager"
+							decoding="sync"
+						/>
+						<figcaption><span>T4</span><strong>Elder Wyrm</strong></figcaption>
+					</figure>
+				</div>
+				<div class="enemy-family">
+					<h3>Elementals</h3>
+					<figure class="enemy-card">
+						<img
+							src="../../apps/web/static/runtime/enemies/monster-wiki-v1/elementals/elemental-wisp/normal.0265122c562b.webp"
+							alt="Wisp"
+							loading="eager"
+							decoding="sync"
+						/>
+						<figcaption><span>T1</span><strong>Wisp</strong></figcaption>
+					</figure>
+					<figure class="enemy-card">
+						<img
+							src="../../apps/web/static/runtime/enemies/monster-wiki-v1/elementals/elemental-spirit/normal.1ed7bc6e6a3a.webp"
+							alt="Elemental Spirit"
+							loading="eager"
+							decoding="sync"
+						/>
+						<figcaption><span>T2</span><strong>Elemental Spirit</strong></figcaption>
+					</figure>
+					<figure class="enemy-card">
+						<img
+							src="../../apps/web/static/runtime/enemies/monster-wiki-v1/elementals/elemental-colossus/normal.86fc02832629.webp"
+							alt="Elemental Colossus"
+							loading="eager"
+							decoding="sync"
+						/>
+						<figcaption><span>T4</span><strong>Elemental Colossus</strong></figcaption>
+					</figure>
+				</div>
+				<div class="enemy-family">
+					<h3>Golems</h3>
+					<figure class="enemy-card">
+						<img
+							src="../../apps/web/static/runtime/enemies/monster-wiki-v1/golems/golem-clay-figure/normal.f544517aee5a.webp"
+							alt="Clay Figure"
+							loading="eager"
+							decoding="sync"
+						/>
+						<figcaption><span>T1</span><strong>Clay Figure</strong></figcaption>
+					</figure>
+					<figure class="enemy-card">
+						<img
+							src="../../apps/web/static/runtime/enemies/monster-wiki-v1/golems/golem-stone-servant/normal.677d598256ea.webp"
+							alt="Stone Servant"
+							loading="eager"
+							decoding="sync"
+						/>
+						<figcaption><span>T2</span><strong>Stone Servant</strong></figcaption>
+					</figure>
+					<figure class="enemy-card">
+						<img
+							src="../../apps/web/static/runtime/enemies/monster-wiki-v1/golems/golem-basalt-colossus/normal.836b42bef008.webp"
+							alt="Basalt Colossus"
+							loading="eager"
+							decoding="sync"
+						/>
+						<figcaption><span>T4</span><strong>Basalt Colossus</strong></figcaption>
+					</figure>
+				</div>
+			</div>
+			<footer>
+				<span>T1 → T2 → T4 · Intermediate and later forms omitted</span
+				><span>Summonlab · Selected artwork</span>
+			</footer>
+		</section>
+		<section id="equipment">
+			<header class="page-header">
+				<div>
+					<p class="eyebrow">Summonlab · Visual gallery</p>
+					<h1>Equipment, from F to S</h1>
+				</div>
+				<p>
+					Three armor styles across selected ranks.<br />Matching weapon, head, torso, legs, and
+					boots.
+				</p>
+			</header>
+			<div class="equipment-row">
+				<h3>Heavy armor</h3>
+				<div class="equipment-grid">
+					<article class="equipment-card">
+						<header>
+							<b>RANK F</b>
+							<h4>Bronze</h4>
+						</header>
+						<div class="loadout">
+							<figure class="weapon">
+								<img
+									src="../../apps/web/static/runtime/equipment-v1/equipment-v1-f-bronze-sword/detail.15b351059803.webp"
+									alt="Bronze Sword"
+									loading="eager"
+									decoding="sync"
+								/>
+								<figcaption>Bronze Sword</figcaption>
+							</figure>
+							<div class="armor-parts">
+								<figure>
+									<img
+										src="../../apps/web/static/runtime/equipment-v1/equipment-v1-f-bronze-heavy-armor-head/detail.86c872601970.webp"
+										alt="Bronze Heavy armor · Head"
+										loading="eager"
+										decoding="sync"
+									/>
+									<figcaption>Head</figcaption>
+								</figure>
+								<figure>
+									<img
+										src="../../apps/web/static/runtime/equipment-v1/equipment-v1-f-bronze-heavy-armor-torso/detail.fcd73a4fb2a4.webp"
+										alt="Bronze Heavy armor · Torso"
+										loading="eager"
+										decoding="sync"
+									/>
+									<figcaption>Torso</figcaption>
+								</figure>
+								<figure>
+									<img
+										src="../../apps/web/static/runtime/equipment-v1/equipment-v1-f-bronze-heavy-armor-legs/detail.b97133649ee6.webp"
+										alt="Bronze Heavy armor · Legs"
+										loading="eager"
+										decoding="sync"
+									/>
+									<figcaption>Legs</figcaption>
+								</figure>
+								<figure>
+									<img
+										src="../../apps/web/static/runtime/equipment-v1/equipment-v1-f-bronze-heavy-armor-boots/detail.6c35caaad549.webp"
+										alt="Bronze Heavy armor · Boots"
+										loading="eager"
+										decoding="sync"
+									/>
+									<figcaption>Boots</figcaption>
+								</figure>
+							</div>
+						</div>
+					</article>
+					<article class="equipment-card">
+						<header>
+							<b>RANK D</b>
+							<h4>Steel</h4>
+						</header>
+						<div class="loadout">
+							<figure class="weapon">
+								<img
+									src="../../apps/web/static/runtime/equipment-v1/equipment-v1-d-steel-sword/detail.63b7c075d7e6.webp"
+									alt="Steel Sword"
+									loading="eager"
+									decoding="sync"
+								/>
+								<figcaption>Steel Sword</figcaption>
+							</figure>
+							<div class="armor-parts">
+								<figure>
+									<img
+										src="../../apps/web/static/runtime/equipment-v1/equipment-v1-d-steel-heavy-armor-head/detail.ca62e0a1d4a3.webp"
+										alt="Steel Heavy armor · Head"
+										loading="eager"
+										decoding="sync"
+									/>
+									<figcaption>Head</figcaption>
+								</figure>
+								<figure>
+									<img
+										src="../../apps/web/static/runtime/equipment-v1/equipment-v1-d-steel-heavy-armor-torso/detail.2d6a395c75a5.webp"
+										alt="Steel Heavy armor · Torso"
+										loading="eager"
+										decoding="sync"
+									/>
+									<figcaption>Torso</figcaption>
+								</figure>
+								<figure>
+									<img
+										src="../../apps/web/static/runtime/equipment-v1/equipment-v1-d-steel-heavy-armor-legs/detail.61b41b23ecef.webp"
+										alt="Steel Heavy armor · Legs"
+										loading="eager"
+										decoding="sync"
+									/>
+									<figcaption>Legs</figcaption>
+								</figure>
+								<figure>
+									<img
+										src="../../apps/web/static/runtime/equipment-v1/equipment-v1-d-steel-heavy-armor-boots/detail.8c272229f567.webp"
+										alt="Steel Heavy armor · Boots"
+										loading="eager"
+										decoding="sync"
+									/>
+									<figcaption>Boots</figcaption>
+								</figure>
+							</div>
+						</div>
+					</article>
+					<article class="equipment-card">
+						<header>
+							<b>RANK S</b>
+							<h4>Sunsteel</h4>
+						</header>
+						<div class="loadout">
+							<figure class="weapon">
+								<img
+									src="../../apps/web/static/runtime/equipment-v1/equipment-v1-s-sunsteel-sword/detail.adbb93e3971b.webp"
+									alt="Sunsteel Sword"
+									loading="eager"
+									decoding="sync"
+								/>
+								<figcaption>Sunsteel Sword</figcaption>
+							</figure>
+							<div class="armor-parts">
+								<figure>
+									<img
+										src="../../apps/web/static/runtime/equipment-v1/equipment-v1-s-sunsteel-heavy-armor-head/detail.5daa548c9b88.webp"
+										alt="Sunsteel Heavy armor · Head"
+										loading="eager"
+										decoding="sync"
+									/>
+									<figcaption>Head</figcaption>
+								</figure>
+								<figure>
+									<img
+										src="../../apps/web/static/runtime/equipment-v1/equipment-v1-s-sunsteel-heavy-armor-torso/detail.ee04addd0467.webp"
+										alt="Sunsteel Heavy armor · Torso"
+										loading="eager"
+										decoding="sync"
+									/>
+									<figcaption>Torso</figcaption>
+								</figure>
+								<figure>
+									<img
+										src="../../apps/web/static/runtime/equipment-v1/equipment-v1-s-sunsteel-heavy-armor-legs/detail.8be31a8d34dd.webp"
+										alt="Sunsteel Heavy armor · Legs"
+										loading="eager"
+										decoding="sync"
+									/>
+									<figcaption>Legs</figcaption>
+								</figure>
+								<figure>
+									<img
+										src="../../apps/web/static/runtime/equipment-v1/equipment-v1-s-sunsteel-heavy-armor-boots/detail.814b878a6eb0.webp"
+										alt="Sunsteel Heavy armor · Boots"
+										loading="eager"
+										decoding="sync"
+									/>
+									<figcaption>Boots</figcaption>
+								</figure>
+							</div>
+						</div>
+					</article>
+				</div>
+			</div>
+			<div class="equipment-row">
+				<h3>Light armor</h3>
+				<div class="equipment-grid">
+					<article class="equipment-card">
+						<header>
+							<b>RANK F</b>
+							<h4>Coarse Hide</h4>
+						</header>
+						<div class="loadout">
+							<figure class="weapon">
+								<img
+									src="../../apps/web/static/runtime/equipment-v1/equipment-v1-f-ash-bow/detail.af0c426254c0.webp"
+									alt="Ash Bow"
+									loading="eager"
+									decoding="sync"
+								/>
+								<figcaption>Ash Bow</figcaption>
+							</figure>
+							<div class="armor-parts">
+								<figure>
+									<img
+										src="../../apps/web/static/runtime/equipment-v1/equipment-v1-f-coarse-hide-light-armor-head/detail.59cbd4d133b8.webp"
+										alt="Coarse Hide Light armor · Head"
+										loading="eager"
+										decoding="sync"
+									/>
+									<figcaption>Head</figcaption>
+								</figure>
+								<figure>
+									<img
+										src="../../apps/web/static/runtime/equipment-v1/equipment-v1-f-coarse-hide-light-armor-torso/detail.a4ade9ca1f3d.webp"
+										alt="Coarse Hide Light armor · Torso"
+										loading="eager"
+										decoding="sync"
+									/>
+									<figcaption>Torso</figcaption>
+								</figure>
+								<figure>
+									<img
+										src="../../apps/web/static/runtime/equipment-v1/equipment-v1-f-coarse-hide-light-armor-legs/detail.9a7e93567bf5.webp"
+										alt="Coarse Hide Light armor · Legs"
+										loading="eager"
+										decoding="sync"
+									/>
+									<figcaption>Legs</figcaption>
+								</figure>
+								<figure>
+									<img
+										src="../../apps/web/static/runtime/equipment-v1/equipment-v1-f-coarse-hide-light-armor-boots/detail.0fed39585b11.webp"
+										alt="Coarse Hide Light armor · Boots"
+										loading="eager"
+										decoding="sync"
+									/>
+									<figcaption>Boots</figcaption>
+								</figure>
+							</div>
+						</div>
+					</article>
+					<article class="equipment-card">
+						<header>
+							<b>RANK D</b>
+							<h4>Beast Scale</h4>
+						</header>
+						<div class="loadout">
+							<figure class="weapon">
+								<img
+									src="../../apps/web/static/runtime/equipment-v1/equipment-v1-d-ironwood-bow/detail.8541f13a2140.webp"
+									alt="Ironwood Bow"
+									loading="eager"
+									decoding="sync"
+								/>
+								<figcaption>Ironwood Bow</figcaption>
+							</figure>
+							<div class="armor-parts">
+								<figure>
+									<img
+										src="../../apps/web/static/runtime/equipment-v1/equipment-v1-d-beast-scale-light-armor-head/detail.e6819065fc89.webp"
+										alt="Beast Scale Light armor · Head"
+										loading="eager"
+										decoding="sync"
+									/>
+									<figcaption>Head</figcaption>
+								</figure>
+								<figure>
+									<img
+										src="../../apps/web/static/runtime/equipment-v1/equipment-v1-d-beast-scale-light-armor-torso/detail.6a712a361602.webp"
+										alt="Beast Scale Light armor · Torso"
+										loading="eager"
+										decoding="sync"
+									/>
+									<figcaption>Torso</figcaption>
+								</figure>
+								<figure>
+									<img
+										src="../../apps/web/static/runtime/equipment-v1/equipment-v1-d-beast-scale-light-armor-legs/detail.86b8e8df5976.webp"
+										alt="Beast Scale Light armor · Legs"
+										loading="eager"
+										decoding="sync"
+									/>
+									<figcaption>Legs</figcaption>
+								</figure>
+								<figure>
+									<img
+										src="../../apps/web/static/runtime/equipment-v1/equipment-v1-d-beast-scale-light-armor-boots/detail.d7851b6ad16d.webp"
+										alt="Beast Scale Light armor · Boots"
+										loading="eager"
+										decoding="sync"
+									/>
+									<figcaption>Boots</figcaption>
+								</figure>
+							</div>
+						</div>
+					</article>
+					<article class="equipment-card">
+						<header>
+							<b>RANK S</b>
+							<h4>Ancient Dragon Scale</h4>
+						</header>
+						<div class="loadout">
+							<figure class="weapon">
+								<img
+									src="../../apps/web/static/runtime/equipment-v1/equipment-v1-s-worldtree-limb-bow/detail.c2fd4d597373.webp"
+									alt="Worldtree Limb Bow"
+									loading="eager"
+									decoding="sync"
+								/>
+								<figcaption>Worldtree Limb Bow</figcaption>
+							</figure>
+							<div class="armor-parts">
+								<figure>
+									<img
+										src="../../apps/web/static/runtime/equipment-v1/equipment-v1-s-ancient-dragon-scale-light-armor-head/detail.3547e77f3dd8.webp"
+										alt="Ancient Dragon Scale Light armor · Head"
+										loading="eager"
+										decoding="sync"
+									/>
+									<figcaption>Head</figcaption>
+								</figure>
+								<figure>
+									<img
+										src="../../apps/web/static/runtime/equipment-v1/equipment-v1-s-ancient-dragon-scale-light-armor-torso/detail.1d672d4e88c4.webp"
+										alt="Ancient Dragon Scale Light armor · Torso"
+										loading="eager"
+										decoding="sync"
+									/>
+									<figcaption>Torso</figcaption>
+								</figure>
+								<figure>
+									<img
+										src="../../apps/web/static/runtime/equipment-v1/equipment-v1-s-ancient-dragon-scale-light-armor-legs/detail.4e693d51842b.webp"
+										alt="Ancient Dragon Scale Light armor · Legs"
+										loading="eager"
+										decoding="sync"
+									/>
+									<figcaption>Legs</figcaption>
+								</figure>
+								<figure>
+									<img
+										src="../../apps/web/static/runtime/equipment-v1/equipment-v1-s-ancient-dragon-scale-light-armor-boots/detail.cdbd297e4519.webp"
+										alt="Ancient Dragon Scale Light armor · Boots"
+										loading="eager"
+										decoding="sync"
+									/>
+									<figcaption>Boots</figcaption>
+								</figure>
+							</div>
+						</div>
+					</article>
+				</div>
+			</div>
+			<div class="equipment-row">
+				<h3>Robes</h3>
+				<div class="equipment-grid">
+					<article class="equipment-card">
+						<header>
+							<b>RANK F</b>
+							<h4>Hemp Weave</h4>
+						</header>
+						<div class="loadout">
+							<figure class="weapon">
+								<img
+									src="../../apps/web/static/runtime/equipment-v1/equipment-v1-f-ash-staff/detail.1a1bb5c1198a.webp"
+									alt="Ash Staff"
+									loading="eager"
+									decoding="sync"
+								/>
+								<figcaption>Ash Staff</figcaption>
+							</figure>
+							<div class="armor-parts">
+								<figure>
+									<img
+										src="../../apps/web/static/runtime/equipment-v1/equipment-v1-f-hemp-weave-robes-head/detail.c855cd2d0869.webp"
+										alt="Hemp Weave Robes · Head"
+										loading="eager"
+										decoding="sync"
+									/>
+									<figcaption>Head</figcaption>
+								</figure>
+								<figure>
+									<img
+										src="../../apps/web/static/runtime/equipment-v1/equipment-v1-f-hemp-weave-robes-torso/detail.d7ba4a3b37c5.webp"
+										alt="Hemp Weave Robes · Torso"
+										loading="eager"
+										decoding="sync"
+									/>
+									<figcaption>Torso</figcaption>
+								</figure>
+								<figure>
+									<img
+										src="../../apps/web/static/runtime/equipment-v1/equipment-v1-f-hemp-weave-robes-legs/detail.ed4b9afde60a.webp"
+										alt="Hemp Weave Robes · Legs"
+										loading="eager"
+										decoding="sync"
+									/>
+									<figcaption>Legs</figcaption>
+								</figure>
+								<figure>
+									<img
+										src="../../apps/web/static/runtime/equipment-v1/equipment-v1-f-hemp-weave-robes-boots/detail.80cb57e7bd31.webp"
+										alt="Hemp Weave Robes · Boots"
+										loading="eager"
+										decoding="sync"
+									/>
+									<figcaption>Boots</figcaption>
+								</figure>
+							</div>
+						</div>
+					</article>
+					<article class="equipment-card">
+						<header>
+							<b>RANK D</b>
+							<h4>Layered Silk</h4>
+						</header>
+						<div class="loadout">
+							<figure class="weapon">
+								<img
+									src="../../apps/web/static/runtime/equipment-v1/equipment-v1-d-ironwood-staff/detail.23270a94ed31.webp"
+									alt="Ironwood Staff"
+									loading="eager"
+									decoding="sync"
+								/>
+								<figcaption>Ironwood Staff</figcaption>
+							</figure>
+							<div class="armor-parts">
+								<figure>
+									<img
+										src="../../apps/web/static/runtime/equipment-v1/equipment-v1-d-layered-silk-robes-head/detail.04eecdb5aee0.webp"
+										alt="Layered Silk Robes · Head"
+										loading="eager"
+										decoding="sync"
+									/>
+									<figcaption>Head</figcaption>
+								</figure>
+								<figure>
+									<img
+										src="../../apps/web/static/runtime/equipment-v1/equipment-v1-d-layered-silk-robes-torso/detail.300bcdc4b1aa.webp"
+										alt="Layered Silk Robes · Torso"
+										loading="eager"
+										decoding="sync"
+									/>
+									<figcaption>Torso</figcaption>
+								</figure>
+								<figure>
+									<img
+										src="../../apps/web/static/runtime/equipment-v1/equipment-v1-d-layered-silk-robes-legs/detail.fcb74ca1bdd2.webp"
+										alt="Layered Silk Robes · Legs"
+										loading="eager"
+										decoding="sync"
+									/>
+									<figcaption>Legs</figcaption>
+								</figure>
+								<figure>
+									<img
+										src="../../apps/web/static/runtime/equipment-v1/equipment-v1-d-layered-silk-robes-boots/detail.257da608b0d9.webp"
+										alt="Layered Silk Robes · Boots"
+										loading="eager"
+										decoding="sync"
+									/>
+									<figcaption>Boots</figcaption>
+								</figure>
+							</div>
+						</div>
+					</article>
+					<article class="equipment-card">
+						<header>
+							<b>RANK S</b>
+							<h4>Fateweave</h4>
+						</header>
+						<div class="loadout">
+							<figure class="weapon">
+								<img
+									src="../../apps/web/static/runtime/equipment-v1/equipment-v1-s-worldtree-limb-staff/detail.1171a7f7a355.webp"
+									alt="Worldtree Limb Staff"
+									loading="eager"
+									decoding="sync"
+								/>
+								<figcaption>Worldtree Limb Staff</figcaption>
+							</figure>
+							<div class="armor-parts">
+								<figure>
+									<img
+										src="../../apps/web/static/runtime/equipment-v1/equipment-v1-s-fateweave-robes-head/detail.f96de730e088.webp"
+										alt="Fateweave Robes · Head"
+										loading="eager"
+										decoding="sync"
+									/>
+									<figcaption>Head</figcaption>
+								</figure>
+								<figure>
+									<img
+										src="../../apps/web/static/runtime/equipment-v1/equipment-v1-s-fateweave-robes-torso/detail.c0d7ef7e3481.webp"
+										alt="Fateweave Robes · Torso"
+										loading="eager"
+										decoding="sync"
+									/>
+									<figcaption>Torso</figcaption>
+								</figure>
+								<figure>
+									<img
+										src="../../apps/web/static/runtime/equipment-v1/equipment-v1-s-fateweave-robes-legs/detail.ded5d1bc8477.webp"
+										alt="Fateweave Robes · Legs"
+										loading="eager"
+										decoding="sync"
+									/>
+									<figcaption>Legs</figcaption>
+								</figure>
+								<figure>
+									<img
+										src="../../apps/web/static/runtime/equipment-v1/equipment-v1-s-fateweave-robes-boots/detail.670659443974.webp"
+										alt="Fateweave Robes · Boots"
+										loading="eager"
+										decoding="sync"
+									/>
+									<figcaption>Boots</figcaption>
+								</figure>
+							</div>
+						</div>
+					</article>
+				</div>
+			</div>
+			<footer>
+				<span>F → D → S · Selected material and rank progressions</span
+				><span>Summonlab · Selected artwork</span>
+			</footer>
+		</section>
+		<section id="skills">
+			<header class="page-header">
+				<div>
+					<p class="eyebrow">Summonlab · Visual gallery</p>
+					<h1>Skills for a living company</h1>
+				</div>
+				<p>
+					Combat, craft, knowledge, and care.<br />A small representative overview of the skill
+					catalog.
+				</p>
+			</header>
+			<div class="skill-grid">
+				<div class="skill-group">
+					<h3>Combat</h3>
+					<figure class="skill-card">
+						<img
+							src="../../apps/web/static/wiki-media/skills/visual-catalog-v2/icons/martial-blade-measured-cut.a96984091431.webp"
+							alt="Measured Cut"
+							loading="eager"
+							decoding="sync"
+						/>
+						<figcaption><strong>Measured Cut</strong><span>Martial · Blade</span></figcaption>
+					</figure>
+					<figure class="skill-card">
+						<img
+							src="../../apps/web/static/wiki-media/skills/visual-catalog-v2/icons/martial-ranged-aimed-shot.687f1a3a2a0e.webp"
+							alt="Aimed Shot"
+							loading="eager"
+							decoding="sync"
+						/>
+						<figcaption><strong>Aimed Shot</strong><span>Martial · Ranged</span></figcaption>
+					</figure>
+					<figure class="skill-card">
+						<img
+							src="../../apps/web/static/wiki-media/skills/visual-catalog-v2/icons/magical-elemental-fireball.c27dc6cc80f0.webp"
+							alt="Fireball"
+							loading="eager"
+							decoding="sync"
+						/>
+						<figcaption><strong>Fireball</strong><span>Magical · Elemental</span></figcaption>
+					</figure>
+					<figure class="skill-card">
+						<img
+							src="../../apps/web/static/wiki-media/skills/visual-catalog-v2/icons/martial-shield-shield-bash.5d2f3cc5bbb9.webp"
+							alt="Shield Bash"
+							loading="eager"
+							decoding="sync"
+						/>
+						<figcaption><strong>Shield Bash</strong><span>Martial · Shield</span></figcaption>
+					</figure>
+				</div>
+				<div class="skill-group">
+					<h3>Craft</h3>
+					<figure class="skill-card">
+						<img
+							src="../../apps/web/static/wiki-media/skills/visual-catalog-v2/icons/craft-forging-weaponsmithing.e3614378517f.webp"
+							alt="Weaponsmithing"
+							loading="eager"
+							decoding="sync"
+						/>
+						<figcaption><strong>Weaponsmithing</strong><span>Craft · Forging</span></figcaption>
+					</figure>
+					<figure class="skill-card">
+						<img
+							src="../../apps/web/static/wiki-media/skills/visual-catalog-v2/icons/craft-alchemy-potion-brewing.3d8124e428ca.webp"
+							alt="Potion Brewing"
+							loading="eager"
+							decoding="sync"
+						/>
+						<figcaption><strong>Potion Brewing</strong><span>Craft · Alchemy</span></figcaption>
+					</figure>
+					<figure class="skill-card">
+						<img
+							src="../../apps/web/static/wiki-media/skills/visual-catalog-v2/icons/craft-cooking-hearth-meal.507e963554c7.webp"
+							alt="Hearth Meal"
+							loading="eager"
+							decoding="sync"
+						/>
+						<figcaption><strong>Hearth Meal</strong><span>Craft · Cooking</span></figcaption>
+					</figure>
+					<figure class="skill-card">
+						<img
+							src="../../apps/web/static/wiki-media/skills/visual-catalog-v2/icons/craft-gathering-mining.0543cbf59416.webp"
+							alt="Mining"
+							loading="eager"
+							decoding="sync"
+						/>
+						<figcaption><strong>Mining</strong><span>Craft · Gathering</span></figcaption>
+					</figure>
+				</div>
+				<div class="skill-group">
+					<h3>Social &amp; knowledge</h3>
+					<figure class="skill-card">
+						<img
+							src="../../apps/web/static/wiki-media/skills/visual-catalog-v2/icons/craft-knowledge-languages.54616df843ed.webp"
+							alt="Languages"
+							loading="eager"
+							decoding="sync"
+						/>
+						<figcaption><strong>Languages</strong><span>Craft · Knowledge</span></figcaption>
+					</figure>
+					<figure class="skill-card">
+						<img
+							src="../../apps/web/static/wiki-media/skills/visual-catalog-v2/icons/magical-mind-presence.4b40daa775b3.webp"
+							alt="Presence"
+							loading="eager"
+							decoding="sync"
+						/>
+						<figcaption><strong>Presence</strong><span>Magical · Mind</span></figcaption>
+					</figure>
+					<figure class="skill-card">
+						<img
+							src="../../apps/web/static/wiki-media/skills/visual-catalog-v2/icons/magical-mind-read-surface.42dbab60889c.webp"
+							alt="Read Surface"
+							loading="eager"
+							decoding="sync"
+						/>
+						<figcaption><strong>Read Surface</strong><span>Magical · Mind</span></figcaption>
+					</figure>
+					<figure class="skill-card">
+						<img
+							src="../../apps/web/static/wiki-media/skills/visual-catalog-v2/icons/craft-knowledge-research.3e181e032ac0.webp"
+							alt="Research"
+							loading="eager"
+							decoding="sync"
+						/>
+						<figcaption><strong>Research</strong><span>Craft · Knowledge</span></figcaption>
+					</figure>
+				</div>
+				<div class="skill-group">
+					<h3>Support</h3>
+					<figure class="skill-card">
+						<img
+							src="../../apps/web/static/wiki-media/skills/visual-catalog-v2/icons/magical-restoration-mending.fff9ffc35531.webp"
+							alt="Mending"
+							loading="eager"
+							decoding="sync"
+						/>
+						<figcaption><strong>Mending</strong><span>Magical · Restoration</span></figcaption>
+					</figure>
+					<figure class="skill-card">
+						<img
+							src="../../apps/web/static/wiki-media/skills/visual-catalog-v2/icons/magical-enchantment-group-blessing.86dac7ff3496.webp"
+							alt="Group Blessing"
+							loading="eager"
+							decoding="sync"
+						/>
+						<figcaption>
+							<strong>Group Blessing</strong><span>Magical · Enchantment</span>
+						</figcaption>
+					</figure>
+					<figure class="skill-card">
+						<img
+							src="../../apps/web/static/wiki-media/skills/visual-catalog-v2/icons/magical-restoration-soothe.4046d4a57d6b.webp"
+							alt="Soothe"
+							loading="eager"
+							decoding="sync"
+						/>
+						<figcaption><strong>Soothe</strong><span>Magical · Restoration</span></figcaption>
+					</figure>
+					<figure class="skill-card">
+						<img
+							src="../../apps/web/static/wiki-media/skills/visual-catalog-v2/icons/magical-ward-barrier.2b2e1b541a54.webp"
+							alt="Barrier"
+							loading="eager"
+							decoding="sync"
+						/>
+						<figcaption><strong>Barrier</strong><span>Magical · Ward</span></figcaption>
+					</figure>
+				</div>
+			</div>
+			<footer>
+				<span>16 selected skills · Combat, craft, knowledge, and care.</span
+				><span>Summonlab · Selected artwork</span>
+			</footer>
+		</section>
+	</body>
+</html>

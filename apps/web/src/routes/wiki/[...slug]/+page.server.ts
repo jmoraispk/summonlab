@@ -1,4 +1,5 @@
 import { error, redirect } from '@sveltejs/kit';
+import { base } from '$app/paths';
 
 import {
 	getLegacyMonsterWikiRedirect,
@@ -6,8 +7,9 @@ import {
 	getMonsterVisualDatabase,
 	getMonsterVisualEntry
 } from '$lib/server/monster-database';
+import { getEquipmentWikiCatalog } from '$lib/server/equipment-wiki-catalog';
 import { getSkillVisualCatalog } from '$lib/server/skill-visual-catalog';
-import { getWikiAsset, getWikiPage } from '$lib/server/wiki';
+import { getWikiAsset, getWikiConsolidationRedirect, getWikiPage } from '$lib/server/wiki';
 
 import type { PageServerLoad } from './$types';
 
@@ -21,14 +23,19 @@ const visualPacketHeroes = [
 ] as const;
 
 export const load = (({ params }) => {
-	const legacyMonsterId = params.slug.match(/^creatures\/monsters\/([a-z][a-z0-9-]*)$/u)?.[1];
+	const slug = params.slug.replace(/\/+$/u, '');
+	const consolidatedDestination = getWikiConsolidationRedirect(slug);
+	if (consolidatedDestination) redirect(308, `${base}${consolidatedDestination}`);
+	const legacyMonsterId = slug.match(/^creatures\/monsters\/([a-z][a-z0-9-]*)$/u)?.[1];
 	const legacyDestination = legacyMonsterId ? getLegacyMonsterWikiRedirect(legacyMonsterId) : null;
-	if (legacyDestination) redirect(308, legacyDestination);
-	const wikiPage = getWikiPage(params.slug);
+	if (legacyDestination) redirect(308, `${base}${legacyDestination}`);
+	const wikiPage = getWikiPage(slug);
 	if (!wikiPage || wikiPage.href === '/wiki') error(404, 'Wiki page not found');
 
 	return {
 		wikiPage,
+		equipmentWikiCatalog:
+			wikiPage.wikiId === 'mechanics.equipment' ? getEquipmentWikiCatalog() : null,
 		skillVisualCatalog:
 			wikiPage.wikiId === 'skills.visual-catalog' ? getSkillVisualCatalog() : null,
 		monsterDatabase:

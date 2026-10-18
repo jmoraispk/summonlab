@@ -31,6 +31,38 @@ function thrownRouteResult(slug: string): { status: number; location?: string } 
 }
 
 describe('online wiki registry', () => {
+	it('preserves consolidation and legacy redirects with static-host trailing slashes', () => {
+		expect(thrownRouteResult('creatures/monsters/armored-brood-guard/')).toEqual({
+			status: 308,
+			location: '/wiki/creatures/monsters/reconciliation'
+		});
+		expect(thrownRouteResult('mechanics/affinities/')).toEqual({
+			status: 308,
+			location: '/wiki/mechanics/progression/affinities'
+		});
+	});
+	it('puts the selected monster families first without changing the canonical catalog', () => {
+		const families = getMonsterVisualDatabase();
+		expect(families.slice(0, 8).map(({ familyId }) => familyId)).toEqual([
+			'giants',
+			'orcs',
+			'trolls',
+			'harpies',
+			'minotaurs',
+			'golems',
+			'treants',
+			'dragons'
+		]);
+		expect(families.slice(-4).map(({ familyId }) => familyId)).toEqual([
+			'elementals',
+			'slimes',
+			'arachnids',
+			'wolves'
+		]);
+		expect(new Set(families.map(({ familyId }) => familyId)).size).toBe(38);
+		expect(monsterIndex.families[0]?.familyId).toBe('goblins');
+	});
+
 	it('publishes every public catalog route from canonical Markdown', () => {
 		const navigation = getWikiNavigation();
 
@@ -152,9 +184,10 @@ describe('online wiki registry', () => {
 		expect(getMonsterVisualEntry('monster.wolf-gray-wolf')?.variants[0]?.thumbnailPath).toMatch(
 			/^\/runtime\/enemies\/fauna-family-v1\//u
 		);
-		expect(
-			getWikiNavigation().find((entry) => entry.href === '/wiki/creatures/monsters/goblin-runt')
-		).toMatchObject({ section: 'Creatures', group: 'Monsters', pageType: 'monster-entry' });
+		expect(getWikiPage('creatures/monsters/goblin-runt')).toMatchObject({
+			section: 'Monsters',
+			pageType: 'monster-entry'
+		});
 	});
 
 	it('dispatches index, family, and form visual models to their matching wiki routes', () => {
@@ -259,7 +292,146 @@ describe('online wiki registry', () => {
 		const progression = getWikiNavigation().find(
 			(entry) => entry.href === '/wiki/mechanics/progression'
 		);
-		expect(progression).toMatchObject({ section: 'Mechanics', group: 'Progression' });
+		expect(progression).toMatchObject({ section: 'Progression', group: null });
+	});
+
+	it.each([
+		['/wiki/mechanics/equipment', 'Equipment'],
+		['/wiki/mechanics/skills/visual-catalog', 'Skills'],
+		['/wiki/art/skill-rarity-frames', 'Skills'],
+		['/wiki/art/monster-gallery', 'Monsters'],
+		['/wiki/art/living-village-heroes', 'Other'],
+		['/wiki/art/hero-rarity-frames', 'Other'],
+		['/wiki/roadmap', 'Other'],
+		['/wiki/mechanics/skills/living-village', 'Other']
+	])('organizes %s inside its subject section %s', (href, section) => {
+		expect(getWikiNavigation().find((entry) => entry.href === href)).toMatchObject({
+			section,
+			group: null
+		});
+	});
+
+	it('removes Milestones and duplicate affinity navigation while keeping Progression rules', () => {
+		const navigation = getWikiNavigation();
+		expect(navigation.some((entry) => /Art book|Milestones|Affinities/.test(entry.section))).toBe(
+			false
+		);
+		expect(navigation.some((entry) => entry.href.startsWith('/wiki/milestones'))).toBe(false);
+		expect(navigation.some((entry) => entry.href.startsWith('/wiki/mechanics/affinities'))).toBe(
+			false
+		);
+		expect(
+			navigation.find((entry) => entry.href === '/wiki/mechanics/progression/affinities')
+		).toMatchObject({ section: 'Progression' });
+		expect(getWikiPage('milestones')?.wikiId).toBe('milestones.index');
+		expect(thrownRouteResult('mechanics/affinities')).toMatchObject({
+			status: 308,
+			location: '/wiki/mechanics/progression/affinities'
+		});
+	});
+
+	it('keeps monster artwork and rules together in compact navigation', () => {
+		const monsters = getWikiNavigation().filter((entry) => entry.section === 'Monsters');
+		expect(monsters.map(({ href }) => href).sort()).toEqual([
+			'/wiki/art/monster-gallery',
+			'/wiki/creatures/fauna-family-expansion',
+			'/wiki/creatures/monster-races',
+			'/wiki/creatures/monsters',
+			'/wiki/creatures/monsters/reconciliation'
+		]);
+		expect(monsters.every((entry) => entry.group === null)).toBe(true);
+		expect(getWikiNavigation().some((entry) => entry.section === 'Creatures')).toBe(false);
+		for (const entry of catalog.entries.filter(
+			(entry) =>
+				entry.path.startsWith('docs/wiki/creatures/monsters/') &&
+				['monster-family', 'monster-entry'].includes(entry.pageType)
+		)) {
+			const route = entry.path.replace('docs/wiki/', '').replace(/\.md$/u, '');
+			expect(getWikiPage(route)?.wikiId).toBe(entry.wikiId);
+		}
+	});
+
+	it.each([
+		['Goblins', '/wiki/creatures/monster-races'],
+		['Goblinoids', '/wiki/creatures/monster-races'],
+		['taxonomy', '/wiki/creatures/monster-races'],
+		['Doppelgangers', '/wiki/creatures/monster-races'],
+		['Goblin Runt', '/wiki/creatures/monsters']
+	])('keeps absorbed subject %s discoverable through its containing page', (query, href) => {
+		const entry = getWikiNavigation().find((entry) => entry.href === href);
+		expect(entry?.searchTerms.toLowerCase()).toContain(query.toLowerCase());
+	});
+
+	it('publishes all thirty source races with 150 progression rows and their status boundary', () => {
+		const page = getWikiPage('creatures/monster-races');
+		expect(page).toMatchObject({ wikiId: 'creatures.monster-families', title: 'Monster Races' });
+		expect(page?.html.match(/<h2 id="\d+-/gu)).toHaveLength(30);
+		expect(page?.html.match(/<td>T[1-5]<\/td>/gu)).toHaveLength(150);
+		expect(page?.html).toContain('source briefs');
+		expect(page?.html).toContain('not accepted species canon');
+		expect(page?.html).toContain('id="30-doppelgangers"');
+		expect(page?.html).toContain('id="classification-axes"');
+		expect(page?.html).toContain(
+			'Sapience, personhood, hostility, and faction are separate fields.'
+		);
+		expect(page?.html).toContain('id="implemented-combat-grammar"');
+		expect(page?.html).toContain('Goblin Hexweaver');
+		expect(page?.html).toContain('candidate</strong>, not approved runtime canon');
+		expect(page?.html).toContain('packages/content/src/enemy-roster.ts');
+		expect(page?.html).toContain('alt="Goblinoid warband review plate"');
+		expect(page?.html).not.toContain('href="/wiki/creatures/taxonomy');
+	});
+
+	it.each([
+		['creatures/taxonomy', 'creatures.taxonomy'],
+		['creatures/monster-races/goblinoids', 'monster-family.goblinoids'],
+		...['01', '02', '03', '04', '05'].map((volume) => [
+			`creatures/monster-races/generator-bestiary-${volume}`,
+			`monster-seed.generator-bestiary-${volume}`
+		])
+	])(
+		'redirects former reader route %s while preserving its internal source identity',
+		(slug, wikiId) => {
+			expect(thrownRouteResult(slug)).toMatchObject({
+				status: 308,
+				location: '/wiki/creatures/monster-races'
+			});
+			expect(getWikiPage(slug)).toMatchObject({ wikiId, spoilerScope: 'internal' });
+		}
+	);
+
+	it('rewrites source links to the single reader page and preserves existing race fragments', () => {
+		const guide = getWikiPage('creatures/monster-races/generator-bestiary-guide');
+		expect(guide?.html).not.toMatch(
+			/href="\/wiki\/creatures\/monster-races\/generator-bestiary-0/u
+		);
+		for (const anchor of [
+			'1-goblins',
+			'7-rotwalkers',
+			'13-harpies',
+			'19-slimes',
+			'25-werebeasts'
+		]) {
+			expect(guide?.html).toContain(`href="/wiki/creatures/monster-races#${anchor}"`);
+		}
+		expect(getWikiPage('creatures/monster-races/generator-bestiary-01')?.html).toContain(
+			'href="/wiki/creatures/monster-races#creature-taxonomy"'
+		);
+		expect(getWikiPage('creatures/monsters/families/goblins')?.html).toContain(
+			'href="/wiki/creatures/monster-races#1-goblins"'
+		);
+	});
+
+	it('keeps the monster source guide linked without promoting its internal visibility', () => {
+		const href = '/wiki/creatures/monster-races/generator-bestiary-guide';
+
+		expect(getWikiPage('creatures/monster-races/generator-bestiary-guide')).toMatchObject({
+			wikiId: 'monster-seed.generator-guidance',
+			href,
+			spoilerScope: 'internal'
+		});
+		expect(getWikiPage('creatures/monster-races')?.html).toContain(`href="${href}"`);
+		expect(getWikiNavigation().some((entry) => entry.href === href)).toBe(false);
 	});
 
 	it('provides title-free body HTML for promoted canonical headings', () => {
