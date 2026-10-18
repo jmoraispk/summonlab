@@ -114,8 +114,8 @@ existing 512-pixel equipment exports and tightly padded skill derivatives provid
 fit the full original image proportionally inside a 512 × 512 transparent canvas, without cropping
 or stretching. Monster images fill their cells proportionally across the full table width instead
 of stopping at 128 pixels. Equipment images also fill their cells proportionally, with no fixed pixel size limit. Both align to the top of
-their cells; compact monster captions appear directly below each image in the same cell. Nonbreaking tier/form headers keep
-the five monster columns from shrinking unevenly in GitHub’s narrow-screen table layout. Current bindings are recorded in `readmeInputs` in the gallery provenance;
+their cells; compact monster captions appear directly below each image in the same cell. Each family name spans all five monster columns above its images. Optional caption breaks keep
+the table within the available width, including on phones. Current bindings are recorded in `readmeInputs` in the gallery provenance;
 the original `inputs` array remains the historical contact-sheet capture record.
 The reproducible monster export is `python3 tools/export-readme-monsters.py`; add `--check` to
 verify source hashes, previews, selection, and provenance. Canonical sources, approvals, and gameplay
@@ -171,3 +171,16 @@ Checks of GitHub-sanitized markup with GitHub-style CSS at 390-, 1,076-, and 1,5
 preserved equal skill image dimensions and horizontal scrolling. In the 1,500-pixel article, the
 skills table is approximately 76 pixels shorter and the monster table 104 pixels shorter, with the
 same image dimensions. Both README exporters reproduce this compact layout.
+
+## Final monster layout and publication
+
+The owner accepted the compact captions and requested family names above their images, following
+the equipment group headings. The monster table now has five columns, with each family name in a
+full-width heading row. The extra family column and tier-header row are removed. Forms remain in
+T1–T5 order, followed by the +30 more families footer. All 40 images and original artwork links are
+preserved. Captions include optional zero-width line breaks so long names can wrap without forcing
+the table beyond the available width; canonical names and alt text remain unchanged.
+
+The owner authorized merging the finished proposal into main and making the repository public.
+The repository was already public when this final request was checked. It remains unarchived, with
+the visible README notice recording that the game website is unavailable and development is paused.

@@ -53,9 +53,11 @@ def export(check=False):
                 'originalSourcePath': record['sourcePath'],
                 'originalSourceSha256': record['sourceSha256'],
             })
-            images.append(f'      <td align="center" valign="top" width="18%"><a href="{record["sourcePath"]}"><img src="{path}" alt="{html.escape(form["name"], quote=True)}" width="100%"></a><br><sup><strong>{html.escape(form["name"])}</strong></sup></td>')
-        rows.append(f'    <tr><th scope="row" align="center" valign="middle">{family["displayName"]}</th>\n' + '\n'.join(images) + '\n    </tr>')
-    table = '<table width="100%">\n  <thead><tr><th>Family</th>' + ''.join(f'<th>T{i}&nbsp;·&nbsp;Monster&nbsp;form</th>' for i in range(1, 6)) + '</tr></thead>\n  <tbody>\n' + '\n'.join(rows) + '\n    <tr><td colspan="6" align="center"><strong>+30 more families</strong></td></tr>\n  </tbody>\n</table>'
+            # GitHub strips CSS word-break rules; these optional breaks keep names from widening phone columns.
+            caption = re.sub(r'([A-Za-z]{2})(?=[A-Za-z])', r'\1&#8203;', html.escape(form['name']))
+            images.append(f'      <td align="center" valign="top" width="20%"><a href="{record["sourcePath"]}"><img src="{path}" alt="{html.escape(form["name"], quote=True)}" width="100%"></a><br><sup><strong>{caption}</strong></sup></td>')
+        rows.append(f'    <tr><th colspan="5" align="center">{family["displayName"]}</th></tr>\n    <tr>\n' + '\n'.join(images) + '\n    </tr>')
+    table = '<table width="100%">\n  <tbody>\n' + '\n'.join(rows) + '\n    <tr><td colspan="5" align="center"><strong>+30 more families</strong></td></tr>\n  </tbody>\n</table>'
     readme_path = ROOT / 'README.md'
     readme = re.sub(r'(## Enemies\n\n)<table[\s\S]*?</table>', lambda m: m[1] + table, readme_path.read_text(), count=1)
     expected[readme_path] = readme.encode()
@@ -67,7 +69,7 @@ def export(check=False):
     section = next(s for s in presentation['sections'] if s['heading'] == 'Enemies')
     section.update({
         'families': FAMILIES, 'imageWidth': '100%', 'imageHeight': 'auto',
-        'layout': 'Eight families with five T1–T5 forms. Each top-aligned image and compact raised caption share a cell, avoiding a separately padded text row; family labels are centered in both directions. Proportional square images fill the five equally requested columns across the full README width; +30 more families footer.',
+        'layout': 'Eight family heading rows each span five columns above their T1–T5 forms. There is no separate family column or tier header. Optional caption line breaks keep names from forcing horizontal overflow on narrow screens. Each top-aligned image and compact raised caption share a cell. Proportional square images fill five equally requested 20% columns across the full README width; +30 more families footer.',
         'previewExport': {'script': 'tools/export-readme-monsters.py', 'canvas': [512, 512], 'fit': 'contain', 'padding': 'transparent', 'format': 'webp', 'quality': 88, 'method': 6},
     })
     expected[provenance_path] = (json.dumps(provenance, indent='\t', ensure_ascii=False) + '\n').encode()
