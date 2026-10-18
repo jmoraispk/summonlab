@@ -30,9 +30,48 @@
 	const current = $derived(images[imageIndex] ?? { src, sourcePath, alt });
 	let sourceFailed = $state(false);
 	let loaded = $state(false);
+	let dismissStart: { x: number; y: number } | undefined;
 	const original = $derived(
 		`https://media.githubusercontent.com/media/jmoraispk/summonlab/main/${current.sourcePath}`
 	);
+
+	function isEmptyArea(event: MouseEvent | PointerEvent) {
+		const target = event.target;
+		if (target === dialog) return true;
+		if (!(target instanceof HTMLElement)) return false;
+		if (target.classList.contains('gallery-stage')) return true;
+		if (!(target instanceof HTMLImageElement) || !target.naturalWidth) return false;
+		// object-fit leaves letterboxing inside the image element's bounds.
+		const bounds = target.getBoundingClientRect();
+		const scale = Math.min(
+			bounds.width / target.naturalWidth,
+			bounds.height / target.naturalHeight
+		);
+		const insetX = (bounds.width - target.naturalWidth * scale) / 2;
+		const insetY = (bounds.height - target.naturalHeight * scale) / 2;
+		return (
+			event.clientX < bounds.left + insetX ||
+			event.clientX > bounds.right - insetX ||
+			event.clientY < bounds.top + insetY ||
+			event.clientY > bounds.bottom - insetY
+		);
+	}
+
+	function beginDismiss(event: PointerEvent) {
+		dismissStart = isEmptyArea(event) ? { x: event.clientX, y: event.clientY } : undefined;
+	}
+
+	function dismissEmptyArea(event: MouseEvent) {
+		const start = dismissStart;
+		dismissStart = undefined;
+		if (
+			start &&
+			Math.hypot(event.clientX - start.x, event.clientY - start.y) < 5 &&
+			isEmptyArea(event)
+		) {
+			dialog.close();
+		}
+	}
 
 	async function open() {
 		imageIndex = Math.max(
@@ -94,6 +133,9 @@
 	aria-label={current.alt}
 	onclose={() => (opened = false)}
 	onkeydown={handleKeydown}
+	onpointerdown={beginDismiss}
+	onpointercancel={() => (dismissStart = undefined)}
+	onclick={dismissEmptyArea}
 >
 	{#if opened}
 		<header>
@@ -115,8 +157,6 @@
 				aria-label="Zoom in">+</button
 			>
 			<button type="button" onclick={() => changeZoom(1)}>Fit image</button>
-			<!-- eslint-disable-next-line svelte/no-navigation-without-resolve -- full-resolution repository raster -->
-			<a href={original} target="_blank" rel="noreferrer">Open original image ↗</a>
 		</div>
 		<div class="gallery-position" aria-live="polite">{imageIndex + 1} / {images.length}</div>
 		<div class="gallery-stage">
@@ -154,11 +194,12 @@
 				onclick={() => navigate(1)}>›</button
 			>
 		</div>
-		<p aria-live="polite">
-			{#if sourceFailed}Original image unavailable. Showing the smaller preview.
-			{:else if !loaded}Loading original image…
-			{:else}Zoom in, then scroll to inspect details.{/if}
-		</p>
+		{#if sourceFailed || !loaded}
+			<p aria-live="polite">
+				{#if sourceFailed}Original image unavailable. Showing the smaller preview.
+				{:else}Loading original image…{/if}
+			</p>
+		{/if}
 	{/if}
 </dialog>
 
@@ -230,6 +271,7 @@
 	.controls {
 		display: flex;
 		align-items: center;
+		justify-content: center;
 		flex-wrap: wrap;
 		gap: 0.5rem;
 		margin-block: 0.75rem;
@@ -241,8 +283,7 @@
 			0.8rem ui-monospace,
 			monospace;
 	}
-	button:not(.thumbnail),
-	a {
+	button:not(.thumbnail) {
 		min-height: 2.75rem;
 		padding: 0.65rem 0.8rem;
 		border: 1px solid #47616b;
@@ -252,7 +293,6 @@
 		font:
 			0.8rem ui-monospace,
 			monospace;
-		text-decoration: none;
 		cursor: pointer;
 		box-sizing: border-box;
 	}

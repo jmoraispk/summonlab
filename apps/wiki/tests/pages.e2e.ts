@@ -18,7 +18,14 @@ for (const width of [1440, 390]) {
 			'src',
 			/^\/summonlab\/runtime\//
 		);
-		await page.getByRole('button', { name: 'Close image' }).click();
+		await expect(
+			page.getByRole('dialog').getByRole('link', { name: 'Open original image' })
+		).toHaveCount(0);
+		await expect(page.getByRole('dialog')).not.toContainText(
+			'Zoom in, then scroll to inspect details'
+		);
+		await page.mouse.click(1, 1);
+		await expect(page.getByRole('dialog')).not.toBeVisible();
 		await expect(opener).toBeFocused();
 		await page.goto('/summonlab/wiki/mechanics/equipment/', { waitUntil: 'networkidle' });
 		await expect(page.locator('.equipment-catalog .equipment-card')).toHaveCount(21);

@@ -127,8 +127,17 @@ README at desktop and phone widths confirmed that all 28 source exports are 512 
 GitHub’s automatic table columns shrank the rendered images to different widths, while vertically
 centered cells moved them as skill names wrapped across different numbers of lines.
 
-Each category now spans two rows: a top-aligned image row and a separate caption row. All icons
-request 80 × 80 pixels. Equal column width requests, smaller captions, and selected nonbreaking phrases keep all seven ranks
-visible on desktop. Names wrap in the separate caption row without moving the icons. The native
-GitHub table retains horizontal scrolling on narrow screens. The four categories, seven F–S ranks,
-28 exact approved exports, captions, and original artwork links are preserved. No artwork is regenerated or changed.
+Each category spans two rows: a top-aligned image row and a separate caption row. The owner
+subsequently requested larger artwork, a narrower category column with horizontally centered labels,
+and vertically centered skill names. Each rank now requests 13% of the table width, and images fill
+their cells proportionally instead of stopping at 80 pixels. The category column gives
+more room to the artwork. Captions use normal-flow bold text in vertically centered cells, with
+an explicit line break in Weaponsmithing to allow a narrower column. GitHub’s rendering API
+removes small-text and word-break tags, so the table uses supported text and alignment attributes.
+
+The GitHub-rendered HTML, measured with GitHub-style table CSS, shows 101–108-pixel square icons
+in a 1,012-pixel article and uniformly 168-pixel square icons in a 1,500-pixel article. The native
+table retains horizontal scrolling on narrow screens. At a 390-pixel viewport, the table scrolls across 892 pixels, and icon sizes range from 69 to
+108 pixels according to caption widths. Inline minimum-width CSS is unavailable in sanitized
+README HTML. The four categories, seven F–S ranks, 28 exact approved exports, captions, and original artwork links are preserved. No artwork is
+regenerated or changed.

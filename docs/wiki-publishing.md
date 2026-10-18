@@ -26,7 +26,8 @@ Full-resolution monster artwork loads from GitHub's Git LFS media endpoint when 
 viewer opens. Its arrows follow the displayed gallery: all normal forms in the
 bestiary, the selected affinity's five forms in a family, or a form's five affinities.
 Arrow keys navigate images except when the focused enlarged image needs them for
-panning. Closing the viewer returns focus to its original thumbnail.
+panning. Clicking the backdrop or empty image margins closes the viewer; image/control clicks and
+dragging remain interactive. Closing the viewer returns focus to its original thumbnail.
 
 Verification rejects missing local page/image links, URLs outside the project base,
 symbolic links, game endpoint directories, and artifacts at or above GitHub Pages'

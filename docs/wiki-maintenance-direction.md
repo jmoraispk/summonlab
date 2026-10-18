@@ -86,7 +86,7 @@ move Elementals, Slimes, Arachnids, and Wolves to the end of the reader index an
 the README showcase. This order is presentation only; do not reorder production authorities.
 
 Images in the bestiary, family affinity atlas, and individual form pages open an enlarged viewer.
-Provide zoom in/out, fit, scrolling, an original-image link, Escape/close support, and keyboard
+Provide zoom in/out, fit, scrolling, Escape/close support, and keyboard
 focus restoration. Load the full-resolution repository source only when opening a viewer, with a
 local preview fallback if that source is unavailable. These originals use Git LFS, so use GitHub’s
 media endpoint rather than its raw endpoint, which returns pointer text. Keep the viewed region
@@ -105,3 +105,10 @@ static app reuses the current wiki, galleries, and reader navigation. All 736 he
 searchable with shared query URLs, collection filters, pagination, and browser history. Keep game
 routes and API endpoints out of the publication. Build and deployment details are in
 [Publishing the wiki](wiki-publishing.md).
+
+## Viewer spacing and dismissal
+
+Accepted owner feedback: center the zoom controls, remove the original-image link and the routine
+zoom/scroll instruction, and close the viewer when clicking outside its image section or in empty
+image margins. Image clicks, gallery arrows, and controls remain active. A drag that begins on the
+artwork must not dismiss the viewer when released outside it. Preserve Escape and opener focus.

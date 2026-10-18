@@ -1000,9 +1000,9 @@
 					"A",
 					"S"
 				],
-				"layout": "Each category spans an image row and a separate caption row, with seven ascending F–S rank columns. Top-aligned 80-pixel square images, equally requested column widths, and smaller captions with selected nonbreaking phrases preserve equal icon size while other names wrap in their separate row. Examples illustrate increasing rarity, not a guaranteed prerequisite chain.",
-				"imageWidth": 80,
-				"imageHeight": 80
+				"layout": "Each category spans an image row and a separate caption row, with seven ascending F–S rank columns. Each rank requests 13% of the table width; square images fill their cells proportionally. Centered category labels and vertically centered, normal-flow captions keep artwork and names aligned. Native horizontal scrolling remains available on narrow screens. Examples illustrate increasing rarity, not a guaranteed prerequisite chain.",
+				"imageWidth": "100%",
+				"imageHeight": "auto"
 			}
 		],
 		"inputRecords": "readmeInputs"
