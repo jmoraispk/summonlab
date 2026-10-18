@@ -260,12 +260,48 @@ describe('online wiki registry', () => {
 		const progression = getWikiNavigation().find(
 			(entry) => entry.href === '/wiki/mechanics/progression'
 		);
-		expect(progression).toMatchObject({ section: 'Mechanics', group: 'Progression' });
+		expect(progression).toMatchObject({ section: 'Progression', group: null });
 	});
 
-	it('consolidates creature navigation into four compact Monster entry points', () => {
+	it.each([
+		['/wiki/mechanics/equipment', 'Equipment'],
+		['/wiki/mechanics/skills/visual-catalog', 'Skills'],
+		['/wiki/art/skill-rarity-frames', 'Skills'],
+		['/wiki/art/monster-gallery', 'Monsters'],
+		['/wiki/art/living-village-heroes', 'Other'],
+		['/wiki/art/hero-rarity-frames', 'Other'],
+		['/wiki/roadmap', 'Other'],
+		['/wiki/mechanics/skills/living-village', 'Other']
+	])('organizes %s inside its subject section %s', (href, section) => {
+		expect(getWikiNavigation().find((entry) => entry.href === href)).toMatchObject({
+			section,
+			group: null
+		});
+	});
+
+	it('removes Milestones and duplicate affinity navigation while keeping Progression rules', () => {
+		const navigation = getWikiNavigation();
+		expect(navigation.some((entry) => /Art book|Milestones|Affinities/.test(entry.section))).toBe(
+			false
+		);
+		expect(navigation.some((entry) => entry.href.startsWith('/wiki/milestones'))).toBe(false);
+		expect(navigation.some((entry) => entry.href.startsWith('/wiki/mechanics/affinities'))).toBe(
+			false
+		);
+		expect(
+			navigation.find((entry) => entry.href === '/wiki/mechanics/progression/affinities')
+		).toMatchObject({ section: 'Progression' });
+		expect(getWikiPage('milestones')?.wikiId).toBe('milestones.index');
+		expect(thrownRouteResult('mechanics/affinities')).toMatchObject({
+			status: 308,
+			location: '/wiki/mechanics/progression/affinities'
+		});
+	});
+
+	it('keeps monster artwork and rules together in compact navigation', () => {
 		const monsters = getWikiNavigation().filter((entry) => entry.section === 'Monsters');
 		expect(monsters.map(({ href }) => href).sort()).toEqual([
+			'/wiki/art/monster-gallery',
 			'/wiki/creatures/fauna-family-expansion',
 			'/wiki/creatures/monster-races',
 			'/wiki/creatures/monsters',

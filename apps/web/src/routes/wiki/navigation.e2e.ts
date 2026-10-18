@@ -9,6 +9,47 @@ for (const width of [1400, 390]) {
 	test.describe(`wiki index at ${width}px`, () => {
 		test.use({ viewport: { width, height: 900 } });
 
+		test('keeps artwork in its subject section and prototype references in Other', async ({
+			page
+		}) => {
+			await page.goto('/wiki/mechanics/equipment', { waitUntil: 'networkidle' });
+			if (width === 390) await page.getByRole('button', { name: 'Open index' }).click();
+			const index = page.getByRole('complementary', { name: 'Wiki index' });
+			await expect(
+				index.locator('summary').filter({ hasText: /Art book|Milestones|Affinities/ })
+			).toHaveCount(0);
+			for (const [section, href] of [
+				['Equipment', '/wiki/mechanics/equipment'],
+				['Skills', '/wiki/mechanics/skills/visual-catalog'],
+				['Monsters', '/wiki/art/monster-gallery'],
+				['Other', '/wiki/art/living-village-heroes']
+			]) {
+				const group = index
+					.locator('details')
+					.filter({ has: page.locator('summary').filter({ hasText: new RegExp(`^${section}`) }) });
+				if (!(await group.getAttribute('open'))) {
+					await group.locator('summary').evaluate((element) => {
+						if (!element.parentElement?.hasAttribute('open')) (element as HTMLElement).click();
+					});
+				}
+				await expect(group.locator(`a[href="${href}"]`)).toBeVisible();
+			}
+			await expect(index.locator('details details')).toHaveCount(0);
+			await expect(
+				index
+					.getByRole('navigation', { name: 'Wiki shortcuts' })
+					.locator('a[href="/wiki/art/living-village-heroes"]')
+			).toHaveCount(0);
+			await index.getByRole('searchbox').fill('Fire');
+			await expect(index.locator('a[href="/wiki/mechanics/progression/affinities"]')).toBeVisible();
+			await expect(index.locator('a[href^="/wiki/mechanics/affinities"]')).toHaveCount(0);
+			await page.goto('/wiki/mechanics/affinities', { waitUntil: 'networkidle' });
+			await expect(page).toHaveURL(/\/wiki\/mechanics\/progression\/affinities$/);
+			await expect(
+				page.getByRole('heading', { level: 1, name: 'Affinities', exact: true })
+			).toBeVisible();
+		});
+
 		test('keeps every collapsible heading at the same level', async ({ page }) => {
 			await page.goto(firstVolume, { waitUntil: 'networkidle' });
 			if (width === 390) await page.getByRole('button', { name: 'Open index' }).click();
@@ -57,7 +98,7 @@ for (const width of [1400, 390]) {
 			await expect(group).not.toHaveAttribute('open');
 			await group.locator(':scope > summary').click();
 			await expect(group.locator('a[aria-current="page"]')).toHaveAttribute('href', races);
-			await expect(group.getByRole('link')).toHaveCount(4);
+			await expect(group.getByRole('link')).toHaveCount(5);
 			await expect(
 				group.getByRole('link', { name: 'Monster bestiary', exact: true })
 			).toBeVisible();
@@ -110,7 +151,7 @@ for (const width of [1400, 390]) {
 			await expect(page).toHaveURL(/\/wiki\/creatures\/monsters\/goblin-runt$/);
 			if (width === 390) await page.getByRole('button', { name: 'Open index' }).click();
 			await expect(group).toHaveAttribute('open', '');
-			await expect(group.getByRole('link')).toHaveCount(4);
+			await expect(group.getByRole('link')).toHaveCount(5);
 		});
 
 		test('searches the consolidated page and clears an empty search', async ({ page }) => {

@@ -111,18 +111,29 @@ const consolidatedMonsterSources = new Map([
 ]);
 
 export function getWikiConsolidationRedirect(slug: string): string | null {
+	if (slug === 'mechanics/affinities') return '/wiki/mechanics/progression/affinities';
 	return consolidatedMonsterSources.has(slug) ? '/wiki/creatures/monster-races' : null;
 }
 
 function sectionFromPath(sourcePath: string): string {
+	if (sourcePath.startsWith('mechanics/equipment/')) return 'Equipment';
+	if (sourcePath === 'mechanics/skills/living-village.md') return 'Other';
+	if (sourcePath.startsWith('mechanics/skills/')) return 'Skills';
+	if (
+		sourcePath.startsWith('mechanics/progression/') ||
+		sourcePath.startsWith('mechanics/affinities/')
+	)
+		return 'Progression';
+	if (sourcePath === 'art/monster-gallery.md') return 'Monsters';
+	if (sourcePath === 'art/skill-rarity-frames.md') return 'Skills';
 	const first = sourcePath.split('/')[0];
 	const labels: Record<string, string> = {
-		art: 'Art book',
+		art: 'Other',
 		creatures: 'Monsters',
 		mechanics: 'Mechanics',
 		milestones: 'Milestones',
-		principles: 'Principles',
-		roadmap: 'Roadmap',
+		principles: 'Other',
+		roadmap: 'Other',
 		sources: 'Sources',
 		systems: 'Systems',
 		templates: 'Templates'
@@ -132,7 +143,13 @@ function sectionFromPath(sourcePath: string): string {
 
 function navigationGroupFromPath(sourcePath: string): string | null {
 	const segments = sourcePath.split('/');
-	if (segments.length < 3 || segments[0] === 'creatures') return null;
+	if (
+		segments.length < 3 ||
+		['Equipment', 'Skills', 'Progression', 'Monsters', 'Other'].includes(
+			sectionFromPath(sourcePath)
+		)
+	)
+		return null;
 	return segments[1].replaceAll('-', ' ').replace(/\b\w/gu, (character) => character.toUpperCase());
 }
 
@@ -181,7 +198,8 @@ function resolveTarget(target: string, sourcePath: string): string {
 				if (route.endsWith('/goblinoids')) fragment = '#goblinoid-open-questions';
 				if (route.endsWith('/taxonomy')) fragment = '#taxonomy-open-questions';
 			}
-			const defaultFragment = `#${consolidatedMonsterSources.get(route.replace('/wiki/', ''))}`;
+			const defaultAnchor = consolidatedMonsterSources.get(route.replace('/wiki/', ''));
+			const defaultFragment = defaultAnchor ? `#${defaultAnchor}` : '';
 			return `${consolidated}${fragment || defaultFragment}`;
 		}
 		return `${route}${suffix}`;
@@ -253,6 +271,9 @@ const pages = catalog.entries
 const pagesByHref = new Map(pages.map((page) => [page.href, page]));
 
 function navigationSearchTerms(sourcePath: string): string {
+	if (sourcePath === 'mechanics/progression/affinities.md') {
+		return 'Fire Earth Wind Water Burn Weight Lacerate Chill Mist Lightning Sand Rot Magma Ice';
+	}
 	if (sourcePath === 'creatures/monster-races/README.md') {
 		const headings = [...(wikiByPath.get(sourcePath) ?? '').matchAll(/^#{2,3}\s+(.+)$/gmu)].map(
 			(match) => match[1]
@@ -281,6 +302,8 @@ export function getWikiNavigation(): WikiNavigationEntry[] {
 			(page) =>
 				page.spoilerScope !== 'internal' &&
 				page.href !== '/wiki' &&
+				!page.sourcePath.startsWith('milestones/') &&
+				!page.sourcePath.startsWith('mechanics/affinities/') &&
 				!(
 					page.sourcePath.startsWith('creatures/monsters/') &&
 					['monster-family', 'monster-entry'].includes(page.pageType)

@@ -1,4 +1,5 @@
 <script lang="ts">
+	import EquipmentVisualCatalog from '$lib/components/wiki/EquipmentVisualCatalog.svelte';
 	import MonsterDatabase from '$lib/components/wiki/MonsterDatabase.svelte';
 	import MonsterFamily from '$lib/components/wiki/MonsterFamily.svelte';
 	import MonsterVisualMatrix from '$lib/components/wiki/MonsterVisualMatrix.svelte';
@@ -80,7 +81,11 @@
 				<i>Implementation · {data.wikiPage.implementationStatus}</i>
 				{#if !data.monsterVisual}<i>Visual · {data.wikiPage.visualStatus}</i>{/if}
 			</header>
-			{#if data.wikiPage.wikiId === 'skills.visual-catalog' && data.skillVisualCatalog}
+			{#if data.equipmentWikiCatalog}
+				<EquipmentVisualCatalog records={data.equipmentWikiCatalog} />
+				<!-- eslint-disable-next-line svelte/no-at-html-tags -- canonical repository Markdown is rendered by the server with raw HTML escaped -->
+				<div class="article-body">{@html data.wikiPage.bodyHtml}</div>
+			{:else if data.wikiPage.wikiId === 'skills.visual-catalog' && data.skillVisualCatalog}
 				<SkillVisualCatalog records={data.skillVisualCatalog} />
 				<!-- eslint-disable-next-line svelte/no-at-html-tags -- canonical repository Markdown is rendered by the server with raw HTML escaped -->
 				<div class="article-body">{@html data.wikiPage.bodyHtml}</div>

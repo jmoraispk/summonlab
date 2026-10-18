@@ -117,12 +117,12 @@ also includes earlier studies and combat prototypes.
       <td align="center"><a href="assets/enemies/experiments/family-affinity-v1/candidates/golems/golem-basalt-colossus/normal-v1.png"><img src="apps/web/static/runtime/enemies/monster-wiki-v1/golems/golem-basalt-colossus/normal.836b42bef008.webp" alt="Basalt Colossus" width="180"></a><br><strong>Basalt Colossus</strong></td>
       <td align="center"><a href="assets/enemies/experiments/family-affinity-v1/candidates/golems/golem-master-golem/normal-v2.png"><img src="apps/web/static/runtime/enemies/monster-wiki-v1/golems/golem-master-golem/normal.62b7a9383e6c.webp" alt="Master Golem" width="180"></a><br><strong>Master Golem</strong></td>
     </tr>
-    <tr><th scope="row">Slimes</th>
-      <td align="center"><a href="assets/enemies/experiments/family-affinity-v1/candidates/slimes/slime-droplet/normal-v1.png"><img src="apps/web/static/runtime/enemies/monster-wiki-v1/slimes/slime-droplet/normal.02350cdcc4c5.webp" alt="Droplet" width="180"></a><br><strong>Droplet</strong></td>
-      <td align="center"><a href="assets/enemies/experiments/family-affinity-v1/candidates/slimes/slime-blob/normal-v1.png"><img src="apps/web/static/runtime/enemies/monster-wiki-v1/slimes/slime-blob/normal.184a62d03e0f.webp" alt="Blob" width="180"></a><br><strong>Blob</strong></td>
-      <td align="center"><a href="assets/enemies/experiments/family-affinity-v1/candidates/slimes/slime-ooze-knight/normal-v2.png"><img src="apps/web/static/runtime/enemies/monster-wiki-v1/slimes/slime-ooze-knight/normal.ca33c2fdf368.webp" alt="Ooze Knight" width="180"></a><br><strong>Ooze Knight</strong></td>
-      <td align="center"><a href="assets/enemies/experiments/family-affinity-v1/candidates/slimes/slime-devourer/normal-v1.png"><img src="apps/web/static/runtime/enemies/monster-wiki-v1/slimes/slime-devourer/normal.0a12b6e88f6b.webp" alt="Devourer" width="180"></a><br><strong>Devourer</strong></td>
-      <td align="center"><a href="assets/enemies/experiments/family-affinity-v1/candidates/slimes/slime-primordial-ooze/normal-v2.png"><img src="apps/web/static/runtime/enemies/monster-wiki-v1/slimes/slime-primordial-ooze/normal.f995e64447e4.webp" alt="Primordial Ooze" width="180"></a><br><strong>Primordial Ooze</strong></td>
+    <tr><th scope="row">Deep Ones</th>
+      <td align="center"><a href="assets/enemies/experiments/family-affinity-v1/candidates/deep-ones/deep-one-fishman/normal-v1.png"><img src="apps/web/static/runtime/enemies/monster-wiki-v1/deep-ones/deep-one-fishman/normal.6410e3d3cd68.webp" alt="Fishman" width="180"></a><br><strong>Fishman</strong></td>
+      <td align="center"><a href="assets/enemies/experiments/family-affinity-v1/candidates/deep-ones/deep-one-tidewarrior/normal-v1.png"><img src="apps/web/static/runtime/enemies/monster-wiki-v1/deep-ones/deep-one-tidewarrior/normal.559cd99988b4.webp" alt="Tidewarrior" width="180"></a><br><strong>Tidewarrior</strong></td>
+      <td align="center"><a href="assets/enemies/experiments/family-affinity-v1/candidates/deep-ones/deep-one-abyssal-hunter/normal-v1.png"><img src="apps/web/static/runtime/enemies/monster-wiki-v1/deep-ones/deep-one-abyssal-hunter/normal.5a5d881a197d.webp" alt="Abyssal Hunter" width="180"></a><br><strong>Abyssal Hunter</strong></td>
+      <td align="center"><a href="assets/enemies/experiments/family-affinity-v1/candidates/deep-ones/deep-one-deep-priest/normal-v1.png"><img src="apps/web/static/runtime/enemies/monster-wiki-v1/deep-ones/deep-one-deep-priest/normal.3a721f95dd3c.webp" alt="Deep Priest" width="180"></a><br><strong>Deep Priest</strong></td>
+      <td align="center"><a href="assets/enemies/experiments/family-affinity-v1/candidates/deep-ones/deep-one-leviathan-lord/normal-v1.png"><img src="apps/web/static/runtime/enemies/monster-wiki-v1/deep-ones/deep-one-leviathan-lord/normal.6c6f721b80bc.webp" alt="Leviathan Lord" width="180"></a><br><strong>Leviathan Lord</strong></td>
     </tr>
     <tr><th scope="row">Arachnids</th>
       <td align="center"><a href="assets/enemies/experiments/family-affinity-v1/candidates/arachnids/arachnid-crawler/normal-v1.png"><img src="apps/web/static/runtime/enemies/monster-wiki-v1/arachnids/arachnid-crawler/normal.0be0bcafb7a1.webp" alt="Crawler" width="180"></a><br><strong>Crawler</strong></td>
@@ -236,41 +236,77 @@ ahead, while supplies, training, and recovery help a party use those tools well.
 <table width="100%">
   <thead><tr><th>Category</th><th>F</th><th>E</th><th>D</th><th>C</th><th>B</th><th>A</th><th>S</th></tr></thead>
   <tbody>
-    <tr><th scope="row">Combat</th>
-      <td align="center"><a href="assets/wiki/skills/icon-production-v2/interiors/martial-blade-measured-cut.png"><img src="apps/web/static/wiki-media/skills/visual-catalog-v2/icons/martial-blade-measured-cut.a96984091431.webp" alt="Measured Cut" width="104"></a><br><strong>Measured Cut</strong></td>
-      <td align="center"><a href="assets/wiki/skills/icon-production-v2/interiors/martial-blade-edge-alignment.png"><img src="apps/web/static/wiki-media/skills/visual-catalog-v2/icons/martial-blade-edge-alignment.5a83cb51e42f.webp" alt="Edge Alignment" width="104"></a><br><strong>Edge Alignment</strong></td>
-      <td align="center"><a href="assets/wiki/skills/icon-production-v2/interiors/martial-blade-drawing-cut.png"><img src="apps/web/static/wiki-media/skills/visual-catalog-v2/icons/martial-blade-drawing-cut.43f4b75873f5.webp" alt="Drawing Cut" width="104"></a><br><strong>Drawing Cut</strong></td>
-      <td align="center"><a href="assets/wiki/skills/icon-production-v2/interiors/martial-blade-rising-moon.png"><img src="apps/web/static/wiki-media/skills/visual-catalog-v2/icons/martial-blade-rising-moon.d6e37d74b80e.webp" alt="Rising Moon" width="104"></a><br><strong>Rising Moon</strong></td>
-      <td align="center"><a href="assets/wiki/skills/icon-production-v2/interiors/martial-blade-severing-intent.png"><img src="apps/web/static/wiki-media/skills/visual-catalog-v2/icons/martial-blade-severing-intent.fa60481dc61d.webp" alt="Severing Intent" width="104"></a><br><strong>Severing Intent</strong></td>
-      <td align="center"><a href="assets/wiki/skills/icon-production-v2/interiors/martial-blade-void-cut.png"><img src="apps/web/static/wiki-media/skills/visual-catalog-v2/icons/martial-blade-void-cut.02da24e4ee12.webp" alt="Void Cut" width="104"></a><br><strong>Void Cut</strong></td>
-      <td align="center"><a href="assets/wiki/skills/icon-production-v2/interiors/martial-blade-one-blade-one-world.png"><img src="apps/web/static/wiki-media/skills/visual-catalog-v2/icons/martial-blade-one-blade-one-world.aabb7db195c3.webp" alt="One Blade, One World" width="104"></a><br><strong>One Blade, One World</strong></td>
+    <tr><th scope="rowgroup" rowspan="2" valign="top">Combat</th>
+      <td align="center" valign="top" width="12%"><a href="assets/wiki/skills/icon-production-v2/interiors/martial-blade-measured-cut.png"><img src="apps/web/static/wiki-media/skills/visual-catalog-v2/icons/martial-blade-measured-cut.a96984091431.webp" alt="Measured Cut" width="80" height="80"></a></td>
+      <td align="center" valign="top" width="12%"><a href="assets/wiki/skills/icon-production-v2/interiors/martial-blade-edge-alignment.png"><img src="apps/web/static/wiki-media/skills/visual-catalog-v2/icons/martial-blade-edge-alignment.5a83cb51e42f.webp" alt="Edge Alignment" width="80" height="80"></a></td>
+      <td align="center" valign="top" width="12%"><a href="assets/wiki/skills/icon-production-v2/interiors/martial-blade-drawing-cut.png"><img src="apps/web/static/wiki-media/skills/visual-catalog-v2/icons/martial-blade-drawing-cut.43f4b75873f5.webp" alt="Drawing Cut" width="80" height="80"></a></td>
+      <td align="center" valign="top" width="12%"><a href="assets/wiki/skills/icon-production-v2/interiors/martial-blade-rising-moon.png"><img src="apps/web/static/wiki-media/skills/visual-catalog-v2/icons/martial-blade-rising-moon.d6e37d74b80e.webp" alt="Rising Moon" width="80" height="80"></a></td>
+      <td align="center" valign="top" width="12%"><a href="assets/wiki/skills/icon-production-v2/interiors/martial-blade-severing-intent.png"><img src="apps/web/static/wiki-media/skills/visual-catalog-v2/icons/martial-blade-severing-intent.fa60481dc61d.webp" alt="Severing Intent" width="80" height="80"></a></td>
+      <td align="center" valign="top" width="12%"><a href="assets/wiki/skills/icon-production-v2/interiors/martial-blade-void-cut.png"><img src="apps/web/static/wiki-media/skills/visual-catalog-v2/icons/martial-blade-void-cut.02da24e4ee12.webp" alt="Void Cut" width="80" height="80"></a></td>
+      <td align="center" valign="top" width="12%"><a href="assets/wiki/skills/icon-production-v2/interiors/martial-blade-one-blade-one-world.png"><img src="apps/web/static/wiki-media/skills/visual-catalog-v2/icons/martial-blade-one-blade-one-world.aabb7db195c3.webp" alt="One Blade, One World" width="80" height="80"></a></td>
     </tr>
-    <tr><th scope="row">Magic</th>
-      <td align="center"><a href="assets/wiki/skills/icon-production-v2/interiors/magical-elemental-ember.png"><img src="apps/web/static/wiki-media/skills/visual-catalog-v2/icons/magical-elemental-ember.67859341db4a.webp" alt="Ember" width="104"></a><br><strong>Ember</strong></td>
-      <td align="center"><a href="assets/wiki/skills/icon-production-v2/interiors/magical-elemental-fireball.png"><img src="apps/web/static/wiki-media/skills/visual-catalog-v2/icons/magical-elemental-fireball.c27dc6cc80f0.webp" alt="Fireball" width="104"></a><br><strong>Fireball</strong></td>
-      <td align="center"><a href="assets/wiki/skills/icon-production-v2/interiors/magical-elemental-great-fireball.png"><img src="apps/web/static/wiki-media/skills/visual-catalog-v2/icons/magical-elemental-great-fireball.f94a387ef3a0.webp" alt="Great Fireball" width="104"></a><br><strong>Great Fireball</strong></td>
-      <td align="center"><a href="assets/wiki/skills/icon-production-v2/interiors/magical-elemental-charged-fireball.png"><img src="apps/web/static/wiki-media/skills/visual-catalog-v2/icons/magical-elemental-charged-fireball.7a25bcc12fe0.webp" alt="Charged Fireball" width="104"></a><br><strong>Charged Fireball</strong></td>
-      <td align="center"><a href="assets/wiki/skills/icon-production-v2/interiors/magical-elemental-meteor.png"><img src="apps/web/static/wiki-media/skills/visual-catalog-v2/icons/magical-elemental-meteor.7489759bb8e7.webp" alt="Meteor" width="104"></a><br><strong>Meteor</strong></td>
-      <td align="center"><a href="assets/wiki/skills/icon-production-v2/interiors/magical-elemental-sea-of-flame.png"><img src="apps/web/static/wiki-media/skills/visual-catalog-v2/icons/magical-elemental-sea-of-flame.c5a20cbc91ce.webp" alt="Sea of Flame" width="104"></a><br><strong>Sea of Flame</strong></td>
-      <td align="center"><a href="assets/wiki/skills/icon-production-v2/interiors/magical-elemental-sunfall.png"><img src="apps/web/static/wiki-media/skills/visual-catalog-v2/icons/magical-elemental-sunfall.375e4673079e.webp" alt="Sunfall" width="104"></a><br><strong>Sunfall</strong></td>
+    <tr>
+      <td align="center" width="12%"><sub><strong>Measured Cut</strong></sub></td>
+      <td align="center" width="12%"><sub><strong>Edge&nbsp;Alignment</strong></sub></td>
+      <td align="center" width="12%"><sub><strong>Drawing Cut</strong></sub></td>
+      <td align="center" width="12%"><sub><strong>Rising Moon</strong></sub></td>
+      <td align="center" width="12%"><sub><strong>Severing Intent</strong></sub></td>
+      <td align="center" width="12%"><sub><strong>Void Cut</strong></sub></td>
+      <td align="center" width="12%"><sub><strong>One&nbsp;Blade,&nbsp;One World</strong></sub></td>
     </tr>
-    <tr><th scope="row">Craft</th>
-      <td align="center"><a href="assets/wiki/skills/icon-production-v2/interiors/craft-forging-simple-smithing.png"><img src="apps/web/static/wiki-media/skills/visual-catalog-v2/icons/craft-forging-simple-smithing.11d3d5a8ef65.webp" alt="Simple Smithing" width="104"></a><br><strong>Simple Smithing</strong></td>
-      <td align="center"><a href="assets/wiki/skills/icon-production-v2/interiors/craft-forging-weaponsmithing.png"><img src="apps/web/static/wiki-media/skills/visual-catalog-v2/icons/craft-forging-weaponsmithing.e3614378517f.webp" alt="Weaponsmithing" width="104"></a><br><strong>Weaponsmithing</strong></td>
-      <td align="center"><a href="assets/wiki/skills/icon-production-v2/interiors/craft-forging-alloying.png"><img src="apps/web/static/wiki-media/skills/visual-catalog-v2/icons/craft-forging-alloying.9d30447c006a.webp" alt="Alloying" width="104"></a><br><strong>Alloying</strong></td>
-      <td align="center"><a href="assets/wiki/skills/icon-production-v2/interiors/craft-forging-runic-foundation.png"><img src="apps/web/static/wiki-media/skills/visual-catalog-v2/icons/craft-forging-runic-foundation.25b356fa9342.webp" alt="Runic Foundation" width="104"></a><br><strong>Runic Foundation</strong></td>
-      <td align="center"><a href="assets/wiki/skills/icon-production-v2/interiors/craft-forging-living-metal.png"><img src="apps/web/static/wiki-media/skills/visual-catalog-v2/icons/craft-forging-living-metal.0719da05a343.webp" alt="Living Metal" width="104"></a><br><strong>Living Metal</strong></td>
-      <td align="center"><a href="assets/wiki/skills/icon-production-v2/interiors/craft-forging-soul-forging.png"><img src="apps/web/static/wiki-media/skills/visual-catalog-v2/icons/craft-forging-soul-forging.7a848ffcabed.webp" alt="Soul Forging" width="104"></a><br><strong>Soul Forging</strong></td>
-      <td align="center"><a href="assets/wiki/skills/icon-production-v2/interiors/craft-forging-godsmithing.png"><img src="apps/web/static/wiki-media/skills/visual-catalog-v2/icons/craft-forging-godsmithing.623243e784be.webp" alt="Godsmithing" width="104"></a><br><strong>Godsmithing</strong></td>
+    <tr><th scope="rowgroup" rowspan="2" valign="top">Magic</th>
+      <td align="center" valign="top" width="12%"><a href="assets/wiki/skills/icon-production-v2/interiors/magical-elemental-ember.png"><img src="apps/web/static/wiki-media/skills/visual-catalog-v2/icons/magical-elemental-ember.67859341db4a.webp" alt="Ember" width="80" height="80"></a></td>
+      <td align="center" valign="top" width="12%"><a href="assets/wiki/skills/icon-production-v2/interiors/magical-elemental-fireball.png"><img src="apps/web/static/wiki-media/skills/visual-catalog-v2/icons/magical-elemental-fireball.c27dc6cc80f0.webp" alt="Fireball" width="80" height="80"></a></td>
+      <td align="center" valign="top" width="12%"><a href="assets/wiki/skills/icon-production-v2/interiors/magical-elemental-great-fireball.png"><img src="apps/web/static/wiki-media/skills/visual-catalog-v2/icons/magical-elemental-great-fireball.f94a387ef3a0.webp" alt="Great Fireball" width="80" height="80"></a></td>
+      <td align="center" valign="top" width="12%"><a href="assets/wiki/skills/icon-production-v2/interiors/magical-elemental-charged-fireball.png"><img src="apps/web/static/wiki-media/skills/visual-catalog-v2/icons/magical-elemental-charged-fireball.7a25bcc12fe0.webp" alt="Charged Fireball" width="80" height="80"></a></td>
+      <td align="center" valign="top" width="12%"><a href="assets/wiki/skills/icon-production-v2/interiors/magical-elemental-meteor.png"><img src="apps/web/static/wiki-media/skills/visual-catalog-v2/icons/magical-elemental-meteor.7489759bb8e7.webp" alt="Meteor" width="80" height="80"></a></td>
+      <td align="center" valign="top" width="12%"><a href="assets/wiki/skills/icon-production-v2/interiors/magical-elemental-sea-of-flame.png"><img src="apps/web/static/wiki-media/skills/visual-catalog-v2/icons/magical-elemental-sea-of-flame.c5a20cbc91ce.webp" alt="Sea of Flame" width="80" height="80"></a></td>
+      <td align="center" valign="top" width="12%"><a href="assets/wiki/skills/icon-production-v2/interiors/magical-elemental-sunfall.png"><img src="apps/web/static/wiki-media/skills/visual-catalog-v2/icons/magical-elemental-sunfall.375e4673079e.webp" alt="Sunfall" width="80" height="80"></a></td>
     </tr>
-    <tr><th scope="row">Support</th>
-      <td align="center"><a href="assets/wiki/skills/icon-production-v2/interiors/magical-restoration-mending.png"><img src="apps/web/static/wiki-media/skills/visual-catalog-v2/icons/magical-restoration-mending.fff9ffc35531.webp" alt="Mending" width="104"></a><br><strong>Mending</strong></td>
-      <td align="center"><a href="assets/wiki/skills/icon-production-v2/interiors/magical-restoration-regeneration.png"><img src="apps/web/static/wiki-media/skills/visual-catalog-v2/icons/magical-restoration-regeneration.dba72a22396d.webp" alt="Regeneration" width="104"></a><br><strong>Regeneration</strong></td>
-      <td align="center"><a href="assets/wiki/skills/icon-production-v2/interiors/magical-restoration-mass-mending.png"><img src="apps/web/static/wiki-media/skills/visual-catalog-v2/icons/magical-restoration-mass-mending.b3ac45a5a81d.webp" alt="Mass Mending" width="104"></a><br><strong>Mass Mending</strong></td>
-      <td align="center"><a href="assets/wiki/skills/icon-production-v2/interiors/magical-restoration-sanctified-ground.png"><img src="apps/web/static/wiki-media/skills/visual-catalog-v2/icons/magical-restoration-sanctified-ground.61fddffdc694.webp" alt="Sanctified Ground" width="104"></a><br><strong>Sanctified Ground</strong></td>
-      <td align="center"><a href="assets/wiki/skills/icon-production-v2/interiors/magical-restoration-great-renewal.png"><img src="apps/web/static/wiki-media/skills/visual-catalog-v2/icons/magical-restoration-great-renewal.6d9616e48a28.webp" alt="Great Renewal" width="104"></a><br><strong>Great Renewal</strong></td>
-      <td align="center"><a href="assets/wiki/skills/icon-production-v2/interiors/magical-restoration-the-unbroken-thread.png"><img src="apps/web/static/wiki-media/skills/visual-catalog-v2/icons/magical-restoration-the-unbroken-thread.aafa299ca902.webp" alt="The Unbroken Thread" width="104"></a><br><strong>The Unbroken Thread</strong></td>
-      <td align="center"><a href="assets/wiki/skills/icon-production-v2/interiors/magical-restoration-what-was-taken-back.png"><img src="apps/web/static/wiki-media/skills/visual-catalog-v2/icons/magical-restoration-what-was-taken-back.9eea114a4d74.webp" alt="What Was Taken Back" width="104"></a><br><strong>What Was Taken Back</strong></td>
+    <tr>
+      <td align="center" width="12%"><sub><strong>Ember</strong></sub></td>
+      <td align="center" width="12%"><sub><strong>Fireball</strong></sub></td>
+      <td align="center" width="12%"><sub><strong>Great Fireball</strong></sub></td>
+      <td align="center" width="12%"><sub><strong>Charged Fireball</strong></sub></td>
+      <td align="center" width="12%"><sub><strong>Meteor</strong></sub></td>
+      <td align="center" width="12%"><sub><strong>Sea of Flame</strong></sub></td>
+      <td align="center" width="12%"><sub><strong>Sunfall</strong></sub></td>
+    </tr>
+    <tr><th scope="rowgroup" rowspan="2" valign="top">Craft</th>
+      <td align="center" valign="top" width="12%"><a href="assets/wiki/skills/icon-production-v2/interiors/craft-forging-simple-smithing.png"><img src="apps/web/static/wiki-media/skills/visual-catalog-v2/icons/craft-forging-simple-smithing.11d3d5a8ef65.webp" alt="Simple Smithing" width="80" height="80"></a></td>
+      <td align="center" valign="top" width="12%"><a href="assets/wiki/skills/icon-production-v2/interiors/craft-forging-weaponsmithing.png"><img src="apps/web/static/wiki-media/skills/visual-catalog-v2/icons/craft-forging-weaponsmithing.e3614378517f.webp" alt="Weaponsmithing" width="80" height="80"></a></td>
+      <td align="center" valign="top" width="12%"><a href="assets/wiki/skills/icon-production-v2/interiors/craft-forging-alloying.png"><img src="apps/web/static/wiki-media/skills/visual-catalog-v2/icons/craft-forging-alloying.9d30447c006a.webp" alt="Alloying" width="80" height="80"></a></td>
+      <td align="center" valign="top" width="12%"><a href="assets/wiki/skills/icon-production-v2/interiors/craft-forging-runic-foundation.png"><img src="apps/web/static/wiki-media/skills/visual-catalog-v2/icons/craft-forging-runic-foundation.25b356fa9342.webp" alt="Runic Foundation" width="80" height="80"></a></td>
+      <td align="center" valign="top" width="12%"><a href="assets/wiki/skills/icon-production-v2/interiors/craft-forging-living-metal.png"><img src="apps/web/static/wiki-media/skills/visual-catalog-v2/icons/craft-forging-living-metal.0719da05a343.webp" alt="Living Metal" width="80" height="80"></a></td>
+      <td align="center" valign="top" width="12%"><a href="assets/wiki/skills/icon-production-v2/interiors/craft-forging-soul-forging.png"><img src="apps/web/static/wiki-media/skills/visual-catalog-v2/icons/craft-forging-soul-forging.7a848ffcabed.webp" alt="Soul Forging" width="80" height="80"></a></td>
+      <td align="center" valign="top" width="12%"><a href="assets/wiki/skills/icon-production-v2/interiors/craft-forging-godsmithing.png"><img src="apps/web/static/wiki-media/skills/visual-catalog-v2/icons/craft-forging-godsmithing.623243e784be.webp" alt="Godsmithing" width="80" height="80"></a></td>
+    </tr>
+    <tr>
+      <td align="center" width="12%"><sub><strong>Simple&nbsp;Smithing</strong></sub></td>
+      <td align="center" width="12%"><sub><strong>Weaponsmithing</strong></sub></td>
+      <td align="center" width="12%"><sub><strong>Alloying</strong></sub></td>
+      <td align="center" width="12%"><sub><strong>Runic&nbsp;Foundation</strong></sub></td>
+      <td align="center" width="12%"><sub><strong>Living Metal</strong></sub></td>
+      <td align="center" width="12%"><sub><strong>Soul Forging</strong></sub></td>
+      <td align="center" width="12%"><sub><strong>Godsmithing</strong></sub></td>
+    </tr>
+    <tr><th scope="rowgroup" rowspan="2" valign="top">Support</th>
+      <td align="center" valign="top" width="12%"><a href="assets/wiki/skills/icon-production-v2/interiors/magical-restoration-mending.png"><img src="apps/web/static/wiki-media/skills/visual-catalog-v2/icons/magical-restoration-mending.fff9ffc35531.webp" alt="Mending" width="80" height="80"></a></td>
+      <td align="center" valign="top" width="12%"><a href="assets/wiki/skills/icon-production-v2/interiors/magical-restoration-regeneration.png"><img src="apps/web/static/wiki-media/skills/visual-catalog-v2/icons/magical-restoration-regeneration.dba72a22396d.webp" alt="Regeneration" width="80" height="80"></a></td>
+      <td align="center" valign="top" width="12%"><a href="assets/wiki/skills/icon-production-v2/interiors/magical-restoration-mass-mending.png"><img src="apps/web/static/wiki-media/skills/visual-catalog-v2/icons/magical-restoration-mass-mending.b3ac45a5a81d.webp" alt="Mass Mending" width="80" height="80"></a></td>
+      <td align="center" valign="top" width="12%"><a href="assets/wiki/skills/icon-production-v2/interiors/magical-restoration-sanctified-ground.png"><img src="apps/web/static/wiki-media/skills/visual-catalog-v2/icons/magical-restoration-sanctified-ground.61fddffdc694.webp" alt="Sanctified Ground" width="80" height="80"></a></td>
+      <td align="center" valign="top" width="12%"><a href="assets/wiki/skills/icon-production-v2/interiors/magical-restoration-great-renewal.png"><img src="apps/web/static/wiki-media/skills/visual-catalog-v2/icons/magical-restoration-great-renewal.6d9616e48a28.webp" alt="Great Renewal" width="80" height="80"></a></td>
+      <td align="center" valign="top" width="12%"><a href="assets/wiki/skills/icon-production-v2/interiors/magical-restoration-the-unbroken-thread.png"><img src="apps/web/static/wiki-media/skills/visual-catalog-v2/icons/magical-restoration-the-unbroken-thread.aafa299ca902.webp" alt="The Unbroken Thread" width="80" height="80"></a></td>
+      <td align="center" valign="top" width="12%"><a href="assets/wiki/skills/icon-production-v2/interiors/magical-restoration-what-was-taken-back.png"><img src="apps/web/static/wiki-media/skills/visual-catalog-v2/icons/magical-restoration-what-was-taken-back.9eea114a4d74.webp" alt="What Was Taken Back" width="80" height="80"></a></td>
+    </tr>
+    <tr>
+      <td align="center" width="12%"><sub><strong>Mending</strong></sub></td>
+      <td align="center" width="12%"><sub><strong>Regeneration</strong></sub></td>
+      <td align="center" width="12%"><sub><strong>Mass&nbsp;Mending</strong></sub></td>
+      <td align="center" width="12%"><sub><strong>Sanctified Ground</strong></sub></td>
+      <td align="center" width="12%"><sub><strong>Great&nbsp;Renewal</strong></sub></td>
+      <td align="center" width="12%"><sub><strong>The&nbsp;Unbroken Thread</strong></sub></td>
+      <td align="center" width="12%"><sub><strong>What Was Taken Back</strong></sub></td>
     </tr>
   </tbody>
 </table>

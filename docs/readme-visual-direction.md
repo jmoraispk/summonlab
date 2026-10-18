@@ -96,12 +96,14 @@ identity or change gameplay artwork.
 
 The owner rejected the low-resolution JPEG collages and requested actual images in README tables.
 The README now shows eight monster families with five T1–T5 forms in each row, 45 equipment pieces
-across nine complete sets, and 28 skills in four category rows. Monster and equipment tables use the
+across nine complete sets, and 28 skills in four category groups. Monster and equipment tables use the
 full README width. Skills use seven ascending rank columns: F, E, D, C, B, A, and S. Combat, Magic,
 Craft, and Support each have one catalog-ranked example per column. These are representative rank
 progressions, not an assertion that every selected skill directly unlocks the next.
 
-The monster selection preserves the original five families and adds Slimes, Arachnids, and Wolves.
+The monster selection preserves the original five families and adds Deep Ones, Arachnids, and Wolves.
+The owner replaced Slimes with all five normal-affinity Deep Ones forms; each selected form retains
+its recorded `approved-review` status.
 The complete eight-family progressions include reviewed, candidate, and runtime artwork; the README
 caption and provenance preserve those distinctions without changing approval status. The catalog has
 38 families, so the closing row reports +30 more families after eight displayed. This corrects the
@@ -113,3 +115,16 @@ individual previews. Current bindings are recorded in `readmeInputs` in the gall
 the original `inputs` array remains the historical contact-sheet capture record.
 This revision changes only README presentation and its supporting documentation; wiki pages and
 game assets stay unchanged.
+
+## Skill table alignment
+
+The owner requested consistent skill icon sizes and alignment. Inspection of the published GitHub
+README at desktop and phone widths confirmed that all 28 source exports are 512 × 512 pixels.
+GitHub’s automatic table columns shrank the rendered images to different widths, while vertically
+centered cells moved them as skill names wrapped across different numbers of lines.
+
+Each category now spans two rows: a top-aligned image row and a separate caption row. All icons
+request 80 × 80 pixels. Equal column width requests, smaller captions, and selected nonbreaking phrases keep all seven ranks
+visible on desktop. Names wrap in the separate caption row without moving the icons. The native
+GitHub table retains horizontal scrolling on narrow screens. The four categories, seven F–S ranks,
+28 exact approved exports, captions, and original artwork links are preserved. No artwork is regenerated or changed.

@@ -14,6 +14,24 @@ sets. It is a companion to the progression and skill systems: equipment suppleme
 enables particular techniques, and exposes tradeoffs without replacing a hero's underlying
 capability.
 
+## Approved visual archive
+
+The Equipment wiki opens with all 21 approved complete armor sets, grouped from F through S.
+Each set links to its matching Head, Torso, Legs, and Boots artwork. Switch to Individual items
+to browse all 147 approved item images by material, rank, or equipment class, with 24 items per
+page. The gallery preserves the rules and reference pages below.
+
+The archive covers the 161 approved material-equipment images (140 individual items and 21
+complete-set references) plus seven approved Greatsword images. Greatsword artwork approval does
+not imply gameplay integration; those seven images are labeled as integration pending. Complete-set
+references do not imply implemented set bonuses. Original approved PNG links remain available on
+every card.
+
+The gallery reuses the existing 140 runtime detail images. Its 28 additional wiki previews are
+source-hash-bound WebP exports: 21 complete sets at 512 × 768 and seven Greatswords at 512 × 512.
+Regenerate or verify them with `python3 tools/export-wiki-equipment-gallery.py` or the same command
+with `--check`. This export does not alter runtime manifests, item definitions, or approvals.
+
 ## Reading the catalog
 
 `R` is rank: F Common, E Uncommon, D Rare, C Epic, B Mythic, A Fabled, and S Legendary. Material

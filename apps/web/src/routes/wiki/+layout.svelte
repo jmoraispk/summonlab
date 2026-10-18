@@ -18,11 +18,11 @@
 	const sectionOrder = [
 		'Systems',
 		'Mechanics',
+		'Progression',
+		'Equipment',
+		'Skills',
 		'Monsters',
-		'Art book',
-		'Milestones',
-		'Roadmap',
-		'Principles'
+		'Other'
 	];
 
 	const sections = $derived.by(() => {
@@ -122,7 +122,7 @@
 <svelte:head>
 	<meta
 		name="description"
-		content="The living rulebook, art book, bestiary, and development record for Summonlab."
+		content="The rulebook, artwork, bestiary, and development record for Summonlab."
 	/>
 </svelte:head>
 
@@ -174,9 +174,6 @@
 					aria-current={page.url.pathname === '/wiki/heroes' ? 'page' : undefined}
 				>
 					<span>Hero archive</span><i>736 identities</i>
-				</a>
-				<a href={resolve('/wiki/art/living-village-heroes')} onclick={() => closeIndex()}>
-					<span>Living Village</span><i>Visual packet</i>
 				</a>
 				<a href={resolve('/wiki/creatures/monsters')} onclick={() => closeIndex()}>
 					<span>Monster database</span><i>190 forms</i>

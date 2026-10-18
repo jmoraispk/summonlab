@@ -2,7 +2,7 @@
 
 Wiki ID: `wiki.root`
 
-The Summonlab Wiki is the joint rulebook, world bible, subsystem index, and visual art book for the
+The Summonlab Wiki is the joint rulebook, world bible, subsystem index, and artwork reference for the
 game. It is designed to be both the **input** and **output** of a work session:
 
 ```text
@@ -26,8 +26,6 @@ replay evidence make that claim verifiable rather than aspirational.
 - [Game systems](systems/README.md) — every vertical subsystem and horizontal capability.
 - [Agentic skills](systems/agentic-skills.md) — repository-authored operating instructions and the
   pinned PixiJS support collection available to Codex.
-- [Playable milestones](milestones/README.md) — integration slices beginning with the reduced
-  [Living Village](milestones/living-village.md) loop.
 - [Release roadmap](roadmap/README.md) — the explicit `on`, `off`, `placeholder`, and `decision`
   matrix that selects from the complete wiki without deleting deferred design.
 - [Website and online wiki roadmap](roadmap/wiki-website.md) — one SvelteKit platform for the game,
@@ -37,8 +35,7 @@ replay evidence make that claim verifiable rather than aspirational.
 - [Rewards and engagement](mechanics/rewards-and-engagement.md) — benefits, daily return, mission
   rewards, special access, and the ownership boundary for claims.
 - [Attributes](mechanics/attributes.md) — the shared mechanical vocabulary behind capability.
-- [Affinities](mechanics/affinities/README.md) — hero/monster affinities, attribute expression, and
-  typed effects.
+- [Affinities](mechanics/progression/affinities.md) — the canonical affinity rules within Progression.
 - [Creature taxonomy](creatures/monster-races/README.md#classification-axes) — family, race/species, archetype, variant, and faction.
 - [Monster database](creatures/monsters/README.md) — 38 families, 190 canonical T1–T5 forms, 950
   Normal/Fire/Earth/Wind/Water coordinates, including the approved fauna runtime set.
@@ -47,11 +44,12 @@ replay evidence make that claim verifiable rather than aspirational.
   original 750 images remain untouched.
 - [Monster Races](creatures/monster-races/README.md) — thirty race briefs, visual progressions,
   taxonomy, and first-wave Goblinoid encounter notes in one page.
-- [Monster visual gallery](art/monster-gallery.md) — current review plates and their actual status.
-- [Skill rarity frames](art/skill-rarity-frames.md) — the accepted F–S material and ornament
-  grammar for hexagonal skill displays.
-- [Living Village hero packet](art/living-village-heroes.md) — the fixed Dara, Mara, Jori, Kira,
-  Iven, and Remy roster, with bounded derivative work and no additional prototype faces.
+- [Equipment artwork](mechanics/equipment/README.md) — 21 complete armor sets and all 147 individual approved item images.
+- [Skill artwork](mechanics/skills/visual-catalog.md) — all 457 approved skill images, inside Skills.
+- [Monster artwork studies](art/monster-gallery.md) — earlier review plates, inside Monsters.
+- [Skill rarity frames](art/skill-rarity-frames.md) — the F–S frame reference, inside Skills.
+- Other references: the [Living Village hero packet](art/living-village-heroes.md),
+  [hero rarity frames](art/hero-rarity-frames.md), and archived prototype plans.
 - [Hero identity and evolution art](art/hero-identity-and-evolution.md) — the accepted stochastic
   production workflow for physical variation, capability cues, wardrobe, aptitudes, and 1★–7★
   identity continuity beyond the fixed prototype roster.

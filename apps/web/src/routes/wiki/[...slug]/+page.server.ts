@@ -6,6 +6,7 @@ import {
 	getMonsterVisualDatabase,
 	getMonsterVisualEntry
 } from '$lib/server/monster-database';
+import { getEquipmentWikiCatalog } from '$lib/server/equipment-wiki-catalog';
 import { getSkillVisualCatalog } from '$lib/server/skill-visual-catalog';
 import { getWikiAsset, getWikiConsolidationRedirect, getWikiPage } from '$lib/server/wiki';
 
@@ -31,6 +32,8 @@ export const load = (({ params }) => {
 
 	return {
 		wikiPage,
+		equipmentWikiCatalog:
+			wikiPage.wikiId === 'mechanics.equipment' ? getEquipmentWikiCatalog() : null,
 		skillVisualCatalog:
 			wikiPage.wikiId === 'skills.visual-catalog' ? getSkillVisualCatalog() : null,
 		monsterDatabase:

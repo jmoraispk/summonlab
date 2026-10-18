@@ -59,3 +59,20 @@ to the consolidated page, preserving numbered race fragments. Internal source gu
 separate reference. Current links go directly to the relevant consolidated section.
 
 The [compact Monsters phone index](evidence/public-archive-wiki/consolidated-monsters-phone.png) records the consolidated layout. Search includes absorbed race, taxonomy, Goblinoid, and form names and returns their containing reader page or bestiary. Legacy question-section bookmarks reach a shared questions section with both original lists.
+
+## Artwork organization revision
+
+Accepted owner feedback: put all equipment artwork inside Equipment, all skill artwork inside Skills,
+and all monster artwork inside Monsters. Remove the separate Art book heading. Remove Milestones
+from browsing and remove the redundant Affinities group; Progression keeps the canonical affinity
+page. Move the Living Village packet and other prototype/reference material to Other. Preserve
+existing source documents and old URLs as needed for source bindings and links.
+
+The approved equipment inventory includes 21 complete armor-set references, 140 individual runtime
+items, and seven additional Greatsword artwork masters. Show all 168 images in Equipment, with
+complete sets prominent and source-only Greatsword integration status explicit. Use optimized wiki
+previews for artwork that has no gameplay export; do not change gameplay manifests or approvals.
+
+The README replaces Slimes with Deep Ones. Its skill images share 512-pixel source canvases, but
+GitHub column sizing and mixed caption wrapping caused unequal displayed sizes and vertical offsets.
+Use consistent icon dimensions and separate label rows, with canonical names preserved.
