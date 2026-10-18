@@ -85,117 +85,61 @@ also includes earlier studies and combat prototypes.
 <table width="100%">
   <thead><tr><th>Family</th><th>T1&nbsp;·&nbsp;Monster&nbsp;form</th><th>T2&nbsp;·&nbsp;Monster&nbsp;form</th><th>T3&nbsp;·&nbsp;Monster&nbsp;form</th><th>T4&nbsp;·&nbsp;Monster&nbsp;form</th><th>T5&nbsp;·&nbsp;Monster&nbsp;form</th></tr></thead>
   <tbody>
-    <tr><th scope="rowgroup" rowspan="2">Giants</th>
-      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/giants/giant-brute/normal-v1.png"><img src="docs/readme-gallery/monsters/giant-brute.793e5ebbe3db.webp" alt="Brute" width="100%"></a></td>
-      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/giants/giant-hill-giant/normal-v1.png"><img src="docs/readme-gallery/monsters/giant-hill-giant.6c59319df356.webp" alt="Hill Giant" width="100%"></a></td>
-      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/giants/giant-stone-giant/normal-v2.png"><img src="docs/readme-gallery/monsters/giant-stone-giant.5a137d742354.webp" alt="Stone Giant" width="100%"></a></td>
-      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/giants/giant-mountain-lord/normal-v1.png"><img src="docs/readme-gallery/monsters/giant-mountain-lord.7bfce6d243b7.webp" alt="Mountain Lord" width="100%"></a></td>
-      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/giants/giant-primordial-titan/normal-v2.png"><img src="docs/readme-gallery/monsters/giant-primordial-titan.2a0cdbb4101d.webp" alt="Primordial Titan" width="100%"></a></td>
+    <tr><th scope="row" align="center" valign="middle">Giants</th>
+      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/giants/giant-brute/normal-v1.png"><img src="docs/readme-gallery/monsters/giant-brute.793e5ebbe3db.webp" alt="Brute" width="100%"></a><br><sup><strong>Brute</strong></sup></td>
+      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/giants/giant-hill-giant/normal-v1.png"><img src="docs/readme-gallery/monsters/giant-hill-giant.6c59319df356.webp" alt="Hill Giant" width="100%"></a><br><sup><strong>Hill Giant</strong></sup></td>
+      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/giants/giant-stone-giant/normal-v2.png"><img src="docs/readme-gallery/monsters/giant-stone-giant.5a137d742354.webp" alt="Stone Giant" width="100%"></a><br><sup><strong>Stone Giant</strong></sup></td>
+      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/giants/giant-mountain-lord/normal-v1.png"><img src="docs/readme-gallery/monsters/giant-mountain-lord.7bfce6d243b7.webp" alt="Mountain Lord" width="100%"></a><br><sup><strong>Mountain Lord</strong></sup></td>
+      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/giants/giant-primordial-titan/normal-v2.png"><img src="docs/readme-gallery/monsters/giant-primordial-titan.2a0cdbb4101d.webp" alt="Primordial Titan" width="100%"></a><br><sup><strong>Primordial Titan</strong></sup></td>
     </tr>
-    <tr>
-      <td align="center" width="18%"><sub><strong>Brute</strong></sub></td>
-      <td align="center" width="18%"><sub><strong>Hill Giant</strong></sub></td>
-      <td align="center" width="18%"><sub><strong>Stone Giant</strong></sub></td>
-      <td align="center" width="18%"><sub><strong>Mountain Lord</strong></sub></td>
-      <td align="center" width="18%"><sub><strong>Primordial Titan</strong></sub></td>
+    <tr><th scope="row" align="center" valign="middle">Orcs</th>
+      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/orcs/orc-grunt/normal-v1.png"><img src="docs/readme-gallery/monsters/orc-grunt.c0bdfaf44dca.webp" alt="Grunt" width="100%"></a><br><sup><strong>Grunt</strong></sup></td>
+      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/orcs/orc-warrior/normal-v1.png"><img src="docs/readme-gallery/monsters/orc-warrior.fd9f4d050156.webp" alt="Warrior" width="100%"></a><br><sup><strong>Warrior</strong></sup></td>
+      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/orcs/orc-berserker/normal-v1.png"><img src="docs/readme-gallery/monsters/orc-berserker.05227f4b5fe8.webp" alt="Berserker" width="100%"></a><br><sup><strong>Berserker</strong></sup></td>
+      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/orcs/orc-warchief/normal-v1.png"><img src="docs/readme-gallery/monsters/orc-warchief.8e7178010c9f.webp" alt="Warchief" width="100%"></a><br><sup><strong>Warchief</strong></sup></td>
+      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/orcs/orc-overlord/normal-v2.png"><img src="docs/readme-gallery/monsters/orc-overlord.1f568d275c35.webp" alt="Overlord" width="100%"></a><br><sup><strong>Overlord</strong></sup></td>
     </tr>
-    <tr><th scope="rowgroup" rowspan="2">Orcs</th>
-      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/orcs/orc-grunt/normal-v1.png"><img src="docs/readme-gallery/monsters/orc-grunt.c0bdfaf44dca.webp" alt="Grunt" width="100%"></a></td>
-      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/orcs/orc-warrior/normal-v1.png"><img src="docs/readme-gallery/monsters/orc-warrior.fd9f4d050156.webp" alt="Warrior" width="100%"></a></td>
-      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/orcs/orc-berserker/normal-v1.png"><img src="docs/readme-gallery/monsters/orc-berserker.05227f4b5fe8.webp" alt="Berserker" width="100%"></a></td>
-      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/orcs/orc-warchief/normal-v1.png"><img src="docs/readme-gallery/monsters/orc-warchief.8e7178010c9f.webp" alt="Warchief" width="100%"></a></td>
-      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/orcs/orc-overlord/normal-v2.png"><img src="docs/readme-gallery/monsters/orc-overlord.1f568d275c35.webp" alt="Overlord" width="100%"></a></td>
+    <tr><th scope="row" align="center" valign="middle">Trolls</th>
+      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/trolls/troll-scrag/normal-v1.png"><img src="docs/readme-gallery/monsters/troll-scrag.2807d224cdde.webp" alt="Scrag" width="100%"></a><br><sup><strong>Scrag</strong></sup></td>
+      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/trolls/troll-bog-troll/normal-v1.png"><img src="docs/readme-gallery/monsters/troll-bog-troll.913bf4e5a7ad.webp" alt="Bog Troll" width="100%"></a><br><sup><strong>Bog Troll</strong></sup></td>
+      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/trolls/troll-mutant-troll/normal-v2.png"><img src="docs/readme-gallery/monsters/troll-mutant-troll.615e73945a81.webp" alt="Mutant Troll" width="100%"></a><br><sup><strong>Mutant Troll</strong></sup></td>
+      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/trolls/troll-scarlord/normal-v1.png"><img src="docs/readme-gallery/monsters/troll-scarlord.225aca2e7076.webp" alt="Scarlord" width="100%"></a><br><sup><strong>Scarlord</strong></sup></td>
+      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/trolls/troll-elder-troll/normal-v2.png"><img src="docs/readme-gallery/monsters/troll-elder-troll.2e18aecc2698.webp" alt="Elder Troll" width="100%"></a><br><sup><strong>Elder Troll</strong></sup></td>
     </tr>
-    <tr>
-      <td align="center" width="18%"><sub><strong>Grunt</strong></sub></td>
-      <td align="center" width="18%"><sub><strong>Warrior</strong></sub></td>
-      <td align="center" width="18%"><sub><strong>Berserker</strong></sub></td>
-      <td align="center" width="18%"><sub><strong>Warchief</strong></sub></td>
-      <td align="center" width="18%"><sub><strong>Overlord</strong></sub></td>
+    <tr><th scope="row" align="center" valign="middle">Harpies</th>
+      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/harpies/harpy-screecher/normal-v1.png"><img src="docs/readme-gallery/monsters/harpy-screecher.4547b1397060.webp" alt="Screecher" width="100%"></a><br><sup><strong>Screecher</strong></sup></td>
+      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/harpies/harpy-talon/normal-v1.png"><img src="docs/readme-gallery/monsters/harpy-talon.a45a749639d7.webp" alt="Talon" width="100%"></a><br><sup><strong>Talon</strong></sup></td>
+      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/harpies/harpy-skyrender/normal-v2.png"><img src="docs/readme-gallery/monsters/harpy-skyrender.1fa02e6ae492.webp" alt="Skyrender" width="100%"></a><br><sup><strong>Skyrender</strong></sup></td>
+      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/harpies/harpy-matriarch/normal-v1.png"><img src="docs/readme-gallery/monsters/harpy-matriarch.9b6f14187349.webp" alt="Matriarch" width="100%"></a><br><sup><strong>Matriarch</strong></sup></td>
+      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/harpies/harpy-sky-queen/normal-v2.png"><img src="docs/readme-gallery/monsters/harpy-sky-queen.471d01a3ba8f.webp" alt="Sky Queen" width="100%"></a><br><sup><strong>Sky Queen</strong></sup></td>
     </tr>
-    <tr><th scope="rowgroup" rowspan="2">Trolls</th>
-      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/trolls/troll-scrag/normal-v1.png"><img src="docs/readme-gallery/monsters/troll-scrag.2807d224cdde.webp" alt="Scrag" width="100%"></a></td>
-      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/trolls/troll-bog-troll/normal-v1.png"><img src="docs/readme-gallery/monsters/troll-bog-troll.913bf4e5a7ad.webp" alt="Bog Troll" width="100%"></a></td>
-      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/trolls/troll-mutant-troll/normal-v2.png"><img src="docs/readme-gallery/monsters/troll-mutant-troll.615e73945a81.webp" alt="Mutant Troll" width="100%"></a></td>
-      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/trolls/troll-scarlord/normal-v1.png"><img src="docs/readme-gallery/monsters/troll-scarlord.225aca2e7076.webp" alt="Scarlord" width="100%"></a></td>
-      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/trolls/troll-elder-troll/normal-v2.png"><img src="docs/readme-gallery/monsters/troll-elder-troll.2e18aecc2698.webp" alt="Elder Troll" width="100%"></a></td>
+    <tr><th scope="row" align="center" valign="middle">Minotaurs</th>
+      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/minotaurs/minotaur-bull-kin/normal-v1.png"><img src="docs/readme-gallery/monsters/minotaur-bull-kin.6c90fd367491.webp" alt="Bull-kin" width="100%"></a><br><sup><strong>Bull-kin</strong></sup></td>
+      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/minotaurs/minotaur-charger/normal-v1.png"><img src="docs/readme-gallery/monsters/minotaur-charger.2fd73cf212b5.webp" alt="Charger" width="100%"></a><br><sup><strong>Charger</strong></sup></td>
+      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/minotaurs/minotaur-labyrinth-warrior/normal-v1.png"><img src="docs/readme-gallery/monsters/minotaur-labyrinth-warrior.ffc2fae466f6.webp" alt="Labyrinth Warrior" width="100%"></a><br><sup><strong>Labyrinth Warrior</strong></sup></td>
+      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/minotaurs/minotaur-arena-champion/normal-v1.png"><img src="docs/readme-gallery/monsters/minotaur-arena-champion.ff11631c4c11.webp" alt="Arena Champion" width="100%"></a><br><sup><strong>Arena Champion</strong></sup></td>
+      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/minotaurs/minotaur-bull-emperor/normal-v2.png"><img src="docs/readme-gallery/monsters/minotaur-bull-emperor.4238d76fdc4b.webp" alt="Bull Emperor" width="100%"></a><br><sup><strong>Bull Emperor</strong></sup></td>
     </tr>
-    <tr>
-      <td align="center" width="18%"><sub><strong>Scrag</strong></sub></td>
-      <td align="center" width="18%"><sub><strong>Bog Troll</strong></sub></td>
-      <td align="center" width="18%"><sub><strong>Mutant Troll</strong></sub></td>
-      <td align="center" width="18%"><sub><strong>Scarlord</strong></sub></td>
-      <td align="center" width="18%"><sub><strong>Elder Troll</strong></sub></td>
+    <tr><th scope="row" align="center" valign="middle">Golems</th>
+      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/golems/golem-clay-figure/normal-v1.png"><img src="docs/readme-gallery/monsters/golem-clay-figure.4ef42c527712.webp" alt="Clay Figure" width="100%"></a><br><sup><strong>Clay Figure</strong></sup></td>
+      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/golems/golem-stone-servant/normal-v1.png"><img src="docs/readme-gallery/monsters/golem-stone-servant.25470a9b3925.webp" alt="Stone Servant" width="100%"></a><br><sup><strong>Stone Servant</strong></sup></td>
+      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/golems/golem-rune-warrior/normal-v2.png"><img src="docs/readme-gallery/monsters/golem-rune-warrior.22e922a00af5.webp" alt="Rune Warrior" width="100%"></a><br><sup><strong>Rune Warrior</strong></sup></td>
+      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/golems/golem-basalt-colossus/normal-v1.png"><img src="docs/readme-gallery/monsters/golem-basalt-colossus.013efcaa3996.webp" alt="Basalt Colossus" width="100%"></a><br><sup><strong>Basalt Colossus</strong></sup></td>
+      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/golems/golem-master-golem/normal-v2.png"><img src="docs/readme-gallery/monsters/golem-master-golem.b7fd82163110.webp" alt="Master Golem" width="100%"></a><br><sup><strong>Master Golem</strong></sup></td>
     </tr>
-    <tr><th scope="rowgroup" rowspan="2">Harpies</th>
-      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/harpies/harpy-screecher/normal-v1.png"><img src="docs/readme-gallery/monsters/harpy-screecher.4547b1397060.webp" alt="Screecher" width="100%"></a></td>
-      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/harpies/harpy-talon/normal-v1.png"><img src="docs/readme-gallery/monsters/harpy-talon.a45a749639d7.webp" alt="Talon" width="100%"></a></td>
-      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/harpies/harpy-skyrender/normal-v2.png"><img src="docs/readme-gallery/monsters/harpy-skyrender.1fa02e6ae492.webp" alt="Skyrender" width="100%"></a></td>
-      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/harpies/harpy-matriarch/normal-v1.png"><img src="docs/readme-gallery/monsters/harpy-matriarch.9b6f14187349.webp" alt="Matriarch" width="100%"></a></td>
-      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/harpies/harpy-sky-queen/normal-v2.png"><img src="docs/readme-gallery/monsters/harpy-sky-queen.471d01a3ba8f.webp" alt="Sky Queen" width="100%"></a></td>
+    <tr><th scope="row" align="center" valign="middle">Treants</th>
+      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/treants/treant-sapling-walker/normal-v1.png"><img src="docs/readme-gallery/monsters/treant-sapling-walker.ffdfed52e888.webp" alt="Sapling-walker" width="100%"></a><br><sup><strong>Sapling-walker</strong></sup></td>
+      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/treants/treant-young-treant/normal-v1.png"><img src="docs/readme-gallery/monsters/treant-young-treant.4396fb1cdd90.webp" alt="Young Treant" width="100%"></a><br><sup><strong>Young Treant</strong></sup></td>
+      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/treants/treant-oakheart/normal-v2.png"><img src="docs/readme-gallery/monsters/treant-oakheart.6480522c76b0.webp" alt="Oakheart" width="100%"></a><br><sup><strong>Oakheart</strong></sup></td>
+      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/treants/treant-elder-warden/normal-v1.png"><img src="docs/readme-gallery/monsters/treant-elder-warden.bdc488b34f8d.webp" alt="Elder Warden" width="100%"></a><br><sup><strong>Elder Warden</strong></sup></td>
+      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/treants/treant-world-tree-warden/normal-v1.png"><img src="docs/readme-gallery/monsters/treant-world-tree-warden.cd33c475848f.webp" alt="World-Tree Warden" width="100%"></a><br><sup><strong>World-Tree Warden</strong></sup></td>
     </tr>
-    <tr>
-      <td align="center" width="18%"><sub><strong>Screecher</strong></sub></td>
-      <td align="center" width="18%"><sub><strong>Talon</strong></sub></td>
-      <td align="center" width="18%"><sub><strong>Skyrender</strong></sub></td>
-      <td align="center" width="18%"><sub><strong>Matriarch</strong></sub></td>
-      <td align="center" width="18%"><sub><strong>Sky Queen</strong></sub></td>
-    </tr>
-    <tr><th scope="rowgroup" rowspan="2">Minotaurs</th>
-      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/minotaurs/minotaur-bull-kin/normal-v1.png"><img src="docs/readme-gallery/monsters/minotaur-bull-kin.6c90fd367491.webp" alt="Bull-kin" width="100%"></a></td>
-      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/minotaurs/minotaur-charger/normal-v1.png"><img src="docs/readme-gallery/monsters/minotaur-charger.2fd73cf212b5.webp" alt="Charger" width="100%"></a></td>
-      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/minotaurs/minotaur-labyrinth-warrior/normal-v1.png"><img src="docs/readme-gallery/monsters/minotaur-labyrinth-warrior.ffc2fae466f6.webp" alt="Labyrinth Warrior" width="100%"></a></td>
-      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/minotaurs/minotaur-arena-champion/normal-v1.png"><img src="docs/readme-gallery/monsters/minotaur-arena-champion.ff11631c4c11.webp" alt="Arena Champion" width="100%"></a></td>
-      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/minotaurs/minotaur-bull-emperor/normal-v2.png"><img src="docs/readme-gallery/monsters/minotaur-bull-emperor.4238d76fdc4b.webp" alt="Bull Emperor" width="100%"></a></td>
-    </tr>
-    <tr>
-      <td align="center" width="18%"><sub><strong>Bull-kin</strong></sub></td>
-      <td align="center" width="18%"><sub><strong>Charger</strong></sub></td>
-      <td align="center" width="18%"><sub><strong>Labyrinth Warrior</strong></sub></td>
-      <td align="center" width="18%"><sub><strong>Arena Champion</strong></sub></td>
-      <td align="center" width="18%"><sub><strong>Bull Emperor</strong></sub></td>
-    </tr>
-    <tr><th scope="rowgroup" rowspan="2">Golems</th>
-      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/golems/golem-clay-figure/normal-v1.png"><img src="docs/readme-gallery/monsters/golem-clay-figure.4ef42c527712.webp" alt="Clay Figure" width="100%"></a></td>
-      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/golems/golem-stone-servant/normal-v1.png"><img src="docs/readme-gallery/monsters/golem-stone-servant.25470a9b3925.webp" alt="Stone Servant" width="100%"></a></td>
-      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/golems/golem-rune-warrior/normal-v2.png"><img src="docs/readme-gallery/monsters/golem-rune-warrior.22e922a00af5.webp" alt="Rune Warrior" width="100%"></a></td>
-      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/golems/golem-basalt-colossus/normal-v1.png"><img src="docs/readme-gallery/monsters/golem-basalt-colossus.013efcaa3996.webp" alt="Basalt Colossus" width="100%"></a></td>
-      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/golems/golem-master-golem/normal-v2.png"><img src="docs/readme-gallery/monsters/golem-master-golem.b7fd82163110.webp" alt="Master Golem" width="100%"></a></td>
-    </tr>
-    <tr>
-      <td align="center" width="18%"><sub><strong>Clay Figure</strong></sub></td>
-      <td align="center" width="18%"><sub><strong>Stone Servant</strong></sub></td>
-      <td align="center" width="18%"><sub><strong>Rune Warrior</strong></sub></td>
-      <td align="center" width="18%"><sub><strong>Basalt Colossus</strong></sub></td>
-      <td align="center" width="18%"><sub><strong>Master Golem</strong></sub></td>
-    </tr>
-    <tr><th scope="rowgroup" rowspan="2">Treants</th>
-      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/treants/treant-sapling-walker/normal-v1.png"><img src="docs/readme-gallery/monsters/treant-sapling-walker.ffdfed52e888.webp" alt="Sapling-walker" width="100%"></a></td>
-      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/treants/treant-young-treant/normal-v1.png"><img src="docs/readme-gallery/monsters/treant-young-treant.4396fb1cdd90.webp" alt="Young Treant" width="100%"></a></td>
-      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/treants/treant-oakheart/normal-v2.png"><img src="docs/readme-gallery/monsters/treant-oakheart.6480522c76b0.webp" alt="Oakheart" width="100%"></a></td>
-      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/treants/treant-elder-warden/normal-v1.png"><img src="docs/readme-gallery/monsters/treant-elder-warden.bdc488b34f8d.webp" alt="Elder Warden" width="100%"></a></td>
-      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/treants/treant-world-tree-warden/normal-v1.png"><img src="docs/readme-gallery/monsters/treant-world-tree-warden.cd33c475848f.webp" alt="World-Tree Warden" width="100%"></a></td>
-    </tr>
-    <tr>
-      <td align="center" width="18%"><sub><strong>Sapling-walker</strong></sub></td>
-      <td align="center" width="18%"><sub><strong>Young Treant</strong></sub></td>
-      <td align="center" width="18%"><sub><strong>Oakheart</strong></sub></td>
-      <td align="center" width="18%"><sub><strong>Elder Warden</strong></sub></td>
-      <td align="center" width="18%"><sub><strong>World-Tree Warden</strong></sub></td>
-    </tr>
-    <tr><th scope="rowgroup" rowspan="2">Dragons</th>
-      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/dragons/dragon-whelp/normal-v1.png"><img src="docs/readme-gallery/monsters/dragon-whelp.3520907faf75.webp" alt="Whelp" width="100%"></a></td>
-      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/dragons/dragon-fledgling/normal-v1.png"><img src="docs/readme-gallery/monsters/dragon-fledgling.786495ae0500.webp" alt="Fledgling" width="100%"></a></td>
-      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/dragons/dragon-drake/normal-v2.png"><img src="docs/readme-gallery/monsters/dragon-drake.6f901bcb97f8.webp" alt="Drake" width="100%"></a></td>
-      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/dragons/dragon-elder-wyrm/normal-v1.png"><img src="docs/readme-gallery/monsters/dragon-elder-wyrm.7c38d1884f02.webp" alt="Elder Wyrm" width="100%"></a></td>
-      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/dragons/dragon-emperor/normal-v2.png"><img src="docs/readme-gallery/monsters/dragon-emperor.91514b10a7e2.webp" alt="Dragon Emperor" width="100%"></a></td>
-    </tr>
-    <tr>
-      <td align="center" width="18%"><sub><strong>Whelp</strong></sub></td>
-      <td align="center" width="18%"><sub><strong>Fledgling</strong></sub></td>
-      <td align="center" width="18%"><sub><strong>Drake</strong></sub></td>
-      <td align="center" width="18%"><sub><strong>Elder Wyrm</strong></sub></td>
-      <td align="center" width="18%"><sub><strong>Dragon Emperor</strong></sub></td>
+    <tr><th scope="row" align="center" valign="middle">Dragons</th>
+      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/dragons/dragon-whelp/normal-v1.png"><img src="docs/readme-gallery/monsters/dragon-whelp.3520907faf75.webp" alt="Whelp" width="100%"></a><br><sup><strong>Whelp</strong></sup></td>
+      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/dragons/dragon-fledgling/normal-v1.png"><img src="docs/readme-gallery/monsters/dragon-fledgling.786495ae0500.webp" alt="Fledgling" width="100%"></a><br><sup><strong>Fledgling</strong></sup></td>
+      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/dragons/dragon-drake/normal-v2.png"><img src="docs/readme-gallery/monsters/dragon-drake.6f901bcb97f8.webp" alt="Drake" width="100%"></a><br><sup><strong>Drake</strong></sup></td>
+      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/dragons/dragon-elder-wyrm/normal-v1.png"><img src="docs/readme-gallery/monsters/dragon-elder-wyrm.7c38d1884f02.webp" alt="Elder Wyrm" width="100%"></a><br><sup><strong>Elder Wyrm</strong></sup></td>
+      <td align="center" valign="top" width="18%"><a href="assets/enemies/experiments/family-affinity-v1/candidates/dragons/dragon-emperor/normal-v2.png"><img src="docs/readme-gallery/monsters/dragon-emperor.91514b10a7e2.webp" alt="Dragon Emperor" width="100%"></a><br><sup><strong>Dragon Emperor</strong></sup></td>
     </tr>
     <tr><td colspan="6" align="center"><strong>+30 more families</strong></td></tr>
   </tbody>
@@ -295,77 +239,41 @@ ahead, while supplies, training, and recovery help a party use those tools well.
 <table width="100%">
   <thead><tr><th>Category</th><th><code>F&nbsp;·&nbsp;Skill</code></th><th><code>E&nbsp;·&nbsp;Skill</code></th><th><code>D&nbsp;·&nbsp;Skill</code></th><th><code>C&nbsp;·&nbsp;Skill</code></th><th><code>B&nbsp;·&nbsp;Skill</code></th><th><code>A&nbsp;·&nbsp;Skill</code></th><th><code>S&nbsp;·&nbsp;Skill</code></th></tr></thead>
   <tbody>
-    <tr><th scope="rowgroup" rowspan="2" align="center" valign="middle">Combat</th>
-      <td align="center" valign="top" width="12.8%"><a href="assets/wiki/skills/icon-production-v2/interiors/martial-blade-measured-cut.png"><img src="docs/readme-gallery/skills/martial-blade-measured-cut.f90f15c6e260.webp" alt="Measured Cut" width="100%"></a></td>
-      <td align="center" valign="top" width="12.8%"><a href="assets/wiki/skills/icon-production-v2/interiors/martial-blade-edge-alignment.png"><img src="docs/readme-gallery/skills/martial-blade-edge-alignment.4547460dc6ea.webp" alt="Edge Alignment" width="100%"></a></td>
-      <td align="center" valign="top" width="12.8%"><a href="assets/wiki/skills/icon-production-v2/interiors/martial-blade-drawing-cut.png"><img src="docs/readme-gallery/skills/martial-blade-drawing-cut.c96379712e83.webp" alt="Drawing Cut" width="100%"></a></td>
-      <td align="center" valign="top" width="12.8%"><a href="assets/wiki/skills/icon-production-v2/interiors/martial-blade-rising-moon.png"><img src="docs/readme-gallery/skills/martial-blade-rising-moon.ffe2f58c20d8.webp" alt="Rising Moon" width="100%"></a></td>
-      <td align="center" valign="top" width="12.8%"><a href="assets/wiki/skills/icon-production-v2/interiors/martial-blade-severing-intent.png"><img src="docs/readme-gallery/skills/martial-blade-severing-intent.cff6a59c0fba.webp" alt="Severing Intent" width="100%"></a></td>
-      <td align="center" valign="top" width="12.8%"><a href="assets/wiki/skills/icon-production-v2/interiors/martial-blade-void-cut.png"><img src="docs/readme-gallery/skills/martial-blade-void-cut.8db5236b312f.webp" alt="Void Cut" width="100%"></a></td>
-      <td align="center" valign="top" width="12.8%"><a href="assets/wiki/skills/icon-production-v2/interiors/martial-blade-one-blade-one-world.png"><img src="docs/readme-gallery/skills/martial-blade-one-blade-one-world.dfc4996c351f.webp" alt="One Blade, One World" width="100%"></a></td>
+    <tr><th scope="row" align="center" valign="middle">Combat</th>
+      <td align="center" valign="top" width="12.8%"><a href="assets/wiki/skills/icon-production-v2/interiors/martial-blade-measured-cut.png"><img src="docs/readme-gallery/skills/martial-blade-measured-cut.f90f15c6e260.webp" alt="Measured Cut" width="100%"></a><br><sup><strong>Measured Cut</strong></sup></td>
+      <td align="center" valign="top" width="12.8%"><a href="assets/wiki/skills/icon-production-v2/interiors/martial-blade-edge-alignment.png"><img src="docs/readme-gallery/skills/martial-blade-edge-alignment.4547460dc6ea.webp" alt="Edge Alignment" width="100%"></a><br><sup><strong>Edge Alignment</strong></sup></td>
+      <td align="center" valign="top" width="12.8%"><a href="assets/wiki/skills/icon-production-v2/interiors/martial-blade-drawing-cut.png"><img src="docs/readme-gallery/skills/martial-blade-drawing-cut.c96379712e83.webp" alt="Drawing Cut" width="100%"></a><br><sup><strong>Drawing Cut</strong></sup></td>
+      <td align="center" valign="top" width="12.8%"><a href="assets/wiki/skills/icon-production-v2/interiors/martial-blade-rising-moon.png"><img src="docs/readme-gallery/skills/martial-blade-rising-moon.ffe2f58c20d8.webp" alt="Rising Moon" width="100%"></a><br><sup><strong>Rising Moon</strong></sup></td>
+      <td align="center" valign="top" width="12.8%"><a href="assets/wiki/skills/icon-production-v2/interiors/martial-blade-severing-intent.png"><img src="docs/readme-gallery/skills/martial-blade-severing-intent.cff6a59c0fba.webp" alt="Severing Intent" width="100%"></a><br><sup><strong>Severing Intent</strong></sup></td>
+      <td align="center" valign="top" width="12.8%"><a href="assets/wiki/skills/icon-production-v2/interiors/martial-blade-void-cut.png"><img src="docs/readme-gallery/skills/martial-blade-void-cut.8db5236b312f.webp" alt="Void Cut" width="100%"></a><br><sup><strong>Void Cut</strong></sup></td>
+      <td align="center" valign="top" width="12.8%"><a href="assets/wiki/skills/icon-production-v2/interiors/martial-blade-one-blade-one-world.png"><img src="docs/readme-gallery/skills/martial-blade-one-blade-one-world.dfc4996c351f.webp" alt="One Blade, One World" width="100%"></a><br><sup><strong>One Blade, One World</strong></sup></td>
     </tr>
-    <tr>
-      <td align="center" valign="middle" width="12.8%"><sub><strong>Measured Cut</strong></sub></td>
-      <td align="center" valign="middle" width="12.8%"><sub><strong>Edge Alignment</strong></sub></td>
-      <td align="center" valign="middle" width="12.8%"><sub><strong>Drawing Cut</strong></sub></td>
-      <td align="center" valign="middle" width="12.8%"><sub><strong>Rising Moon</strong></sub></td>
-      <td align="center" valign="middle" width="12.8%"><sub><strong>Severing Intent</strong></sub></td>
-      <td align="center" valign="middle" width="12.8%"><sub><strong>Void Cut</strong></sub></td>
-      <td align="center" valign="middle" width="12.8%"><sub><strong>One Blade, One World</strong></sub></td>
+    <tr><th scope="row" align="center" valign="middle">Magic</th>
+      <td align="center" valign="top" width="12.8%"><a href="assets/wiki/skills/icon-production-v2/interiors/magical-elemental-ember.png"><img src="docs/readme-gallery/skills/magical-elemental-ember.0f1a088d3015.webp" alt="Ember" width="100%"></a><br><sup><strong>Ember</strong></sup></td>
+      <td align="center" valign="top" width="12.8%"><a href="assets/wiki/skills/icon-production-v2/interiors/magical-elemental-fireball.png"><img src="docs/readme-gallery/skills/magical-elemental-fireball.0143cd885579.webp" alt="Fireball" width="100%"></a><br><sup><strong>Fireball</strong></sup></td>
+      <td align="center" valign="top" width="12.8%"><a href="assets/wiki/skills/icon-production-v2/interiors/magical-elemental-great-fireball.png"><img src="docs/readme-gallery/skills/magical-elemental-great-fireball.d2becfafd7ae.webp" alt="Great Fireball" width="100%"></a><br><sup><strong>Great Fireball</strong></sup></td>
+      <td align="center" valign="top" width="12.8%"><a href="assets/wiki/skills/icon-production-v2/interiors/magical-elemental-charged-fireball.png"><img src="docs/readme-gallery/skills/magical-elemental-charged-fireball.c5ba06227612.webp" alt="Charged Fireball" width="100%"></a><br><sup><strong>Charged Fireball</strong></sup></td>
+      <td align="center" valign="top" width="12.8%"><a href="assets/wiki/skills/icon-production-v2/interiors/magical-elemental-meteor.png"><img src="docs/readme-gallery/skills/magical-elemental-meteor.91ee2cef7728.webp" alt="Meteor" width="100%"></a><br><sup><strong>Meteor</strong></sup></td>
+      <td align="center" valign="top" width="12.8%"><a href="assets/wiki/skills/icon-production-v2/interiors/magical-elemental-sea-of-flame.png"><img src="docs/readme-gallery/skills/magical-elemental-sea-of-flame.d3df8094505d.webp" alt="Sea of Flame" width="100%"></a><br><sup><strong>Sea of Flame</strong></sup></td>
+      <td align="center" valign="top" width="12.8%"><a href="assets/wiki/skills/icon-production-v2/interiors/magical-elemental-sunfall.png"><img src="docs/readme-gallery/skills/magical-elemental-sunfall.6b311f19f716.webp" alt="Sunfall" width="100%"></a><br><sup><strong>Sunfall</strong></sup></td>
     </tr>
-    <tr><th scope="rowgroup" rowspan="2" align="center" valign="middle">Magic</th>
-      <td align="center" valign="top" width="12.8%"><a href="assets/wiki/skills/icon-production-v2/interiors/magical-elemental-ember.png"><img src="docs/readme-gallery/skills/magical-elemental-ember.0f1a088d3015.webp" alt="Ember" width="100%"></a></td>
-      <td align="center" valign="top" width="12.8%"><a href="assets/wiki/skills/icon-production-v2/interiors/magical-elemental-fireball.png"><img src="docs/readme-gallery/skills/magical-elemental-fireball.0143cd885579.webp" alt="Fireball" width="100%"></a></td>
-      <td align="center" valign="top" width="12.8%"><a href="assets/wiki/skills/icon-production-v2/interiors/magical-elemental-great-fireball.png"><img src="docs/readme-gallery/skills/magical-elemental-great-fireball.d2becfafd7ae.webp" alt="Great Fireball" width="100%"></a></td>
-      <td align="center" valign="top" width="12.8%"><a href="assets/wiki/skills/icon-production-v2/interiors/magical-elemental-charged-fireball.png"><img src="docs/readme-gallery/skills/magical-elemental-charged-fireball.c5ba06227612.webp" alt="Charged Fireball" width="100%"></a></td>
-      <td align="center" valign="top" width="12.8%"><a href="assets/wiki/skills/icon-production-v2/interiors/magical-elemental-meteor.png"><img src="docs/readme-gallery/skills/magical-elemental-meteor.91ee2cef7728.webp" alt="Meteor" width="100%"></a></td>
-      <td align="center" valign="top" width="12.8%"><a href="assets/wiki/skills/icon-production-v2/interiors/magical-elemental-sea-of-flame.png"><img src="docs/readme-gallery/skills/magical-elemental-sea-of-flame.d3df8094505d.webp" alt="Sea of Flame" width="100%"></a></td>
-      <td align="center" valign="top" width="12.8%"><a href="assets/wiki/skills/icon-production-v2/interiors/magical-elemental-sunfall.png"><img src="docs/readme-gallery/skills/magical-elemental-sunfall.6b311f19f716.webp" alt="Sunfall" width="100%"></a></td>
+    <tr><th scope="row" align="center" valign="middle">Craft</th>
+      <td align="center" valign="top" width="12.8%"><a href="assets/wiki/skills/icon-production-v2/interiors/craft-forging-simple-smithing.png"><img src="docs/readme-gallery/skills/craft-forging-simple-smithing.53748ef293c6.webp" alt="Simple Smithing" width="100%"></a><br><sup><strong>Simple Smithing</strong></sup></td>
+      <td align="center" valign="top" width="12.8%"><a href="assets/wiki/skills/icon-production-v2/interiors/craft-forging-weaponsmithing.png"><img src="docs/readme-gallery/skills/craft-forging-weaponsmithing.6e54bea5e7d9.webp" alt="Weaponsmithing" width="100%"></a><br><sup><strong>Weapon&shy;smithing</strong></sup></td>
+      <td align="center" valign="top" width="12.8%"><a href="assets/wiki/skills/icon-production-v2/interiors/craft-forging-alloying.png"><img src="docs/readme-gallery/skills/craft-forging-alloying.b75c76e24e2d.webp" alt="Alloying" width="100%"></a><br><sup><strong>Alloying</strong></sup></td>
+      <td align="center" valign="top" width="12.8%"><a href="assets/wiki/skills/icon-production-v2/interiors/craft-forging-runic-foundation.png"><img src="docs/readme-gallery/skills/craft-forging-runic-foundation.5706ff09e62a.webp" alt="Runic Foundation" width="100%"></a><br><sup><strong>Runic Foundation</strong></sup></td>
+      <td align="center" valign="top" width="12.8%"><a href="assets/wiki/skills/icon-production-v2/interiors/craft-forging-living-metal.png"><img src="docs/readme-gallery/skills/craft-forging-living-metal.558dad7e2772.webp" alt="Living Metal" width="100%"></a><br><sup><strong>Living Metal</strong></sup></td>
+      <td align="center" valign="top" width="12.8%"><a href="assets/wiki/skills/icon-production-v2/interiors/craft-forging-soul-forging.png"><img src="docs/readme-gallery/skills/craft-forging-soul-forging.e4a00f2a990f.webp" alt="Soul Forging" width="100%"></a><br><sup><strong>Soul Forging</strong></sup></td>
+      <td align="center" valign="top" width="12.8%"><a href="assets/wiki/skills/icon-production-v2/interiors/craft-forging-godsmithing.png"><img src="docs/readme-gallery/skills/craft-forging-godsmithing.d2b5fc49d494.webp" alt="Godsmithing" width="100%"></a><br><sup><strong>Godsmithing</strong></sup></td>
     </tr>
-    <tr>
-      <td align="center" valign="middle" width="12.8%"><sub><strong>Ember</strong></sub></td>
-      <td align="center" valign="middle" width="12.8%"><sub><strong>Fireball</strong></sub></td>
-      <td align="center" valign="middle" width="12.8%"><sub><strong>Great Fireball</strong></sub></td>
-      <td align="center" valign="middle" width="12.8%"><sub><strong>Charged Fireball</strong></sub></td>
-      <td align="center" valign="middle" width="12.8%"><sub><strong>Meteor</strong></sub></td>
-      <td align="center" valign="middle" width="12.8%"><sub><strong>Sea of Flame</strong></sub></td>
-      <td align="center" valign="middle" width="12.8%"><sub><strong>Sunfall</strong></sub></td>
-    </tr>
-    <tr><th scope="rowgroup" rowspan="2" align="center" valign="middle">Craft</th>
-      <td align="center" valign="top" width="12.8%"><a href="assets/wiki/skills/icon-production-v2/interiors/craft-forging-simple-smithing.png"><img src="docs/readme-gallery/skills/craft-forging-simple-smithing.53748ef293c6.webp" alt="Simple Smithing" width="100%"></a></td>
-      <td align="center" valign="top" width="12.8%"><a href="assets/wiki/skills/icon-production-v2/interiors/craft-forging-weaponsmithing.png"><img src="docs/readme-gallery/skills/craft-forging-weaponsmithing.6e54bea5e7d9.webp" alt="Weaponsmithing" width="100%"></a></td>
-      <td align="center" valign="top" width="12.8%"><a href="assets/wiki/skills/icon-production-v2/interiors/craft-forging-alloying.png"><img src="docs/readme-gallery/skills/craft-forging-alloying.b75c76e24e2d.webp" alt="Alloying" width="100%"></a></td>
-      <td align="center" valign="top" width="12.8%"><a href="assets/wiki/skills/icon-production-v2/interiors/craft-forging-runic-foundation.png"><img src="docs/readme-gallery/skills/craft-forging-runic-foundation.5706ff09e62a.webp" alt="Runic Foundation" width="100%"></a></td>
-      <td align="center" valign="top" width="12.8%"><a href="assets/wiki/skills/icon-production-v2/interiors/craft-forging-living-metal.png"><img src="docs/readme-gallery/skills/craft-forging-living-metal.558dad7e2772.webp" alt="Living Metal" width="100%"></a></td>
-      <td align="center" valign="top" width="12.8%"><a href="assets/wiki/skills/icon-production-v2/interiors/craft-forging-soul-forging.png"><img src="docs/readme-gallery/skills/craft-forging-soul-forging.e4a00f2a990f.webp" alt="Soul Forging" width="100%"></a></td>
-      <td align="center" valign="top" width="12.8%"><a href="assets/wiki/skills/icon-production-v2/interiors/craft-forging-godsmithing.png"><img src="docs/readme-gallery/skills/craft-forging-godsmithing.d2b5fc49d494.webp" alt="Godsmithing" width="100%"></a></td>
-    </tr>
-    <tr>
-      <td align="center" valign="middle" width="12.8%"><sub><strong>Simple Smithing</strong></sub></td>
-      <td align="center" valign="middle" width="12.8%"><sub><strong>Weapon<br>smithing</strong></sub></td>
-      <td align="center" valign="middle" width="12.8%"><sub><strong>Alloying</strong></sub></td>
-      <td align="center" valign="middle" width="12.8%"><sub><strong>Runic Foundation</strong></sub></td>
-      <td align="center" valign="middle" width="12.8%"><sub><strong>Living Metal</strong></sub></td>
-      <td align="center" valign="middle" width="12.8%"><sub><strong>Soul Forging</strong></sub></td>
-      <td align="center" valign="middle" width="12.8%"><sub><strong>Godsmithing</strong></sub></td>
-    </tr>
-    <tr><th scope="rowgroup" rowspan="2" align="center" valign="middle">Support</th>
-      <td align="center" valign="top" width="12.8%"><a href="assets/wiki/skills/icon-production-v2/interiors/magical-restoration-mending.png"><img src="docs/readme-gallery/skills/magical-restoration-mending.c6b983e78b3d.webp" alt="Mending" width="100%"></a></td>
-      <td align="center" valign="top" width="12.8%"><a href="assets/wiki/skills/icon-production-v2/interiors/magical-restoration-regeneration.png"><img src="docs/readme-gallery/skills/magical-restoration-regeneration.86e746c19e62.webp" alt="Regeneration" width="100%"></a></td>
-      <td align="center" valign="top" width="12.8%"><a href="assets/wiki/skills/icon-production-v2/interiors/magical-restoration-mass-mending.png"><img src="docs/readme-gallery/skills/magical-restoration-mass-mending.aff963c97a27.webp" alt="Mass Mending" width="100%"></a></td>
-      <td align="center" valign="top" width="12.8%"><a href="assets/wiki/skills/icon-production-v2/interiors/magical-restoration-sanctified-ground.png"><img src="docs/readme-gallery/skills/magical-restoration-sanctified-ground.4fdcdf58eeb6.webp" alt="Sanctified Ground" width="100%"></a></td>
-      <td align="center" valign="top" width="12.8%"><a href="assets/wiki/skills/icon-production-v2/interiors/magical-restoration-great-renewal.png"><img src="docs/readme-gallery/skills/magical-restoration-great-renewal.cc9531ffffe6.webp" alt="Great Renewal" width="100%"></a></td>
-      <td align="center" valign="top" width="12.8%"><a href="assets/wiki/skills/icon-production-v2/interiors/magical-restoration-the-unbroken-thread.png"><img src="docs/readme-gallery/skills/magical-restoration-the-unbroken-thread.35e26518e8d7.webp" alt="The Unbroken Thread" width="100%"></a></td>
-      <td align="center" valign="top" width="12.8%"><a href="assets/wiki/skills/icon-production-v2/interiors/magical-restoration-what-was-taken-back.png"><img src="docs/readme-gallery/skills/magical-restoration-what-was-taken-back.c6be96aed9a6.webp" alt="What Was Taken Back" width="100%"></a></td>
-    </tr>
-    <tr>
-      <td align="center" valign="middle" width="12.8%"><sub><strong>Mending</strong></sub></td>
-      <td align="center" valign="middle" width="12.8%"><sub><strong>Regeneration</strong></sub></td>
-      <td align="center" valign="middle" width="12.8%"><sub><strong>Mass Mending</strong></sub></td>
-      <td align="center" valign="middle" width="12.8%"><sub><strong>Sanctified Ground</strong></sub></td>
-      <td align="center" valign="middle" width="12.8%"><sub><strong>Great Renewal</strong></sub></td>
-      <td align="center" valign="middle" width="12.8%"><sub><strong>The Unbroken Thread</strong></sub></td>
-      <td align="center" valign="middle" width="12.8%"><sub><strong>What Was Taken Back</strong></sub></td>
+    <tr><th scope="row" align="center" valign="middle">Support</th>
+      <td align="center" valign="top" width="12.8%"><a href="assets/wiki/skills/icon-production-v2/interiors/magical-restoration-mending.png"><img src="docs/readme-gallery/skills/magical-restoration-mending.c6b983e78b3d.webp" alt="Mending" width="100%"></a><br><sup><strong>Mending</strong></sup></td>
+      <td align="center" valign="top" width="12.8%"><a href="assets/wiki/skills/icon-production-v2/interiors/magical-restoration-regeneration.png"><img src="docs/readme-gallery/skills/magical-restoration-regeneration.86e746c19e62.webp" alt="Regeneration" width="100%"></a><br><sup><strong>Regeneration</strong></sup></td>
+      <td align="center" valign="top" width="12.8%"><a href="assets/wiki/skills/icon-production-v2/interiors/magical-restoration-mass-mending.png"><img src="docs/readme-gallery/skills/magical-restoration-mass-mending.aff963c97a27.webp" alt="Mass Mending" width="100%"></a><br><sup><strong>Mass Mending</strong></sup></td>
+      <td align="center" valign="top" width="12.8%"><a href="assets/wiki/skills/icon-production-v2/interiors/magical-restoration-sanctified-ground.png"><img src="docs/readme-gallery/skills/magical-restoration-sanctified-ground.4fdcdf58eeb6.webp" alt="Sanctified Ground" width="100%"></a><br><sup><strong>Sanctified Ground</strong></sup></td>
+      <td align="center" valign="top" width="12.8%"><a href="assets/wiki/skills/icon-production-v2/interiors/magical-restoration-great-renewal.png"><img src="docs/readme-gallery/skills/magical-restoration-great-renewal.cc9531ffffe6.webp" alt="Great Renewal" width="100%"></a><br><sup><strong>Great Renewal</strong></sup></td>
+      <td align="center" valign="top" width="12.8%"><a href="assets/wiki/skills/icon-production-v2/interiors/magical-restoration-the-unbroken-thread.png"><img src="docs/readme-gallery/skills/magical-restoration-the-unbroken-thread.35e26518e8d7.webp" alt="The Unbroken Thread" width="100%"></a><br><sup><strong>The Unbroken Thread</strong></sup></td>
+      <td align="center" valign="top" width="12.8%"><a href="assets/wiki/skills/icon-production-v2/interiors/magical-restoration-what-was-taken-back.png"><img src="docs/readme-gallery/skills/magical-restoration-what-was-taken-back.c6be96aed9a6.webp" alt="What Was Taken Back" width="100%"></a><br><sup><strong>What Was Taken Back</strong></sup></td>
     </tr>
   </tbody>
 </table>

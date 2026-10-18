@@ -114,7 +114,7 @@ existing 512-pixel equipment exports and tightly padded skill derivatives provid
 fit the full original image proportionally inside a 512 × 512 transparent canvas, without cropping
 or stretching. Monster images fill their cells proportionally across the full table width instead
 of stopping at 128 pixels. Equipment images also fill their cells proportionally, with no fixed pixel size limit. Both align to the top of
-their cells; monster captions occupy a separate row. Nonbreaking tier/form headers keep
+their cells; compact monster captions appear directly below each image in the same cell. Nonbreaking tier/form headers keep
 the five monster columns from shrinking unevenly in GitHub’s narrow-screen table layout. Current bindings are recorded in `readmeInputs` in the gallery provenance;
 the original `inputs` array remains the historical contact-sheet capture record.
 The reproducible monster export is `python3 tools/export-readme-monsters.py`; add `--check` to
@@ -135,9 +135,9 @@ are intentional; nothing is stretched or redrawn. The source and derivative bind
 and normalized dimensions are recorded in `readmeInputs`. Add `--check` to verify reproducibility.
 The original artwork links, canonical sources, wiki images, and gameplay assets are preserved.
 
-Each category spans an image row and a separate caption row. Category labels remain centered in
-both directions. The seven ascending F–S columns request 12.8% of the table width. Smaller bold
-captions remain selectable text, vertically centered in their cells. Equal-length, nonbreaking rank
+Each category occupies one row, with each image and its caption sharing a cell. Category labels
+remain centered in both directions. The seven ascending F–S columns request 12.8% of the table width. Smaller bold
+captions remain selectable text, centered horizontally and positioned close beneath the artwork. Equal-length, nonbreaking rank
 headers use monospace text to establish a shared minimum column width on narrow screens; this
 prevents long captions from making some icons smaller. The headers read “F · Skill” through
 “S · Skill.” Native horizontal scrolling keeps the table usable on phones.
@@ -153,3 +153,21 @@ Equipment uses all available table width through proportional `width="100%"` ima
 128-pixel cap. At a 1,500-pixel article width, each equipment image displays at approximately
 243 × 243 pixels; at a 1,012-pixel article width, images display at approximately 153 × 153 pixels.
 All nine complete sets, 45 pieces, captions, and original artwork links are preserved.
+
+## Compact skill and monster captions
+
+The owner found the separate caption bands too tall and the names too low. Skill and monster names
+now sit directly below their images in the same top-aligned cell, removing the extra caption row,
+its padding, and its horizontal border. GitHub-supported raised small text replaces the earlier
+lowered subscript formatting, bringing the labels closer to the center of the space beneath the
+image. Category and family labels remain centered in both directions. This supersedes the earlier
+separate-caption-row layout; the artwork dimensions, source bindings, and column widths are preserved.
+
+Weaponsmithing uses a soft hyphen rather than a forced line break. The complete word appears on one
+line when it fits, and wraps between “Weapon” and “smithing” only when space requires it. The canonical
+name, alt text, original artwork link, and catalog identity are unchanged.
+
+Checks of GitHub-sanitized markup with GitHub-style CSS at 390-, 1,076-, and 1,564-pixel viewports
+preserved equal skill image dimensions and horizontal scrolling. In the 1,500-pixel article, the
+skills table is approximately 76 pixels shorter and the monster table 104 pixels shorter, with the
+same image dimensions. Both README exporters reproduce this compact layout.

@@ -29,7 +29,7 @@ def export(check=False):
     records, expected, rows = [], {}, []
     for family_id in FAMILIES:
         family = families[family_id]
-        images, captions = [], []
+        images = []
         for form_id in family['formIds']:
             form = forms[form_id]
             record = coordinates[f'{family_id}/{form_id}/normal']
@@ -53,9 +53,8 @@ def export(check=False):
                 'originalSourcePath': record['sourcePath'],
                 'originalSourceSha256': record['sourceSha256'],
             })
-            images.append(f'      <td align="center" valign="top" width="18%"><a href="{record["sourcePath"]}"><img src="{path}" alt="{html.escape(form["name"], quote=True)}" width="100%"></a></td>')
-            captions.append(f'      <td align="center" width="18%"><sub><strong>{html.escape(form["name"])}</strong></sub></td>')
-        rows.append(f'    <tr><th scope="rowgroup" rowspan="2">{family["displayName"]}</th>\n' + '\n'.join(images) + '\n    </tr>\n    <tr>\n' + '\n'.join(captions) + '\n    </tr>')
+            images.append(f'      <td align="center" valign="top" width="18%"><a href="{record["sourcePath"]}"><img src="{path}" alt="{html.escape(form["name"], quote=True)}" width="100%"></a><br><sup><strong>{html.escape(form["name"])}</strong></sup></td>')
+        rows.append(f'    <tr><th scope="row" align="center" valign="middle">{family["displayName"]}</th>\n' + '\n'.join(images) + '\n    </tr>')
     table = '<table width="100%">\n  <thead><tr><th>Family</th>' + ''.join(f'<th>T{i}&nbsp;·&nbsp;Monster&nbsp;form</th>' for i in range(1, 6)) + '</tr></thead>\n  <tbody>\n' + '\n'.join(rows) + '\n    <tr><td colspan="6" align="center"><strong>+30 more families</strong></td></tr>\n  </tbody>\n</table>'
     readme_path = ROOT / 'README.md'
     readme = re.sub(r'(## Enemies\n\n)<table[\s\S]*?</table>', lambda m: m[1] + table, readme_path.read_text(), count=1)
@@ -68,7 +67,7 @@ def export(check=False):
     section = next(s for s in presentation['sections'] if s['heading'] == 'Enemies')
     section.update({
         'families': FAMILIES, 'imageWidth': '100%', 'imageHeight': 'auto',
-        'layout': 'Eight families with five T1–T5 forms. Separate image and caption rows keep images aligned. Proportional square images fill the five equally requested columns across the full README width; +30 more families footer.',
+        'layout': 'Eight families with five T1–T5 forms. Each top-aligned image and compact raised caption share a cell, avoiding a separately padded text row; family labels are centered in both directions. Proportional square images fill the five equally requested columns across the full README width; +30 more families footer.',
         'previewExport': {'script': 'tools/export-readme-monsters.py', 'canvas': [512, 512], 'fit': 'contain', 'padding': 'transparent', 'format': 'webp', 'quality': 88, 'method': 6},
     })
     expected[provenance_path] = (json.dumps(provenance, indent='\t', ensure_ascii=False) + '\n').encode()

@@ -67,12 +67,28 @@ def export(check=False):
     table = re.search(r'<table[\s\S]*?</table>', skills).group()
     normalized = table.replace('width="13%"', 'width="12.8%"')
     normalized = re.sub(r'<th>([FEDCBAS])</th>', r'<th><code>\1&nbsp;·&nbsp;Skill</code></th>', normalized)
-    normalized = re.sub(r'(?<!<sub>)<strong>(.*?)</strong>(?!</sub>)', r'<sub><strong>\1</strong></sub>', normalized)
+    def merge_rows(match):
+        heading = match[1].replace(' rowspan="2"', '').replace('scope="rowgroup"', 'scope="row"')
+        cells = re.findall(r'<td[^>]*>[\s\S]*?</td>', match[2])
+        captions = re.findall(r'<td[^>]*>([\s\S]*?)</td>', match[3])
+        if len(cells) != 7 or len(captions) != 7:
+            raise ValueError('Expected seven skill images and captions per category')
+        return '    <tr>' + heading + '\n' + '\n'.join(
+            '      ' + cell.replace('</td>', '<br>' + caption + '</td>')
+            for cell, caption in zip(cells, captions)
+        ) + '\n    </tr>'
+
+    normalized = re.sub(
+        r'    <tr>(<th[^>]*rowspan="2"[^>]*>[\s\S]*?</th>)\n([\s\S]*?)\n    </tr>\n    <tr>\n([\s\S]*?)\n    </tr>',
+        merge_rows, normalized,
+    )
+    normalized = normalized.replace('<sub>', '<sup>').replace('</sub>', '</sup>')
+    normalized = normalized.replace('Weapon<br>smithing', 'Weapon&shy;smithing')
     readme = prefix + skills.replace(table, normalized, 1)
     expected[readme_path] = readme.encode()
     section = next(s for s in provenance['readmePresentation']['sections'] if s['heading'] == 'Skills')
     section.update({
-        'layout': 'Four image/caption row pairs with centered category labels and seven ascending F–S rank columns requesting 12.8% each. Smaller vertically centered captions leave room for artwork. Equal-length nonbreaking rank headers in monospace keep column minimum widths consistent on narrow screens. All previews use the same 448 × 512 canvas and 496-pixel visible artwork height, preserving each original frame aspect ratio. Images fill their cells proportionally; native horizontal scrolling remains available on narrow screens.',
+        'layout': 'Four category rows with centered category labels and seven ascending F–S rank columns requesting 12.8% each. Each top-aligned image and compact raised caption share a cell instead of separate padded rows. A soft hyphen lets Weaponsmithing wrap only when necessary. Equal-length nonbreaking rank headers in monospace keep column minimum widths consistent on narrow screens. All previews use the same 448 × 512 canvas and 496-pixel visible artwork height, preserving each original frame aspect ratio. Images fill their cells proportionally; native horizontal scrolling remains available on narrow screens.',
         'previewExport': {'script': 'tools/export-readme-skills.py', 'canvas': list(CANVAS), 'artworkHeight': ART_HEIGHT, 'fit': 'trim transparent bounds, scale uniformly to common height, center', 'padding': 'transparent', 'format': 'lossless-webp'},
     })
     expected[provenance_path] = (json.dumps(provenance, indent='\t', ensure_ascii=False) + '\n').encode()

@@ -957,7 +957,7 @@
 				],
 				"catalogFamilyCount": 38,
 				"remainingFamilyCount": 30,
-				"layout": "Eight families with five T1–T5 forms. Separate image and caption rows keep images aligned. Proportional square images fill the five equally requested columns across the full README width; +30 more families footer.",
+				"layout": "Eight families with five T1–T5 forms. Each top-aligned image and compact raised caption share a cell, avoiding a separately padded text row; family labels are centered in both directions. Proportional square images fill the five equally requested columns across the full README width; +30 more families footer.",
 				"imageWidth": "100%",
 				"imageHeight": "auto",
 				"previewExport": {
@@ -1000,7 +1000,7 @@
 					"A",
 					"S"
 				],
-				"layout": "Four image/caption row pairs with centered category labels and seven ascending F–S rank columns requesting 12.8% each. Smaller vertically centered captions leave room for artwork. Equal-length nonbreaking rank headers in monospace keep column minimum widths consistent on narrow screens. All previews use the same 448 × 512 canvas and 496-pixel visible artwork height, preserving each original frame aspect ratio. Images fill their cells proportionally; native horizontal scrolling remains available on narrow screens.",
+				"layout": "Four category rows with centered category labels and seven ascending F–S rank columns requesting 12.8% each. Each top-aligned image and compact raised caption share a cell instead of separate padded rows. A soft hyphen lets Weaponsmithing wrap only when necessary. Equal-length nonbreaking rank headers in monospace keep column minimum widths consistent on narrow screens. All previews use the same 448 × 512 canvas and 496-pixel visible artwork height, preserving each original frame aspect ratio. Images fill their cells proportionally; native horizontal scrolling remains available on narrow screens.",
 				"imageWidth": "100%",
 				"imageHeight": "auto",
 				"previewExport": {
