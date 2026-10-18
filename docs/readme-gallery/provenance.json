@@ -977,9 +977,9 @@
 				"heading": "Equipment",
 				"inputSection": "equipment",
 				"images": 45,
-				"layout": "Nine complete five-piece sets grouped by armor class; ranks F, D, and S. Top-aligned 128-pixel square images and equally requested column widths. Full README width.",
-				"imageWidth": 128,
-				"imageHeight": 128
+				"layout": "Nine complete five-piece sets grouped by armor class; ranks F, D, and S. Top-aligned proportional square images fill five equally requested columns across the full README width, without a fixed pixel size limit.",
+				"imageWidth": "100%",
+				"imageHeight": "auto"
 			},
 			{
 				"heading": "Skills",
@@ -1000,9 +1000,20 @@
 					"A",
 					"S"
 				],
-				"layout": "Each category spans an image row and a separate caption row, with seven ascending F–S rank columns. Each rank requests 13% of the table width; square images fill their cells proportionally. Centered category labels and vertically centered, normal-flow captions keep artwork and names aligned. Native horizontal scrolling remains available on narrow screens. Examples illustrate increasing rarity, not a guaranteed prerequisite chain.",
+				"layout": "Four image/caption row pairs with centered category labels and seven ascending F–S rank columns requesting 12.8% each. Smaller vertically centered captions leave room for artwork. Equal-length nonbreaking rank headers in monospace keep column minimum widths consistent on narrow screens. All previews use the same 448 × 512 canvas and 496-pixel visible artwork height, preserving each original frame aspect ratio. Images fill their cells proportionally; native horizontal scrolling remains available on narrow screens.",
 				"imageWidth": "100%",
-				"imageHeight": "auto"
+				"imageHeight": "auto",
+				"previewExport": {
+					"script": "tools/export-readme-skills.py",
+					"canvas": [
+						448,
+						512
+					],
+					"artworkHeight": 496,
+					"fit": "trim transparent bounds, scale uniformly to common height, center",
+					"padding": "transparent",
+					"format": "lossless-webp"
+				}
 			}
 		],
 		"inputRecords": "readmeInputs"
@@ -2068,8 +2079,8 @@
 			"category": "Combat",
 			"rarity": "F",
 			"caption": "Measured Cut",
-			"path": "apps/web/static/wiki-media/skills/visual-catalog-v2/icons/martial-blade-measured-cut.a96984091431.webp",
-			"sha256": "e1a7439fba2b88209a21e8737ef98ee3ec00596df97665c82c72eb098d7519b3",
+			"path": "docs/readme-gallery/skills/martial-blade-measured-cut.f90f15c6e260.webp",
+			"sha256": "f90f15c6e260c9c5e6f086f436ec6a645a6e3532c5539ddca09529652dd1236f",
 			"authority": "apps/web/static/wiki-media/skills/visual-catalog-v2/manifest.json",
 			"targetId": "martial:blade:measured-cut",
 			"canonicalCatalog": "assets/wiki/skills/icon-production-v2/catalog.json",
@@ -2077,15 +2088,27 @@
 			"originalSourcePath": "assets/wiki/skills/icon-production-v2/interiors/martial-blade-measured-cut.png",
 			"originalSourceSha256": "c142509491c2bdfb364bbf63be536aa1bba2de2e43fd28226591ee15ba32a66c",
 			"framePath": "assets/wiki/skills/icon-production-v2/frames/rarity-frame-f.png",
-			"frameSha256": "8a96672403f0eb28e794ea4332780245cb7a992ca40374917dc4994a59bf79f4"
+			"frameSha256": "8a96672403f0eb28e794ea4332780245cb7a992ca40374917dc4994a59bf79f4",
+			"previewSourcePath": "apps/web/static/wiki-media/skills/visual-catalog-v2/icons/martial-blade-measured-cut.a96984091431.webp",
+			"previewSourceSha256": "e1a7439fba2b88209a21e8737ef98ee3ec00596df97665c82c72eb098d7519b3",
+			"sourceAlphaBounds": [
+				57,
+				12,
+				455,
+				489
+			],
+			"normalizedArtworkSize": [
+				414,
+				496
+			]
 		},
 		{
 			"section": "skills",
 			"category": "Combat",
 			"rarity": "E",
 			"caption": "Edge Alignment",
-			"path": "apps/web/static/wiki-media/skills/visual-catalog-v2/icons/martial-blade-edge-alignment.5a83cb51e42f.webp",
-			"sha256": "52a42bd1da166e8341d721da078b92df2f0fa03097b464ff294916a73ee58fb7",
+			"path": "docs/readme-gallery/skills/martial-blade-edge-alignment.4547460dc6ea.webp",
+			"sha256": "4547460dc6ea4f2faaa876e5522a3a79023d8a4ee2416f51825e3ed23fcdafb6",
 			"authority": "apps/web/static/wiki-media/skills/visual-catalog-v2/manifest.json",
 			"targetId": "martial:blade:edge-alignment",
 			"canonicalCatalog": "assets/wiki/skills/icon-production-v2/catalog.json",
@@ -2093,15 +2116,27 @@
 			"originalSourcePath": "assets/wiki/skills/icon-production-v2/interiors/martial-blade-edge-alignment.png",
 			"originalSourceSha256": "d5ad88f6fe0e78513d4880499591e630f71fb3ab104bcd6f960189cc087a80d1",
 			"framePath": "assets/wiki/skills/icon-production-v2/frames/rarity-frame-e.png",
-			"frameSha256": "759766a69a4c8daecc72f3714f6e6bcc06560f9dd349e9be676b88bf69199056"
+			"frameSha256": "759766a69a4c8daecc72f3714f6e6bcc06560f9dd349e9be676b88bf69199056",
+			"previewSourcePath": "apps/web/static/wiki-media/skills/visual-catalog-v2/icons/martial-blade-edge-alignment.5a83cb51e42f.webp",
+			"previewSourceSha256": "52a42bd1da166e8341d721da078b92df2f0fa03097b464ff294916a73ee58fb7",
+			"sourceAlphaBounds": [
+				55,
+				6,
+				457,
+				491
+			],
+			"normalizedArtworkSize": [
+				411,
+				496
+			]
 		},
 		{
 			"section": "skills",
 			"category": "Combat",
 			"rarity": "D",
 			"caption": "Drawing Cut",
-			"path": "apps/web/static/wiki-media/skills/visual-catalog-v2/icons/martial-blade-drawing-cut.43f4b75873f5.webp",
-			"sha256": "b44a794ad1ae8b703c227510abe67dfa85ddb51f50fbeaf641b26188d4f92e67",
+			"path": "docs/readme-gallery/skills/martial-blade-drawing-cut.c96379712e83.webp",
+			"sha256": "c96379712e833c17d7894275bc048385c7b5948268f01070f4d59d8df0a9b89a",
 			"authority": "apps/web/static/wiki-media/skills/visual-catalog-v2/manifest.json",
 			"targetId": "martial:blade:drawing-cut",
 			"canonicalCatalog": "assets/wiki/skills/icon-production-v2/catalog.json",
@@ -2109,15 +2144,27 @@
 			"originalSourcePath": "assets/wiki/skills/icon-production-v2/interiors/martial-blade-drawing-cut.png",
 			"originalSourceSha256": "455df5e742410800577ff401effd4852e0fd6d78b085b38c9c9e4a6c5ceb8b38",
 			"framePath": "assets/wiki/skills/icon-production-v2/frames/rarity-frame-d.png",
-			"frameSha256": "a5e986928d1cd3202194df2db17e8d727669e62f7428cd8dbc79bf706420ae15"
+			"frameSha256": "a5e986928d1cd3202194df2db17e8d727669e62f7428cd8dbc79bf706420ae15",
+			"previewSourcePath": "apps/web/static/wiki-media/skills/visual-catalog-v2/icons/martial-blade-drawing-cut.43f4b75873f5.webp",
+			"previewSourceSha256": "b44a794ad1ae8b703c227510abe67dfa85ddb51f50fbeaf641b26188d4f92e67",
+			"sourceAlphaBounds": [
+				57,
+				10,
+				455,
+				490
+			],
+			"normalizedArtworkSize": [
+				411,
+				496
+			]
 		},
 		{
 			"section": "skills",
 			"category": "Combat",
 			"rarity": "C",
 			"caption": "Rising Moon",
-			"path": "apps/web/static/wiki-media/skills/visual-catalog-v2/icons/martial-blade-rising-moon.d6e37d74b80e.webp",
-			"sha256": "05760ff92e8740845f58c4de074e43344c706983ee3746fb0429b5267d722db5",
+			"path": "docs/readme-gallery/skills/martial-blade-rising-moon.ffe2f58c20d8.webp",
+			"sha256": "ffe2f58c20d8c2f306215ba00044597af874c8c1efafa73237085692907dab62",
 			"authority": "apps/web/static/wiki-media/skills/visual-catalog-v2/manifest.json",
 			"targetId": "martial:blade:rising-moon",
 			"canonicalCatalog": "assets/wiki/skills/icon-production-v2/catalog.json",
@@ -2125,15 +2172,27 @@
 			"originalSourcePath": "assets/wiki/skills/icon-production-v2/interiors/martial-blade-rising-moon.png",
 			"originalSourceSha256": "1a7558d11978497584bc0fbaeaf36a57113eb47e6cd1ec9f26c5c421502c78e0",
 			"framePath": "assets/wiki/skills/icon-production-v2/frames/rarity-frame-c.png",
-			"frameSha256": "ce21fd3bc700133299ae0d812c85796445d6ad5011e0cb1ef29916a78fdda2d8"
+			"frameSha256": "ce21fd3bc700133299ae0d812c85796445d6ad5011e0cb1ef29916a78fdda2d8",
+			"previewSourcePath": "apps/web/static/wiki-media/skills/visual-catalog-v2/icons/martial-blade-rising-moon.d6e37d74b80e.webp",
+			"previewSourceSha256": "05760ff92e8740845f58c4de074e43344c706983ee3746fb0429b5267d722db5",
+			"sourceAlphaBounds": [
+				55,
+				8,
+				458,
+				487
+			],
+			"normalizedArtworkSize": [
+				417,
+				496
+			]
 		},
 		{
 			"section": "skills",
 			"category": "Combat",
 			"rarity": "B",
 			"caption": "Severing Intent",
-			"path": "apps/web/static/wiki-media/skills/visual-catalog-v2/icons/martial-blade-severing-intent.fa60481dc61d.webp",
-			"sha256": "2b9e7d7e91ab050cf35edae5d5982453b1f78f58fc9ef7c24eefe3fb52eeaac6",
+			"path": "docs/readme-gallery/skills/martial-blade-severing-intent.cff6a59c0fba.webp",
+			"sha256": "cff6a59c0fbaf8e7da3f76b9d3883935e7d0ec44b2d476e3cc5494cab16ee850",
 			"authority": "apps/web/static/wiki-media/skills/visual-catalog-v2/manifest.json",
 			"targetId": "martial:blade:severing-intent",
 			"canonicalCatalog": "assets/wiki/skills/icon-production-v2/catalog.json",
@@ -2141,15 +2200,27 @@
 			"originalSourcePath": "assets/wiki/skills/icon-production-v2/interiors/martial-blade-severing-intent.png",
 			"originalSourceSha256": "c138abf440b13101560108a2b213a817e5fbc83d96b3d4c9acb50c3d115c2a37",
 			"framePath": "assets/wiki/skills/icon-production-v2/frames/rarity-frame-b.png",
-			"frameSha256": "2157b369aaecdf883693b644da8256a1add656a4a92309ea0b19d0b8cce3c7e0"
+			"frameSha256": "2157b369aaecdf883693b644da8256a1add656a4a92309ea0b19d0b8cce3c7e0",
+			"previewSourcePath": "apps/web/static/wiki-media/skills/visual-catalog-v2/icons/martial-blade-severing-intent.fa60481dc61d.webp",
+			"previewSourceSha256": "2b9e7d7e91ab050cf35edae5d5982453b1f78f58fc9ef7c24eefe3fb52eeaac6",
+			"sourceAlphaBounds": [
+				57,
+				21,
+				455,
+				482
+			],
+			"normalizedArtworkSize": [
+				428,
+				496
+			]
 		},
 		{
 			"section": "skills",
 			"category": "Combat",
 			"rarity": "A",
 			"caption": "Void Cut",
-			"path": "apps/web/static/wiki-media/skills/visual-catalog-v2/icons/martial-blade-void-cut.02da24e4ee12.webp",
-			"sha256": "a3a628bed20f9f886fa20e89102020eade2d0e0dca80760cb3c968638baf4f81",
+			"path": "docs/readme-gallery/skills/martial-blade-void-cut.8db5236b312f.webp",
+			"sha256": "8db5236b312fdec009bc8761fc0dc290e890598ff3c0d5434c8c582b01736389",
 			"authority": "apps/web/static/wiki-media/skills/visual-catalog-v2/manifest.json",
 			"targetId": "martial:blade:void-cut",
 			"canonicalCatalog": "assets/wiki/skills/icon-production-v2/catalog.json",
@@ -2157,15 +2228,27 @@
 			"originalSourcePath": "assets/wiki/skills/icon-production-v2/interiors/martial-blade-void-cut.png",
 			"originalSourceSha256": "7efbf03f44b766098982c0aaf2aed1a6b29475efaf26118572281fda6d5d7e6a",
 			"framePath": "assets/wiki/skills/icon-production-v2/frames/rarity-frame-a.png",
-			"frameSha256": "7b705ab4bfa49fa6f96949f0277da2be5602fb3457de2108fe4e0e620d1d6d7a"
+			"frameSha256": "7b705ab4bfa49fa6f96949f0277da2be5602fb3457de2108fe4e0e620d1d6d7a",
+			"previewSourcePath": "apps/web/static/wiki-media/skills/visual-catalog-v2/icons/martial-blade-void-cut.02da24e4ee12.webp",
+			"previewSourceSha256": "a3a628bed20f9f886fa20e89102020eade2d0e0dca80760cb3c968638baf4f81",
+			"sourceAlphaBounds": [
+				54,
+				10,
+				458,
+				490
+			],
+			"normalizedArtworkSize": [
+				417,
+				496
+			]
 		},
 		{
 			"section": "skills",
 			"category": "Combat",
 			"rarity": "S",
 			"caption": "One Blade, One World",
-			"path": "apps/web/static/wiki-media/skills/visual-catalog-v2/icons/martial-blade-one-blade-one-world.aabb7db195c3.webp",
-			"sha256": "b1ce5e09668ac984ed43e4c89f848b6e06eb8355ea196843bb6d87e04cb8448d",
+			"path": "docs/readme-gallery/skills/martial-blade-one-blade-one-world.dfc4996c351f.webp",
+			"sha256": "dfc4996c351f8a8738b58b1f46cee77aa22775ef61fa343920c73532ad185c01",
 			"authority": "apps/web/static/wiki-media/skills/visual-catalog-v2/manifest.json",
 			"targetId": "martial:blade:one-blade-one-world",
 			"canonicalCatalog": "assets/wiki/skills/icon-production-v2/catalog.json",
@@ -2173,15 +2256,27 @@
 			"originalSourcePath": "assets/wiki/skills/icon-production-v2/interiors/martial-blade-one-blade-one-world.png",
 			"originalSourceSha256": "11eef617a927e6a4a03d52305db8f16eedf57b07323bc6ebdc79d47e3aa526f4",
 			"framePath": "assets/wiki/skills/icon-production-v2/frames/rarity-frame-s.png",
-			"frameSha256": "9dcf6bd4d9df127d695668e9b59e8c515d531ef2370e0d4e17d4349bd9e1e464"
+			"frameSha256": "9dcf6bd4d9df127d695668e9b59e8c515d531ef2370e0d4e17d4349bd9e1e464",
+			"previewSourcePath": "apps/web/static/wiki-media/skills/visual-catalog-v2/icons/martial-blade-one-blade-one-world.aabb7db195c3.webp",
+			"previewSourceSha256": "b1ce5e09668ac984ed43e4c89f848b6e06eb8355ea196843bb6d87e04cb8448d",
+			"sourceAlphaBounds": [
+				57,
+				14,
+				455,
+				491
+			],
+			"normalizedArtworkSize": [
+				414,
+				496
+			]
 		},
 		{
 			"section": "skills",
 			"category": "Magic",
 			"rarity": "F",
 			"caption": "Ember",
-			"path": "apps/web/static/wiki-media/skills/visual-catalog-v2/icons/magical-elemental-ember.67859341db4a.webp",
-			"sha256": "9d50c9e902f99bb310d1b4bcc8fb584c2ae81927d1eaa65f2e5dd85edbffc072",
+			"path": "docs/readme-gallery/skills/magical-elemental-ember.0f1a088d3015.webp",
+			"sha256": "0f1a088d30154a83b0ce66d17e3b317f9ed475e7f3ef23fca05148000cbc861a",
 			"authority": "apps/web/static/wiki-media/skills/visual-catalog-v2/manifest.json",
 			"targetId": "magical:elemental:ember",
 			"canonicalCatalog": "assets/wiki/skills/icon-production-v2/catalog.json",
@@ -2189,15 +2284,27 @@
 			"originalSourcePath": "assets/wiki/skills/icon-production-v2/interiors/magical-elemental-ember.png",
 			"originalSourceSha256": "4156f8085aefc08f788ff9d6eaf10c8c4f2ecb482f10d52edf65ba5e937d6709",
 			"framePath": "assets/wiki/skills/icon-production-v2/frames/rarity-frame-f.png",
-			"frameSha256": "8a96672403f0eb28e794ea4332780245cb7a992ca40374917dc4994a59bf79f4"
+			"frameSha256": "8a96672403f0eb28e794ea4332780245cb7a992ca40374917dc4994a59bf79f4",
+			"previewSourcePath": "apps/web/static/wiki-media/skills/visual-catalog-v2/icons/magical-elemental-ember.67859341db4a.webp",
+			"previewSourceSha256": "9d50c9e902f99bb310d1b4bcc8fb584c2ae81927d1eaa65f2e5dd85edbffc072",
+			"sourceAlphaBounds": [
+				57,
+				12,
+				455,
+				489
+			],
+			"normalizedArtworkSize": [
+				414,
+				496
+			]
 		},
 		{
 			"section": "skills",
 			"category": "Magic",
 			"rarity": "E",
 			"caption": "Fireball",
-			"path": "apps/web/static/wiki-media/skills/visual-catalog-v2/icons/magical-elemental-fireball.c27dc6cc80f0.webp",
-			"sha256": "8f40c07345d9c14c99841a3a39b7fee98bdcf5eee7e50532d1e027a37603a2b1",
+			"path": "docs/readme-gallery/skills/magical-elemental-fireball.0143cd885579.webp",
+			"sha256": "0143cd885579e7894c9aa5092aceef9ca3a58ab73016ad1ba3d92e3858db34f5",
 			"authority": "apps/web/static/wiki-media/skills/visual-catalog-v2/manifest.json",
 			"targetId": "magical:elemental:fireball",
 			"canonicalCatalog": "assets/wiki/skills/icon-production-v2/catalog.json",
@@ -2205,15 +2312,27 @@
 			"originalSourcePath": "assets/wiki/skills/icon-production-v2/interiors/magical-elemental-fireball.png",
 			"originalSourceSha256": "fece2f08fadbe03e3ec1b678f7876c211bca78051affda43893ae66497d26f16",
 			"framePath": "assets/wiki/skills/icon-production-v2/frames/rarity-frame-e.png",
-			"frameSha256": "759766a69a4c8daecc72f3714f6e6bcc06560f9dd349e9be676b88bf69199056"
+			"frameSha256": "759766a69a4c8daecc72f3714f6e6bcc06560f9dd349e9be676b88bf69199056",
+			"previewSourcePath": "apps/web/static/wiki-media/skills/visual-catalog-v2/icons/magical-elemental-fireball.c27dc6cc80f0.webp",
+			"previewSourceSha256": "8f40c07345d9c14c99841a3a39b7fee98bdcf5eee7e50532d1e027a37603a2b1",
+			"sourceAlphaBounds": [
+				55,
+				6,
+				457,
+				491
+			],
+			"normalizedArtworkSize": [
+				411,
+				496
+			]
 		},
 		{
 			"section": "skills",
 			"category": "Magic",
 			"rarity": "D",
 			"caption": "Great Fireball",
-			"path": "apps/web/static/wiki-media/skills/visual-catalog-v2/icons/magical-elemental-great-fireball.f94a387ef3a0.webp",
-			"sha256": "cd37c7f4832f1c00bd6e76ae4abd2dc1a6a4daa35735e9feeb7294c92fcdfebe",
+			"path": "docs/readme-gallery/skills/magical-elemental-great-fireball.d2becfafd7ae.webp",
+			"sha256": "d2becfafd7ae4d1f7daa24a81d38cdb0697629916f017cea69e27bf32e2d2798",
 			"authority": "apps/web/static/wiki-media/skills/visual-catalog-v2/manifest.json",
 			"targetId": "magical:elemental:great-fireball",
 			"canonicalCatalog": "assets/wiki/skills/icon-production-v2/catalog.json",
@@ -2221,15 +2340,27 @@
 			"originalSourcePath": "assets/wiki/skills/icon-production-v2/interiors/magical-elemental-great-fireball.png",
 			"originalSourceSha256": "b61fdb2f47a6eb76540cdc040b1991ba3567f4b1e197109fa74780d8e510bc4a",
 			"framePath": "assets/wiki/skills/icon-production-v2/frames/rarity-frame-d.png",
-			"frameSha256": "a5e986928d1cd3202194df2db17e8d727669e62f7428cd8dbc79bf706420ae15"
+			"frameSha256": "a5e986928d1cd3202194df2db17e8d727669e62f7428cd8dbc79bf706420ae15",
+			"previewSourcePath": "apps/web/static/wiki-media/skills/visual-catalog-v2/icons/magical-elemental-great-fireball.f94a387ef3a0.webp",
+			"previewSourceSha256": "cd37c7f4832f1c00bd6e76ae4abd2dc1a6a4daa35735e9feeb7294c92fcdfebe",
+			"sourceAlphaBounds": [
+				57,
+				10,
+				455,
+				490
+			],
+			"normalizedArtworkSize": [
+				411,
+				496
+			]
 		},
 		{
 			"section": "skills",
 			"category": "Magic",
 			"rarity": "C",
 			"caption": "Charged Fireball",
-			"path": "apps/web/static/wiki-media/skills/visual-catalog-v2/icons/magical-elemental-charged-fireball.7a25bcc12fe0.webp",
-			"sha256": "34bad02f6ed552b9f1bb8073d42fa79b43d0b80f392232cda29d56e95038ed13",
+			"path": "docs/readme-gallery/skills/magical-elemental-charged-fireball.c5ba06227612.webp",
+			"sha256": "c5ba062276121c0e19c93840e41f1f2b4ae3a7e14f79f719c9cd595ceac9650c",
 			"authority": "apps/web/static/wiki-media/skills/visual-catalog-v2/manifest.json",
 			"targetId": "magical:elemental:charged-fireball",
 			"canonicalCatalog": "assets/wiki/skills/icon-production-v2/catalog.json",
@@ -2237,15 +2368,27 @@
 			"originalSourcePath": "assets/wiki/skills/icon-production-v2/interiors/magical-elemental-charged-fireball.png",
 			"originalSourceSha256": "263ab89d183ee1616d119becc41e064fb67736d55dabe225c8e67db3f6b71941",
 			"framePath": "assets/wiki/skills/icon-production-v2/frames/rarity-frame-c.png",
-			"frameSha256": "ce21fd3bc700133299ae0d812c85796445d6ad5011e0cb1ef29916a78fdda2d8"
+			"frameSha256": "ce21fd3bc700133299ae0d812c85796445d6ad5011e0cb1ef29916a78fdda2d8",
+			"previewSourcePath": "apps/web/static/wiki-media/skills/visual-catalog-v2/icons/magical-elemental-charged-fireball.7a25bcc12fe0.webp",
+			"previewSourceSha256": "34bad02f6ed552b9f1bb8073d42fa79b43d0b80f392232cda29d56e95038ed13",
+			"sourceAlphaBounds": [
+				55,
+				8,
+				458,
+				487
+			],
+			"normalizedArtworkSize": [
+				417,
+				496
+			]
 		},
 		{
 			"section": "skills",
 			"category": "Magic",
 			"rarity": "B",
 			"caption": "Meteor",
-			"path": "apps/web/static/wiki-media/skills/visual-catalog-v2/icons/magical-elemental-meteor.7489759bb8e7.webp",
-			"sha256": "44047b84b44bdd47ea0a53d67165a310327c949f166ba53f3e7599db2faa9e5e",
+			"path": "docs/readme-gallery/skills/magical-elemental-meteor.91ee2cef7728.webp",
+			"sha256": "91ee2cef77287ca59c435ed2241f0dae5347111452080de1c03a95a5c998ad06",
 			"authority": "apps/web/static/wiki-media/skills/visual-catalog-v2/manifest.json",
 			"targetId": "magical:elemental:meteor",
 			"canonicalCatalog": "assets/wiki/skills/icon-production-v2/catalog.json",
@@ -2253,15 +2396,27 @@
 			"originalSourcePath": "assets/wiki/skills/icon-production-v2/interiors/magical-elemental-meteor.png",
 			"originalSourceSha256": "e2b35988a6b1a74c90293b47d2c04cd48577e11cbfa5a5cb5ce439c4efbff667",
 			"framePath": "assets/wiki/skills/icon-production-v2/frames/rarity-frame-b.png",
-			"frameSha256": "2157b369aaecdf883693b644da8256a1add656a4a92309ea0b19d0b8cce3c7e0"
+			"frameSha256": "2157b369aaecdf883693b644da8256a1add656a4a92309ea0b19d0b8cce3c7e0",
+			"previewSourcePath": "apps/web/static/wiki-media/skills/visual-catalog-v2/icons/magical-elemental-meteor.7489759bb8e7.webp",
+			"previewSourceSha256": "44047b84b44bdd47ea0a53d67165a310327c949f166ba53f3e7599db2faa9e5e",
+			"sourceAlphaBounds": [
+				57,
+				21,
+				455,
+				482
+			],
+			"normalizedArtworkSize": [
+				428,
+				496
+			]
 		},
 		{
 			"section": "skills",
 			"category": "Magic",
 			"rarity": "A",
 			"caption": "Sea of Flame",
-			"path": "apps/web/static/wiki-media/skills/visual-catalog-v2/icons/magical-elemental-sea-of-flame.c5a20cbc91ce.webp",
-			"sha256": "ec4a7b46ec75b3b7aa83321cf2896f2ffa966140b8a61fc32adfe60eddca4b0e",
+			"path": "docs/readme-gallery/skills/magical-elemental-sea-of-flame.d3df8094505d.webp",
+			"sha256": "d3df8094505dad96103ff204c204de1a31ef9050de914670ab5ed27838c39255",
 			"authority": "apps/web/static/wiki-media/skills/visual-catalog-v2/manifest.json",
 			"targetId": "magical:elemental:sea-of-flame",
 			"canonicalCatalog": "assets/wiki/skills/icon-production-v2/catalog.json",
@@ -2269,15 +2424,27 @@
 			"originalSourcePath": "assets/wiki/skills/icon-production-v2/interiors/magical-elemental-sea-of-flame.png",
 			"originalSourceSha256": "f9b4a8ef3eb5a27ab29314a28c43440843e02f8042a7c831aaa9373d09f5bf37",
 			"framePath": "assets/wiki/skills/icon-production-v2/frames/rarity-frame-a.png",
-			"frameSha256": "7b705ab4bfa49fa6f96949f0277da2be5602fb3457de2108fe4e0e620d1d6d7a"
+			"frameSha256": "7b705ab4bfa49fa6f96949f0277da2be5602fb3457de2108fe4e0e620d1d6d7a",
+			"previewSourcePath": "apps/web/static/wiki-media/skills/visual-catalog-v2/icons/magical-elemental-sea-of-flame.c5a20cbc91ce.webp",
+			"previewSourceSha256": "ec4a7b46ec75b3b7aa83321cf2896f2ffa966140b8a61fc32adfe60eddca4b0e",
+			"sourceAlphaBounds": [
+				54,
+				10,
+				458,
+				490
+			],
+			"normalizedArtworkSize": [
+				417,
+				496
+			]
 		},
 		{
 			"section": "skills",
 			"category": "Magic",
 			"rarity": "S",
 			"caption": "Sunfall",
-			"path": "apps/web/static/wiki-media/skills/visual-catalog-v2/icons/magical-elemental-sunfall.375e4673079e.webp",
-			"sha256": "90d6aa6a4e26f5ee2b54528e7f50ed04c2f27e8442838b506c0975dd041f12cc",
+			"path": "docs/readme-gallery/skills/magical-elemental-sunfall.6b311f19f716.webp",
+			"sha256": "6b311f19f7164baa8da1805425d24c830c3c69805dc2e414f32f9c5e80ddf1f9",
 			"authority": "apps/web/static/wiki-media/skills/visual-catalog-v2/manifest.json",
 			"targetId": "magical:elemental:sunfall",
 			"canonicalCatalog": "assets/wiki/skills/icon-production-v2/catalog.json",
@@ -2285,15 +2452,27 @@
 			"originalSourcePath": "assets/wiki/skills/icon-production-v2/interiors/magical-elemental-sunfall.png",
 			"originalSourceSha256": "7bc592826cb4d787375415fa24d185544b837ae7cc36da00e0274acfd33bb25e",
 			"framePath": "assets/wiki/skills/icon-production-v2/frames/rarity-frame-s.png",
-			"frameSha256": "9dcf6bd4d9df127d695668e9b59e8c515d531ef2370e0d4e17d4349bd9e1e464"
+			"frameSha256": "9dcf6bd4d9df127d695668e9b59e8c515d531ef2370e0d4e17d4349bd9e1e464",
+			"previewSourcePath": "apps/web/static/wiki-media/skills/visual-catalog-v2/icons/magical-elemental-sunfall.375e4673079e.webp",
+			"previewSourceSha256": "90d6aa6a4e26f5ee2b54528e7f50ed04c2f27e8442838b506c0975dd041f12cc",
+			"sourceAlphaBounds": [
+				57,
+				14,
+				455,
+				491
+			],
+			"normalizedArtworkSize": [
+				414,
+				496
+			]
 		},
 		{
 			"section": "skills",
 			"category": "Craft",
 			"rarity": "F",
 			"caption": "Simple Smithing",
-			"path": "apps/web/static/wiki-media/skills/visual-catalog-v2/icons/craft-forging-simple-smithing.11d3d5a8ef65.webp",
-			"sha256": "f9f8f000e06287294c8f0a99b57d6408a70f35a30b777236970ad32eeb3ada30",
+			"path": "docs/readme-gallery/skills/craft-forging-simple-smithing.53748ef293c6.webp",
+			"sha256": "53748ef293c6778456a08d384acb444694040e8b7ae689e0cb63e266d0b0c6b5",
 			"authority": "apps/web/static/wiki-media/skills/visual-catalog-v2/manifest.json",
 			"targetId": "craft:forging:simple-smithing",
 			"canonicalCatalog": "assets/wiki/skills/icon-production-v2/catalog.json",
@@ -2301,15 +2480,27 @@
 			"originalSourcePath": "assets/wiki/skills/icon-production-v2/interiors/craft-forging-simple-smithing.png",
 			"originalSourceSha256": "7bb46e5b4030591383f437e8e7963ade91053a7e24afba05cd1c7a59659ef3ae",
 			"framePath": "assets/wiki/skills/icon-production-v2/frames/rarity-frame-f.png",
-			"frameSha256": "8a96672403f0eb28e794ea4332780245cb7a992ca40374917dc4994a59bf79f4"
+			"frameSha256": "8a96672403f0eb28e794ea4332780245cb7a992ca40374917dc4994a59bf79f4",
+			"previewSourcePath": "apps/web/static/wiki-media/skills/visual-catalog-v2/icons/craft-forging-simple-smithing.11d3d5a8ef65.webp",
+			"previewSourceSha256": "f9f8f000e06287294c8f0a99b57d6408a70f35a30b777236970ad32eeb3ada30",
+			"sourceAlphaBounds": [
+				57,
+				12,
+				455,
+				489
+			],
+			"normalizedArtworkSize": [
+				414,
+				496
+			]
 		},
 		{
 			"section": "skills",
 			"category": "Craft",
 			"rarity": "E",
 			"caption": "Weaponsmithing",
-			"path": "apps/web/static/wiki-media/skills/visual-catalog-v2/icons/craft-forging-weaponsmithing.e3614378517f.webp",
-			"sha256": "108e5ccbb65e9fe4cd0e0fae23d70a40f40db52030d9af79b18b2628270fabcf",
+			"path": "docs/readme-gallery/skills/craft-forging-weaponsmithing.6e54bea5e7d9.webp",
+			"sha256": "6e54bea5e7d900b7762d0e726ec0551aef2a9141db100117be4f294672522b7e",
 			"authority": "apps/web/static/wiki-media/skills/visual-catalog-v2/manifest.json",
 			"targetId": "craft:forging:weaponsmithing",
 			"canonicalCatalog": "assets/wiki/skills/icon-production-v2/catalog.json",
@@ -2317,15 +2508,27 @@
 			"originalSourcePath": "assets/wiki/skills/icon-production-v2/interiors/craft-forging-weaponsmithing.png",
 			"originalSourceSha256": "3ae1b90762a5475d8768a1efdd1a347e370b8dd3079f6e1de64d8175753fdcde",
 			"framePath": "assets/wiki/skills/icon-production-v2/frames/rarity-frame-e.png",
-			"frameSha256": "759766a69a4c8daecc72f3714f6e6bcc06560f9dd349e9be676b88bf69199056"
+			"frameSha256": "759766a69a4c8daecc72f3714f6e6bcc06560f9dd349e9be676b88bf69199056",
+			"previewSourcePath": "apps/web/static/wiki-media/skills/visual-catalog-v2/icons/craft-forging-weaponsmithing.e3614378517f.webp",
+			"previewSourceSha256": "108e5ccbb65e9fe4cd0e0fae23d70a40f40db52030d9af79b18b2628270fabcf",
+			"sourceAlphaBounds": [
+				55,
+				6,
+				457,
+				491
+			],
+			"normalizedArtworkSize": [
+				411,
+				496
+			]
 		},
 		{
 			"section": "skills",
 			"category": "Craft",
 			"rarity": "D",
 			"caption": "Alloying",
-			"path": "apps/web/static/wiki-media/skills/visual-catalog-v2/icons/craft-forging-alloying.9d30447c006a.webp",
-			"sha256": "84a60b689f7e8a67c970e1217083ee540d5d3d77a9c12e5ed2464d2ab045adbd",
+			"path": "docs/readme-gallery/skills/craft-forging-alloying.b75c76e24e2d.webp",
+			"sha256": "b75c76e24e2d54097979b6eb727f21980a9f6ba0f97ef5d9724fdd818efb531c",
 			"authority": "apps/web/static/wiki-media/skills/visual-catalog-v2/manifest.json",
 			"targetId": "craft:forging:alloying",
 			"canonicalCatalog": "assets/wiki/skills/icon-production-v2/catalog.json",
@@ -2333,15 +2536,27 @@
 			"originalSourcePath": "assets/wiki/skills/icon-production-v2/interiors/craft-forging-alloying.png",
 			"originalSourceSha256": "248563618b84fbb5f431064a6e500c13b95b8743121baecae1cdf8d527fd30d4",
 			"framePath": "assets/wiki/skills/icon-production-v2/frames/rarity-frame-d.png",
-			"frameSha256": "a5e986928d1cd3202194df2db17e8d727669e62f7428cd8dbc79bf706420ae15"
+			"frameSha256": "a5e986928d1cd3202194df2db17e8d727669e62f7428cd8dbc79bf706420ae15",
+			"previewSourcePath": "apps/web/static/wiki-media/skills/visual-catalog-v2/icons/craft-forging-alloying.9d30447c006a.webp",
+			"previewSourceSha256": "84a60b689f7e8a67c970e1217083ee540d5d3d77a9c12e5ed2464d2ab045adbd",
+			"sourceAlphaBounds": [
+				57,
+				10,
+				455,
+				490
+			],
+			"normalizedArtworkSize": [
+				411,
+				496
+			]
 		},
 		{
 			"section": "skills",
 			"category": "Craft",
 			"rarity": "C",
 			"caption": "Runic Foundation",
-			"path": "apps/web/static/wiki-media/skills/visual-catalog-v2/icons/craft-forging-runic-foundation.25b356fa9342.webp",
-			"sha256": "34fb22d1880cd45a345f937c74536b48e393b5bdd1171d24aba44b6f1bcc7afb",
+			"path": "docs/readme-gallery/skills/craft-forging-runic-foundation.5706ff09e62a.webp",
+			"sha256": "5706ff09e62a143ae84084c5b0e7f5e085832ff7146bf8a73dd949af7fb1cbb3",
 			"authority": "apps/web/static/wiki-media/skills/visual-catalog-v2/manifest.json",
 			"targetId": "craft:forging:runic-foundation",
 			"canonicalCatalog": "assets/wiki/skills/icon-production-v2/catalog.json",
@@ -2349,15 +2564,27 @@
 			"originalSourcePath": "assets/wiki/skills/icon-production-v2/interiors/craft-forging-runic-foundation.png",
 			"originalSourceSha256": "67c2c9b82cdfe052054aca37544dca6e158c88c10cc228674d05a1e97eb8ce24",
 			"framePath": "assets/wiki/skills/icon-production-v2/frames/rarity-frame-c.png",
-			"frameSha256": "ce21fd3bc700133299ae0d812c85796445d6ad5011e0cb1ef29916a78fdda2d8"
+			"frameSha256": "ce21fd3bc700133299ae0d812c85796445d6ad5011e0cb1ef29916a78fdda2d8",
+			"previewSourcePath": "apps/web/static/wiki-media/skills/visual-catalog-v2/icons/craft-forging-runic-foundation.25b356fa9342.webp",
+			"previewSourceSha256": "34fb22d1880cd45a345f937c74536b48e393b5bdd1171d24aba44b6f1bcc7afb",
+			"sourceAlphaBounds": [
+				55,
+				8,
+				458,
+				487
+			],
+			"normalizedArtworkSize": [
+				417,
+				496
+			]
 		},
 		{
 			"section": "skills",
 			"category": "Craft",
 			"rarity": "B",
 			"caption": "Living Metal",
-			"path": "apps/web/static/wiki-media/skills/visual-catalog-v2/icons/craft-forging-living-metal.0719da05a343.webp",
-			"sha256": "f83c29dbb4f9af7e159f1dd8bde6bf61abc2f67bfc90ca33c6b9ac01b289432a",
+			"path": "docs/readme-gallery/skills/craft-forging-living-metal.558dad7e2772.webp",
+			"sha256": "558dad7e2772f572412944a7fb9fa6ecd6b3d95a180a0df74fd5edb674071791",
 			"authority": "apps/web/static/wiki-media/skills/visual-catalog-v2/manifest.json",
 			"targetId": "craft:forging:living-metal",
 			"canonicalCatalog": "assets/wiki/skills/icon-production-v2/catalog.json",
@@ -2365,15 +2592,27 @@
 			"originalSourcePath": "assets/wiki/skills/icon-production-v2/interiors/craft-forging-living-metal.png",
 			"originalSourceSha256": "c00a71fa8027827d6e8c288394d0c0bf962681964c99a02758ec5b837fa92ef9",
 			"framePath": "assets/wiki/skills/icon-production-v2/frames/rarity-frame-b.png",
-			"frameSha256": "2157b369aaecdf883693b644da8256a1add656a4a92309ea0b19d0b8cce3c7e0"
+			"frameSha256": "2157b369aaecdf883693b644da8256a1add656a4a92309ea0b19d0b8cce3c7e0",
+			"previewSourcePath": "apps/web/static/wiki-media/skills/visual-catalog-v2/icons/craft-forging-living-metal.0719da05a343.webp",
+			"previewSourceSha256": "f83c29dbb4f9af7e159f1dd8bde6bf61abc2f67bfc90ca33c6b9ac01b289432a",
+			"sourceAlphaBounds": [
+				57,
+				21,
+				455,
+				482
+			],
+			"normalizedArtworkSize": [
+				428,
+				496
+			]
 		},
 		{
 			"section": "skills",
 			"category": "Craft",
 			"rarity": "A",
 			"caption": "Soul Forging",
-			"path": "apps/web/static/wiki-media/skills/visual-catalog-v2/icons/craft-forging-soul-forging.7a848ffcabed.webp",
-			"sha256": "0047eb00d285751b9009fb67fb2941c63d94ef15101a37cc5c96097fe6f2234e",
+			"path": "docs/readme-gallery/skills/craft-forging-soul-forging.e4a00f2a990f.webp",
+			"sha256": "e4a00f2a990f9c46cfef142849a3ef4c1d687678dcaad27bce3c530aebdc228c",
 			"authority": "apps/web/static/wiki-media/skills/visual-catalog-v2/manifest.json",
 			"targetId": "craft:forging:soul-forging",
 			"canonicalCatalog": "assets/wiki/skills/icon-production-v2/catalog.json",
@@ -2381,15 +2620,27 @@
 			"originalSourcePath": "assets/wiki/skills/icon-production-v2/interiors/craft-forging-soul-forging.png",
 			"originalSourceSha256": "c83510ad0eceab99d4ff2c134d027e492f509191f94217619376ea243f6b8aaf",
 			"framePath": "assets/wiki/skills/icon-production-v2/frames/rarity-frame-a.png",
-			"frameSha256": "7b705ab4bfa49fa6f96949f0277da2be5602fb3457de2108fe4e0e620d1d6d7a"
+			"frameSha256": "7b705ab4bfa49fa6f96949f0277da2be5602fb3457de2108fe4e0e620d1d6d7a",
+			"previewSourcePath": "apps/web/static/wiki-media/skills/visual-catalog-v2/icons/craft-forging-soul-forging.7a848ffcabed.webp",
+			"previewSourceSha256": "0047eb00d285751b9009fb67fb2941c63d94ef15101a37cc5c96097fe6f2234e",
+			"sourceAlphaBounds": [
+				54,
+				10,
+				458,
+				490
+			],
+			"normalizedArtworkSize": [
+				417,
+				496
+			]
 		},
 		{
 			"section": "skills",
 			"category": "Craft",
 			"rarity": "S",
 			"caption": "Godsmithing",
-			"path": "apps/web/static/wiki-media/skills/visual-catalog-v2/icons/craft-forging-godsmithing.623243e784be.webp",
-			"sha256": "8cfa39e0e1afd9d41501bf6362b7b6da2686ff12e737488fe5b2e9f127f00409",
+			"path": "docs/readme-gallery/skills/craft-forging-godsmithing.d2b5fc49d494.webp",
+			"sha256": "d2b5fc49d49476d070c1644baf718e9cc67e7813d7f240849ce04c74357b52b2",
 			"authority": "apps/web/static/wiki-media/skills/visual-catalog-v2/manifest.json",
 			"targetId": "craft:forging:godsmithing",
 			"canonicalCatalog": "assets/wiki/skills/icon-production-v2/catalog.json",
@@ -2397,15 +2648,27 @@
 			"originalSourcePath": "assets/wiki/skills/icon-production-v2/interiors/craft-forging-godsmithing.png",
 			"originalSourceSha256": "d298a882213811f54da635667ed3eb79f44371108db45d20ac2d53369fb201a4",
 			"framePath": "assets/wiki/skills/icon-production-v2/frames/rarity-frame-s.png",
-			"frameSha256": "9dcf6bd4d9df127d695668e9b59e8c515d531ef2370e0d4e17d4349bd9e1e464"
+			"frameSha256": "9dcf6bd4d9df127d695668e9b59e8c515d531ef2370e0d4e17d4349bd9e1e464",
+			"previewSourcePath": "apps/web/static/wiki-media/skills/visual-catalog-v2/icons/craft-forging-godsmithing.623243e784be.webp",
+			"previewSourceSha256": "8cfa39e0e1afd9d41501bf6362b7b6da2686ff12e737488fe5b2e9f127f00409",
+			"sourceAlphaBounds": [
+				57,
+				14,
+				455,
+				491
+			],
+			"normalizedArtworkSize": [
+				414,
+				496
+			]
 		},
 		{
 			"section": "skills",
 			"category": "Support",
 			"rarity": "F",
 			"caption": "Mending",
-			"path": "apps/web/static/wiki-media/skills/visual-catalog-v2/icons/magical-restoration-mending.fff9ffc35531.webp",
-			"sha256": "773d7e483a56b382ad563e6fbbd6f45edf811a9164eddf09ce2a03f148ce6c55",
+			"path": "docs/readme-gallery/skills/magical-restoration-mending.c6b983e78b3d.webp",
+			"sha256": "c6b983e78b3d8d6a4693b0aba637bd30f5343b4e18eef333161308d011f657a3",
 			"authority": "apps/web/static/wiki-media/skills/visual-catalog-v2/manifest.json",
 			"targetId": "magical:restoration:mending",
 			"canonicalCatalog": "assets/wiki/skills/icon-production-v2/catalog.json",
@@ -2413,15 +2676,27 @@
 			"originalSourcePath": "assets/wiki/skills/icon-production-v2/interiors/magical-restoration-mending.png",
 			"originalSourceSha256": "0b0da3403200a6efbebc42e1e09aa643f63c6e132b1668c21044b106cf94d092",
 			"framePath": "assets/wiki/skills/icon-production-v2/frames/rarity-frame-f.png",
-			"frameSha256": "8a96672403f0eb28e794ea4332780245cb7a992ca40374917dc4994a59bf79f4"
+			"frameSha256": "8a96672403f0eb28e794ea4332780245cb7a992ca40374917dc4994a59bf79f4",
+			"previewSourcePath": "apps/web/static/wiki-media/skills/visual-catalog-v2/icons/magical-restoration-mending.fff9ffc35531.webp",
+			"previewSourceSha256": "773d7e483a56b382ad563e6fbbd6f45edf811a9164eddf09ce2a03f148ce6c55",
+			"sourceAlphaBounds": [
+				57,
+				12,
+				455,
+				489
+			],
+			"normalizedArtworkSize": [
+				414,
+				496
+			]
 		},
 		{
 			"section": "skills",
 			"category": "Support",
 			"rarity": "E",
 			"caption": "Regeneration",
-			"path": "apps/web/static/wiki-media/skills/visual-catalog-v2/icons/magical-restoration-regeneration.dba72a22396d.webp",
-			"sha256": "7b016f7b3647de67521f511b89f31b59f235364c223558e3e344316b48513690",
+			"path": "docs/readme-gallery/skills/magical-restoration-regeneration.86e746c19e62.webp",
+			"sha256": "86e746c19e626253c57cd5ce0d396e2a6f45376ffe9c2aaa13f4430d22a5ac22",
 			"authority": "apps/web/static/wiki-media/skills/visual-catalog-v2/manifest.json",
 			"targetId": "magical:restoration:regeneration",
 			"canonicalCatalog": "assets/wiki/skills/icon-production-v2/catalog.json",
@@ -2429,15 +2704,27 @@
 			"originalSourcePath": "assets/wiki/skills/icon-production-v2/interiors/magical-restoration-regeneration.png",
 			"originalSourceSha256": "c674565640c02ddb00596a22ab844bc18ac53cf864f6a12418b43a254dbaddb4",
 			"framePath": "assets/wiki/skills/icon-production-v2/frames/rarity-frame-e.png",
-			"frameSha256": "759766a69a4c8daecc72f3714f6e6bcc06560f9dd349e9be676b88bf69199056"
+			"frameSha256": "759766a69a4c8daecc72f3714f6e6bcc06560f9dd349e9be676b88bf69199056",
+			"previewSourcePath": "apps/web/static/wiki-media/skills/visual-catalog-v2/icons/magical-restoration-regeneration.dba72a22396d.webp",
+			"previewSourceSha256": "7b016f7b3647de67521f511b89f31b59f235364c223558e3e344316b48513690",
+			"sourceAlphaBounds": [
+				55,
+				6,
+				457,
+				491
+			],
+			"normalizedArtworkSize": [
+				411,
+				496
+			]
 		},
 		{
 			"section": "skills",
 			"category": "Support",
 			"rarity": "D",
 			"caption": "Mass Mending",
-			"path": "apps/web/static/wiki-media/skills/visual-catalog-v2/icons/magical-restoration-mass-mending.b3ac45a5a81d.webp",
-			"sha256": "dc376082aae3b9d6af9c8cb207567467d80cdb433d23317a7eae2e47d1db359f",
+			"path": "docs/readme-gallery/skills/magical-restoration-mass-mending.aff963c97a27.webp",
+			"sha256": "aff963c97a2795580d27fe9bcb5039c083b569fe89e43ac63af985ad5964c650",
 			"authority": "apps/web/static/wiki-media/skills/visual-catalog-v2/manifest.json",
 			"targetId": "magical:restoration:mass-mending",
 			"canonicalCatalog": "assets/wiki/skills/icon-production-v2/catalog.json",
@@ -2445,15 +2732,27 @@
 			"originalSourcePath": "assets/wiki/skills/icon-production-v2/interiors/magical-restoration-mass-mending.png",
 			"originalSourceSha256": "b8fd170188ebbd5d59e2b555b51c98a41599f8851823d3ecceb1a5013879841a",
 			"framePath": "assets/wiki/skills/icon-production-v2/frames/rarity-frame-d.png",
-			"frameSha256": "a5e986928d1cd3202194df2db17e8d727669e62f7428cd8dbc79bf706420ae15"
+			"frameSha256": "a5e986928d1cd3202194df2db17e8d727669e62f7428cd8dbc79bf706420ae15",
+			"previewSourcePath": "apps/web/static/wiki-media/skills/visual-catalog-v2/icons/magical-restoration-mass-mending.b3ac45a5a81d.webp",
+			"previewSourceSha256": "dc376082aae3b9d6af9c8cb207567467d80cdb433d23317a7eae2e47d1db359f",
+			"sourceAlphaBounds": [
+				57,
+				10,
+				455,
+				490
+			],
+			"normalizedArtworkSize": [
+				411,
+				496
+			]
 		},
 		{
 			"section": "skills",
 			"category": "Support",
 			"rarity": "C",
 			"caption": "Sanctified Ground",
-			"path": "apps/web/static/wiki-media/skills/visual-catalog-v2/icons/magical-restoration-sanctified-ground.61fddffdc694.webp",
-			"sha256": "38e4c73399c37c479680648d1b206d3d8ccc1a2eafa25fdfe0719357ef51cb84",
+			"path": "docs/readme-gallery/skills/magical-restoration-sanctified-ground.4fdcdf58eeb6.webp",
+			"sha256": "4fdcdf58eeb6fee115aa7269ddb7c99b2201e8c48203c739812f1de5fa848a2a",
 			"authority": "apps/web/static/wiki-media/skills/visual-catalog-v2/manifest.json",
 			"targetId": "magical:restoration:sanctified-ground",
 			"canonicalCatalog": "assets/wiki/skills/icon-production-v2/catalog.json",
@@ -2461,15 +2760,27 @@
 			"originalSourcePath": "assets/wiki/skills/icon-production-v2/interiors/magical-restoration-sanctified-ground.png",
 			"originalSourceSha256": "53099a756055df4170992f552aff2cdacaf1b50fe7c7132173915e4a51567944",
 			"framePath": "assets/wiki/skills/icon-production-v2/frames/rarity-frame-c.png",
-			"frameSha256": "ce21fd3bc700133299ae0d812c85796445d6ad5011e0cb1ef29916a78fdda2d8"
+			"frameSha256": "ce21fd3bc700133299ae0d812c85796445d6ad5011e0cb1ef29916a78fdda2d8",
+			"previewSourcePath": "apps/web/static/wiki-media/skills/visual-catalog-v2/icons/magical-restoration-sanctified-ground.61fddffdc694.webp",
+			"previewSourceSha256": "38e4c73399c37c479680648d1b206d3d8ccc1a2eafa25fdfe0719357ef51cb84",
+			"sourceAlphaBounds": [
+				55,
+				8,
+				458,
+				487
+			],
+			"normalizedArtworkSize": [
+				417,
+				496
+			]
 		},
 		{
 			"section": "skills",
 			"category": "Support",
 			"rarity": "B",
 			"caption": "Great Renewal",
-			"path": "apps/web/static/wiki-media/skills/visual-catalog-v2/icons/magical-restoration-great-renewal.6d9616e48a28.webp",
-			"sha256": "4de2f5c8d8696f9d008a3e570bf2e1b693c81c573e0ad42052a9ea6ab3a4736e",
+			"path": "docs/readme-gallery/skills/magical-restoration-great-renewal.cc9531ffffe6.webp",
+			"sha256": "cc9531ffffe686e4a7cc048d4a50ebf49c2dcf83da779d10606431f94fbf5d97",
 			"authority": "apps/web/static/wiki-media/skills/visual-catalog-v2/manifest.json",
 			"targetId": "magical:restoration:great-renewal",
 			"canonicalCatalog": "assets/wiki/skills/icon-production-v2/catalog.json",
@@ -2477,15 +2788,27 @@
 			"originalSourcePath": "assets/wiki/skills/icon-production-v2/interiors/magical-restoration-great-renewal.png",
 			"originalSourceSha256": "332378cb205523c330bec64dfe367c58fc52a2b95974b16eca276e74ec8f2008",
 			"framePath": "assets/wiki/skills/icon-production-v2/frames/rarity-frame-b.png",
-			"frameSha256": "2157b369aaecdf883693b644da8256a1add656a4a92309ea0b19d0b8cce3c7e0"
+			"frameSha256": "2157b369aaecdf883693b644da8256a1add656a4a92309ea0b19d0b8cce3c7e0",
+			"previewSourcePath": "apps/web/static/wiki-media/skills/visual-catalog-v2/icons/magical-restoration-great-renewal.6d9616e48a28.webp",
+			"previewSourceSha256": "4de2f5c8d8696f9d008a3e570bf2e1b693c81c573e0ad42052a9ea6ab3a4736e",
+			"sourceAlphaBounds": [
+				57,
+				21,
+				455,
+				482
+			],
+			"normalizedArtworkSize": [
+				428,
+				496
+			]
 		},
 		{
 			"section": "skills",
 			"category": "Support",
 			"rarity": "A",
 			"caption": "The Unbroken Thread",
-			"path": "apps/web/static/wiki-media/skills/visual-catalog-v2/icons/magical-restoration-the-unbroken-thread.aafa299ca902.webp",
-			"sha256": "401601877c340d24f890c8dc2ace082139aa6b97e4a3599a6642191b2e2c23cd",
+			"path": "docs/readme-gallery/skills/magical-restoration-the-unbroken-thread.35e26518e8d7.webp",
+			"sha256": "35e26518e8d71b13a8e1e6dab43a46b215e5808a3ab0a3216a6e65bcbc5cb3fc",
 			"authority": "apps/web/static/wiki-media/skills/visual-catalog-v2/manifest.json",
 			"targetId": "magical:restoration:the-unbroken-thread",
 			"canonicalCatalog": "assets/wiki/skills/icon-production-v2/catalog.json",
@@ -2493,15 +2816,27 @@
 			"originalSourcePath": "assets/wiki/skills/icon-production-v2/interiors/magical-restoration-the-unbroken-thread.png",
 			"originalSourceSha256": "761b12d689dfe31a286b7274f1451335ec8b29ab2ada4b2ab1aa64132fe865a6",
 			"framePath": "assets/wiki/skills/icon-production-v2/frames/rarity-frame-a.png",
-			"frameSha256": "7b705ab4bfa49fa6f96949f0277da2be5602fb3457de2108fe4e0e620d1d6d7a"
+			"frameSha256": "7b705ab4bfa49fa6f96949f0277da2be5602fb3457de2108fe4e0e620d1d6d7a",
+			"previewSourcePath": "apps/web/static/wiki-media/skills/visual-catalog-v2/icons/magical-restoration-the-unbroken-thread.aafa299ca902.webp",
+			"previewSourceSha256": "401601877c340d24f890c8dc2ace082139aa6b97e4a3599a6642191b2e2c23cd",
+			"sourceAlphaBounds": [
+				54,
+				10,
+				458,
+				490
+			],
+			"normalizedArtworkSize": [
+				417,
+				496
+			]
 		},
 		{
 			"section": "skills",
 			"category": "Support",
 			"rarity": "S",
 			"caption": "What Was Taken Back",
-			"path": "apps/web/static/wiki-media/skills/visual-catalog-v2/icons/magical-restoration-what-was-taken-back.9eea114a4d74.webp",
-			"sha256": "ceaf4762c3f3acaec4a26560e51d1699bd97f93991a10b5977f2f79a3975ae03",
+			"path": "docs/readme-gallery/skills/magical-restoration-what-was-taken-back.c6be96aed9a6.webp",
+			"sha256": "c6be96aed9a6bc84ff83af9ac6ec3023ef487304f986a2db803e4c3d4b1ef8db",
 			"authority": "apps/web/static/wiki-media/skills/visual-catalog-v2/manifest.json",
 			"targetId": "magical:restoration:what-was-taken-back",
 			"canonicalCatalog": "assets/wiki/skills/icon-production-v2/catalog.json",
@@ -2509,7 +2844,19 @@
 			"originalSourcePath": "assets/wiki/skills/icon-production-v2/interiors/magical-restoration-what-was-taken-back.png",
 			"originalSourceSha256": "1bc035293d6ef84d840113ef4a901dabdd34030b5c2dc81c6081d618e67442aa",
 			"framePath": "assets/wiki/skills/icon-production-v2/frames/rarity-frame-s.png",
-			"frameSha256": "9dcf6bd4d9df127d695668e9b59e8c515d531ef2370e0d4e17d4349bd9e1e464"
+			"frameSha256": "9dcf6bd4d9df127d695668e9b59e8c515d531ef2370e0d4e17d4349bd9e1e464",
+			"previewSourcePath": "apps/web/static/wiki-media/skills/visual-catalog-v2/icons/magical-restoration-what-was-taken-back.9eea114a4d74.webp",
+			"previewSourceSha256": "ceaf4762c3f3acaec4a26560e51d1699bd97f93991a10b5977f2f79a3975ae03",
+			"sourceAlphaBounds": [
+				57,
+				14,
+				455,
+				491
+			],
+			"normalizedArtworkSize": [
+				414,
+				496
+			]
 		}
 	]
 }

@@ -110,10 +110,10 @@ caption and provenance preserve those distinctions without changing approval sta
 proposed +26 wording to match the catalog count.
 
 Text labels remain readable document text, and each image links to its exact original PNG. The
-existing 512-pixel equipment and skill exports provide sharp individual previews. Monster previews
+existing 512-pixel equipment exports and tightly padded skill derivatives provide sharp individual previews. Monster previews
 fit the full original image proportionally inside a 512 × 512 transparent canvas, without cropping
 or stretching. Monster images fill their cells proportionally across the full table width instead
-of stopping at 128 pixels. Equipment thumbnails request 128 × 128 pixels. Both align to the top of
+of stopping at 128 pixels. Equipment images also fill their cells proportionally, with no fixed pixel size limit. Both align to the top of
 their cells; monster captions occupy a separate row. Nonbreaking tier/form headers keep
 the five monster columns from shrinking unevenly in GitHub’s narrow-screen table layout. Current bindings are recorded in `readmeInputs` in the gallery provenance;
 the original `inputs` array remains the historical contact-sheet capture record.
@@ -123,22 +123,33 @@ assets stay unchanged.
 
 ## Skill table alignment
 
-The owner requested consistent skill icon sizes and alignment. Inspection of the published GitHub
-README at desktop and phone widths confirmed that all 28 source exports are 512 × 512 pixels.
-GitHub’s automatic table columns shrank the rendered images to different widths, while vertically
-centered cells moved them as skill names wrapped across different numbers of lines.
+The owner requested larger, equally sized skill artwork with less empty space. Equal source canvas
+sizes did not guarantee equal visible artwork: each rank frame had different transparent borders,
+and GitHub’s automatic table columns could shrink images according to caption widths.
 
-Each category spans two rows: a top-aligned image row and a separate caption row. The owner
-subsequently requested larger artwork, a narrower category column with horizontally centered labels,
-and vertically centered skill names. Each rank now requests 13% of the table width, and images fill
-their cells proportionally instead of stopping at 80 pixels. The category column gives
-more room to the artwork. Captions use normal-flow bold text in vertically centered cells, with
-an explicit line break in Weaponsmithing to allow a narrower column. GitHub’s rendering API
-removes small-text and word-break tags, so the table uses supported text and alignment attributes.
+The README uses 28 dedicated previews exported by `python3 tools/export-readme-skills.py`.
+The exporter checks the canonical composed preview, interior, and frame hashes, crops only transparent
+outer borders, and scales each badge uniformly to exactly 496 pixels high on a common 448 × 512
+transparent canvas. Each badge keeps its original aspect ratio, so small differences in frame width
+are intentional; nothing is stretched or redrawn. The source and derivative bindings, crop bounds,
+and normalized dimensions are recorded in `readmeInputs`. Add `--check` to verify reproducibility.
+The original artwork links, canonical sources, wiki images, and gameplay assets are preserved.
 
-The GitHub-rendered HTML, measured with GitHub-style table CSS, shows 101–108-pixel square icons
-in a 1,012-pixel article and uniformly 168-pixel square icons in a 1,500-pixel article. The native
-table retains horizontal scrolling on narrow screens. At a 390-pixel viewport, the table scrolls across 892 pixels, and icon sizes range from 69 to
-108 pixels according to caption widths. Inline minimum-width CSS is unavailable in sanitized
-README HTML. The four categories, seven F–S ranks, 28 exact approved exports, captions, and original artwork links are preserved. No artwork is
-regenerated or changed.
+Each category spans an image row and a separate caption row. Category labels remain centered in
+both directions. The seven ascending F–S columns request 12.8% of the table width. Smaller bold
+captions remain selectable text, vertically centered in their cells. Equal-length, nonbreaking rank
+headers use monospace text to establish a shared minimum column width on narrow screens; this
+prevents long captions from making some icons smaller. The headers read “F · Skill” through
+“S · Skill.” Native horizontal scrolling keeps the table usable on phones.
+
+GitHub-sanitized HTML measured with GitHub-style table CSS gives all 28 previews the same dimensions:
+102.406 × 117.031 pixels in a 1,012-pixel article, 164.859 × 188.406 pixels in a 1,500-pixel article,
+and 84.297 × 96.328 pixels in a horizontally scrolling 390-pixel viewport. Visible badge height is
+496/512 of each preview’s displayed height. The wider article previously showed roughly 151–159
+pixels of visible artwork height; it now shows approximately 183 pixels. All rank decorations and
+artwork remain intact. These measurements supersede the earlier square-thumbnail layout.
+
+Equipment uses all available table width through proportional `width="100%"` images instead of a
+128-pixel cap. At a 1,500-pixel article width, each equipment image displays at approximately
+243 × 243 pixels; at a 1,012-pixel article width, images display at approximately 153 × 153 pixels.
+All nine complete sets, 45 pieces, captions, and original artwork links are preserved.
