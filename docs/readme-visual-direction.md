@@ -6,7 +6,8 @@ Review date: 2026-10-17.
 
 - Use exactly five story sections, in this order: Home, Heroes, Enemies, Equipment, and Skills.
 - Lead with village life, then heroes, followed by representative selections from the other catalogs.
-- Tell the intended game story through existing approved artwork and short narrative passages.
+- Tell the intended game story through existing project artwork and short narrative passages,
+  preserving the recorded approval status of each selection.
 - Keep the first Village screenshot, including its existing interface overlay. Remove the second
   resident-detail screenshot.
 - Show several enemy families and selected progression stages in a native README image table.
@@ -33,9 +34,9 @@ equipment sets, and skills follow in native image tables.
 Seven hero portrait images come from the approved summonable roster runtime manifest. Brinia Ulenai
 uses a compact preview of her exact archived source; its immutable source binding and derivative
 hash are recorded in [selected portrait provenance](readme-gallery/selected-heroes/provenance.json).
-The legacy row preserves the four exact portraits subsequently supplied by the owner. Enemy images use
-`approved-review` normal forms. Equipment images use the approved runtime manifest; skill icons use
-the approved skill visual catalog. The current README embeds individual raster exports and links each image to its original full-size
+The legacy row preserves the four exact portraits subsequently supplied by the owner. Enemy images
+retain their reviewed, candidate, or runtime status from the monster visual catalog. Equipment images
+use the approved runtime manifest; skill icons use the approved skill visual catalog. The current README embeds individual raster exports and links each image to its original full-size
 source. Input hashes and table layouts are recorded in `readme-gallery/provenance.json`. The earlier
 JPEG contact sheets and their `readme-gallery/gallery.html` capture source remain historical artifacts.
 Existing artwork is presented without inventing or revising character depictions.
@@ -94,9 +95,21 @@ identity or change gameplay artwork.
 ## Native artwork tables
 
 The owner rejected the low-resolution JPEG collages and requested actual images in README tables.
-The README now embeds all 15 previously selected monster forms, 45 equipment pieces across nine
-complete sets, and 16 skill images individually. Text labels remain readable document text, and
-each image links to its exact original PNG. The existing 512-pixel equipment and skill exports and
-up-to-640-pixel monster exports provide sharper previews than images flattened into contact sheets.
+The README now shows eight monster families with five T1–T5 forms in each row, 45 equipment pieces
+across nine complete sets, and 28 skills in four category rows. Monster and equipment tables use the
+full README width. Skills use seven ascending rank columns: F, E, D, C, B, A, and S. Combat, Magic,
+Craft, and Support each have one catalog-ranked example per column. These are representative rank
+progressions, not an assertion that every selected skill directly unlocks the next.
+
+The monster selection preserves the original five families and adds Slimes, Arachnids, and Wolves.
+The complete eight-family progressions include reviewed, candidate, and runtime artwork; the README
+caption and provenance preserve those distinctions without changing approval status. The catalog has
+38 families, so the closing row reports +30 more families after eight displayed. This corrects the
+proposed +26 wording to match the catalog count.
+
+Text labels remain readable document text, and each image links to its exact original PNG. The
+existing 512-pixel equipment and skill exports and up-to-640-pixel monster exports provide sharp
+individual previews. Current bindings are recorded in `readmeInputs` in the gallery provenance;
+the original `inputs` array remains the historical contact-sheet capture record.
 This revision changes only README presentation and its supporting documentation; wiki pages and
 game assets stay unchanged.
