@@ -1,5 +1,8 @@
 # Tripo Studio checklist for Experiment 2
 
+> **Superseded on 2026-11-17:** the pipeline now runs on the Tripo API (`scripts/batch_sample.py`); see
+> `REPORT-rigging.md` and `notes/decisions.md`. Kept for the record of the Studio-only plan.
+
 You run these steps by hand in Tripo Studio, on your paid subscription. I run everything after the
 exports land. Inputs are in `experiments/image-to-3d/rigging/tripo-inputs/`. Save every export to
 `experiments/image-to-3d/rigging/tripo-exports/`. Both folders are gitignored.

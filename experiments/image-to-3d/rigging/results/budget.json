@@ -1,0 +1,510 @@
+[
+  {
+    "name": "armor-set--rig-biped",
+    "kind": "creature",
+    "budget": {
+      "tris": 15000,
+      "bytes": 2097152,
+      "tex": 1024
+    },
+    "raw": {
+      "triangles": 11868,
+      "bytes": 3837364,
+      "joints": 65,
+      "clips": [],
+      "textures": [
+        "NormalGL 2048x2048 png",
+        "Color 2048x2048 jpeg",
+        "ORM 2048x2048 jpeg"
+      ]
+    },
+    "optimized": {
+      "triangles": 11868,
+      "bytes": 534496,
+      "joints": 65,
+      "clips": [],
+      "textures": [
+        "NormalGL 1024x1024 webp",
+        "Color 1024x1024 webp",
+        "ORM 1024x1024 webp"
+      ]
+    },
+    "withinBudget": true
+  },
+  {
+    "name": "asha-neutral--anim-0",
+    "kind": "creature",
+    "budget": {
+      "tris": 15000,
+      "bytes": 2097152,
+      "tex": 1024
+    },
+    "raw": {
+      "triangles": 13671,
+      "bytes": 4894980,
+      "joints": 65,
+      "clips": [
+        "hurt",
+        "idle",
+        "run",
+        "slash",
+        "walk"
+      ],
+      "textures": [
+        "NormalGL 2048x2048 png",
+        "Color 2048x2048 jpeg",
+        "ORM 2048x2048 jpeg"
+      ]
+    },
+    "optimized": {
+      "triangles": 13671,
+      "bytes": 1013184,
+      "joints": 65,
+      "clips": [
+        "hurt",
+        "idle",
+        "run",
+        "slash",
+        "walk"
+      ],
+      "textures": [
+        "NormalGL 1024x1024 webp",
+        "Color 1024x1024 webp",
+        "ORM 1024x1024 webp"
+      ]
+    },
+    "withinBudget": true
+  },
+  {
+    "name": "asha-neutral--anim-1",
+    "kind": "creature",
+    "budget": {
+      "tris": 15000,
+      "bytes": 2097152,
+      "tex": 1024
+    },
+    "raw": {
+      "triangles": 13671,
+      "bytes": 3905184,
+      "joints": 65,
+      "clips": [
+        "fall"
+      ],
+      "textures": [
+        "NormalGL 2048x2048 png",
+        "Color 2048x2048 jpeg",
+        "ORM 2048x2048 jpeg"
+      ]
+    },
+    "optimized": {
+      "triangles": 13671,
+      "bytes": 603692,
+      "joints": 65,
+      "clips": [
+        "fall"
+      ],
+      "textures": [
+        "NormalGL 1024x1024 webp",
+        "Color 1024x1024 webp",
+        "ORM 1024x1024 webp"
+      ]
+    },
+    "withinBudget": true
+  },
+  {
+    "name": "asha-neutral--rig-biped",
+    "kind": "creature",
+    "budget": {
+      "tris": 15000,
+      "bytes": 2097152,
+      "tex": 1024
+    },
+    "raw": {
+      "triangles": 13671,
+      "bytes": 3780996,
+      "joints": 65,
+      "clips": [],
+      "textures": [
+        "NormalGL 2048x2048 png",
+        "Color 2048x2048 jpeg",
+        "ORM 2048x2048 jpeg"
+      ]
+    },
+    "optimized": {
+      "triangles": 13671,
+      "bytes": 493748,
+      "joints": 65,
+      "clips": [],
+      "textures": [
+        "NormalGL 1024x1024 webp",
+        "Color 1024x1024 webp",
+        "ORM 1024x1024 webp"
+      ]
+    },
+    "withinBudget": true
+  },
+  {
+    "name": "asha-original--anim-0",
+    "kind": "creature",
+    "budget": {
+      "tris": 15000,
+      "bytes": 2097152,
+      "tex": 1024
+    },
+    "raw": {
+      "triangles": 13603,
+      "bytes": 4858868,
+      "joints": 65,
+      "clips": [
+        "hurt",
+        "idle",
+        "run",
+        "slash",
+        "walk"
+      ],
+      "textures": [
+        "NormalGL 2048x2048 png",
+        "Color 2048x2048 jpeg",
+        "ORM 2048x2048 jpeg"
+      ]
+    },
+    "optimized": {
+      "triangles": 13603,
+      "bytes": 1010780,
+      "joints": 65,
+      "clips": [
+        "hurt",
+        "idle",
+        "run",
+        "slash",
+        "walk"
+      ],
+      "textures": [
+        "NormalGL 1024x1024 webp",
+        "Color 1024x1024 webp",
+        "ORM 1024x1024 webp"
+      ]
+    },
+    "withinBudget": true
+  },
+  {
+    "name": "asha-original--anim-1",
+    "kind": "creature",
+    "budget": {
+      "tris": 15000,
+      "bytes": 2097152,
+      "tex": 1024
+    },
+    "raw": {
+      "triangles": 13603,
+      "bytes": 3867132,
+      "joints": 65,
+      "clips": [
+        "fall"
+      ],
+      "textures": [
+        "NormalGL 2048x2048 png",
+        "Color 2048x2048 jpeg",
+        "ORM 2048x2048 jpeg"
+      ]
+    },
+    "optimized": {
+      "triangles": 13603,
+      "bytes": 600404,
+      "joints": 65,
+      "clips": [
+        "fall"
+      ],
+      "textures": [
+        "NormalGL 1024x1024 webp",
+        "Color 1024x1024 webp",
+        "ORM 1024x1024 webp"
+      ]
+    },
+    "withinBudget": true
+  },
+  {
+    "name": "asha-original--rig-biped",
+    "kind": "creature",
+    "budget": {
+      "tris": 15000,
+      "bytes": 2097152,
+      "tex": 1024
+    },
+    "raw": {
+      "triangles": 13603,
+      "bytes": 3742932,
+      "joints": 65,
+      "clips": [],
+      "textures": [
+        "NormalGL 2048x2048 png",
+        "Color 2048x2048 jpeg",
+        "ORM 2048x2048 jpeg"
+      ]
+    },
+    "optimized": {
+      "triangles": 13603,
+      "bytes": 490776,
+      "joints": 65,
+      "clips": [],
+      "textures": [
+        "NormalGL 1024x1024 webp",
+        "Color 1024x1024 webp",
+        "ORM 1024x1024 webp"
+      ]
+    },
+    "withinBudget": true
+  },
+  {
+    "name": "hawk-neutral--rig-avian",
+    "kind": "creature",
+    "budget": {
+      "tris": 15000,
+      "bytes": 2097152,
+      "tex": 1024
+    },
+    "raw": {
+      "triangles": 12593,
+      "bytes": 5128840,
+      "joints": 61,
+      "clips": [],
+      "textures": [
+        "NormalGL 2048x2048 png",
+        "Color 2048x2048 jpeg",
+        "ORM 2048x2048 jpeg"
+      ]
+    },
+    "optimized": {
+      "triangles": 12593,
+      "bytes": 556200,
+      "joints": 61,
+      "clips": [],
+      "textures": [
+        "NormalGL 1024x1024 webp",
+        "Color 1024x1024 webp",
+        "ORM 1024x1024 webp"
+      ]
+    },
+    "withinBudget": true
+  },
+  {
+    "name": "helmet--model",
+    "kind": "prop",
+    "budget": {
+      "tris": 3000,
+      "bytes": 307200,
+      "tex": 512
+    },
+    "raw": {
+      "triangles": 5152,
+      "bytes": 3767076,
+      "joints": 0,
+      "clips": [],
+      "textures": [
+        "Color 2048x2048 jpeg",
+        "ORM 2048x2048 jpeg",
+        "NormalGL 2048x2048 png"
+      ]
+    },
+    "optimized": {
+      "triangles": 3519,
+      "bytes": 188292,
+      "joints": 0,
+      "clips": [],
+      "textures": [
+        "Color 512x512 webp",
+        "ORM 512x512 webp",
+        "NormalGL 512x512 webp"
+      ]
+    },
+    "withinBudget": false
+  },
+  {
+    "name": "shield--model",
+    "kind": "prop",
+    "budget": {
+      "tris": 3000,
+      "bytes": 307200,
+      "tex": 512
+    },
+    "raw": {
+      "triangles": 4578,
+      "bytes": 3812748,
+      "joints": 0,
+      "clips": [],
+      "textures": [
+        "Color 2048x2048 jpeg",
+        "ORM 2048x2048 jpeg",
+        "NormalGL 2048x2048 png"
+      ]
+    },
+    "optimized": {
+      "triangles": 2999,
+      "bytes": 139596,
+      "joints": 0,
+      "clips": [],
+      "textures": [
+        "Color 512x512 webp",
+        "ORM 512x512 webp",
+        "NormalGL 512x512 webp"
+      ]
+    },
+    "withinBudget": true
+  },
+  {
+    "name": "sword--model",
+    "kind": "prop",
+    "budget": {
+      "tris": 3000,
+      "bytes": 307200,
+      "tex": 512
+    },
+    "raw": {
+      "triangles": 5007,
+      "bytes": 4754584,
+      "joints": 0,
+      "clips": [],
+      "textures": [
+        "Color 2048x2048 jpeg",
+        "ORM 2048x2048 jpeg",
+        "NormalGL 2048x2048 png"
+      ]
+    },
+    "optimized": {
+      "triangles": 2999,
+      "bytes": 198516,
+      "joints": 0,
+      "clips": [],
+      "textures": [
+        "Color 512x512 webp",
+        "ORM 512x512 webp",
+        "NormalGL 512x512 webp"
+      ]
+    },
+    "withinBudget": true
+  },
+  {
+    "name": "wolf-neutral--anim-0",
+    "kind": "creature",
+    "budget": {
+      "tris": 15000,
+      "bytes": 2097152,
+      "tex": 1024
+    },
+    "raw": {
+      "triangles": 15720,
+      "bytes": 4864404,
+      "joints": 33,
+      "clips": [
+        "preset:quadruped:walk"
+      ],
+      "textures": [
+        "NormalGL 2048x2048 png",
+        "Color 2048x2048 jpeg",
+        "ORM 2048x2048 jpeg"
+      ]
+    },
+    "optimized": {
+      "triangles": 15000,
+      "bytes": 614528,
+      "joints": 33,
+      "clips": [
+        "preset:quadruped:walk"
+      ],
+      "textures": [
+        "NormalGL 1024x1024 webp",
+        "Color 1024x1024 webp",
+        "ORM 1024x1024 webp"
+      ]
+    },
+    "withinBudget": true
+  },
+  {
+    "name": "wolf-neutral--rig-quadruped",
+    "kind": "creature",
+    "budget": {
+      "tris": 15000,
+      "bytes": 2097152,
+      "tex": 1024
+    },
+    "raw": {
+      "triangles": 15720,
+      "bytes": 4828148,
+      "joints": 33,
+      "clips": [],
+      "textures": [
+        "NormalGL 2048x2048 png",
+        "Color 2048x2048 jpeg",
+        "ORM 2048x2048 jpeg"
+      ]
+    },
+    "optimized": {
+      "triangles": 15000,
+      "bytes": 587592,
+      "joints": 33,
+      "clips": [],
+      "textures": [
+        "NormalGL 1024x1024 webp",
+        "Color 1024x1024 webp",
+        "ORM 1024x1024 webp"
+      ]
+    },
+    "withinBudget": true
+  },
+  {
+    "name": "studio--goblin_warrior_3d_model_rigged",
+    "kind": "creature",
+    "budget": {
+      "tris": 15000,
+      "bytes": 2097152,
+      "tex": 1024
+    },
+    "raw": {
+      "triangles": 9589,
+      "bytes": 5726840,
+      "joints": 65,
+      "clips": [],
+      "textures": [
+        "goblin 4096x4096 jpeg"
+      ]
+    },
+    "optimized": {
+      "triangles": 9589,
+      "bytes": 454440,
+      "joints": 65,
+      "clips": [],
+      "textures": [
+        "goblin 1024x1024 webp"
+      ]
+    },
+    "withinBudget": true
+  },
+  {
+    "name": "studio--clay_gollem_guardian_3d_model_rigged",
+    "kind": "creature",
+    "budget": {
+      "tris": 15000,
+      "bytes": 2097152,
+      "tex": 1024
+    },
+    "raw": {
+      "triangles": 10926,
+      "bytes": 4088108,
+      "joints": 65,
+      "clips": [],
+      "textures": [
+        "tripo 4096x4096 jpeg"
+      ]
+    },
+    "optimized": {
+      "triangles": 10926,
+      "bytes": 332172,
+      "joints": 65,
+      "clips": [],
+      "textures": [
+        "tripo 1024x1024 webp"
+      ]
+    },
+    "withinBudget": true
+  }
+]

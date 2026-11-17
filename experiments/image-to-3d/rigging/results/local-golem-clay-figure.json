@@ -1,0 +1,328 @@
+{
+  "entry": "local/golem-clay-figure",
+  "label": "Local baseline · Clay Figure",
+  "at": "2026-11-17T16:03:38.625Z",
+  "autoFacingYaw": 0,
+  "bindVsNodeRest": [],
+  "skeleton": {
+    "count": 16,
+    "roots": [
+      "hips"
+    ],
+    "hierarchy": "hips\n  spine\n    neck\n      head\n    upperarmL\n      forearmL\n        handL\n    upperarmR\n      forearmR\n        handR\n  thighL\n    shinL\n      footL\n  thighR\n    shinR\n      footR",
+    "canonical": {
+      "hips": "hips",
+      "spine": "spine",
+      "chest": "spine",
+      "neck": "neck",
+      "head": "head",
+      "clavicle_l": null,
+      "clavicle_r": null,
+      "upperarm_l": "upperarmL",
+      "upperarm_r": "upperarmR",
+      "forearm_l": "forearmL",
+      "forearm_r": "forearmR",
+      "hand_l": "handL",
+      "hand_r": "handR",
+      "thigh_l": "thighL",
+      "thigh_r": "thighR",
+      "shin_l": "shinL",
+      "shin_r": "shinR",
+      "foot_l": "footL",
+      "foot_r": "footR"
+    },
+    "missing": [
+      "clavicle_l",
+      "clavicle_r"
+    ],
+    "restPose": {
+      "leftArmFromVerticalDeg": 21,
+      "rightArmFromVerticalDeg": 53.3,
+      "leftElbowBendDeg": 9.3,
+      "leftKneeBendDeg": 0.8
+    }
+  },
+  "clips": [
+    "walk",
+    "attack"
+  ],
+  "deformation": {
+    "walk": {
+      "clip": "walk",
+      "duration": 1.1,
+      "samples": 24,
+      "regionVertexCounts": {
+        "elbow": 1793,
+        "knee": 730,
+        "shoulder": 628,
+        "hip": 1741,
+        "neck": 1599,
+        "ears": 0,
+        "loincloth": 993,
+        "all": 23288
+      },
+      "peak": {
+        "elbow": 0.01,
+        "knee": 0.534,
+        "shoulder": 0.211,
+        "hip": 1.215,
+        "neck": 0.195,
+        "ears": 0,
+        "loincloth": 0.353,
+        "all": 0.358
+      },
+      "worstFrame": {
+        "t": 0,
+        "stretch": {
+          "elbow": 0.01,
+          "knee": 0.343,
+          "shoulder": 0.211,
+          "hip": 1.215,
+          "neck": 0.195,
+          "ears": null,
+          "loincloth": 0.245,
+          "all": 0.358
+        }
+      }
+    },
+    "attack": {
+      "clip": "attack",
+      "duration": 0.833,
+      "samples": 24,
+      "regionVertexCounts": {
+        "elbow": 1793,
+        "knee": 730,
+        "shoulder": 628,
+        "hip": 1741,
+        "neck": 1599,
+        "ears": 0,
+        "loincloth": 993,
+        "all": 23288
+      },
+      "peak": {
+        "elbow": 0.416,
+        "knee": 0.09,
+        "shoulder": 1.208,
+        "hip": 1.266,
+        "neck": 0.679,
+        "ears": 0,
+        "loincloth": 0.126,
+        "all": 0.658
+      },
+      "worstFrame": {
+        "t": 0.278,
+        "stretch": {
+          "elbow": 0.416,
+          "knee": 0.065,
+          "shoulder": 1.208,
+          "hip": 0.484,
+          "neck": 0.679,
+          "ears": null,
+          "loincloth": 0.065,
+          "all": 0.658
+        }
+      }
+    }
+  },
+  "weapons": {
+    "sword (Tripo)": {
+      "ok": true,
+      "mode": "grip"
+    },
+    "shield (Tripo, left forearm)": {
+      "ok": true,
+      "mode": "forearm"
+    },
+    "helmet (Tripo)": {
+      "ok": true,
+      "mode": "head"
+    },
+    "iron shield (Exp. 1, left forearm)": {
+      "ok": true,
+      "mode": "forearm"
+    }
+  },
+  "ragdoll": {
+    "killClip": "walk",
+    "killAt": 0.44,
+    "gravity": "3x",
+    "stats": [
+      {
+        "t": 0,
+        "bodies": 12,
+        "joints": 11,
+        "excludedPairs": 32,
+        "limitHits": 0,
+        "maxLimitExcess": 0,
+        "maxSpeed": 2.75,
+        "lowestBodyY": 0.279,
+        "maxJointSeparation": 0,
+        "steps": 0
+      },
+      {
+        "t": 0.2,
+        "bodies": 12,
+        "joints": 11,
+        "excludedPairs": 32,
+        "limitHits": 103,
+        "maxLimitExcess": 0.71,
+        "maxSpeed": 7.02,
+        "lowestBodyY": 0.28,
+        "maxJointSeparation": 0,
+        "steps": 12
+      },
+      {
+        "t": 0.4,
+        "bodies": 12,
+        "joints": 11,
+        "excludedPairs": 32,
+        "limitHits": 177,
+        "maxLimitExcess": 0.71,
+        "maxSpeed": 5.43,
+        "lowestBodyY": 0.241,
+        "maxJointSeparation": 0,
+        "steps": 24
+      },
+      {
+        "t": 0.7,
+        "bodies": 12,
+        "joints": 11,
+        "excludedPairs": 32,
+        "limitHits": 246,
+        "maxLimitExcess": 1.75,
+        "maxSpeed": 3.65,
+        "lowestBodyY": 0.245,
+        "maxJointSeparation": 0,
+        "steps": 42
+      },
+      {
+        "t": 1.2,
+        "bodies": 12,
+        "joints": 11,
+        "excludedPairs": 32,
+        "limitHits": 600,
+        "maxLimitExcess": 2.74,
+        "maxSpeed": 1.54,
+        "lowestBodyY": 0.232,
+        "maxJointSeparation": 0,
+        "steps": 72
+      },
+      {
+        "t": 2.5,
+        "bodies": 12,
+        "joints": 11,
+        "excludedPairs": 32,
+        "limitHits": 1620,
+        "maxLimitExcess": 2.74,
+        "maxSpeed": 0.75,
+        "lowestBodyY": 0.253,
+        "maxJointSeparation": 0,
+        "steps": 150
+      }
+    ]
+  },
+  "hitRegions": {
+    "head": {
+      "vertices": 106,
+      "purity": 0,
+      "volumes": 1,
+      "sizeOfHeight": [
+        0.338
+      ],
+      "bones": [
+        "head"
+      ]
+    },
+    "throat": {
+      "vertices": 2718,
+      "purity": 0.46,
+      "volumes": 1,
+      "sizeOfHeight": [
+        0.412
+      ],
+      "bones": [
+        "neck"
+      ]
+    },
+    "torso": {
+      "vertices": 1208,
+      "purity": 0.79,
+      "volumes": 2,
+      "sizeOfHeight": [
+        0.354,
+        0.357
+      ],
+      "bones": [
+        "hips",
+        "spine"
+      ]
+    },
+    "elbow": {
+      "vertices": 58,
+      "purity": 1,
+      "volumes": 1,
+      "sizeOfHeight": [
+        0.206
+      ],
+      "bones": [
+        "forearmL"
+      ]
+    },
+    "forearm": {
+      "vertices": 4692,
+      "purity": 0.67,
+      "volumes": 2,
+      "sizeOfHeight": [
+        0.379,
+        0.266
+      ],
+      "bones": [
+        "forearmL",
+        "forearmR"
+      ]
+    },
+    "wrist": {
+      "vertices": 253,
+      "purity": 1,
+      "volumes": 2,
+      "sizeOfHeight": [
+        0.162,
+        0.114
+      ],
+      "bones": [
+        "handL",
+        "handR"
+      ]
+    },
+    "knee": {
+      "vertices": 0,
+      "purity": null,
+      "volumes": 0,
+      "sizeOfHeight": [],
+      "bones": []
+    }
+  },
+  "rigCheck": {
+    "outsideFraction": {
+      "hips": 0.2,
+      "spine": 0,
+      "neck": 0,
+      "head": 0.4,
+      "upperarmL": 0.6,
+      "forearmL": 1,
+      "upperarmR": 0,
+      "forearmR": 0,
+      "thighL": 0,
+      "shinL": 0,
+      "thighR": 1,
+      "shinR": 1
+    },
+    "bonesOutsideMesh": [
+      "head",
+      "upperarmL",
+      "forearmL",
+      "thighR",
+      "shinR"
+    ]
+  }
+}

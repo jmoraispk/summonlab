@@ -13,3 +13,4 @@ pnpm-lock.yaml
 rigging/tripo-inputs/
 rigging/tripo-exports/
 rigging/manifest.json
+rigging/ledger.jsonl

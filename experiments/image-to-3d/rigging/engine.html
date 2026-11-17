@@ -87,12 +87,14 @@ async function load(id) {
 	$('weapon').innerHTML = ['', ...Object.keys(entry.weapons ?? {})].map((w) => `<option value="${w}">${w || '(none)'}</option>`).join('');
 	const hr = E.hitRegions(ch);
 	masks = hr.masks;
+	ch.hitVolumes = hr.volumes;
 	api.hits = hr.summary;
+	api.rigCheck = hr.rig;
 	$('region').innerHTML = ['', ...E.HIT_REGIONS].map((r) => `<option value="${r}">${r || '(none)'}</option>`).join('');
 	$('source').src = entry.source ?? '';
 	const sk = E.describeSkeleton(ch);
 	api.skeleton = sk;
-	info(`${entry.label}\nbones ${sk.count}, clips: ${Object.keys(ch.clips).join(', ') || 'none'}\nmissing canonical: ${sk.missing.join(', ') || 'none'}`);
+	info(`${entry.label}\nfacing: auto ${ch.autoYaw}°\nbones ${sk.count}, clips: ${Object.keys(ch.clips).join(', ') || 'none'}\nmissing canonical: ${sk.missing.join(', ') || 'none'}`);
 	const h = ch.height;
 	stage.controls.target.set(0, h * 0.5, 0);
 	stage.camera.position.set(0, h * 0.75, h * 3.1);
@@ -115,17 +117,23 @@ async function setWeapon(key) {
 	const w = ch.entry.weapons[key];
 	const prop = await E.loadProp(w.file, '');
 	const t = action ? ch.mixer.time : null, cur = action?.getClip().name;
-	weapon = E.attachProp(ch, prop, { side: w.side ?? 'r', mode: w.mode ?? 'grip', length: w.length ?? 0.85 });
+	weapon = E.attachProp(ch, prop, { side: w.side ?? 'r', mode: w.mode ?? 'grip', length: w.length ?? 0.85, hold: w.hold ?? 0.33, tip: w.tip ?? '+y' });
 	if (cur) play(cur, t);
 }
 
 async function kill(clip = $('clip').value, t = null) {
 	if (!ch.clips[clip]) clip = Object.keys(ch.clips).find((c) => c === 'walk') ?? Object.keys(ch.clips)[0];
-	const at = t ?? (action ? ch.mixer.time % ch.clips[clip].duration : 0);
-	ch.lastVelocities = E.sampleVelocities(ch, clip, at);
+	if (clip) {
+		const at = t ?? (action ? ch.mixer.time % ch.clips[clip].duration : 0);
+		ch.lastVelocities = E.sampleVelocities(ch, clip, at);
+	} else {
+		// No clips: die from the rest pose with a small forward stumble.
+		ch.skeleton.pose(); ch.root.updateMatrixWorld(true);
+		ch.lastVelocities = new Map(ch.skeleton.bones.map((b) => [b, new THREE.Vector3(0, 0, 0.6 * ch.height)]));
+	}
 	ch.mixer.stopAllAction();
 	action = null;
-	rag = await E.buildRagdoll(ch, { gravityScale: 3 });
+	rag = await E.buildRagdoll(ch, { gravityScale: 3, ...(api.ragdollOptions ?? {}) });
 	api.rag = rag;
 }
 

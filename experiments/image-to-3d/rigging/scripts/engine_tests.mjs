@@ -41,6 +41,8 @@ for (const entry of entries) {
 	await page.goto(`http://127.0.0.1:${PORT}/rigging/engine.html?shot=1&entry=${encodeURIComponent(entry.id)}`);
 	await page.waitForFunction(() => window.__ready === true, null, { timeout: 180000 });
 	const result = { entry: entry.id, label: entry.label, at: new Date().toISOString() };
+	result.autoFacingYaw = await ev(() => window.__engine.ch.autoYaw);
+	result.bindVsNodeRest = await ev(() => window.__engine.ch.restMismatch);
 
 	// Skeleton and rest pose.
 	result.skeleton = await ev(() => {
@@ -98,11 +100,11 @@ for (const entry of entries) {
 	await ev(() => window.__engine.setWeapon(''));
 
 	// 3. Ragdoll: kill mid-walk (or mid first clip) and fall under 3x gravity.
-	const killClip = clips.includes('walk') ? 'walk' : clips[0];
-	if (killClip) {
-		const dur = result.deformation[killClip].duration;
-		await ev(([c, t]) => { window.__engine.view('side'); window.__engine.play(c, t); }, [killClip, dur * 0.4]);
-		await ev(([c, t]) => window.__engine.kill(c, t), [killClip, dur * 0.4]);
+	const killClip = clips.includes('walk') ? 'walk' : clips[0] ?? null;
+	{
+		const dur = killClip ? result.deformation[killClip].duration : 0;
+		await ev(([c, t]) => { window.__engine.view('side'); if (c) window.__engine.play(c, t); }, [killClip, dur * 0.4]);
+		await ev(([c, t]) => window.__engine.kill(c ?? '(rest pose)', c ? t : null), [killClip, dur * 0.4]);
 		const frames = [];
 		let elapsed = 0;
 		const stats = [];
@@ -114,16 +116,18 @@ for (const entry of entries) {
 			frames.push(await snap());
 		}
 		await strip(frames, path.join(out, 'ragdoll.webp'), 6);
-		result.ragdoll = { killClip, killAt: +(dur * 0.4).toFixed(2), gravity: '3x', stats };
+		result.ragdoll = { killClip: killClip ?? '(rest pose, forward stumble)', killAt: +(dur * 0.4).toFixed(2), gravity: '3x', stats };
 		await page.goto(`http://127.0.0.1:${PORT}/rigging/engine.html?shot=1&entry=${encodeURIComponent(entry.id)}`);
 		await page.waitForFunction(() => window.__ready === true, null, { timeout: 180000 });
 	}
 
 	// 4. Hit regions.
 	result.hitRegions = await ev(() => window.__engine.hits);
+	result.rigCheck = await ev(() => window.__engine.rigCheck);
 	const regionFrames = [];
 	for (const r of ['head', 'throat', 'torso', 'elbow', 'forearm', 'wrist', 'knee']) {
-		await ev((rr) => { window.__engine.play('(rest pose)'); window.__engine.view('front'); window.__engine.region(rr); window.__engine.tag(`hit: ${rr}`); }, r);
+		const pur = result.hitRegions[r]?.purity;
+		await ev(([rr, pu]) => { window.__engine.play('(rest pose)'); window.__engine.view(['elbow', 'wrist', 'forearm', 'knee'].includes(rr) ? 'threeq' : 'front'); window.__engine.region(rr); window.__engine.tag(`hit: ${rr}${pu == null ? '' : ` · purity ${Math.round(pu * 100)}%`}`); }, [r, pur]);
 		regionFrames.push(await snap());
 	}
 	await ev(() => window.__engine.region(null));

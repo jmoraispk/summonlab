@@ -7,7 +7,9 @@ work/hosted/tripo/<step>/. Steps that already succeeded in the ledger are reused
 from __future__ import annotations
 
 import json
+import mimetypes
 import os
+import threading
 import time
 from pathlib import Path
 
@@ -19,6 +21,7 @@ OUT = EXP / "work" / "hosted" / "tripo"
 BASE = "https://openapi.tripo3d.ai/v3"
 KEYS = Path.home() / ".config" / "image-to-3d" / "keys.env"
 PENDING = {"queued", "running"}  # any other status is terminal
+_LEDGER_LOCK = threading.Lock()
 
 
 def _key(name: str = "TRIPO_API_KEY") -> str:
@@ -53,7 +56,7 @@ def balance() -> dict:
 def upload(path: Path) -> str:
     with open(path, "rb") as f:
         data = _check(requests.post(f"{BASE}/files", headers=_headers(),
-                                    files={"file": (path.name, f, "image/png")}, timeout=120))
+                                    files={"file": (path.name, f, mimetypes.guess_type(path.name)[0] or "application/octet-stream")}, timeout=120))
     return data["file_token"]
 
 
@@ -68,19 +71,31 @@ def spent() -> float:
 
 
 class Budget:
-    """Refuses to start a task whose estimate would push this batch past the approved credits."""
+    """Refuses to start a task whose estimate would push this batch past the approved credits.
+
+    Thread-safe: running tasks hold their estimate as a reservation until their real cost is known.
+    """
 
     def __init__(self, approved_credits: float):
         self.approved = approved_credits
         self.used = 0.0
+        self.pending = 0.0
+        self._lock = threading.Lock()
 
     def reserve(self, step: str, estimate: float) -> None:
-        if self.used + estimate > self.approved:
-            raise SystemExit(f"BUDGET STOP before {step}: {self.used:.0f} used + {estimate:.0f} estimated "
-                             f"> {self.approved:.0f} approved credits")
+        with self._lock:
+            if self.used + self.pending + estimate > self.approved:
+                raise RuntimeError(f"BUDGET STOP before {step}: {self.used:.0f} used + {self.pending:.0f} reserved + "
+                                   f"{estimate:.0f} estimated > {self.approved:.0f} approved credits")
+            self.pending += estimate
+
+    def settle(self, estimate: float, credits: float) -> None:
+        with self._lock:
+            self.pending -= estimate
+            self.used += credits
 
     def charge(self, credits: float) -> None:
-        self.used += credits
+        self.settle(0.0, credits)
 
 
 def done(step: str) -> dict | None:
@@ -88,6 +103,18 @@ def done(step: str) -> dict | None:
         if e["step"] == step and e["status"] == "success":
             return e
     return None
+
+
+def _create(endpoint: str, payload: dict, step: str, max_wait_s: float = 1800) -> str:
+    """POST a task. The API caps concurrent generations with HTTP 429 (nothing is charged); wait and retry."""
+    t0 = time.time()
+    while True:
+        r = requests.post(f"{BASE}{endpoint}", headers=_headers(), json=payload, timeout=60)
+        if r.status_code != 429 or time.time() - t0 > max_wait_s:
+            return _check(r)["task_id"]
+        wait = float(r.headers.get("Retry-After") or 20)
+        print(f"[429] {step}: concurrency limit, retrying in {wait:g}s", flush=True)
+        time.sleep(wait)
 
 
 def run(step: str, endpoint: str, payload: dict, budget: Budget, estimate: float,
@@ -99,7 +126,11 @@ def run(step: str, endpoint: str, payload: dict, budget: Budget, estimate: float
         return prior
     budget.reserve(step, estimate)
     t0 = time.time()
-    task_id = _check(requests.post(f"{BASE}{endpoint}", headers=_headers(), json=payload, timeout=60))["task_id"]
+    try:
+        task_id = _create(endpoint, payload, step)
+    except Exception:
+        budget.settle(estimate, 0.0)
+        raise
     print(f"[start] {step} task {task_id}", flush=True)
     while True:
         data = _check(requests.get(f"{BASE}/tasks/{task_id}", headers=_headers(), timeout=30))
@@ -107,7 +138,7 @@ def run(step: str, endpoint: str, payload: dict, budget: Budget, estimate: float
             break
         time.sleep(poll_s)
     credits = float(data.get("credits_consumed") or 0)
-    budget.charge(credits)
+    budget.settle(estimate, credits)
     out_dir = OUT / step
     out_dir.mkdir(parents=True, exist_ok=True)
     files = {}
@@ -121,7 +152,7 @@ def run(step: str, endpoint: str, payload: dict, budget: Budget, estimate: float
              "estimate": estimate, "seconds": round(time.time() - t0, 1), "files": files,
              "at": time.strftime("%Y-%m-%dT%H:%M:%S")}
     LEDGER.parent.mkdir(parents=True, exist_ok=True)
-    with LEDGER.open("a") as f:
+    with _LEDGER_LOCK, LEDGER.open("a") as f:
         f.write(json.dumps(entry) + "\n")
     print(f"[{data.get('status')}] {step} {credits:g} credits {entry['seconds']}s files={list(files)}", flush=True)
     if data.get("status") != "success":

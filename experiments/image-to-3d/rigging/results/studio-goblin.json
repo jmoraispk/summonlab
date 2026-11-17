@@ -1,0 +1,260 @@
+{
+  "entry": "studio/goblin",
+  "label": "Studio · Goblin (crouched art, humanoid)",
+  "at": "2026-11-17T15:54:26.909Z",
+  "autoFacingYaw": 0,
+  "skeleton": {
+    "count": 65,
+    "roots": [
+      "mixamorigHips"
+    ],
+    "hierarchy": "mixamorigHips\n  mixamorigLeftUpLeg\n    mixamorigLeftLeg\n      mixamorigLeftFoot\n        mixamorigLeftToeBase\n          mixamorigLeftToe_End\n  mixamorigRightUpLeg\n    mixamorigRightLeg\n      mixamorigRightFoot\n        mixamorigRightToeBase\n          mixamorigRightToe_End\n  mixamorigSpine\n    mixamorigSpine1\n      mixamorigSpine2\n        mixamorigLeftShoulder\n          mixamorigLeftArm\n            mixamorigLeftForeArm\n              mixamorigLeftHand\n                mixamorigLeftHandIndex1\n                  mixamorigLeftHandIndex2\n                    mixamorigLeftHandIndex3\n                      mixamorigLeftHandIndex4\n                mixamorigLeftHandMiddle1\n                  mixamorigLeftHandMiddle2\n                    mixamorigLeftHandMiddle3\n                      mixamorigLeftHandMiddle4\n                mixamorigLeftHandPinky1\n                  mixamorigLeftHandPinky2\n                    mixamorigLeftHandPinky3\n                      mixamorigLeftHandPinky4\n                mixamorigLeftHandRing1\n                  mixamorigLeftHandRing2\n                    mixamorigLeftHandRing3\n                      mixamorigLeftHandRing4\n                mixamorigLeftHandThumb1\n                  mixamorigLeftHandThumb2\n                    mixamorigLeftHandThumb3\n                      mixamorigLeftHandThumb4\n        mixamorigNeck\n          mixamorigHead\n            mixamorigHeadTop_End\n        mixamorigRightShoulder\n          mixamorigRightArm\n            mixamorigRightForeArm\n              mixamorigRightHand\n                mixamorigRightHandIndex1\n                  mixamorigRightHandIndex2\n                    mixamorigRightHandIndex3\n                      mixamorigRightHandIndex4\n                mixamorigRightHandMiddle1\n                  mixamorigRightHandMiddle2\n                    mixamorigRightHandMiddle3\n                      mixamorigRightHandMiddle4\n                mixamorigRightHandPinky1\n                  mixamorigRightHandPinky2\n                    mixamorigRightHandPinky3\n                      mixamorigRightHandPinky4\n                mixamorigRightHandRing1\n                  mixamorigRightHandRing2\n                    mixamorigRightHandRing3\n                      mixamorigRightHandRing4\n                mixamorigRightHandThumb1\n                  mixamorigRightHandThumb2\n                    mixamorigRightHandThumb3\n                      mixamorigRightHandThumb4",
+    "canonical": {
+      "hips": "mixamorigHips",
+      "spine": "mixamorigSpine",
+      "chest": "mixamorigSpine2",
+      "neck": "mixamorigNeck",
+      "head": "mixamorigHead",
+      "clavicle_l": "mixamorigLeftShoulder",
+      "clavicle_r": "mixamorigRightShoulder",
+      "upperarm_l": "mixamorigLeftArm",
+      "upperarm_r": "mixamorigRightArm",
+      "forearm_l": "mixamorigLeftForeArm",
+      "forearm_r": "mixamorigRightForeArm",
+      "hand_l": "mixamorigLeftHand",
+      "hand_r": "mixamorigRightHand",
+      "thigh_l": "mixamorigLeftUpLeg",
+      "thigh_r": "mixamorigRightUpLeg",
+      "shin_l": "mixamorigLeftLeg",
+      "shin_r": "mixamorigRightLeg",
+      "foot_l": "mixamorigLeftFoot",
+      "foot_r": "mixamorigRightFoot"
+    },
+    "missing": [],
+    "restPose": {
+      "leftArmFromVerticalDeg": 30.1,
+      "rightArmFromVerticalDeg": 21.4,
+      "leftElbowBendDeg": 91.8,
+      "leftKneeBendDeg": 81.5
+    }
+  },
+  "clips": [],
+  "deformation": {},
+  "weapons": {
+    "sword (Tripo)": {
+      "ok": true,
+      "mode": "grip"
+    },
+    "shield (Tripo, left forearm)": {
+      "ok": true,
+      "mode": "forearm"
+    },
+    "helmet (Tripo)": {
+      "ok": true,
+      "mode": "head"
+    },
+    "iron shield (Exp. 1, left forearm)": {
+      "ok": true,
+      "mode": "forearm"
+    }
+  },
+  "ragdoll": {
+    "killClip": "(rest pose, forward stumble)",
+    "killAt": 0,
+    "gravity": "3x",
+    "stats": [
+      {
+        "t": 0,
+        "bodies": 19,
+        "joints": 18,
+        "excludedPairs": 49,
+        "limitHits": 0,
+        "maxLimitExcess": 0,
+        "maxSpeed": 0.6,
+        "lowestBodyY": 0.076,
+        "maxJointSeparation": 0,
+        "steps": 0
+      },
+      {
+        "t": 0.2,
+        "bodies": 19,
+        "joints": 18,
+        "excludedPairs": 49,
+        "limitHits": 212,
+        "maxLimitExcess": 0.49,
+        "maxSpeed": 3.06,
+        "lowestBodyY": 0.058,
+        "maxJointSeparation": 0,
+        "steps": 12
+      },
+      {
+        "t": 0.4,
+        "bodies": 19,
+        "joints": 18,
+        "excludedPairs": 49,
+        "limitHits": 551,
+        "maxLimitExcess": 1.8,
+        "maxSpeed": 4.27,
+        "lowestBodyY": 0.047,
+        "maxJointSeparation": 0,
+        "steps": 24
+      },
+      {
+        "t": 0.7,
+        "bodies": 19,
+        "joints": 18,
+        "excludedPairs": 49,
+        "limitHits": 1521,
+        "maxLimitExcess": 2.15,
+        "maxSpeed": 0.17,
+        "lowestBodyY": 0.046,
+        "maxJointSeparation": 0,
+        "steps": 42
+      },
+      {
+        "t": 1.2,
+        "bodies": 19,
+        "joints": 18,
+        "excludedPairs": 49,
+        "limitHits": 3157,
+        "maxLimitExcess": 2.15,
+        "maxSpeed": 0.47,
+        "lowestBodyY": 0.042,
+        "maxJointSeparation": 0,
+        "steps": 72
+      },
+      {
+        "t": 2.5,
+        "bodies": 19,
+        "joints": 18,
+        "excludedPairs": 49,
+        "limitHits": 6787,
+        "maxLimitExcess": 2.6,
+        "maxSpeed": 0.41,
+        "lowestBodyY": 0.042,
+        "maxJointSeparation": 0,
+        "steps": 150
+      }
+    ]
+  },
+  "hitRegions": {
+    "head": {
+      "vertices": 2902,
+      "purity": 0.94,
+      "volumes": 1,
+      "sizeOfHeight": [
+        0.323
+      ],
+      "bones": [
+        "mixamorigHead"
+      ]
+    },
+    "throat": {
+      "vertices": 350,
+      "purity": 0.51,
+      "volumes": 1,
+      "sizeOfHeight": [
+        0.187
+      ],
+      "bones": [
+        "mixamorigNeck"
+      ]
+    },
+    "torso": {
+      "vertices": 1063,
+      "purity": 0.82,
+      "volumes": 4,
+      "sizeOfHeight": [
+        0.225,
+        0.214,
+        0.238,
+        0.214
+      ],
+      "bones": [
+        "mixamorigHips",
+        "mixamorigSpine",
+        "mixamorigSpine1",
+        "mixamorigSpine2"
+      ]
+    },
+    "elbow": {
+      "vertices": 260,
+      "purity": 1,
+      "volumes": 2,
+      "sizeOfHeight": [
+        0.086,
+        0.099
+      ],
+      "bones": [
+        "mixamorigLeftForeArm",
+        "mixamorigRightForeArm"
+      ]
+    },
+    "forearm": {
+      "vertices": 432,
+      "purity": 0.99,
+      "volumes": 2,
+      "sizeOfHeight": [
+        0.082,
+        0.087
+      ],
+      "bones": [
+        "mixamorigLeftForeArm",
+        "mixamorigRightForeArm"
+      ]
+    },
+    "wrist": {
+      "vertices": 164,
+      "purity": 0.93,
+      "volumes": 2,
+      "sizeOfHeight": [
+        0.087,
+        0.091
+      ],
+      "bones": [
+        "mixamorigLeftHand",
+        "mixamorigRightHand"
+      ]
+    },
+    "knee": {
+      "vertices": 339,
+      "purity": 1,
+      "volumes": 2,
+      "sizeOfHeight": [
+        0.114,
+        0.105
+      ],
+      "bones": [
+        "mixamorigLeftLeg",
+        "mixamorigRightLeg"
+      ]
+    }
+  },
+  "rigCheck": {
+    "outsideFraction": {
+      "mixamorigHips": 0,
+      "mixamorigLeftUpLeg": 0.2,
+      "mixamorigLeftLeg": 0.2,
+      "mixamorigLeftFoot": 0,
+      "mixamorigRightUpLeg": 0,
+      "mixamorigRightLeg": 0,
+      "mixamorigRightFoot": 0,
+      "mixamorigSpine": 0,
+      "mixamorigSpine1": 0,
+      "mixamorigSpine2": 0,
+      "mixamorigLeftShoulder": 0.6,
+      "mixamorigLeftArm": 0.2,
+      "mixamorigLeftForeArm": 0,
+      "mixamorigLeftHand": 0,
+      "mixamorigNeck": 0,
+      "mixamorigHead": 0.2,
+      "mixamorigRightShoulder": 0.2,
+      "mixamorigRightArm": 0,
+      "mixamorigRightForeArm": 0,
+      "mixamorigRightHand": 0
+    },
+    "bonesOutsideMesh": [
+      "mixamorigLeftShoulder"
+    ]
+  }
+}
