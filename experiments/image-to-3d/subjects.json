@@ -27,5 +27,12 @@
     "kind": "humanoid-with-object",
     "source": "assets/enemies/experiments/family-affinity-v1/candidates/goblins/goblin-raider/normal-v2.png",
     "runtime": "apps/web/static/runtime/enemies/monster-wiki-v1/goblins/goblin-raider/normal.8f8515bd979e.webp"
+  },
+  {
+    "id": "golem-clay-figure",
+    "label": "Clay Figure (Golem T1)",
+    "kind": "humanoid",
+    "source": "assets/enemies/experiments/family-affinity-v1/candidates/golems/golem-clay-figure/normal-v1.png",
+    "runtime": "apps/web/static/runtime/enemies/monster-wiki-v1/golems/golem-clay-figure/normal.f544517aee5a.webp"
   }
 ]

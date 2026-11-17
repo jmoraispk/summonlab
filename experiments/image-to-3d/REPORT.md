@@ -28,6 +28,7 @@ using glTF/GLB, at 60 fps on a mid-range laptop.
 | Bristle Hog (Boar T1) | `assets/enemies/approved/fauna-family-v1/sources/boars/boar-bristle-hog/normal.png` (1402×1122) | quadruped |
 | Iron Shield (rank E) | `assets/equipment/approved/material-equipment-v1/items/e/iron/shield.png` (1024×1024) | prop |
 | Goblin Raider (T3, stretch) | `.../goblin-raider/normal-v2.png` (1199×1312) | humanoid with a large door-shield |
+| Clay Figure (Golem T1, control) | `assets/enemies/experiments/family-affinity-v1/candidates/golems/golem-clay-figure/normal-v1.png` (1199×1312) | humanoid in a neutral standing pose with nothing in hand; added later as a control for the pose problem |
 
 Every creature source is a full scene with a busy battlefield background. `scripts/prepare_sources.py` uses
 BiRefNet (via rembg) to cut each subject out, then:
@@ -68,6 +69,8 @@ faces.
 | Iron Shield | Hunyuan3D-2 | 4 | 5 | 4 — boss, cross bands and rivets all present. **Back face is a mirrored copy of the front.** | 40,000 / 4.5 MB / 2048² | 3,000 / 62 KB ✅ | 172 s | local GPU | n/a |
 | Goblin Raider | TRELLIS | 3 | 4 | 2 — door, sword and banner all present but very dark and muddy | 25,027 / 1.9 MB / 1024² | 14,999 / 189 KB ✅ | 28 s | local GPU | not attempted (stretch) |
 | Goblin Raider | Hunyuan3D-2 | 3 | 4 | 3 — clean door slab; helmet tinted orange; back of the body invented | 40,000 / 4.3 MB / 2048² | 15,000 / 218 KB ✅ | 144 s | local GPU | not attempted (stretch) |
+| Clay Figure (control) | TRELLIS | 3.5 | 5 | 2 — shape and rune right, but the clay shifts to dark red | 19,589 / 1.5 MB / 1024² | 14,999 / 120 KB ✅ | 30 s | local GPU | Welded to 1 shell; bone heat works directly with 0 stray vertices. Walk and arm-slam play cleanly. |
+| Clay Figure (control) | Hunyuan3D-2 | 4.5 | 5 | 4 — right clay color, smoother than the source's pitted surface | 40,000 / 3.4 MB / 2048² | 15,000 / 138 KB ✅ | 127 s | local GPU | Single watertight shell; bone heat works directly with 0 stray vertices. Walk and arm-slam play cleanly. |
 
 Rigged and animated GLBs, also through the same budget pipeline:
 
@@ -77,6 +80,8 @@ Rigged and animated GLBs, also through the same budget pipeline:
 | TRELLIS boar | 307 KB | 15k | walk, attack |
 | Hunyuan goblin | 358 KB | 15k | walk, attack |
 | Hunyuan boar | 418 KB | 15k | walk, attack |
+| TRELLIS golem | 229 KB | 15k | walk, attack |
+| Hunyuan golem | 259 KB | 15k | walk, attack |
 
 Optimization pipeline: dedup, flatten, join, weld, meshopt simplify, prune, WebP textures (1024² for
 monsters, 512² for props), quantization, and `EXT_meshopt_compression`.
@@ -91,6 +96,10 @@ monsters, 512² for props), quantization, and `EXT_meshopt_compression`.
 | --- | --- |
 | ![Iron Shield comparison](previews/compare/iron-shield.webp) | ![Goblin Raider comparison](previews/compare/goblin-raider.webp) |
 
+| Clay Figure (neutral-pose control) |
+| --- |
+| ![Clay Figure comparison](previews/compare/golem-clay-figure.webp) |
+
 Animation frames, side view, five evenly spaced frames:
 
 | | Walk | Attack |
@@ -99,6 +108,21 @@ Animation frames, side view, five evenly spaced frames:
 | Hunyuan goblin | ![](previews/animation/hunyuan3d--goblin-runt--walk.webp) | ![](previews/animation/hunyuan3d--goblin-runt--attack.webp) |
 | TRELLIS boar | ![](previews/animation/trellis--boar-bristle-hog--walk.webp) | ![](previews/animation/trellis--boar-bristle-hog--attack.webp) |
 | Hunyuan boar | ![](previews/animation/hunyuan3d--boar-bristle-hog--walk.webp) | ![](previews/animation/hunyuan3d--boar-bristle-hog--attack.webp) |
+| TRELLIS golem | ![](previews/animation/trellis--golem-clay-figure--walk.webp) | ![](previews/animation/trellis--golem-clay-figure--attack.webp) |
+| Hunyuan golem | ![](previews/animation/hunyuan3d--golem-clay-figure--walk.webp) | ![](previews/animation/hunyuan3d--golem-clay-figure--attack.webp) |
+
+### Neutral-pose control: the Clay Figure
+
+I added the Clay Figure to test the main hypothesis: that the action poses in the source art, not the
+generators, are what make rigging hard. It stands neutrally with arms free and nothing in hand.
+
+- **Both tools rigged it cleanly with no workaround.** After welding, each mesh was one shell, and Blender's
+  bone heat weighted every vertex directly.
+- **The clips read well.** The walk is a convincing heavy stomp, and the attack is a clean overhead arm
+  slam. There is no prop bending and no limb fused to the body.
+- **The hypothesis holds.** Neutral-pose source images turn the animation problem from "prototype only"
+  into "workable with a template rig". The remaining issues are cosmetic: TRELLIS shifted the clay to red,
+  and Hunyuan smoothed away the pitted surface.
 
 ## Do the three subjects look like one game?
 
@@ -123,7 +147,7 @@ They do not read as a stylized game. Getting a stylized look means one of two th
 | --- | --- | --- | --- |
 | **Props: shields, weapons, armor pieces** | **Yes**, with light cleanup | Hunyuan3D-2-class fidelity (or hosted) | Flat ornament needs the stronger texture model; TRELLIS lost the shield's cross bands. Backs are invented: Hunyuan mirrored the front design, so plan a quick back-face fix or a back reference image. 45–62 KB per item. |
 | **Beasts: quadrupeds** | Static yes; animated only as a prototype | Either route, plus a rig step | The charge pose in the source art becomes the rest pose. Fur and bristles become solid spikes that defeat automatic skinning. |
-| **Humanoids** | Static yes; animated only as a prototype | Either route, plus a rig step | Crossed arms and held weapons fuse into the body. Rest pose is the art pose, not a T- or A-pose. Large carried objects (the raider's door) fuse to the body, which makes the raider hard to rig. |
+| **Humanoids** | Static yes. Animated: yes from neutral-pose art (Clay Figure); prototype only from action-pose art | Hunyuan3D-2-class, plus a template rig | Crossed arms and held weapons fuse into the body. Rest pose is the art pose, not a T- or A-pose. Large carried objects (the raider's door) fuse to the body, which makes the raider hard to rig. A neutral source image avoids all of this. |
 
 Between the two local routes, neither wins outright:
 
@@ -216,8 +240,9 @@ I am not a lawyer. Treat these as findings to confirm, not legal advice.
    - their auto-rig and walk/attack presets against the local rig.
 
    This settles whether hosted removes the animation bottleneck.
-2. In parallel, generate one neutral-pose model-sheet image for the goblin with the existing image pipeline,
-   then rerun both local routes on it. This tests whether fixing the pose fixes rigging.
+2. The Clay Figure already shows that neutral poses rig cleanly. Next, generate a neutral-pose model-sheet
+   image of the goblin with the existing image pipeline, to confirm the fix works for a monster whose
+   approved art is posed.
 
 ## Reproduce
 
