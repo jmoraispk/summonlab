@@ -1,8 +1,14 @@
 {
   "entry": "studio/golem",
   "label": "Studio · Clay Guardian (T-pose image)",
-  "at": "2026-11-17T15:54:12.229Z",
+  "at": "2026-11-17T17:14:46.167Z",
   "autoFacingYaw": 0,
+  "bindVsNodeRest": [],
+  "cleanup": {
+    "floatingIslands": [],
+    "keptIslands": 0,
+    "skirtVertices": 0
+  },
   "skeleton": {
     "count": 65,
     "roots": [
@@ -80,9 +86,9 @@
         "bodies": 20,
         "joints": 19,
         "excludedPairs": 53,
-        "limitHits": 438,
-        "maxLimitExcess": 1.99,
-        "maxSpeed": 14.17,
+        "limitHits": 712,
+        "maxLimitExcess": 0.77,
+        "maxSpeed": 7.34,
         "lowestBodyY": 0.184,
         "maxJointSeparation": 0,
         "steps": 12
@@ -92,10 +98,10 @@
         "bodies": 20,
         "joints": 19,
         "excludedPairs": 53,
-        "limitHits": 999,
-        "maxLimitExcess": 2.6,
-        "maxSpeed": 7.63,
-        "lowestBodyY": 0.194,
+        "limitHits": 1618,
+        "maxLimitExcess": 0.84,
+        "maxSpeed": 4.67,
+        "lowestBodyY": 0.196,
         "maxJointSeparation": 0,
         "steps": 24
       },
@@ -104,10 +110,10 @@
         "bodies": 20,
         "joints": 19,
         "excludedPairs": 53,
-        "limitHits": 1990,
-        "maxLimitExcess": 2.6,
-        "maxSpeed": 9.47,
-        "lowestBodyY": 0.091,
+        "limitHits": 2931,
+        "maxLimitExcess": 1,
+        "maxSpeed": 6.68,
+        "lowestBodyY": 0.073,
         "maxJointSeparation": 0,
         "steps": 42
       },
@@ -116,10 +122,10 @@
         "bodies": 20,
         "joints": 19,
         "excludedPairs": 53,
-        "limitHits": 3411,
-        "maxLimitExcess": 2.6,
-        "maxSpeed": 1.31,
-        "lowestBodyY": 0.081,
+        "limitHits": 5021,
+        "maxLimitExcess": 1.04,
+        "maxSpeed": 1.18,
+        "lowestBodyY": 0.127,
         "maxJointSeparation": 0,
         "steps": 72
       },
@@ -128,10 +134,10 @@
         "bodies": 20,
         "joints": 19,
         "excludedPairs": 53,
-        "limitHits": 6793,
-        "maxLimitExcess": 2.6,
-        "maxSpeed": 0.23,
-        "lowestBodyY": 0.08,
+        "limitHits": 10718,
+        "maxLimitExcess": 1.06,
+        "maxSpeed": 0.14,
+        "lowestBodyY": 0.127,
         "maxJointSeparation": 0,
         "steps": 150
       }
@@ -145,6 +151,9 @@
       "sizeOfHeight": [
         0.106
       ],
+      "types": [
+        "sphere"
+      ],
       "bones": [
         "mixamorigHead"
       ]
@@ -156,34 +165,99 @@
       "sizeOfHeight": [
         0.128
       ],
+      "types": [
+        "capsule"
+      ],
       "bones": [
         "mixamorigNeck"
       ]
     },
-    "torso": {
-      "vertices": 595,
-      "purity": 0.8,
-      "volumes": 4,
+    "chest": {
+      "vertices": 186,
+      "purity": 0.96,
+      "volumes": 2,
       "sizeOfHeight": [
-        0.306,
-        0.342,
         0.388,
         0.138
       ],
+      "types": [
+        "box"
+      ],
       "bones": [
-        "mixamorigHips",
-        "mixamorigSpine",
         "mixamorigSpine1",
         "mixamorigSpine2"
       ]
     },
-    "elbow": {
-      "vertices": 163,
+    "abdomen": {
+      "vertices": 232,
+      "purity": 0.84,
+      "volumes": 1,
+      "sizeOfHeight": [
+        0.342
+      ],
+      "types": [
+        "box"
+      ],
+      "bones": [
+        "mixamorigSpine"
+      ]
+    },
+    "pelvis": {
+      "vertices": 130,
+      "purity": 1,
+      "volumes": 1,
+      "sizeOfHeight": [
+        0.306
+      ],
+      "types": [
+        "box"
+      ],
+      "bones": [
+        "mixamorigHips"
+      ]
+    },
+    "shoulder": {
+      "vertices": 97,
       "purity": 1,
       "volumes": 2,
       "sizeOfHeight": [
-        0.181,
-        0.144
+        0.246,
+        0.202
+      ],
+      "types": [
+        "cylinder"
+      ],
+      "bones": [
+        "mixamorigLeftArm",
+        "mixamorigRightArm"
+      ]
+    },
+    "upper_arm": {
+      "vertices": 989,
+      "purity": 0.65,
+      "volumes": 2,
+      "sizeOfHeight": [
+        0.27,
+        0.247
+      ],
+      "types": [
+        "capsule"
+      ],
+      "bones": [
+        "mixamorigLeftArm",
+        "mixamorigRightArm"
+      ]
+    },
+    "elbow": {
+      "vertices": 142,
+      "purity": 1,
+      "volumes": 2,
+      "sizeOfHeight": [
+        0.279,
+        0.202
+      ],
+      "types": [
+        "cylinder"
       ],
       "bones": [
         "mixamorigLeftForeArm",
@@ -191,12 +265,15 @@
       ]
     },
     "forearm": {
-      "vertices": 949,
-      "purity": 0.9,
+      "vertices": 808,
+      "purity": 0.89,
       "volumes": 2,
       "sizeOfHeight": [
         0.237,
-        0.214
+        0.215
+      ],
+      "types": [
+        "capsule"
       ],
       "bones": [
         "mixamorigLeftForeArm",
@@ -204,27 +281,189 @@
       ]
     },
     "wrist": {
-      "vertices": 187,
-      "purity": 0.83,
-      "volumes": 1,
+      "vertices": 280,
+      "purity": 0.86,
+      "volumes": 2,
       "sizeOfHeight": [
-        0.175
+        0.238,
+        0.207
+      ],
+      "types": [
+        "cylinder"
       ],
       "bones": [
+        "mixamorigLeftHand",
         "mixamorigRightHand"
       ]
     },
-    "knee": {
-      "vertices": 489,
+    "hand": {
+      "vertices": 139,
+      "purity": 0.73,
+      "volumes": 2,
+      "sizeOfHeight": [
+        0.181,
+        0.147
+      ],
+      "types": [
+        "box"
+      ],
+      "bones": [
+        "mixamorigLeftHand",
+        "mixamorigRightHand"
+      ]
+    },
+    "thumb": {
+      "vertices": 656,
+      "purity": 0.76,
+      "volumes": 6,
+      "sizeOfHeight": [
+        0.169,
+        0.08,
+        0.083,
+        0.151,
+        0.091,
+        0.099
+      ],
+      "types": [
+        "capsule"
+      ],
+      "bones": [
+        "mixamorigLeftHandThumb1",
+        "mixamorigLeftHandThumb2",
+        "mixamorigLeftHandThumb3",
+        "mixamorigRightHandThumb1",
+        "mixamorigRightHandThumb2",
+        "mixamorigRightHandThumb3"
+      ]
+    },
+    "fingers": {
+      "vertices": 1504,
+      "purity": 0.94,
+      "volumes": 24,
+      "sizeOfHeight": [
+        0.083,
+        0.065,
+        0.057,
+        0.095,
+        0.065,
+        0.061
+      ],
+      "types": [
+        "capsule"
+      ],
+      "bones": [
+        "mixamorigLeftHandIndex1",
+        "mixamorigLeftHandIndex2",
+        "mixamorigLeftHandIndex3",
+        "mixamorigLeftHandMiddle1",
+        "mixamorigLeftHandMiddle2",
+        "mixamorigLeftHandMiddle3",
+        "mixamorigLeftHandPinky1",
+        "mixamorigLeftHandPinky2",
+        "mixamorigLeftHandPinky3",
+        "mixamorigLeftHandRing1",
+        "mixamorigLeftHandRing2",
+        "mixamorigLeftHandRing3"
+      ]
+    },
+    "hip": {
+      "vertices": 77,
+      "purity": 0.97,
+      "volumes": 2,
+      "sizeOfHeight": [
+        0.278,
+        0.228
+      ],
+      "types": [
+        "cylinder"
+      ],
+      "bones": [
+        "mixamorigLeftUpLeg",
+        "mixamorigRightUpLeg"
+      ]
+    },
+    "thigh": {
+      "vertices": 706,
       "purity": 1,
       "volumes": 2,
       "sizeOfHeight": [
-        0.18,
-        0.19
+        0.243,
+        0.244
+      ],
+      "types": [
+        "capsule"
+      ],
+      "bones": [
+        "mixamorigLeftUpLeg",
+        "mixamorigRightUpLeg"
+      ]
+    },
+    "knee": {
+      "vertices": 359,
+      "purity": 1,
+      "volumes": 2,
+      "sizeOfHeight": [
+        0.188,
+        0.196
+      ],
+      "types": [
+        "cylinder"
       ],
       "bones": [
         "mixamorigLeftLeg",
         "mixamorigRightLeg"
+      ]
+    },
+    "shin": {
+      "vertices": 838,
+      "purity": 0.88,
+      "volumes": 2,
+      "sizeOfHeight": [
+        0.226,
+        0.211
+      ],
+      "types": [
+        "capsule"
+      ],
+      "bones": [
+        "mixamorigLeftLeg",
+        "mixamorigRightLeg"
+      ]
+    },
+    "ankle": {
+      "vertices": 92,
+      "purity": 1,
+      "volumes": 2,
+      "sizeOfHeight": [
+        0.236,
+        0.23
+      ],
+      "types": [
+        "cylinder"
+      ],
+      "bones": [
+        "mixamorigLeftFoot",
+        "mixamorigRightFoot"
+      ]
+    },
+    "foot": {
+      "vertices": 898,
+      "purity": 0.9,
+      "volumes": 4,
+      "sizeOfHeight": [
+        0.227,
+        0.183,
+        0.246,
+        0.183
+      ],
+      "types": [
+        "capsule"
+      ],
+      "bones": [
+        "mixamorigLeftFoot",
+        "mixamorigLeftToeBase",
+        "mixamorigRightFoot",
+        "mixamorigRightToeBase"
       ]
     }
   },

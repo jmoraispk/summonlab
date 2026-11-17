@@ -83,6 +83,9 @@ async function load(id) {
 	ch = await E.loadCharacter(entry, '');
 	stage.scene.add(ch.root);
 	api.ch = ch;
+	// Import cleanup (floating islands, skirt weights) unless ?cleanup=0 or the entry opts out.
+	ch.cleanup = params.get('cleanup') === '0' || entry.cleanup === false ? null : E.skinCleanup(ch, { islands: entry.removeIslands ? 'remove' : 'report' });
+	api.cleanup = ch.cleanup;
 	$('clip').innerHTML = ['(rest pose)', ...Object.keys(ch.clips)].map((c) => `<option>${c}</option>`).join('');
 	$('weapon').innerHTML = ['', ...Object.keys(entry.weapons ?? {})].map((w) => `<option value="${w}">${w || '(none)'}</option>`).join('');
 	const hr = E.hitRegions(ch);
@@ -90,7 +93,7 @@ async function load(id) {
 	ch.hitVolumes = hr.volumes;
 	api.hits = hr.summary;
 	api.rigCheck = hr.rig;
-	$('region').innerHTML = ['', ...E.HIT_REGIONS].map((r) => `<option value="${r}">${r || '(none)'}</option>`).join('');
+	$('region').innerHTML = ['', '*', ...E.HIT_REGIONS].map((r) => `<option value="${r}">${r === '*' ? '(all regions)' : r || '(none)'}</option>`).join('');
 	$('source').src = entry.source ?? '';
 	const sk = E.describeSkeleton(ch);
 	api.skeleton = sk;
@@ -140,15 +143,26 @@ async function kill(clip = $('clip').value, t = null) {
 api.load = load; api.play = play; api.setWeapon = setWeapon; api.kill = kill;
 api.setTime = (t) => { ch.mixer.setTime(t); ch.root.updateMatrixWorld(true); };
 api.simulate = (seconds) => { for (let i = 0; i < Math.round(seconds * 60); i++) E.stepRagdoll(ch, rag); return E.ragdollStats(rag, ch); };
-api.region = (r) => E.showRegion(ch, masks, r);
+api.region = (r, opts) => E.showRegion(ch, masks, r, ch.hitVolumes, opts);
 api.light = (m) => E.setLighting(stage, m);
 api.yaw = (deg) => { ch.root.rotation.y = (deg * Math.PI) / 180; ch.root.updateMatrixWorld(true); };
-api.view = (name) => {
+api.view = (name, k = 1) => {
 	const h = ch.height;
 	const views = { front: [0, 0.6, 3.0], side: [3.0, 0.6, 0], threeq: [2.1, 0.75, 2.4], close: [0.9, 0.85, 1.6] };
 	const [x, y, z] = views[name] ?? views.front;
-	stage.camera.position.set(x * h, y * h, z * h);
+	stage.camera.position.set(x * h * k, (0.48 + (y - 0.48) * k) * h, z * h * k);
 	stage.controls.target.set(0, h * 0.48, 0);
+	stage.controls.update();
+};
+api.focus = (canonKey) => {
+	// Close-up on a canonical bone (e.g. hand_r), from the outside of that side, slightly in front.
+	const b = ch.bones.canon[canonKey];
+	if (!b) return;
+	ch.root.updateMatrixWorld(true);
+	const t = b.getWorldPosition(new THREE.Vector3()), h = ch.height;
+	const out = Math.sign(t.x || 1);
+	stage.camera.position.set(t.x + out * 0.3 * h, t.y + 0.12 * h, t.z + 0.45 * h);
+	stage.controls.target.copy(t);
 	stage.controls.update();
 };
 api.tag = (t) => ($('tag').textContent = t ?? '');

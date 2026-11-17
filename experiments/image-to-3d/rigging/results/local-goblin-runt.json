@@ -1,9 +1,14 @@
 {
   "entry": "local/goblin-runt",
   "label": "Local baseline · Goblin Runt (crouched)",
-  "at": "2026-11-17T16:04:15.429Z",
+  "at": "2026-11-17T17:11:31.345Z",
   "autoFacingYaw": 0,
   "bindVsNodeRest": [],
+  "cleanup": {
+    "floatingIslands": [],
+    "keptIslands": 0,
+    "skirtVertices": 0
+  },
   "skeleton": {
     "count": 16,
     "roots": [
@@ -164,10 +169,10 @@
         "bodies": 12,
         "joints": 11,
         "excludedPairs": 38,
-        "limitHits": 92,
-        "maxLimitExcess": 0.36,
-        "maxSpeed": 4.02,
-        "lowestBodyY": 0.17,
+        "limitHits": 200,
+        "maxLimitExcess": 0.42,
+        "maxSpeed": 4.01,
+        "lowestBodyY": 0.171,
         "maxJointSeparation": 0,
         "steps": 12
       },
@@ -176,10 +181,10 @@
         "bodies": 12,
         "joints": 11,
         "excludedPairs": 38,
-        "limitHits": 277,
-        "maxLimitExcess": 0.53,
-        "maxSpeed": 3.28,
-        "lowestBodyY": 0.102,
+        "limitHits": 659,
+        "maxLimitExcess": 0.42,
+        "maxSpeed": 2.07,
+        "lowestBodyY": 0.095,
         "maxJointSeparation": 0,
         "steps": 24
       },
@@ -188,10 +193,10 @@
         "bodies": 12,
         "joints": 11,
         "excludedPairs": 38,
-        "limitHits": 687,
-        "maxLimitExcess": 0.53,
-        "maxSpeed": 0.49,
-        "lowestBodyY": 0.094,
+        "limitHits": 1324,
+        "maxLimitExcess": 0.42,
+        "maxSpeed": 0.59,
+        "lowestBodyY": 0.092,
         "maxJointSeparation": 0,
         "steps": 42
       },
@@ -200,10 +205,10 @@
         "bodies": 12,
         "joints": 11,
         "excludedPairs": 38,
-        "limitHits": 1305,
-        "maxLimitExcess": 0.55,
-        "maxSpeed": 0.53,
-        "lowestBodyY": 0.095,
+        "limitHits": 2506,
+        "maxLimitExcess": 0.42,
+        "maxSpeed": 0.15,
+        "lowestBodyY": 0.091,
         "maxJointSeparation": 0,
         "steps": 72
       },
@@ -212,10 +217,10 @@
         "bodies": 12,
         "joints": 11,
         "excludedPairs": 38,
-        "limitHits": 2942,
-        "maxLimitExcess": 1.26,
+        "limitHits": 5564,
+        "maxLimitExcess": 0.42,
         "maxSpeed": 0.09,
-        "lowestBodyY": 0.097,
+        "lowestBodyY": 0.091,
         "maxJointSeparation": 0,
         "steps": 150
       }
@@ -223,8 +228,8 @@
   },
   "hitRegions": {
     "head": {
-      "vertices": 996,
-      "purity": 0.93,
+      "vertices": 954,
+      "purity": 0.94,
       "volumes": 1,
       "sizeOfHeight": [
         0.344
@@ -234,8 +239,8 @@
       ]
     },
     "throat": {
-      "vertices": 2584,
-      "purity": 0.58,
+      "vertices": 2063,
+      "purity": 0.56,
       "volumes": 1,
       "sizeOfHeight": [
         0.26
@@ -244,33 +249,75 @@
         "neck"
       ]
     },
-    "torso": {
-      "vertices": 1522,
-      "purity": 0.72,
-      "volumes": 2,
+    "chest": {
+      "vertices": 435,
+      "purity": 0.78,
+      "volumes": 1,
       "sizeOfHeight": [
-        0.204,
         0.327
       ],
       "bones": [
-        "hips",
         "spine"
       ]
     },
-    "elbow": {
-      "vertices": 815,
-      "purity": 0.34,
+    "abdomen": {
+      "vertices": 0,
+      "purity": null,
+      "volumes": 0,
+      "sizeOfHeight": [],
+      "bones": []
+    },
+    "pelvis": {
+      "vertices": 0,
+      "purity": null,
       "volumes": 1,
       "sizeOfHeight": [
-        0.266
+        0.204
+      ],
+      "bones": [
+        "hips"
+      ]
+    },
+    "shoulder": {
+      "vertices": 1565,
+      "purity": 0.65,
+      "volumes": 2,
+      "sizeOfHeight": [
+        0.149,
+        0.305
+      ],
+      "bones": [
+        "upperarmL",
+        "upperarmR"
+      ]
+    },
+    "upper_arm": {
+      "vertices": 990,
+      "purity": 0.48,
+      "volumes": 2,
+      "sizeOfHeight": [
+        0.259,
+        0.392
+      ],
+      "bones": [
+        "upperarmL",
+        "upperarmR"
+      ]
+    },
+    "elbow": {
+      "vertices": 1479,
+      "purity": 0.36,
+      "volumes": 1,
+      "sizeOfHeight": [
+        0.333
       ],
       "bones": [
         "forearmR"
       ]
     },
     "forearm": {
-      "vertices": 1092,
-      "purity": 0.64,
+      "vertices": 342,
+      "purity": 0.71,
       "volumes": 2,
       "sizeOfHeight": [
         0.163,
@@ -282,19 +329,103 @@
       ]
     },
     "wrist": {
-      "vertices": 673,
-      "purity": 1,
+      "vertices": 1046,
+      "purity": 0.93,
       "volumes": 2,
       "sizeOfHeight": [
-        0.073,
-        0.185
+        0.167,
+        0.233
       ],
       "bones": [
         "handL",
         "handR"
       ]
     },
+    "hand": {
+      "vertices": 0,
+      "purity": null,
+      "volumes": 0,
+      "sizeOfHeight": [],
+      "bones": []
+    },
+    "thumb": {
+      "vertices": 0,
+      "purity": null,
+      "volumes": 0,
+      "sizeOfHeight": [],
+      "bones": []
+    },
+    "fingers": {
+      "vertices": 0,
+      "purity": null,
+      "volumes": 0,
+      "sizeOfHeight": [],
+      "bones": []
+    },
+    "hip": {
+      "vertices": 672,
+      "purity": 0.06,
+      "volumes": 2,
+      "sizeOfHeight": [
+        0.378,
+        0.17
+      ],
+      "bones": [
+        "thighL",
+        "thighR"
+      ]
+    },
+    "thigh": {
+      "vertices": 13,
+      "purity": 0,
+      "volumes": 2,
+      "sizeOfHeight": [
+        0.417,
+        0.431
+      ],
+      "bones": [
+        "thighL",
+        "thighR"
+      ]
+    },
     "knee": {
+      "vertices": 4362,
+      "purity": 0.95,
+      "volumes": 1,
+      "sizeOfHeight": [
+        0.362
+      ],
+      "bones": [
+        "shinR"
+      ]
+    },
+    "shin": {
+      "vertices": 343,
+      "purity": 0,
+      "volumes": 2,
+      "sizeOfHeight": [
+        0.791,
+        0.733
+      ],
+      "bones": [
+        "shinL",
+        "shinR"
+      ]
+    },
+    "ankle": {
+      "vertices": 12829,
+      "purity": 0.19,
+      "volumes": 2,
+      "sizeOfHeight": [
+        0.894,
+        0.96
+      ],
+      "bones": [
+        "footL",
+        "footR"
+      ]
+    },
+    "foot": {
       "vertices": 0,
       "purity": null,
       "volumes": 0,

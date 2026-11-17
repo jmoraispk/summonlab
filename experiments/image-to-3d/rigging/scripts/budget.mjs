@@ -2,11 +2,13 @@
 // triangle budget, WebP textures at the budget size, quantize, meshopt compression; animations resampled)
 // applied to every rigged / animated / prop GLB from the Tripo API sample and the Studio rigs.
 // Writes work/optimized/<name>.glb and rigging/results/budget.json.
-import { readdir, stat, writeFile, mkdir } from 'node:fs/promises';
+import { readdir, stat, writeFile, mkdir, readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { NodeIO } from '@gltf-transform/core';
 import { ALL_EXTENSIONS } from '@gltf-transform/extensions';
-import { dedup, weld, simplify, prune, textureCompress, quantize, meshopt, resample } from '@gltf-transform/functions';
+import { dedup, weld, simplify, prune, textureCompress, quantize, meshopt, resample, compactPrimitive } from '@gltf-transform/functions';
+
+const compactPrimitives = () => (doc) => { for (const m of doc.getRoot().listMeshes()) for (const p of m.listPrimitives()) compactPrimitive(p); };
 import { MeshoptSimplifier, MeshoptEncoder, MeshoptDecoder } from 'meshoptimizer';
 import sharp from 'sharp';
 
@@ -35,9 +37,23 @@ async function optimize(src, out, budget) {
 	const doc = await io.read(src);
 	await doc.transform(dedup(), weld());
 	let ratio = Math.min(1, budget.tris / tris(doc));
-	for (let i = 0; i < 6 && tris(doc) > budget.tris; i++) {
-		await doc.transform(simplify({ simplifier: MeshoptSimplifier, ratio, error: 0.02 * (i + 1), lockBorder: false }));
-		ratio *= 0.85;
+	// meshoptimizer stops early at UV seams; keep tightening ratio and error until under budget.
+	for (let i = 0; i < 12 && tris(doc) > budget.tris; i++) {
+		await doc.transform(simplify({ simplifier: MeshoptSimplifier, ratio, error: Math.min(0.02 * (i + 1), 0.15), lockBorder: false }));
+		ratio *= 0.8;
+	}
+	// Last resort when seams still block the budget (the helmet stalled at 3,519): sloppy simplification
+	// ignores topology, so it only trims the final few percent.
+	const total = tris(doc);
+	if (total > budget.tris) {
+		for (const prim of doc.getRoot().listMeshes().flatMap((m) => m.listPrimitives())) {
+			const idx = prim.getIndices(), pos = prim.getAttribute('POSITION');
+			if (!idx || prim.listTargets().length) continue;
+			const target = Math.floor((idx.getCount() * budget.tris) / total / 3) * 3;
+			const [out] = MeshoptSimplifier.simplifySloppy(Uint32Array.from(idx.getArray()), Float32Array.from(pos.getArray()), 3, null, target, 0.05);
+			idx.setArray(out);
+		}
+		await doc.transform(compactPrimitives());
 	}
 	await doc.transform(resample(), prune(),
 		textureCompress({ encoder: sharp, targetFormat: 'webp', quality: 82, resize: [budget.tex, budget.tex] }),
@@ -57,7 +73,8 @@ for (const f of ['goblin_warrior_3d_model_rigged.glb', 'clay_gollem_guardian_3d_
 
 await mkdir(OUT, { recursive: true });
 const report = [];
-for (const j of jobs) {
+const only = process.argv.slice(2);
+for (const j of jobs.filter((x) => !only.length || only.some((o) => x.name.includes(o)))) {
 	const budget = BUDGET[j.kind];
 	const out = path.join(OUT, `${j.name}.glb`);
 	await optimize(j.file, out, budget);
@@ -66,4 +83,7 @@ for (const j of jobs) {
 	report.push({ name: j.name, kind: j.kind, budget, raw, optimized: opt, withinBudget: ok });
 	console.log(j.name.padEnd(44), `${raw.triangles} tris ${(raw.bytes / 1048576).toFixed(1)} MB -> ${opt.triangles} tris ${(opt.bytes / 1024).toFixed(0)} KB`, ok ? 'OK' : 'OVER');
 }
-await writeFile(path.join(RIG, 'results/budget.json'), JSON.stringify(report, null, 2));
+// Merge into the existing report so a filtered run does not drop other entries.
+const prior = await readFile(path.join(RIG, 'results/budget.json'), 'utf8').then(JSON.parse, () => []);
+const merged = [...prior.filter((r) => !report.some((x) => x.name === r.name)), ...report].sort((a, b) => a.name.localeCompare(b.name));
+await writeFile(path.join(RIG, 'results/budget.json'), JSON.stringify(merged, null, 2));

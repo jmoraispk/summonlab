@@ -58,19 +58,26 @@ for (const [id, file, label, height] of [['goblin', 'goblin_warrior_3d_model_rig
 		rigged: `tripo-exports/studio/${file}`, clips: {}, source: o.source ?? null, weapons: await weapons(id) });
 }
 // Experiment 2b API sample: <name>-<arm>--rig-<type>, clips from <name>-<arm>--anim-<i> (several clips per file).
-const SAMPLE = { asha: ['Asha', 1.7, 'biped'], wolf: ['Gray Wolf', 0.85, 'quadruped'], hawk: ['Hunting Hawk', 0.6, 'avian'], armor: ['Iron armor set on mannequin', 1.8, 'biped'] };
+const SAMPLE = { asha: ['Asha', 1.7, 'biped'], wolf: ['Gray Wolf', 0.85, 'quadruped'], hawk: ['Hunting Hawk', 0.6, 'avian'], armor: ['Iron armor set on mannequin', 1.8, 'biped'],
+	golem: ['Clay Figure golem', 1.8, 'biped'], wenyn: ['Wenyn Amarun', 1.83, 'biped'], kelan: ['Kelan Grelan', 1.55, 'biped'] };
 const steps = (await exists(HOSTED)) ? await readdir(HOSTED) : [];
 for (const step of steps.sort()) {
-	const m = step.match(/^(asha|wolf|hawk|armor)-(neutral|original|set)--rig-(\w+)$/);
+	const m = step.match(/^(asha|wolf|hawk|armor|golem|wenyn|kelan)-(neutral|original|set)--rig-(\w+)$/);
 	if (!m || !(await hostedOk(step))) continue;
 	const [, name, arm, rigType] = m;
 	const [label, height] = SAMPLE[name];
-	const clipFiles = steps.filter((x) => x.startsWith(`${name}-${arm}--anim-`)).sort().map((x) => hosted(x));
-	const o = overrides[`${name}-${arm}`] ?? {};
+	const clipFiles = rigType === 'others' ? [] : steps.filter((x) => x.startsWith(`${name}-${arm}--anim-`)).sort().map((x) => hosted(x));
+	const o = overrides[`${name}-${arm}${rigType === 'others' ? '-others' : ''}`] ?? {};
 	const src = arm === 'neutral' ? hosted(`${name}-${arm}--image`, 'generated_image_url.png') : `../work/sample/${name}__source.png`;
-	entries.push({ id: `api/${name}-${arm}`, label: `API · ${label} (${arm === 'neutral' ? 'neutral-pose image' : arm === 'set' ? 'set' : 'original art'}, ${rigType})`,
+	entries.push({ id: `api/${name}-${arm}${rigType === 'others' ? '-others' : ''}`, label: `API · ${label} (${arm === 'neutral' ? 'neutral-pose image' : arm === 'set' ? 'set' : 'original art'}, ${rigType})`,
 		tool: 'tripo-api', subject: name, kind: rigType, height: o.height ?? height, facing: o.facing ?? 0, rigged: hosted(step), clips: {}, clipFiles,
-		source: o.source ?? src, weapons: rigType === 'biped' ? await weapons(name) : {} });
+		source: o.source ?? src, removeIslands: o.removeIslands ?? false, weapons: rigType === 'biped' ? await weapons(name) : {} });
+}
+// Clip sharing: humanoid rigs playing Asha's Tripo clips (rotations only, root scaled at load).
+const ashaClips = entries.find((e) => e.id === 'api/asha-neutral')?.clipFiles;
+for (const id of ['api/golem-neutral', 'api/wenyn-neutral', 'api/kelan-neutral']) {
+	const e = entries.find((x) => x.id === id);
+	if (ashaClips && e) entries.push({ ...e, id: `share/${id.split('/')[1]}-asha-clips`, label: `Clip sharing · ${e.label.replace('API · ', '')} playing Asha's clips`, clipFiles: ashaClips });
 }
 await writeFile(path.join(RIG, 'manifest.json'), JSON.stringify({ entries }, null, 2));
 console.log(`manifest: ${entries.length} entries`, entries.map((e) => e.id).join(', '));

@@ -48,3 +48,28 @@ M/ = https://docs.meshy.ai/en/api/ . "Unverified" marks claims the docs leave op
 - Prices: image→3D 30 textured; remesh 5; rig 5; animation 3 per action; Pro $20 / 1,000 credits.
   Paid plans own outputs (Terms §3.2); Meshy may train on non-Enterprise content unless you opt out (§2.9).
   (M/pricing, https://www.meshy.ai/terms-of-use)
+
+## Learned while running Experiment 2b (2026-11-17)
+
+- Concurrency: image-to-image runs **one task at a time** per account; image-to-model, rig and retarget
+  accept several (we ran up to six). Extra submissions return HTTP 429 `code 2000` "exceeded the limit
+  of generation"; nothing is charged. `scripts/tripo.py` queues four tasks per process and retries 429s.
+- Rig models (T/animations-rig): default `v1.0-20240301` is biped-only with **90+ presets**;
+  `v2.5-20260210` covers quadruped, hexapod, octopod, serpentine, aquatic and avian; `v3.0-20260909`
+  is the humanoid model and the **only one that accepts `rig_type: others`** (v2.5 fails it with
+  error 1004 "Invalid input parameter"). `spec` (tripo, mixamo, actorcore, unity, unreal, vrm) applies to
+  bipeds only.
+- Retarget presets (T/animations-retarget): v3.0 bipeds have 11 (`preset:idle|walk|run|dive|climb|jump|
+  slash|shoot|hurt|fall|turn`). v1.0 bipeds have 90+ as `preset:biped:<name>`, including combat-relevant
+  `chop`, `box_01..03`, `front_kick_01..02`, `cast_a_spell`, `fire`, `shoot`, `slash`,
+  `hit_to_head|body_01|body_02|side|stomach`, `hurt`, `defeat_02..03`, `fall`, `flee_01..02`. Non-biped:
+  `preset:quadruped:walk`, `preset:hexapod:walk`, `preset:octopod:walk`, `preset:serpentine:march`,
+  `preset:aquatic:march`; **no avian preset**. Whether v1.0 presets work on a v3.0 rig, and whether a
+  v1.0 rig accepts `spec: mixamo`, is undocumented.
+- rig-check's `rig_type` is only a hint (it answered `biped` for a sword); `riggable` was reliable in
+  every case we checked.
+- Exports: API rigs face +X or -X, not +Z (the bench derives facing from the skeleton). Non-biped exports
+  bind the root 0.18–0.28 model units away from its node translation; clips key the node value, so
+  position tracks must be rebased onto the bind pose at import.
+- Image-to-model with Smart Mesh counts quads: `face_limit` 10000 gave ~13.6k triangles; 3000 gave
+  4.6–5.2k. Use 2000 for props. Outputs carry color + normal + ORM maps at 2048².

@@ -22,6 +22,8 @@ BASE = "https://openapi.tripo3d.ai/v3"
 KEYS = Path.home() / ".config" / "image-to-3d" / "keys.env"
 PENDING = {"queued", "running"}  # any other status is terminal
 _LEDGER_LOCK = threading.Lock()
+# The API rejects extra concurrent tasks with HTTP 429; keep at most this many in flight per process.
+_SLOTS = threading.BoundedSemaphore(int(os.environ.get("TRIPO_CONCURRENCY", "4")))
 
 
 def _key(name: str = "TRIPO_API_KEY") -> str:
@@ -125,6 +127,14 @@ def run(step: str, endpoint: str, payload: dict, budget: Budget, estimate: float
         print(f"[reuse] {step} -> {prior['task_id']}")
         return prior
     budget.reserve(step, estimate)
+    _SLOTS.acquire()
+    try:
+        return _run_slot(step, endpoint, payload, budget, estimate, poll_s, timeout_s)
+    finally:
+        _SLOTS.release()
+
+
+def _run_slot(step: str, endpoint: str, payload: dict, budget: Budget, estimate: float, poll_s: float, timeout_s: float) -> dict:
     t0 = time.time()
     try:
         task_id = _create(endpoint, payload, step)

@@ -37,7 +37,13 @@ SOURCES = {
     "sword": IRON / "sword.png",
     "shield": IRON / "shield.png",
     "helmet": IRON / "heavy-armor-head.png",
+    "golem": REPO / "assets/enemies/experiments/family-affinity-v1/candidates/golems/golem-clay-figure/normal-v1.png",
+    "wenyn": REPO / "assets/heroes/approved/summonable-roster-v1/sources/wenyn-amarun/summon.png",
+    "kelan": REPO / "assets/heroes/approved/summonable-roster-v1/sources/kelan-grelan/summon.png",
 }
+T_POSE = ("Redraw {who} standing in a T-pose facing the camera straight on: arms straight out to the sides at "
+          "shoulder height, palms down, fingers together, legs straight and slightly apart, feet flat. {pron} holds "
+          "nothing. ")
 
 STYLE_TAIL = ("Full body from head to toe, nothing cropped, centered, plain light gray background, soft even studio "
               "lighting, no ground shadow, no scenery, no text, same painterly-realistic style and colors.")
@@ -56,6 +62,16 @@ PROMPTS = {
              "talons. Redraw it standing upright on the ground facing the camera straight on, with both wings fully "
              "spread out horizontally to the sides like a T-pose, flight feathers fanned, tail fanned downward, legs "
              "straight with talons flat on the ground. " + STYLE_TAIL),
+    "golem": ("The exact same clay golem as the reference: same rough brown clay surface, cracks, carved rune on the "
+              "chest, heavy blocky limbs, small head nub, thick fingers and toes, same proportions. "
+              + T_POSE.format(who="it", pron="It") + STYLE_TAIL),
+    "wenyn": ("The exact same adult man as the reference: same face, short cropped dark hair, very muscular build "
+              "and bare muscular arms, sleeveless teal tunic to the knees with a brown knotted sash, dark trousers "
+              "wrapped at the shins, and brown shoes. " + T_POSE.format(who="him", pron="He") + STYLE_TAIL),
+    "kelan": ("The exact same adult woman as the reference: same face, deep skin tone, large voluminous curly black "
+              "hair, short and broad sturdy build, rust-red hooded capelet over a black long-sleeved tunic, red sash "
+              "with a small pouch, rust-red wrap skirt over loose black trousers, and red boots. "
+              + T_POSE.format(who="her", pron="She") + STYLE_TAIL),
     "armor": ("Assemble these four iron armor pieces into one complete suit worn by a plain smooth gray featureless "
               "mannequin standing in an A-pose facing the camera straight on: the helmet on its head, the cuirass "
               "with pauldrons on its chest and shoulders, the plated leg armor on its legs, and the boots on its "
@@ -125,6 +141,8 @@ def rig(step: str, model_task: str, rig_type: str, budget: tripo.Budget) -> dict
     payload = {"input": model_task, "rig_type": rig_type, "out_format": "glb"}
     if rig_type == "biped":
         payload.update(model=RIG_BIPED, spec="mixamo")
+    elif rig_type == "others":
+        payload.update(model=RIG_BIPED)  # "others" exists only on v3.0 (v2.5 rejects it with error 1004)
     else:
         payload.update(model=RIG_OTHER)
     return tripo.run(step, "/animations/rig", payload, budget, estimate=25)
@@ -162,6 +180,13 @@ def creature(name: str, neutral: bool, budget: tripo.Budget, expect: str, preset
         animate(f"{name}-{arm}--anim-{i}", r["task_id"], group, budget)
 
 
+def golem_both_rigs(budget: tripo.Budget) -> None:
+    """Owner question: biped (Mixamo) or "others" for a humanoid-shaped monster, from the same T-pose model."""
+    creature("golem", True, budget, "biped", BIPED_DONOR)
+    model = tripo.done("golem-neutral--model")
+    rig("golem-neutral--rig-others", model["task_id"], "others", budget)
+
+
 def piece(name: str, budget: tripo.Budget) -> None:
     to_model(f"{name}--model", token(prepared(name)), budget, 3000)
 
@@ -188,6 +213,9 @@ CHAINS = {
     "shield": lambda b: piece("shield", b),
     "helmet": lambda b: piece("helmet", b),
     "armor-set": armor,
+    "golem-neutral": golem_both_rigs,
+    "wenyn-neutral": lambda b: creature("wenyn", True, b, "biped", BIPED_DONOR),
+    "kelan-neutral": lambda b: creature("kelan", True, b, "biped", BIPED_DONOR),
 }
 
 

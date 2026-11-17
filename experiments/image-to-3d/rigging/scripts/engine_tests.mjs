@@ -10,6 +10,12 @@ import sharp from 'sharp';
 const RIG = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..');
 const EXP = path.resolve(RIG, '..');
 const PORT = 5182;
+// RAW=1 runs without the import cleanup, to measure what it changes.
+const CLEANUP = process.env.RAW === '1' ? '&cleanup=0' : '';
+const SUFFIX = process.env.RAW === '1' ? '--raw' : '';
+// PARTS=hits re-runs only the skeleton, cleanup, rig check and hit regions, keeping the other results.
+const PARTS = new Set((process.env.PARTS ?? 'all').split(','));
+const want = (part) => PARTS.has('all') || PARTS.has(part);
 const W = 360, H = 440;
 const manifest = JSON.parse(await readFile(path.join(RIG, 'manifest.json'), 'utf8'));
 const only = process.argv.slice(2);
@@ -34,15 +40,17 @@ async function strip(frames, file, cols = frames.length) {
 }
 
 for (const entry of entries) {
-	const slug = entry.id.replace(/[^a-z0-9]+/gi, '-');
+	const slug = entry.id.replace(/[^a-z0-9]+/gi, '-') + SUFFIX;
 	const out = path.join(RIG, 'previews', slug);
 	await mkdir(out, { recursive: true });
 	await mkdir(path.join(RIG, 'results'), { recursive: true });
-	await page.goto(`http://127.0.0.1:${PORT}/rigging/engine.html?shot=1&entry=${encodeURIComponent(entry.id)}`);
+	await page.goto(`http://127.0.0.1:${PORT}/rigging/engine.html?shot=1${CLEANUP}&entry=${encodeURIComponent(entry.id)}`);
 	await page.waitForFunction(() => window.__ready === true, null, { timeout: 180000 });
-	const result = { entry: entry.id, label: entry.label, at: new Date().toISOString() };
+	const prior = PARTS.has('all') ? {} : await readFile(path.join(RIG, 'results', `${slug}.json`), 'utf8').then(JSON.parse, () => ({}));
+	const result = { ...prior, entry: entry.id, label: entry.label, at: new Date().toISOString() };
 	result.autoFacingYaw = await ev(() => window.__engine.ch.autoYaw);
 	result.bindVsNodeRest = await ev(() => window.__engine.ch.restMismatch);
+	result.cleanup = await ev(() => window.__engine.cleanup);
 
 	// Skeleton and rest pose.
 	result.skeleton = await ev(() => {
@@ -58,8 +66,8 @@ for (const entry of entries) {
 	result.clips = clips;
 
 	// 1. Deformation: metric per clip, worst frame, and a 5-frame strip.
-	result.deformation = {};
-	for (const clip of clips) {
+	if (want('clips')) result.deformation = {};
+	for (const clip of want('clips') ? clips : []) {
 		const d = await ev((c) => window.__engine.E.deformation(window.__engine.ch, c, 24), clip);
 		result.deformation[clip] = d;
 		await ev(() => window.__engine.view('threeq'));
@@ -78,8 +86,8 @@ for (const entry of entries) {
 	}
 
 	// 2. Weapon attachment: each weapon in the right hand through attack and walk, then a swap.
-	result.weapons = {};
-	for (const [key, w] of Object.entries(entry.weapons ?? {})) {
+	if (want('weapons')) result.weapons = {};
+	for (const [key, w] of want('weapons') ? Object.entries(entry.weapons ?? {}) : []) {
 		try {
 			await ev((k) => window.__engine.setWeapon(k), key);
 			const frames = [];
@@ -101,7 +109,7 @@ for (const entry of entries) {
 
 	// 3. Ragdoll: kill mid-walk (or mid first clip) and fall under 3x gravity.
 	const killClip = clips.includes('walk') ? 'walk' : clips[0] ?? null;
-	{
+	if (want('ragdoll')) {
 		const dur = killClip ? result.deformation[killClip].duration : 0;
 		await ev(([c, t]) => { window.__engine.view('side'); if (c) window.__engine.play(c, t); }, [killClip, dur * 0.4]);
 		await ev(([c, t]) => window.__engine.kill(c ?? '(rest pose)', c ? t : null), [killClip, dur * 0.4]);
@@ -117,7 +125,7 @@ for (const entry of entries) {
 		}
 		await strip(frames, path.join(out, 'ragdoll.webp'), 6);
 		result.ragdoll = { killClip: killClip ?? '(rest pose, forward stumble)', killAt: +(dur * 0.4).toFixed(2), gravity: '3x', stats };
-		await page.goto(`http://127.0.0.1:${PORT}/rigging/engine.html?shot=1&entry=${encodeURIComponent(entry.id)}`);
+		await page.goto(`http://127.0.0.1:${PORT}/rigging/engine.html?shot=1${CLEANUP}&entry=${encodeURIComponent(entry.id)}`);
 		await page.waitForFunction(() => window.__ready === true, null, { timeout: 180000 });
 	}
 
@@ -125,21 +133,36 @@ for (const entry of entries) {
 	result.hitRegions = await ev(() => window.__engine.hits);
 	result.rigCheck = await ev(() => window.__engine.rigCheck);
 	const regionFrames = [];
-	for (const r of ['head', 'throat', 'torso', 'elbow', 'forearm', 'wrist', 'knee']) {
-		const pur = result.hitRegions[r]?.purity;
-		await ev(([rr, pu]) => { window.__engine.play('(rest pose)'); window.__engine.view(['elbow', 'wrist', 'forearm', 'knee'].includes(rr) ? 'threeq' : 'front'); window.__engine.region(rr); window.__engine.tag(`hit: ${rr}${pu == null ? '' : ` · purity ${Math.round(pu * 100)}%`}`); }, [r, pur]);
+	const pose = clips.includes('idle') ? 'idle' : '(rest pose)';
+	for (const [view, label] of [['front', 'all regions · front'], ['side', 'all regions · side'], ['threeq', 'all regions · three-quarter']]) {
+		await ev(([v, l, ps]) => { const a = window.__engine; a.play(ps, 0); a.view(v, 0.62); a.region('*', { wire: false }); a.tag(l); }, [view, label, pose]);
 		regionFrames.push(await snap());
 	}
+	const near = { hand: ['wrist', 'hand', 'thumb', 'fingers', 'forearm'], foot: ['ankle', 'foot', 'shin', 'knee'] };
+	for (const key of ['hand_r', 'hand_l', 'foot_r']) {
+		const ok = await ev(([k, ps, rs]) => { const a = window.__engine; if (!a.ch.bones.canon[k]) return false; a.play(ps, 0); a.region(rs, { wire: true }); a.focus(k); a.tag(`close-up · ${k.replace('_r', ' (right)').replace('_l', ' (left)')}`); return true; }, [key, pose, near[key.split('_')[0]]]);
+		if (ok) regionFrames.push(await snap());
+	}
+	await strip(regionFrames, path.join(out, 'hit-regions.webp'), 3);
+	// Legend: region colors with vertex counts and purity.
+	const regions = await ev(() => Object.entries(window.__engine.E.REGION_COLOR));
+	const rows = regions.map(([r, col], i) => {
+		const s = result.hitRegions[r];
+		const txt = `${r.replace('_', ' ')} · ${s?.vertices ?? 0} v · purity ${s?.purity == null ? '–' : Math.round(s.purity * 100) + '%'}`;
+		const x = (i % 4) * 370, y = Math.floor(i / 4) * 30;
+		return `<rect x="${x + 8}" y="${y + 8}" width="18" height="18" fill="#${col.toString(16).padStart(6, '0')}"/><text x="${x + 32}" y="${y + 22}" font-size="15" fill="#eee" font-family="sans-serif">${txt}</text>`;
+	});
+	const lh = Math.ceil(regions.length / 4) * 30 + 12;
+	await sharp(Buffer.from(`<svg xmlns="http://www.w3.org/2000/svg" width="1480" height="${lh}"><rect width="1480" height="${lh}" fill="#20242a"/>${rows.join('')}</svg>`)).webp({ quality: 85 }).toFile(path.join(out, 'hit-legend.webp'));
 	await ev(() => window.__engine.region(null));
-	await strip(regionFrames, path.join(out, 'hit-regions.webp'), 7);
 
 	// 5. Texture under day and night lighting (rest pose, front and three-quarter).
 	const tex = [];
-	for (const light of ['day', 'night']) for (const v of ['front', 'threeq']) {
+	for (const light of want('texture') ? ['day', 'night'] : []) for (const v of ['front', 'threeq']) {
 		await ev(([l, vv]) => { window.__engine.light(l); window.__engine.view(vv); window.__engine.play(window.__engine.ch.clips.idle ? 'idle' : '(rest pose)', 0); window.__engine.tag(l); }, [light, v]);
 		tex.push(await snap());
 	}
-	await strip(tex, path.join(out, 'texture-day-night.webp'), 4);
+	if (tex.length) await strip(tex, path.join(out, 'texture-day-night.webp'), 4);
 
 	await writeFile(path.join(RIG, 'results', `${slug}.json`), JSON.stringify(result, null, 2));
 	console.log('done', entry.id);

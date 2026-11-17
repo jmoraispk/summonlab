@@ -1,7 +1,39 @@
 {
 	"_note": "Per-subject settings for engine.html. height is the in-game height in meters; facing is the yaw (degrees) that turns the export to face +Z.",
-	"goblin-neutral": { "label": "Goblin Runt (neutral A-pose)", "kind": "biped", "height": 1.0, "facing": 0, "source": "tripo-exports/goblin-neutral__source.png" },
-	"goblin-crouched": { "label": "Goblin Runt (crouched, spear segmented off)", "kind": "biped", "height": 1.0, "facing": 0, "source": "../previews/sources/goblin-runt.webp" },
-	"hog": { "label": "Bristle Hog", "kind": "quadruped", "height": 0.85, "facing": 0, "source": "../previews/sources/boar-bristle-hog.webp" },
-	"raider": { "label": "Goblin Raider", "kind": "biped", "height": 1.25, "facing": 0, "source": "../previews/sources/goblin-raider.webp" }
+	"goblin-neutral": {
+		"label": "Goblin Runt (neutral A-pose)",
+		"kind": "biped",
+		"height": 1.0,
+		"facing": 0,
+		"source": "tripo-exports/goblin-neutral__source.png"
+	},
+	"goblin-crouched": {
+		"label": "Goblin Runt (crouched, spear segmented off)",
+		"kind": "biped",
+		"height": 1.0,
+		"facing": 0,
+		"source": "../previews/sources/goblin-runt.webp"
+	},
+	"hog": {
+		"label": "Bristle Hog",
+		"kind": "quadruped",
+		"height": 0.85,
+		"facing": 0,
+		"source": "../previews/sources/boar-bristle-hog.webp"
+	},
+	"raider": {
+		"label": "Goblin Raider",
+		"kind": "biped",
+		"height": 1.25,
+		"facing": 0,
+		"source": "../previews/sources/goblin-raider.webp"
+	},
+	"asha-neutral": {
+		"removeIslands": true,
+		"_review": "2026-11-17: the two floating pieces (249 + 55 vertices at hip height, right side) are the braid tip split off the braid; removal reviewed in previews/api-asha-neutral."
+	},
+	"golem-neutral-others": {
+		"facing": -90,
+		"_review": "Generic bone names give no feet or tail for automatic facing; -90 matches the biped rig of the same model."
+	}
 }

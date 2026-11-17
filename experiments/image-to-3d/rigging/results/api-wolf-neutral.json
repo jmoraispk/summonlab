@@ -1,7 +1,7 @@
 {
   "entry": "api/wolf-neutral",
   "label": "API · Gray Wolf (neutral-pose image, quadruped)",
-  "at": "2026-11-17T16:02:40.680Z",
+  "at": "2026-11-17T17:15:48.234Z",
   "autoFacingYaw": -90,
   "bindVsNodeRest": [
     {
@@ -9,6 +9,11 @@
       "offset": 0.2789
     }
   ],
+  "cleanup": {
+    "floatingIslands": [],
+    "keptIslands": 0,
+    "skirtVertices": 0
+  },
   "skeleton": {
     "count": 33,
     "roots": [
@@ -126,10 +131,10 @@
         "bodies": 27,
         "joints": 26,
         "excludedPairs": 74,
-        "limitHits": 618,
-        "maxLimitExcess": 1.52,
-        "maxSpeed": 6.82,
-        "lowestBodyY": 0.126,
+        "limitHits": 1197,
+        "maxLimitExcess": 0.92,
+        "maxSpeed": 6.44,
+        "lowestBodyY": 0.06,
         "maxJointSeparation": 0,
         "steps": 12
       },
@@ -138,10 +143,10 @@
         "bodies": 27,
         "joints": 26,
         "excludedPairs": 74,
-        "limitHits": 1384,
-        "maxLimitExcess": 1.64,
-        "maxSpeed": 3.62,
-        "lowestBodyY": 0.055,
+        "limitHits": 2561,
+        "maxLimitExcess": 0.92,
+        "maxSpeed": 2.19,
+        "lowestBodyY": 0.049,
         "maxJointSeparation": 0,
         "steps": 24
       },
@@ -150,10 +155,10 @@
         "bodies": 27,
         "joints": 26,
         "excludedPairs": 74,
-        "limitHits": 2836,
-        "maxLimitExcess": 1.64,
-        "maxSpeed": 3.27,
-        "lowestBodyY": 0.053,
+        "limitHits": 4676,
+        "maxLimitExcess": 0.92,
+        "maxSpeed": 2.37,
+        "lowestBodyY": 0.049,
         "maxJointSeparation": 0,
         "steps": 42
       },
@@ -162,10 +167,10 @@
         "bodies": 27,
         "joints": 26,
         "excludedPairs": 74,
-        "limitHits": 5428,
-        "maxLimitExcess": 1.64,
-        "maxSpeed": 1.34,
-        "lowestBodyY": 0.052,
+        "limitHits": 8617,
+        "maxLimitExcess": 0.92,
+        "maxSpeed": 0.93,
+        "lowestBodyY": 0.05,
         "maxJointSeparation": 0,
         "steps": 72
       },
@@ -174,10 +179,10 @@
         "bodies": 27,
         "joints": 26,
         "excludedPairs": 74,
-        "limitHits": 11822,
-        "maxLimitExcess": 1.64,
-        "maxSpeed": 0.36,
-        "lowestBodyY": 0.05,
+        "limitHits": 17313,
+        "maxLimitExcess": 0.92,
+        "maxSpeed": 0.35,
+        "lowestBodyY": 0.047,
         "maxJointSeparation": 0,
         "steps": 150
       }
@@ -191,6 +196,9 @@
       "sizeOfHeight": [
         0.239
       ],
+      "types": [
+        "sphere"
+      ],
       "bones": [
         "tripoHead_0"
       ]
@@ -200,28 +208,75 @@
       "purity": null,
       "volumes": 0,
       "sizeOfHeight": [],
+      "types": [],
       "bones": []
     },
-    "torso": {
-      "vertices": 1777,
-      "purity": 0.9,
-      "volumes": 3,
+    "chest": {
+      "vertices": 1261,
+      "purity": 0.89,
+      "volumes": 2,
       "sizeOfHeight": [
-        0.322,
         0.423,
         0.411
       ],
+      "types": [
+        "box"
+      ],
       "bones": [
-        "tripoSpine_0",
         "tripoSpine_1",
         "tripoSpine_2"
       ]
+    },
+    "abdomen": {
+      "vertices": 516,
+      "purity": 0.93,
+      "volumes": 1,
+      "sizeOfHeight": [
+        0.322
+      ],
+      "types": [
+        "box"
+      ],
+      "bones": [
+        "tripoSpine_0"
+      ]
+    },
+    "pelvis": {
+      "vertices": 848,
+      "purity": 0.36,
+      "volumes": 1,
+      "sizeOfHeight": [
+        0.268
+      ],
+      "types": [
+        "box"
+      ],
+      "bones": [
+        "tripoRoot"
+      ]
+    },
+    "shoulder": {
+      "vertices": 0,
+      "purity": null,
+      "volumes": 0,
+      "sizeOfHeight": [],
+      "types": [],
+      "bones": []
+    },
+    "upper_arm": {
+      "vertices": 0,
+      "purity": null,
+      "volumes": 0,
+      "sizeOfHeight": [],
+      "types": [],
+      "bones": []
     },
     "elbow": {
       "vertices": 0,
       "purity": null,
       "volumes": 0,
       "sizeOfHeight": [],
+      "types": [],
       "bones": []
     },
     "forearm": {
@@ -229,6 +284,7 @@
       "purity": null,
       "volumes": 0,
       "sizeOfHeight": [],
+      "types": [],
       "bones": []
     },
     "wrist": {
@@ -236,6 +292,47 @@
       "purity": null,
       "volumes": 0,
       "sizeOfHeight": [],
+      "types": [],
+      "bones": []
+    },
+    "hand": {
+      "vertices": 0,
+      "purity": null,
+      "volumes": 0,
+      "sizeOfHeight": [],
+      "types": [],
+      "bones": []
+    },
+    "thumb": {
+      "vertices": 0,
+      "purity": null,
+      "volumes": 0,
+      "sizeOfHeight": [],
+      "types": [],
+      "bones": []
+    },
+    "fingers": {
+      "vertices": 0,
+      "purity": null,
+      "volumes": 0,
+      "sizeOfHeight": [],
+      "types": [],
+      "bones": []
+    },
+    "hip": {
+      "vertices": 0,
+      "purity": null,
+      "volumes": 0,
+      "sizeOfHeight": [],
+      "types": [],
+      "bones": []
+    },
+    "thigh": {
+      "vertices": 0,
+      "purity": null,
+      "volumes": 0,
+      "sizeOfHeight": [],
+      "types": [],
       "bones": []
     },
     "knee": {
@@ -243,6 +340,31 @@
       "purity": null,
       "volumes": 0,
       "sizeOfHeight": [],
+      "types": [],
+      "bones": []
+    },
+    "shin": {
+      "vertices": 0,
+      "purity": null,
+      "volumes": 0,
+      "sizeOfHeight": [],
+      "types": [],
+      "bones": []
+    },
+    "ankle": {
+      "vertices": 0,
+      "purity": null,
+      "volumes": 0,
+      "sizeOfHeight": [],
+      "types": [],
+      "bones": []
+    },
+    "foot": {
+      "vertices": 0,
+      "purity": null,
+      "volumes": 0,
+      "sizeOfHeight": [],
+      "types": [],
       "bones": []
     }
   },

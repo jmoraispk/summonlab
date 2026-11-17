@@ -1,6 +1,6 @@
 {
  "note": "Tripo API tasks for Experiment 2b (task ids and upload tokens omitted).",
- "totalCredits": 720.0,
+ "totalCredits": 1135.0,
  "tasks": [
   {
    "step": "sword--model",
@@ -273,6 +273,166 @@
    "credits_consumed": 10.0,
    "seconds": 10.9,
    "at": "2026-11-17T07:53:59"
+  },
+  {
+   "step": "golem-neutral--image",
+   "endpoint": "/generation/image-to-image",
+   "status": "success",
+   "credits_consumed": 5.0,
+   "seconds": 22.5,
+   "at": "2026-11-17T08:50:32"
+  },
+  {
+   "step": "kelan-neutral--image",
+   "endpoint": "/generation/image-to-image",
+   "status": "success",
+   "credits_consumed": 5.0,
+   "seconds": 53.1,
+   "at": "2026-11-17T08:51:03"
+  },
+  {
+   "step": "wenyn-neutral--image",
+   "endpoint": "/generation/image-to-image",
+   "status": "success",
+   "credits_consumed": 5.0,
+   "seconds": 84.5,
+   "at": "2026-11-17T08:51:34"
+  },
+  {
+   "step": "golem-neutral--model",
+   "endpoint": "/generation/image-to-model",
+   "status": "success",
+   "credits_consumed": 40.0,
+   "seconds": 298.6,
+   "at": "2026-11-17T08:55:31"
+  },
+  {
+   "step": "golem-neutral--rig-check",
+   "endpoint": "/animations/rig-check",
+   "status": "success",
+   "credits_consumed": 0.0,
+   "seconds": 5.5,
+   "at": "2026-11-17T08:55:36"
+  },
+  {
+   "step": "golem-neutral--rig-biped",
+   "endpoint": "/animations/rig",
+   "status": "success",
+   "credits_consumed": 25.0,
+   "seconds": 31.5,
+   "at": "2026-11-17T08:56:08"
+  },
+  {
+   "step": "golem-neutral--anim-0",
+   "endpoint": "/animations/retarget",
+   "status": "success",
+   "credits_consumed": 50.0,
+   "seconds": 16.0,
+   "at": "2026-11-17T08:56:24"
+  },
+  {
+   "step": "golem-neutral--anim-1",
+   "endpoint": "/animations/retarget",
+   "status": "success",
+   "credits_consumed": 10.0,
+   "seconds": 5.8,
+   "at": "2026-11-17T08:56:29"
+  },
+  {
+   "step": "golem-neutral--rig-others",
+   "endpoint": "/animations/rig",
+   "status": "failed",
+   "credits_consumed": 0.0,
+   "seconds": 15.7,
+   "at": "2026-11-17T08:56:45"
+  },
+  {
+   "step": "wenyn-neutral--model",
+   "endpoint": "/generation/image-to-model",
+   "status": "success",
+   "credits_consumed": 40.0,
+   "seconds": 324.3,
+   "at": "2026-11-17T08:56:58"
+  },
+  {
+   "step": "wenyn-neutral--rig-check",
+   "endpoint": "/animations/rig-check",
+   "status": "success",
+   "credits_consumed": 0.0,
+   "seconds": 5.5,
+   "at": "2026-11-17T08:57:04"
+  },
+  {
+   "step": "wenyn-neutral--rig-biped",
+   "endpoint": "/animations/rig",
+   "status": "success",
+   "credits_consumed": 25.0,
+   "seconds": 21.3,
+   "at": "2026-11-17T08:57:25"
+  },
+  {
+   "step": "kelan-neutral--model",
+   "endpoint": "/generation/image-to-model",
+   "status": "success",
+   "credits_consumed": 40.0,
+   "seconds": 385.2,
+   "at": "2026-11-17T08:57:28"
+  },
+  {
+   "step": "kelan-neutral--rig-check",
+   "endpoint": "/animations/rig-check",
+   "status": "success",
+   "credits_consumed": 0.0,
+   "seconds": 5.5,
+   "at": "2026-11-17T08:57:33"
+  },
+  {
+   "step": "wenyn-neutral--anim-0",
+   "endpoint": "/animations/retarget",
+   "status": "success",
+   "credits_consumed": 50.0,
+   "seconds": 16.0,
+   "at": "2026-11-17T08:57:41"
+  },
+  {
+   "step": "kelan-neutral--rig-biped",
+   "endpoint": "/animations/rig",
+   "status": "success",
+   "credits_consumed": 25.0,
+   "seconds": 11.0,
+   "at": "2026-11-17T08:57:44"
+  },
+  {
+   "step": "wenyn-neutral--anim-1",
+   "endpoint": "/animations/retarget",
+   "status": "success",
+   "credits_consumed": 10.0,
+   "seconds": 10.9,
+   "at": "2026-11-17T08:57:52"
+  },
+  {
+   "step": "kelan-neutral--anim-0",
+   "endpoint": "/animations/retarget",
+   "status": "success",
+   "credits_consumed": 50.0,
+   "seconds": 16.2,
+   "at": "2026-11-17T08:58:00"
+  },
+  {
+   "step": "golem-neutral--rig-others",
+   "endpoint": "/animations/rig",
+   "status": "success",
+   "credits_consumed": 25.0,
+   "seconds": 16.1,
+   "at": "2026-11-17T08:58:01"
+  },
+  {
+   "step": "kelan-neutral--anim-1",
+   "endpoint": "/animations/retarget",
+   "status": "success",
+   "credits_consumed": 10.0,
+   "seconds": 26.3,
+   "at": "2026-11-17T08:58:27"
   }
  ]
 }
