@@ -1,0 +1,549 @@
+{
+ "kind": "quadruped",
+ "facing": "-X",
+ "voxel": 0.025,
+ "joints": {
+  "pelvis_low": [
+   0.55,
+   0.0,
+   0.5
+  ],
+  "pelvis": [
+   0.45,
+   0.0,
+   0.55
+  ],
+  "withers": [
+   -0.25,
+   0.0,
+   0.62
+  ],
+  "neck": [
+   -0.45,
+   0.0,
+   0.45
+  ],
+  "snout": [
+   -0.76,
+   0.0,
+   0.2
+  ],
+  "tail_base": [
+   0.55,
+   -0.05,
+   0.6
+  ],
+  "tail_tip": [
+   0.76,
+   -0.1,
+   0.62
+  ],
+  "shoulder.FL": [
+   -0.25,
+   -0.15,
+   0.42
+  ],
+  "elbow.FL": [
+   -0.4,
+   -0.15,
+   0.25
+  ],
+  "foot.FL": [
+   -0.54,
+   -0.15,
+   0.03
+  ],
+  "shoulder.FR": [
+   -0.22,
+   0.15,
+   0.42
+  ],
+  "elbow.FR": [
+   -0.25,
+   0.15,
+   0.22
+  ],
+  "foot.FR": [
+   -0.25,
+   0.15,
+   0.03
+  ],
+  "hip.HR": [
+   0.45,
+   0.15,
+   0.42
+  ],
+  "hock.HR": [
+   0.62,
+   0.2,
+   0.22
+  ],
+  "foot.HR": [
+   0.7,
+   0.25,
+   0.04
+  ],
+  "hip.HL": [
+   0.42,
+   -0.15,
+   0.42
+  ],
+  "hock.HL": [
+   0.35,
+   -0.15,
+   0.2
+  ],
+  "foot.HL": [
+   0.25,
+   -0.15,
+   0.03
+  ]
+ },
+ "bones": [
+  [
+   "hips",
+   "pelvis_low",
+   "pelvis",
+   null
+  ],
+  [
+   "spine",
+   "pelvis",
+   "withers",
+   "hips"
+  ],
+  [
+   "neck",
+   "withers",
+   "neck",
+   "spine"
+  ],
+  [
+   "head",
+   "neck",
+   "snout",
+   "neck"
+  ],
+  [
+   "tail",
+   "tail_base",
+   "tail_tip",
+   "hips"
+  ],
+  [
+   "upperleg.FL",
+   "shoulder.FL",
+   "elbow.FL",
+   "spine"
+  ],
+  [
+   "lowerleg.FL",
+   "elbow.FL",
+   "foot.FL",
+   "upperleg.FL"
+  ],
+  [
+   "upperleg.FR",
+   "shoulder.FR",
+   "elbow.FR",
+   "spine"
+  ],
+  [
+   "lowerleg.FR",
+   "elbow.FR",
+   "foot.FR",
+   "upperleg.FR"
+  ],
+  [
+   "upperleg.HL",
+   "hip.HL",
+   "hock.HL",
+   "hips"
+  ],
+  [
+   "lowerleg.HL",
+   "hock.HL",
+   "foot.HL",
+   "upperleg.HL"
+  ],
+  [
+   "upperleg.HR",
+   "hip.HR",
+   "hock.HR",
+   "hips"
+  ],
+  [
+   "lowerleg.HR",
+   "hock.HR",
+   "foot.HR",
+   "upperleg.HR"
+  ]
+ ],
+ "clips": [
+  {
+   "name": "walk",
+   "frames": 24,
+   "keys": [
+    {
+     "f": 1,
+     "pose": {
+      "upperleg.FL": [
+       20,
+       0,
+       0
+      ],
+      "upperleg.HR": [
+       20,
+       0,
+       0
+      ],
+      "upperleg.FR": [
+       -20,
+       0,
+       0
+      ],
+      "upperleg.HL": [
+       -20,
+       0,
+       0
+      ],
+      "lowerleg.FL": [
+       0,
+       0,
+       0
+      ],
+      "lowerleg.HR": [
+       0,
+       0,
+       0
+      ],
+      "lowerleg.FR": [
+       -25,
+       0,
+       0
+      ],
+      "lowerleg.HL": [
+       -25,
+       0,
+       0
+      ],
+      "tail": [
+       0,
+       0,
+       15
+      ],
+      "head": [
+       4,
+       0,
+       0
+      ]
+     }
+    },
+    {
+     "f": 7,
+     "pose": {
+      "upperleg.FL": [
+       0,
+       0,
+       0
+      ],
+      "upperleg.HR": [
+       0,
+       0,
+       0
+      ],
+      "upperleg.FR": [
+       0,
+       0,
+       0
+      ],
+      "upperleg.HL": [
+       0,
+       0,
+       0
+      ],
+      "lowerleg.FL": [
+       0,
+       0,
+       0
+      ],
+      "lowerleg.HR": [
+       0,
+       0,
+       0
+      ],
+      "lowerleg.FR": [
+       0,
+       0,
+       0
+      ],
+      "lowerleg.HL": [
+       0,
+       0,
+       0
+      ],
+      "tail": [
+       0,
+       0,
+       0
+      ],
+      "head": [
+       0,
+       0,
+       0
+      ]
+     }
+    },
+    {
+     "f": 13,
+     "pose": {
+      "upperleg.FL": [
+       -20,
+       0,
+       0
+      ],
+      "upperleg.HR": [
+       -20,
+       0,
+       0
+      ],
+      "upperleg.FR": [
+       20,
+       0,
+       0
+      ],
+      "upperleg.HL": [
+       20,
+       0,
+       0
+      ],
+      "lowerleg.FL": [
+       -25,
+       0,
+       0
+      ],
+      "lowerleg.HR": [
+       -25,
+       0,
+       0
+      ],
+      "lowerleg.FR": [
+       0,
+       0,
+       0
+      ],
+      "lowerleg.HL": [
+       0,
+       0,
+       0
+      ],
+      "tail": [
+       0,
+       0,
+       -15
+      ],
+      "head": [
+       -4,
+       0,
+       0
+      ]
+     }
+    },
+    {
+     "f": 19,
+     "pose": {
+      "upperleg.FL": [
+       0,
+       0,
+       0
+      ],
+      "upperleg.HR": [
+       0,
+       0,
+       0
+      ],
+      "upperleg.FR": [
+       0,
+       0,
+       0
+      ],
+      "upperleg.HL": [
+       0,
+       0,
+       0
+      ],
+      "lowerleg.FL": [
+       0,
+       0,
+       0
+      ],
+      "lowerleg.HR": [
+       0,
+       0,
+       0
+      ],
+      "lowerleg.FR": [
+       0,
+       0,
+       0
+      ],
+      "lowerleg.HL": [
+       0,
+       0,
+       0
+      ],
+      "tail": [
+       0,
+       0,
+       0
+      ],
+      "head": [
+       0,
+       0,
+       0
+      ]
+     }
+    },
+    {
+     "f": 25,
+     "pose": {
+      "upperleg.FL": [
+       20,
+       0,
+       0
+      ],
+      "upperleg.HR": [
+       20,
+       0,
+       0
+      ],
+      "upperleg.FR": [
+       -20,
+       0,
+       0
+      ],
+      "upperleg.HL": [
+       -20,
+       0,
+       0
+      ],
+      "lowerleg.FL": [
+       0,
+       0,
+       0
+      ],
+      "lowerleg.HR": [
+       0,
+       0,
+       0
+      ],
+      "lowerleg.FR": [
+       -25,
+       0,
+       0
+      ],
+      "lowerleg.HL": [
+       -25,
+       0,
+       0
+      ],
+      "tail": [
+       0,
+       0,
+       15
+      ],
+      "head": [
+       4,
+       0,
+       0
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "name": "attack",
+   "frames": 24,
+   "keys": [
+    {
+     "f": 1,
+     "pose": {}
+    },
+    {
+     "f": 8,
+     "pose": {
+      "neck": [
+       25,
+       0,
+       0
+      ],
+      "head": [
+       15,
+       0,
+       0
+      ],
+      "spine": [
+       -8,
+       0,
+       0
+      ],
+      "upperleg.FL": [
+       15,
+       0,
+       0
+      ],
+      "upperleg.FR": [
+       15,
+       0,
+       0
+      ]
+     }
+    },
+    {
+     "f": 13,
+     "pose": {
+      "neck": [
+       -35,
+       0,
+       0
+      ],
+      "head": [
+       -25,
+       0,
+       0
+      ],
+      "spine": [
+       10,
+       0,
+       0
+      ],
+      "upperleg.FL": [
+       -25,
+       0,
+       0
+      ],
+      "upperleg.FR": [
+       -25,
+       0,
+       0
+      ],
+      "upperleg.HL": [
+       20,
+       0,
+       0
+      ],
+      "upperleg.HR": [
+       20,
+       0,
+       0
+      ]
+     }
+    },
+    {
+     "f": 25,
+     "pose": {}
+    }
+   ]
+  }
+ ]
+}
