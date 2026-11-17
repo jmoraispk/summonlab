@@ -643,10 +643,42 @@ export const HIT_REGIONS = ['head', 'throat', 'chest', 'abdomen', 'pelvis', 'sho
 // Small joints win overlaps so a wrist hit is never reported as a forearm hit.
 const PRIORITY = ['wrist', 'elbow', 'knee', 'ankle', 'thumb', 'fingers', 'hand', 'shoulder', 'hip', 'throat', 'head', 'forearm',
 	'upper_arm', 'shin', 'thigh', 'foot', 'chest', 'abdomen', 'pelvis'];
-export const REGION_COLOR = Object.fromEntries(HIT_REGIONS.map((r, i) => [r, new THREE.Color().setHSL((i * 0.618034) % 1, 0.8, 0.55).getHex()]));
+export const REGION_COLOR = Object.fromEntries([...HIT_REGIONS, 'neck', 'torso', 'foreleg', 'hindleg', 'paw', 'tail'].map((r, i) => [r, new THREE.Color().setHSL((i * 0.618034) % 1, 0.8, 0.55).getHex()]));
+
+export const QUAD_REGIONS = ['head', 'neck', 'torso', 'foreleg', 'hindleg', 'paw', 'tail'];
+
+// Tripo's non-biped rigs name bones Head_*, Spine_*, <0|1>_<Left|Right>_Limb_<k> (0 = front, 1 = hind) and
+// Tail_*; map those chains to quadruped regions.
+function quadHitRegions(ch, S) {
+	const named = (re) => ch.skeleton.bones.filter((b) => re.test(b.name)).sort((a, b) => depthOf(a) - depthOf(b));
+	const vols = [];
+	const robustCap = (s, q) => Math.max(robust(s.dist, q), 0.15 * s.len);
+	const cap = (region, b, q = 0.75) => { const s = S.byBone.get(b); if (s && s.verts.length) vols.push({ region, type: 'capsule', bone: b, a: s.a.clone(), b: s.tip.clone(), r: robustCap(s, q) }); };
+	const heads = named(/Head_\d+$/);
+	if (heads.length > 1) cap('neck', heads[0], 0.7);
+	// The skull includes every bone under the head chain (jaw and ears come back as generic bone_N names).
+	const under = (b) => [b, ...b.children.filter((k) => k.isBone).flatMap(under)];
+	const skullBones = [...new Set(heads.slice(heads.length > 1 ? 1 : 0).flatMap(under))];
+	const skull = skullBones.flatMap((b) => { const s = S.byBone.get(b); return s ? s.verts : []; });
+	if (skull.length) {
+		const P = (i) => V().set(S.pos[i * 3], S.pos[i * 3 + 1], S.pos[i * 3 + 2]);
+		const ctr = skull.reduce((acc, i) => acc.add(P(i)), V()).multiplyScalar(1 / skull.length);
+		const d = skull.map((i) => ctr.distanceTo(P(i)));
+		vols.push({ region: 'head', type: 'sphere', bone: heads.at(-1), center: ctr, r: quant(d, 0.8), expect: [...heads, ...skullBones] });
+	}
+	for (const b of [...named(/Root$/), ...named(/Spine_\d+$/)]) cap('torso', b, 0.8);
+	for (const [front, region] of [['0', 'foreleg'], ['1', 'hindleg']]) for (const side of ['Left', 'Right']) {
+		const chain = named(new RegExp(`${front}_${side}_Limb_\\d+$`)).filter((b) => S.byBone.get(b));
+		chain.forEach((b, i) => cap(i === chain.length - 1 ? 'paw' : region, b));
+	}
+	for (const b of named(/Tail_\d+$/)) cap('tail', b, 0.8);
+	return vols;
+}
+const depthOf = (b) => { let d = 0; for (let x = b; x.parent; x = x.parent) d++; return d; };
 
 export function hitRegions(ch) {
 	const S = segments(ch);
+	if (ch.skeleton.bones.some((b) => /_Limb_\d+$/.test(b.name))) return finishRegions(ch, S, quadHitRegions(ch, S), QUAD_REGIONS, QUAD_REGIONS, null);
 	const c = ch.bones.canon;
 	const info = ch.bones.info;
 	const seg = (b) => (b ? S.byBone.get(b) : null);
@@ -741,6 +773,24 @@ export function hitRegions(ch) {
 			if (s) capsule('foot', s, robust(s.dist, 0.8), b === c[`foot_${side}`] ? 0.2 : 0, 1);
 		}
 	}
+	// Purity: share of a region's vertices whose dominant skin weight is on the expected bones. Low purity
+	// means the rig's weights disagree with where the bones are (a rig problem, not a hit-volume problem).
+	const fingers = (thumb) => ch.skeleton.bones.filter((b) => info.get(b)?.part === 'finger' && /thumb/i.test(b.name) === thumb);
+	const both = (k) => [c[`${k}_l`], c[`${k}_r`]];
+	const spineBones = ch.bones.byKey.spine ?? [];
+	const expect = {
+		head: [c.head], throat: [c.neck, c.head], chest: [...spineBones.slice(Math.max(0, Math.floor(spineBones.length / 2) - 1)), ...both('clavicle'), c.neck],
+		abdomen: [c.hips, ...spineBones.slice(0, Math.floor(spineBones.length / 2) + 1)], pelvis: [c.hips, ...both('thigh'), spineBones[0]],
+		shoulder: [...both('clavicle'), ...both('upperarm'), spineBones.at(-1)], upper_arm: both('upperarm'), elbow: [...both('upperarm'), ...both('forearm')],
+		forearm: both('forearm'), wrist: [...both('forearm'), ...both('hand')], hand: [...both('hand'), ...fingers(false), ...fingers(true)],
+		thumb: fingers(true), fingers: fingers(false), hip: [c.hips, ...both('thigh')], thigh: both('thigh'), knee: [...both('thigh'), ...both('shin')],
+		shin: both('shin'), ankle: [...both('shin'), ...both('foot')], foot: [...both('foot'), ...(ch.bones.byKey.toe_l ?? []), ...(ch.bones.byKey.toe_r ?? [])]
+	};
+	return finishRegions(ch, S, vols, HIT_REGIONS, PRIORITY, expect);
+}
+
+function finishRegions(ch, S, vols, REGIONS, ORDER, expect) {
+	const info = ch.bones.info;
 	// Attach every volume to its bone (bind pose -> bone-local) so it follows animation.
 	for (const v of vols) {
 		const world = new THREE.Matrix4();
@@ -762,31 +812,19 @@ export function hitRegions(ch) {
 		const l = p.clone().applyMatrix4(v.inv);
 		return Math.abs(l.x) < v.half.x && Math.abs(l.y) < v.half.y && Math.abs(l.z) < v.half.z;
 	};
-	const byRegion = Object.fromEntries(HIT_REGIONS.map((r) => [r, vols.filter((v) => v.region === r)]));
-	const masks = Object.fromEntries(HIT_REGIONS.map((r) => [r, new Uint8Array(S.n)]));
+	const byRegion = Object.fromEntries(REGIONS.map((r) => [r, vols.filter((v) => v.region === r)]));
+	const masks = Object.fromEntries(REGIONS.map((r) => [r, new Uint8Array(S.n)]));
 	const p = V();
 	for (let i = 0; i < S.n; i++) {
 		p.set(S.pos[i * 3], S.pos[i * 3 + 1], S.pos[i * 3 + 2]);
-		for (const r of PRIORITY) if (byRegion[r].some((v) => inside(v, p))) { masks[r][i] = 1; break; }
+		for (const r of ORDER) if (byRegion[r].some((v) => inside(v, p))) { masks[r][i] = 1; break; }
 	}
-	// Purity: share of a region's vertices whose dominant skin weight is on the expected bones. Low purity
-	// means the rig's weights disagree with where the bones are (a rig problem, not a hit-volume problem).
-	const fingers = (thumb) => ch.skeleton.bones.filter((b) => info.get(b)?.part === 'finger' && /thumb/i.test(b.name) === thumb);
-	const both = (k) => [c[`${k}_l`], c[`${k}_r`]];
-	const spineBones = ch.bones.byKey.spine ?? [];
-	const expect = {
-		head: [c.head], throat: [c.neck, c.head], chest: [...spineBones.slice(Math.max(0, Math.floor(spineBones.length / 2) - 1)), ...both('clavicle'), c.neck],
-		abdomen: [c.hips, ...spineBones.slice(0, Math.floor(spineBones.length / 2) + 1)], pelvis: [c.hips, ...both('thigh'), spineBones[0]],
-		shoulder: [...both('clavicle'), ...both('upperarm'), spineBones.at(-1)], upper_arm: both('upperarm'), elbow: [...both('upperarm'), ...both('forearm')],
-		forearm: both('forearm'), wrist: [...both('forearm'), ...both('hand')], hand: [...both('hand'), ...fingers(false), ...fingers(true)],
-		thumb: fingers(true), fingers: fingers(false), hip: [c.hips, ...both('thigh')], thigh: both('thigh'), knee: [...both('thigh'), ...both('shin')],
-		shin: both('shin'), ankle: [...both('shin'), ...both('foot')], foot: [...both('foot'), ...(ch.bones.byKey.toe_l ?? []), ...(ch.bones.byKey.toe_r ?? [])]
-	};
 	const mesh = ch.skinned[0];
 	const si = mesh.geometry.attributes.skinIndex, sw = mesh.geometry.attributes.skinWeight;
 	const dominant = (i) => { let best = 0, bw = -1; for (let k = 0; k < 4; k++) if (sw.getComponent(i, k) > bw) { bw = sw.getComponent(i, k); best = si.getComponent(i, k); } return mesh.skeleton.bones[best]; };
+	expect ??= Object.fromEntries(REGIONS.map((r) => [r, byRegion[r].flatMap((v) => v.expect ?? [v.bone, v.bone.parent, ...v.bone.children])]));
 	const summary = {};
-	for (const r of HIT_REGIONS) {
+	for (const r of REGIONS) {
 		const ok = new Set(expect[r].filter(Boolean));
 		let count = 0, pure = 0;
 		for (let i = 0; i < S.n; i++) if (masks[r][i]) { count++; if (ok.has(dominant(i))) pure++; }
@@ -795,7 +833,7 @@ export function hitRegions(ch) {
 			sizeOfHeight: rv.slice(0, 6).map((v) => +((v.type === 'box' ? 2 * Math.max(v.half.x, v.half.z) : 2 * v.r) / ch.height).toFixed(3)), types: [...new Set(rv.map((v) => v.type))],
 			bones: [...new Set(rv.map((v) => v.bone.name))].slice(0, 12) };
 	}
-	return { masks, summary, volumes: vols, rig: rigCheck(ch, S) };
+	return { masks, summary, volumes: vols, regions: REGIONS, rig: rigCheck(ch, S) };
 }
 
 // Rig sanity: share of each major bone's length that lies outside the mesh (approximate inside test with
@@ -836,7 +874,7 @@ export function showRegion(ch, masks, region, volumes = ch.hitVolumes, { wire = 
 	for (const m of ch.volumeMeshes ?? []) m.removeFromParent();
 	ch.volumeMeshes = [];
 	if (!region) return;
-	const regions = region === '*' ? HIT_REGIONS : Array.isArray(region) ? region : [region];
+	const regions = region === '*' ? ch.hitRegionNames ?? HIT_REGIONS : Array.isArray(region) ? region : [region];
 	const mesh = ch.skinned[0];
 	const geo = mesh.geometry.clone();
 	const n = geo.attributes.position.count;

@@ -1,0 +1,4853 @@
+{
+  "entry": "api/arachnid-crawler-neutral",
+  "label": "API · Arachnid Crawler (neutral-pose image, octopod)",
+  "at": "2026-11-17T17:56:52.543Z",
+  "autoFacingYaw": 0,
+  "bindVsNodeRest": [
+    {
+      "bone": "tripoRoot",
+      "offset": 0.2221
+    }
+  ],
+  "cleanup": {
+    "floatingIslands": [
+      {
+        "vertices": 221,
+        "gapOfHeight": 0.044,
+        "centerOfHeight": [
+          0.91,
+          0.26,
+          -0.62
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 188,
+        "gapOfHeight": 0.059,
+        "centerOfHeight": [
+          -0.46,
+          0.56,
+          0.59
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 160,
+        "gapOfHeight": 0.199,
+        "centerOfHeight": [
+          -0.35,
+          0.45,
+          0.75
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 11,
+        "gapOfHeight": 0.047,
+        "centerOfHeight": [
+          -0.37,
+          0.33,
+          -0.85
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 10,
+        "gapOfHeight": 0.035,
+        "centerOfHeight": [
+          0.17,
+          0.9,
+          0.53
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 10,
+        "gapOfHeight": 0.032,
+        "centerOfHeight": [
+          0.17,
+          0.9,
+          -0.53
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 9,
+        "gapOfHeight": 0.042,
+        "centerOfHeight": [
+          0.25,
+          0.88,
+          -0.54
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 9,
+        "gapOfHeight": 0.057,
+        "centerOfHeight": [
+          0.49,
+          0.82,
+          -0.47
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 9,
+        "gapOfHeight": 0.642,
+        "centerOfHeight": [
+          -0.36,
+          0.15,
+          0.89
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 8,
+        "gapOfHeight": 0.018,
+        "centerOfHeight": [
+          0.17,
+          0.83,
+          0.57
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 8,
+        "gapOfHeight": 0.02,
+        "centerOfHeight": [
+          0.2,
+          0.86,
+          0.6
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 8,
+        "gapOfHeight": 0.034,
+        "centerOfHeight": [
+          0.2,
+          0.86,
+          -0.61
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 8,
+        "gapOfHeight": 0.031,
+        "centerOfHeight": [
+          0.21,
+          0.82,
+          0.64
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 8,
+        "gapOfHeight": 0.028,
+        "centerOfHeight": [
+          0.21,
+          0.82,
+          -0.64
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 8,
+        "gapOfHeight": 0.066,
+        "centerOfHeight": [
+          0.23,
+          0.79,
+          0.69
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 8,
+        "gapOfHeight": 0.016,
+        "centerOfHeight": [
+          0.25,
+          0.83,
+          0.54
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 8,
+        "gapOfHeight": 0.018,
+        "centerOfHeight": [
+          0.25,
+          0.83,
+          -0.54
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 8,
+        "gapOfHeight": 0.024,
+        "centerOfHeight": [
+          0.39,
+          0.65,
+          0.4
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 8,
+        "gapOfHeight": 0.06,
+        "centerOfHeight": [
+          0.39,
+          0.65,
+          -0.4
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 8,
+        "gapOfHeight": 0.024,
+        "centerOfHeight": [
+          0.49,
+          0.82,
+          0.47
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 8,
+        "gapOfHeight": 0.039,
+        "centerOfHeight": [
+          0.54,
+          0.8,
+          0.41
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 8,
+        "gapOfHeight": 0.021,
+        "centerOfHeight": [
+          0.54,
+          0.79,
+          -0.49
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 8,
+        "gapOfHeight": 0.022,
+        "centerOfHeight": [
+          0.55,
+          0.74,
+          -0.41
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 8,
+        "gapOfHeight": 0.052,
+        "centerOfHeight": [
+          0.55,
+          0.77,
+          0.5
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 8,
+        "gapOfHeight": 0.018,
+        "centerOfHeight": [
+          -0.26,
+          0.79,
+          -0.56
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 8,
+        "gapOfHeight": 0.195,
+        "centerOfHeight": [
+          -0.27,
+          0.82,
+          0.5
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 8,
+        "gapOfHeight": 0.158,
+        "centerOfHeight": [
+          -0.32,
+          0.82,
+          0.45
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 8,
+        "gapOfHeight": 0.028,
+        "centerOfHeight": [
+          -0.33,
+          0.8,
+          -0.53
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 8,
+        "gapOfHeight": 0.208,
+        "centerOfHeight": [
+          -0.36,
+          0.79,
+          0.51
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 8,
+        "gapOfHeight": 0.029,
+        "centerOfHeight": [
+          -0.41,
+          0.15,
+          -0.91
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 7,
+        "gapOfHeight": 0.017,
+        "centerOfHeight": [
+          0.17,
+          0.77,
+          0.37
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 7,
+        "gapOfHeight": 0.047,
+        "centerOfHeight": [
+          0.21,
+          0.73,
+          -0.67
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 7,
+        "gapOfHeight": 0.038,
+        "centerOfHeight": [
+          0.21,
+          0.72,
+          0.69
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 7,
+        "gapOfHeight": 0.018,
+        "centerOfHeight": [
+          0.22,
+          0.66,
+          0.38
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 7,
+        "gapOfHeight": 0.018,
+        "centerOfHeight": [
+          0.22,
+          0.66,
+          -0.38
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 7,
+        "gapOfHeight": 0.06,
+        "centerOfHeight": [
+          0.23,
+          0.7,
+          -0.72
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 7,
+        "gapOfHeight": 0.036,
+        "centerOfHeight": [
+          0.22,
+          0.74,
+          0.4
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 7,
+        "gapOfHeight": 0.029,
+        "centerOfHeight": [
+          0.23,
+          0.68,
+          0.75
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 7,
+        "gapOfHeight": 0.025,
+        "centerOfHeight": [
+          0.23,
+          0.76,
+          -0.72
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 7,
+        "gapOfHeight": 0.056,
+        "centerOfHeight": [
+          0.23,
+          0.76,
+          0.73
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 7,
+        "gapOfHeight": 0.045,
+        "centerOfHeight": [
+          0.24,
+          0.66,
+          -0.78
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 7,
+        "gapOfHeight": 0.027,
+        "centerOfHeight": [
+          0.26,
+          0.71,
+          0.79
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 7,
+        "gapOfHeight": 0.028,
+        "centerOfHeight": [
+          0.26,
+          0.72,
+          -0.77
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 7,
+        "gapOfHeight": 0.016,
+        "centerOfHeight": [
+          0.26,
+          0.65,
+          0.75
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 7,
+        "gapOfHeight": 0.031,
+        "centerOfHeight": [
+          0.29,
+          0.72,
+          -0.68
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 7,
+        "gapOfHeight": 0.024,
+        "centerOfHeight": [
+          0.29,
+          0.74,
+          -0.64
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 7,
+        "gapOfHeight": 0.02,
+        "centerOfHeight": [
+          0.3,
+          0.72,
+          0.67
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 7,
+        "gapOfHeight": 0.02,
+        "centerOfHeight": [
+          0.3,
+          0.7,
+          0.71
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 7,
+        "gapOfHeight": 0.046,
+        "centerOfHeight": [
+          0.31,
+          0.72,
+          0.74
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 7,
+        "gapOfHeight": 0.032,
+        "centerOfHeight": [
+          0.31,
+          0.72,
+          -0.75
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 7,
+        "gapOfHeight": 0.017,
+        "centerOfHeight": [
+          0.31,
+          0.67,
+          -0.74
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 7,
+        "gapOfHeight": 0.038,
+        "centerOfHeight": [
+          0.31,
+          0.22,
+          1.01
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 7,
+        "gapOfHeight": 0.017,
+        "centerOfHeight": [
+          0.33,
+          0.53,
+          0.84
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 7,
+        "gapOfHeight": 0.039,
+        "centerOfHeight": [
+          0.42,
+          0.64,
+          0.31
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 7,
+        "gapOfHeight": 0.036,
+        "centerOfHeight": [
+          0.42,
+          0.64,
+          -0.31
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 7,
+        "gapOfHeight": 0.018,
+        "centerOfHeight": [
+          0.6,
+          0.71,
+          0.44
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 7,
+        "gapOfHeight": 0.024,
+        "centerOfHeight": [
+          0.6,
+          0.64,
+          0.53
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 7,
+        "gapOfHeight": 0.033,
+        "centerOfHeight": [
+          0.65,
+          0.63,
+          0.46
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 7,
+        "gapOfHeight": 0.027,
+        "centerOfHeight": [
+          0.65,
+          0.63,
+          -0.46
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 7,
+        "gapOfHeight": 0.04,
+        "centerOfHeight": [
+          0.67,
+          0.58,
+          0.57
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 7,
+        "gapOfHeight": 0.018,
+        "centerOfHeight": [
+          0.67,
+          0.58,
+          -0.57
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 7,
+        "gapOfHeight": 0.028,
+        "centerOfHeight": [
+          0.7,
+          0.64,
+          0.57
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 7,
+        "gapOfHeight": 0.015,
+        "centerOfHeight": [
+          0.69,
+          0.6,
+          0.48
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 7,
+        "gapOfHeight": 0.016,
+        "centerOfHeight": [
+          0.73,
+          0.63,
+          0.51
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 7,
+        "gapOfHeight": 0.039,
+        "centerOfHeight": [
+          0.73,
+          0.63,
+          -0.51
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 7,
+        "gapOfHeight": 0.018,
+        "centerOfHeight": [
+          0.84,
+          0.41,
+          0.63
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 7,
+        "gapOfHeight": 0.123,
+        "centerOfHeight": [
+          0.84,
+          0.41,
+          -0.63
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 7,
+        "gapOfHeight": 0.023,
+        "centerOfHeight": [
+          0.83,
+          0.34,
+          0.62
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 7,
+        "gapOfHeight": 0.177,
+        "centerOfHeight": [
+          0.83,
+          0.34,
+          -0.62
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 7,
+        "gapOfHeight": 0.044,
+        "centerOfHeight": [
+          -0.22,
+          0.74,
+          -0.42
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 7,
+        "gapOfHeight": 0.233,
+        "centerOfHeight": [
+          -0.27,
+          0.71,
+          0.61
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 7,
+        "gapOfHeight": 0.27,
+        "centerOfHeight": [
+          -0.28,
+          0.58,
+          0.67
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 7,
+        "gapOfHeight": 0.197,
+        "centerOfHeight": [
+          -0.28,
+          0.74,
+          0.52
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 7,
+        "gapOfHeight": 0.036,
+        "centerOfHeight": [
+          -0.28,
+          0.76,
+          -0.61
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 7,
+        "gapOfHeight": 0.295,
+        "centerOfHeight": [
+          -0.3,
+          0.69,
+          0.67
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 7,
+        "gapOfHeight": 0.038,
+        "centerOfHeight": [
+          -0.32,
+          0.99,
+          0
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 7,
+        "gapOfHeight": 0.029,
+        "centerOfHeight": [
+          -0.31,
+          0.53,
+          -0.77
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 7,
+        "gapOfHeight": 0.26,
+        "centerOfHeight": [
+          -0.34,
+          0.72,
+          0.58
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 7,
+        "gapOfHeight": 0.434,
+        "centerOfHeight": [
+          -0.33,
+          0.42,
+          0.78
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 7,
+        "gapOfHeight": 0.489,
+        "centerOfHeight": [
+          -0.34,
+          0.34,
+          0.8
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 7,
+        "gapOfHeight": 0.327,
+        "centerOfHeight": [
+          -0.35,
+          0.71,
+          0.67
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 7,
+        "gapOfHeight": 0.347,
+        "centerOfHeight": [
+          -0.36,
+          0.61,
+          0.73
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 7,
+        "gapOfHeight": 0.282,
+        "centerOfHeight": [
+          -0.37,
+          0.59,
+          0.63
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 7,
+        "gapOfHeight": 0.053,
+        "centerOfHeight": [
+          -0.38,
+          0.64,
+          -0.63
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 7,
+        "gapOfHeight": 0.03,
+        "centerOfHeight": [
+          -0.38,
+          0.65,
+          -0.71
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 7,
+        "gapOfHeight": 0.024,
+        "centerOfHeight": [
+          -0.4,
+          0.57,
+          -0.79
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 7,
+        "gapOfHeight": 0.027,
+        "centerOfHeight": [
+          -0.41,
+          0.53,
+          -0.75
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 7,
+        "gapOfHeight": 0.293,
+        "centerOfHeight": [
+          -0.43,
+          0.71,
+          0.6
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 7,
+        "gapOfHeight": 0.264,
+        "centerOfHeight": [
+          -0.44,
+          0.63,
+          0.55
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 7,
+        "gapOfHeight": 0.022,
+        "centerOfHeight": [
+          -0.43,
+          0.36,
+          -0.86
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 7,
+        "gapOfHeight": 0.02,
+        "centerOfHeight": [
+          -0.44,
+          0.28,
+          -0.86
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 7,
+        "gapOfHeight": 0.342,
+        "centerOfHeight": [
+          -0.46,
+          0.58,
+          0.66
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 7,
+        "gapOfHeight": 0.368,
+        "centerOfHeight": [
+          -0.51,
+          0.64,
+          0.66
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 7,
+        "gapOfHeight": 0.358,
+        "centerOfHeight": [
+          -0.55,
+          0.62,
+          0.63
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 7,
+        "gapOfHeight": 0.356,
+        "centerOfHeight": [
+          -0.55,
+          0.54,
+          0.62
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 7,
+        "gapOfHeight": 0.478,
+        "centerOfHeight": [
+          -0.62,
+          0.35,
+          0.74
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 7,
+        "gapOfHeight": 0.015,
+        "centerOfHeight": [
+          -0.8,
+          0.39,
+          0.28
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 7,
+        "gapOfHeight": 0.028,
+        "centerOfHeight": [
+          -0.82,
+          0.37,
+          0.22
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 7,
+        "gapOfHeight": 0.017,
+        "centerOfHeight": [
+          -0.82,
+          0.37,
+          -0.22
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 7,
+        "gapOfHeight": 0.03,
+        "centerOfHeight": [
+          -0.83,
+          0.32,
+          0.29
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 7,
+        "gapOfHeight": 0.021,
+        "centerOfHeight": [
+          -0.83,
+          0.32,
+          -0.29
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 7,
+        "gapOfHeight": 0.017,
+        "centerOfHeight": [
+          -0.86,
+          0.31,
+          0.23
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 7,
+        "gapOfHeight": 0.042,
+        "centerOfHeight": [
+          -0.86,
+          0.31,
+          -0.23
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 7,
+        "gapOfHeight": 0.033,
+        "centerOfHeight": [
+          -0.86,
+          0.33,
+          0.3
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 7,
+        "gapOfHeight": 0.021,
+        "centerOfHeight": [
+          -0.86,
+          0.33,
+          -0.3
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 6,
+        "gapOfHeight": 0.058,
+        "centerOfHeight": [
+          0,
+          0.52,
+          0.45
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 6,
+        "gapOfHeight": 0.057,
+        "centerOfHeight": [
+          0,
+          0.52,
+          -0.45
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 6,
+        "gapOfHeight": 0.023,
+        "centerOfHeight": [
+          0.18,
+          0.61,
+          0.44
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 6,
+        "gapOfHeight": 0.02,
+        "centerOfHeight": [
+          0.18,
+          0.61,
+          -0.44
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 6,
+        "gapOfHeight": 0.052,
+        "centerOfHeight": [
+          0.18,
+          0.67,
+          0.44
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 6,
+        "gapOfHeight": 0.035,
+        "centerOfHeight": [
+          0.18,
+          0.67,
+          -0.44
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 6,
+        "gapOfHeight": 0.023,
+        "centerOfHeight": [
+          0.2,
+          0.76,
+          0.63
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 6,
+        "gapOfHeight": 0.051,
+        "centerOfHeight": [
+          0.29,
+          0.77,
+          0.69
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 6,
+        "gapOfHeight": 0.024,
+        "centerOfHeight": [
+          0.29,
+          0.77,
+          -0.69
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 6,
+        "gapOfHeight": 0.023,
+        "centerOfHeight": [
+          0.28,
+          0.58,
+          -0.87
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 6,
+        "gapOfHeight": 0.044,
+        "centerOfHeight": [
+          0.31,
+          0.39,
+          0.98
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 6,
+        "gapOfHeight": 0.03,
+        "centerOfHeight": [
+          0.34,
+          0.44,
+          0.88
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 6,
+        "gapOfHeight": 0.04,
+        "centerOfHeight": [
+          0.35,
+          0.37,
+          0.93
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 6,
+        "gapOfHeight": 0.05,
+        "centerOfHeight": [
+          0.42,
+          0.58,
+          0.31
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 6,
+        "gapOfHeight": 0.028,
+        "centerOfHeight": [
+          0.42,
+          0.58,
+          -0.31
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 6,
+        "gapOfHeight": 0.043,
+        "centerOfHeight": [
+          0.56,
+          0.69,
+          0.51
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 6,
+        "gapOfHeight": 0.029,
+        "centerOfHeight": [
+          0.6,
+          0.73,
+          0.52
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 6,
+        "gapOfHeight": 0.03,
+        "centerOfHeight": [
+          0.6,
+          0.74,
+          -0.52
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 6,
+        "gapOfHeight": 0.024,
+        "centerOfHeight": [
+          0.72,
+          0.57,
+          -0.51
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 6,
+        "gapOfHeight": 0.053,
+        "centerOfHeight": [
+          -0.02,
+          0.54,
+          0.46
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 6,
+        "gapOfHeight": 0.052,
+        "centerOfHeight": [
+          -0.02,
+          0.54,
+          -0.46
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 6,
+        "gapOfHeight": 0.06,
+        "centerOfHeight": [
+          -0.02,
+          0.62,
+          0.49
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 6,
+        "gapOfHeight": 0.017,
+        "centerOfHeight": [
+          -0.02,
+          0.62,
+          -0.49
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 6,
+        "gapOfHeight": 0.027,
+        "centerOfHeight": [
+          -0.04,
+          0.65,
+          0.51
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 6,
+        "gapOfHeight": 0.044,
+        "centerOfHeight": [
+          -0.04,
+          0.65,
+          -0.51
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 6,
+        "gapOfHeight": 0.02,
+        "centerOfHeight": [
+          -0.05,
+          0.7,
+          0.27
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 6,
+        "gapOfHeight": 0.06,
+        "centerOfHeight": [
+          -0.05,
+          0.7,
+          -0.27
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 6,
+        "gapOfHeight": 0.02,
+        "centerOfHeight": [
+          -0.08,
+          0.65,
+          0.28
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 6,
+        "gapOfHeight": 0.095,
+        "centerOfHeight": [
+          -0.08,
+          0.65,
+          -0.28
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 6,
+        "gapOfHeight": 0.091,
+        "centerOfHeight": [
+          -0.09,
+          0.68,
+          -0.29
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 6,
+        "gapOfHeight": 0.027,
+        "centerOfHeight": [
+          -0.3,
+          0.6,
+          -0.69
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 6,
+        "gapOfHeight": 0.164,
+        "centerOfHeight": [
+          -0.34,
+          0.74,
+          0.46
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 6,
+        "gapOfHeight": 0.021,
+        "centerOfHeight": [
+          -0.34,
+          0.74,
+          -0.55
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 6,
+        "gapOfHeight": 0.278,
+        "centerOfHeight": [
+          -0.37,
+          0.67,
+          0.62
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 6,
+        "gapOfHeight": 0.271,
+        "centerOfHeight": [
+          -0.4,
+          0.74,
+          0.57
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 6,
+        "gapOfHeight": 0.608,
+        "centerOfHeight": [
+          -0.37,
+          0.26,
+          0.88
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 6,
+        "gapOfHeight": 0.017,
+        "centerOfHeight": [
+          -0.39,
+          0.58,
+          -0.7
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 6,
+        "gapOfHeight": 0.385,
+        "centerOfHeight": [
+          -0.51,
+          0.58,
+          0.68
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 6,
+        "gapOfHeight": 0.316,
+        "centerOfHeight": [
+          -0.5,
+          0.58,
+          0.58
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 6,
+        "gapOfHeight": 0.46,
+        "centerOfHeight": [
+          -0.59,
+          0.46,
+          0.73
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 6,
+        "gapOfHeight": 0.436,
+        "centerOfHeight": [
+          -0.63,
+          0.35,
+          0.68
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 6,
+        "gapOfHeight": 0.45,
+        "centerOfHeight": [
+          -0.65,
+          0.29,
+          0.7
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 6,
+        "gapOfHeight": 0.022,
+        "centerOfHeight": [
+          -0.68,
+          0.51,
+          -0.26
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 6,
+        "gapOfHeight": 0.033,
+        "centerOfHeight": [
+          -0.83,
+          0.38,
+          -0.3
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 6,
+        "gapOfHeight": 0.018,
+        "centerOfHeight": [
+          -0.85,
+          0.39,
+          0.23
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 6,
+        "gapOfHeight": 0.02,
+        "centerOfHeight": [
+          -0.85,
+          0.39,
+          -0.23
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 6,
+        "gapOfHeight": 0.036,
+        "centerOfHeight": [
+          -0.84,
+          0.36,
+          0.22
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 6,
+        "gapOfHeight": 0.023,
+        "centerOfHeight": [
+          -0.87,
+          0.24,
+          -0.3
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 6,
+        "gapOfHeight": 0.044,
+        "centerOfHeight": [
+          -0.92,
+          0.22,
+          0.25
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 5,
+        "gapOfHeight": 0.053,
+        "centerOfHeight": [
+          0.18,
+          0.57,
+          0.41
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 5,
+        "gapOfHeight": 0.028,
+        "centerOfHeight": [
+          0.18,
+          0.57,
+          -0.41
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 5,
+        "gapOfHeight": 0.023,
+        "centerOfHeight": [
+          0.39,
+          0.58,
+          0.39
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 5,
+        "gapOfHeight": 0.038,
+        "centerOfHeight": [
+          0.39,
+          0.58,
+          -0.39
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 5,
+        "gapOfHeight": 0.038,
+        "centerOfHeight": [
+          0.64,
+          0.61,
+          0.54
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 5,
+        "gapOfHeight": 0.024,
+        "centerOfHeight": [
+          0.64,
+          0.61,
+          -0.54
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 5,
+        "gapOfHeight": 0.062,
+        "centerOfHeight": [
+          -0.02,
+          0.57,
+          0.46
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 5,
+        "gapOfHeight": 0.032,
+        "centerOfHeight": [
+          -0.02,
+          0.57,
+          -0.46
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 5,
+        "gapOfHeight": 0.023,
+        "centerOfHeight": [
+          -0.05,
+          0.69,
+          0.51
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 5,
+        "gapOfHeight": 0.059,
+        "centerOfHeight": [
+          -0.34,
+          0.68,
+          0.3
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 5,
+        "gapOfHeight": 0.04,
+        "centerOfHeight": [
+          -0.34,
+          0.68,
+          -0.3
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 5,
+        "gapOfHeight": 0.043,
+        "centerOfHeight": [
+          -0.46,
+          0.69,
+          0.21
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 5,
+        "gapOfHeight": 0.023,
+        "centerOfHeight": [
+          -0.46,
+          0.69,
+          -0.21
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 5,
+        "gapOfHeight": 0.467,
+        "centerOfHeight": [
+          -0.62,
+          0.4,
+          0.74
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.051,
+        "centerOfHeight": [
+          0.02,
+          0.75,
+          0.17
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.042,
+        "centerOfHeight": [
+          0.02,
+          0.75,
+          -0.17
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.052,
+        "centerOfHeight": [
+          0,
+          0.82,
+          0.12
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.053,
+        "centerOfHeight": [
+          0,
+          0.82,
+          -0.12
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.03,
+        "centerOfHeight": [
+          0.01,
+          0.7,
+          0.2
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.042,
+        "centerOfHeight": [
+          0.01,
+          0.7,
+          -0.2
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.057,
+        "centerOfHeight": [
+          0.02,
+          0.77,
+          0.13
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.045,
+        "centerOfHeight": [
+          0.02,
+          0.77,
+          -0.13
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.044,
+        "centerOfHeight": [
+          0.02,
+          0.8,
+          0.1
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.073,
+        "centerOfHeight": [
+          0.02,
+          0.8,
+          -0.1
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.021,
+        "centerOfHeight": [
+          0.04,
+          0.78,
+          0.1
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.048,
+        "centerOfHeight": [
+          0.04,
+          0.78,
+          -0.1
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.027,
+        "centerOfHeight": [
+          0.04,
+          0.8,
+          0.06
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.045,
+        "centerOfHeight": [
+          0.04,
+          0.8,
+          -0.06
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.023,
+        "centerOfHeight": [
+          0.23,
+          0.85,
+          0.43
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.019,
+        "centerOfHeight": [
+          0.23,
+          0.85,
+          -0.43
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.022,
+        "centerOfHeight": [
+          0.49,
+          0.83,
+          0.39
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.019,
+        "centerOfHeight": [
+          0.49,
+          0.83,
+          -0.39
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.024,
+        "centerOfHeight": [
+          -0.01,
+          0.77,
+          0.19
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.049,
+        "centerOfHeight": [
+          -0.01,
+          0.77,
+          -0.19
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.036,
+        "centerOfHeight": [
+          -0.02,
+          0.81,
+          0.17
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.027,
+        "centerOfHeight": [
+          -0.02,
+          0.81,
+          -0.17
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.022,
+        "centerOfHeight": [
+          -0.03,
+          0.77,
+          0.21
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.04,
+        "centerOfHeight": [
+          -0.03,
+          0.77,
+          -0.21
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.033,
+        "centerOfHeight": [
+          -0.04,
+          0.84,
+          0.12
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.048,
+        "centerOfHeight": [
+          -0.04,
+          0.84,
+          -0.12
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.025,
+        "centerOfHeight": [
+          -0.04,
+          0.8,
+          0.19
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.033,
+        "centerOfHeight": [
+          -0.04,
+          0.8,
+          -0.19
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.016,
+        "centerOfHeight": [
+          -0.04,
+          0.86,
+          0.09
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.077,
+        "centerOfHeight": [
+          -0.04,
+          0.86,
+          -0.09
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.065,
+        "centerOfHeight": [
+          -0.04,
+          0.83,
+          0.15
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.016,
+        "centerOfHeight": [
+          -0.04,
+          0.83,
+          -0.15
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.04,
+        "centerOfHeight": [
+          -0.04,
+          0.86,
+          0.13
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.05,
+        "centerOfHeight": [
+          -0.04,
+          0.86,
+          -0.13
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.042,
+        "centerOfHeight": [
+          -0.05,
+          0.9,
+          -0.07
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.032,
+        "centerOfHeight": [
+          -0.06,
+          0.88,
+          0.11
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.07,
+        "centerOfHeight": [
+          -0.06,
+          0.88,
+          -0.11
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.022,
+        "centerOfHeight": [
+          -0.06,
+          0.76,
+          0.24
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.051,
+        "centerOfHeight": [
+          -0.06,
+          0.76,
+          -0.24
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.058,
+        "centerOfHeight": [
+          -0.06,
+          0.85,
+          0.18
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.028,
+        "centerOfHeight": [
+          -0.06,
+          0.85,
+          -0.18
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.02,
+        "centerOfHeight": [
+          -0.07,
+          0.81,
+          0.23
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.055,
+        "centerOfHeight": [
+          -0.07,
+          0.81,
+          -0.23
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.039,
+        "centerOfHeight": [
+          -0.07,
+          0.92,
+          0.05
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.02,
+        "centerOfHeight": [
+          -0.07,
+          0.92,
+          -0.05
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.057,
+        "centerOfHeight": [
+          -0.08,
+          0.86,
+          0.16
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.047,
+        "centerOfHeight": [
+          -0.08,
+          0.86,
+          -0.16
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.061,
+        "centerOfHeight": [
+          -0.09,
+          0.77,
+          -0.26
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.038,
+        "centerOfHeight": [
+          -0.08,
+          0.85,
+          0.2
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.03,
+        "centerOfHeight": [
+          -0.08,
+          0.85,
+          -0.2
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.02,
+        "centerOfHeight": [
+          -0.09,
+          0.89,
+          0.13
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.065,
+        "centerOfHeight": [
+          -0.09,
+          0.89,
+          -0.13
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.02,
+        "centerOfHeight": [
+          -0.08,
+          0.92,
+          0.09
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.032,
+        "centerOfHeight": [
+          -0.08,
+          0.92,
+          -0.09
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.045,
+        "centerOfHeight": [
+          -0.09,
+          0.93,
+          0.06
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.023,
+        "centerOfHeight": [
+          -0.1,
+          0.81,
+          0.24
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.071,
+        "centerOfHeight": [
+          -0.1,
+          0.81,
+          -0.24
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.069,
+        "centerOfHeight": [
+          -0.1,
+          0.87,
+          0.18
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.018,
+        "centerOfHeight": [
+          -0.1,
+          0.87,
+          -0.18
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.046,
+        "centerOfHeight": [
+          -0.12,
+          0.9,
+          0.15
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.05,
+        "centerOfHeight": [
+          -0.12,
+          0.9,
+          -0.15
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.048,
+        "centerOfHeight": [
+          -0.13,
+          0.82,
+          0.26
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.057,
+        "centerOfHeight": [
+          -0.13,
+          0.82,
+          -0.26
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.058,
+        "centerOfHeight": [
+          -0.14,
+          0.71,
+          -0.31
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.054,
+        "centerOfHeight": [
+          -0.13,
+          0.93,
+          0.11
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.066,
+        "centerOfHeight": [
+          -0.14,
+          0.9,
+          0.19
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.052,
+        "centerOfHeight": [
+          -0.14,
+          0.9,
+          -0.19
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.038,
+        "centerOfHeight": [
+          -0.14,
+          0.93,
+          0.13
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.063,
+        "centerOfHeight": [
+          -0.15,
+          0.8,
+          0.26
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.045,
+        "centerOfHeight": [
+          -0.15,
+          0.8,
+          -0.26
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.069,
+        "centerOfHeight": [
+          -0.16,
+          0.85,
+          0.24
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.07,
+        "centerOfHeight": [
+          -0.16,
+          0.89,
+          0.2
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.052,
+        "centerOfHeight": [
+          -0.16,
+          0.89,
+          -0.2
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.015,
+        "centerOfHeight": [
+          -0.15,
+          0.97,
+          -0.01
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.051,
+        "centerOfHeight": [
+          -0.17,
+          0.78,
+          0.29
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.016,
+        "centerOfHeight": [
+          -0.17,
+          0.78,
+          -0.29
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.067,
+        "centerOfHeight": [
+          -0.17,
+          0.88,
+          0.23
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.027,
+        "centerOfHeight": [
+          -0.17,
+          0.88,
+          -0.23
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.044,
+        "centerOfHeight": [
+          -0.16,
+          0.93,
+          -0.16
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.04,
+        "centerOfHeight": [
+          -0.17,
+          0.94,
+          0.11
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.026,
+        "centerOfHeight": [
+          -0.17,
+          0.94,
+          -0.11
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.028,
+        "centerOfHeight": [
+          -0.17,
+          0.98,
+          0.02
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.024,
+        "centerOfHeight": [
+          -0.17,
+          0.98,
+          -0.02
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.066,
+        "centerOfHeight": [
+          -0.18,
+          0.81,
+          0.27
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.041,
+        "centerOfHeight": [
+          -0.18,
+          0.81,
+          -0.27
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.018,
+        "centerOfHeight": [
+          -0.19,
+          0.93,
+          0.17
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.064,
+        "centerOfHeight": [
+          -0.19,
+          0.93,
+          -0.17
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.049,
+        "centerOfHeight": [
+          -0.19,
+          0.95,
+          0.11
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.032,
+        "centerOfHeight": [
+          -0.19,
+          0.99,
+          0.03
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.029,
+        "centerOfHeight": [
+          -0.19,
+          0.99,
+          -0.03
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.028,
+        "centerOfHeight": [
+          -0.2,
+          0.84,
+          0.26
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.035,
+        "centerOfHeight": [
+          -0.2,
+          0.84,
+          -0.26
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.068,
+        "centerOfHeight": [
+          -0.19,
+          0.89,
+          0.21
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.047,
+        "centerOfHeight": [
+          -0.19,
+          0.89,
+          -0.21
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.053,
+        "centerOfHeight": [
+          -0.2,
+          0.7,
+          0.32
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.04,
+        "centerOfHeight": [
+          -0.2,
+          0.7,
+          -0.32
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.033,
+        "centerOfHeight": [
+          -0.2,
+          0.87,
+          0.24
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.041,
+        "centerOfHeight": [
+          -0.2,
+          0.87,
+          -0.24
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.051,
+        "centerOfHeight": [
+          -0.21,
+          0.82,
+          0.28
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.024,
+        "centerOfHeight": [
+          -0.21,
+          0.82,
+          -0.28
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.023,
+        "centerOfHeight": [
+          -0.2,
+          0.95,
+          0.14
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.045,
+        "centerOfHeight": [
+          -0.2,
+          0.95,
+          -0.14
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.053,
+        "centerOfHeight": [
+          -0.21,
+          0.99,
+          0.04
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.038,
+        "centerOfHeight": [
+          -0.21,
+          0.99,
+          -0.04
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.017,
+        "centerOfHeight": [
+          -0.22,
+          0.73,
+          0.31
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.072,
+        "centerOfHeight": [
+          -0.22,
+          0.73,
+          -0.31
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.03,
+        "centerOfHeight": [
+          -0.22,
+          0.95,
+          0.15
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.06,
+        "centerOfHeight": [
+          -0.22,
+          0.95,
+          -0.15
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.037,
+        "centerOfHeight": [
+          -0.22,
+          0.97,
+          0.07
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.029,
+        "centerOfHeight": [
+          -0.22,
+          0.97,
+          -0.07
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.044,
+        "centerOfHeight": [
+          -0.23,
+          0.66,
+          0.33
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.053,
+        "centerOfHeight": [
+          -0.23,
+          0.93,
+          0.19
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.079,
+        "centerOfHeight": [
+          -0.23,
+          0.93,
+          -0.19
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.036,
+        "centerOfHeight": [
+          -0.23,
+          0.97,
+          0.08
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.023,
+        "centerOfHeight": [
+          -0.23,
+          0.97,
+          -0.08
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.049,
+        "centerOfHeight": [
+          -0.23,
+          0.99,
+          0.01
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.042,
+        "centerOfHeight": [
+          -0.23,
+          0.99,
+          -0.01
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.017,
+        "centerOfHeight": [
+          -0.24,
+          0.76,
+          0.3
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.042,
+        "centerOfHeight": [
+          -0.24,
+          0.76,
+          -0.3
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.065,
+        "centerOfHeight": [
+          -0.23,
+          0.9,
+          0.21
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.077,
+        "centerOfHeight": [
+          -0.23,
+          0.9,
+          -0.21
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.029,
+        "centerOfHeight": [
+          -0.24,
+          0.82,
+          0.27
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.027,
+        "centerOfHeight": [
+          -0.24,
+          0.82,
+          -0.27
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.017,
+        "centerOfHeight": [
+          -0.25,
+          0.86,
+          0.24
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.068,
+        "centerOfHeight": [
+          -0.25,
+          0.86,
+          -0.24
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.016,
+        "centerOfHeight": [
+          -0.25,
+          0.85,
+          0.27
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.053,
+        "centerOfHeight": [
+          -0.25,
+          0.85,
+          -0.27
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.028,
+        "centerOfHeight": [
+          -0.25,
+          0.97,
+          0.09
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.032,
+        "centerOfHeight": [
+          -0.25,
+          0.97,
+          -0.09
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.046,
+        "centerOfHeight": [
+          -0.25,
+          0.95,
+          0.15
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.05,
+        "centerOfHeight": [
+          -0.25,
+          0.95,
+          -0.15
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.056,
+        "centerOfHeight": [
+          -0.26,
+          0.93,
+          0.19
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.047,
+        "centerOfHeight": [
+          -0.26,
+          0.93,
+          -0.19
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.051,
+        "centerOfHeight": [
+          -0.26,
+          0.99,
+          0.04
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.024,
+        "centerOfHeight": [
+          -0.26,
+          0.99,
+          -0.04
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.024,
+        "centerOfHeight": [
+          -0.27,
+          0.78,
+          0.3
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.048,
+        "centerOfHeight": [
+          -0.27,
+          0.78,
+          -0.3
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.03,
+        "centerOfHeight": [
+          -0.26,
+          0.9,
+          0.22
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.065,
+        "centerOfHeight": [
+          -0.26,
+          0.9,
+          -0.22
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.041,
+        "centerOfHeight": [
+          -0.26,
+          0.97,
+          0.05
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.02,
+        "centerOfHeight": [
+          -0.26,
+          0.97,
+          -0.05
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.044,
+        "centerOfHeight": [
+          -0.27,
+          0.81,
+          0.27
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.044,
+        "centerOfHeight": [
+          -0.27,
+          0.81,
+          -0.27
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.041,
+        "centerOfHeight": [
+          -0.27,
+          0.92,
+          0.2
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.037,
+        "centerOfHeight": [
+          -0.27,
+          0.92,
+          -0.2
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.036,
+        "centerOfHeight": [
+          -0.27,
+          0.86,
+          0.25
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.074,
+        "centerOfHeight": [
+          -0.27,
+          0.86,
+          -0.25
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.065,
+        "centerOfHeight": [
+          -0.28,
+          0.66,
+          0.32
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.023,
+        "centerOfHeight": [
+          -0.28,
+          0.66,
+          -0.32
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.052,
+        "centerOfHeight": [
+          -0.28,
+          0.94,
+          0.16
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.022,
+        "centerOfHeight": [
+          -0.28,
+          0.94,
+          -0.16
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.033,
+        "centerOfHeight": [
+          -0.28,
+          0.97,
+          0.1
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.058,
+        "centerOfHeight": [
+          -0.28,
+          0.97,
+          -0.1
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.054,
+        "centerOfHeight": [
+          -0.28,
+          0.69,
+          0.32
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.047,
+        "centerOfHeight": [
+          -0.28,
+          0.69,
+          -0.32
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.031,
+        "centerOfHeight": [
+          -0.29,
+          0.72,
+          0.31
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.064,
+        "centerOfHeight": [
+          -0.29,
+          0.72,
+          -0.31
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.026,
+        "centerOfHeight": [
+          -0.29,
+          0.9,
+          0.22
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.053,
+        "centerOfHeight": [
+          -0.29,
+          0.9,
+          -0.22
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.027,
+        "centerOfHeight": [
+          -0.29,
+          0.62,
+          0.32
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.02,
+        "centerOfHeight": [
+          -0.29,
+          0.62,
+          -0.32
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.028,
+        "centerOfHeight": [
+          -0.3,
+          0.97,
+          0.08
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.058,
+        "centerOfHeight": [
+          -0.3,
+          0.97,
+          -0.08
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.036,
+        "centerOfHeight": [
+          -0.29,
+          0.99,
+          0.03
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.062,
+        "centerOfHeight": [
+          -0.29,
+          0.99,
+          -0.03
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.044,
+        "centerOfHeight": [
+          -0.3,
+          0.85,
+          0.25
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.085,
+        "centerOfHeight": [
+          -0.3,
+          0.85,
+          -0.25
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.048,
+        "centerOfHeight": [
+          -0.3,
+          0.79,
+          0.27
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.045,
+        "centerOfHeight": [
+          -0.3,
+          0.79,
+          -0.27
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.058,
+        "centerOfHeight": [
+          -0.3,
+          0.96,
+          0.11
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.058,
+        "centerOfHeight": [
+          -0.3,
+          0.96,
+          -0.11
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.066,
+        "centerOfHeight": [
+          -0.31,
+          0.83,
+          0.26
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.084,
+        "centerOfHeight": [
+          -0.31,
+          0.83,
+          -0.26
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.076,
+        "centerOfHeight": [
+          -0.31,
+          0.87,
+          -0.22
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.031,
+        "centerOfHeight": [
+          -0.32,
+          0.77,
+          0.28
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.028,
+        "centerOfHeight": [
+          -0.32,
+          0.77,
+          -0.28
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.06,
+        "centerOfHeight": [
+          -0.31,
+          0.94,
+          0.17
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.017,
+        "centerOfHeight": [
+          -0.31,
+          0.94,
+          -0.17
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.04,
+        "centerOfHeight": [
+          -0.32,
+          0.92,
+          0.2
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.032,
+        "centerOfHeight": [
+          -0.32,
+          0.92,
+          -0.2
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.056,
+        "centerOfHeight": [
+          -0.32,
+          0.96,
+          0.12
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.055,
+        "centerOfHeight": [
+          -0.32,
+          0.96,
+          -0.12
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.027,
+        "centerOfHeight": [
+          -0.32,
+          0.98,
+          0.02
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.038,
+        "centerOfHeight": [
+          -0.32,
+          0.98,
+          -0.02
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.196,
+        "centerOfHeight": [
+          -0.33,
+          0.81,
+          0.48
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.068,
+        "centerOfHeight": [
+          -0.33,
+          0.83,
+          0.25
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.079,
+        "centerOfHeight": [
+          -0.33,
+          0.83,
+          -0.25
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.032,
+        "centerOfHeight": [
+          -0.33,
+          0.96,
+          0.07
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.071,
+        "centerOfHeight": [
+          -0.33,
+          0.96,
+          -0.07
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.057,
+        "centerOfHeight": [
+          -0.34,
+          0.65,
+          0.3
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.022,
+        "centerOfHeight": [
+          -0.34,
+          0.65,
+          -0.3
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.073,
+        "centerOfHeight": [
+          -0.34,
+          0.93,
+          0.15
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.031,
+        "centerOfHeight": [
+          -0.34,
+          0.93,
+          -0.15
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.023,
+        "centerOfHeight": [
+          -0.35,
+          0.72,
+          0.29
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.028,
+        "centerOfHeight": [
+          -0.35,
+          0.72,
+          -0.29
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.053,
+        "centerOfHeight": [
+          -0.35,
+          0.91,
+          0.19
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.029,
+        "centerOfHeight": [
+          -0.35,
+          0.91,
+          -0.19
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.024,
+        "centerOfHeight": [
+          -0.35,
+          0.94,
+          0.1
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.08,
+        "centerOfHeight": [
+          -0.35,
+          0.94,
+          -0.1
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.023,
+        "centerOfHeight": [
+          -0.35,
+          0.95,
+          0.08
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.067,
+        "centerOfHeight": [
+          -0.35,
+          0.95,
+          -0.08
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.031,
+        "centerOfHeight": [
+          -0.35,
+          0.97,
+          0.03
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.029,
+        "centerOfHeight": [
+          -0.35,
+          0.97,
+          -0.03
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.076,
+        "centerOfHeight": [
+          -0.36,
+          0.82,
+          0.24
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.071,
+        "centerOfHeight": [
+          -0.36,
+          0.82,
+          -0.24
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.049,
+        "centerOfHeight": [
+          -0.36,
+          0.88,
+          0.2
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.018,
+        "centerOfHeight": [
+          -0.36,
+          0.87,
+          -0.2
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.043,
+        "centerOfHeight": [
+          -0.36,
+          0.6,
+          -0.29
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.042,
+        "centerOfHeight": [
+          -0.36,
+          0.79,
+          0.25
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.037,
+        "centerOfHeight": [
+          -0.36,
+          0.79,
+          -0.25
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.029,
+        "centerOfHeight": [
+          -0.38,
+          0.77,
+          0.25
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.038,
+        "centerOfHeight": [
+          -0.38,
+          0.77,
+          -0.25
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.073,
+        "centerOfHeight": [
+          -0.37,
+          0.89,
+          0.18
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.059,
+        "centerOfHeight": [
+          -0.38,
+          0.86,
+          0.2
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.026,
+        "centerOfHeight": [
+          -0.38,
+          0.86,
+          -0.2
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.02,
+        "centerOfHeight": [
+          -0.38,
+          0.94,
+          0.1
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.063,
+        "centerOfHeight": [
+          -0.38,
+          0.94,
+          -0.1
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.026,
+        "centerOfHeight": [
+          -0.37,
+          0.96,
+          0.03
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.023,
+        "centerOfHeight": [
+          -0.37,
+          0.96,
+          -0.03
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.066,
+        "centerOfHeight": [
+          -0.38,
+          0.93,
+          0.14
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.057,
+        "centerOfHeight": [
+          -0.38,
+          0.93,
+          -0.14
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.028,
+        "centerOfHeight": [
+          -0.38,
+          0.95,
+          0.06
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.048,
+        "centerOfHeight": [
+          -0.38,
+          0.95,
+          -0.06
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.05,
+        "centerOfHeight": [
+          -0.39,
+          0.8,
+          0.22
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.032,
+        "centerOfHeight": [
+          -0.39,
+          0.8,
+          -0.22
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.042,
+        "centerOfHeight": [
+          -0.4,
+          0.9,
+          0.16
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.037,
+        "centerOfHeight": [
+          -0.4,
+          0.9,
+          -0.16
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.039,
+        "centerOfHeight": [
+          -0.4,
+          0.93,
+          0.1
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.041,
+        "centerOfHeight": [
+          -0.4,
+          0.93,
+          -0.1
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.042,
+        "centerOfHeight": [
+          -0.4,
+          0.94,
+          0.02
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.041,
+        "centerOfHeight": [
+          -0.4,
+          0.94,
+          -0.02
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.028,
+        "centerOfHeight": [
+          -0.41,
+          0.85,
+          0.19
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.048,
+        "centerOfHeight": [
+          -0.41,
+          0.85,
+          -0.19
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.036,
+        "centerOfHeight": [
+          -0.41,
+          0.79,
+          0.22
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.024,
+        "centerOfHeight": [
+          -0.41,
+          0.79,
+          -0.22
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.039,
+        "centerOfHeight": [
+          -0.42,
+          0.71,
+          0.24
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.048,
+        "centerOfHeight": [
+          -0.41,
+          0.91,
+          0.13
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.036,
+        "centerOfHeight": [
+          -0.41,
+          0.91,
+          -0.13
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.033,
+        "centerOfHeight": [
+          -0.42,
+          0.74,
+          -0.23
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.017,
+        "centerOfHeight": [
+          -0.42,
+          0.88,
+          0.16
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.051,
+        "centerOfHeight": [
+          -0.42,
+          0.88,
+          -0.16
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.045,
+        "centerOfHeight": [
+          -0.43,
+          0.92,
+          0.09
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.02,
+        "centerOfHeight": [
+          -0.43,
+          0.92,
+          -0.09
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.016,
+        "centerOfHeight": [
+          -0.43,
+          0.92,
+          0.01
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.04,
+        "centerOfHeight": [
+          -0.43,
+          0.92,
+          -0.01
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.028,
+        "centerOfHeight": [
+          -0.43,
+          0.92,
+          0.06
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.032,
+        "centerOfHeight": [
+          -0.43,
+          0.92,
+          -0.06
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.031,
+        "centerOfHeight": [
+          -0.45,
+          0.66,
+          0.22
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.056,
+        "centerOfHeight": [
+          -0.45,
+          0.66,
+          -0.22
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.059,
+        "centerOfHeight": [
+          -0.45,
+          0.83,
+          -0.16
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.06,
+        "centerOfHeight": [
+          -0.44,
+          0.86,
+          -0.15
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.043,
+        "centerOfHeight": [
+          -0.44,
+          0.9,
+          0.11
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.017,
+        "centerOfHeight": [
+          -0.44,
+          0.9,
+          -0.11
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.044,
+        "centerOfHeight": [
+          -0.45,
+          0.77,
+          0.21
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.035,
+        "centerOfHeight": [
+          -0.45,
+          0.77,
+          -0.21
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.017,
+        "centerOfHeight": [
+          -0.45,
+          0.82,
+          0.17
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.046,
+        "centerOfHeight": [
+          -0.45,
+          0.82,
+          -0.17
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.048,
+        "centerOfHeight": [
+          -0.46,
+          0.57,
+          0.21
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.039,
+        "centerOfHeight": [
+          -0.46,
+          0.57,
+          -0.21
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.031,
+        "centerOfHeight": [
+          -0.46,
+          0.73,
+          0.2
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.044,
+        "centerOfHeight": [
+          -0.46,
+          0.73,
+          -0.2
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.042,
+        "centerOfHeight": [
+          -0.47,
+          0.71,
+          0.2
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.018,
+        "centerOfHeight": [
+          -0.47,
+          0.71,
+          -0.2
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.023,
+        "centerOfHeight": [
+          -0.47,
+          0.76,
+          0.18
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.058,
+        "centerOfHeight": [
+          -0.47,
+          0.76,
+          -0.18
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.051,
+        "centerOfHeight": [
+          -0.47,
+          0.9,
+          0
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.061,
+        "centerOfHeight": [
+          -0.47,
+          0.89,
+          0.08
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.036,
+        "centerOfHeight": [
+          -0.47,
+          0.89,
+          -0.08
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.053,
+        "centerOfHeight": [
+          -0.47,
+          0.89,
+          0.05
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.059,
+        "centerOfHeight": [
+          -0.47,
+          0.89,
+          -0.05
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.033,
+        "centerOfHeight": [
+          -0.49,
+          0.68,
+          0.18
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.053,
+        "centerOfHeight": [
+          -0.49,
+          0.84,
+          0.12
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.04,
+        "centerOfHeight": [
+          -0.49,
+          0.84,
+          -0.12
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.06,
+        "centerOfHeight": [
+          -0.49,
+          0.8,
+          0.15
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.044,
+        "centerOfHeight": [
+          -0.49,
+          0.8,
+          -0.15
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.031,
+        "centerOfHeight": [
+          -0.5,
+          0.87,
+          0.08
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.06,
+        "centerOfHeight": [
+          -0.5,
+          0.87,
+          -0.08
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.061,
+        "centerOfHeight": [
+          -0.52,
+          0.81,
+          0.12
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.029,
+        "centerOfHeight": [
+          -0.52,
+          0.81,
+          -0.12
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.042,
+        "centerOfHeight": [
+          -0.52,
+          0.78,
+          0.13
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.027,
+        "centerOfHeight": [
+          -0.52,
+          0.78,
+          -0.13
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.018,
+        "centerOfHeight": [
+          -0.52,
+          0.86,
+          0.08
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.037,
+        "centerOfHeight": [
+          -0.52,
+          0.86,
+          -0.08
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.024,
+        "centerOfHeight": [
+          -0.52,
+          0.87,
+          0.03
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.028,
+        "centerOfHeight": [
+          -0.52,
+          0.87,
+          -0.03
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.02,
+        "centerOfHeight": [
+          -0.53,
+          0.84,
+          0.08
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.03,
+        "centerOfHeight": [
+          -0.53,
+          0.84,
+          -0.08
+        ],
+        "removed": false
+      },
+      {
+        "vertices": 4,
+        "gapOfHeight": 0.028,
+        "centerOfHeight": [
+          -0.82,
+          0.42,
+          0.29
+        ],
+        "removed": false
+      }
+    ],
+    "keptIslands": 60,
+    "skirtVertices": 0
+  },
+  "skeleton": {
+    "count": 60,
+    "roots": [
+      "tripoRoot"
+    ],
+    "hierarchy": "tripoRoot\n  bone_1\n  bone_2\n    bone_3\n  tripo3_Left_Limb_0\n    tripo3_Left_Limb_1\n      tripo3_Left_Limb_2\n  bone_7\n    bone_8\n      bone_9\n  bone_10\n  tripo1_Left_Limb_0\n    tripo1_Left_Limb_1\n      tripo1_Left_Limb_2\n  bone_14\n  tripo0_Left_Limb_0\n    tripo0_Left_Limb_1\n      tripo0_Left_Limb_2\n  bone_18\n    bone_19\n      bone_20\n  tripo0_Right_Limb_0\n    tripo0_Right_Limb_1\n      tripo0_Right_Limb_2\n  tripo2_Right_Limb_0\n    tripo2_Right_Limb_1\n      tripo2_Right_Limb_2\n  bone_27\n  tripoSpine_0\n    tripo2_Left_Limb_0\n      tripo2_Left_Limb_1\n        tripo2_Left_Limb_2\n          tripo2_Left_Limb_3\n            tripo2_Left_Limb_4\n            bone_34\n            bone_35\n            bone_36\n            bone_37\n            bone_38\n            bone_39\n            bone_40\n            bone_41\n            bone_42\n    bone_43\n    bone_44\n      bone_45\n    tripo3_Right_Limb_0\n      tripo3_Right_Limb_1\n    bone_48\n    bone_49\n    tripoSpine_1\n      bone_51\n    bone_52\n    bone_53\n    bone_54\n      bone_55\n        bone_56\n    tripo1_Right_Limb_0\n      tripo1_Right_Limb_1\n        tripo1_Right_Limb_2",
+    "canonical": {
+      "hips": "tripoRoot",
+      "spine": "tripoSpine_0",
+      "chest": "tripoSpine_1",
+      "neck": null,
+      "head": null,
+      "clavicle_l": null,
+      "clavicle_r": null,
+      "upperarm_l": null,
+      "upperarm_r": null,
+      "forearm_l": null,
+      "forearm_r": null,
+      "hand_l": null,
+      "hand_r": null,
+      "thigh_l": null,
+      "thigh_r": null,
+      "shin_l": null,
+      "shin_r": null,
+      "foot_l": null,
+      "foot_r": null
+    },
+    "missing": [
+      "neck",
+      "head",
+      "clavicle_l",
+      "clavicle_r",
+      "upperarm_l",
+      "upperarm_r",
+      "forearm_l",
+      "forearm_r",
+      "hand_l",
+      "hand_r",
+      "thigh_l",
+      "thigh_r",
+      "shin_l",
+      "shin_r",
+      "foot_l",
+      "foot_r"
+    ],
+    "restPose": {
+      "leftArmFromVerticalDeg": null,
+      "rightArmFromVerticalDeg": null,
+      "leftElbowBendDeg": null,
+      "leftKneeBendDeg": null
+    }
+  },
+  "clips": [
+    "walk"
+  ],
+  "deformation": {
+    "walk": {
+      "clip": "walk",
+      "duration": 2.6,
+      "samples": 16,
+      "regionVertexCounts": {
+        "elbow": 0,
+        "knee": 0,
+        "shoulder": 0,
+        "hip": 0,
+        "neck": 0,
+        "ears": 0,
+        "loincloth": 0,
+        "all": 22952
+      },
+      "peak": {
+        "elbow": 0,
+        "knee": 0,
+        "shoulder": 0,
+        "hip": 0,
+        "neck": 0,
+        "ears": 0,
+        "loincloth": 0,
+        "all": 5.899
+      },
+      "worstFrame": {
+        "t": 1.462,
+        "stretch": {
+          "elbow": null,
+          "knee": null,
+          "shoulder": null,
+          "hip": null,
+          "neck": null,
+          "ears": null,
+          "loincloth": null,
+          "all": 5.899
+        }
+      }
+    }
+  },
+  "hitRegions": {
+    "head": {
+      "vertices": 0,
+      "purity": null,
+      "volumes": 0,
+      "sizeOfHeight": [],
+      "types": [],
+      "bones": []
+    },
+    "neck": {
+      "vertices": 0,
+      "purity": null,
+      "volumes": 0,
+      "sizeOfHeight": [],
+      "types": [],
+      "bones": []
+    },
+    "torso": {
+      "vertices": 4141,
+      "purity": 0.97,
+      "volumes": 3,
+      "sizeOfHeight": [
+        0.301,
+        0.218,
+        0.621
+      ],
+      "types": [
+        "capsule"
+      ],
+      "bones": [
+        "tripoRoot",
+        "tripoSpine_0",
+        "tripoSpine_1"
+      ]
+    },
+    "foreleg": {
+      "vertices": 1201,
+      "purity": 0.77,
+      "volumes": 2,
+      "sizeOfHeight": [
+        0.465,
+        0.218
+      ],
+      "types": [
+        "capsule"
+      ],
+      "bones": [
+        "tripo0_Left_Limb_0",
+        "tripo0_Right_Limb_0"
+      ]
+    },
+    "hindleg": {
+      "vertices": 3642,
+      "purity": 0.46,
+      "volumes": 2,
+      "sizeOfHeight": [
+        0.563,
+        0.456
+      ],
+      "types": [
+        "capsule"
+      ],
+      "bones": [
+        "tripo1_Left_Limb_0",
+        "tripo1_Right_Limb_0"
+      ]
+    },
+    "paw": {
+      "vertices": 1163,
+      "purity": 1,
+      "volumes": 4,
+      "sizeOfHeight": [
+        0.104,
+        0.125,
+        0.337,
+        0.171
+      ],
+      "types": [
+        "capsule"
+      ],
+      "bones": [
+        "tripo0_Left_Limb_1",
+        "tripo0_Right_Limb_1",
+        "tripo1_Left_Limb_1",
+        "tripo1_Right_Limb_1"
+      ]
+    },
+    "tail": {
+      "vertices": 0,
+      "purity": null,
+      "volumes": 0,
+      "sizeOfHeight": [],
+      "types": [],
+      "bones": []
+    }
+  },
+  "rigCheck": {
+    "outsideFraction": {
+      "tripoRoot": 0.4,
+      "bone_2": 0.2,
+      "tripo3_Left_Limb_0": 0,
+      "tripo3_Left_Limb_1": 0.8,
+      "bone_7": 0.2,
+      "bone_8": 0.6,
+      "tripo1_Left_Limb_0": 0.4,
+      "tripo1_Left_Limb_1": 0.6,
+      "tripo0_Left_Limb_0": 0.2,
+      "tripo0_Left_Limb_1": 0.4,
+      "bone_18": 0.2,
+      "bone_19": 0.2,
+      "tripo0_Right_Limb_0": 0.2,
+      "tripo0_Right_Limb_1": 0.6,
+      "tripo2_Right_Limb_0": 0.2,
+      "tripo2_Right_Limb_1": 0,
+      "tripoSpine_0": 0.2,
+      "tripo2_Left_Limb_0": 0,
+      "tripo2_Left_Limb_1": 0,
+      "tripo2_Left_Limb_2": 0,
+      "tripo2_Left_Limb_3": 0,
+      "bone_44": 0.4,
+      "tripo3_Right_Limb_0": 0.2,
+      "tripoSpine_1": 0.6,
+      "bone_54": 0.4,
+      "bone_55": 0.8,
+      "tripo1_Right_Limb_0": 0.2,
+      "tripo1_Right_Limb_1": 0
+    },
+    "bonesOutsideMesh": [
+      "tripoRoot",
+      "tripo3_Left_Limb_1",
+      "bone_8",
+      "tripo1_Left_Limb_0",
+      "tripo1_Left_Limb_1",
+      "tripo0_Left_Limb_1",
+      "tripo0_Right_Limb_1",
+      "bone_44",
+      "tripoSpine_1",
+      "bone_54",
+      "bone_55"
+    ]
+  },
+  "ragdoll": {
+    "killClip": "walk",
+    "gravity": "3x",
+    "stats": [
+      {
+        "bodies": 28,
+        "joints": 27,
+        "excludedPairs": 121,
+        "limitHits": 2784,
+        "maxLimitExcess": 0.87,
+        "maxSpeed": 1.91,
+        "lowestBodyY": 0.047,
+        "maxJointSeparation": 0,
+        "steps": 24
+      },
+      {
+        "bodies": 28,
+        "joints": 27,
+        "excludedPairs": 121,
+        "limitHits": 10758,
+        "maxLimitExcess": 1.03,
+        "maxSpeed": 0.5,
+        "lowestBodyY": 0.034,
+        "maxJointSeparation": 0,
+        "steps": 72
+      },
+      {
+        "bodies": 28,
+        "joints": 27,
+        "excludedPairs": 121,
+        "limitHits": 27664,
+        "maxLimitExcess": 1.31,
+        "maxSpeed": 1.25,
+        "lowestBodyY": 0.05,
+        "maxJointSeparation": 0,
+        "steps": 150
+      }
+    ]
+  }
+}

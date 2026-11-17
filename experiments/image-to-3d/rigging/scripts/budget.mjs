@@ -65,8 +65,9 @@ const jobs = [];
 for (const step of (await readdir(HOSTED)).sort()) {
 	const file = path.join(HOSTED, step, 'model_url.glb');
 	if (!(await stat(file).then(() => true, () => false))) continue;
-	if (/--(rig-|anim-)/.test(step) || /^(sword|shield|helmet)--model$/.test(step))
-		jobs.push({ name: step, file, kind: /^(sword|shield|helmet)/.test(step) ? 'prop' : 'creature' });
+	// Props: the Experiment 2b pieces and every batch equipment item (<rank>-<material>-<item>--model).
+	const prop = /^(sword|shield|helmet)--model$/.test(step) || /^[a-fs]-[a-z-]+--model$/.test(step);
+	if (/--(rig-|anim-)/.test(step) || prop) jobs.push({ name: step, file, kind: prop ? 'prop' : 'creature' });
 }
 for (const f of ['goblin_warrior_3d_model_rigged.glb', 'clay_gollem_guardian_3d_model_rigged.glb'])
 	jobs.push({ name: `studio--${f.replace('.glb', '')}`, file: path.join(RIG, 'tripo-exports/studio', f), kind: 'creature' });

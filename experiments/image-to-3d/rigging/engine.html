@@ -91,14 +91,18 @@ async function load(id) {
 	const hr = E.hitRegions(ch);
 	masks = hr.masks;
 	ch.hitVolumes = hr.volumes;
+	ch.hitRegionNames = hr.regions;
 	api.hits = hr.summary;
 	api.rigCheck = hr.rig;
-	$('region').innerHTML = ['', '*', ...E.HIT_REGIONS].map((r) => `<option value="${r}">${r === '*' ? '(all regions)' : r || '(none)'}</option>`).join('');
+	$('region').innerHTML = ['', '*', ...hr.regions].map((r) => `<option value="${r}">${r === '*' ? '(all regions)' : r || '(none)'}</option>`).join('');
 	$('source').src = entry.source ?? '';
 	const sk = E.describeSkeleton(ch);
 	api.skeleton = sk;
 	info(`${entry.label}\nfacing: auto ${ch.autoYaw}°\nbones ${sk.count}, clips: ${Object.keys(ch.clips).join(', ') || 'none'}\nmissing canonical: ${sk.missing.join(', ') || 'none'}`);
 	const h = ch.height;
+	// Long bodies (quadrupeds, serpents) need the camera further out than their height suggests.
+	const bb = new THREE.Box3().setFromObject(ch.root).getSize(new THREE.Vector3());
+	ch.aspect = Math.max(1, Math.max(bb.x, bb.z) / Math.max(1e-6, bb.y));
 	stage.controls.target.set(0, h * 0.5, 0);
 	stage.camera.position.set(0, h * 0.75, h * 3.1);
 	window.__ready = true;
@@ -148,6 +152,7 @@ api.light = (m) => E.setLighting(stage, m);
 api.yaw = (deg) => { ch.root.rotation.y = (deg * Math.PI) / 180; ch.root.updateMatrixWorld(true); };
 api.view = (name, k = 1) => {
 	const h = ch.height;
+	k *= (ch.aspect ?? 1) > 1.2 ? 0.75 * Math.min(ch.aspect, 10) : 1;
 	const views = { front: [0, 0.6, 3.0], side: [3.0, 0.6, 0], threeq: [2.1, 0.75, 2.4], close: [0.9, 0.85, 1.6] };
 	const [x, y, z] = views[name] ?? views.front;
 	stage.camera.position.set(x * h * k, (0.48 + (y - 0.48) * k) * h, z * h * k);

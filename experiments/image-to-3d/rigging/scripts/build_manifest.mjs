@@ -61,15 +61,23 @@ for (const [id, file, label, height] of [['goblin', 'goblin_warrior_3d_model_rig
 const SAMPLE = { asha: ['Asha', 1.7, 'biped'], wolf: ['Gray Wolf', 0.85, 'quadruped'], hawk: ['Hunting Hawk', 0.6, 'avian'], armor: ['Iron armor set on mannequin', 1.8, 'biped'],
 	golem: ['Clay Figure golem', 1.8, 'biped'], wenyn: ['Wenyn Amarun', 1.83, 'biped'], kelan: ['Kelan Grelan', 1.55, 'biped'] };
 const steps = (await exists(HOSTED)) ? await readdir(HOSTED) : [];
+// Batch subjects (rigging/batches/*.json) supply label, height and body plan for any API rig.
+const batchSubjects = {};
+for (const f of (await exists(path.join(RIG, 'batches'))) ? await readdir(path.join(RIG, 'batches')) : []) {
+	if (!f.endsWith('.json')) continue;
+	for (const sub of JSON.parse(await readFile(path.join(RIG, 'batches', f), 'utf8')).subjects) if (!sub.done) batchSubjects[sub.id] = sub;
+}
 for (const step of steps.sort()) {
-	const m = step.match(/^(asha|wolf|hawk|armor|golem|wenyn|kelan)-(neutral|original|set)--rig-(\w+)$/);
+	const m = step.match(/^(.+?)-(neutral|original|set)--rig-(\w+)$/);
 	if (!m || !(await hostedOk(step))) continue;
 	const [, name, arm, rigType] = m;
-	const [label, height] = SAMPLE[name];
+	const b = batchSubjects[name];
+	if (!SAMPLE[name] && !b) continue;
+	const [label, height] = SAMPLE[name] ?? [b.label, b.height];
 	const clipFiles = rigType === 'others' ? [] : steps.filter((x) => x.startsWith(`${name}-${arm}--anim-`)).sort().map((x) => hosted(x));
 	const o = overrides[`${name}-${arm}${rigType === 'others' ? '-others' : ''}`] ?? {};
 	const src = arm === 'neutral' ? hosted(`${name}-${arm}--image`, 'generated_image_url.png') : `../work/sample/${name}__source.png`;
-	entries.push({ id: `api/${name}-${arm}${rigType === 'others' ? '-others' : ''}`, label: `API · ${label} (${arm === 'neutral' ? 'neutral-pose image' : arm === 'set' ? 'set' : 'original art'}, ${rigType})`,
+	entries.push({ batch: b ? 'starting-set' : 'sample', kind2: b?.kind ?? null, id: `api/${name}-${arm}${rigType === 'others' && SAMPLE[name] ? '-others' : ''}`, label: `API · ${label} (${arm === 'neutral' ? 'neutral-pose image' : arm === 'set' ? 'set' : 'original art'}, ${rigType})`,
 		tool: 'tripo-api', subject: name, kind: rigType, height: o.height ?? height, facing: o.facing ?? 0, rigged: hosted(step), clips: {}, clipFiles,
 		source: o.source ?? src, removeIslands: o.removeIslands ?? false, weapons: rigType === 'biped' ? await weapons(name) : {} });
 }

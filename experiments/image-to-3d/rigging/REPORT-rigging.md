@@ -1,10 +1,33 @@
 # Experiment 2: rigged, animated characters with Tripo
 
 Status: shortened on 2026-11-17 at the owner's request and run as a production sample on the Tripo
-API. Round 1 (720 credits): Asha, wolf, hawk, sword, shield, helmet, armor set. Round 2 (415
+API, then scaled to the starting set (round 3, 6,070 credits). Round 1 (720 credits): Asha, wolf, hawk, sword, shield, helmet, armor set. Round 2 (415
 credits, after owner feedback): the clay golem from a T-pose image rigged both ways, and two more heroes.
 Local models (TRELLIS, Hunyuan3D-2, Qwen) are out of the pipeline. Owner decisions live in
 `notes/decisions.md`.
+
+## Round 3: the starting set (2026-11-17)
+
+7 heroes, 27 monsters and 57 equipment pieces (`batches/starting-set.json`). With the Experiment 2b
+subjects that makes 10 heroes, 30 monsters and 60 equipment pieces. It cost **6,070 credits, exactly
+the estimate**, and took 56 minutes plus a 7-minute retry pass. The QA summary is
+`results/qa-starting-set.md`; overview sheets are `previews/sample/starting-set-creatures.webp` and
+`starting-set-equipment.webp`.
+
+- **80 of 91 subjects pass every gate.** Every equipment piece is within the prop budget (2000-face
+  generation), and every creature is within the 15k-triangle, 2 MB budget with clips.
+- **Every humanoid** (7 heroes, 15 monsters) rigged from its T-pose image and plays the six Tripo
+  clips; worst-frame stretch stays at or below 173%.
+- **Retries:** rig-check called three subjects unriggable (Bristle Hog, Slime Blob, Elemental Wisp);
+  all three rigged when asked anyway. One image failure (Rotwalker) succeeded on retry.
+- **Flags to look at:**
+  - The **spider's** walk tears a leg (590%), and the spider and **insect** ragdolls don't settle.
+  - **Lania Eshan's** ragdoll is still moving at 1.8 m/s after 2.5 s.
+  - Purity just under 60% on the **goblin's** shoulder, the **mushroom-folk's** upper arm (cap
+    weighting) and **Oran Keshi's** throat.
+  - Bones read outside the body on thin or odd bodies (**imp** legs, **boar, bear and dragon**
+    extras, **slime**).
+- **New lessons** are in `PIPELINE.md`, the living workflow doc (lessons 15–20).
 
 ## Rules (accepted unless marked)
 
@@ -148,7 +171,8 @@ rights") does not define "Paid User". The owner should send the drafted question
   - `asha-run-original-vs-tpose.webp`, `wolf-walk-side.webp`, `clip-sharing-golem.webp`: single comparisons.
 - Per rig: `previews/<entry>/` and `results/<entry>.json`.
 - Budgets: `results/budget.json`.
-- Every Tripo task with its credits and seconds: `results/tripo-tasks.json` (1,135 credits, 54 tasks).
+- Every Tripo task with its credits and seconds: `results/tripo-tasks.json` (all rounds: 7,205 credits,
+  301 tasks; the starting set is 6,070 of them).
 - Re-run steps:
   1. `python rigging/scripts/batch_sample.py --budget <credits> <chain …>`
   2. `node rigging/scripts/build_manifest.mjs`

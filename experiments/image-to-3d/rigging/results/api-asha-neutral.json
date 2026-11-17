@@ -1,7 +1,7 @@
 {
   "entry": "api/asha-neutral",
   "label": "API · Asha (neutral-pose image, biped)",
-  "at": "2026-11-17T17:15:05.203Z",
+  "at": "2026-11-17T17:42:00.328Z",
   "autoFacingYaw": -90,
   "bindVsNodeRest": [],
   "cleanup": {
@@ -77,7 +77,7 @@
     "hit": {
       "clip": "hit",
       "duration": 13.867,
-      "samples": 24,
+      "samples": 16,
       "regionVertexCounts": {
         "elbow": 19,
         "knee": 347,
@@ -89,33 +89,33 @@
         "all": 15997
       },
       "peak": {
-        "elbow": 0.435,
+        "elbow": 0.418,
         "knee": 5.637,
-        "shoulder": 1.351,
-        "hip": 3.393,
-        "neck": 0.615,
+        "shoulder": 1.433,
+        "hip": 3.422,
+        "neck": 0.504,
         "ears": 0,
-        "loincloth": 0.88,
-        "all": 1.167
+        "loincloth": 0.868,
+        "all": 1.161
       },
       "worstFrame": {
-        "t": 4.044,
+        "t": 4.333,
         "stretch": {
-          "elbow": 0.34,
-          "knee": 5.465,
-          "shoulder": 1.013,
-          "hip": 3.262,
-          "neck": 0.338,
+          "elbow": 0.366,
+          "knee": 5.417,
+          "shoulder": 1.034,
+          "hip": 3.422,
+          "neck": 0.295,
           "ears": null,
-          "loincloth": 0.791,
-          "all": 1.167
+          "loincloth": 0.793,
+          "all": 1.161
         }
       }
     },
     "idle": {
       "clip": "idle",
       "duration": 15.367,
-      "samples": 24,
+      "samples": 16,
       "regionVertexCounts": {
         "elbow": 19,
         "knee": 347,
@@ -129,31 +129,31 @@
       "peak": {
         "elbow": 0.167,
         "knee": 0.698,
-        "shoulder": 3.273,
+        "shoulder": 3.259,
         "hip": 0.423,
         "neck": 0.417,
         "ears": 0,
-        "loincloth": 0.329,
-        "all": 0.491
+        "loincloth": 0.327,
+        "all": 0.488
       },
       "worstFrame": {
-        "t": 0.64,
+        "t": 0,
         "stretch": {
-          "elbow": 0.165,
-          "knee": 0.666,
-          "shoulder": 3.031,
-          "hip": 0.26,
-          "neck": 0.394,
+          "elbow": 0.164,
+          "knee": 0.698,
+          "shoulder": 3.023,
+          "hip": 0.263,
+          "neck": 0.389,
           "ears": null,
-          "loincloth": 0.319,
-          "all": 0.491
+          "loincloth": 0.327,
+          "all": 0.488
         }
       }
     },
     "run": {
       "clip": "run",
       "duration": 1.267,
-      "samples": 24,
+      "samples": 16,
       "regionVertexCounts": {
         "elbow": 19,
         "knee": 347,
@@ -165,33 +165,33 @@
         "all": 15997
       },
       "peak": {
-        "elbow": 0.464,
-        "knee": 5.305,
+        "elbow": 0.425,
+        "knee": 5.242,
         "shoulder": 1.477,
         "hip": 1.889,
         "neck": 0.426,
         "ears": 0,
-        "loincloth": 1.213,
-        "all": 1.004
+        "loincloth": 1.103,
+        "all": 0.958
       },
       "worstFrame": {
-        "t": 0.528,
+        "t": 0.554,
         "stretch": {
-          "elbow": 0.464,
-          "knee": 4.886,
-          "shoulder": 0.776,
-          "hip": 0.976,
+          "elbow": 0.425,
+          "knee": 4.232,
+          "shoulder": 0.665,
+          "hip": 0.958,
           "neck": 0.355,
           "ears": null,
-          "loincloth": 1.213,
-          "all": 1.004
+          "loincloth": 1.103,
+          "all": 0.958
         }
       }
     },
     "attack": {
       "clip": "attack",
       "duration": 6.6,
-      "samples": 24,
+      "samples": 16,
       "regionVertexCounts": {
         "elbow": 19,
         "knee": 347,
@@ -203,33 +203,33 @@
         "all": 15997
       },
       "peak": {
-        "elbow": 0.439,
-        "knee": 0.7,
-        "shoulder": 1.959,
-        "hip": 1.544,
-        "neck": 0.874,
+        "elbow": 0.405,
+        "knee": 0.641,
+        "shoulder": 1.602,
+        "hip": 1.249,
+        "neck": 0.802,
         "ears": 0,
-        "loincloth": 0.446,
-        "all": 1.045
+        "loincloth": 0.383,
+        "all": 0.983
       },
       "worstFrame": {
-        "t": 1.925,
+        "t": 2.062,
         "stretch": {
-          "elbow": 0.439,
-          "knee": 0.192,
-          "shoulder": 1.959,
-          "hip": 0.391,
-          "neck": 0.874,
+          "elbow": 0.198,
+          "knee": 0.583,
+          "shoulder": 1.602,
+          "hip": 0.759,
+          "neck": 0.802,
           "ears": null,
-          "loincloth": 0.235,
-          "all": 1.045
+          "loincloth": 0.277,
+          "all": 0.983
         }
       }
     },
     "walk": {
       "clip": "walk",
       "duration": 2.367,
-      "samples": 24,
+      "samples": 16,
       "regionVertexCounts": {
         "elbow": 19,
         "knee": 347,
@@ -243,9 +243,9 @@
       "peak": {
         "elbow": 0.051,
         "knee": 4.913,
-        "shoulder": 2.084,
+        "shoulder": 2.068,
         "hip": 0.52,
-        "neck": 0.373,
+        "neck": 0.37,
         "ears": 0,
         "loincloth": 0.639,
         "all": 0.639
@@ -267,7 +267,7 @@
     "death": {
       "clip": "death",
       "duration": 3.033,
-      "samples": 24,
+      "samples": 16,
       "regionVertexCounts": {
         "elbow": 19,
         "knee": 347,
@@ -279,26 +279,26 @@
         "all": 15997
       },
       "peak": {
-        "elbow": 1.029,
+        "elbow": 0.77,
         "knee": 3.278,
-        "shoulder": 1.959,
+        "shoulder": 1.927,
         "hip": 0.976,
         "neck": 0.914,
         "ears": 0,
         "loincloth": 1.126,
-        "all": 0.92
+        "all": 0.872
       },
       "worstFrame": {
-        "t": 1.769,
+        "t": 1.706,
         "stretch": {
-          "elbow": 1.029,
-          "knee": 0.462,
-          "shoulder": 1.093,
-          "hip": 0.563,
-          "neck": 0.9,
+          "elbow": 0.77,
+          "knee": 0.621,
+          "shoulder": 0.922,
+          "hip": 0.729,
+          "neck": 0.835,
           "ears": null,
-          "loincloth": 0.52,
-          "all": 0.92
+          "loincloth": 0.413,
+          "all": 0.872
         }
       }
     }
@@ -323,35 +323,9 @@
   },
   "ragdoll": {
     "killClip": "walk",
-    "killAt": 0.95,
     "gravity": "3x",
     "stats": [
       {
-        "t": 0,
-        "bodies": 18,
-        "joints": 17,
-        "excludedPairs": 47,
-        "limitHits": 0,
-        "maxLimitExcess": 0,
-        "maxSpeed": 3.01,
-        "lowestBodyY": 0.09,
-        "maxJointSeparation": 0,
-        "steps": 0
-      },
-      {
-        "t": 0.2,
-        "bodies": 18,
-        "joints": 17,
-        "excludedPairs": 47,
-        "limitHits": 454,
-        "maxLimitExcess": 0.8,
-        "maxSpeed": 5.3,
-        "lowestBodyY": 0.076,
-        "maxJointSeparation": 0,
-        "steps": 12
-      },
-      {
-        "t": 0.4,
         "bodies": 18,
         "joints": 17,
         "excludedPairs": 47,
@@ -363,19 +337,6 @@
         "steps": 24
       },
       {
-        "t": 0.7,
-        "bodies": 18,
-        "joints": 17,
-        "excludedPairs": 47,
-        "limitHits": 1989,
-        "maxLimitExcess": 0.93,
-        "maxSpeed": 2.39,
-        "lowestBodyY": 0.062,
-        "maxJointSeparation": 0,
-        "steps": 42
-      },
-      {
-        "t": 1.2,
         "bodies": 18,
         "joints": 17,
         "excludedPairs": 47,
@@ -387,7 +348,6 @@
         "steps": 72
       },
       {
-        "t": 2.5,
         "bodies": 18,
         "joints": 17,
         "excludedPairs": 47,

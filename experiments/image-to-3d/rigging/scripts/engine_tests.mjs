@@ -65,6 +65,42 @@ for (const entry of entries) {
 	const clips = await ev(() => Object.keys(window.__engine.ch.clips));
 	result.clips = clips;
 
+	// PARTS=quick: batch QA. Metrics for every test, one four-frame sheet (rest, hit regions, worst frame,
+	// ragdoll end) instead of the full strips.
+	if (PARTS.has('quick')) {
+		result.autoFacingYaw = await ev(() => window.__engine.ch.autoYaw);
+		result.bindVsNodeRest = await ev(() => window.__engine.ch.restMismatch);
+		result.cleanup = await ev(() => window.__engine.cleanup);
+		result.deformation = {};
+		for (const clip of clips) result.deformation[clip] = await ev((c) => window.__engine.E.deformation(window.__engine.ch, c, 16), clip);
+		result.hitRegions = await ev(() => window.__engine.hits);
+		result.rigCheck = await ev(() => window.__engine.rigCheck);
+		const frames = [];
+		await ev(() => { const a = window.__engine; a.play('(rest pose)'); a.light('day'); a.view('threeq', 0.8); a.tag(a.ch.entry.label.replace('API · ', '')); });
+		frames.push(await snap());
+		await ev(() => { const a = window.__engine; a.view('front', 0.8); a.region('*', { wire: false }); a.tag('hit regions'); });
+		frames.push(await snap());
+		await ev(() => window.__engine.region(null));
+		const worst = Object.values(result.deformation).filter(Boolean).sort((x, y) => (y.peak.all ?? 0) - (x.peak.all ?? 0))[0];
+		if (worst) {
+			await ev(([c, t, st]) => { const a = window.__engine; a.play(c, t); a.view('threeq', 0.8); a.tag(`worst: ${c} · ${Math.round(st * 100)}%`); }, [worst.clip, worst.worstFrame.t, worst.peak.all ?? 0]);
+			frames.push(await snap());
+		}
+		const kc = clips.includes('walk') ? 'walk' : clips[0] ?? null;
+		const kt = kc ? result.deformation[kc].duration * 0.4 : 0;
+		await ev(([c, t]) => { const a = window.__engine; a.view('side', 0.9); if (c) a.play(c, t); }, [kc, kt]);
+		await ev(([c, t]) => window.__engine.kill(c ?? '(rest pose)', c ? t : null), [kc, kt]);
+		const stats = [];
+		for (const dt of [0.4, 0.8, 1.3]) stats.push(await ev((d) => window.__engine.simulate(d), dt));
+		await ev(() => window.__engine.tag('ragdoll 2.5 s'));
+		frames.push(await snap());
+		result.ragdoll = { killClip: kc ?? '(rest pose)', gravity: '3x', stats };
+		await strip(frames, path.join(out, 'qa.webp'), frames.length);
+		await writeFile(path.join(RIG, 'results', `${slug}.json`), JSON.stringify(result, null, 2));
+		console.log('done', entry.id);
+		continue;
+	}
+
 	// 1. Deformation: metric per clip, worst frame, and a 5-frame strip.
 	if (want('clips')) result.deformation = {};
 	for (const clip of want('clips') ? clips : []) {
@@ -145,7 +181,7 @@ for (const entry of entries) {
 	}
 	await strip(regionFrames, path.join(out, 'hit-regions.webp'), 3);
 	// Legend: region colors with vertex counts and purity.
-	const regions = await ev(() => Object.entries(window.__engine.E.REGION_COLOR));
+	const regions = await ev(() => Object.entries(window.__engine.E.REGION_COLOR).filter(([r]) => (window.__engine.ch.hitRegionNames ?? []).includes(r)));
 	const rows = regions.map(([r, col], i) => {
 		const s = result.hitRegions[r];
 		const txt = `${r.replace('_', ' ')} · ${s?.vertices ?? 0} v · purity ${s?.purity == null ? '–' : Math.round(s.purity * 100) + '%'}`;

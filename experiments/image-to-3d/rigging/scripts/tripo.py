@@ -24,6 +24,9 @@ PENDING = {"queued", "running"}  # any other status is terminal
 _LEDGER_LOCK = threading.Lock()
 # The API rejects extra concurrent tasks with HTTP 429; keep at most this many in flight per process.
 _SLOTS = threading.BoundedSemaphore(int(os.environ.get("TRIPO_CONCURRENCY", "4")))
+# Image generation runs one task at a time per account; give it its own queue so waiting images do not
+# hold the slots that models, rigs and clips could use.
+_IMAGE_SLOT = threading.BoundedSemaphore(1)
 
 
 def _key(name: str = "TRIPO_API_KEY") -> str:
@@ -127,17 +130,19 @@ def run(step: str, endpoint: str, payload: dict, budget: Budget, estimate: float
         print(f"[reuse] {step} -> {prior['task_id']}")
         return prior
     budget.reserve(step, estimate)
-    _SLOTS.acquire()
+    slot = _IMAGE_SLOT if endpoint == "/generation/image-to-image" else _SLOTS
+    slot.acquire()
     try:
         return _run_slot(step, endpoint, payload, budget, estimate, poll_s, timeout_s)
     finally:
-        _SLOTS.release()
+        slot.release()
 
 
-def _run_slot(step: str, endpoint: str, payload: dict, budget: Budget, estimate: float, poll_s: float, timeout_s: float) -> dict:
+def _run_slot(step: str, endpoint: str, payload: dict, budget: Budget, estimate: float, poll_s: float, timeout_s: float,
+              task_id: str | None = None) -> dict:
     t0 = time.time()
     try:
-        task_id = _create(endpoint, payload, step)
+        task_id = task_id or _create(endpoint, payload, step)
     except Exception:
         budget.settle(estimate, 0.0)
         raise
@@ -170,5 +175,15 @@ def _run_slot(step: str, endpoint: str, payload: dict, budget: Budget, estimate:
     return entry
 
 
+def adopt(step: str, endpoint: str, task_id: str) -> dict:
+    """Record a task whose submitting process died (it still runs and is charged): wait for it, download its
+    outputs and write the ledger entry, so re-runs reuse it instead of paying again."""
+    return _run_slot(step, endpoint, {"adopted": task_id}, Budget(1e9), 0.0, 5.0, 1800, task_id=task_id)
+
+
 if __name__ == "__main__":
-    print(json.dumps(balance()))
+    import sys
+    if len(sys.argv) == 5 and sys.argv[1] == "adopt":
+        print(json.dumps(adopt(sys.argv[2], sys.argv[3], sys.argv[4]))[:300])
+    else:
+        print(json.dumps(balance()))
