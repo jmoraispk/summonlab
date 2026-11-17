@@ -1,0 +1,7 @@
+{
+	"_note": "Per-subject settings for engine.html. height is the in-game height in meters; facing is the yaw (degrees) that turns the export to face +Z.",
+	"goblin-neutral": { "label": "Goblin Runt (neutral A-pose)", "kind": "biped", "height": 1.0, "facing": 0, "source": "tripo-exports/goblin-neutral__source.png" },
+	"goblin-crouched": { "label": "Goblin Runt (crouched, spear segmented off)", "kind": "biped", "height": 1.0, "facing": 0, "source": "../previews/sources/goblin-runt.webp" },
+	"hog": { "label": "Bristle Hog", "kind": "quadruped", "height": 0.85, "facing": 0, "source": "../previews/sources/boar-bristle-hog.webp" },
+	"raider": { "label": "Goblin Raider", "kind": "biped", "height": 1.25, "facing": 0, "source": "../previews/sources/goblin-raider.webp" }
+}

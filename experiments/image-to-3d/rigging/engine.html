@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Rig Test Bench</title>
+<style>
+	:root { --bg: #15171a; --panel: #1d2024; --line: #2c3036; --text: #e6e3dc; --muted: #9a978f; --accent: #d9a441; --ok: #6fbf73; --bad: #e0675a; }
+	* { box-sizing: border-box; }
+	body { margin: 0; height: 100vh; display: grid; grid-template-columns: 320px 1fr; background: var(--bg); color: var(--text);
+		font: 14px/1.4 system-ui, sans-serif; overflow: hidden; }
+	aside { background: var(--panel); border-right: 1px solid var(--line); padding: 14px; overflow-y: auto; }
+	h1 { font-size: 15px; margin: 0 0 10px; }
+	label { display: block; font-size: 11px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin: 12px 0 4px; }
+	select, button { width: 100%; background: #262a2f; color: var(--text); border: 1px solid var(--line); border-radius: 6px; padding: 6px 8px; font: inherit; }
+	button { cursor: pointer; margin-top: 6px; }
+	button:hover { border-color: var(--accent); }
+	main { position: relative; }
+	canvas { display: block; width: 100%; height: 100%; }
+	#info { position: absolute; left: 12px; bottom: 12px; max-width: 46%; background: rgba(20,22,25,.86); border: 1px solid var(--line);
+		border-radius: 8px; padding: 8px 10px; font: 12px/1.45 ui-monospace, monospace; white-space: pre-wrap; }
+	#source { position: absolute; right: 12px; top: 12px; width: min(24vw, 260px); border: 1px solid var(--line); border-radius: 8px; }
+	#tag { position: absolute; left: 12px; top: 10px; font: 600 16px/1.2 system-ui, sans-serif; text-shadow: 0 1px 3px #000; }
+	body.shot { grid-template-columns: 1fr !important; grid-template-rows: 1fr !important; }
+	body.shot aside, body.shot #info { display: none; }
+	body.shot:not(.with-source) #source { display: none; }
+	@media (max-width: 760px) { body:not(.shot) { grid-template-columns: 1fr; grid-template-rows: 45vh 1fr; } }
+</style>
+<script type="importmap">
+{ "imports": {
+	"three": "../node_modules/three/build/three.module.js",
+	"three/addons/": "../node_modules/three/examples/jsm/",
+	"@dimforge/rapier3d-compat": "../node_modules/@dimforge/rapier3d-compat/rapier.mjs"
+} }
+</script>
+</head>
+<body>
+<aside>
+	<h1>Rig test bench</h1>
+	<label for="entry">Character</label><select id="entry"></select>
+	<label for="clip">Clip</label><select id="clip"></select>
+	<label for="light">Lighting</label><select id="light"><option>day</option><option>night</option></select>
+	<label for="weapon">Weapon in right hand</label><select id="weapon"></select>
+	<label for="region">Hit region</label><select id="region"></select>
+	<label>Ragdoll</label><button id="kill">Kill now (3× gravity)</button>
+</aside>
+<main>
+	<canvas id="c"></canvas>
+	<img id="source" alt="Source art for the selected character" />
+	<div id="tag"></div>
+	<div id="info"></div>
+</main>
+<script type="module">
+import * as THREE from 'three';
+import * as E from './engine.js';
+
+const params = new URLSearchParams(location.search);
+const shot = params.has('shot');
+if (shot) document.body.classList.add('shot');
+if (params.has('withSource')) document.body.classList.add('with-source');
+const manifest = await (await fetch('manifest.json', { cache: 'no-store' })).json();
+const stage = E.createStage(document.getElementById('c'), { preserve: shot });
+const $ = (id) => document.getElementById(id);
+const info = (t) => ($('info').textContent = t);
+const api = (window.__engine = { E, stage, manifest });
+
+let ch = null, action = null, rag = null, weapon = null, masks = null, paused = shot;
+const clock = new THREE.Clock();
+
+$('entry').innerHTML = manifest.entries.map((e) => `<option value="${e.id}">${e.label}</option>`).join('');
+$('light').onchange = () => E.setLighting(stage, $('light').value);
+$('clip').onchange = () => play($('clip').value);
+$('weapon').onchange = () => setWeapon($('weapon').value);
+$('region').onchange = () => E.showRegion(ch, masks, $('region').value || null);
+$('kill').onclick = () => kill();
+$('entry').onchange = () => load($('entry').value);
+
+async function load(id) {
+	window.__ready = false;
+	if (ch) ch.root.removeFromParent();
+	rag = null; weapon = null;
+	const entry = manifest.entries.find((e) => e.id === id);
+	ch = await E.loadCharacter(entry, '');
+	stage.scene.add(ch.root);
+	api.ch = ch;
+	$('clip').innerHTML = ['(rest pose)', ...Object.keys(ch.clips)].map((c) => `<option>${c}</option>`).join('');
+	$('weapon').innerHTML = ['', ...Object.keys(entry.weapons ?? {})].map((w) => `<option value="${w}">${w || '(none)'}</option>`).join('');
+	const hr = E.hitRegions(ch);
+	masks = hr.masks;
+	api.hits = hr.summary;
+	$('region').innerHTML = ['', ...E.HIT_REGIONS].map((r) => `<option value="${r}">${r || '(none)'}</option>`).join('');
+	$('source').src = entry.source ?? '';
+	const sk = E.describeSkeleton(ch);
+	api.skeleton = sk;
+	info(`${entry.label}\nbones ${sk.count}, clips: ${Object.keys(ch.clips).join(', ') || 'none'}\nmissing canonical: ${sk.missing.join(', ') || 'none'}`);
+	const h = ch.height;
+	stage.controls.target.set(0, h * 0.5, 0);
+	stage.camera.position.set(0, h * 0.75, h * 3.1);
+	window.__ready = true;
+}
+
+function play(name, t = null) {
+	ch.mixer.stopAllAction();
+	action = null;
+	if (!name || name === '(rest pose)' || !ch.clips[name]) { ch.skeleton.pose(); return; }
+	action = ch.mixer.clipAction(ch.clips[name]);
+	action.reset().play();
+	if (t !== null) ch.mixer.setTime(t);
+}
+
+async function setWeapon(key) {
+	weapon?.removeFromParent();
+	weapon = null;
+	if (!key) return;
+	const w = ch.entry.weapons[key];
+	const prop = await E.loadProp(w.file, '');
+	const t = action ? ch.mixer.time : null, cur = action?.getClip().name;
+	weapon = E.attachProp(ch, prop, { side: w.side ?? 'r', mode: w.mode ?? 'grip', length: w.length ?? 0.85 });
+	if (cur) play(cur, t);
+}
+
+async function kill(clip = $('clip').value, t = null) {
+	if (!ch.clips[clip]) clip = Object.keys(ch.clips).find((c) => c === 'walk') ?? Object.keys(ch.clips)[0];
+	const at = t ?? (action ? ch.mixer.time % ch.clips[clip].duration : 0);
+	ch.lastVelocities = E.sampleVelocities(ch, clip, at);
+	ch.mixer.stopAllAction();
+	action = null;
+	rag = await E.buildRagdoll(ch, { gravityScale: 3 });
+	api.rag = rag;
+}
+
+api.load = load; api.play = play; api.setWeapon = setWeapon; api.kill = kill;
+api.setTime = (t) => { ch.mixer.setTime(t); ch.root.updateMatrixWorld(true); };
+api.simulate = (seconds) => { for (let i = 0; i < Math.round(seconds * 60); i++) E.stepRagdoll(ch, rag); return E.ragdollStats(rag, ch); };
+api.region = (r) => E.showRegion(ch, masks, r);
+api.light = (m) => E.setLighting(stage, m);
+api.yaw = (deg) => { ch.root.rotation.y = (deg * Math.PI) / 180; ch.root.updateMatrixWorld(true); };
+api.view = (name) => {
+	const h = ch.height;
+	const views = { front: [0, 0.6, 3.0], side: [3.0, 0.6, 0], threeq: [2.1, 0.75, 2.4], close: [0.9, 0.85, 1.6] };
+	const [x, y, z] = views[name] ?? views.front;
+	stage.camera.position.set(x * h, y * h, z * h);
+	stage.controls.target.set(0, h * 0.48, 0);
+	stage.controls.update();
+};
+api.tag = (t) => ($('tag').textContent = t ?? '');
+api.render = () => { stage.controls.update(); stage.renderer.render(stage.scene, stage.camera); };
+
+await load(params.get('entry') ?? manifest.entries[0].id);
+if (params.get('clip')) play(params.get('clip'), params.has('t') ? Number(params.get('t')) : null);
+if (params.get('light')) api.light(params.get('light'));
+
+renderer();
+function renderer() {
+	stage.renderer.setAnimationLoop(() => {
+		const dt = Math.min(clock.getDelta(), 1 / 30);
+		if (!paused && rag) E.stepRagdoll(ch, rag, 1 / 60);
+		else if (!paused && action) ch.mixer.update(dt);
+		stage.controls.update();
+		stage.renderer.render(stage.scene, stage.camera);
+	});
+}
+</script>
+</body>
+</html>

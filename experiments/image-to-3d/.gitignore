@@ -9,3 +9,7 @@ node_modules/
 # The lockfile names a transitive sharp package that the American English policy only
 # permits in the root pnpm-lock.yaml. Direct dependencies are pinned exactly in package.json instead.
 pnpm-lock.yaml
+# Experiment 2: Studio inputs and exports are generated assets; keep them local.
+rigging/tripo-inputs/
+rigging/tripo-exports/
+rigging/manifest.json

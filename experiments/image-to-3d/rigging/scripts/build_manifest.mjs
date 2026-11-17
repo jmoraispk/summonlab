@@ -1,0 +1,48 @@
+// Build rigging/manifest.json for engine.html from rigging/tripo-exports/<subject>__<stage>.glb
+// plus Experiment 1's local Blender rigs as baselines.
+import { readdir, readFile, writeFile, stat } from 'node:fs/promises';
+import path from 'node:path';
+
+const RIG = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..');
+const EXPORTS = path.join(RIG, 'tripo-exports');
+const exists = (p) => stat(p).then(() => true, () => false);
+const overrides = JSON.parse(await readFile(path.join(RIG, 'subjects.json'), 'utf8'));
+const CLIPS = ['idle', 'walk', 'run', 'attack', 'hit', 'death'];
+
+const files = (await exists(EXPORTS)) ? await readdir(EXPORTS) : [];
+const bySubject = {};
+for (const f of files) {
+	const m = f.match(/^(.+?)__(.+)\.(glb|gltf|fbx)$/);
+	if (m) (bySubject[m[1]] ??= {})[m[2]] = `tripo-exports/${f}`;
+}
+
+const weapons = (subject) => {
+	const w = {};
+	if (bySubject.spear?.mesh) w['spear (generated)'] = { file: bySubject.spear.mesh, mode: 'grip', length: 0.95 };
+	if (subject === 'goblin-crouched' && bySubject['goblin-crouched']?.['spear-part'])
+		w['spear (segmented part, in place)'] = { file: bySubject['goblin-crouched']['spear-part'], mode: 'inplace' };
+	if (subject === 'goblin-crouched' && bySubject['goblin-crouched']?.['spear-part'])
+		w['spear (segmented part, socket)'] = { file: bySubject['goblin-crouched']['spear-part'], mode: 'grip', length: 0.95 };
+	w['iron shield (Exp. 1)'] = { file: '../work/models/hunyuan3d/iron-shield/optimized.glb', mode: 'grip', length: 0.5 };
+	return w;
+};
+
+const entries = [];
+for (const [subject, stages] of Object.entries(bySubject)) {
+	const rigged = stages.clips ?? stages.rigged;
+	if (!rigged) continue;
+	const o = overrides[subject] ?? {};
+	const clips = Object.fromEntries(CLIPS.filter((c) => stages[c]).map((c) => [c, stages[c]]));
+	entries.push({ id: `tripo/${subject}`, label: `Tripo · ${o.label ?? subject}`, tool: 'tripo', subject, kind: o.kind ?? 'biped',
+		height: o.height ?? 1.0, facing: o.facing ?? 0, rigged, clips, mesh: stages.mesh ?? null,
+		source: o.source ?? null, weapons: weapons(subject) });
+}
+// Experiment 1 baselines (Hunyuan3D-2 mesh + Blender landmark rig).
+for (const [id, label, height] of [['golem-clay-figure', 'Clay Figure', 1.8], ['goblin-runt', 'Goblin Runt (crouched)', 1.0]]) {
+	const file = `../work/models/hunyuan3d/${id}/rigged.glb`;
+	if (!(await exists(path.join(RIG, file)))) continue;
+	entries.push({ id: `local/${id}`, label: `Local baseline · ${label}`, tool: 'local', subject: id, kind: 'biped', height, facing: 0,
+		rigged: file, clips: {}, source: `../previews/sources/${id}.webp`, weapons: weapons(id) });
+}
+await writeFile(path.join(RIG, 'manifest.json'), JSON.stringify({ entries }, null, 2));
+console.log(`manifest: ${entries.length} entries`, entries.map((e) => e.id).join(', '));
