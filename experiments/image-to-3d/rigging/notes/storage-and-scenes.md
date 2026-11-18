@@ -29,27 +29,46 @@ GLBs and images directly through Cloudflare's CDN without bandwidth bills. The f
 month, more than everything generated so far. Vercel Blob or S3 + CloudFront work too, but both bill
 egress, and 3D assets are download-heavy. Check current prices before committing.
 
+### Two buckets: public runtime, private masters
+
+| Bucket | Access | Contents | Size now | Full catalog (est.) |
+| --- | --- | --- | --- | --- |
+| `summonlab-assets` | public (custom domain, CORS) | `runtime/`: optimized GLBs (rigged character 0.54 MB avg, prop 0.15 MB), shared clip library per skeleton family (clips without the mesh), thumbnails; `catalog/<batch>.json` | ~90 MB | ~0.5 GB |
+| `summonlab-masters` | private (no public URL) | `raw/tripo/<step>/`: every Tripo output (models 404 MB, rigs 189 MB, clip files 301 MB, neutral images 34 MB); `raw/sources/`: prepared inputs (167 MB); task metadata and ledger | ~1.1 GB | ~7 GB |
+
+- **Masters are what the credits bought:** keep them, never overwrite, and store them privately. Ownership
+  terms are unconfirmed, and the raw files are large and unoptimized. Re-optimizing or re-cutting from
+  masters costs nothing; regenerating costs credits.
+- **Runtime is what players download:** content-hashed, immutable names cache forever. Today each Tripo
+  clip file repeats the whole mesh; the runtime library stores clips once per skeleton family, since
+  clips now retarget across rigs.
+- **Neither bucket:** Experiment 1 local outputs (dropped route), logs, the derived bench manifest,
+  caches. Bench previews, QA results and the catalog JSON stay in git (small evidence and the index).
+- Estimates assume the whole catalog: 200 heroes, about 190 monster species and 140 equipment items, at
+  ~17 MB of masters per animated creature and ~4 MB per prop. Both fit around R2's free 10 GB.
+
 ### What the owner sets up (I must not create accounts)
 
-1. Create a Cloudflare account, if needed, and an R2 bucket, for example `summonlab-assets`.
+1. Create a Cloudflare account, if needed, and two R2 buckets: `summonlab-assets` (public runtime) and
+   `summonlab-masters` (private; skip steps 2 and 4 for it).
 2. Make it public:
    - for production, connect a custom domain such as `assets.<your-domain>` (CDN-cached);
    - for a quick test, enable the bucket's `r2.dev` URL (rate-limited, not for production).
-3. Create an R2 API token with **Object Read & Write** scoped to that bucket. Note the Access Key ID,
+3. Create an R2 API token with **Object Read & Write** scoped to both buckets. Note the Access Key ID,
    the Secret Access Key and the account ID; the endpoint is `https://<account_id>.r2.cloudflarestorage.com`.
 4. Add a CORS rule on the bucket allowing `GET` and `HEAD` from the site's origins: production, Vercel
    previews, `localhost`, and the LAN preview.
 5. Put the values in `~/.config/image-to-3d/keys.env` (never in the repo): `R2_ACCOUNT_ID`,
-   `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`, `R2_BUCKET`, `R2_PUBLIC_BASE`.
+   `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`, `R2_BUCKET` (public), `R2_MASTERS_BUCKET` (private),
+   `R2_PUBLIC_BASE`.
 
 ### What I build once the keys exist
 
 - `rigging/scripts/sync_r2.py`: uploads with content hashes, skips what is already there, never deletes.
-- Bucket layout:
-  - `raw/tripo/<step>/…`: every Tripo output, kept immutable (neutral images, models, rigs, clips).
-  - `raw/sources/<id>.png`: prepared inputs.
-  - `runtime/<kind>/<id>/<sha12>.glb`: optimized, game-ready files with hashed names, cacheable forever.
-  - `catalog/<batch>.json`: id → runtime URL, triangles, bytes, clips, QA result.
+- Layout:
+  - masters bucket: `raw/tripo/<step>/…` (every Tripo output, immutable) and `raw/sources/<id>.png`.
+  - public bucket: `runtime/<kind>/<id>/<sha12>.glb` (optimized, hashed names, cacheable forever) and
+    `catalog/<batch>.json` (id → runtime URL, triangles, bytes, clips, QA result).
 - The catalog JSON is also committed, so the website and game read one small file and fetch GLBs from R2.
 - Later, optional: move `apps/web/static/runtime` images and the LFS art to the same bucket.
 
