@@ -1,0 +1,121 @@
+# Moving binary assets from GitHub to Cloudflare R2 (proposal, 2026-11-18)
+
+Owner question: can most, or all, of what GitHub serves move to the R2 storage? Answer: nearly all of the
+binary art can. Code, docs, manifests and small review evidence stay in git. This note is the full plan.
+It sits with the image-to-3D notes until the owner accepts it; the repo-wide steps (web app, CI, wiki)
+are their own change on `main`.
+
+## What GitHub stores and serves today (measured 2026-11-18)
+
+| What                                         | Where                                               | Size    | Who downloads it from GitHub                                                                                                                                                                                        |
+| -------------------------------------------- | --------------------------------------------------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Git LFS art (2,262 PNGs at the tip)          | `assets/**`, two `docs`/`apps` folders              | 4.82 GB | CI on every run (`ci.yml` checks out with `lfs: true`); the wiki workflow (a subset); the site's full-size monster viewer (`MonsterArtwork.svelte` loads `media.githubusercontent.com`); every clone that pulls LFS |
+| Site runtime images (3,105 files)            | `apps/web/static/{runtime,wiki-media,hero-archive}` | 177 MB  | Every clone and Vercel build; players get them from Vercel                                                                                                                                                          |
+| Generated 3D (Tripo masters, optimized GLBs) | this machine only (`work/`, gitignored)             | 1.3 GB  | nobody (no backup yet)                                                                                                                                                                                              |
+| Git history (regular objects)                | the repository pack                                 | 642 MB  | every clone                                                                                                                                                                                                         |
+
+LFS by folder: enemy experiment candidates 2.46 GB, hero roster sources 1.01 GB, approved enemies 0.56 GB,
+skill icons 0.40 GB, approved equipment 0.23 GB, hero visuals 0.13 GB, other 0.04 GB.
+
+**GitHub limits (Free plan, per GitHub's billing docs):** 10 GiB of LFS storage and 10 GiB of LFS download
+bandwidth a month, then $0.07/GiB-month and $0.0875/GiB. LFS downloads count against the owner's
+bandwidth even in a public repository. One CI run downloads all 4.8 GB, so about two CI runs fit in the
+monthly allowance. The real numbers are on GitHub: Settings → Billing and licensing → Usage, filtered to
+Git LFS.
+
+## Target split
+
+| Location                      | Holds                                                                                                                                                          | Size now |
+| ----------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- |
+| Git                           | code, docs, JSON manifests (path → SHA-256, bytes, bucket key), batch plans, QA results, small preview and evidence images, `apps/web/static/ui`, `robots.txt` | small    |
+| `summonlab-assets` (public)   | what the site, wiki and game load: runtime images, the full-size art the wiki viewer opens, optimized GLBs and clips, catalogs                                 | ~1 GB    |
+| `summonlab-masters` (private) | every master worth keeping: all LFS art (hero and enemy masters, experiment candidates), Tripo raw outputs, prepared sources                                   | ~6 GB    |
+
+- Everything fits R2's free 10 GB-month today (about 7 GB). The full 3D catalog adds about 6.5 GB, so
+  about 14 GB in all: roughly $0.06 a month over the allowance at $0.015/GB-month. Reads are free of
+  egress fees; the free allowance covers 1 million writes and 10 million reads a month, and Cloudflare's
+  cache in front of the public bucket absorbs most reads.
+- Keys are content-addressed (`<kind>/<id>.<sha12>.<ext>`, as `hero-archive` already does), so files are
+  immutable and cache for a year. Uploads never overwrite or delete.
+
+## Owner setup (I must not create accounts)
+
+1. **Account.** Sign in to Cloudflare (Free plan) and open R2 Object Storage. Cloudflare asks for a
+   payment method to turn on R2, even within the free allowance.
+2. **Domain for the public bucket.** Production needs a custom domain, such as `assets.<your-domain>`,
+   whose DNS is on Cloudflare in the same account. If the domain is elsewhere, add it to Cloudflare
+   (Free plan: change the nameservers at the registrar, then recreate the existing records, keeping
+   Vercel's records "DNS only"). A dedicated domain from Cloudflare Registrar also works. Without a domain,
+   the bucket's `r2.dev` URL works for testing only: it is rate-limited and uncached.
+3. **Buckets.** Create `summonlab-assets` and `summonlab-masters`: location Automatic, storage class
+   Standard (the free allowance covers Standard only).
+4. **Public access, `summonlab-assets` only.** Settings → Custom Domains → connect `assets.<your-domain>`.
+   For a quick test, also enable the Public Development URL. Leave `summonlab-masters` with no public
+   access.
+5. **CORS, `summonlab-assets` only.** Settings → CORS policy:
+
+   ```json
+   [
+   	{
+   		"AllowedOrigins": ["*"],
+   		"AllowedMethods": ["GET", "HEAD"],
+   		"AllowedHeaders": ["*"],
+   		"MaxAgeSeconds": 86400
+   	}
+   ]
+   ```
+
+   Everything in this bucket is public and read-only, so any origin may read it. That covers production,
+   every Vercel preview, the GitHub Pages wiki, `localhost` and the LAN preview without upkeep.
+
+6. **Caching.** On the domain: Caching → Cache Rules → new rule, hostname equals `assets.<your-domain>`,
+   "Eligible for cache", Edge TTL "use cache-control header if present". Uploads carry
+   `Cache-Control: public, max-age=31536000, immutable`. Without the rule, Cloudflare skips `.glb` and
+   `.json` by default.
+7. **API token.** R2 → Manage API tokens → Create API token: name `summonlab-local`, permission
+   **Object Read & Write**, applied to **both buckets only**, no expiry. Copy the Access Key ID and Secret
+   Access Key (shown once) and the account ID (the endpoint is
+   `https://<account_id>.r2.cloudflarestorage.com`).
+8. **Keys on this machine.** Add to `~/.config/image-to-3d/keys.env` (mode 600, never in the repo or chat):
+
+   ```text
+   R2_ACCOUNT_ID=...
+   R2_ACCESS_KEY_ID=...
+   R2_SECRET_ACCESS_KEY=...
+   R2_BUCKET=summonlab-assets
+   R2_MASTERS_BUCKET=summonlab-masters
+   R2_PUBLIC_BASE=https://assets.<your-domain>
+   ```
+
+   `R2_PUBLIC_BASE` may be the `r2.dev` URL until the domain is connected.
+
+9. **Later, at phase 2:** add `PUBLIC_ASSET_BASE` (the same public URL; not a secret) to the Vercel project
+   (Production and Preview) and as a GitHub Actions variable for the wiki workflow. CI needs no R2
+   secrets in this plan.
+
+## Phases (each one reversible until the last)
+
+1. **Back up (copy only).** `sync_r2.py` uploads the Tripo masters and every LFS file to
+   `summonlab-masters`, writes a manifest, then re-downloads and checks every hash. GitHub is unchanged.
+2. **Serve from R2.** Upload what the site loads to `summonlab-assets`. One `assetUrl()` helper reading
+   `PUBLIC_ASSET_BASE` goes where asset URLs are built: 10 `/runtime/…` references in `apps/web` code, 16
+   in the content packages (the rest are tests), and the `media.githubusercontent.com` URL in the monster
+   viewer. With the variable unset, the app serves the local `static/` copy as today.
+3. **Stop GitHub downloads.** CI checks out without LFS; the asset validators verify manifests (presence,
+   hash, size), and the few checks that need pixels fetch from R2 with an Actions cache. The wiki workflow
+   fetches from R2 instead of `git lfs pull`.
+4. **Stop GitHub growth.** New art goes to R2 plus a manifest entry; a validator rejects new large binaries
+   in git; the tip drops the LFS files and the runtime images, and `pnpm assets:pull` fetches them for work
+   that needs them locally.
+5. **Optional: purge history.** Files already pushed to LFS keep counting toward GitHub's LFS storage.
+   GitHub's documented way to remove them is rewriting history and deleting and recreating the repository,
+   which loses issues and pull requests. Only worth it if storage goes over quota.
+
+## Trade-offs
+
+- A checkout is no longer self-contained: offline work on art needs `pnpm assets:pull` first, and masters
+  need the read key.
+- Pull requests no longer show changed art inline; art changes carry small preview sheets in git, as the
+  image-to-3D batches already do.
+- One more service to keep alive: the manifests in git are the index, so the buckets can be rebuilt from a
+  local copy if the account changes.

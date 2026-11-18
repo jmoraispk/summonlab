@@ -52,18 +52,8 @@ egress, and 3D assets are download-heavy. Check current prices before committing
 
 ### What the owner sets up (I must not create accounts)
 
-1. Create a Cloudflare account, if needed, and two R2 buckets: `summonlab-assets` (public runtime) and
-   `summonlab-masters` (private; skip steps 2 and 4 for it).
-2. Make it public:
-   - for production, connect a custom domain such as `assets.<your-domain>` (CDN-cached);
-   - for a quick test, enable the bucket's `r2.dev` URL (rate-limited, not for production).
-3. Create an R2 API token with **Object Read & Write** scoped to both buckets. Note the Access Key ID,
-   the Secret Access Key and the account ID; the endpoint is `https://<account_id>.r2.cloudflarestorage.com`.
-4. Add a CORS rule on the bucket allowing `GET` and `HEAD` from the site's origins: production, Vercel
-   previews, `localhost`, and the LAN preview.
-5. Put the values in `~/.config/image-to-3d/keys.env` (never in the repo): `R2_ACCOUNT_ID`,
-   `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`, `R2_BUCKET` (public), `R2_MASTERS_BUCKET` (private),
-   `R2_PUBLIC_BASE`.
+The full steps (account, domain, buckets, CORS, caching, token, keys) are in `r2-migration.md`, which also
+covers moving the repository's Git LFS art and site images off GitHub.
 
 ### What I build once the keys exist
 

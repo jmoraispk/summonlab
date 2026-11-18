@@ -146,7 +146,8 @@ and clips run in parallel.
 - Fitting wearable armor (cuirass, legs, boots, robes) to the shared skeleton.
 - Spider and insect: try `others` rigs or hand-placed leg weights; a leg-aware ragdoll (thin capsules,
   stiffer limits) for many-legged bodies.
-- Storage: Cloudflare R2 bucket and `sync_r2.py` (needs owner-created keys; `notes/storage-and-scenes.md`).
+- Storage: Cloudflare R2 buckets and `sync_r2.py` (needs owner-created keys; setup and the GitHub-to-R2
+  phases in `notes/r2-migration.md`).
 - Scenes: Hearth-01 kit test (~20 pieces, ~1,000 credits; `notes/storage-and-scenes.md`).
 - Owner: send `notes/tripo-license-question.md` to Tripo.
 
