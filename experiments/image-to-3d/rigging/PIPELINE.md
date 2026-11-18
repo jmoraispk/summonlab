@@ -31,7 +31,7 @@ the experiment that established all this is `REPORT-rigging.md`.
 | Neutral image | `image-to-image`, `seedream_v5`; `template: t_pose` for bipeds; body-plan prompt otherwise; hero prompts from the roster catalog | action poses are not riggable; T-pose rigs deform ~4× better |
 | Model | v3.1, texture + PBR, Smart Mesh; `face_limit` 10000 creatures, 2000 props | Smart Mesh counts quads (10000 → ~13.6k triangles) |
 | Rig | biped: `v3.0-20260909` + `spec: mixamo`; quadruped, avian, serpentine, hexapod, octopod: `v2.5-20260210`; others: `v3.0` | "others" only exists on v3.0; Mixamo names make clips and hit regions portable |
-| Clips | biped: one shared library made on a donor rig (v3.0 presets: idle, walk, run, slash, hurt, fall; v1.0 presets for combat: chop, box, kick, hit reactions, defeat) and retargeted in world space to every humanoid; quadruped/hexapod/octopod walk; serpentine march; avian and others none | retargeted clips deform as well as each rig's own (walk 73% vs 77% on the golem); per-character presets become optional |
+| Clips | biped: v3.0 presets on each character's own rig (idle, walk, run, slash, hurt, fall); v1.0 combat presets (chop, box, kick, hit reactions, defeat) made once on a donor rig and retargeted in world space to every humanoid at load; quadruped/hexapod/octopod walk; serpentine march; avian and others none | retargeted clips deform about as well as each rig's own (walk 73% vs 77% on the golem), but the gate does not measure foot sliding or where the fists land; sharing is a shortcut, and clips per skeleton are the target (owner, 2026-11-18; deferred) |
 | Import | auto facing from the skeleton; rebase clip position tracks onto the bind pose; flag floating pieces ≥4% of height for review; props yaw −90° | API exports face ±X; non-biped exports sink without the rebase |
 
 Cost per subject: biped with clips 130, quadruped/hexapod/octopod/serpentine with clip 80, avian or
@@ -126,12 +126,20 @@ and clips run in parallel.
 27. **Grips need a fist.** The handle runs along the knuckle line through the fist center (T-pose rigs rest
     palms down, so the palm is world −Y at rest), and the finger and thumb joints curl around it on top of
     every clip (`applyGrip`). Without the curl the sword looked glued to the back of an open hand.
+28. **Clips without the mesh are small; sharing them is a shortcut, not a storage need.** Every Tripo
+    clip file repeats the whole character. Stripped of the mesh and packed (resample + meshopt), a v3.0
+    clip is about 75 KB (65 bones with fingers) and a v1.0 combat clip about 33 KB (23 bones), so a full
+    11-clip set is about 0.8 MB per character. One clip on many bodies copies rotations but ignores
+    proportions (arm length, shoulder width, girth, height), so feet can slide and fists miss the grip.
 
 ## Backlog (next experiments)
 
 - Hair under helmets: a hair-hidden head variant per hero, or shrink-to-skull for helmet wear.
-- Grow the shared combat library: more v1.0 presets on the donor (10 credits each), one set for every
-  humanoid; check that two-handed weapon grips survive the retarget.
+- Clips per skeleton (owner, 2026-11-18: sharing is a shortcut; deferred while shared clips look fine).
+  Either bake each borrowed clip once per character (free: retarget offline, plant the feet, put the fists
+  on the grip, check it on the bench, store it as that character's animation-only file), or have Tripo
+  make it on each character (v1.0 rig plus presets, ~75 credits for five clips). Then grow the combat set
+  (10 credits per preset) and check that two-handed grips hold.
 - Hit regions for 6- and 8-legged chains (`2_`/`3_` limbs), and geometry-based regions for birds,
   snakes and "others" (quadrupeds are done).
 - Per-family head mapping (golems: head bone sits above the head nub).
@@ -154,3 +162,5 @@ and clips run in parallel.
   retarget make one clip library serve every humanoid; exact clip naming; storage and scenes plan.
 - 2026-11-18: cloth code removed; floating pieces flagged for review instead of auto-removed; helmets face
   forward and fit the head; procedural fist for sword grips.
+- 2026-11-18: two R2 buckets accepted (public runtime, private masters); runtime clips stored per character
+  without the mesh; shared clips recorded as a shortcut, clips per skeleton deferred.

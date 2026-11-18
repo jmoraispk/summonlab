@@ -33,19 +33,22 @@ egress, and 3D assets are download-heavy. Check current prices before committing
 
 | Bucket | Access | Contents | Size now | Full catalog (est.) |
 | --- | --- | --- | --- | --- |
-| `summonlab-assets` | public (custom domain, CORS) | `runtime/`: optimized GLBs (rigged character 0.54 MB avg, prop 0.15 MB), shared clip library per skeleton family (clips without the mesh), thumbnails; `catalog/<batch>.json` | ~90 MB | ~0.5 GB |
+| `summonlab-assets` | public (custom domain, CORS) | `runtime/`: optimized GLBs (rigged character 0.54 MB avg, prop 0.15 MB), each character's clips as animation-only files (mesh stripped, ~75 KB per clip), thumbnails; `catalog/<batch>.json` | ~90 MB | ~0.75 GB |
 | `summonlab-masters` | private (no public URL) | `raw/tripo/<step>/`: every Tripo output (models 404 MB, rigs 189 MB, clip files 301 MB, neutral images 34 MB); `raw/sources/`: prepared inputs (167 MB); task metadata and ledger | ~1.1 GB | ~7 GB |
 
 - **Masters are what the credits bought:** keep them, never overwrite, and store them privately. Ownership
   terms are unconfirmed, and the raw files are large and unoptimized. Re-optimizing or re-cutting from
   masters costs nothing; regenerating costs credits.
 - **Runtime is what players download:** content-hashed, immutable names cache forever. Today each Tripo
-  clip file repeats the whole mesh; the runtime library stores clips once per skeleton family, since
-  clips now retarget across rigs.
+  clip file repeats the whole mesh; the runtime stores each character's clips without it (about 0.8 MB
+  for an 11-clip set, measured 2026-11-18). Clips stay per character: playing one clip on many bodies is
+  a shortcut (combat clips do it today), and clips per skeleton are the target (owner, 2026-11-18;
+  deferred).
 - **Neither bucket:** Experiment 1 local outputs (dropped route), logs, the derived bench manifest,
   caches. Bench previews, QA results and the catalog JSON stay in git (small evidence and the index).
 - Estimates assume the whole catalog: 200 heroes, about 190 monster species and 140 equipment items, at
-  ~17 MB of masters per animated creature and ~4 MB per prop. Both fit around R2's free 10 GB.
+  ~17 MB of masters per animated creature and ~4 MB per prop; per-character clips add about 0.25 GB of
+  runtime. Both fit around R2's free 10 GB.
 
 ### What the owner sets up (I must not create accounts)
 

@@ -28,3 +28,5 @@ Durable owner answers, so later turns do not rediscover them.
 | 2026-11-18 | Delete the cloth-bone code (extra complexity; it did not work, and runs already look fine). | done |
 | 2026-11-18 | Watch for isolated pieces (the bear's chin blob); a removal stage if cheap. | revised: automatic removal at ≥4% also cut real costume parts (werebeast chain), so far pieces are flagged on the QA sheet and removed per asset after review |
 | 2026-11-18 | Helmet must cover the head and face forward; the sword must be held by the hand. | fixed: props turned −90°, helmet fitted to head extents, procedural fist |
+| 2026-11-18 | Two R2 buckets: public `summonlab-assets` (runtime files and catalog) and private `summonlab-masters` (every raw Tripo output and source image). | accepted; owner is creating the keys |
+| 2026-11-18 | Playing one clip on many characters is a shortcut; clips per skeleton are the target. Runtime stores each character's clips without the mesh. | accepted; per-skeleton clips deferred while shared clips look fine |
