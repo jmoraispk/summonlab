@@ -12,6 +12,7 @@ const exists = (p) => stat(p).then(() => true, () => false);
 const batch = JSON.parse(await readFile(process.argv[2], 'utf8'));
 const run = JSON.parse(await readFile(path.join(RIG, 'results', `batch-${batch.name}.json`), 'utf8').catch(() => '{"subjects":{}}'));
 const budget = JSON.parse(await readFile(path.join(RIG, 'results', 'budget.json'), 'utf8').catch(() => '[]'));
+const subjectsCfg = JSON.parse(await readFile(path.join(RIG, 'subjects.json'), 'utf8'));
 const MINOR = /finger|thumb|index|middle|ring|pinky|toe|end/i;
 const BIPED_REGIONS = 19;
 
@@ -57,12 +58,18 @@ for (const s of batch.subjects.filter((x) => !x.done)) {
 	if (st) flag('ragdoll', st.maxJointSeparation === 0 && st.maxSpeed < 1.0, `ragdoll end speed ${st.maxSpeed} m/s`);
 	const b = budget.filter((x) => x.name.startsWith(`${s.id}-neutral--`));
 	if (b.length) flag('budget', b.every((x) => x.withinBudget), 'over budget');
+	// Floating pieces far from the body need a human: artifact (removeIslands) or costume part (keepIslands).
+	const flaggedIslands = (res.cleanup?.floatingIslands ?? []).filter((x) => x.flagged);
+	const review = subjectsCfg[`${s.id}-neutral`] ?? {};
+	if (flaggedIslands.length) flag('islands', Boolean(review.removeIslands || review.keepIslands), `${flaggedIslands.length} floating pieces to review`);
+	if (flaggedIslands.length && review._review) row.notes.push(`islands reviewed: ${review.removeIslands ? 'removed' : 'kept'}`);
 	row.qa = `rigging/previews/${slug}/qa.webp`;
 	rows.push(row);
 }
 const pass = (r) => Object.values(r.gates).every(Boolean);
 const md = [`# QA: ${batch.name}`, '', `${rows.filter(pass).length} of ${rows.length} subjects pass every gate. Gates: generated, riggable,`,
 	'bones inside mesh, hit regions (bipeds: ≥17/19 filled, lowest purity ≥60%), worst-1% stretch ≤200%, ragdoll settles',
+	'floating pieces ≥4% of height away reviewed (removed as artifacts or kept as costume parts),',
 	'(<1 m/s at 2.5 s, no separation), budget (creatures ≤15k tris and 2 MB; props ≤3k tris and 300 KB).', '',
 	'| Subject | Kind | Body | Result | Worst clip | Notes |', '| --- | --- | --- | --- | --- | --- |',
 	...rows.map((r) => `| ${r.label ?? r.id} | ${r.kind} | ${r.body} | ${pass(r) ? 'pass' : 'FLAG: ' + Object.entries(r.gates).filter(([, v]) => !v).map(([k]) => k).join(', ')} | ${r.worstStretch ?? ''} | ${r.notes.join('; ')} |`), ''];

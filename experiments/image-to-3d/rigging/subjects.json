@@ -30,10 +30,34 @@
 	},
 	"asha-neutral": {
 		"removeIslands": true,
-		"_review": "2026-11-17: the two floating pieces (249 + 55 vertices at hip height, right side) are the braid tip split off the braid; removal reviewed in previews/api-asha-neutral."
+		"_review": "2026-11-17: the two flagged pieces (249 + 55 vertices at hip height, right side) are the braid tip split off the braid; removed."
 	},
 	"golem-neutral-others": {
 		"facing": -90,
 		"_review": "Generic bone names give no feet or tail for automatic facing; -90 matches the biped rig of the same model."
+	},
+	"bear-scrub-bear-neutral": {
+		"removeIslands": true,
+		"_review": "2026-11-18: two flagged pieces float beside the head and under the chin (owner spotted the chin blob); removed."
+	},
+	"werebeast-afflicted-neutral": {
+		"keepIslands": true,
+		"_review": "2026-11-18: the flagged pieces are the lower half of his hanging chain; kept."
+	},
+	"mummy-husk-neutral": {
+		"keepIslands": true,
+		"_review": "2026-11-18: the flagged piece is the end of a hanging strip in front of the leg; kept."
+	},
+	"insectoid-worker-neutral": {
+		"keepIslands": true,
+		"_review": "2026-11-18: the flagged pieces include a hanging feeler from the head; kept."
+	},
+	"arachnid-crawler-neutral": {
+		"keepIslands": true,
+		"_review": "2026-11-18: the flagged pieces are leg segments and leg hairs; kept."
+	},
+	"burrower-soil-grub-neutral": {
+		"keepIslands": true,
+		"_review": "2026-11-18: the flagged piece is a bristle by the body; kept."
 	}
 }

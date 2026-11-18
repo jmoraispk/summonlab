@@ -2,6 +2,7 @@
 
 80 of 91 subjects pass every gate. Gates: generated, riggable,
 bones inside mesh, hit regions (bipeds: ≥17/19 filled, lowest purity ≥60%), worst-1% stretch ≤200%, ragdoll settles
+floating pieces ≥4% of height away reviewed (removed as artifacts or kept as costume parts),
 (<1 m/s at 2.5 s, no separation), budget (creatures ≤15k tris and 2 MB; props ≤3k tris and 300 KB).
 
 | Subject | Kind | Body | Result | Worst clip | Notes |
@@ -10,7 +11,7 @@ bones inside mesh, hit regions (bipeds: ≥17/19 filled, lowest purity ≥60%), 
 | Orc Grunt | monster | biped | pass | hit 132% |  |
 | Skeleton Rattler | monster | biped | pass | hit 157% | 9 bones read as outside: thin geometry, check visually |
 | Rotwalker Shambler | monster | biped | pass | hit 127% |  |
-| Mummy Husk | monster | biped | pass | hit 125% |  |
+| Mummy Husk | monster | biped | pass | hit 125% | islands reviewed: kept |
 | Lizardfolk Scout | monster | biped | pass | hit 102% |  |
 | Minotaur Bull-Kin | monster | biped | pass | hit 131% |  |
 | Troll Scrag | monster | biped | pass | hit 127% |  |
@@ -18,19 +19,19 @@ bones inside mesh, hit regions (bipeds: ≥17/19 filled, lowest purity ≥60%), 
 | Deep One Fishman | monster | biped | pass | hit 144% |  |
 | Demon Imp | monster | biped | FLAG: bones | attack 109% | bones outside mesh: mixamorigLeftLeg |
 | Gargoyle Grotesque | monster | biped | pass | hit 128% |  |
-| Werebeast Afflicted | monster | biped | pass | hit 88% |  |
+| Werebeast Afflicted | monster | biped | pass | hit 88% | islands reviewed: kept |
 | Giant Brute | monster | biped | pass | hit 150% |  |
 | Harpy Screecher | monster | biped | pass | hit 157% |  |
 | Bristle Hog | monster | quadruped | FLAG: bones | walk 68% | bones outside mesh: tripoHead_3, tripoTail_0 |
-| Scrub Bear | monster | quadruped | FLAG: bones | walk 133% | bones outside mesh: tripoHead_0, tripoHead_1 |
+| Scrub Bear | monster | quadruped | FLAG: bones | walk 136% | bones outside mesh: tripoHead_0, tripoHead_1; islands reviewed: removed |
 | Wildcat | monster | quadruped | pass | walk 93% |  |
 | Mire Caiman | monster | quadruped | pass | walk 49% |  |
 | Dragon Whelp | monster | quadruped | FLAG: bones | walk 147% | bones outside mesh: tripo1_Left_Limb_4, tripo1_Left_Limb_5 |
 | Night Owl | monster | avian | pass |  | no clips (none available for this body plan) |
 | Adder | monster | serpentine | pass | preset:serpentine:march 9% |  |
-| Soil Grub | monster | serpentine | pass | preset:serpentine:march 16% |  |
-| Insectoid Worker | monster | hexapod | FLAG: bones, ragdoll | walk 118% | bones outside mesh: tripo0_Left_Limb_4; ragdoll end speed 4.35 m/s |
-| Arachnid Crawler | monster | octopod | FLAG: bones, deformation, ragdoll | walk 590% | bones outside mesh: tripo3_Left_Limb_1, tripo1_Left_Limb_1, tripo0_Right_Limb_1, tripoSpine_1; worst-1% stretch 590% (walk); ragdoll end speed 1.25 m/s |
+| Soil Grub | monster | serpentine | pass | march 16% | islands reviewed: kept |
+| Insectoid Worker | monster | hexapod | FLAG: bones, ragdoll | walk 118% | bones outside mesh: tripo0_Left_Limb_4; ragdoll end speed 4.35 m/s; islands reviewed: kept |
+| Arachnid Crawler | monster | octopod | FLAG: bones, deformation, ragdoll | walk 590% | bones outside mesh: tripo3_Left_Limb_1, tripo1_Left_Limb_1, tripo0_Right_Limb_1, tripoSpine_1; worst-1% stretch 590% (walk); ragdoll end speed 1.25 m/s; islands reviewed: kept |
 | Slime Blob | monster | others | FLAG: bones |  | bones outside mesh: tripoHead_3; no clips (none available for this body plan) |
 | Elemental Wisp | monster | others | pass |  | no clips (none available for this body plan) |
 | Rao Falin | hero | biped | pass | hit 150% |  |

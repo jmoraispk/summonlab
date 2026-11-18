@@ -1,7 +1,7 @@
 {
   "entry": "api/asha-neutral",
   "label": "API · Asha (neutral-pose image, biped)",
-  "at": "2026-11-17T17:42:00.328Z",
+  "at": "2026-11-18T13:15:40.698Z",
   "autoFacingYaw": -90,
   "bindVsNodeRest": [],
   "cleanup": {
@@ -14,6 +14,7 @@
           0.47,
           0.08
         ],
+        "flagged": true,
         "removed": true
       },
       {
@@ -24,11 +25,11 @@
           0.47,
           0.06
         ],
+        "flagged": true,
         "removed": true
       }
     ],
-    "keptIslands": 4,
-    "skirtVertices": 0
+    "keptIslands": 4
   },
   "skeleton": {
     "count": 65,

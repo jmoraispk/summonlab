@@ -1,7 +1,7 @@
 {
   "entry": "api/burrower-soil-grub-neutral",
   "label": "API · Soil Grub (neutral-pose image, serpentine)",
-  "at": "2026-11-17T18:31:13.301Z",
+  "at": "2026-11-18T13:16:09.559Z",
   "autoFacingYaw": -90,
   "bindVsNodeRest": [
     {
@@ -19,6 +19,7 @@
           0.74,
           1.66
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -29,6 +30,7 @@
           0.96,
           1.66
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -39,11 +41,11 @@
           0.57,
           1.39
         ],
+        "flagged": false,
         "removed": false
       }
     ],
-    "keptIslands": 0,
-    "skirtVertices": 0
+    "keptIslands": 0
   },
   "skeleton": {
     "count": 20,
@@ -97,11 +99,11 @@
     }
   },
   "clips": [
-    "preset:serpentine:march"
+    "march"
   ],
   "deformation": {
-    "preset:serpentine:march": {
-      "clip": "preset:serpentine:march",
+    "march": {
+      "clip": "march",
       "duration": 1.25,
       "samples": 16,
       "regionVertexCounts": {
@@ -349,7 +351,7 @@
     ]
   },
   "ragdoll": {
-    "killClip": "preset:serpentine:march",
+    "killClip": "march",
     "gravity": "3x",
     "stats": [
       {

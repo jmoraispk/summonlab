@@ -1,7 +1,7 @@
 {
   "entry": "api/bear-scrub-bear-neutral",
   "label": "API · Scrub Bear (neutral-pose image, quadruped)",
-  "at": "2026-11-17T17:53:27.709Z",
+  "at": "2026-11-18T13:15:50.347Z",
   "autoFacingYaw": 0,
   "bindVsNodeRest": [
     {
@@ -19,7 +19,8 @@
           0.73,
           0.12
         ],
-        "removed": false
+        "flagged": true,
+        "removed": true
       },
       {
         "vertices": 66,
@@ -29,11 +30,11 @@
           0.53,
           -0.05
         ],
-        "removed": false
+        "flagged": true,
+        "removed": true
       }
     ],
-    "keptIslands": 0,
-    "skirtVertices": 0
+    "keptIslands": 0
   },
   "skeleton": {
     "count": 46,
@@ -112,7 +113,7 @@
         "neck": 0,
         "ears": 0.003,
         "loincloth": 0,
-        "all": 1.329
+        "all": 1.36
       },
       "worstFrame": {
         "t": 1.137,
@@ -124,7 +125,7 @@
           "neck": null,
           "ears": 0.003,
           "loincloth": null,
-          "all": 1.329
+          "all": 1.36
         }
       }
     }

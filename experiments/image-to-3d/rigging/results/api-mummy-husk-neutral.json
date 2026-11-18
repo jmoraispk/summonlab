@@ -1,7 +1,7 @@
 {
   "entry": "api/mummy-husk-neutral",
   "label": "API · Mummy Husk (neutral-pose image, biped)",
-  "at": "2026-11-17T17:42:40.500Z",
+  "at": "2026-11-18T13:16:37.471Z",
   "autoFacingYaw": -90,
   "bindVsNodeRest": [],
   "cleanup": {
@@ -14,11 +14,11 @@
           0.13,
           0.07
         ],
+        "flagged": true,
         "removed": false
       }
     ],
-    "keptIslands": 9,
-    "skirtVertices": 0
+    "keptIslands": 9
   },
   "skeleton": {
     "count": 65,

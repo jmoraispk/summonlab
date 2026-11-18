@@ -1,7 +1,7 @@
 {
   "entry": "api/arachnid-crawler-neutral",
   "label": "API · Arachnid Crawler (neutral-pose image, octopod)",
-  "at": "2026-11-17T17:56:52.543Z",
+  "at": "2026-11-18T13:15:21.514Z",
   "autoFacingYaw": 0,
   "bindVsNodeRest": [
     {
@@ -19,6 +19,7 @@
           0.26,
           -0.62
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -29,6 +30,7 @@
           0.56,
           0.59
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -39,6 +41,7 @@
           0.45,
           0.75
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -49,6 +52,7 @@
           0.33,
           -0.85
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -59,6 +63,7 @@
           0.9,
           0.53
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -69,6 +74,7 @@
           0.9,
           -0.53
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -79,6 +85,7 @@
           0.88,
           -0.54
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -89,6 +96,7 @@
           0.82,
           -0.47
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -99,6 +107,7 @@
           0.15,
           0.89
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -109,6 +118,7 @@
           0.83,
           0.57
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -119,6 +129,7 @@
           0.86,
           0.6
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -129,6 +140,7 @@
           0.86,
           -0.61
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -139,6 +151,7 @@
           0.82,
           0.64
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -149,6 +162,7 @@
           0.82,
           -0.64
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -159,6 +173,7 @@
           0.79,
           0.69
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -169,6 +184,7 @@
           0.83,
           0.54
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -179,6 +195,7 @@
           0.83,
           -0.54
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -189,6 +206,7 @@
           0.65,
           0.4
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -199,6 +217,7 @@
           0.65,
           -0.4
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -209,6 +228,7 @@
           0.82,
           0.47
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -219,6 +239,7 @@
           0.8,
           0.41
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -229,6 +250,7 @@
           0.79,
           -0.49
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -239,6 +261,7 @@
           0.74,
           -0.41
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -249,6 +272,7 @@
           0.77,
           0.5
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -259,6 +283,7 @@
           0.79,
           -0.56
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -269,6 +294,7 @@
           0.82,
           0.5
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -279,6 +305,7 @@
           0.82,
           0.45
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -289,6 +316,7 @@
           0.8,
           -0.53
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -299,6 +327,7 @@
           0.79,
           0.51
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -309,6 +338,7 @@
           0.15,
           -0.91
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -319,6 +349,7 @@
           0.77,
           0.37
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -329,6 +360,7 @@
           0.73,
           -0.67
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -339,6 +371,7 @@
           0.72,
           0.69
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -349,6 +382,7 @@
           0.66,
           0.38
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -359,6 +393,7 @@
           0.66,
           -0.38
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -369,6 +404,7 @@
           0.7,
           -0.72
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -379,6 +415,7 @@
           0.74,
           0.4
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -389,6 +426,7 @@
           0.68,
           0.75
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -399,6 +437,7 @@
           0.76,
           -0.72
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -409,6 +448,7 @@
           0.76,
           0.73
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -419,6 +459,7 @@
           0.66,
           -0.78
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -429,6 +470,7 @@
           0.71,
           0.79
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -439,6 +481,7 @@
           0.72,
           -0.77
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -449,6 +492,7 @@
           0.65,
           0.75
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -459,6 +503,7 @@
           0.72,
           -0.68
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -469,6 +514,7 @@
           0.74,
           -0.64
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -479,6 +525,7 @@
           0.72,
           0.67
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -489,6 +536,7 @@
           0.7,
           0.71
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -499,6 +547,7 @@
           0.72,
           0.74
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -509,6 +558,7 @@
           0.72,
           -0.75
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -519,6 +569,7 @@
           0.67,
           -0.74
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -529,6 +580,7 @@
           0.22,
           1.01
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -539,6 +591,7 @@
           0.53,
           0.84
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -549,6 +602,7 @@
           0.64,
           0.31
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -559,6 +613,7 @@
           0.64,
           -0.31
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -569,6 +624,7 @@
           0.71,
           0.44
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -579,6 +635,7 @@
           0.64,
           0.53
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -589,6 +646,7 @@
           0.63,
           0.46
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -599,6 +657,7 @@
           0.63,
           -0.46
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -609,6 +668,7 @@
           0.58,
           0.57
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -619,6 +679,7 @@
           0.58,
           -0.57
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -629,6 +690,7 @@
           0.64,
           0.57
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -639,6 +701,7 @@
           0.6,
           0.48
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -649,6 +712,7 @@
           0.63,
           0.51
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -659,6 +723,7 @@
           0.63,
           -0.51
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -669,6 +734,7 @@
           0.41,
           0.63
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -679,6 +745,7 @@
           0.41,
           -0.63
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -689,6 +756,7 @@
           0.34,
           0.62
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -699,6 +767,7 @@
           0.34,
           -0.62
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -709,6 +778,7 @@
           0.74,
           -0.42
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -719,6 +789,7 @@
           0.71,
           0.61
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -729,6 +800,7 @@
           0.58,
           0.67
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -739,6 +811,7 @@
           0.74,
           0.52
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -749,6 +822,7 @@
           0.76,
           -0.61
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -759,6 +833,7 @@
           0.69,
           0.67
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -769,6 +844,7 @@
           0.99,
           0
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -779,6 +855,7 @@
           0.53,
           -0.77
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -789,6 +866,7 @@
           0.72,
           0.58
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -799,6 +877,7 @@
           0.42,
           0.78
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -809,6 +888,7 @@
           0.34,
           0.8
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -819,6 +899,7 @@
           0.71,
           0.67
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -829,6 +910,7 @@
           0.61,
           0.73
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -839,6 +921,7 @@
           0.59,
           0.63
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -849,6 +932,7 @@
           0.64,
           -0.63
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -859,6 +943,7 @@
           0.65,
           -0.71
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -869,6 +954,7 @@
           0.57,
           -0.79
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -879,6 +965,7 @@
           0.53,
           -0.75
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -889,6 +976,7 @@
           0.71,
           0.6
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -899,6 +987,7 @@
           0.63,
           0.55
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -909,6 +998,7 @@
           0.36,
           -0.86
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -919,6 +1009,7 @@
           0.28,
           -0.86
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -929,6 +1020,7 @@
           0.58,
           0.66
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -939,6 +1031,7 @@
           0.64,
           0.66
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -949,6 +1042,7 @@
           0.62,
           0.63
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -959,6 +1053,7 @@
           0.54,
           0.62
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -969,6 +1064,7 @@
           0.35,
           0.74
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -979,6 +1075,7 @@
           0.39,
           0.28
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -989,6 +1086,7 @@
           0.37,
           0.22
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -999,6 +1097,7 @@
           0.37,
           -0.22
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -1009,6 +1108,7 @@
           0.32,
           0.29
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -1019,6 +1119,7 @@
           0.32,
           -0.29
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -1029,6 +1130,7 @@
           0.31,
           0.23
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -1039,6 +1141,7 @@
           0.31,
           -0.23
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -1049,6 +1152,7 @@
           0.33,
           0.3
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -1059,6 +1163,7 @@
           0.33,
           -0.3
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -1069,6 +1174,7 @@
           0.52,
           0.45
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -1079,6 +1185,7 @@
           0.52,
           -0.45
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -1089,6 +1196,7 @@
           0.61,
           0.44
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -1099,6 +1207,7 @@
           0.61,
           -0.44
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -1109,6 +1218,7 @@
           0.67,
           0.44
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -1119,6 +1229,7 @@
           0.67,
           -0.44
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -1129,6 +1240,7 @@
           0.76,
           0.63
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -1139,6 +1251,7 @@
           0.77,
           0.69
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -1149,6 +1262,7 @@
           0.77,
           -0.69
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -1159,6 +1273,7 @@
           0.58,
           -0.87
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -1169,6 +1284,7 @@
           0.39,
           0.98
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -1179,6 +1295,7 @@
           0.44,
           0.88
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -1189,6 +1306,7 @@
           0.37,
           0.93
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -1199,6 +1317,7 @@
           0.58,
           0.31
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -1209,6 +1328,7 @@
           0.58,
           -0.31
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -1219,6 +1339,7 @@
           0.69,
           0.51
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -1229,6 +1350,7 @@
           0.73,
           0.52
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -1239,6 +1361,7 @@
           0.74,
           -0.52
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -1249,6 +1372,7 @@
           0.57,
           -0.51
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -1259,6 +1383,7 @@
           0.54,
           0.46
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -1269,6 +1394,7 @@
           0.54,
           -0.46
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -1279,6 +1405,7 @@
           0.62,
           0.49
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -1289,6 +1416,7 @@
           0.62,
           -0.49
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -1299,6 +1427,7 @@
           0.65,
           0.51
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -1309,6 +1438,7 @@
           0.65,
           -0.51
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -1319,6 +1449,7 @@
           0.7,
           0.27
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -1329,6 +1460,7 @@
           0.7,
           -0.27
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -1339,6 +1471,7 @@
           0.65,
           0.28
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -1349,6 +1482,7 @@
           0.65,
           -0.28
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -1359,6 +1493,7 @@
           0.68,
           -0.29
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -1369,6 +1504,7 @@
           0.6,
           -0.69
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -1379,6 +1515,7 @@
           0.74,
           0.46
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -1389,6 +1526,7 @@
           0.74,
           -0.55
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -1399,6 +1537,7 @@
           0.67,
           0.62
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -1409,6 +1548,7 @@
           0.74,
           0.57
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -1419,6 +1559,7 @@
           0.26,
           0.88
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -1429,6 +1570,7 @@
           0.58,
           -0.7
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -1439,6 +1581,7 @@
           0.58,
           0.68
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -1449,6 +1592,7 @@
           0.58,
           0.58
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -1459,6 +1603,7 @@
           0.46,
           0.73
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -1469,6 +1614,7 @@
           0.35,
           0.68
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -1479,6 +1625,7 @@
           0.29,
           0.7
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -1489,6 +1636,7 @@
           0.51,
           -0.26
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -1499,6 +1647,7 @@
           0.38,
           -0.3
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -1509,6 +1658,7 @@
           0.39,
           0.23
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -1519,6 +1669,7 @@
           0.39,
           -0.23
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -1529,6 +1680,7 @@
           0.36,
           0.22
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -1539,6 +1691,7 @@
           0.24,
           -0.3
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -1549,6 +1702,7 @@
           0.22,
           0.25
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -1559,6 +1713,7 @@
           0.57,
           0.41
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -1569,6 +1724,7 @@
           0.57,
           -0.41
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -1579,6 +1735,7 @@
           0.58,
           0.39
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -1589,6 +1746,7 @@
           0.58,
           -0.39
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -1599,6 +1757,7 @@
           0.61,
           0.54
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -1609,6 +1768,7 @@
           0.61,
           -0.54
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -1619,6 +1779,7 @@
           0.57,
           0.46
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -1629,6 +1790,7 @@
           0.57,
           -0.46
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -1639,6 +1801,7 @@
           0.69,
           0.51
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -1649,6 +1812,7 @@
           0.68,
           0.3
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -1659,6 +1823,7 @@
           0.68,
           -0.3
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -1669,6 +1834,7 @@
           0.69,
           0.21
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -1679,6 +1845,7 @@
           0.69,
           -0.21
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -1689,6 +1856,7 @@
           0.4,
           0.74
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -1699,6 +1867,7 @@
           0.75,
           0.17
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -1709,6 +1878,7 @@
           0.75,
           -0.17
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -1719,6 +1889,7 @@
           0.82,
           0.12
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -1729,6 +1900,7 @@
           0.82,
           -0.12
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -1739,6 +1911,7 @@
           0.7,
           0.2
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -1749,6 +1922,7 @@
           0.7,
           -0.2
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -1759,6 +1933,7 @@
           0.77,
           0.13
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -1769,6 +1944,7 @@
           0.77,
           -0.13
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -1779,6 +1955,7 @@
           0.8,
           0.1
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -1789,6 +1966,7 @@
           0.8,
           -0.1
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -1799,6 +1977,7 @@
           0.78,
           0.1
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -1809,6 +1988,7 @@
           0.78,
           -0.1
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -1819,6 +1999,7 @@
           0.8,
           0.06
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -1829,6 +2010,7 @@
           0.8,
           -0.06
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -1839,6 +2021,7 @@
           0.85,
           0.43
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -1849,6 +2032,7 @@
           0.85,
           -0.43
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -1859,6 +2043,7 @@
           0.83,
           0.39
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -1869,6 +2054,7 @@
           0.83,
           -0.39
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -1879,6 +2065,7 @@
           0.77,
           0.19
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -1889,6 +2076,7 @@
           0.77,
           -0.19
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -1899,6 +2087,7 @@
           0.81,
           0.17
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -1909,6 +2098,7 @@
           0.81,
           -0.17
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -1919,6 +2109,7 @@
           0.77,
           0.21
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -1929,6 +2120,7 @@
           0.77,
           -0.21
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -1939,6 +2131,7 @@
           0.84,
           0.12
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -1949,6 +2142,7 @@
           0.84,
           -0.12
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -1959,6 +2153,7 @@
           0.8,
           0.19
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -1969,6 +2164,7 @@
           0.8,
           -0.19
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -1979,6 +2175,7 @@
           0.86,
           0.09
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -1989,6 +2186,7 @@
           0.86,
           -0.09
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -1999,6 +2197,7 @@
           0.83,
           0.15
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -2009,6 +2208,7 @@
           0.83,
           -0.15
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -2019,6 +2219,7 @@
           0.86,
           0.13
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -2029,6 +2230,7 @@
           0.86,
           -0.13
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -2039,6 +2241,7 @@
           0.9,
           -0.07
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -2049,6 +2252,7 @@
           0.88,
           0.11
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -2059,6 +2263,7 @@
           0.88,
           -0.11
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -2069,6 +2274,7 @@
           0.76,
           0.24
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -2079,6 +2285,7 @@
           0.76,
           -0.24
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -2089,6 +2296,7 @@
           0.85,
           0.18
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -2099,6 +2307,7 @@
           0.85,
           -0.18
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -2109,6 +2318,7 @@
           0.81,
           0.23
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -2119,6 +2329,7 @@
           0.81,
           -0.23
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -2129,6 +2340,7 @@
           0.92,
           0.05
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -2139,6 +2351,7 @@
           0.92,
           -0.05
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -2149,6 +2362,7 @@
           0.86,
           0.16
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -2159,6 +2373,7 @@
           0.86,
           -0.16
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -2169,6 +2384,7 @@
           0.77,
           -0.26
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -2179,6 +2395,7 @@
           0.85,
           0.2
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -2189,6 +2406,7 @@
           0.85,
           -0.2
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -2199,6 +2417,7 @@
           0.89,
           0.13
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -2209,6 +2428,7 @@
           0.89,
           -0.13
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -2219,6 +2439,7 @@
           0.92,
           0.09
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -2229,6 +2450,7 @@
           0.92,
           -0.09
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -2239,6 +2461,7 @@
           0.93,
           0.06
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -2249,6 +2472,7 @@
           0.81,
           0.24
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -2259,6 +2483,7 @@
           0.81,
           -0.24
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -2269,6 +2494,7 @@
           0.87,
           0.18
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -2279,6 +2505,7 @@
           0.87,
           -0.18
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -2289,6 +2516,7 @@
           0.9,
           0.15
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -2299,6 +2527,7 @@
           0.9,
           -0.15
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -2309,6 +2538,7 @@
           0.82,
           0.26
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -2319,6 +2549,7 @@
           0.82,
           -0.26
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -2329,6 +2560,7 @@
           0.71,
           -0.31
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -2339,6 +2571,7 @@
           0.93,
           0.11
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -2349,6 +2582,7 @@
           0.9,
           0.19
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -2359,6 +2593,7 @@
           0.9,
           -0.19
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -2369,6 +2604,7 @@
           0.93,
           0.13
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -2379,6 +2615,7 @@
           0.8,
           0.26
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -2389,6 +2626,7 @@
           0.8,
           -0.26
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -2399,6 +2637,7 @@
           0.85,
           0.24
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -2409,6 +2648,7 @@
           0.89,
           0.2
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -2419,6 +2659,7 @@
           0.89,
           -0.2
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -2429,6 +2670,7 @@
           0.97,
           -0.01
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -2439,6 +2681,7 @@
           0.78,
           0.29
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -2449,6 +2692,7 @@
           0.78,
           -0.29
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -2459,6 +2703,7 @@
           0.88,
           0.23
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -2469,6 +2714,7 @@
           0.88,
           -0.23
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -2479,6 +2725,7 @@
           0.93,
           -0.16
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -2489,6 +2736,7 @@
           0.94,
           0.11
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -2499,6 +2747,7 @@
           0.94,
           -0.11
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -2509,6 +2758,7 @@
           0.98,
           0.02
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -2519,6 +2769,7 @@
           0.98,
           -0.02
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -2529,6 +2780,7 @@
           0.81,
           0.27
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -2539,6 +2791,7 @@
           0.81,
           -0.27
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -2549,6 +2802,7 @@
           0.93,
           0.17
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -2559,6 +2813,7 @@
           0.93,
           -0.17
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -2569,6 +2824,7 @@
           0.95,
           0.11
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -2579,6 +2835,7 @@
           0.99,
           0.03
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -2589,6 +2846,7 @@
           0.99,
           -0.03
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -2599,6 +2857,7 @@
           0.84,
           0.26
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -2609,6 +2868,7 @@
           0.84,
           -0.26
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -2619,6 +2879,7 @@
           0.89,
           0.21
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -2629,6 +2890,7 @@
           0.89,
           -0.21
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -2639,6 +2901,7 @@
           0.7,
           0.32
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -2649,6 +2912,7 @@
           0.7,
           -0.32
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -2659,6 +2923,7 @@
           0.87,
           0.24
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -2669,6 +2934,7 @@
           0.87,
           -0.24
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -2679,6 +2945,7 @@
           0.82,
           0.28
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -2689,6 +2956,7 @@
           0.82,
           -0.28
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -2699,6 +2967,7 @@
           0.95,
           0.14
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -2709,6 +2978,7 @@
           0.95,
           -0.14
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -2719,6 +2989,7 @@
           0.99,
           0.04
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -2729,6 +3000,7 @@
           0.99,
           -0.04
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -2739,6 +3011,7 @@
           0.73,
           0.31
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -2749,6 +3022,7 @@
           0.73,
           -0.31
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -2759,6 +3033,7 @@
           0.95,
           0.15
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -2769,6 +3044,7 @@
           0.95,
           -0.15
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -2779,6 +3055,7 @@
           0.97,
           0.07
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -2789,6 +3066,7 @@
           0.97,
           -0.07
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -2799,6 +3077,7 @@
           0.66,
           0.33
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -2809,6 +3088,7 @@
           0.93,
           0.19
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -2819,6 +3099,7 @@
           0.93,
           -0.19
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -2829,6 +3110,7 @@
           0.97,
           0.08
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -2839,6 +3121,7 @@
           0.97,
           -0.08
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -2849,6 +3132,7 @@
           0.99,
           0.01
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -2859,6 +3143,7 @@
           0.99,
           -0.01
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -2869,6 +3154,7 @@
           0.76,
           0.3
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -2879,6 +3165,7 @@
           0.76,
           -0.3
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -2889,6 +3176,7 @@
           0.9,
           0.21
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -2899,6 +3187,7 @@
           0.9,
           -0.21
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -2909,6 +3198,7 @@
           0.82,
           0.27
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -2919,6 +3209,7 @@
           0.82,
           -0.27
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -2929,6 +3220,7 @@
           0.86,
           0.24
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -2939,6 +3231,7 @@
           0.86,
           -0.24
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -2949,6 +3242,7 @@
           0.85,
           0.27
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -2959,6 +3253,7 @@
           0.85,
           -0.27
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -2969,6 +3264,7 @@
           0.97,
           0.09
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -2979,6 +3275,7 @@
           0.97,
           -0.09
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -2989,6 +3286,7 @@
           0.95,
           0.15
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -2999,6 +3297,7 @@
           0.95,
           -0.15
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -3009,6 +3308,7 @@
           0.93,
           0.19
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -3019,6 +3319,7 @@
           0.93,
           -0.19
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -3029,6 +3330,7 @@
           0.99,
           0.04
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -3039,6 +3341,7 @@
           0.99,
           -0.04
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -3049,6 +3352,7 @@
           0.78,
           0.3
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -3059,6 +3363,7 @@
           0.78,
           -0.3
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -3069,6 +3374,7 @@
           0.9,
           0.22
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -3079,6 +3385,7 @@
           0.9,
           -0.22
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -3089,6 +3396,7 @@
           0.97,
           0.05
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -3099,6 +3407,7 @@
           0.97,
           -0.05
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -3109,6 +3418,7 @@
           0.81,
           0.27
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -3119,6 +3429,7 @@
           0.81,
           -0.27
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -3129,6 +3440,7 @@
           0.92,
           0.2
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -3139,6 +3451,7 @@
           0.92,
           -0.2
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -3149,6 +3462,7 @@
           0.86,
           0.25
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -3159,6 +3473,7 @@
           0.86,
           -0.25
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -3169,6 +3484,7 @@
           0.66,
           0.32
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -3179,6 +3495,7 @@
           0.66,
           -0.32
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -3189,6 +3506,7 @@
           0.94,
           0.16
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -3199,6 +3517,7 @@
           0.94,
           -0.16
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -3209,6 +3528,7 @@
           0.97,
           0.1
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -3219,6 +3539,7 @@
           0.97,
           -0.1
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -3229,6 +3550,7 @@
           0.69,
           0.32
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -3239,6 +3561,7 @@
           0.69,
           -0.32
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -3249,6 +3572,7 @@
           0.72,
           0.31
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -3259,6 +3583,7 @@
           0.72,
           -0.31
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -3269,6 +3594,7 @@
           0.9,
           0.22
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -3279,6 +3605,7 @@
           0.9,
           -0.22
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -3289,6 +3616,7 @@
           0.62,
           0.32
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -3299,6 +3627,7 @@
           0.62,
           -0.32
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -3309,6 +3638,7 @@
           0.97,
           0.08
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -3319,6 +3649,7 @@
           0.97,
           -0.08
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -3329,6 +3660,7 @@
           0.99,
           0.03
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -3339,6 +3671,7 @@
           0.99,
           -0.03
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -3349,6 +3682,7 @@
           0.85,
           0.25
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -3359,6 +3693,7 @@
           0.85,
           -0.25
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -3369,6 +3704,7 @@
           0.79,
           0.27
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -3379,6 +3715,7 @@
           0.79,
           -0.27
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -3389,6 +3726,7 @@
           0.96,
           0.11
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -3399,6 +3737,7 @@
           0.96,
           -0.11
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -3409,6 +3748,7 @@
           0.83,
           0.26
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -3419,6 +3759,7 @@
           0.83,
           -0.26
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -3429,6 +3770,7 @@
           0.87,
           -0.22
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -3439,6 +3781,7 @@
           0.77,
           0.28
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -3449,6 +3792,7 @@
           0.77,
           -0.28
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -3459,6 +3803,7 @@
           0.94,
           0.17
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -3469,6 +3814,7 @@
           0.94,
           -0.17
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -3479,6 +3825,7 @@
           0.92,
           0.2
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -3489,6 +3836,7 @@
           0.92,
           -0.2
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -3499,6 +3847,7 @@
           0.96,
           0.12
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -3509,6 +3858,7 @@
           0.96,
           -0.12
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -3519,6 +3869,7 @@
           0.98,
           0.02
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -3529,6 +3880,7 @@
           0.98,
           -0.02
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -3539,6 +3891,7 @@
           0.81,
           0.48
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -3549,6 +3902,7 @@
           0.83,
           0.25
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -3559,6 +3913,7 @@
           0.83,
           -0.25
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -3569,6 +3924,7 @@
           0.96,
           0.07
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -3579,6 +3935,7 @@
           0.96,
           -0.07
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -3589,6 +3946,7 @@
           0.65,
           0.3
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -3599,6 +3957,7 @@
           0.65,
           -0.3
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -3609,6 +3968,7 @@
           0.93,
           0.15
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -3619,6 +3979,7 @@
           0.93,
           -0.15
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -3629,6 +3990,7 @@
           0.72,
           0.29
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -3639,6 +4001,7 @@
           0.72,
           -0.29
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -3649,6 +4012,7 @@
           0.91,
           0.19
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -3659,6 +4023,7 @@
           0.91,
           -0.19
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -3669,6 +4034,7 @@
           0.94,
           0.1
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -3679,6 +4045,7 @@
           0.94,
           -0.1
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -3689,6 +4056,7 @@
           0.95,
           0.08
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -3699,6 +4067,7 @@
           0.95,
           -0.08
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -3709,6 +4078,7 @@
           0.97,
           0.03
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -3719,6 +4089,7 @@
           0.97,
           -0.03
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -3729,6 +4100,7 @@
           0.82,
           0.24
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -3739,6 +4111,7 @@
           0.82,
           -0.24
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -3749,6 +4122,7 @@
           0.88,
           0.2
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -3759,6 +4133,7 @@
           0.87,
           -0.2
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -3769,6 +4144,7 @@
           0.6,
           -0.29
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -3779,6 +4155,7 @@
           0.79,
           0.25
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -3789,6 +4166,7 @@
           0.79,
           -0.25
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -3799,6 +4177,7 @@
           0.77,
           0.25
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -3809,6 +4188,7 @@
           0.77,
           -0.25
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -3819,6 +4199,7 @@
           0.89,
           0.18
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -3829,6 +4210,7 @@
           0.86,
           0.2
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -3839,6 +4221,7 @@
           0.86,
           -0.2
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -3849,6 +4232,7 @@
           0.94,
           0.1
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -3859,6 +4243,7 @@
           0.94,
           -0.1
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -3869,6 +4254,7 @@
           0.96,
           0.03
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -3879,6 +4265,7 @@
           0.96,
           -0.03
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -3889,6 +4276,7 @@
           0.93,
           0.14
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -3899,6 +4287,7 @@
           0.93,
           -0.14
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -3909,6 +4298,7 @@
           0.95,
           0.06
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -3919,6 +4309,7 @@
           0.95,
           -0.06
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -3929,6 +4320,7 @@
           0.8,
           0.22
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -3939,6 +4331,7 @@
           0.8,
           -0.22
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -3949,6 +4342,7 @@
           0.9,
           0.16
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -3959,6 +4353,7 @@
           0.9,
           -0.16
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -3969,6 +4364,7 @@
           0.93,
           0.1
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -3979,6 +4375,7 @@
           0.93,
           -0.1
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -3989,6 +4386,7 @@
           0.94,
           0.02
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -3999,6 +4397,7 @@
           0.94,
           -0.02
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -4009,6 +4408,7 @@
           0.85,
           0.19
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -4019,6 +4419,7 @@
           0.85,
           -0.19
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -4029,6 +4430,7 @@
           0.79,
           0.22
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -4039,6 +4441,7 @@
           0.79,
           -0.22
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -4049,6 +4452,7 @@
           0.71,
           0.24
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -4059,6 +4463,7 @@
           0.91,
           0.13
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -4069,6 +4474,7 @@
           0.91,
           -0.13
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -4079,6 +4485,7 @@
           0.74,
           -0.23
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -4089,6 +4496,7 @@
           0.88,
           0.16
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -4099,6 +4507,7 @@
           0.88,
           -0.16
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -4109,6 +4518,7 @@
           0.92,
           0.09
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -4119,6 +4529,7 @@
           0.92,
           -0.09
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -4129,6 +4540,7 @@
           0.92,
           0.01
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -4139,6 +4551,7 @@
           0.92,
           -0.01
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -4149,6 +4562,7 @@
           0.92,
           0.06
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -4159,6 +4573,7 @@
           0.92,
           -0.06
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -4169,6 +4584,7 @@
           0.66,
           0.22
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -4179,6 +4595,7 @@
           0.66,
           -0.22
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -4189,6 +4606,7 @@
           0.83,
           -0.16
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -4199,6 +4617,7 @@
           0.86,
           -0.15
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -4209,6 +4628,7 @@
           0.9,
           0.11
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -4219,6 +4639,7 @@
           0.9,
           -0.11
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -4229,6 +4650,7 @@
           0.77,
           0.21
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -4239,6 +4661,7 @@
           0.77,
           -0.21
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -4249,6 +4672,7 @@
           0.82,
           0.17
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -4259,6 +4683,7 @@
           0.82,
           -0.17
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -4269,6 +4694,7 @@
           0.57,
           0.21
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -4279,6 +4705,7 @@
           0.57,
           -0.21
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -4289,6 +4716,7 @@
           0.73,
           0.2
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -4299,6 +4727,7 @@
           0.73,
           -0.2
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -4309,6 +4738,7 @@
           0.71,
           0.2
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -4319,6 +4749,7 @@
           0.71,
           -0.2
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -4329,6 +4760,7 @@
           0.76,
           0.18
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -4339,6 +4771,7 @@
           0.76,
           -0.18
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -4349,6 +4782,7 @@
           0.9,
           0
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -4359,6 +4793,7 @@
           0.89,
           0.08
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -4369,6 +4804,7 @@
           0.89,
           -0.08
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -4379,6 +4815,7 @@
           0.89,
           0.05
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -4389,6 +4826,7 @@
           0.89,
           -0.05
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -4399,6 +4837,7 @@
           0.68,
           0.18
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -4409,6 +4848,7 @@
           0.84,
           0.12
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -4419,6 +4859,7 @@
           0.84,
           -0.12
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -4429,6 +4870,7 @@
           0.8,
           0.15
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -4439,6 +4881,7 @@
           0.8,
           -0.15
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -4449,6 +4892,7 @@
           0.87,
           0.08
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -4459,6 +4903,7 @@
           0.87,
           -0.08
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -4469,6 +4914,7 @@
           0.81,
           0.12
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -4479,6 +4925,7 @@
           0.81,
           -0.12
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -4489,6 +4936,7 @@
           0.78,
           0.13
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -4499,6 +4947,7 @@
           0.78,
           -0.13
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -4509,6 +4958,7 @@
           0.86,
           0.08
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -4519,6 +4969,7 @@
           0.86,
           -0.08
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -4529,6 +4980,7 @@
           0.87,
           0.03
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -4539,6 +4991,7 @@
           0.87,
           -0.03
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -4549,6 +5002,7 @@
           0.84,
           0.08
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -4559,6 +5013,7 @@
           0.84,
           -0.08
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -4569,11 +5024,11 @@
           0.42,
           0.29
         ],
+        "flagged": false,
         "removed": false
       }
     ],
-    "keptIslands": 60,
-    "skirtVertices": 0
+    "keptIslands": 60
   },
   "skeleton": {
     "count": 60,

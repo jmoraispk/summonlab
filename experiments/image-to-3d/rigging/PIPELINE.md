@@ -32,7 +32,7 @@ the experiment that established all this is `REPORT-rigging.md`.
 | Model | v3.1, texture + PBR, Smart Mesh; `face_limit` 10000 creatures, 2000 props | Smart Mesh counts quads (10000 → ~13.6k triangles) |
 | Rig | biped: `v3.0-20260909` + `spec: mixamo`; quadruped, avian, serpentine, hexapod, octopod: `v2.5-20260210`; others: `v3.0` | "others" only exists on v3.0; Mixamo names make clips and hit regions portable |
 | Clips | biped: one shared library made on a donor rig (v3.0 presets: idle, walk, run, slash, hurt, fall; v1.0 presets for combat: chop, box, kick, hit reactions, defeat) and retargeted in world space to every humanoid; quadruped/hexapod/octopod walk; serpentine march; avian and others none | retargeted clips deform as well as each rig's own (walk 73% vs 77% on the golem); per-character presets become optional |
-| Import | auto facing from the skeleton; rebase clip position tracks onto the bind pose; report floating islands | API exports face ±X; non-biped exports sink without the rebase |
+| Import | auto facing from the skeleton; rebase clip position tracks onto the bind pose; flag floating pieces ≥4% of height for review; props yaw −90° | API exports face ±X; non-biped exports sink without the rebase |
 
 Cost per subject: biped with clips 130, quadruped/hexapod/octopod/serpentine with clip 80, avian or
 others 70, equipment 40. Image generation runs one at a time per account (~20–85 s each); models, rigs
@@ -48,6 +48,7 @@ and clips run in parallel.
 | Deformation | worst-1% edge stretch ≤200% on every clip | bench `deformation` |
 | Ragdoll | no joint separation, <1 m/s after 2.5 s at 3× gravity | bench `ragdoll` |
 | Budget | creatures ≤15k triangles and 2 MB with clips; props ≤3k and 300 KB | `budget.mjs` |
+| Floating pieces | every piece ≥4% of height from the body reviewed: `removeIslands` (artifact) or `keepIslands` (costume part) in `subjects.json` | QA sheet markers |
 
 ## Lessons (newest last; each with its evidence)
 
@@ -65,8 +66,12 @@ and clips run in parallel.
    rigs with neither (golem "others" rig).
 7. **UV seams stall mesh simplification**: a last seam-ignoring pass trims the final few percent (helmet
    3,519 → 2,985 triangles); better, ask for 2000 faces on props.
-8. **Floating islands need a human:** size and gap cannot tell Asha's broken braid tip from the goblin's
-   47 dangling ornaments. Report them; remove only after review.
+8. **Floating islands need a human.** Most islands are details (663 in the starting set, mostly 1.5–3% of
+   height from the body: bristles, teeth, beads). Pieces ≥4% away are flagged and marked on the QA sheet
+   (red removed, amber kept). In the starting set 7 of 34 creatures had flagged pieces: 2 artifacts (the
+   bear's chin blob, Asha's broken braid tip; `removeIslands`) and 5 costume or body parts (the werebeast's
+   chain, the mummy's hanging strip, the insect's feeler, the spider's leg pieces, the worm's bristles;
+   `keepIslands`). Removing everything at ≥4% would have cut the werebeast's chain in half.
 9. **Weight edits do not fix robes and skirts:** smoothing, hip blending and shin-to-thigh all raised
    Asha's run stretch (99% → 109–256%). Robes need cloth bones or simulation.
 10. **Clips can be shared across Mixamo rigs** after keeping rotations only and scaling the root (golem
@@ -100,9 +105,8 @@ and clips run in parallel.
 
 21. **Cloth bones do not rescue fused robes.** Image-to-3D returns one shell where robe and trousers
     share faces. Spring chains around the hips tore them in every setting tried (Asha's T-pose run:
-    100% → 169–707%; original-art run: 414% → 485–593%). A robe can only move independently once it is
-    a separate mesh (segment it off, hide the inner faces); until then, T-pose rigs are good enough
-    (≤200% on every clip). Cloth bones stay in the bench as an opt-in (`?cloth=1`).
+    100% → 169–707%), as did weight edits. T-pose rigs already keep robes within the gate (≤200%), so the
+    cloth code was removed (owner decision, 2026-11-18).
 22. **v1.0 rigs carry the combat library.** `v1.0-20240301` accepts `spec: mixamo` and returns 23 bones
     (no fingers), with 90+ presets. Five combat clips cost 75 credits including the rig and deform at
     89–157% on their own rig.
@@ -115,10 +119,17 @@ and clips run in parallel.
 25. **Name clips exactly.** Matching names by substring made `hit_to_head` replace `hurt`; map only exact
     preset names to bench roles.
 
+26. **Tripo props face +X**, like Tripo characters: helmets and shields mount with a −90° yaw (the helmet
+    was on backward). A helmet's bounding box hides its crest and shell thickness, so fit it ~35% over the
+    head's own extents (middle 90% of the head vertices, skull base to crown); 12% left the scalp showing.
+    Voluminous hair (Kelan) makes the helmet huge: such heroes need a hair-hidden-under-helmet variant.
+27. **Grips need a fist.** The handle runs along the knuckle line through the fist center (T-pose rigs rest
+    palms down, so the palm is world −Y at rest), and the finger and thumb joints curl around it on top of
+    every clip (`applyGrip`). Without the curl the sword looked glued to the back of an open hand.
+
 ## Backlog (next experiments)
 
-- Robes as separate pieces: segment the robe off a T-pose model (Segment, 40 credits), hide the inner
-  faces, then drive it with the existing cloth bones (opt-in in the bench).
+- Hair under helmets: a hair-hidden head variant per hero, or shrink-to-skull for helmet wear.
 - Grow the shared combat library: more v1.0 presets on the donor (10 credits each), one set for every
   humanoid; check that two-handed weapon grips survive the retarget.
 - Hit regions for 6- and 8-legged chains (`2_`/`3_` limbs), and geometry-based regions for birds,
@@ -141,3 +152,5 @@ and clips run in parallel.
   rigs despite rig-check; quadruped hit regions; head-bone gate refined; one thread per subject.
 - 2026-11-18: cloth bones tested and kept opt-in (fused shells tear); v1.0 combat clips plus world-space
   retarget make one clip library serve every humanoid; exact clip naming; storage and scenes plan.
+- 2026-11-18: cloth code removed; floating pieces flagged for review instead of auto-removed; helmets face
+  forward and fit the head; procedural fist for sword grips.

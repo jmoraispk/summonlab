@@ -1,7 +1,7 @@
 {
   "entry": "api/wenyn-neutral",
   "label": "API · Wenyn Amarun (neutral-pose image, biped)",
-  "at": "2026-11-17T17:15:42.048Z",
+  "at": "2026-11-18T12:59:59.907Z",
   "autoFacingYaw": -90,
   "bindVsNodeRest": [
     {
@@ -11,8 +11,7 @@
   ],
   "cleanup": {
     "floatingIslands": [],
-    "keptIslands": 0,
-    "skirtVertices": 0
+    "keptIslands": 0
   },
   "skeleton": {
     "count": 65,

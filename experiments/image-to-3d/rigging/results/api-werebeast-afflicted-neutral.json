@@ -1,7 +1,7 @@
 {
   "entry": "api/werebeast-afflicted-neutral",
   "label": "API · Werebeast Afflicted (neutral-pose image, biped)",
-  "at": "2026-11-17T17:45:40.637Z",
+  "at": "2026-11-18T13:16:48.061Z",
   "autoFacingYaw": -90,
   "bindVsNodeRest": [
     {
@@ -19,6 +19,7 @@
           0.65,
           0.08
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -29,11 +30,11 @@
           0.7,
           0.08
         ],
+        "flagged": true,
         "removed": false
       }
     ],
-    "keptIslands": 4,
-    "skirtVertices": 0
+    "keptIslands": 4
   },
   "skeleton": {
     "count": 65,

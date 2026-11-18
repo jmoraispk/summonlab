@@ -81,6 +81,11 @@ for (const entry of entries) {
 		await ev(() => { const a = window.__engine; a.view('front', 0.8); a.region('*', { wire: false }); a.tag('hit regions'); });
 		frames.push(await snap());
 		await ev(() => window.__engine.region(null));
+		if ((result.cleanup?.floatingIslands ?? []).some((x) => x.flagged)) {
+			await ev(() => { const a = window.__engine, f = a.cleanup.floatingIslands.filter((x) => x.flagged); a.view('threeq', 0.8); a.islands(true); a.tag(`floating pieces: ${f.length} (${f.filter((x) => x.removed).length} removed)`); });
+			frames.push(await snap());
+			await ev(() => window.__engine.islands(false));
+		}
 		const worst = Object.values(result.deformation).filter(Boolean).sort((x, y) => (y.peak.all ?? 0) - (x.peak.all ?? 0))[0];
 		if (worst) {
 			await ev(([c, t, st]) => { const a = window.__engine; a.play(c, t); a.view('threeq', 0.8); a.tag(`worst: ${c} · ${Math.round(st * 100)}%`); }, [worst.clip, worst.worstFrame.t, worst.peak.all ?? 0]);

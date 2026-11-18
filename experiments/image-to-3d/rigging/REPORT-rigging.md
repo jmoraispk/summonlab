@@ -18,11 +18,15 @@ Local models (TRELLIS, Hunyuan3D-2, Qwen) are out of the pipeline. Owner decisio
     borrowed vs 77% own).
   - **Recommendation:** buy each clip once on a donor (10 credits) and retarget it to every humanoid;
     per-character presets become optional, saving about 60 credits per humanoid.
-- **Cloth bones fail on these meshes.** Spring chains around the hips (bench opt-in `?cloth=1`) tore
-  Asha's robe in every setting tried: T-pose run 100% → 169–707%; original-art run 414% → 485–593%.
-  Image-to-3D fuses robe and trousers into one shell, so a robe can only move on its own once it is a
-  separate piece. Next test: segment the robe off and drive only that part. Sheet:
-  `previews/sample/cloth-bones-asha.webp`.
+- **Cloth bones failed and were removed.** Spring chains around the hips tore Asha's robe in every
+  setting tried (T-pose run 100% → 169–707%). Image-to-3D fuses robe and trousers into one shell. The
+  T-pose rigs already keep robes within the gate, so the owner dropped the idea and the code is gone.
+- **Owner review fixes:**
+  - **Helmet:** it now faces forward (Tripo props face +X like the characters) and fits the head.
+  - **Sword:** held in a closed fist; the fingers curl around the handle on every clip.
+  - **Floating pieces:** pieces ≥4% of height from the body are flagged on the QA sheet and removed only
+    after review. The bear's chin blob is gone; the werebeast's chain stays. Sheets:
+    `previews/sample/mount-closeups.webp`, `previews/sample/island-review.webp`.
 - **Storage and scenes:** recommendations in `notes/storage-and-scenes.md`.
 
 ## Round 3: the starting set (2026-11-17)

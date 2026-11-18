@@ -22,9 +22,9 @@ const hostedOk = async (step) => exists(path.join(HOSTED, step, 'model_url.glb')
 
 const weapons = async (subject) => {
 	const w = {};
-	if (await hostedOk('sword--model')) w['sword (Tripo)'] = { file: hosted('sword--model'), mode: 'grip', length: 0.55, hold: 0.08, tip: '-y' };
-	if (await hostedOk('shield--model')) w['shield (Tripo, left forearm)'] = { file: hosted('shield--model'), mode: 'forearm', side: 'l', length: 0.42 };
-	if (await hostedOk('helmet--model')) w['helmet (Tripo)'] = { file: hosted('helmet--model'), mode: 'head' };
+	if (await hostedOk('sword--model')) w['sword (Tripo)'] = { file: hosted('sword--model'), mode: 'grip', length: 0.55, hold: 0.1, tip: '-y' };
+	if (await hostedOk('shield--model')) w['shield (Tripo, left forearm)'] = { file: hosted('shield--model'), mode: 'forearm', side: 'l', length: 0.42, yaw: -90 };
+	if (await hostedOk('helmet--model')) w['helmet (Tripo)'] = { file: hosted('helmet--model'), mode: 'head', yaw: -90 };
 	if (bySubject.spear?.mesh) w['spear (generated)'] = { file: bySubject.spear.mesh, mode: 'grip', length: 0.95 };
 	if (subject === 'goblin-crouched' && bySubject['goblin-crouched']?.['spear-part'])
 		w['spear (segmented part, in place)'] = { file: bySubject['goblin-crouched']['spear-part'], mode: 'inplace' };
@@ -80,7 +80,7 @@ for (const step of steps.sort()) {
 	const src = arm === 'neutral' ? hosted(`${name}-${arm}--image`, 'generated_image_url.png') : `../work/sample/${name}__source.png`;
 	entries.push({ batch: b ? 'starting-set' : 'sample', kind2: b?.kind ?? null, id: `api/${name}-${arm}${rigType === 'others' && SAMPLE[name] ? '-others' : ''}`, label: `API · ${label} (${arm === 'neutral' ? 'neutral-pose image' : arm === 'set' ? 'set' : 'original art'}, ${rigType})`,
 		tool: 'tripo-api', subject: name, kind: rigType, height: o.height ?? height, facing: o.facing ?? 0, rigged: hosted(step), clips: {}, clipFiles,
-		source: o.source ?? src, removeIslands: o.removeIslands ?? false, weapons: rigType === 'biped' ? await weapons(name) : {} });
+		source: o.source ?? src, removeIslands: o.removeIslands ?? false, keepIslands: o.keepIslands ?? false, weapons: rigType === 'biped' ? await weapons(name) : {} });
 }
 // Clip sharing: humanoid rigs playing Asha's Tripo clips (rotations only, root scaled at load).
 const ashaClips = entries.find((e) => e.id === 'api/asha-neutral')?.clipFiles;

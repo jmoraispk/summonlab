@@ -81,9 +81,12 @@
    "hits": true,
    "deformation": true,
    "ragdoll": true,
-   "budget": true
+   "budget": true,
+   "islands": true
   },
-  "notes": [],
+  "notes": [
+   "islands reviewed: kept"
+  ],
   "worstStretch": "hit 125%",
   "qa": "rigging/previews/api-mummy-husk-neutral/qa.webp"
  },
@@ -221,9 +224,12 @@
    "hits": true,
    "deformation": true,
    "ragdoll": true,
-   "budget": true
+   "budget": true,
+   "islands": true
   },
-  "notes": [],
+  "notes": [
+   "islands reviewed: kept"
+  ],
   "worstStretch": "hit 88%",
   "qa": "rigging/previews/api-werebeast-afflicted-neutral/qa.webp"
  },
@@ -289,12 +295,14 @@
    "bones": false,
    "deformation": true,
    "ragdoll": true,
-   "budget": true
+   "budget": true,
+   "islands": true
   },
   "notes": [
-   "bones outside mesh: tripoHead_0, tripoHead_1"
+   "bones outside mesh: tripoHead_0, tripoHead_1",
+   "islands reviewed: removed"
   ],
-  "worstStretch": "walk 133%",
+  "worstStretch": "walk 136%",
   "qa": "rigging/previews/api-bear-scrub-bear-neutral/qa.webp"
  },
  {
@@ -389,10 +397,13 @@
    "bones": true,
    "deformation": true,
    "ragdoll": true,
-   "budget": true
+   "budget": true,
+   "islands": true
   },
-  "notes": [],
-  "worstStretch": "preset:serpentine:march 16%",
+  "notes": [
+   "islands reviewed: kept"
+  ],
+  "worstStretch": "march 16%",
   "qa": "rigging/previews/api-burrower-soil-grub-neutral/qa.webp"
  },
  {
@@ -405,11 +416,13 @@
    "bones": false,
    "deformation": true,
    "ragdoll": false,
-   "budget": true
+   "budget": true,
+   "islands": true
   },
   "notes": [
    "bones outside mesh: tripo0_Left_Limb_4",
-   "ragdoll end speed 4.35 m/s"
+   "ragdoll end speed 4.35 m/s",
+   "islands reviewed: kept"
   ],
   "worstStretch": "walk 118%",
   "qa": "rigging/previews/api-insectoid-worker-neutral/qa.webp"
@@ -424,12 +437,14 @@
    "bones": false,
    "deformation": false,
    "ragdoll": false,
-   "budget": true
+   "budget": true,
+   "islands": true
   },
   "notes": [
    "bones outside mesh: tripo3_Left_Limb_1, tripo1_Left_Limb_1, tripo0_Right_Limb_1, tripoSpine_1",
    "worst-1% stretch 590% (walk)",
-   "ragdoll end speed 1.25 m/s"
+   "ragdoll end speed 1.25 m/s",
+   "islands reviewed: kept"
   ],
   "worstStretch": "walk 590%",
   "qa": "rigging/previews/api-arachnid-crawler-neutral/qa.webp"

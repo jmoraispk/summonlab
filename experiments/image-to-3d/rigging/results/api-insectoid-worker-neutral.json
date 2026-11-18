@@ -1,7 +1,7 @@
 {
   "entry": "api/insectoid-worker-neutral",
   "label": "API · Insectoid Worker (neutral-pose image, hexapod)",
-  "at": "2026-11-17T18:00:20.550Z",
+  "at": "2026-11-18T13:16:17.848Z",
   "autoFacingYaw": 0,
   "bindVsNodeRest": [
     {
@@ -19,6 +19,7 @@
           0.28,
           0.26
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -29,6 +30,7 @@
           0.68,
           0.59
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -39,6 +41,7 @@
           0.52,
           0.66
         ],
+        "flagged": true,
         "removed": false
       },
       {
@@ -49,6 +52,7 @@
           0.12,
           -0.49
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -59,6 +63,7 @@
           0.35,
           -0.4
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -69,6 +74,7 @@
           0.25,
           0.03
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -79,6 +85,7 @@
           0.24,
           -0.51
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -89,6 +96,7 @@
           0.16,
           -0.48
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -99,6 +107,7 @@
           0.24,
           0.04
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -109,6 +118,7 @@
           0.16,
           -0.48
         ],
+        "flagged": false,
         "removed": false
       },
       {
@@ -119,11 +129,11 @@
           0.51,
           -0.05
         ],
+        "flagged": false,
         "removed": false
       }
     ],
-    "keptIslands": 45,
-    "skirtVertices": 0
+    "keptIslands": 45
   },
   "skeleton": {
     "count": 43,

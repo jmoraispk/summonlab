@@ -83,16 +83,13 @@ async function load(id) {
 	ch = await E.loadCharacter(entry, '');
 	stage.scene.add(ch.root);
 	api.ch = ch;
-	// Import cleanup (floating islands, skirt weights) unless ?cleanup=0 or the entry opts out.
+	// Import cleanup unless ?cleanup=0: floating pieces far from the body are flagged; removeIslands (set after a
+	// review in subjects.json) removes them, keepIslands records that they were reviewed and kept.
 	ch.cleanup = params.get('cleanup') === '0' || entry.cleanup === false ? null : E.skinCleanup(ch, { islands: entry.removeIslands ? 'remove' : 'report' });
 	api.cleanup = ch.cleanup;
 	$('clip').innerHTML = ['(rest pose)', ...Object.keys(ch.clips)].map((c) => `<option>${c}</option>`).join('');
 	$('weapon').innerHTML = ['', ...Object.keys(entry.weapons ?? {})].map((w) => `<option value="${w}">${w || '(none)'}</option>`).join('');
 	const hr = E.hitRegions(ch);
-	// Cloth bones (opt-in with ?cloth=1): they tore Asha's fused robe-and-trouser shell in every setting
-	// tried, so they stay off until a robe comes as its own mesh piece.
-	ch.clothInfo = params.get('cloth') === '1' || entry.cloth === true ? E.addClothBones(ch) : null;
-	api.clothInfo = ch.clothInfo;
 	masks = hr.masks;
 	ch.hitVolumes = hr.volumes;
 	ch.hitRegionNames = hr.regions;
@@ -115,21 +112,22 @@ async function load(id) {
 function play(name, t = null) {
 	ch.mixer.stopAllAction();
 	action = null;
-	if (!name || name === '(rest pose)' || !ch.clips[name]) { ch.skeleton.pose(); return; }
+	if (!name || name === '(rest pose)' || !ch.clips[name]) { ch.skeleton.pose(); ch.root.updateMatrixWorld(true); E.applyGrip(ch); return; }
 	action = ch.mixer.clipAction(ch.clips[name]);
 	action.reset().play();
-	if (t !== null) { ch.mixer.setTime(t); E.clothSettle(ch, name, t); }
-	else E.resetCloth(ch);
+	if (t !== null) ch.mixer.setTime(t);
+	E.applyGrip(ch);
 }
 
 async function setWeapon(key) {
 	weapon?.removeFromParent();
 	weapon = null;
-	if (!key) return;
+	ch.grips = {};
+	if (!key) { if (action) play(action.getClip().name, ch.mixer.time); else play('(rest pose)'); return; }
 	const w = ch.entry.weapons[key];
 	const prop = await E.loadProp(w.file, '');
 	const t = action ? ch.mixer.time : null, cur = action?.getClip().name;
-	weapon = E.attachProp(ch, prop, { side: w.side ?? 'r', mode: w.mode ?? 'grip', length: w.length ?? 0.85, hold: w.hold ?? 0.33, tip: w.tip ?? '+y' });
+	weapon = E.attachProp(ch, prop, { side: w.side ?? 'r', mode: w.mode ?? 'grip', length: w.length ?? 0.85, hold: w.hold ?? 0.33, tip: w.tip ?? '+y', yaw: w.yaw ?? 0 });
 	if (cur) play(cur, t);
 }
 
@@ -176,6 +174,7 @@ api.focus = (canonKey) => {
 	stage.controls.update();
 };
 api.tag = (t) => ($('tag').textContent = t ?? '');
+api.islands = (on) => E.showRemovedIslands(ch, on);
 api.render = () => { stage.controls.update(); stage.renderer.render(stage.scene, stage.camera); };
 
 await load(params.get('entry') ?? manifest.entries[0].id);
@@ -187,7 +186,7 @@ function renderer() {
 	stage.renderer.setAnimationLoop(() => {
 		const dt = Math.min(clock.getDelta(), 1 / 30);
 		if (!paused && rag) E.stepRagdoll(ch, rag, 1 / 60);
-		else if (!paused && action) { ch.mixer.update(dt); E.stepCloth(ch, dt); }
+		else if (!paused && action) { ch.mixer.update(dt); E.applyGrip(ch); }
 		stage.controls.update();
 		stage.renderer.render(stage.scene, stage.camera);
 	});

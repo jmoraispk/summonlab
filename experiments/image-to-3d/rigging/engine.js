@@ -440,11 +440,8 @@ export function deformation(ch, clipName, samples = 24) {
 	action.reset().play();
 	const pos = new Float32Array(n * 3);
 	const frames = [];
-	if (ch.cloth) { ch.mixer.setTime(0); resetCloth(ch); for (let k = 0; k < 36; k++) stepCloth(ch, 1 / 60); }
-	let tPrev = 0;
 	for (let f = 0; f < samples; f++) {
 		const t = (clip.duration * f) / samples;
-		if (ch.cloth) { for (let x = tPrev; x < t - 1e-6; x += 1 / 60) { ch.mixer.setTime(Math.min(t, x + 1 / 60)); stepCloth(ch, 1 / 60); } tPrev = t; }
 		ch.mixer.setTime(t);
 		ch.root.updateMatrixWorld(true);
 		skinnedPositions(mesh, pos);
@@ -556,14 +553,29 @@ function jointRadius(S, joint, segsNear, band) {
 }
 
 // ---------------------------------------------------------------------------------------------
-// Skin cleanup at import (run once per asset; the game would bake the result into the GLB):
-//  - floating islands: small mesh pieces with a gap to the body are reported, and removed only for assets
-//    reviewed as broken (entry.removeIslands; Asha's braid tip);
-//  - skirt weights (off by default): smoothing cloth weights, blending them toward the hips, or moving
-//    shin weight to the thigh all made Asha's robe stretch worse (Experiment 2b), so robes need cloth
-//    bones or simulation instead; the code stays for the record and for re-tests.
+// Skin cleanup at import (run once per asset; the game would bake the result into the GLB): floating
+// islands, i.e. small mesh pieces with a gap to the body, are reported; far ones are flagged for review and
+// removed only for assets reviewed as broken (rule below).
 // ---------------------------------------------------------------------------------------------
-export function skinCleanup(ch, { islands = 'report', skirt = false, skirtIterations = 40, hipsBlend = 0.35, shinToThigh = false, smooth = true } = {}) {
+const FLAG_GAP = 0.04;
+
+// Wireframe spheres on flagged floating pieces (rest pose) for the review sheet: red = removed after review,
+// amber = still there (kept, or not reviewed yet).
+export function showRemovedIslands(ch, on = true) {
+	for (const m of ch.islandMarkers ?? []) m.removeFromParent();
+	ch.islandMarkers = [];
+	if (!on) return;
+	for (const r of ch.flaggedIslands ?? []) {
+		const mat = new THREE.MeshBasicMaterial({ color: r.removed ? 0xff2020 : 0xffb000, wireframe: true, depthTest: false });
+		const m = new THREE.Mesh(new THREE.SphereGeometry(r.radius * 1.2, 12, 8), mat);
+		m.position.copy(r.center);
+		m.renderOrder = 20;
+		ch.root.parent.add(m);
+		ch.islandMarkers.push(m);
+	}
+}
+
+export function skinCleanup(ch, { islands = 'report' } = {}) {
 	const mesh = ch.skinned[0];
 	const geo = mesh.geometry;
 	const S = segments(ch);
@@ -581,7 +593,7 @@ export function skinCleanup(ch, { islands = 'report', skirt = false, skirtIterat
 	const nbr = new Map();
 	const link = (a, b) => { if (a === b) return; (nbr.get(a) ?? nbr.set(a, new Set()).get(a)).add(b); };
 	for (let t = 0; t < index.count; t += 3) { const [a, b, c] = tri(t); link(a, b); link(b, a); link(b, c); link(c, b); link(a, c); link(c, a); }
-	const report = { floatingIslands: [], keptIslands: 0, skirtVertices: 0 };
+	const report = { floatingIslands: [], keptIslands: 0 };
 	if (islands) {
 		const par = new Int32Array(n).map((_, i) => i);
 		const find = (x) => { while (par[x] !== x) { par[x] = par[par[x]]; x = par[x]; } return x; };
@@ -598,12 +610,20 @@ export function skinCleanup(ch, { islands = 'report', skirt = false, skirtIterat
 			let gap = Infinity;
 			for (const i of comp.filter((_, k) => k % 2 === 0)) { const p = P(i); for (const j of mainSample) gap = Math.min(gap, p.distanceTo(P(j))); }
 			const gapFrac = gap / ch.height;
-			// Size and gap cannot tell a broken braid tip (Asha: 249 verts, 4.3%) from a dangling ornament (the
-			// Studio goblin has 47 at 1.6-7.3%), so islands are only removed for assets reviewed as broken.
+			// Pieces at least FLAG_GAP of the height away are flagged for review: they include real artifacts (the
+			// bear's chin blob, 9.7%; Asha's broken braid tip, 4.3%) but also detached costume parts (the
+			// werebeast's chain, the mummy's hanging strip, the insect's feeler), so size and gap alone cannot
+			// decide. 'remove' (an asset reviewed as broken) drops the flagged pieces; closer ones are details
+			// such as bristles, teeth and beads (most of the 663 islands in the starting set sit at 1.5-3%).
 			if (gapFrac > 0.015) {
-				if (islands === 'remove') comp.forEach((i) => drop.add(i));
+				const flagged = gapFrac >= FLAG_GAP;
+				const removeIt = flagged && islands === 'remove';
+				if (removeIt) comp.forEach((i) => drop.add(i));
 				const ctr = comp.reduce((acc, i) => acc.add(P(i)), V()).multiplyScalar(1 / comp.length);
-				report.floatingIslands.push({ vertices: comp.length, gapOfHeight: +gapFrac.toFixed(3), centerOfHeight: ctr.toArray().map((x) => +(x / ch.height).toFixed(2)), removed: islands === 'remove' });
+				const box = new THREE.Box3();
+				comp.forEach((i) => box.expandByPoint(P(i)));
+				report.floatingIslands.push({ vertices: comp.length, gapOfHeight: +gapFrac.toFixed(3), centerOfHeight: ctr.toArray().map((x) => +(x / ch.height).toFixed(2)), flagged, removed: removeIt });
+				if (flagged) (ch.flaggedIslands ??= []).push({ center: ctr, radius: Math.max(0.01 * ch.height, box.getSize(V()).length() / 2), removed: removeIt });
 			}
 			else report.keptIslands++;
 		}
@@ -613,279 +633,7 @@ export function skinCleanup(ch, { islands = 'report', skirt = false, skirtIterat
 			index.needsUpdate = true;
 		}
 	}
-	if (skirt) {
-		const c = ch.bones.canon;
-		const legSegs = ['thigh_l', 'thigh_r', 'shin_l', 'shin_r'].map((k) => S.byBone.get(c[k])).filter(Boolean);
-		const hips = c.hips;
-		if (legSegs.length === 4 && hips) {
-			const legR = new Map(legSegs.map((s) => [s, robust(s.dist, 0.35)]));
-			const hipsY = hips.getWorldPosition(V()).y;
-			const ankleY = Math.max(...['foot_l', 'foot_r'].map((k) => (c[k] ? c[k].getWorldPosition(V()).y : 0)));
-			const p = V(), cp = V();
-			const legParts = new Set(['thigh', 'shin', 'hips']);
-			const cloth = new Set();
-			for (let i = 0; i < n; i++) {
-				if (canon[i] !== i) continue;
-				const own = S.segs[S.owner[i]];
-				if (!own || !legParts.has(own.part)) continue;
-				p.set(pos[i * 3], pos[i * 3 + 1], pos[i * 3 + 2]);
-				if (p.y > hipsY || p.y < ankleY) continue;
-				let inLeg = false;
-				for (const s of legSegs) { s.line.closestPointToPoint(p, true, cp); if (cp.distanceTo(p) < 1.6 * legR.get(s)) { inLeg = true; break; } }
-				if (!inLeg) cloth.add(i);
-			}
-			report.skirtVertices = cloth.size;
-			if (cloth.size) {
-				const si = geo.attributes.skinIndex, sw = geo.attributes.skinWeight;
-				const hipsIdx = mesh.skeleton.bones.indexOf(hips);
-				const W = new Map();
-				const read = (i) => { const m = new Map(); for (let k = 0; k < 4; k++) { const w = sw.getComponent(i, k); if (w > 0) m.set(si.getComponent(i, k), (m.get(si.getComponent(i, k)) ?? 0) + w); } return m; };
-				for (const i of cloth) W.set(i, read(i));
-				// Cloth does not bend at the knee: shin weight moves to the thigh on the same side.
-				if (shinToThigh) {
-					const bi = (k) => mesh.skeleton.bones.indexOf(c[k]);
-					const pairs = [[bi('shin_l'), bi('thigh_l')], [bi('shin_r'), bi('thigh_r')], [bi('foot_l'), bi('thigh_l')], [bi('foot_r'), bi('thigh_r')]];
-					for (const m of W.values()) for (const [from, to] of pairs) if (m.has(from)) { m.set(to, (m.get(to) ?? 0) + m.get(from)); m.delete(from); }
-				}
-				const fixed = new Map();
-				const weightsOf = (j) => W.get(j) ?? fixed.get(j) ?? fixed.set(j, read(j)).get(j);
-				for (let it = 0; it < (smooth ? skirtIterations : 0); it++) {
-					const next = new Map();
-					for (const i of cloth) {
-						const acc = new Map();
-						const ns = [...(nbr.get(i) ?? [])];
-						for (const j of ns) for (const [b, w] of weightsOf(j)) acc.set(b, (acc.get(b) ?? 0) + w / ns.length);
-						const own = W.get(i);
-						const m = new Map();
-						for (const b of new Set([...own.keys(), ...acc.keys()])) m.set(b, 0.5 * (own.get(b) ?? 0) + 0.5 * (acc.get(b) ?? 0));
-						next.set(i, m);
-					}
-					for (const [i, m] of next) W.set(i, m);
-				}
-				// Blend toward the hips, most at the waist, fading to none at the ankles.
-				for (const i of cloth) {
-					const t = THREE.MathUtils.clamp((pos[i * 3 + 1] - ankleY) / Math.max(1e-6, hipsY - ankleY), 0, 1);
-					const a = hipsBlend * (0.4 + 0.6 * t);
-					const m = W.get(i);
-					for (const [b, w] of m) m.set(b, w * (1 - a));
-					m.set(hipsIdx, (m.get(hipsIdx) ?? 0) + a);
-				}
-				// Top four influences, renormalized, written to every duplicate of the welded vertex.
-				const top = new Map();
-				for (const [i, m] of W) {
-					const best = [...m.entries()].sort((x, y) => y[1] - x[1]).slice(0, 4);
-					const sum = best.reduce((s, [, w]) => s + w, 0) || 1;
-					while (best.length < 4) best.push([0, 0]);
-					top.set(i, best.map(([b, w]) => [b, w / sum]));
-				}
-				for (let i = 0; i < n; i++) {
-					const t = top.get(canon[i]);
-					if (!t) continue;
-					si.setXYZW(i, t[0][0], t[1][0], t[2][0], t[3][0]);
-					sw.setXYZW(i, t[0][1], t[1][1], t[2][1], t[3][1]);
-				}
-				si.needsUpdate = true; sw.needsUpdate = true;
-			}
-		}
-	}
 	return report;
-}
-
-// ---------------------------------------------------------------------------------------------
-// Cloth bones for robes and skirts: rings of spring chains hanging from the hips. Cloth that hangs away
-// from the legs is re-skinned to the chains (blended back to its original weights near the legs), and the
-// chains swing under gravity, hold their shape around the hips and are pushed out of the leg capsules, so
-// the robe no longer has to follow both legs at once. Weight edits alone made Asha's robe worse.
-// ---------------------------------------------------------------------------------------------
-const smooth01 = (x) => { const t = THREE.MathUtils.clamp(x, 0, 1); return t * t * (3 - 2 * t); };
-
-export function addClothBones(ch, { sectors = 10, links = 3, stiffness = 0.06, damping = 0.92, legPad = 1.15, blendFrom = 1.15, blendTo = 1.7 } = {}) {
-	const c = ch.bones.canon;
-	const hips = c.hips;
-	const S = segments(ch); // bind pose, cached
-	const legs = ['thigh_l', 'shin_l', 'thigh_r', 'shin_r'].map((k) => S.byBone.get(c[k])).filter(Boolean);
-	if (!hips || legs.length < 4) return null;
-	ch.mixer.stopAllAction();
-	ch.skeleton.pose();
-	ch.root.updateMatrixWorld(true);
-	const mesh = ch.skinned[0];
-	const n = S.n, pos = S.pos;
-	const legR = new Map(legs.map((s) => [s, robust(s.dist, 0.35)]));
-	const hipsW = hips.matrixWorld.clone();
-	const hp = hips.getWorldPosition(V());
-	const hipsY = hp.y;
-	const ankleY = Math.max(...['foot_l', 'foot_r'].map((k) => (c[k] ? c[k].getWorldPosition(V()).y : 0)));
-	// How much each vertex is "cloth": far from both legs, below the waist, owned by a leg or the hips.
-	const clothF = new Float32Array(n);
-	const p = V(), cp = V();
-	const legParts = new Set(['thigh', 'shin', 'hips']);
-	let count = 0, hemY = hipsY;
-	for (let i = 0; i < n; i++) {
-		const own = S.segs[S.owner[i]];
-		if (!own || !legParts.has(own.part)) continue;
-		p.set(pos[i * 3], pos[i * 3 + 1], pos[i * 3 + 2]);
-		if (p.y > hipsY) continue;
-		let ratio = Infinity;
-		for (const s of legs) { s.line.closestPointToPoint(p, true, cp); ratio = Math.min(ratio, cp.distanceTo(p) / Math.max(1e-6, legR.get(s))); }
-		const f = smooth01((ratio - blendFrom) / (blendTo - blendFrom)) * smooth01((hipsY - p.y) / (0.08 * (hipsY - ankleY)));
-		if (f > 0) { clothF[i] = f; count++; if (f > 0.5) hemY = Math.min(hemY, p.y); }
-	}
-	if (count < 0.01 * n || hipsY - hemY < 0.15 * (hipsY - ankleY)) return null; // no hanging cloth
-	// Chain rest positions: per sector, the cloth's median radius at each level.
-	const angleOf = (x, z) => Math.atan2(x - hp.x, z - hp.z);
-	const levelY = (j) => hipsY - ((hipsY - hemY) * j) / links;
-	const radii = Array.from({ length: sectors }, () => Array.from({ length: links + 1 }, () => []));
-	for (let i = 0; i < n; i++) {
-		if (clothF[i] < 0.5) continue;
-		const a = angleOf(pos[i * 3], pos[i * 3 + 2]);
-		const k = Math.min(sectors - 1, Math.floor(((a + Math.PI) / (2 * Math.PI)) * sectors));
-		const j = Math.round(((hipsY - pos[i * 3 + 1]) / (hipsY - hemY)) * links);
-		radii[k][THREE.MathUtils.clamp(j, 0, links)].push(Math.hypot(pos[i * 3] - hp.x, pos[i * 3 + 2] - hp.z));
-	}
-	const allR = radii.flat(2);
-	const fallbackR = quant(allR, 0.5);
-	const chains = [];
-	const newBones = [], newInverses = [];
-	const R = mesh.matrixWorld.clone().multiply(mesh.bindMatrix.clone().invert());
-	const hipsInv = hipsW.clone().invert();
-	for (let k = 0; k < sectors; k++) {
-		const a = -Math.PI + ((k + 0.5) * 2 * Math.PI) / sectors;
-		const pts = [];
-		for (let j = 0; j <= links; j++) {
-			const r = radii[k][j].length >= 3 ? quant(radii[k][j], 0.5) : radii[k].flat().length ? quant(radii[k].flat(), 0.5) : fallbackR;
-			pts.push(new THREE.Vector3(hp.x + Math.sin(a) * r * (j === 0 ? 0.85 : 1), levelY(j), hp.z + Math.cos(a) * r * (j === 0 ? 0.85 : 1)));
-		}
-		const bones = [];
-		for (let j = 0; j < links; j++) {
-			const b = new THREE.Bone();
-			b.name = `cloth_${k}_${j}`;
-			hips.add(b);
-			hipsInv.clone().multiply(new THREE.Matrix4().makeTranslation(pts[j].x, pts[j].y, pts[j].z)).decompose(b.position, b.quaternion, b.scale);
-			b.updateMatrixWorld(true);
-			newBones.push(b);
-			newInverses.push(new THREE.Matrix4().makeTranslation(pts[j].x, pts[j].y, pts[j].z).invert().multiply(R));
-			bones.push(b);
-		}
-		chains.push({
-			angle: a, bones,
-			rest: pts.map((q) => q.clone().applyMatrix4(hipsInv)), // hips-local rest positions
-			restDir: pts.slice(0, -1).map((q, j) => pts[j + 1].clone().sub(q).normalize()),
-			len: pts.slice(0, -1).map((q, j) => pts[j + 1].distanceTo(q)),
-			p: pts.map((q) => q.clone()), prev: pts.map((q) => q.clone())
-		});
-	}
-	// Re-skin: cloth share f goes to the two nearest chains (by angle) on the link at the vertex's level,
-	// blended across link joints; the rest keeps the original weights.
-	const base = mesh.skeleton.bones.length;
-	const si = mesh.geometry.attributes.skinIndex, sw = mesh.geometry.attributes.skinWeight;
-	for (let i = 0; i < n; i++) {
-		const f = clothF[i];
-		if (!f) continue;
-		const m = new Map();
-		for (let q = 0; q < 4; q++) { const w = sw.getComponent(i, q); if (w > 0) m.set(si.getComponent(i, q), (m.get(si.getComponent(i, q)) ?? 0) + w * (1 - f)); }
-		const a = angleOf(pos[i * 3], pos[i * 3 + 2]);
-		const u = ((a + Math.PI) / (2 * Math.PI)) * sectors - 0.5;
-		const k0 = ((Math.floor(u) % sectors) + sectors) % sectors, k1 = (k0 + 1) % sectors, wa = u - Math.floor(u);
-		const t = THREE.MathUtils.clamp(((hipsY - pos[i * 3 + 1]) / (hipsY - hemY)) * links, 0, links - 1e-3);
-		const j = Math.floor(t), fr = t - j;
-		const linkW = [[j, 1]];
-		if (fr < 0.25 && j > 0) { linkW[0][1] = 0.5 + 2 * fr; linkW.push([j - 1, 1 - linkW[0][1]]); }
-		for (const [kk, aw] of [[k0, 1 - wa], [k1, wa]]) for (const [jj, lw] of linkW) {
-			const bi = base + kk * links + jj;
-			m.set(bi, (m.get(bi) ?? 0) + f * aw * lw);
-		}
-		const best = [...m.entries()].sort((x, y) => y[1] - x[1]).slice(0, 4);
-		const sum = best.reduce((acc, [, w]) => acc + w, 0) || 1;
-		while (best.length < 4) best.push([0, 0]);
-		si.setXYZW(i, best[0][0], best[1][0], best[2][0], best[3][0]);
-		sw.setXYZW(i, best[0][1] / sum, best[1][1] / sum, best[2][1] / sum, best[3][1] / sum);
-	}
-	si.needsUpdate = true; sw.needsUpdate = true;
-	const skeleton = new THREE.Skeleton([...mesh.skeleton.bones, ...newBones], [...mesh.skeleton.boneInverses, ...newInverses]);
-	for (const m of ch.skinned) m.bind(skeleton, m.bindMatrix);
-	ch.skeleton = skeleton;
-	ch.cloth = { chains, hips, legs, legR, legPad, hipsBindQ: new THREE.Quaternion().setFromRotationMatrix(hipsW), stiffness, damping, sectors, links, vertices: count };
-	return { chains: sectors, links, clothVertices: count, hemOfHeight: +((hipsY - hemY) / ch.height).toFixed(2) };
-}
-
-const _q = new THREE.Quaternion(), _qd = new THREE.Quaternion(), _w = new THREE.Matrix4(), _l = new THREE.Matrix4(), _s1 = new THREE.Vector3(1, 1, 1);
-export function resetCloth(ch) {
-	if (!ch.cloth) return;
-	ch.root.updateMatrixWorld(true);
-	for (const chn of ch.cloth.chains) chn.rest.forEach((r, j) => { const w = r.clone().applyMatrix4(ch.cloth.hips.matrixWorld); chn.p[j].copy(w); chn.prev[j].copy(w); });
-	applyCloth(ch);
-}
-
-export function stepCloth(ch, dt) {
-	const C = ch.cloth;
-	if (!C) return;
-	ch.root.updateMatrixWorld(true);
-	const sub = Math.max(1, Math.ceil(dt / (1 / 120)));
-	const h = dt / sub;
-	const g = 9.81 * h * h;
-	const hw = C.hips.matrixWorld;
-	const legSegs = C.legs.map((s) => {
-		const a = s.bone.getWorldPosition(V());
-		const kid = s.bone.children.find((k) => k.isBone && !k.name.startsWith('cloth_'));
-		const b = kid ? kid.getWorldPosition(V()) : a.clone();
-		return { line: new THREE.Line3(a, b), r: C.legPad * C.legR.get(s) };
-	});
-	const cp = V();
-	for (let it = 0; it < sub; it++) {
-		for (const chn of C.chains) {
-			chn.p[0].copy(chn.rest[0]).applyMatrix4(hw);
-			for (let j = 1; j < chn.p.length; j++) {
-				const cur = chn.p[j], prev = chn.prev[j];
-				const vx = (cur.x - prev.x) * C.damping, vy = (cur.y - prev.y) * C.damping, vz = (cur.z - prev.z) * C.damping;
-				prev.copy(cur);
-				cur.x += vx; cur.y += vy - g; cur.z += vz;
-				// Shape memory: pull toward the rest position carried by the hips.
-				const target = chn.rest[j].clone().applyMatrix4(hw);
-				cur.lerp(target, C.stiffness);
-			}
-			for (let pass = 0; pass < 3; pass++) {
-				for (let j = 0; j < chn.len.length; j++) {
-					const a = chn.p[j], b = chn.p[j + 1];
-					const d = b.clone().sub(a);
-					const dl = d.length() || 1e-6;
-					const corr = d.multiplyScalar((dl - chn.len[j]) / dl);
-					if (j === 0) b.sub(corr); else { a.addScaledVector(corr, 0.5); b.addScaledVector(corr, -0.5); }
-				}
-				for (let j = 1; j < chn.p.length; j++) for (const L of legSegs) {
-					L.line.closestPointToPoint(chn.p[j], true, cp);
-					const off = chn.p[j].clone().sub(cp);
-					const dist = off.length();
-					if (dist < L.r) chn.p[j].copy(cp).addScaledVector(dist > 1e-6 ? off.divideScalar(dist) : new THREE.Vector3(0, 0, 1), L.r);
-				}
-			}
-		}
-	}
-	applyCloth(ch);
-}
-
-function applyCloth(ch) {
-	const C = ch.cloth;
-	const hw = C.hips.matrixWorld;
-	const hipsQ = new THREE.Quaternion().setFromRotationMatrix(new THREE.Matrix4().extractRotation(hw));
-	const delta = hipsQ.clone().multiply(C.hipsBindQ.clone().invert());
-	const hwInv = hw.clone().invert();
-	for (const chn of C.chains) chn.bones.forEach((b, j) => {
-		const d = chn.p[j + 1].clone().sub(chn.p[j]).normalize();
-		const d0 = chn.restDir[j].clone().applyQuaternion(delta);
-		_q.setFromUnitVectors(d0, d).multiply(delta);
-		_w.compose(chn.p[j], _q, _s1);
-		_l.multiplyMatrices(hwInv, _w).decompose(b.position, b.quaternion, b.scale);
-		b.updateMatrixWorld(true);
-	});
-}
-
-// Play a clip to time t with the cloth simulated up to it (cloth needs history, unlike bones).
-export function clothSettle(ch, clip, t, preroll = 0.6) {
-	if (!ch.cloth) return;
-	const t0 = Math.max(0, t - preroll);
-	ch.mixer.setTime(t0);
-	resetCloth(ch);
-	for (let x = t0; x < t - 1e-6; x += 1 / 60) { ch.mixer.setTime(Math.min(t, x + 1 / 60)); stepCloth(ch, 1 / 60); }
 }
 
 // ---------------------------------------------------------------------------------------------
@@ -1191,9 +939,52 @@ function mountAt(ch, bone, group, world) {
 	return holder;
 }
 
+// A closed fist: finger joints flex about the knuckle axis toward the palm, the thumb wraps toward the fist.
+// Axes are stored in the hand's local frame so the fist follows the hand in every clip.
+function makeFist(ch, hand, roots, knuckleAxis, palm) {
+	const handQinv = hand.getWorldQuaternion(new THREE.Quaternion()).invert();
+	const chains = [];
+	for (const r of roots) {
+		const bones = [];
+		for (let b = r; b && b.isBone; b = b.children.find((k) => k.isBone)) bones.push(b);
+		const thumb = /thumb/i.test(r.name);
+		const base = r.getWorldPosition(V()), tip = bones.at(-1).getWorldPosition(V());
+		const dir = tip.clone().sub(base).normalize();
+		const axis = thumb ? dir.clone().cross(palm).normalize() : knuckleAxis.clone();
+		// Sign: a small positive turn must move the tip toward the palm.
+		const moved = tip.clone().sub(base).applyAxisAngle(axis, 0.2).add(base);
+		const sign = moved.sub(tip).dot(palm) >= 0 ? 1 : -1;
+		const angles = thumb ? [0.35, 0.45, 0.35] : [1.25, 1.45, 0.95];
+		chains.push({ bones: bones.slice(0, 3), axisLocal: axis.applyQuaternion(handQinv), angles: angles.map((x) => x * sign) });
+	}
+	return { hand, chains };
+}
+
+// Curl the gripping hands on top of the current animation pose (call after every mixer update).
+export function applyGrip(ch) {
+	const _qa = new THREE.Quaternion();
+	for (const g of Object.values(ch.grips ?? {})) {
+		const handQ = g.hand.getWorldQuaternion(new THREE.Quaternion());
+		for (const c of g.chains) {
+			const axisW = c.axisLocal.clone().applyQuaternion(handQ);
+			let oldParent = handQ.clone(), newParent = handQ.clone(), cum = 0;
+			c.bones.forEach((b, j) => {
+				const oldWorld = oldParent.clone().multiply(b.quaternion);
+				cum += c.angles[j] ?? 0;
+				const newWorld = _qa.setFromAxisAngle(axisW, cum).clone().multiply(oldWorld);
+				b.quaternion.copy(newParent.clone().invert().multiply(newWorld));
+				oldParent = oldWorld; newParent = newWorld;
+			});
+		}
+		g.hand.updateMatrixWorld(true);
+	}
+}
+
 // hold: where the hand grips, as a fraction of length from the butt end. tip: which local end of the
 // prop's long axis points away from the hand ('+y' or '-y' after the long axis is mapped to Y).
-export function attachProp(ch, prop, { side = 'r', mode = 'grip', length = 0.85, hold = 0.33, tip = '+y', inplaceRoot = null } = {}) {
+export function attachProp(ch, prop, { side = 'r', mode = 'grip', length = 0.85, hold = 0.33, tip = '+y', yaw = 0, inplaceRoot = null } = {}) {
+	ch.grips ??= {};
+	delete ch.grips[side];
 	ch.mixer.stopAllAction();
 	ch.skeleton.pose();
 	ch.root.updateMatrixWorld(true);
@@ -1207,17 +998,23 @@ export function attachProp(ch, prop, { side = 'r', mode = 'grip', length = 0.85,
 		hand.add(holder);
 		return holder;
 	}
+	// Tripo props face +X in their files, like Tripo characters (bench facing is +Z): yaw -90 turns them.
+	if (yaw) { const turn = new THREE.Group(); turn.add(prop); turn.rotation.y = (yaw * Math.PI) / 180; turn.updateMatrixWorld(true); prop = turn; }
 	const { group, size } = centered(prop);
 	if (mode === 'head') {
 		const head = ch.bones.canon.head;
 		const hs = S.byBone.get(head);
 		if (!hs) throw new Error('no head segment');
-		const box = new THREE.Box3();
-		for (const i of hs.verts) box.expandByPoint(V().set(S.pos[i * 3], S.pos[i * 3 + 1], S.pos[i * 3 + 2]));
-		const hsz = box.getSize(V()), hc = box.getCenter(V());
-		const s = (1.15 * Math.max(hsz.x, hsz.z)) / Math.max(size.x, size.z);
-		// Sit the helmet so its top clears the head top slightly.
-		const center = new THREE.Vector3(hc.x, box.max.y + 0.04 * hsz.y - (size.y * s) / 2, hc.z);
+		// Fit to the head's own extents: the middle 90% of its vertices left-right and front-back (hair tufts,
+		// a braid or a hood edge drop out), from the skull base (head bone) to the crown.
+		const xs = [], ys = [], zs = [];
+		for (const i of hs.verts) { xs.push(S.pos[i * 3]); ys.push(S.pos[i * 3 + 1]); zs.push(S.pos[i * 3 + 2]); }
+		const base = head.getWorldPosition(V()).y, crown = quant(ys, 0.97);
+		const w = quant(xs, 0.95) - quant(xs, 0.05), d = quant(zs, 0.95) - quant(zs, 0.05), h = Math.max(1e-6, crown - base);
+		// The bounding box hides a crest above the dome and a shell thickness, so the outside needs ~35% over the
+		// head (12% left the scalp showing), and the box top sits ~12% of the helmet's height above the crown.
+		const s = 1.35 * Math.max(w / size.x, d / size.z, h / (0.8 * size.y));
+		const center = new THREE.Vector3((quant(xs, 0.95) + quant(xs, 0.05)) / 2, crown + 0.12 * size.y * s - (size.y * s) / 2, (quant(zs, 0.95) + quant(zs, 0.05)) / 2);
 		return mountAt(ch, head, group, new THREE.Matrix4().compose(center, new THREE.Quaternion(), new THREE.Vector3(s, s, s)));
 	}
 	if (mode === 'forearm') {
@@ -1253,21 +1050,27 @@ export function attachProp(ch, prop, { side = 'r', mode = 'grip', length = 0.85,
 	if (tip === '-y') flip.rotation.z = Math.PI;
 	const L = length * H;
 	flip.scale.setScalar(L / Math.max(size.x, size.y, size.z));
-	// With finger bones, the handle runs across the palm along the knuckle line (pinky -> index) and the
-	// blade leaves on the thumb side, so the grip follows whatever the hand does in each clip. Without
-	// finger bones, fall back to a blade pointing forward through the palm.
+	// With finger bones, the handle runs across the palm along the knuckle line (pinky -> index), through the
+	// center of a closed fist, and the blade leaves on the thumb side; the fingers then curl around it every
+	// frame (applyGrip). Without finger bones, a blade points forward through the palm.
 	const roots = hand.children.filter((k) => k.isBone && ch.bones.info.get(k)?.part === 'finger');
 	const idx = roots.find((k) => /index/i.test(k.name)), pky = roots.find((k) => /pinky|little/i.test(k.name));
 	let grip, along;
-	if (idx && pky) {
-		const pi = idx.getWorldPosition(V()), pp = pky.getWorldPosition(V());
-		along = pi.clone().sub(pp).normalize();
-		const knuckles = roots.filter((k) => !/thumb/i.test(k.name)).map((k) => k.getWorldPosition(V())).reduce((acc, v) => acc.add(v), V()).multiplyScalar(1 / Math.max(1, roots.filter((k) => !/thumb/i.test(k.name)).length));
-		// Fist center: a little past the knuckles toward the fingertips.
-		const hs = S.byBone.get(hand);
-		grip = knuckles.add(hs ? hs.dir.clone().multiplyScalar(0.25 * hs.len) : V());
+	const hs = S.byBone.get(hand);
+	if (idx && pky && hs) {
+		const W = (b) => b.getWorldPosition(V());
+		along = W(idx).sub(W(pky)).normalize();
+		const fingers = roots.filter((k) => !/thumb/i.test(k.name));
+		const knuckles = fingers.map(W).reduce((acc, v) => acc.add(v), V()).multiplyScalar(1 / fingers.length);
+		const tipOf = (b) => { let t = b; while (t.children.some((k) => k.isBone)) t = t.children.find((k) => k.isBone); return t; };
+		const mid = fingers.find((k) => /middle/i.test(k.name)) ?? fingers[0];
+		const fingerLen = W(tipOf(mid)).distanceTo(W(mid)) || 0.4 * hs.len;
+		// Palm normal: T-pose rigs rest palms down, so it is world -Y made perpendicular to the hand.
+		const palm = new THREE.Vector3(0, -1, 0);
+		palm.addScaledVector(hs.dir, -palm.dot(hs.dir)).addScaledVector(along, -palm.dot(along)).normalize();
+		grip = knuckles.addScaledVector(hs.dir, 0.3 * fingerLen).addScaledVector(palm, 0.32 * fingerLen);
+		ch.grips[side] = makeFist(ch, hand, roots, along, palm);
 	} else {
-		const hs = S.byBone.get(hand);
 		const handPos = hand.getWorldPosition(V());
 		const dir = hs ? hs.dir.clone() : new THREE.Vector3(0, -1, 0);
 		const forward = new THREE.Vector3(0, 0, 1);
