@@ -14,9 +14,11 @@
   | Optimized game-ready GLBs | 86 MB (about 0.8 MB per asset) |
   | Experiment 1 local outputs | 135 MB |
 
-- **Reclaimable:** the dropped local models (TRELLIS and Hunyuan3D-2) still use about 48 GB: 18 GB of
-  environments in `~/.local/opt/image-to-3d/` and 30 GB of weights in `~/.cache/huggingface/hub/`.
-  `tools-venv` (0.8 GB) is still needed.
+- **Reclaimed 2026-11-18 (owner-approved):** the dropped local models (TRELLIS and Hunyuan3D-2) are
+  deleted: their environments in `~/.local/opt/image-to-3d/`, their weights in
+  `~/.cache/huggingface/hub/`, and their packages in uv's shared cache (`uv cache clean` for packages
+  the tools env does not use, then `uv cache prune`). 45 GB freed; home went from 210 GB to 165 GB used.
+  `tools-venv` (0.8 GB, the Tripo client and image tools) is kept and still works.
 - **The 2D art is on GitHub:** `assets/` is 4.7 GB on disk in Git LFS (2,262 files), and
   `apps/web/static` holds 177 MB of runtime images. The website deploys to Vercel.
 

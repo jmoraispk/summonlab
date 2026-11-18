@@ -24,3 +24,4 @@ Durable owner answers, so later turns do not rediscover them.
 | 2026-11-18 | Try both follow-ups: v1.0 combat clips (~75 credits) and cloth bones. | run: combat clips adopted as a shared library; cloth bones rejected for fused meshes (opt-in only) |
 | 2026-11-18 | Storing every asset in GitHub does not scale; move generated assets to cloud storage the website can fetch. | proposed: Cloudflare R2 (`notes/storage-and-scenes.md`); waiting for owner-created bucket and keys |
 | 2026-11-18 | Path for scenes. | proposed: kit-based scenes on the same pipeline, Hearth-01 square first (`notes/storage-and-scenes.md`) |
+| 2026-11-18 | Delete the unused local-model files (TRELLIS, Hunyuan3D-2 environments, weights and cached packages). | done: 45 GB freed; Tripo tools env kept |
