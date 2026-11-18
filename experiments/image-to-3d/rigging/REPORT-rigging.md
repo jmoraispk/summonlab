@@ -1,10 +1,29 @@
 # Experiment 2: rigged, animated characters with Tripo
 
 Status: shortened on 2026-11-17 at the owner's request and run as a production sample on the Tripo
-API, then scaled to the starting set (round 3, 6,070 credits). Round 1 (720 credits): Asha, wolf, hawk, sword, shield, helmet, armor set. Round 2 (415
+API, then scaled to the starting set (round 3, 6,070 credits) and a combat-clip test (round 4, 75
+credits). Round 1 (720 credits): Asha, wolf, hawk, sword, shield, helmet, armor set. Round 2 (415
 credits, after owner feedback): the clay golem from a T-pose image rigged both ways, and two more heroes.
 Local models (TRELLIS, Hunyuan3D-2, Qwen) are out of the pipeline. Owner decisions live in
 `notes/decisions.md`.
+
+## Round 4: combat clips and cloth bones (2026-11-18)
+
+- **Combat clips work, and one library serves everyone** (75 credits). Tripo's v1.0 rig (23
+  Mixamo-named bones, 90+ presets) on Asha's T-pose model gave chop, punch (`box_01`), front kick,
+  hit to the head and defeat, at 89–157% worst-frame stretch.
+  - A new world-space retarget moves them onto Asha's full rig, Wenyn, Kelan, the golem, the goblin and
+    the orc at 52–183%. Sheet: `previews/sample/combat-clips.webp`.
+  - The same retarget moves v3.0 clips between rigs as well as each rig's own clips (golem walk 73%
+    borrowed vs 77% own).
+  - **Recommendation:** buy each clip once on a donor (10 credits) and retarget it to every humanoid;
+    per-character presets become optional, saving about 60 credits per humanoid.
+- **Cloth bones fail on these meshes.** Spring chains around the hips (bench opt-in `?cloth=1`) tore
+  Asha's robe in every setting tried: T-pose run 100% → 169–707%; original-art run 414% → 485–593%.
+  Image-to-3D fuses robe and trousers into one shell, so a robe can only move on its own once it is a
+  separate piece. Next test: segment the robe off and drive only that part. Sheet:
+  `previews/sample/cloth-bones-asha.webp`.
+- **Storage and scenes:** recommendations in `notes/storage-and-scenes.md`.
 
 ## Round 3: the starting set (2026-11-17)
 
@@ -171,8 +190,8 @@ rights") does not define "Paid User". The owner should send the drafted question
   - `asha-run-original-vs-tpose.webp`, `wolf-walk-side.webp`, `clip-sharing-golem.webp`: single comparisons.
 - Per rig: `previews/<entry>/` and `results/<entry>.json`.
 - Budgets: `results/budget.json`.
-- Every Tripo task with its credits and seconds: `results/tripo-tasks.json` (all rounds: 7,205 credits,
-  301 tasks; the starting set is 6,070 of them).
+- Every Tripo task with its credits and seconds: `results/tripo-tasks.json` (all rounds: 7,280 credits,
+  303 tasks; the starting set is 6,070 of them, the combat-clip test 75).
 - Re-run steps:
   1. `python rigging/scripts/batch_sample.py --budget <credits> <chain …>`
   2. `node rigging/scripts/build_manifest.mjs`

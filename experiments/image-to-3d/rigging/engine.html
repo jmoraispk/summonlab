@@ -89,6 +89,10 @@ async function load(id) {
 	$('clip').innerHTML = ['(rest pose)', ...Object.keys(ch.clips)].map((c) => `<option>${c}</option>`).join('');
 	$('weapon').innerHTML = ['', ...Object.keys(entry.weapons ?? {})].map((w) => `<option value="${w}">${w || '(none)'}</option>`).join('');
 	const hr = E.hitRegions(ch);
+	// Cloth bones (opt-in with ?cloth=1): they tore Asha's fused robe-and-trouser shell in every setting
+	// tried, so they stay off until a robe comes as its own mesh piece.
+	ch.clothInfo = params.get('cloth') === '1' || entry.cloth === true ? E.addClothBones(ch) : null;
+	api.clothInfo = ch.clothInfo;
 	masks = hr.masks;
 	ch.hitVolumes = hr.volumes;
 	ch.hitRegionNames = hr.regions;
@@ -114,7 +118,8 @@ function play(name, t = null) {
 	if (!name || name === '(rest pose)' || !ch.clips[name]) { ch.skeleton.pose(); return; }
 	action = ch.mixer.clipAction(ch.clips[name]);
 	action.reset().play();
-	if (t !== null) ch.mixer.setTime(t);
+	if (t !== null) { ch.mixer.setTime(t); E.clothSettle(ch, name, t); }
+	else E.resetCloth(ch);
 }
 
 async function setWeapon(key) {
@@ -182,7 +187,7 @@ function renderer() {
 	stage.renderer.setAnimationLoop(() => {
 		const dt = Math.min(clock.getDelta(), 1 / 30);
 		if (!paused && rag) E.stepRagdoll(ch, rag, 1 / 60);
-		else if (!paused && action) ch.mixer.update(dt);
+		else if (!paused && action) { ch.mixer.update(dt); E.stepCloth(ch, dt); }
 		stage.controls.update();
 		stage.renderer.render(stage.scene, stage.camera);
 	});

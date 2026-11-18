@@ -122,20 +122,12 @@ export async function loadCharacter(entry, base = '') {
 		// motion by the ratio of root heights.
 		const srcRoot = g.scene.getObjectByName(skeleton.bones[0].name);
 		const tgtRest = nodeRest.get(skeleton.bones[0]);
-		const foreign = srcRoot && tgtRest && srcRoot.position.distanceTo(tgtRest) > 0.01 * Math.max(1e-6, tgtRest.length());
+		// combatFiles: clips made on another rig of any proportions (v1.0 combat presets) are always borrowed.
+		const foreign = entry.clipsForeign || (entry.combatFiles ?? []).includes(file) || (srcRoot && tgtRest && srcRoot.position.distanceTo(tgtRest) > 0.01 * Math.max(1e-6, tgtRest.length()));
 		for (const a of g.animations) {
-			const c = a.clone();
+			let c = a.clone();
+			if (foreign) { c = retargetWorld(g.scene, a, skeleton, inner); borrowed.push(clipName(a.name)); }
 			c.name = clipName(a.name);
-			if (foreign) {
-				const k = tgtRest.length() / Math.max(1e-6, srcRoot.position.length());
-				c.tracks = c.tracks.filter((t) => t.name.endsWith('.quaternion') || t.name === `${skeleton.bones[0].name}.position`);
-				for (const t of c.tracks) if (t.name.endsWith('.position')) for (let i = 0; i < t.values.length; i += 3) {
-					t.values[i] = tgtRest.x + (t.values[i] - srcRoot.position.x) * k;
-					t.values[i + 1] = tgtRest.y + (t.values[i + 1] - srcRoot.position.y) * k;
-					t.values[i + 2] = tgtRest.z + (t.values[i + 2] - srcRoot.position.z) * k;
-				}
-				borrowed.push(c.name);
-			}
 			clips[c.name] = c;
 		}
 	}
@@ -171,6 +163,66 @@ export async function loadCharacter(entry, base = '') {
 	return { entry, root, inner, skinned, skeleton, clips, mixer, bones, height: entry.height ?? 1.1, scale: s, autoYaw, restMismatch, borrowed };
 }
 
+// World-space retarget for clips made on another rig: each bone keeps the source's rotation *relative to the
+// source's rest pose*, measured in the shared scene frame, so different bone orientations between rigs (v1.0
+// vs v3.0) and different proportions both cancel out. Bones the source lacks (fingers) stay at rest; the
+// root's motion is scaled by the ratio of root heights. Both rigs must share a rest pose (T-pose here).
+function retargetWorld(srcScene, srcClip, skeleton, inner, fps = 30) {
+	// Rest = the source mesh's bind pose (its inverse bind matrices), not the file's default node pose.
+	let srcSkinned = null;
+	srcScene.traverse((o) => { if (o.isSkinnedMesh && !srcSkinned) srcSkinned = o; });
+	srcSkinned?.skeleton.pose();
+	srcScene.updateMatrixWorld(true);
+	inner.updateMatrixWorld(true);
+	const src = new Map();
+	srcScene.traverse((o) => { if (o.isBone) src.set(o.name, o); });
+	const innerQinv = inner.getWorldQuaternion(new THREE.Quaternion()).invert();
+	const relQ = (o) => innerQinv.clone().multiply(o.getWorldQuaternion(new THREE.Quaternion()));
+	const bones = [...skeleton.bones].sort((a, b) => depthOf(a) - depthOf(b));
+	const tgtRest = new Map(bones.map((b) => [b, relQ(b)]));
+	const tgtLocal = new Map(bones.map((b) => [b, b.quaternion.clone()]));
+	const parentRest = new Map(bones.map((b) => [b, b.parent ? relQ(b.parent) : new THREE.Quaternion()]));
+	const srcRest = new Map([...src].map(([n, o]) => [n, o.getWorldQuaternion(new THREE.Quaternion())]));
+	const root = skeleton.bones[0], sRoot = src.get(root.name);
+	const sRootRest = sRoot?.position.clone(), tRootRest = root.position.clone();
+	const k = sRoot ? tRootRest.length() / Math.max(1e-6, sRootRest.length()) : 1;
+	const sRootParentQ = sRoot?.parent ? sRoot.parent.getWorldQuaternion(new THREE.Quaternion()) : new THREE.Quaternion();
+	const tRootParentQinv = (root.parent && root.parent !== inner ? relQ(root.parent) : new THREE.Quaternion()).invert();
+	const mixer = new THREE.AnimationMixer(srcScene);
+	mixer.clipAction(srcClip).play();
+	const n = Math.max(2, Math.round(srcClip.duration * fps) + 1);
+	const times = new Float32Array(n);
+	const quats = new Map(bones.filter((b) => src.has(b.name)).map((b) => [b, new Float32Array(n * 4)]));
+	const rootPos = new Float32Array(n * 3);
+	const world = new Map();
+	for (let f = 0; f < n; f++) {
+		const t = (srcClip.duration * f) / (n - 1);
+		times[f] = t;
+		mixer.setTime(t);
+		srcScene.updateMatrixWorld(true);
+		world.clear();
+		for (const b of bones) {
+			const parentQ = b.parent?.isBone && world.has(b.parent) ? world.get(b.parent) : parentRest.get(b);
+			const sb = src.get(b.name);
+			let w;
+			if (sb) {
+				const delta = sb.getWorldQuaternion(new THREE.Quaternion()).multiply(srcRest.get(b.name).clone().invert());
+				w = delta.multiply(tgtRest.get(b));
+				const local = parentQ.clone().invert().multiply(w);
+				quats.get(b).set([local.x, local.y, local.z, local.w], f * 4);
+			} else w = parentQ.clone().multiply(tgtLocal.get(b));
+			world.set(b, w);
+		}
+		if (sRoot) {
+			const d = sRoot.position.clone().sub(sRootRest).applyQuaternion(sRootParentQ).applyQuaternion(tRootParentQinv).multiplyScalar(k);
+			rootPos.set([tRootRest.x + d.x, tRootRest.y + d.y, tRootRest.z + d.z], f * 3);
+		}
+	}
+	const tracks = [...quats].map(([b, v]) => new THREE.QuaternionKeyframeTrack(`${b.name}.quaternion`, times, v));
+	if (sRoot) tracks.push(new THREE.VectorKeyframeTrack(`${root.name}.position`, times, rootPos));
+	return new THREE.AnimationClip(srcClip.name, srcClip.duration, tracks);
+}
+
 function facingYaw(skeleton) {
 	const W = (b) => b.getWorldPosition(new THREE.Vector3());
 	const fwd = new THREE.Vector3();
@@ -190,10 +242,13 @@ function facingYaw(skeleton) {
 }
 
 function clipName(n) {
-	const l = n.toLowerCase();
-	for (const k of ['idle', 'walk', 'run', 'attack', 'slash', 'hit', 'hurt', 'death', 'die', 'fall'])
-		if (l.includes(k)) return { slash: 'attack', hurt: 'hit', die: 'death', fall: 'death' }[k] ?? k;
-	return n;
+	// Map Tripo's preset names to the bench's clip roles by exact name only: "hit_to_head" (a v1.0 combat
+	// preset) must not collide with "hurt" -> "hit".
+	const base = n.toLowerCase().replace(/^.*[:|/]/, '');
+	const roles = { idle: 'idle', walk: 'walk', run: 'run', slash: 'attack', attack: 'attack', hurt: 'hit', hit: 'hit', fall: 'death', death: 'death', die: 'death' };
+	if (roles[base]) return roles[base];
+	for (const k of Object.keys(roles)) if (new RegExp(`(^|[^a-z])${k}([^a-z]|$)`).test(base) && !/_to_/.test(base)) return roles[k];
+	return base;
 }
 
 function skinnedBox(mesh) {
@@ -385,8 +440,11 @@ export function deformation(ch, clipName, samples = 24) {
 	action.reset().play();
 	const pos = new Float32Array(n * 3);
 	const frames = [];
+	if (ch.cloth) { ch.mixer.setTime(0); resetCloth(ch); for (let k = 0; k < 36; k++) stepCloth(ch, 1 / 60); }
+	let tPrev = 0;
 	for (let f = 0; f < samples; f++) {
 		const t = (clip.duration * f) / samples;
+		if (ch.cloth) { for (let x = tPrev; x < t - 1e-6; x += 1 / 60) { ch.mixer.setTime(Math.min(t, x + 1 / 60)); stepCloth(ch, 1 / 60); } tPrev = t; }
 		ch.mixer.setTime(t);
 		ch.root.updateMatrixWorld(true);
 		skinnedPositions(mesh, pos);
@@ -631,6 +689,203 @@ export function skinCleanup(ch, { islands = 'report', skirt = false, skirtIterat
 		}
 	}
 	return report;
+}
+
+// ---------------------------------------------------------------------------------------------
+// Cloth bones for robes and skirts: rings of spring chains hanging from the hips. Cloth that hangs away
+// from the legs is re-skinned to the chains (blended back to its original weights near the legs), and the
+// chains swing under gravity, hold their shape around the hips and are pushed out of the leg capsules, so
+// the robe no longer has to follow both legs at once. Weight edits alone made Asha's robe worse.
+// ---------------------------------------------------------------------------------------------
+const smooth01 = (x) => { const t = THREE.MathUtils.clamp(x, 0, 1); return t * t * (3 - 2 * t); };
+
+export function addClothBones(ch, { sectors = 10, links = 3, stiffness = 0.06, damping = 0.92, legPad = 1.15, blendFrom = 1.15, blendTo = 1.7 } = {}) {
+	const c = ch.bones.canon;
+	const hips = c.hips;
+	const S = segments(ch); // bind pose, cached
+	const legs = ['thigh_l', 'shin_l', 'thigh_r', 'shin_r'].map((k) => S.byBone.get(c[k])).filter(Boolean);
+	if (!hips || legs.length < 4) return null;
+	ch.mixer.stopAllAction();
+	ch.skeleton.pose();
+	ch.root.updateMatrixWorld(true);
+	const mesh = ch.skinned[0];
+	const n = S.n, pos = S.pos;
+	const legR = new Map(legs.map((s) => [s, robust(s.dist, 0.35)]));
+	const hipsW = hips.matrixWorld.clone();
+	const hp = hips.getWorldPosition(V());
+	const hipsY = hp.y;
+	const ankleY = Math.max(...['foot_l', 'foot_r'].map((k) => (c[k] ? c[k].getWorldPosition(V()).y : 0)));
+	// How much each vertex is "cloth": far from both legs, below the waist, owned by a leg or the hips.
+	const clothF = new Float32Array(n);
+	const p = V(), cp = V();
+	const legParts = new Set(['thigh', 'shin', 'hips']);
+	let count = 0, hemY = hipsY;
+	for (let i = 0; i < n; i++) {
+		const own = S.segs[S.owner[i]];
+		if (!own || !legParts.has(own.part)) continue;
+		p.set(pos[i * 3], pos[i * 3 + 1], pos[i * 3 + 2]);
+		if (p.y > hipsY) continue;
+		let ratio = Infinity;
+		for (const s of legs) { s.line.closestPointToPoint(p, true, cp); ratio = Math.min(ratio, cp.distanceTo(p) / Math.max(1e-6, legR.get(s))); }
+		const f = smooth01((ratio - blendFrom) / (blendTo - blendFrom)) * smooth01((hipsY - p.y) / (0.08 * (hipsY - ankleY)));
+		if (f > 0) { clothF[i] = f; count++; if (f > 0.5) hemY = Math.min(hemY, p.y); }
+	}
+	if (count < 0.01 * n || hipsY - hemY < 0.15 * (hipsY - ankleY)) return null; // no hanging cloth
+	// Chain rest positions: per sector, the cloth's median radius at each level.
+	const angleOf = (x, z) => Math.atan2(x - hp.x, z - hp.z);
+	const levelY = (j) => hipsY - ((hipsY - hemY) * j) / links;
+	const radii = Array.from({ length: sectors }, () => Array.from({ length: links + 1 }, () => []));
+	for (let i = 0; i < n; i++) {
+		if (clothF[i] < 0.5) continue;
+		const a = angleOf(pos[i * 3], pos[i * 3 + 2]);
+		const k = Math.min(sectors - 1, Math.floor(((a + Math.PI) / (2 * Math.PI)) * sectors));
+		const j = Math.round(((hipsY - pos[i * 3 + 1]) / (hipsY - hemY)) * links);
+		radii[k][THREE.MathUtils.clamp(j, 0, links)].push(Math.hypot(pos[i * 3] - hp.x, pos[i * 3 + 2] - hp.z));
+	}
+	const allR = radii.flat(2);
+	const fallbackR = quant(allR, 0.5);
+	const chains = [];
+	const newBones = [], newInverses = [];
+	const R = mesh.matrixWorld.clone().multiply(mesh.bindMatrix.clone().invert());
+	const hipsInv = hipsW.clone().invert();
+	for (let k = 0; k < sectors; k++) {
+		const a = -Math.PI + ((k + 0.5) * 2 * Math.PI) / sectors;
+		const pts = [];
+		for (let j = 0; j <= links; j++) {
+			const r = radii[k][j].length >= 3 ? quant(radii[k][j], 0.5) : radii[k].flat().length ? quant(radii[k].flat(), 0.5) : fallbackR;
+			pts.push(new THREE.Vector3(hp.x + Math.sin(a) * r * (j === 0 ? 0.85 : 1), levelY(j), hp.z + Math.cos(a) * r * (j === 0 ? 0.85 : 1)));
+		}
+		const bones = [];
+		for (let j = 0; j < links; j++) {
+			const b = new THREE.Bone();
+			b.name = `cloth_${k}_${j}`;
+			hips.add(b);
+			hipsInv.clone().multiply(new THREE.Matrix4().makeTranslation(pts[j].x, pts[j].y, pts[j].z)).decompose(b.position, b.quaternion, b.scale);
+			b.updateMatrixWorld(true);
+			newBones.push(b);
+			newInverses.push(new THREE.Matrix4().makeTranslation(pts[j].x, pts[j].y, pts[j].z).invert().multiply(R));
+			bones.push(b);
+		}
+		chains.push({
+			angle: a, bones,
+			rest: pts.map((q) => q.clone().applyMatrix4(hipsInv)), // hips-local rest positions
+			restDir: pts.slice(0, -1).map((q, j) => pts[j + 1].clone().sub(q).normalize()),
+			len: pts.slice(0, -1).map((q, j) => pts[j + 1].distanceTo(q)),
+			p: pts.map((q) => q.clone()), prev: pts.map((q) => q.clone())
+		});
+	}
+	// Re-skin: cloth share f goes to the two nearest chains (by angle) on the link at the vertex's level,
+	// blended across link joints; the rest keeps the original weights.
+	const base = mesh.skeleton.bones.length;
+	const si = mesh.geometry.attributes.skinIndex, sw = mesh.geometry.attributes.skinWeight;
+	for (let i = 0; i < n; i++) {
+		const f = clothF[i];
+		if (!f) continue;
+		const m = new Map();
+		for (let q = 0; q < 4; q++) { const w = sw.getComponent(i, q); if (w > 0) m.set(si.getComponent(i, q), (m.get(si.getComponent(i, q)) ?? 0) + w * (1 - f)); }
+		const a = angleOf(pos[i * 3], pos[i * 3 + 2]);
+		const u = ((a + Math.PI) / (2 * Math.PI)) * sectors - 0.5;
+		const k0 = ((Math.floor(u) % sectors) + sectors) % sectors, k1 = (k0 + 1) % sectors, wa = u - Math.floor(u);
+		const t = THREE.MathUtils.clamp(((hipsY - pos[i * 3 + 1]) / (hipsY - hemY)) * links, 0, links - 1e-3);
+		const j = Math.floor(t), fr = t - j;
+		const linkW = [[j, 1]];
+		if (fr < 0.25 && j > 0) { linkW[0][1] = 0.5 + 2 * fr; linkW.push([j - 1, 1 - linkW[0][1]]); }
+		for (const [kk, aw] of [[k0, 1 - wa], [k1, wa]]) for (const [jj, lw] of linkW) {
+			const bi = base + kk * links + jj;
+			m.set(bi, (m.get(bi) ?? 0) + f * aw * lw);
+		}
+		const best = [...m.entries()].sort((x, y) => y[1] - x[1]).slice(0, 4);
+		const sum = best.reduce((acc, [, w]) => acc + w, 0) || 1;
+		while (best.length < 4) best.push([0, 0]);
+		si.setXYZW(i, best[0][0], best[1][0], best[2][0], best[3][0]);
+		sw.setXYZW(i, best[0][1] / sum, best[1][1] / sum, best[2][1] / sum, best[3][1] / sum);
+	}
+	si.needsUpdate = true; sw.needsUpdate = true;
+	const skeleton = new THREE.Skeleton([...mesh.skeleton.bones, ...newBones], [...mesh.skeleton.boneInverses, ...newInverses]);
+	for (const m of ch.skinned) m.bind(skeleton, m.bindMatrix);
+	ch.skeleton = skeleton;
+	ch.cloth = { chains, hips, legs, legR, legPad, hipsBindQ: new THREE.Quaternion().setFromRotationMatrix(hipsW), stiffness, damping, sectors, links, vertices: count };
+	return { chains: sectors, links, clothVertices: count, hemOfHeight: +((hipsY - hemY) / ch.height).toFixed(2) };
+}
+
+const _q = new THREE.Quaternion(), _qd = new THREE.Quaternion(), _w = new THREE.Matrix4(), _l = new THREE.Matrix4(), _s1 = new THREE.Vector3(1, 1, 1);
+export function resetCloth(ch) {
+	if (!ch.cloth) return;
+	ch.root.updateMatrixWorld(true);
+	for (const chn of ch.cloth.chains) chn.rest.forEach((r, j) => { const w = r.clone().applyMatrix4(ch.cloth.hips.matrixWorld); chn.p[j].copy(w); chn.prev[j].copy(w); });
+	applyCloth(ch);
+}
+
+export function stepCloth(ch, dt) {
+	const C = ch.cloth;
+	if (!C) return;
+	ch.root.updateMatrixWorld(true);
+	const sub = Math.max(1, Math.ceil(dt / (1 / 120)));
+	const h = dt / sub;
+	const g = 9.81 * h * h;
+	const hw = C.hips.matrixWorld;
+	const legSegs = C.legs.map((s) => {
+		const a = s.bone.getWorldPosition(V());
+		const kid = s.bone.children.find((k) => k.isBone && !k.name.startsWith('cloth_'));
+		const b = kid ? kid.getWorldPosition(V()) : a.clone();
+		return { line: new THREE.Line3(a, b), r: C.legPad * C.legR.get(s) };
+	});
+	const cp = V();
+	for (let it = 0; it < sub; it++) {
+		for (const chn of C.chains) {
+			chn.p[0].copy(chn.rest[0]).applyMatrix4(hw);
+			for (let j = 1; j < chn.p.length; j++) {
+				const cur = chn.p[j], prev = chn.prev[j];
+				const vx = (cur.x - prev.x) * C.damping, vy = (cur.y - prev.y) * C.damping, vz = (cur.z - prev.z) * C.damping;
+				prev.copy(cur);
+				cur.x += vx; cur.y += vy - g; cur.z += vz;
+				// Shape memory: pull toward the rest position carried by the hips.
+				const target = chn.rest[j].clone().applyMatrix4(hw);
+				cur.lerp(target, C.stiffness);
+			}
+			for (let pass = 0; pass < 3; pass++) {
+				for (let j = 0; j < chn.len.length; j++) {
+					const a = chn.p[j], b = chn.p[j + 1];
+					const d = b.clone().sub(a);
+					const dl = d.length() || 1e-6;
+					const corr = d.multiplyScalar((dl - chn.len[j]) / dl);
+					if (j === 0) b.sub(corr); else { a.addScaledVector(corr, 0.5); b.addScaledVector(corr, -0.5); }
+				}
+				for (let j = 1; j < chn.p.length; j++) for (const L of legSegs) {
+					L.line.closestPointToPoint(chn.p[j], true, cp);
+					const off = chn.p[j].clone().sub(cp);
+					const dist = off.length();
+					if (dist < L.r) chn.p[j].copy(cp).addScaledVector(dist > 1e-6 ? off.divideScalar(dist) : new THREE.Vector3(0, 0, 1), L.r);
+				}
+			}
+		}
+	}
+	applyCloth(ch);
+}
+
+function applyCloth(ch) {
+	const C = ch.cloth;
+	const hw = C.hips.matrixWorld;
+	const hipsQ = new THREE.Quaternion().setFromRotationMatrix(new THREE.Matrix4().extractRotation(hw));
+	const delta = hipsQ.clone().multiply(C.hipsBindQ.clone().invert());
+	const hwInv = hw.clone().invert();
+	for (const chn of C.chains) chn.bones.forEach((b, j) => {
+		const d = chn.p[j + 1].clone().sub(chn.p[j]).normalize();
+		const d0 = chn.restDir[j].clone().applyQuaternion(delta);
+		_q.setFromUnitVectors(d0, d).multiply(delta);
+		_w.compose(chn.p[j], _q, _s1);
+		_l.multiplyMatrices(hwInv, _w).decompose(b.position, b.quaternion, b.scale);
+		b.updateMatrixWorld(true);
+	});
+}
+
+// Play a clip to time t with the cloth simulated up to it (cloth needs history, unlike bones).
+export function clothSettle(ch, clip, t, preroll = 0.6) {
+	if (!ch.cloth) return;
+	const t0 = Math.max(0, t - preroll);
+	ch.mixer.setTime(t0);
+	resetCloth(ch);
+	for (let x = t0; x < t - 1e-6; x += 1 / 60) { ch.mixer.setTime(Math.min(t, x + 1 / 60)); stepCloth(ch, 1 / 60); }
 }
 
 // ---------------------------------------------------------------------------------------------

@@ -292,6 +292,50 @@
     "withinBudget": true
   },
   {
+    "name": "asha-neutral--anim-v1-combat",
+    "kind": "creature",
+    "budget": {
+      "tris": 15000,
+      "bytes": 2097152,
+      "tex": 1024
+    },
+    "raw": {
+      "triangles": 13671,
+      "bytes": 4088060,
+      "joints": 23,
+      "clips": [
+        "box_01",
+        "chop",
+        "defeat_02",
+        "front_kick_01",
+        "hit_to_head"
+      ],
+      "textures": [
+        "NormalGL 2048x2048 png",
+        "Color 2048x2048 jpeg",
+        "ORM 2048x2048 jpeg"
+      ]
+    },
+    "optimized": {
+      "triangles": 13671,
+      "bytes": 715436,
+      "joints": 23,
+      "clips": [
+        "box_01",
+        "chop",
+        "defeat_02",
+        "front_kick_01",
+        "hit_to_head"
+      ],
+      "textures": [
+        "NormalGL 1024x1024 webp",
+        "Color 1024x1024 webp",
+        "ORM 1024x1024 webp"
+      ]
+    },
+    "withinBudget": true
+  },
+  {
     "name": "asha-neutral--rig-biped",
     "kind": "creature",
     "budget": {
@@ -314,6 +358,38 @@
       "triangles": 13671,
       "bytes": 493748,
       "joints": 65,
+      "clips": [],
+      "textures": [
+        "NormalGL 1024x1024 webp",
+        "Color 1024x1024 webp",
+        "ORM 1024x1024 webp"
+      ]
+    },
+    "withinBudget": true
+  },
+  {
+    "name": "asha-neutral--rig-v1-mixamo",
+    "kind": "creature",
+    "budget": {
+      "tris": 15000,
+      "bytes": 2097152,
+      "tex": 1024
+    },
+    "raw": {
+      "triangles": 13671,
+      "bytes": 3767104,
+      "joints": 23,
+      "clips": [],
+      "textures": [
+        "NormalGL 2048x2048 png",
+        "Color 2048x2048 jpeg",
+        "ORM 2048x2048 jpeg"
+      ]
+    },
+    "optimized": {
+      "triangles": 13671,
+      "bytes": 475140,
+      "joints": 23,
       "clips": [],
       "textures": [
         "NormalGL 1024x1024 webp",

@@ -1,6 +1,6 @@
 {
- "note": "Tripo API tasks for Experiment 2b and the starting set (task ids and upload tokens omitted).",
- "totalCredits": 7205.0,
+ "note": "Tripo API tasks for Experiment 2b, the starting set and the combat-clip test (task ids and upload tokens omitted).",
+ "totalCredits": 7280.0,
  "tasks": [
   {
    "step": "sword--model",
@@ -2409,6 +2409,22 @@
    "credits_consumed": 10.0,
    "seconds": 10.9,
    "at": "2026-11-17T10:30:33"
+  },
+  {
+   "step": "asha-neutral--rig-v1-mixamo",
+   "endpoint": "/animations/rig",
+   "status": "success",
+   "credits_consumed": 25.0,
+   "seconds": 16.4,
+   "at": "2026-11-18T04:24:43"
+  },
+  {
+   "step": "asha-neutral--anim-v1-combat",
+   "endpoint": "/animations/retarget",
+   "status": "success",
+   "credits_consumed": 50.0,
+   "seconds": 46.7,
+   "at": "2026-11-18T04:25:30"
   }
  ]
 }

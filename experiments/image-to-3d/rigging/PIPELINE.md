@@ -31,7 +31,7 @@ the experiment that established all this is `REPORT-rigging.md`.
 | Neutral image | `image-to-image`, `seedream_v5`; `template: t_pose` for bipeds; body-plan prompt otherwise; hero prompts from the roster catalog | action poses are not riggable; T-pose rigs deform ~4× better |
 | Model | v3.1, texture + PBR, Smart Mesh; `face_limit` 10000 creatures, 2000 props | Smart Mesh counts quads (10000 → ~13.6k triangles) |
 | Rig | biped: `v3.0-20260909` + `spec: mixamo`; quadruped, avian, serpentine, hexapod, octopod: `v2.5-20260210`; others: `v3.0` | "others" only exists on v3.0; Mixamo names make clips and hit regions portable |
-| Clips | biped: idle, walk, run, slash, hurt, fall; quadruped/hexapod/octopod walk; serpentine march; avian and others none | the API has no other presets for those rigs |
+| Clips | biped: one shared library made on a donor rig (v3.0 presets: idle, walk, run, slash, hurt, fall; v1.0 presets for combat: chop, box, kick, hit reactions, defeat) and retargeted in world space to every humanoid; quadruped/hexapod/octopod walk; serpentine march; avian and others none | retargeted clips deform as well as each rig's own (walk 73% vs 77% on the golem); per-character presets become optional |
 | Import | auto facing from the skeleton; rebase clip position tracks onto the bind pose; report floating islands | API exports face ±X; non-biped exports sink without the rebase |
 
 Cost per subject: biped with clips 130, quadruped/hexapod/octopod/serpentine with clip 80, avian or
@@ -98,16 +98,37 @@ and clips run in parallel.
     credits, exactly the estimate. Images (one at a time, 22–85 s) are the bottleneck; give every subject
     its own thread so equipment models fill the model slots while creature images queue.
 
+21. **Cloth bones do not rescue fused robes.** Image-to-3D returns one shell where robe and trousers
+    share faces. Spring chains around the hips tore them in every setting tried (Asha's T-pose run:
+    100% → 169–707%; original-art run: 414% → 485–593%). A robe can only move independently once it is
+    a separate mesh (segment it off, hide the inner faces); until then, T-pose rigs are good enough
+    (≤200% on every clip). Cloth bones stay in the bench as an opt-in (`?cloth=1`).
+22. **v1.0 rigs carry the combat library.** `v1.0-20240301` accepts `spec: mixamo` and returns 23 bones
+    (no fingers), with 90+ presets. Five combat clips cost 75 credits including the rig and deform at
+    89–157% on their own rig.
+23. **World-space retargeting makes clips portable.** Replaying each bone's rotation relative to its own
+    rest pose, in the shared scene frame, moved the combat clips onto Asha, Wenyn, Kelan, the golem, the
+    goblin and the orc at 52–183%, and v3.0 walks onto other rigs as well as their own clips.
+    Rotations-only copying laid every character sideways.
+24. **Take rest from the bind pose.** The v1.0 export's default node pose has the arms turned about
+    180° from its bind pose; using the file's node pose as "rest" froze arms in a T.
+25. **Name clips exactly.** Matching names by substring made `hit_to_head` replace `hurt`; map only exact
+    preset names to bench roles.
+
 ## Backlog (next experiments)
 
-- Cloth bones for robes and skirts (spring bones around the hips, colliding with leg capsules).
-- v1.0 rig with combat presets (`chop`, `box_*`, `front_kick_*`, `hit_to_*`, `defeat_*`) on one hero, then
-  share across humanoids.
-- Hit regions for Tripo's quadruped names; geometry-based regions for birds and "others".
+- Robes as separate pieces: segment the robe off a T-pose model (Segment, 40 credits), hide the inner
+  faces, then drive it with the existing cloth bones (opt-in in the bench).
+- Grow the shared combat library: more v1.0 presets on the donor (10 credits each), one set for every
+  humanoid; check that two-handed weapon grips survive the retarget.
+- Hit regions for 6- and 8-legged chains (`2_`/`3_` limbs), and geometry-based regions for birds,
+  snakes and "others" (quadrupeds are done).
 - Per-family head mapping (golems: head bone sits above the head nub).
 - Fitting wearable armor (cuirass, legs, boots, robes) to the shared skeleton.
 - Spider and insect: try `others` rigs or hand-placed leg weights; a leg-aware ragdoll (thin capsules,
   stiffer limits) for many-legged bodies.
+- Storage: Cloudflare R2 bucket and `sync_r2.py` (needs owner-created keys; `notes/storage-and-scenes.md`).
+- Scenes: Hearth-01 kit test (~20 pieces, ~1,000 credits; `notes/storage-and-scenes.md`).
 - Owner: send `notes/tripo-license-question.md` to Tripo.
 
 ## Change log
@@ -118,3 +139,5 @@ and clips run in parallel.
   quick QA mode and QA summary; starting set (10 heroes, 30 monsters, 60 equipment) launched.
 - 2026-11-17: starting set done (7 heroes, 27 monsters, 57 equipment; 6,070 credits, 63 min). Retry pass
   rigs despite rig-check; quadruped hit regions; head-bone gate refined; one thread per subject.
+- 2026-11-18: cloth bones tested and kept opt-in (fused shells tear); v1.0 combat clips plus world-space
+  retarget make one clip library serve every humanoid; exact clip naming; storage and scenes plan.

@@ -74,7 +74,8 @@ for (const step of steps.sort()) {
 	const b = batchSubjects[name];
 	if (!SAMPLE[name] && !b) continue;
 	const [label, height] = SAMPLE[name] ?? [b.label, b.height];
-	const clipFiles = rigType === 'others' ? [] : steps.filter((x) => x.startsWith(`${name}-${arm}--anim-`)).sort().map((x) => hosted(x));
+	// Own preset clips only (<id>--anim-<n>); other clip sets (v1.0 combat) are attached as borrowed files.
+	const clipFiles = rigType === 'others' ? [] : steps.filter((x) => new RegExp(`^${name}-${arm}--anim-\\d+$`).test(x)).sort().map((x) => hosted(x));
 	const o = overrides[`${name}-${arm}${rigType === 'others' ? '-others' : ''}`] ?? {};
 	const src = arm === 'neutral' ? hosted(`${name}-${arm}--image`, 'generated_image_url.png') : `../work/sample/${name}__source.png`;
 	entries.push({ batch: b ? 'starting-set' : 'sample', kind2: b?.kind ?? null, id: `api/${name}-${arm}${rigType === 'others' && SAMPLE[name] ? '-others' : ''}`, label: `API · ${label} (${arm === 'neutral' ? 'neutral-pose image' : arm === 'set' ? 'set' : 'original art'}, ${rigType})`,
@@ -86,6 +87,16 @@ const ashaClips = entries.find((e) => e.id === 'api/asha-neutral')?.clipFiles;
 for (const id of ['api/golem-neutral', 'api/wenyn-neutral', 'api/kelan-neutral']) {
 	const e = entries.find((x) => x.id === id);
 	if (ashaClips && e) entries.push({ ...e, id: `share/${id.split('/')[1]}-asha-clips`, label: `Clip sharing · ${e.label.replace('API · ', '')} playing Asha's clips`, clipFiles: ashaClips });
+}
+// v1.0 combat clips (chop, punch, kick, hit to head, defeat): on their own v1.0 rig, and borrowed by v3.0 rigs.
+const combat = (await hostedOk('asha-neutral--anim-v1-combat')) ? [hosted('asha-neutral--anim-v1-combat')] : null;
+if (combat) {
+	const asha = entries.find((e) => e.id === 'api/asha-neutral');
+	entries.push({ ...asha, id: 'api/asha-neutral-v1', label: 'API · Asha, v1.0 rig (combat presets)', rigged: hosted('asha-neutral--rig-v1-mixamo'), clipFiles: combat, weapons: {} });
+	for (const id of ['api/asha-neutral', 'api/wenyn-neutral', 'api/kelan-neutral', 'api/golem-neutral', 'api/goblin-runt-neutral', 'api/orc-grunt-neutral']) {
+		const e = entries.find((x) => x.id === id);
+		if (e) entries.push({ ...e, id: `combat/${id.split('/')[1]}`, label: `Combat clips · ${e.label.replace('API · ', '')}`, clipFiles: [...(e.clipFiles ?? []), ...combat], clipsForeign: false, combatFiles: combat });
+	}
 }
 await writeFile(path.join(RIG, 'manifest.json'), JSON.stringify({ entries }, null, 2));
 console.log(`manifest: ${entries.length} entries`, entries.map((e) => e.id).join(', '));
