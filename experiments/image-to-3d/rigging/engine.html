@@ -79,7 +79,16 @@ async function load(id) {
 	window.__ready = false;
 	if (ch) ch.root.removeFromParent();
 	rag = null; weapon = null;
-	const entry = manifest.entries.find((e) => e.id === id);
+	const entry = manifest.entries.find((e) => e.id === id) ?? manifest.entries[0];
+	if (entry.id !== id) info(`No entry "${id}"; showing ${entry.label}`);
+	$('entry').value = entry.id;
+	if (!shot) {
+		const url = new URL(location.href);
+		url.searchParams.set('entry', entry.id);
+		history.replaceState(null, '', url);
+		// Embedded at summonlab.ai/rigging: let the host page keep its own link in step.
+		if (window.parent !== window) window.parent.postMessage({ type: 'rig-bench-entry', entry: entry.id }, '*');
+	}
 	ch = await E.loadCharacter(entry, '');
 	stage.scene.add(ch.root);
 	api.ch = ch;

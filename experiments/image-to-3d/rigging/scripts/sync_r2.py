@@ -3,7 +3,7 @@
   python rigging/scripts/sync_r2.py backup 3d [--dry-run] [--workers 16]
   python rigging/scripts/sync_r2.py backup lfs [--dry-run]
   python rigging/scripts/sync_r2.py verify 3d|lfs
-  python rigging/scripts/sync_r2.py publish static|art [--dry-run]
+  python rigging/scripts/sync_r2.py publish static|art|bench [--dry-run]
 
 Run with the tools env (`~/.local/opt/image-to-3d/tools-venv/bin/python`, which has boto3).
 
@@ -16,6 +16,10 @@ Publish sets (public bucket R2_BUCKET, the files the website loads when built wi
   static  apps/web/static/{runtime,wiki-media,hero-archive}, keyed by their URL path (`runtime/…`).
   art     every LFS file that a JSON catalog or manifest in the repository names (wiki originals),
           keyed by repository path (`assets/…`). Copied server-side from the masters bucket.
+  bench   a hosted copy of the rig test bench at `bench/rigging/index.html` (served at summonlab.ai/rigging):
+          the page with its import map pointed at pinned CDN builds of three and Rapier, `engine.js`, a
+          manifest of the Tripo API entries only (local-model baselines and Studio uploads stay private),
+          and every file those entries load, keyed by their path under experiments/image-to-3d.
 The public bucket mirrors the current tree: a changed file replaces its key, and nothing is deleted.
 
 Both backup sets go to the private masters bucket (R2_MASTERS_BUCKET). Keys mirror the repository path with the
@@ -127,7 +131,68 @@ def files_art() -> list[Path]:
     return [REPO / n for n in sorted(named)]
 
 
-PUBLISH = {"static": files_static, "art": files_art}
+BENCH_TOOLS = {"tripo-api"}
+MEDIA = (".glb", ".gltf", ".png", ".jpg", ".jpeg", ".webp")
+
+
+def files_bench() -> list[tuple[Path, str]]:
+    """Stage the hosted bench (page, engine, filtered manifest) and list every file it loads."""
+    pkg = lambda name: json.loads((EXP / "node_modules" / name / "package.json").read_text())["version"]
+    three, rapier = pkg("three"), pkg("@dimforge/rapier3d-compat")
+    cdn = "https://cdn.jsdelivr.net/npm"
+    page = (RIG / "engine.html").read_text()
+    local_map = ('"three": "../node_modules/three/build/three.module.js",\n'
+                 '\t"three/addons/": "../node_modules/three/examples/jsm/",\n'
+                 '\t"@dimforge/rapier3d-compat": "../node_modules/@dimforge/rapier3d-compat/rapier.mjs"')
+    if local_map not in page:
+        raise SystemExit("engine.html import map changed; update files_bench()")
+    page = page.replace(local_map, f'"three": "{cdn}/three@{three}/build/three.module.js",\n'
+                        f'\t"three/addons/": "{cdn}/three@{three}/examples/jsm/",\n'
+                        f'\t"@dimforge/rapier3d-compat": "{cdn}/@dimforge/rapier3d-compat@{rapier}/rapier.mjs"')
+    page = page.replace("<head>", '<head>\n<meta name="robots" content="noindex">', 1)
+
+    manifest = json.loads((RIG / "manifest.json").read_text())
+    kept, dropped, refs = [], [], set()
+    for entry in manifest["entries"]:
+        found: list[str] = []
+
+        def walk(o):
+            if isinstance(o, dict):
+                for v in o.values():
+                    walk(v)
+            elif isinstance(o, list):
+                for v in o:
+                    walk(v)
+            elif isinstance(o, str) and o.lower().endswith(MEDIA):
+                found.append(o)
+
+        walk(entry)
+        paths = [(RIG / f).resolve() for f in found]
+        if entry.get("tool") not in BENCH_TOOLS:
+            dropped.append(f"{entry['id']} ({entry.get('tool')})")
+            continue
+        missing = [f for f, q in zip(found, paths) if not q.exists()]
+        if missing and entry.get("source") in missing and len(missing) == 1:
+            entry["source"] = None  # the image panel is optional; the model still loads
+            paths = [q for q in paths if q.exists()]
+        elif missing:
+            dropped.append(f"{entry['id']} (missing {missing[0]})")
+            continue
+        kept.append(entry)
+        refs.update(paths)
+    print(f"  bench: {len(kept)} entries kept; left out: {', '.join(dropped) or 'none'}")
+
+    stage = EXP / "work" / "bench-site"
+    stage.mkdir(parents=True, exist_ok=True)
+    (stage / "index.html").write_text(page)
+    (stage / "manifest.json").write_text(json.dumps({**manifest, "entries": kept}, indent="\t") + "\n")
+    pairs = [(stage / "index.html", "bench/rigging/index.html"), (RIG / "engine.js", "bench/rigging/engine.js"),
+             (stage / "manifest.json", "bench/rigging/manifest.json")]
+    pairs += [(q, "bench/" + q.relative_to(EXP).as_posix()) for q in sorted(refs)]
+    return pairs
+
+
+PUBLISH = {"static": files_static, "art": files_art, "bench": files_bench}
 
 
 def public_key(name: str, path: Path) -> str:
@@ -135,6 +200,8 @@ def public_key(name: str, path: Path) -> str:
 
 
 def cache_control(key: str) -> str:
+    if key.startswith("bench/rigging/"):
+        return "public, max-age=300"
     return "public, max-age=31536000, immutable" if HASHED.search(key) else "public, max-age=3600"
 
 
@@ -281,19 +348,20 @@ def publish(a, vals: dict) -> None:
     if not bucket:
         raise SystemExit(f"R2_BUCKET missing in {KEYS}")
     t0 = time.time()
-    paths = PUBLISH[a.set]()
+    pairs = [item if isinstance(item, tuple) else (item, public_key(a.set, item)) for item in PUBLISH[a.set]()]
 
-    def one(path: Path) -> dict:
+    def one(pair: tuple[Path, str]) -> dict:
+        path, key = pair
         md5, sha = hashlib.md5(), hashlib.sha256()
         with path.open("rb") as f:
             while block := f.read(CHUNK):
                 md5.update(block)
                 sha.update(block)
-        return {"path": path.relative_to(REPO).as_posix(), "key": public_key(a.set, path),
+        return {"path": path.relative_to(REPO).as_posix(), "key": key,
                 "bytes": path.stat().st_size, "sha256": sha.hexdigest(), "md5": md5.hexdigest()}
 
     with ThreadPoolExecutor(a.workers) as pool:
-        entries = sorted(pool.map(one, paths), key=lambda e: e["key"])
+        entries = sorted(pool.map(one, pairs), key=lambda e: e["key"])
     pointers = [e["path"] for e in entries if e["bytes"] < 200 and (REPO / e["path"]).read_bytes().startswith(LFS_POINTER)]
     if pointers:
         raise SystemExit(f"{len(pointers)} LFS pointer(s) not downloaded locally, e.g. {pointers[0]}; run `git lfs pull`")

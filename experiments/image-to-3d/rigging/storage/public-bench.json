@@ -1,0 +1,635 @@
+{
+	"bucket": "summonlab-assets",
+	"keyRule": "static files at their URL path; repository art at its repository path",
+	"updated": "2026-11-19T13:32:53Z",
+	"files": {
+		"bench/rigging/engine.js": {
+			"bytes": 68796,
+			"sha256": "9287bc0f9dd4188ecfe15aedfa544afbdf4e81218fb0efb15ad01d0c4e8f042f"
+		},
+		"bench/rigging/index.html": {
+			"bytes": 10276,
+			"sha256": "6479782f888bb7810e87e82f7f008ae43c6a35362328a92d01f576e6062557f3"
+		},
+		"bench/rigging/manifest.json": {
+			"bytes": 60963,
+			"sha256": "8e786fde8a4f19ffcd85faca30b80d6445fb4fa21294b0c7c04f95f915a28644"
+		},
+		"bench/work/hosted/tripo/aear-soro-neutral--anim-0/model_url.glb": {
+			"bytes": 5427548,
+			"sha256": "599d77f0763eeb6b41e2b181d53cb61f914d6b64416d8717237f231e1ac10d34"
+		},
+		"bench/work/hosted/tripo/aear-soro-neutral--anim-1/model_url.glb": {
+			"bytes": 4437620,
+			"sha256": "15d355a5adfcbaaba273ccfe4ddc6e35abaf70a8e74042edcf8f6068a3ad3c76"
+		},
+		"bench/work/hosted/tripo/aear-soro-neutral--image/generated_image_url.png": {
+			"bytes": 289869,
+			"sha256": "79c30d663b1add66f4fa6c81e0b693175ae400ff7b2af7e5acfd585865e97c4b"
+		},
+		"bench/work/hosted/tripo/aear-soro-neutral--rig-biped/model_url.glb": {
+			"bytes": 4313916,
+			"sha256": "211ab826ccec38ba99dd9a5cfea530ef2c921330830b84db61961ac14926de7d"
+		},
+		"bench/work/hosted/tripo/arachnid-crawler-neutral--anim-0/model_url.glb": {
+			"bytes": 4284724,
+			"sha256": "2f3cf37b652cdce2dcef790ce8380676820b864ea071f8a9c677c069944cd271"
+		},
+		"bench/work/hosted/tripo/arachnid-crawler-neutral--image/generated_image_url.png": {
+			"bytes": 414341,
+			"sha256": "0b7918b2d883c7276cd9e03fa5b7658b775e97faf846368795afdc1ba5aab479"
+		},
+		"bench/work/hosted/tripo/arachnid-crawler-neutral--rig-octopod/model_url.glb": {
+			"bytes": 4257424,
+			"sha256": "2fbc3cf480f1443612cd704f3889b9e70089db993ffe2d3f5ef4d2d072ee3f9f"
+		},
+		"bench/work/hosted/tripo/armor-set--rig-biped/model_url.glb": {
+			"bytes": 3837364,
+			"sha256": "fe38a3d5845af20cc686bdbc58f5ef0da35ce4e962db4b221909183f180ce63f"
+		},
+		"bench/work/hosted/tripo/asha-neutral--anim-0/model_url.glb": {
+			"bytes": 4894980,
+			"sha256": "974f5aabd4f1d76255cf2accf35303e4759566d57312e8b8849ce30acb95b6dc"
+		},
+		"bench/work/hosted/tripo/asha-neutral--anim-1/model_url.glb": {
+			"bytes": 3905184,
+			"sha256": "42524aad76ccfc5e789d24f904bb1ff7aa7c4bba87633131da6f96dae7d2d168"
+		},
+		"bench/work/hosted/tripo/asha-neutral--anim-v1-combat/model_url.glb": {
+			"bytes": 4088060,
+			"sha256": "457833f4ea87ad0fd487e3a5cd17fc7611c119d67676221a4cd13e470a6ce3b5"
+		},
+		"bench/work/hosted/tripo/asha-neutral--image/generated_image_url.png": {
+			"bytes": 966496,
+			"sha256": "cf5897183fc15696a093d25a28063c21798cfd3184819399822720d5d422fb79"
+		},
+		"bench/work/hosted/tripo/asha-neutral--rig-biped/model_url.glb": {
+			"bytes": 3780996,
+			"sha256": "45290a4a950a963d7bb89e8cf1be2424a182e54ab80b5dcfe3e169816aa588b1"
+		},
+		"bench/work/hosted/tripo/asha-neutral--rig-v1-mixamo/model_url.glb": {
+			"bytes": 3767104,
+			"sha256": "4a9ff922e2507164d248f9b053988f40e0181918da2cd36a62abecc11c122242"
+		},
+		"bench/work/hosted/tripo/asha-original--anim-0/model_url.glb": {
+			"bytes": 4858868,
+			"sha256": "05fc1c68ac5a1f54e9d07405ec11925645aa4445d186af5df113534f7f40fe73"
+		},
+		"bench/work/hosted/tripo/asha-original--anim-1/model_url.glb": {
+			"bytes": 3867132,
+			"sha256": "83ea3d3525e3ad2308b95cddaad3aa9262571a6a08717c14e724caeb5bea7577"
+		},
+		"bench/work/hosted/tripo/asha-original--rig-biped/model_url.glb": {
+			"bytes": 3742932,
+			"sha256": "943931eb30acd7f8d3c2f639041279bd10ac43cde2239b4bcfb54ab0d933a95a"
+		},
+		"bench/work/hosted/tripo/bear-scrub-bear-neutral--anim-0/model_url.glb": {
+			"bytes": 4320016,
+			"sha256": "9389e8e9fdbeb9a09d2ba310172868c32adce0dbf6581f250c354d4126df0cfa"
+		},
+		"bench/work/hosted/tripo/bear-scrub-bear-neutral--image/generated_image_url.png": {
+			"bytes": 1123614,
+			"sha256": "798d1dd3425790a8f73d697b64688c6b9c7e4c2ac479feaa73185dd5bcc879fc"
+		},
+		"bench/work/hosted/tripo/bear-scrub-bear-neutral--rig-quadruped/model_url.glb": {
+			"bytes": 4292312,
+			"sha256": "c9f2211d968a3c5271a4a70dd36d9cf2111f123f97fd812cc3f110cb7db1ec63"
+		},
+		"bench/work/hosted/tripo/boar-bristle-hog-neutral--anim-0/model_url.glb": {
+			"bytes": 4125380,
+			"sha256": "356071d8143b36d8ba1755b27b93582b0c4bd68530c7e7a64eef6b6f94923259"
+		},
+		"bench/work/hosted/tripo/boar-bristle-hog-neutral--image/generated_image_url.png": {
+			"bytes": 1054061,
+			"sha256": "fd716b803ced5d03a7d77973ebee592b700ff76db2b3d61814290f99bb19a085"
+		},
+		"bench/work/hosted/tripo/boar-bristle-hog-neutral--rig-quadruped/model_url.glb": {
+			"bytes": 4090928,
+			"sha256": "64d05f4307b452295714987c89cc3702d3829a009fcbaaa54258ee12db427bd2"
+		},
+		"bench/work/hosted/tripo/burrower-soil-grub-neutral--anim-0/model_url.glb": {
+			"bytes": 4107780,
+			"sha256": "66d1d9d476131d726e1c5213aba929929e25a07e9a2b0180682a3afcb5eb58f8"
+		},
+		"bench/work/hosted/tripo/burrower-soil-grub-neutral--image/generated_image_url.png": {
+			"bytes": 947187,
+			"sha256": "358faaa07afb2aa448f68cf7c46605cb15a2cc0d505b821f60629de46daebe4c"
+		},
+		"bench/work/hosted/tripo/burrower-soil-grub-neutral--rig-serpentine/model_url.glb": {
+			"bytes": 4105100,
+			"sha256": "a495ba5fd7b31acd3eecff8e31467e5e8474861f0c5a41623b17a780ecd34e58"
+		},
+		"bench/work/hosted/tripo/crocodilian-mire-caiman-neutral--anim-0/model_url.glb": {
+			"bytes": 4777520,
+			"sha256": "1ac1f0db6f4db7345aa82f726ebcefd4ea953389c816a64972a883d9cdd85e83"
+		},
+		"bench/work/hosted/tripo/crocodilian-mire-caiman-neutral--image/generated_image_url.png": {
+			"bytes": 989635,
+			"sha256": "d3f0b0f2a7f36c70f1a32d266c612fd4d7f3c451c06ba1c20bfc1f3a9e3ae8bc"
+		},
+		"bench/work/hosted/tripo/crocodilian-mire-caiman-neutral--rig-quadruped/model_url.glb": {
+			"bytes": 4746960,
+			"sha256": "5797b915a8f98c79ae8adc933969a5d446c09cb9193b2f93c7d237966f9ead2a"
+		},
+		"bench/work/hosted/tripo/deep-one-fishman-neutral--anim-0/model_url.glb": {
+			"bytes": 5725376,
+			"sha256": "3dcc2fdc6a5c2341ba70fc3e28edb066be6cd25b5041c7d28701634bd05d8932"
+		},
+		"bench/work/hosted/tripo/deep-one-fishman-neutral--anim-1/model_url.glb": {
+			"bytes": 4735188,
+			"sha256": "13b675892b7450351c6ffa84ae5ed138843d47a01226db5c63c4359d7e19d203"
+		},
+		"bench/work/hosted/tripo/deep-one-fishman-neutral--image/generated_image_url.png": {
+			"bytes": 1031353,
+			"sha256": "79442a4702ecf4de9472bc6267413e72203312b074d9b2e36a82a7534a62d3b0"
+		},
+		"bench/work/hosted/tripo/deep-one-fishman-neutral--rig-biped/model_url.glb": {
+			"bytes": 4610612,
+			"sha256": "4ff01211b1e72d27a5ca1de2716d860ae991ea19671c508ead0def151e637ffc"
+		},
+		"bench/work/hosted/tripo/demon-imp-neutral--anim-0/model_url.glb": {
+			"bytes": 4554140,
+			"sha256": "34045fe453bcb3a128d0b7c1541060f9eb518fffd0c955688b6cb4cec9fbcd6b"
+		},
+		"bench/work/hosted/tripo/demon-imp-neutral--anim-1/model_url.glb": {
+			"bytes": 3564404,
+			"sha256": "524253fe23fbce27992acbfd2fdd8ad26d19e2ae23e57c11d3871baebad78c13"
+		},
+		"bench/work/hosted/tripo/demon-imp-neutral--image/generated_image_url.png": {
+			"bytes": 869067,
+			"sha256": "0b759e0a5f016c8ef3b14ac4938e315acfa204856b53f72521979c9fb6a2518d"
+		},
+		"bench/work/hosted/tripo/demon-imp-neutral--rig-biped/model_url.glb": {
+			"bytes": 3440732,
+			"sha256": "0355c50b26a1182ac39f9be724d050e9f58b330bc69a9c9f287aa3f7ac1bebb7"
+		},
+		"bench/work/hosted/tripo/dragon-whelp-neutral--anim-0/model_url.glb": {
+			"bytes": 4972304,
+			"sha256": "5fe31fa09a1c950a10a0857bcb138119e00fef984e8ec334c185b10a5402864a"
+		},
+		"bench/work/hosted/tripo/dragon-whelp-neutral--image/generated_image_url.png": {
+			"bytes": 1044706,
+			"sha256": "efaa27eacc6fe2e71ff4a4e1e7c408f9286e56d0c57765f71a0a64033c929a4e"
+		},
+		"bench/work/hosted/tripo/dragon-whelp-neutral--rig-quadruped/model_url.glb": {
+			"bytes": 4947316,
+			"sha256": "87991eec916d3b3b87996621ace857659ba152fb6af0ba83e1d688efa2033077"
+		},
+		"bench/work/hosted/tripo/elemental-wisp-neutral--image/generated_image_url.png": {
+			"bytes": 865266,
+			"sha256": "1df907de2d959e1abd8de3d70eac7df4053d189ef3da7dc87ac30f69998e72f1"
+		},
+		"bench/work/hosted/tripo/elemental-wisp-neutral--rig-others/model_url.glb": {
+			"bytes": 3782992,
+			"sha256": "3ebacfc0f6d64ff6743bed431c8f54c5c916d461ce937b1e55ce1d585bcac41b"
+		},
+		"bench/work/hosted/tripo/fungalfolk-sporeling-neutral--anim-0/model_url.glb": {
+			"bytes": 5531252,
+			"sha256": "2f9d8b76ebc108d31ba6d5526c84d80ed341ade7eba60fb6062a3fc54add31e5"
+		},
+		"bench/work/hosted/tripo/fungalfolk-sporeling-neutral--anim-1/model_url.glb": {
+			"bytes": 4540296,
+			"sha256": "a6003fd3c1c2bbbc8bafac639c3da98385c60b1ebf30d8fb198735160083f5d2"
+		},
+		"bench/work/hosted/tripo/fungalfolk-sporeling-neutral--image/generated_image_url.png": {
+			"bytes": 1011323,
+			"sha256": "fb5141a1564e41e492f4a505e2541fea0dbe6b1d75de77ec1f951e588c4965e3"
+		},
+		"bench/work/hosted/tripo/fungalfolk-sporeling-neutral--rig-biped/model_url.glb": {
+			"bytes": 4414744,
+			"sha256": "31a620833c59c07cefeafce015c30470d512b44483e7e2b18bc7d668952fb6b2"
+		},
+		"bench/work/hosted/tripo/gargoyle-grotesque-neutral--anim-0/model_url.glb": {
+			"bytes": 5330676,
+			"sha256": "2a1e944695453a9ee682129ed53ecfbb7415ed7a65ff12c8d865aebdd921f21a"
+		},
+		"bench/work/hosted/tripo/gargoyle-grotesque-neutral--anim-1/model_url.glb": {
+			"bytes": 4340968,
+			"sha256": "1f63f1956c9b8661df7a7db0ded873ba06bb797d231c893378e251afff38310a"
+		},
+		"bench/work/hosted/tripo/gargoyle-grotesque-neutral--image/generated_image_url.png": {
+			"bytes": 885505,
+			"sha256": "e53c810f4c4735fb573afeffdd961818f9315036fbdb3f145dff58e7a774ed7d"
+		},
+		"bench/work/hosted/tripo/gargoyle-grotesque-neutral--rig-biped/model_url.glb": {
+			"bytes": 4215684,
+			"sha256": "a866466225c9a297b6890d3ac593325890c623fe33fc8343d7bf1566c3916b6c"
+		},
+		"bench/work/hosted/tripo/giant-brute-neutral--anim-0/model_url.glb": {
+			"bytes": 5667384,
+			"sha256": "1d98e2f1c75b17d6e3b0e3e0e94f87f8f9b231398c0daf8b570b0bcf5e51748f"
+		},
+		"bench/work/hosted/tripo/giant-brute-neutral--anim-1/model_url.glb": {
+			"bytes": 4677492,
+			"sha256": "1e1db468476d6ff1bb3ed502b61e7737944dc08b64ecd978100bab9f7d6f4c78"
+		},
+		"bench/work/hosted/tripo/giant-brute-neutral--image/generated_image_url.png": {
+			"bytes": 949449,
+			"sha256": "382e233e8381ced2c1976968b0103bafb53377ac90b860b9736abc6b3d043998"
+		},
+		"bench/work/hosted/tripo/giant-brute-neutral--rig-biped/model_url.glb": {
+			"bytes": 4553196,
+			"sha256": "54e2df8234b6bae264d80b218cd5957e2713915976ca110113b3a12d39c6fa71"
+		},
+		"bench/work/hosted/tripo/goblin-runt-neutral--anim-0/model_url.glb": {
+			"bytes": 5610364,
+			"sha256": "97575dcd17c734e1269e309173fdb4fc100df4e0d180ad65c59d33089fb1c730"
+		},
+		"bench/work/hosted/tripo/goblin-runt-neutral--anim-1/model_url.glb": {
+			"bytes": 4618728,
+			"sha256": "bc3fd294404a0eb614cc23dee344bac67ce8b019f96bc9f08fe00348b334e47e"
+		},
+		"bench/work/hosted/tripo/goblin-runt-neutral--image/generated_image_url.png": {
+			"bytes": 928645,
+			"sha256": "ec4b92e42635f1861a2ae37b2386982178efb2363f7a075e1e9739111e206b66"
+		},
+		"bench/work/hosted/tripo/goblin-runt-neutral--rig-biped/model_url.glb": {
+			"bytes": 4494756,
+			"sha256": "ca3d5f2f7dadd3ff1999d310449c893648c166ef45d0867be98e984f16ece5e7"
+		},
+		"bench/work/hosted/tripo/golem-neutral--anim-0/model_url.glb": {
+			"bytes": 5564432,
+			"sha256": "59380b92a14aceabb14f17e5404a56318b2e5c06d16768353b166b6d422de6dd"
+		},
+		"bench/work/hosted/tripo/golem-neutral--anim-1/model_url.glb": {
+			"bytes": 4574372,
+			"sha256": "b8583263544413c370945a303f8fac4791f3a5a02b268fa24f8519d333ca57aa"
+		},
+		"bench/work/hosted/tripo/golem-neutral--image/generated_image_url.png": {
+			"bytes": 1041260,
+			"sha256": "b97b0b5ae2d22aedb8ed4b88791b26532d599fc4db5dbd5ca9fa35bb4d5e0cf8"
+		},
+		"bench/work/hosted/tripo/golem-neutral--rig-biped/model_url.glb": {
+			"bytes": 4450476,
+			"sha256": "95d85d2cd68bfe0018a82184f43a3c19f2af67e35cb8d67f36880bbd035d3d0b"
+		},
+		"bench/work/hosted/tripo/golem-neutral--rig-others/model_url.glb": {
+			"bytes": 4434888,
+			"sha256": "4c48a81edf9e9e59eea51d671b3b42c88d6062c39993d57040f0d4c519db94da"
+		},
+		"bench/work/hosted/tripo/great-cat-wildcat-neutral--anim-0/model_url.glb": {
+			"bytes": 5107748,
+			"sha256": "aa9cd49b54cc6b32fc45fe6ac062362008a5e36ed7cc0066e8fafb9631831adb"
+		},
+		"bench/work/hosted/tripo/great-cat-wildcat-neutral--image/generated_image_url.png": {
+			"bytes": 1033792,
+			"sha256": "586edfc7b5d56968025cab2b83bb1b836916c922b3ab419ff91ea36218bc0568"
+		},
+		"bench/work/hosted/tripo/great-cat-wildcat-neutral--rig-quadruped/model_url.glb": {
+			"bytes": 5076536,
+			"sha256": "893da2034047cb3f7560b9a5773743e8968c676d07b99b1ba5a7dea0519102d5"
+		},
+		"bench/work/hosted/tripo/harpy-screecher-neutral--anim-0/model_url.glb": {
+			"bytes": 5912900,
+			"sha256": "48d88089e4ca90e9fecfe5d1a0290d2264684cecee6ae9a178febb5653b7ee5c"
+		},
+		"bench/work/hosted/tripo/harpy-screecher-neutral--anim-1/model_url.glb": {
+			"bytes": 4924712,
+			"sha256": "0e9e4020a88166b151272883af35f2baea71e8d49e1fb8103f64395a08d3627e"
+		},
+		"bench/work/hosted/tripo/harpy-screecher-neutral--image/generated_image_url.png": {
+			"bytes": 906896,
+			"sha256": "3270c418ee52c13c8f23e1ffe347d37fc7fdd85f5b7afe88f7e080523c1452db"
+		},
+		"bench/work/hosted/tripo/harpy-screecher-neutral--rig-biped/model_url.glb": {
+			"bytes": 4799876,
+			"sha256": "29a38feeddcb6d3415919ce47cb5c76a869cb9de6ff20de7dbb7a8815a0aceaf"
+		},
+		"bench/work/hosted/tripo/hawk-neutral--image/generated_image_url.png": {
+			"bytes": 897680,
+			"sha256": "a3c8983d291f33a7480f3fa7e6b7fb47d1e4ee62b992d8b548535c4d2f3c94ee"
+		},
+		"bench/work/hosted/tripo/hawk-neutral--rig-avian/model_url.glb": {
+			"bytes": 5128840,
+			"sha256": "239acdd59e778098fe712dab58871fac83433336f3ec2508579cc53894afd835"
+		},
+		"bench/work/hosted/tripo/helmet--model/model_url.glb": {
+			"bytes": 3767076,
+			"sha256": "ab34224f6239a400f57ea0422c42cf404c570d31c55edbc48fe6d5fd4849f1eb"
+		},
+		"bench/work/hosted/tripo/iana-joro-neutral--anim-0/model_url.glb": {
+			"bytes": 5136560,
+			"sha256": "a36ef0549d65afdb10a59cd585e5fbccdb32b2203e18caf09a8e8a16f20a6e82"
+		},
+		"bench/work/hosted/tripo/iana-joro-neutral--anim-1/model_url.glb": {
+			"bytes": 4145904,
+			"sha256": "21341bf971aaa25bfa841a801d0404878e5828eaa145fe6c165393102a3920a2"
+		},
+		"bench/work/hosted/tripo/iana-joro-neutral--image/generated_image_url.png": {
+			"bytes": 904599,
+			"sha256": "8fc0d27adec80f75e139325a301dc1977321b968a30edd146e6784c9648bb743"
+		},
+		"bench/work/hosted/tripo/iana-joro-neutral--rig-biped/model_url.glb": {
+			"bytes": 4020900,
+			"sha256": "44febdef8b6bdb0388616588721693d2160cb491c225431f3102719833ec0f26"
+		},
+		"bench/work/hosted/tripo/insectoid-worker-neutral--anim-0/model_url.glb": {
+			"bytes": 4471900,
+			"sha256": "1cfb64754b61d9efb96c68061193337935aca4249e3ebefb090d71c1b3221e34"
+		},
+		"bench/work/hosted/tripo/insectoid-worker-neutral--image/generated_image_url.png": {
+			"bytes": 397018,
+			"sha256": "459230dfbda16b8e1edc1a439a141d406b102623edd6074f418da89936090e9d"
+		},
+		"bench/work/hosted/tripo/insectoid-worker-neutral--rig-hexapod/model_url.glb": {
+			"bytes": 4457252,
+			"sha256": "9fc81d7dbf472b2a27a60cd0250e929107b259bd09d22d62eb9711bc41e6f49a"
+		},
+		"bench/work/hosted/tripo/kelan-neutral--anim-0/model_url.glb": {
+			"bytes": 4870332,
+			"sha256": "32161cdd86e5e5530fad4748e86ee5ca6f8b994c331899b29905219f8752d2b7"
+		},
+		"bench/work/hosted/tripo/kelan-neutral--anim-1/model_url.glb": {
+			"bytes": 3879440,
+			"sha256": "f0b8793ad95f7c160dad2157095408187a520a9532bd66ad566c24543feb03d0"
+		},
+		"bench/work/hosted/tripo/kelan-neutral--image/generated_image_url.png": {
+			"bytes": 1014762,
+			"sha256": "ef0c7251e5815d55008357da509f7df6f921f38dc6d178dfaf0bf7d872d70c4e"
+		},
+		"bench/work/hosted/tripo/kelan-neutral--rig-biped/model_url.glb": {
+			"bytes": 3753372,
+			"sha256": "82a2b1b90b6d806d24b8bcd158f757d00f9c57054785f61fd8ed07d835a4e541"
+		},
+		"bench/work/hosted/tripo/lania-eshan-neutral--anim-0/model_url.glb": {
+			"bytes": 5000480,
+			"sha256": "4ccac45557e5efacb58e19d93e9af6f666bcf807f8da2d79e5a09301e7f88104"
+		},
+		"bench/work/hosted/tripo/lania-eshan-neutral--anim-1/model_url.glb": {
+			"bytes": 4009312,
+			"sha256": "edb8dc427c5fc9395509da1014894a8e748f8efbc073f53062281e1d068f87ae"
+		},
+		"bench/work/hosted/tripo/lania-eshan-neutral--image/generated_image_url.png": {
+			"bytes": 998574,
+			"sha256": "0ac9203eea98f387fba7747b2554d9c545f4404071474c8cbe599dbf7c8f5326"
+		},
+		"bench/work/hosted/tripo/lania-eshan-neutral--rig-biped/model_url.glb": {
+			"bytes": 3885264,
+			"sha256": "fdba3d000b43a2e9b985fa06c3bbc0a15867d335d240b6b28a8340bf444104ef"
+		},
+		"bench/work/hosted/tripo/lizardfolk-scout-neutral--anim-0/model_url.glb": {
+			"bytes": 5859064,
+			"sha256": "2b7dd6383befd0cf75fb96da195e1a759185d3ea79ed17227dfe0f52065388d0"
+		},
+		"bench/work/hosted/tripo/lizardfolk-scout-neutral--anim-1/model_url.glb": {
+			"bytes": 4868872,
+			"sha256": "4052330580d58df68b6337263d30bde5abdda4913586c5e33a1b80689d5480ea"
+		},
+		"bench/work/hosted/tripo/lizardfolk-scout-neutral--image/generated_image_url.png": {
+			"bytes": 959621,
+			"sha256": "573d7eecea3698acdb09a7085715f2b8dce659cd2565befc286c5051063dd4e9"
+		},
+		"bench/work/hosted/tripo/lizardfolk-scout-neutral--rig-biped/model_url.glb": {
+			"bytes": 4744368,
+			"sha256": "1b8924f50feeb85701e3164c0f4529b5a789a582b73e28b33da00ae0cecee5a7"
+		},
+		"bench/work/hosted/tripo/minotaur-bull-kin-neutral--anim-0/model_url.glb": {
+			"bytes": 5391600,
+			"sha256": "bbae985e3a2e7cbbe832063728018e79ec09f982f8c4bd88007b65d912e2d7bb"
+		},
+		"bench/work/hosted/tripo/minotaur-bull-kin-neutral--anim-1/model_url.glb": {
+			"bytes": 4400644,
+			"sha256": "9ecfc7f72a18dece9af61d4e55f5b87ddc78254a04667e8065be2a170878edce"
+		},
+		"bench/work/hosted/tripo/minotaur-bull-kin-neutral--image/generated_image_url.png": {
+			"bytes": 914019,
+			"sha256": "8d0de00e38b26ee2c77a98bbd4b7f8128a43cee9c7209a9aa24c1a08795f7d77"
+		},
+		"bench/work/hosted/tripo/minotaur-bull-kin-neutral--rig-biped/model_url.glb": {
+			"bytes": 4276612,
+			"sha256": "97f9fb0779725a69060324e1dfc2aa67703e4c36d0cfdc3d3c10cecacae96ba6"
+		},
+		"bench/work/hosted/tripo/mummy-husk-neutral--anim-0/model_url.glb": {
+			"bytes": 5730768,
+			"sha256": "e18df1cf185ecbf16246fcd4e4089c9c4d242c279f5a37fb7493c7da90e5b0c6"
+		},
+		"bench/work/hosted/tripo/mummy-husk-neutral--anim-1/model_url.glb": {
+			"bytes": 4739692,
+			"sha256": "9a4507274b358a0cda387dafbd2e3f80c084f05095297ed14bba212cf70324fd"
+		},
+		"bench/work/hosted/tripo/mummy-husk-neutral--image/generated_image_url.png": {
+			"bytes": 1000830,
+			"sha256": "1a34580c1e1481857b150ee3cb8af6db8c2b5ec9380db8e4e9d14e48a71ae5d3"
+		},
+		"bench/work/hosted/tripo/mummy-husk-neutral--rig-biped/model_url.glb": {
+			"bytes": 4616656,
+			"sha256": "a70bcd61f82de1be736aa913bf49a2aada04372ab71573a424b157ae17a40a36"
+		},
+		"bench/work/hosted/tripo/oran-keshi-neutral--anim-0/model_url.glb": {
+			"bytes": 5096104,
+			"sha256": "edd10efc273fb4d910b5bbeb3d0ff033c28b39bed144bde73669666c53701ac4"
+		},
+		"bench/work/hosted/tripo/oran-keshi-neutral--anim-1/model_url.glb": {
+			"bytes": 4104604,
+			"sha256": "0a7f98f213b1650650d75ae54b026279ffefb21eef5284366b4ae44bac213a55"
+		},
+		"bench/work/hosted/tripo/oran-keshi-neutral--image/generated_image_url.png": {
+			"bytes": 281987,
+			"sha256": "34eb2d3bb8b2188fe908e5d23ac7c09e6f80cf9808856eacce6363c79898d7ae"
+		},
+		"bench/work/hosted/tripo/oran-keshi-neutral--rig-biped/model_url.glb": {
+			"bytes": 3979676,
+			"sha256": "692d61649bbc38355819b4fb74c929af98ef7d48686d57f8006270f4fa476293"
+		},
+		"bench/work/hosted/tripo/orc-grunt-neutral--anim-0/model_url.glb": {
+			"bytes": 5499252,
+			"sha256": "19539f8c9172528b02dbcfc21043e2e8236362b41dd0c7675d1d3947c527e52d"
+		},
+		"bench/work/hosted/tripo/orc-grunt-neutral--anim-1/model_url.glb": {
+			"bytes": 4509468,
+			"sha256": "bb17fa1c1d3b24a2afdcf9080eca464308663a74a99b873e465d176b843c955e"
+		},
+		"bench/work/hosted/tripo/orc-grunt-neutral--image/generated_image_url.png": {
+			"bytes": 949061,
+			"sha256": "ee5c0c3895dc5dc0afb37eb6b417beb08ac36c8502617d2fa7340b008569afd8"
+		},
+		"bench/work/hosted/tripo/orc-grunt-neutral--rig-biped/model_url.glb": {
+			"bytes": 4384816,
+			"sha256": "50f25395435e6192edf4752c57e662473044bbb10b284f68ce9ff8218a92f4a3"
+		},
+		"bench/work/hosted/tripo/rao-falin-neutral--anim-0/model_url.glb": {
+			"bytes": 4908444,
+			"sha256": "f7d010d2a609efb33f6e0cbdee9c16fc158d1a5ec885f2b75a5f779e0615b600"
+		},
+		"bench/work/hosted/tripo/rao-falin-neutral--anim-1/model_url.glb": {
+			"bytes": 3918796,
+			"sha256": "7a39aaab44b65986a5efa58988e488cc4256c3433e6e1e11f22a58371fc931cf"
+		},
+		"bench/work/hosted/tripo/rao-falin-neutral--image/generated_image_url.png": {
+			"bytes": 974550,
+			"sha256": "a1165d73c617ea179b2b6caf4648284e35c0e68f2eef2b296f886966ee0e66bc"
+		},
+		"bench/work/hosted/tripo/rao-falin-neutral--rig-biped/model_url.glb": {
+			"bytes": 3794336,
+			"sha256": "707d7a8093b1b4c9b15d51d0c91238c10d1d479cf1bcc854f9283470c054f801"
+		},
+		"bench/work/hosted/tripo/raptor-night-owl-neutral--image/generated_image_url.png": {
+			"bytes": 976180,
+			"sha256": "3feec2a200375c35c2dab4c5d5d35e5e74a8ea4acae1205113d187f490246375"
+		},
+		"bench/work/hosted/tripo/raptor-night-owl-neutral--rig-avian/model_url.glb": {
+			"bytes": 5448592,
+			"sha256": "81ac646a74017f406ec77c0c95ace78b174877370f3d1fe08686f100498b0acd"
+		},
+		"bench/work/hosted/tripo/rotwalker-shambler-neutral--anim-0/model_url.glb": {
+			"bytes": 6370468,
+			"sha256": "5256ee3a5a8e6e82a6ebe8667fba7433bd3fd403a722ea7d2753d58b4c81b80e"
+		},
+		"bench/work/hosted/tripo/rotwalker-shambler-neutral--anim-1/model_url.glb": {
+			"bytes": 5379432,
+			"sha256": "6284332679703d74767c384335f6ae343d73c10ca45a7ea7c8ee99f7f49accda"
+		},
+		"bench/work/hosted/tripo/rotwalker-shambler-neutral--image/generated_image_url.png": {
+			"bytes": 384179,
+			"sha256": "a8bdd28aa868ac4d147f4a17dc61a82fede14e248400057f8787a53fb98230d3"
+		},
+		"bench/work/hosted/tripo/rotwalker-shambler-neutral--rig-biped/model_url.glb": {
+			"bytes": 5254856,
+			"sha256": "1212b9e49d5ae8039a0ee85afc1bbb452fdcb33311dc68ffbb0b3c2a63152711"
+		},
+		"bench/work/hosted/tripo/senia-lorel-neutral--anim-0/model_url.glb": {
+			"bytes": 5371724,
+			"sha256": "8f8f6405deb3004a23719efa6be9da6da7772dbab506530026aa6a9576e13be0"
+		},
+		"bench/work/hosted/tripo/senia-lorel-neutral--anim-1/model_url.glb": {
+			"bytes": 4379652,
+			"sha256": "dc7cc9a7334354a5c5b04d078563f20390315c888d6c6cc260e1b1cb37122d89"
+		},
+		"bench/work/hosted/tripo/senia-lorel-neutral--image/generated_image_url.png": {
+			"bytes": 325468,
+			"sha256": "fdf3e8c8c0d39777cc51d75d63b4ef5a9ab27c8bc5ba2b0d04d63d4ddcb2ff6a"
+		},
+		"bench/work/hosted/tripo/senia-lorel-neutral--rig-biped/model_url.glb": {
+			"bytes": 4254752,
+			"sha256": "c80e330bd063c0273996288d1ae041837ccdfdfad591ec90be53dba995427c83"
+		},
+		"bench/work/hosted/tripo/serpent-adder-neutral--anim-0/model_url.glb": {
+			"bytes": 5882988,
+			"sha256": "9f39e306270f26341917923d51e8cbd6222bf8779a7c604210db6b36ac22ef33"
+		},
+		"bench/work/hosted/tripo/serpent-adder-neutral--image/generated_image_url.png": {
+			"bytes": 1038527,
+			"sha256": "cbac2f18d541fb2b75f54a21345550d338df8f274088198a9024eaa8ed042401"
+		},
+		"bench/work/hosted/tripo/serpent-adder-neutral--rig-serpentine/model_url.glb": {
+			"bytes": 5879564,
+			"sha256": "800e740cc245596c89d705d53f054f8ec8a3ca6abced6044641b9211d05b4d93"
+		},
+		"bench/work/hosted/tripo/shield--model/model_url.glb": {
+			"bytes": 3812748,
+			"sha256": "e8e98c3edf8927b2b78c92974faaeb3b4fb77227fa3b612ba2171626d20ea16e"
+		},
+		"bench/work/hosted/tripo/skeleton-rattler-neutral--anim-0/model_url.glb": {
+			"bytes": 5373316,
+			"sha256": "28790ad8f419db4a1f2b4d005acf3543381d83c0c2c1ae7f0fda2c89ee2928cd"
+		},
+		"bench/work/hosted/tripo/skeleton-rattler-neutral--anim-1/model_url.glb": {
+			"bytes": 4381092,
+			"sha256": "f94c9cd575048806925ad566ade51e47b2a5803b792e239a73ba2b33a107a7b6"
+		},
+		"bench/work/hosted/tripo/skeleton-rattler-neutral--image/generated_image_url.png": {
+			"bytes": 923488,
+			"sha256": "42ae1a320ad9747c0b64352eeb680f9ccbb7390d0cd264fd550f079a7a84c18b"
+		},
+		"bench/work/hosted/tripo/skeleton-rattler-neutral--rig-biped/model_url.glb": {
+			"bytes": 4257248,
+			"sha256": "2bc261fa81e2e3cc4318b0586869389540ff5bd4de2910aaad7078a0d1ef8445"
+		},
+		"bench/work/hosted/tripo/slime-blob-neutral--image/generated_image_url.png": {
+			"bytes": 381452,
+			"sha256": "c8687b5d1ba48b8f15439eb9b52c70270355f425c121f90600874b1e5e4a00fc"
+		},
+		"bench/work/hosted/tripo/slime-blob-neutral--rig-others/model_url.glb": {
+			"bytes": 4413832,
+			"sha256": "938ca2e7a772f74835773f51b6a6854a145ff62db2b34436ce95140e083ea7ff"
+		},
+		"bench/work/hosted/tripo/sword--model/model_url.glb": {
+			"bytes": 4754584,
+			"sha256": "76264e964027d446deeea75eee636ce3565eb413f2a7425ae86758e7c8d3abfc"
+		},
+		"bench/work/hosted/tripo/talar-morai-neutral--anim-0/model_url.glb": {
+			"bytes": 5240332,
+			"sha256": "4f5fc0f33ab51aa5d15289bdf6a40d2b5b42476a5b0ab6c584eb994ac4c318fb"
+		},
+		"bench/work/hosted/tripo/talar-morai-neutral--anim-1/model_url.glb": {
+			"bytes": 4250272,
+			"sha256": "261e859f9cedbd7e517efe82dd1c5783f812da53bdd4eab1dcd5f51d04d590cc"
+		},
+		"bench/work/hosted/tripo/talar-morai-neutral--image/generated_image_url.png": {
+			"bytes": 291238,
+			"sha256": "6dbf6ac366218145af6889d402131a110d019c7778b1eced2b7e3b283de6ffff"
+		},
+		"bench/work/hosted/tripo/talar-morai-neutral--rig-biped/model_url.glb": {
+			"bytes": 4125764,
+			"sha256": "8b4a1c378080fadbe35a8095da0045537c83ba78d74995f7530dddf6c7442562"
+		},
+		"bench/work/hosted/tripo/troll-scrag-neutral--anim-0/model_url.glb": {
+			"bytes": 6015812,
+			"sha256": "d1a755b8f4a4c947f84020afe6d40d468b49928768e8e071f009d2dd8c0e515c"
+		},
+		"bench/work/hosted/tripo/troll-scrag-neutral--anim-1/model_url.glb": {
+			"bytes": 5025376,
+			"sha256": "5d2119423cec9e6f6a7087e3b747f2c92b01d6ec04e1402b3c504617da5ccb81"
+		},
+		"bench/work/hosted/tripo/troll-scrag-neutral--image/generated_image_url.png": {
+			"bytes": 277804,
+			"sha256": "9913e4a74d28f60740b2e3f2d078a34ec511cb5827bd23be4e42ed171c2a9464"
+		},
+		"bench/work/hosted/tripo/troll-scrag-neutral--rig-biped/model_url.glb": {
+			"bytes": 4900420,
+			"sha256": "f8065457d0267640db2e7f96fcffebe4f8681caefe4d6c1f2571ec3f4908f6d5"
+		},
+		"bench/work/hosted/tripo/wenyn-neutral--anim-0/model_url.glb": {
+			"bytes": 5344768,
+			"sha256": "8e1d888c901dab31150bfd82ebb0e546f4232015638acfb05a61d7979fdc2b36"
+		},
+		"bench/work/hosted/tripo/wenyn-neutral--anim-1/model_url.glb": {
+			"bytes": 4354588,
+			"sha256": "8b5c08b23d2995c255e05d7fb35b916e168eaa88824b206ff5e407ba1f44ab8f"
+		},
+		"bench/work/hosted/tripo/wenyn-neutral--image/generated_image_url.png": {
+			"bytes": 1015976,
+			"sha256": "f2cd9b6cc502c0995b66b56b8bf024c305333a7051287aed61f4b27c77164c08"
+		},
+		"bench/work/hosted/tripo/wenyn-neutral--rig-biped/model_url.glb": {
+			"bytes": 4230084,
+			"sha256": "5b0744f1b7572c20b85ad894d26f16082c0ae13fefc916300f9ed1e6170b3d0f"
+		},
+		"bench/work/hosted/tripo/werebeast-afflicted-neutral--anim-0/model_url.glb": {
+			"bytes": 5531336,
+			"sha256": "67c64b0c70536165049f1af2efafad994ee315ca3949362845aaa2606d6d8b2b"
+		},
+		"bench/work/hosted/tripo/werebeast-afflicted-neutral--anim-1/model_url.glb": {
+			"bytes": 4540284,
+			"sha256": "73cf6cd2d9bcfcdc15e385d4f496cd8040c48598602dd48bb39e042c94a5017b"
+		},
+		"bench/work/hosted/tripo/werebeast-afflicted-neutral--image/generated_image_url.png": {
+			"bytes": 947553,
+			"sha256": "fd5ef151394a816574170692a6eabdee217eafed7f0ca0e6921cc414f6b0f317"
+		},
+		"bench/work/hosted/tripo/werebeast-afflicted-neutral--rig-biped/model_url.glb": {
+			"bytes": 4415608,
+			"sha256": "47aeb494b386f3aac6c0995585d0312dbece144e97c88d55120d7ca0ae973008"
+		},
+		"bench/work/hosted/tripo/wolf-neutral--anim-0/model_url.glb": {
+			"bytes": 4864404,
+			"sha256": "5340cb62b4b427f0814a27b03b362957e616bf92702c2ee17bad0ac62dbef0ee"
+		},
+		"bench/work/hosted/tripo/wolf-neutral--image/generated_image_url.png": {
+			"bytes": 1091794,
+			"sha256": "46d4c0bae87ac058ffa89cc4bdbaec9ee14c6a2342d5fbf390722a40e87b69c3"
+		},
+		"bench/work/hosted/tripo/wolf-neutral--rig-quadruped/model_url.glb": {
+			"bytes": 4828148,
+			"sha256": "e7d98b31ec7d33bb41b7388260a0d7340ab241670381d86ab0e6965b1278a850"
+		},
+		"bench/work/models/hunyuan3d/iron-shield/optimized.glb": {
+			"bytes": 64096,
+			"sha256": "1692e2ff170c81a5586be475d2f466ca8b76faf89239ed8802101c791e9d1d0d"
+		},
+		"bench/work/sample/asha__source.png": {
+			"bytes": 2068937,
+			"sha256": "7fdbb28577e762debf61f5d1db265b86295dbdf0f308e686f95fed6e27c7bf42"
+		}
+	}
+}

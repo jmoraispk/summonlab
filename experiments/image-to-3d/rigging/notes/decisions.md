@@ -35,3 +35,5 @@ Durable owner answers, so later turns do not rediscover them.
 | 2026-11-18 | Point the website at the bucket instead of the repository and GitHub. | done on branch `claude/r2-asset-urls` (off until `VITE_ASSET_BASE` is set in Vercel); site images and catalog art published and verified |
 | 2026-11-19 | Merge the asset-URL switch once CI is green. | done: jmoraispk/summonlab#1 merged; `assets.<domain>` serves files with CORS; waiting on `VITE_ASSET_BASE` in Vercel |
 | 2026-11-19 | Switch the live site to the bucket (`VITE_ASSET_BASE` set in Vercel by the owner). | done: live pages load every image from `assets.summonlab.ai` (547 requests, no failures) |
+| 2026-11-19 | Put the rigging bench on the website (summonlab.ai/rigging). | done: hosted copy in the public bucket (Tripo API entries only); page on branch `claude/rigging-page` |
+| 2026-11-19 | A minimap for Threefold (top right, colored markers, legend, zoom) and 2–3 Apron concept images later. | running: Threefold sessions `minimap` and `apron-scene` |

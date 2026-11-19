@@ -177,3 +177,7 @@ and clips run in parallel.
   LFS file (2,262 files, 4.82 GB) to the private bucket, all read back and verified.
 - 2026-11-18: public bucket filled (3,086 site images and 2,244 catalog-named LFS originals, verified);
   `sync_r2.py publish`; the site's asset-URL switch is on branch `claude/r2-asset-urls`.
+- 2026-11-19: hosted bench: `sync_r2.py publish bench` puts the page (import map on pinned CDN builds of
+  three 0.180.0 and Rapier 0.19.3), `engine.js`, a manifest of the 53 Tripo API entries and their 157 files
+  (557 MB) at `bench/` in the public bucket, for summonlab.ai/rigging. Local-model baselines and Studio
+  uploads stay private. The bench now keeps the picker and `?entry=` link in step with the loaded entry.
