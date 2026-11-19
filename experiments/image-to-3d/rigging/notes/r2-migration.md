@@ -43,10 +43,9 @@ Git LFS.
 1. **Account.** Sign in to Cloudflare (Free plan) and open R2 Object Storage. Cloudflare asks for a
    payment method to turn on R2, even within the free allowance.
 2. **Domain for the public bucket.** Production needs a custom domain, such as `assets.<your-domain>`,
-   whose DNS is on Cloudflare in the same account. If the domain is elsewhere, add it to Cloudflare
-   (Free plan: change the nameservers at the registrar, then recreate the existing records, keeping
-   Vercel's records "DNS only"). A dedicated domain from Cloudflare Registrar also works. Without a domain,
-   the bucket's `r2.dev` URL works for testing only: it is rate-limited and uncached.
+   whose DNS is on Cloudflare in the same account. Without a domain, the bucket's `r2.dev` URL works for
+   testing only: it is rate-limited and uncached. The project domain's DNS is on GoDaddy (checked
+   2026-11-18), so it moves first; see "Moving the domain's DNS to Cloudflare" below.
 3. **Buckets.** Create `summonlab-assets` and `summonlab-masters`: location Automatic, storage class
    Standard (the free allowance covers Standard only).
 4. **Public access, `summonlab-assets` only.** Settings → Custom Domains → connect `assets.<your-domain>`.
@@ -92,6 +91,33 @@ Git LFS.
 9. **Later, at phase 2:** add `PUBLIC_ASSET_BASE` (the same public URL; not a secret) to the Vercel project
    (Production and Preview) and as a GitHub Actions variable for the wiki workflow. CI needs no R2
    secrets in this plan.
+
+## Moving the domain's DNS to Cloudflare
+
+Checked 2026-11-18: GoDaddy is both registrar and DNS host (`ns77`/`ns78.domaincontrol.com`), DNSSEC is
+off, and there is no email (no MX). Only the nameservers move; the registration stays at GoDaddy. Because
+Cloudflare serves the same records, the site keeps working throughout.
+
+| Record | Name             | Value                          | On Cloudflare                   |
+| ------ | ---------------- | ------------------------------ | ------------------------------- |
+| A      | `@`              | `216.198.79.1` (Vercel)        | keep, **DNS only** (gray cloud) |
+| CNAME  | `www`            | the apex                       | keep, **DNS only**              |
+| TXT    | `_dmarc`         | GoDaddy's default DMARC policy | keep                            |
+| CNAME  | `_domainconnect` | GoDaddy's Domain Connect       | delete (GoDaddy-only)           |
+
+1. **Cloudflare:** Account home → Add a domain → enter the domain → quick scan for DNS records → Free plan.
+2. **Review the imported records** against the table. Cloudflare proxies imported A and CNAME records
+   by default (orange cloud); switch both to DNS only, since Vercel serves its own certificates and CDN.
+   Delete `_domainconnect`.
+3. **Copy the two nameservers** Cloudflare assigns (`<name>.ns.cloudflare.com`; unique per account).
+4. **GoDaddy:** Domain Portfolio → the domain → DNS → Nameservers → Change nameservers → "I'll use my own
+   nameservers" → enter both Cloudflare nameservers → Save and confirm. If GoDaddy refuses because of the
+   domain lock, turn Domain Lock off, change the nameservers, then turn it back on.
+5. **Wait for "Active".** Cloudflare emails when it sees the change, usually within an hour and at most
+   a day or two; "Check nameservers now" speeds it up. Nothing changes on Vercel.
+6. **Then** connect `assets.<your-domain>` to `summonlab-assets` (step 4 of the setup); Cloudflare creates
+   that record and its certificate itself.
+7. **Optional, later:** turn on DNSSEC in Cloudflare and add the DS record it shows at GoDaddy.
 
 ## Phases (each one reversible until the last)
 
