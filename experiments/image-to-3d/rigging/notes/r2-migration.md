@@ -126,7 +126,9 @@ Cloudflare serves the same records, the site keeps working throughout.
 1. **Back up (copy only). Done 2026-11-18:** `sync_r2.py` uploaded 829 3D files (1.18 GB) and 2,262 LFS
    files (4.82 GB) to `summonlab-masters` and read every one back to check its hash; manifests in
    `rigging/storage/`. GitHub is unchanged. Re-run `sync_r2.py backup 3d` after each batch.
-2. **Serve from R2. Uploaded and coded 2026-11-18; switched on when the domain is live.**
+2. **Serve from R2. Uploaded, merged (jmoraispk/summonlab#1, 2026-11-19) and the domain is live with
+   any-origin CORS; images cache at Cloudflare (MISS then HIT). Left: set `VITE_ASSET_BASE` in Vercel and
+   redeploy.**
    `sync_r2.py publish static` mirrored `apps/web/static/{runtime,wiki-media,hero-archive}` (3,086 files,
    174 MB) and `publish art` the 2,244 LFS files that repository catalogs name (4.8 GB, copied
    server-side from the masters bucket) to `summonlab-assets`, all read back and verified. Branch
