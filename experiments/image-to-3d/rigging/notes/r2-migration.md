@@ -98,17 +98,19 @@ Checked 2026-11-18: GoDaddy is both registrar and DNS host (`ns77`/`ns78.domainc
 off, and there is no email (no MX). Only the nameservers move; the registration stays at GoDaddy. Because
 Cloudflare serves the same records, the site keeps working throughout.
 
-| Record | Name             | Value                          | On Cloudflare                   |
-| ------ | ---------------- | ------------------------------ | ------------------------------- |
-| A      | `@`              | `216.198.79.1` (Vercel)        | keep, **DNS only** (gray cloud) |
-| CNAME  | `www`            | the apex                       | keep, **DNS only**              |
-| TXT    | `_dmarc`         | GoDaddy's default DMARC policy | keep                            |
-| CNAME  | `_domainconnect` | GoDaddy's Domain Connect       | delete (GoDaddy-only)           |
+| Record | Name             | Value                          | On Cloudflare                        |
+| ------ | ---------------- | ------------------------------ | ------------------------------------ |
+| A      | `@`              | `216.198.79.1` (Vercel)        | keep, **DNS only** (gray cloud)      |
+| CNAME  | `www`            | the apex                       | keep, **DNS only**                   |
+| CNAME  | `pay`            | GoDaddy payment links          | keep, **DNS only**; delete if unused |
+| TXT    | `_dmarc`         | GoDaddy's default DMARC policy | keep                                 |
+| CNAME  | `_domainconnect` | GoDaddy's Domain Connect       | delete (GoDaddy-only)                |
 
 1. **Cloudflare:** Account home → Add a domain → enter the domain → quick scan for DNS records → Free plan.
 2. **Review the imported records** against the table. Cloudflare proxies imported A and CNAME records
-   by default (orange cloud); switch both to DNS only, since Vercel serves its own certificates and CDN.
-   Delete `_domainconnect`.
+   by default (orange cloud); switch them to DNS only, since Vercel and GoDaddy serve their own
+   certificates. Delete `_domainconnect`. GoDaddy's NS and SOA records are not copied: Cloudflare supplies
+   its own. The owner's review (2026-11-18) found the scan complete; my earlier lookup had missed `pay`.
 3. **Copy the two nameservers** Cloudflare assigns (`<name>.ns.cloudflare.com`; unique per account).
 4. **GoDaddy:** Domain Portfolio → the domain → DNS → Nameservers → Change nameservers → "I'll use my own
    nameservers" → enter both Cloudflare nameservers → Save and confirm. If GoDaddy refuses because of the
