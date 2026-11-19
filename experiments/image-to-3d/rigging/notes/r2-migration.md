@@ -123,8 +123,9 @@ Cloudflare serves the same records, the site keeps working throughout.
 
 ## Phases (each one reversible until the last)
 
-1. **Back up (copy only).** `sync_r2.py` uploads the Tripo masters and every LFS file to
-   `summonlab-masters`, writes a manifest, then re-downloads and checks every hash. GitHub is unchanged.
+1. **Back up (copy only). Done 2026-11-18:** `sync_r2.py` uploaded 829 3D files (1.18 GB) and 2,262 LFS
+   files (4.82 GB) to `summonlab-masters` and read every one back to check its hash; manifests in
+   `rigging/storage/`. GitHub is unchanged. Re-run `sync_r2.py backup 3d` after each batch.
 2. **Serve from R2.** Upload what the site loads to `summonlab-assets`. One `assetUrl()` helper reading
    `PUBLIC_ASSET_BASE` goes where asset URLs are built: 10 `/runtime/…` references in `apps/web` code, 16
    in the content packages (the rest are tests), and the `media.githubusercontent.com` URL in the monster

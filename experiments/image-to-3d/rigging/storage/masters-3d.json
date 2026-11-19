@@ -1,0 +1,3323 @@
+{
+	"bucket": "summonlab-masters",
+	"keyRule": "repository path with the first 12 hex digits of its SHA-256 before the extension",
+	"updated": "2026-11-19T00:54:37Z",
+	"files": {
+		"experiments/image-to-3d/rigging/ledger.jsonl": {
+			"bytes": 184054,
+			"sha256": "9bcd60e23cc1ed99b7091f1291d15ba2a40eafa436f13dd898fb13a3ecb148ba"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/aear-soro-neutral--anim-0/model_url.glb": {
+			"bytes": 5427548,
+			"sha256": "599d77f0763eeb6b41e2b181d53cb61f914d6b64416d8717237f231e1ac10d34"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/aear-soro-neutral--anim-0/task.json": {
+			"bytes": 1484,
+			"sha256": "e0c1c6abaa7a462c6aeef3304634029974011cbc277eacead36a2319231b78c4"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/aear-soro-neutral--anim-1/model_url.glb": {
+			"bytes": 4437620,
+			"sha256": "15d355a5adfcbaaba273ccfe4ddc6e35abaf70a8e74042edcf8f6068a3ad3c76"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/aear-soro-neutral--anim-1/task.json": {
+			"bytes": 1400,
+			"sha256": "321e9c737d6ca4126a94ac028a5a9dfbf64d6dcd1740e8f56cfa3a68417bef1f"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/aear-soro-neutral--image/generated_image_url.png": {
+			"bytes": 289869,
+			"sha256": "79c30d663b1add66f4fa6c81e0b693175ae400ff7b2af7e5acfd585865e97c4b"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/aear-soro-neutral--image/task.json": {
+			"bytes": 2395,
+			"sha256": "7148e8abf2c3d43b92435d1f11b157021e37490986e86bed8c1911f00c654ea5"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/aear-soro-neutral--model/model_url.glb": {
+			"bytes": 3771560,
+			"sha256": "3985fd72c140057fff1b6ddb6b539e24c5e2f3477308f2d608be447e9de4e7c1"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/aear-soro-neutral--model/rendered_image_url.webp": {
+			"bytes": 95434,
+			"sha256": "58ada31d81b93540450b2e5e464373770901232c5a6af8d59b8232d628fbee25"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/aear-soro-neutral--model/task.json": {
+			"bytes": 2614,
+			"sha256": "424552096a5aac49af0a5c9874bf70edab0fb191a99403d39772f3d987d038cc"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/aear-soro-neutral--rig-biped/model_url.glb": {
+			"bytes": 4313916,
+			"sha256": "211ab826ccec38ba99dd9a5cfea530ef2c921330830b84db61961ac14926de7d"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/aear-soro-neutral--rig-biped/rendered_image_url.webp": {
+			"bytes": 95110,
+			"sha256": "8f2ab7941a65dba49b290bfadc58a26e541642f6705180c38b2e8bb85fcb7f7f"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/aear-soro-neutral--rig-biped/task.json": {
+			"bytes": 2211,
+			"sha256": "1449a8fd7945197a07ed218ac9debefb6e45b71578460c970fc541b52de3f2a4"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/aear-soro-neutral--rig-check/task.json": {
+			"bytes": 400,
+			"sha256": "768bae4255fe6508950475dc4ac24595952097e8489fee850680fcd40bb18aca"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/arachnid-crawler-neutral--anim-0/model_url.glb": {
+			"bytes": 4284724,
+			"sha256": "2f3cf37b652cdce2dcef790ce8380676820b864ea071f8a9c677c069944cd271"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/arachnid-crawler-neutral--anim-0/task.json": {
+			"bytes": 1408,
+			"sha256": "4450bc50572a9b2531d718ebcd3c509d4fca1a3dc2629389d9a4f8bad338865a"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/arachnid-crawler-neutral--image/generated_image_url.png": {
+			"bytes": 414341,
+			"sha256": "0b7918b2d883c7276cd9e03fa5b7658b775e97faf846368795afdc1ba5aab479"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/arachnid-crawler-neutral--image/task.json": {
+			"bytes": 1713,
+			"sha256": "ee5bb0c97d152486b11654f8cf25c379b0610ff25360a433be9b90b0bbb7a5b3"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/arachnid-crawler-neutral--model/model_url.glb": {
+			"bytes": 3777576,
+			"sha256": "d517c39579e1dd82b272e5310954ffb2de2222675e4007de57c5b66b870a1f1a"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/arachnid-crawler-neutral--model/rendered_image_url.webp": {
+			"bytes": 117200,
+			"sha256": "6a31168dea00f0ec8fd27ae795ab10e4fe7e67832539bcfdee41a5b273d75cd8"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/arachnid-crawler-neutral--model/task.json": {
+			"bytes": 2614,
+			"sha256": "1c67df72eba9ec2a5253221213c4fa8c09f86de991bd69536f5594f2793676c5"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/arachnid-crawler-neutral--rig-check/task.json": {
+			"bytes": 402,
+			"sha256": "992623d3edf41880f144d78edf838e5e0f8837de480f9af2d1e93490ea9c0eac"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/arachnid-crawler-neutral--rig-octopod/model_url.glb": {
+			"bytes": 4257424,
+			"sha256": "2fbc3cf480f1443612cd704f3889b9e70089db993ffe2d3f5ef4d2d072ee3f9f"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/arachnid-crawler-neutral--rig-octopod/rendered_image_url.webp": {
+			"bytes": 117856,
+			"sha256": "22a3fa7d119519450f6401358630ad185d18f1d03014a76f0b48b5709579b4d0"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/arachnid-crawler-neutral--rig-octopod/task.json": {
+			"bytes": 2191,
+			"sha256": "aafc204fde95482dcd7b3266f566d8a62f21bb090174f80337ea24a21f85831f"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/armor-set--image/generated_image_url.png": {
+			"bytes": 914855,
+			"sha256": "9ba94dc701f4228a5cd75bdc9fdcb1abeb353874eb1d7cdb03636d31533c5e5e"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/armor-set--image/task.json": {
+			"bytes": 1884,
+			"sha256": "cf1248262c7dd82652f56a181089096c6ba89425fa5ab044b0c8adcd690df6fd"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/armor-set--model/model_url.glb": {
+			"bytes": 3513356,
+			"sha256": "e4e6bd1c2a4c47cc13bbb0b5403863f4b560ba882a937dbfcc50e84020247f07"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/armor-set--model/rendered_image_url.webp": {
+			"bytes": 62826,
+			"sha256": "2d37041ee7dbe9434cef0b55dd56e1353245991bf362ac40b9f9a79436fad661"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/armor-set--model/task.json": {
+			"bytes": 2614,
+			"sha256": "ba0825b54a5bf82c56433c341e67dcda59af077da325f0faa460e289ef0156ed"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/armor-set--rig-biped/model_url.glb": {
+			"bytes": 3837364,
+			"sha256": "fe38a3d5845af20cc686bdbc58f5ef0da35ce4e962db4b221909183f180ce63f"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/armor-set--rig-biped/rendered_image_url.webp": {
+			"bytes": 62816,
+			"sha256": "a14c88a9b89933585c081ed87b0d78b6d7835738edd58b1e1bf9635e7c24afaf"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/armor-set--rig-biped/task.json": {
+			"bytes": 2211,
+			"sha256": "043015da2e30c3b90d08ea3bae4143d0e2b715eb8cc8dc9dfcb15a3eb1b15db9"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/armor-set--rig-check/task.json": {
+			"bytes": 400,
+			"sha256": "d220c60a11bac426a1300849feb3d2c97bb2f3a03f5751b369a844b5988a0333"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/armor-set--segment/model_url.glb": {
+			"bytes": 6962944,
+			"sha256": "cb6328a88bc2eff1402ccc6b4ef6898854248616083291b305ed13576df08efb"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/armor-set--segment/rendered_image_url.webp": {
+			"bytes": 62708,
+			"sha256": "3ce68c8dc07019e1f3ca01495a75f7523bfbc4fc2c4d2890cd7ad2ff10fbedca"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/armor-set--segment/task.json": {
+			"bytes": 2146,
+			"sha256": "12df555e252b22a14cd0aeb127d2a885ec480ff5ced17fc60d9a709e8813ad4c"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/armor-set-v2--image/generated_image_url.png": {
+			"bytes": 904980,
+			"sha256": "4c51279a56f540bab3213d8e41b79aa6c1ddccc967e4ffced83b3d93e4ad4445"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/armor-set-v2--image/task.json": {
+			"bytes": 2077,
+			"sha256": "607d1d16b98213ce48f540c7a2f3d2b5cba6e772e1f47e1a59f4521af365146f"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/asha-neutral--anim-0/model_url.glb": {
+			"bytes": 4894980,
+			"sha256": "974f5aabd4f1d76255cf2accf35303e4759566d57312e8b8849ce30acb95b6dc"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/asha-neutral--anim-0/task.json": {
+			"bytes": 1484,
+			"sha256": "75b455241016f166d0519580fcc6511c1dc02eb7f0f7739cd9c56a54193ad5d6"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/asha-neutral--anim-1/model_url.glb": {
+			"bytes": 3905184,
+			"sha256": "42524aad76ccfc5e789d24f904bb1ff7aa7c4bba87633131da6f96dae7d2d168"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/asha-neutral--anim-1/task.json": {
+			"bytes": 1400,
+			"sha256": "b79e248488b3bc946d9c2deaf1f3704dac0b75abba72b5b7d39b8de5ebb0c69a"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/asha-neutral--anim-v1-combat/model_url.glb": {
+			"bytes": 4088060,
+			"sha256": "457833f4ea87ad0fd487e3a5cd17fc7611c119d67676221a4cd13e470a6ce3b5"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/asha-neutral--anim-v1-combat/task.json": {
+			"bytes": 1537,
+			"sha256": "f18a42d943a430b95870c60d73d556e0639562dd66860293b94eb6fa1166701c"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/asha-neutral--image/generated_image_url.png": {
+			"bytes": 966496,
+			"sha256": "cf5897183fc15696a093d25a28063c21798cfd3184819399822720d5d422fb79"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/asha-neutral--image/task.json": {
+			"bytes": 2288,
+			"sha256": "8c75ea50465485a50ce972e0ca2d8e91e0e945d7231acfaa1e3c66a26370f38d"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/asha-neutral--model/model_url.glb": {
+			"bytes": 3438896,
+			"sha256": "0dc905b7452f14f9dbb7f690315d69d91e6514d7bffe0f6e57f49ccdbbdf4914"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/asha-neutral--model/rendered_image_url.webp": {
+			"bytes": 104152,
+			"sha256": "44ec21b192ac85cd5aa627a534e012e01e4118e7fa4744193607cb30d407eae2"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/asha-neutral--model/task.json": {
+			"bytes": 2614,
+			"sha256": "cbcd85c73e2dc15938e5bcf971598d9b19cec0b0efcec6efdd87298d9c6db101"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/asha-neutral--rig-biped/model_url.glb": {
+			"bytes": 3780996,
+			"sha256": "45290a4a950a963d7bb89e8cf1be2424a182e54ab80b5dcfe3e169816aa588b1"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/asha-neutral--rig-biped/rendered_image_url.webp": {
+			"bytes": 104088,
+			"sha256": "49ec9e89d578feb7d5967e997043fe4eab87a883e04f9f01d1aaa91d3f9ef1e8"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/asha-neutral--rig-biped/task.json": {
+			"bytes": 2211,
+			"sha256": "5d77ef48b0b62d3cdda08841de6c4c1264052c1d7c7ea361db3421956c8c3e24"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/asha-neutral--rig-check/task.json": {
+			"bytes": 400,
+			"sha256": "72bc7d943a6ae4daa30a513daf1fe3df09734000967e7640dac3e8c688e2f5ad"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/asha-neutral--rig-v1-mixamo/model_url.glb": {
+			"bytes": 3767104,
+			"sha256": "4a9ff922e2507164d248f9b053988f40e0181918da2cd36a62abecc11c122242"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/asha-neutral--rig-v1-mixamo/rendered_image_url.webp": {
+			"bytes": 104074,
+			"sha256": "dc5d53b8f7d0526cc083c03bd72f4e18299d0a7175b1af2f184f0b3325608a11"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/asha-neutral--rig-v1-mixamo/task.json": {
+			"bytes": 2211,
+			"sha256": "2498fce3f89ec3da5678dd74f346f2f3d47bcb2db3c0975fdb262476a5e8a816"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/asha-original--anim-0/model_url.glb": {
+			"bytes": 4858868,
+			"sha256": "05fc1c68ac5a1f54e9d07405ec11925645aa4445d186af5df113534f7f40fe73"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/asha-original--anim-0/task.json": {
+			"bytes": 1484,
+			"sha256": "2c78ac1c2b13bfc8b52121615896c553d33503c619671b887989dfaa852351ea"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/asha-original--anim-1/model_url.glb": {
+			"bytes": 3867132,
+			"sha256": "83ea3d3525e3ad2308b95cddaad3aa9262571a6a08717c14e724caeb5bea7577"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/asha-original--anim-1/task.json": {
+			"bytes": 1400,
+			"sha256": "24d9481956ead54f203252f353fd3b45e3eb677a20a116575349a9c4af5be29b"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/asha-original--model/model_url.glb": {
+			"bytes": 3404612,
+			"sha256": "b54256f60b88b5c0462c4d46c800118c515a38d9371f66b5fee4c311acb3fb20"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/asha-original--model/rendered_image_url.webp": {
+			"bytes": 98218,
+			"sha256": "bb4a17fc1e96677bb184733fd18062f01c19e06bd2fee294d91afae44720e24e"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/asha-original--model/task.json": {
+			"bytes": 2616,
+			"sha256": "861891c7c35dd38a4806b52ec6d85379a9b7bed50c04983b00a88557a9851f64"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/asha-original--rig-biped/model_url.glb": {
+			"bytes": 3742932,
+			"sha256": "943931eb30acd7f8d3c2f639041279bd10ac43cde2239b4bcfb54ab0d933a95a"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/asha-original--rig-biped/rendered_image_url.webp": {
+			"bytes": 98654,
+			"sha256": "823c2dc94fd7cfbf96cd64bfb4a65d5c79e08f03cebc9e06ef104a870e536b20"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/asha-original--rig-biped/task.json": {
+			"bytes": 2211,
+			"sha256": "6faaa04ab9e9093e7bc9326f3e854617dd0731e793cd5e9b074b95740997bd1d"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/asha-original--rig-check/task.json": {
+			"bytes": 400,
+			"sha256": "77ffe14f46ef23768d02d25fc70e26a01decdd7c9fee64b2e56c9b07640ddee8"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/bear-scrub-bear-neutral--anim-0/model_url.glb": {
+			"bytes": 4320016,
+			"sha256": "9389e8e9fdbeb9a09d2ba310172868c32adce0dbf6581f250c354d4126df0cfa"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/bear-scrub-bear-neutral--anim-0/task.json": {
+			"bytes": 1410,
+			"sha256": "956489ba58b183a3343dfad7c4f975e8153e2ff9224b6783abd14853c07d16c7"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/bear-scrub-bear-neutral--image/generated_image_url.png": {
+			"bytes": 1123614,
+			"sha256": "798d1dd3425790a8f73d697b64688c6b9c7e4c2ac479feaa73185dd5bcc879fc"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/bear-scrub-bear-neutral--image/task.json": {
+			"bytes": 1799,
+			"sha256": "e7a11e3470785c54622e2260ab928955757910a4e1691177fe00f174cb889e00"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/bear-scrub-bear-neutral--model/model_url.glb": {
+			"bytes": 3982592,
+			"sha256": "be741e9c69b890c52f215ce92a79d23ed002377cee8fcc952b031a516286eaa1"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/bear-scrub-bear-neutral--model/rendered_image_url.webp": {
+			"bytes": 169982,
+			"sha256": "372c2b896c47430c8f151f1873ea03a8d36d841a26724d37624adca2456d6bcd"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/bear-scrub-bear-neutral--model/task.json": {
+			"bytes": 2614,
+			"sha256": "548da8c8dc0a48a0cbddc73dd803022f2769d948a26f72dc618746ba04ab31c9"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/bear-scrub-bear-neutral--rig-check/task.json": {
+			"bytes": 404,
+			"sha256": "0c8918894edbb3a9435e3bd76c6a8b7aba48403d88dd63d6bf3a65d4f6328ed6"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/bear-scrub-bear-neutral--rig-quadruped/model_url.glb": {
+			"bytes": 4292312,
+			"sha256": "c9f2211d968a3c5271a4a70dd36d9cf2111f123f97fd812cc3f110cb7db1ec63"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/bear-scrub-bear-neutral--rig-quadruped/rendered_image_url.webp": {
+			"bytes": 170378,
+			"sha256": "1fa06fe49453705b0bf49b7093123ab2ad77355c4b0a5b3ad34f58c215284005"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/bear-scrub-bear-neutral--rig-quadruped/task.json": {
+			"bytes": 2193,
+			"sha256": "97f8b0954ab43185540397520c5d7f67cdc2cdc405199dbfcbcf8d023a6b8b19"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/boar-bristle-hog-neutral--anim-0/model_url.glb": {
+			"bytes": 4125380,
+			"sha256": "356071d8143b36d8ba1755b27b93582b0c4bd68530c7e7a64eef6b6f94923259"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/boar-bristle-hog-neutral--anim-0/task.json": {
+			"bytes": 1410,
+			"sha256": "5bed5af42d4820e1d9530712956731e047e1810c94eaee90101a2a801a74eef0"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/boar-bristle-hog-neutral--image/generated_image_url.png": {
+			"bytes": 1054061,
+			"sha256": "fd716b803ced5d03a7d77973ebee592b700ff76db2b3d61814290f99bb19a085"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/boar-bristle-hog-neutral--image/task.json": {
+			"bytes": 1800,
+			"sha256": "2a69fd3c32c700c546734069a0f19a568db810d4ac3edd910e64c82aaae5efed"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/boar-bristle-hog-neutral--model/model_url.glb": {
+			"bytes": 3760860,
+			"sha256": "75acfb721d96ac20215973f3e5c3fb89b2fa3bc355264cf5ab8d6a8e23749334"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/boar-bristle-hog-neutral--model/rendered_image_url.webp": {
+			"bytes": 122038,
+			"sha256": "14f54f07525e787470c199e403e8efda1a0b1e37d9f5d95ef34e2b3f6a6e3d47"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/boar-bristle-hog-neutral--model/task.json": {
+			"bytes": 2614,
+			"sha256": "3ede384e622c2fe79aab0dad10f5b46b1e0f10a0427bdc0bd2255999551ddafb"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/boar-bristle-hog-neutral--rig-check/task.json": {
+			"bytes": 405,
+			"sha256": "c749c6e5405d01198b1a4c537ab809065933671cfc31b3710e813a02e8f93955"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/boar-bristle-hog-neutral--rig-quadruped/model_url.glb": {
+			"bytes": 4090928,
+			"sha256": "64d05f4307b452295714987c89cc3702d3829a009fcbaaa54258ee12db427bd2"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/boar-bristle-hog-neutral--rig-quadruped/rendered_image_url.webp": {
+			"bytes": 121870,
+			"sha256": "16fd90c8591108223823d947f19f28ad4a15488c8ff39258fc3e45c3bee962d1"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/boar-bristle-hog-neutral--rig-quadruped/task.json": {
+			"bytes": 2193,
+			"sha256": "1de2cc684ee8963d5ccb7b153af08c98579d20033d1f21812f9819a664ecd073"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/burrower-soil-grub-neutral--anim-0/model_url.glb": {
+			"bytes": 4107780,
+			"sha256": "66d1d9d476131d726e1c5213aba929929e25a07e9a2b0180682a3afcb5eb58f8"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/burrower-soil-grub-neutral--anim-0/task.json": {
+			"bytes": 1412,
+			"sha256": "bc72fc731a1c677c7e2091c66ac611126f3d5e42a14c58573e370a289bf1c8d4"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/burrower-soil-grub-neutral--image/generated_image_url.png": {
+			"bytes": 947187,
+			"sha256": "358faaa07afb2aa448f68cf7c46605cb15a2cc0d505b821f60629de46daebe4c"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/burrower-soil-grub-neutral--image/task.json": {
+			"bytes": 1722,
+			"sha256": "f04bff78f7b9e330e073bc6e7b885188d8332ca030fefa8334fffb3f4e8a94b0"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/burrower-soil-grub-neutral--model/model_url.glb": {
+			"bytes": 3731224,
+			"sha256": "35c4e5e7768e1b3523e85ef7485f2b69cb6e7bac4dfb7ea456b493ce663054dd"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/burrower-soil-grub-neutral--model/rendered_image_url.webp": {
+			"bytes": 160254,
+			"sha256": "5a9f13bd9dbaedf31f511a223fb9247742ed2512bd16db621716f3d7d69641d7"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/burrower-soil-grub-neutral--model/task.json": {
+			"bytes": 2614,
+			"sha256": "a49dc65eb70f9932e05cd8d10d058250e8d0fca99c588a19a84167f36fcc2694"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/burrower-soil-grub-neutral--rig-check/task.json": {
+			"bytes": 401,
+			"sha256": "954fac2aeff305b3749690527e49dd23a6feffce37afd75e513a8675ec5c14ec"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/burrower-soil-grub-neutral--rig-serpentine/model_url.glb": {
+			"bytes": 4105100,
+			"sha256": "a495ba5fd7b31acd3eecff8e31467e5e8474861f0c5a41623b17a780ecd34e58"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/burrower-soil-grub-neutral--rig-serpentine/rendered_image_url.webp": {
+			"bytes": 136194,
+			"sha256": "38e7a22e407a6f372d9d670f1f768108e9e83af8855d4691a621524c54f9d99d"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/burrower-soil-grub-neutral--rig-serpentine/task.json": {
+			"bytes": 2194,
+			"sha256": "748d6bc526bcbf24d72564f1535c4f54b81a8f64da48eae201bdfde4f3e888bf"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/crocodilian-mire-caiman-neutral--anim-0/model_url.glb": {
+			"bytes": 4777520,
+			"sha256": "1ac1f0db6f4db7345aa82f726ebcefd4ea953389c816a64972a883d9cdd85e83"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/crocodilian-mire-caiman-neutral--anim-0/task.json": {
+			"bytes": 1410,
+			"sha256": "6f19f9976f7e8dbac8123a459267779a7cdeb0cb3695978522d7e73de75ca258"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/crocodilian-mire-caiman-neutral--image/generated_image_url.png": {
+			"bytes": 989635,
+			"sha256": "d3f0b0f2a7f36c70f1a32d266c612fd4d7f3c451c06ba1c20bfc1f3a9e3ae8bc"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/crocodilian-mire-caiman-neutral--image/task.json": {
+			"bytes": 1800,
+			"sha256": "682ed17fc0fde4f7a14a400baf6436ea22cf3255ae3d0fab355e10f4468df057"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/crocodilian-mire-caiman-neutral--model/model_url.glb": {
+			"bytes": 4401968,
+			"sha256": "71ec6e7ae8a2cd20b5f642add34a6c4bdbf915467457824246eecadebe43da6e"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/crocodilian-mire-caiman-neutral--model/rendered_image_url.webp": {
+			"bytes": 139446,
+			"sha256": "7d90bea43acf4e8bfe6c47961db995c7259d226cdc008d3f9f21d72e8686315b"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/crocodilian-mire-caiman-neutral--model/task.json": {
+			"bytes": 2614,
+			"sha256": "7885ee451dda4ea137a3f7bf3308f35f48e0c2f6dce562d2502efc317effeaee"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/crocodilian-mire-caiman-neutral--rig-check/task.json": {
+			"bytes": 404,
+			"sha256": "863c1aacc9f06a2d258b27403de80653a1e31e984b09eef356a343d438671862"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/crocodilian-mire-caiman-neutral--rig-quadruped/model_url.glb": {
+			"bytes": 4746960,
+			"sha256": "5797b915a8f98c79ae8adc933969a5d446c09cb9193b2f93c7d237966f9ead2a"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/crocodilian-mire-caiman-neutral--rig-quadruped/rendered_image_url.webp": {
+			"bytes": 139742,
+			"sha256": "a7833a5c149a041db438dbadc9aaebe6e420d88afdb021b8410f2736ce8cc4c8"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/crocodilian-mire-caiman-neutral--rig-quadruped/task.json": {
+			"bytes": 2193,
+			"sha256": "5a018ef3395b3f104302a2aff7b3e78c0f69b1114d91d8e757a4a864f3e56408"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/d-beast-scale-light-armor-boots--model/model_url.glb": {
+			"bytes": 3033092,
+			"sha256": "45e6e61fa9b451297eeec9ff3d118a28b5885969bf092c253be80e5d3fbd2f7b"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/d-beast-scale-light-armor-boots--model/rendered_image_url.webp": {
+			"bytes": 150202,
+			"sha256": "9a8049e55b1a5e4af3f70336d59b525826c41f342c48c03a4bac169e84234ee0"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/d-beast-scale-light-armor-boots--model/task.json": {
+			"bytes": 2615,
+			"sha256": "ca2f7e49f20c5ec066c7b9eb5d2e8fad7e293556a96ab5ff75f0b9adb02106cb"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/d-beast-scale-light-armor-head--model/model_url.glb": {
+			"bytes": 3481124,
+			"sha256": "4d720c5b922bc485d10bd6ecfc71cb057eb00648acd0e820ea9fc66864aeac11"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/d-beast-scale-light-armor-head--model/rendered_image_url.webp": {
+			"bytes": 169560,
+			"sha256": "9821a43542eadaf2b5a64356eb0ba9880cb7c0e13b67c832dd307e850effe086"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/d-beast-scale-light-armor-head--model/task.json": {
+			"bytes": 2615,
+			"sha256": "709b5a0d9bce02cc035838af56e81190c7fa733882313673e7274cf3a3e80338"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/d-beast-scale-light-armor-legs--model/model_url.glb": {
+			"bytes": 3182616,
+			"sha256": "446ead0c9ed7c4387977525b85fa3392caebf34d2569432f317a85fad1528c90"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/d-beast-scale-light-armor-legs--model/rendered_image_url.webp": {
+			"bytes": 225916,
+			"sha256": "9dcbf4754f8b00c9ecb3197492218c5edf3e28bb4af26dfb14d9ff3649767998"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/d-beast-scale-light-armor-legs--model/task.json": {
+			"bytes": 2615,
+			"sha256": "b3509ca3697e16013f53932da9feca1c48811d0b93d0b72bc2462900fe572286"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/d-beast-scale-light-armor-torso--model/model_url.glb": {
+			"bytes": 3753924,
+			"sha256": "9266a489cc857ed002e04c0376fca6299c052e9e9533e364d06cf9fb649acd48"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/d-beast-scale-light-armor-torso--model/rendered_image_url.webp": {
+			"bytes": 208606,
+			"sha256": "766ec830cc4272f4dd366b8da62428e03ca43919d72308376aa055b53130318b"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/d-beast-scale-light-armor-torso--model/task.json": {
+			"bytes": 2615,
+			"sha256": "e62067f5b61b75d5b03bef5913cc3d6f6ad61fe2c29061d40036156ea60cc4f4"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/d-ironwood-bow--model/model_url.glb": {
+			"bytes": 3898324,
+			"sha256": "b7ae33ed0018f4631b081d1355fc9793ac5f78c724c750b7806643e135bbf37d"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/d-ironwood-bow--model/rendered_image_url.webp": {
+			"bytes": 40286,
+			"sha256": "3d6c9dd36a291490198152bdd177ce4705d94fa0bb08524e0cd20a03431eb13c"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/d-ironwood-bow--model/task.json": {
+			"bytes": 2615,
+			"sha256": "adff61b6d2bf8bba58c2d859d7ae66a8610004ff28846a7dc5aa7d3a7e012eb3"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/d-ironwood-staff--model/model_url.glb": {
+			"bytes": 4668364,
+			"sha256": "7e1c97e06af7ae8f10795648347980d53d9b73e7362852b5aac6cf8e954f219e"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/d-ironwood-staff--model/rendered_image_url.webp": {
+			"bytes": 39064,
+			"sha256": "eaeff1e44cdc5c72b89e07fc0327403b61bae051de23c2c4d3e30aff34377893"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/d-ironwood-staff--model/task.json": {
+			"bytes": 2615,
+			"sha256": "52a437c220ba94da6770da5ad3c025f87d7f624f8f97dcdc06fce8491098746e"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/d-layered-silk-robes-boots--model/model_url.glb": {
+			"bytes": 3050756,
+			"sha256": "0572287e3baffe10d120ee3ef6ce823f6cf06af138beefd70a130d434638d697"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/d-layered-silk-robes-boots--model/rendered_image_url.webp": {
+			"bytes": 171522,
+			"sha256": "9c2a47dc6bf1a661b2cb2a7cbf93bfa78e03490c6a31b91c277b6acfd1712125"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/d-layered-silk-robes-boots--model/task.json": {
+			"bytes": 2615,
+			"sha256": "48874a0d1b4695f2599e3709ce2ff7f6e263fd1b0b7fa575ba6d8f8afc1b40d9"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/d-layered-silk-robes-head--model/model_url.glb": {
+			"bytes": 4028528,
+			"sha256": "e9901db44400e73976e4806d110d57e83b60d21e2e5fb620ad789bbfaa9c22e9"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/d-layered-silk-robes-head--model/rendered_image_url.webp": {
+			"bytes": 173460,
+			"sha256": "37987e7fddd55d0ab63e0e6b6a6c64d0f2ed038b723a9a1b02abbf4039cef06c"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/d-layered-silk-robes-head--model/task.json": {
+			"bytes": 2615,
+			"sha256": "fe57257e4bc4abd6724030c2ec2a62db72e1f39d8b34774682e10a9a4a227bde"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/d-layered-silk-robes-legs--model/model_url.glb": {
+			"bytes": 3480344,
+			"sha256": "ab7928a02886b877213d8a30e2a93412c99fa5ee31beeda7c7503d129e8fc4db"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/d-layered-silk-robes-legs--model/rendered_image_url.webp": {
+			"bytes": 114966,
+			"sha256": "a9a1eae4b28ac350423ab9361a7d8ffccae7344e21cd698ee91617717e84c434"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/d-layered-silk-robes-legs--model/task.json": {
+			"bytes": 2615,
+			"sha256": "cdb1d6cf5c0f137d54e1a9a28ee79edcd0a280bc350dcde8f2d83a2077dbda48"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/d-layered-silk-robes-torso--model/model_url.glb": {
+			"bytes": 3271092,
+			"sha256": "c0166b51b2344b6e30ece06cd95e59e64743c30e43b38562fac595f878f71923"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/d-layered-silk-robes-torso--model/rendered_image_url.webp": {
+			"bytes": 182690,
+			"sha256": "2756f8f4aad976b50b04bd72f09a68834d0c3a4a4dc6945afe075da45c113555"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/d-layered-silk-robes-torso--model/task.json": {
+			"bytes": 2615,
+			"sha256": "2bc582fb73df32bd510297d03fb9670df958a72f45c6bfb2f78de17347033495"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/d-steel-axe--model/model_url.glb": {
+			"bytes": 4824536,
+			"sha256": "bb05c724ae3d972a8a331e10bd292b51662dcd2e9d7508f77b62a777d959dca4"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/d-steel-axe--model/rendered_image_url.webp": {
+			"bytes": 45690,
+			"sha256": "cf1cfce6e912520d75f8ffb82cdcc872ecb2d7cb850629bd698e3bf3e48ae849"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/d-steel-axe--model/task.json": {
+			"bytes": 2615,
+			"sha256": "2fb88c3b83567164bb55400ed07f524f9f059eae1fec6aaacf09e79682a33cfb"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/d-steel-dagger--model/model_url.glb": {
+			"bytes": 4910680,
+			"sha256": "8da911f347ba5febd293ed73ccc69f7052c26848334dc4498b1830b14a805447"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/d-steel-dagger--model/rendered_image_url.webp": {
+			"bytes": 50422,
+			"sha256": "fb35630aed200b733e3866b7b52f842ec49774ac6b7b8ae13b12e670aab4c155"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/d-steel-dagger--model/task.json": {
+			"bytes": 2615,
+			"sha256": "cb536d5994e99e6b4f8d54686c801af32041490a07b7e182a6157514a51bd8c5"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/d-steel-heavy-armor-boots--model/model_url.glb": {
+			"bytes": 2956548,
+			"sha256": "d4035c58dba14012d1509346a6a078c61ff828110e5e7e8c0c0e516d0741abc7"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/d-steel-heavy-armor-boots--model/rendered_image_url.webp": {
+			"bytes": 102654,
+			"sha256": "af2af4895a48781318db1d94b30d9e1d1fd4546003a335f279635c0f3bcc99bb"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/d-steel-heavy-armor-boots--model/task.json": {
+			"bytes": 2615,
+			"sha256": "5323d69656669557e8d48caeebceeddae32216ab7f61a7a6840cf3a008f0819c"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/d-steel-heavy-armor-head--model/model_url.glb": {
+			"bytes": 3057580,
+			"sha256": "9f55ae82df38d3d4a0f01cd3b4cb2cb9fdc77f3425737d96a99811d3da556c4a"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/d-steel-heavy-armor-head--model/rendered_image_url.webp": {
+			"bytes": 123552,
+			"sha256": "dd6ae58a221b40b47b834a0bc4b5693da024ec5a462f4db59e237215b34ab86e"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/d-steel-heavy-armor-head--model/task.json": {
+			"bytes": 2615,
+			"sha256": "bdf0fbbbd3b3e644bbab8e195428c37d3798b2d19b0fb8a7670042033e42c0c1"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/d-steel-heavy-armor-legs--model/model_url.glb": {
+			"bytes": 3203740,
+			"sha256": "e8605eb466e1e960bd7a54c8f5c14b9d86523f8a4f51835191760e1aae58512e"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/d-steel-heavy-armor-legs--model/rendered_image_url.webp": {
+			"bytes": 128602,
+			"sha256": "f93eaa0737c1950765d92f9904b311b0be5b03fe23d7702318e3fb6e91640af6"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/d-steel-heavy-armor-legs--model/task.json": {
+			"bytes": 2615,
+			"sha256": "e8ee236a25cb6500264310e675f0b0d22dbe3707020a24faf118fb4191b034ec"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/d-steel-heavy-armor-torso--model/model_url.glb": {
+			"bytes": 3493916,
+			"sha256": "bb6aae96a77133abe5d724092c355b5a4675cf430bd2d463e72c1d226180e8ba"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/d-steel-heavy-armor-torso--model/rendered_image_url.webp": {
+			"bytes": 168600,
+			"sha256": "b7746ef4ae65b96d26fa7e5bd0a70e07b30c391679fc51784685df9e82dbacbc"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/d-steel-heavy-armor-torso--model/task.json": {
+			"bytes": 2615,
+			"sha256": "cd4d03c5a3f1f45f3a13ea14e0c3e426548f8bdb1b29cdee3961de9c887ae62c"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/d-steel-mace--model/model_url.glb": {
+			"bytes": 3988292,
+			"sha256": "aa4cf2ab4ea29461521dc9b588a86992d1948982f84daa937488ee877195c93a"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/d-steel-mace--model/rendered_image_url.webp": {
+			"bytes": 35862,
+			"sha256": "fd43bdd598260b68daa97bec7627a6b7fb4a1295edee34b41b09643c4055bc80"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/d-steel-mace--model/task.json": {
+			"bytes": 2615,
+			"sha256": "17419d368cbe7728d3351584a6608883fa9e8281fdd3ec344a9a97a5eebb86f6"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/d-steel-shield--model/model_url.glb": {
+			"bytes": 3874248,
+			"sha256": "c32d37265e0f548f6ef1265040d30139b093886887b07aacbb6fffedf698ba2c"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/d-steel-shield--model/rendered_image_url.webp": {
+			"bytes": 165316,
+			"sha256": "028e64e27f2527cc45f8b0fb1a477c43430c056c3b82cc5dd701f507d40f55a7"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/d-steel-shield--model/task.json": {
+			"bytes": 2615,
+			"sha256": "00c3730ad56a4dba9c4fb9723dae6a63fffeacad322cf0d44058869920a74bbc"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/d-steel-spear--model/model_url.glb": {
+			"bytes": 4576656,
+			"sha256": "478c537a09a71a6903de567aaec0f82ce9ddb1a3ad5a1b6da2af19bbdd08e50a"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/d-steel-spear--model/rendered_image_url.webp": {
+			"bytes": 34768,
+			"sha256": "6636188e0d32bc4ab83b3e82f6be215fdd6fa063cf479b9a5664dab643c39468"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/d-steel-spear--model/task.json": {
+			"bytes": 2615,
+			"sha256": "8ddd7d7269866973076ba7bcea4a811a8d61a5bc9618c6f4b90a40aabc473063"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/d-steel-sword--model/model_url.glb": {
+			"bytes": 4879188,
+			"sha256": "49a3fff8b75e2f2a0096aa53442a3085165ac4ff3ae160cf1230172558bfbd0f"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/d-steel-sword--model/rendered_image_url.webp": {
+			"bytes": 34932,
+			"sha256": "206b96a613a11820011eaada469fa6117b981f13189cedceaf07b41a7af18d11"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/d-steel-sword--model/task.json": {
+			"bytes": 2615,
+			"sha256": "0593626d21a7c1503a6e9f6edc2fd9a9d220f493579e150d1d0bd9c0f1fa1787"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/deep-one-fishman-neutral--anim-0/model_url.glb": {
+			"bytes": 5725376,
+			"sha256": "3dcc2fdc6a5c2341ba70fc3e28edb066be6cd25b5041c7d28701634bd05d8932"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/deep-one-fishman-neutral--anim-0/task.json": {
+			"bytes": 1484,
+			"sha256": "661b296881101a7de7d2aeb51122b25d26d5911998c3bad9579d1f4a08cc2cc5"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/deep-one-fishman-neutral--anim-1/model_url.glb": {
+			"bytes": 4735188,
+			"sha256": "13b675892b7450351c6ffa84ae5ed138843d47a01226db5c63c4359d7e19d203"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/deep-one-fishman-neutral--anim-1/task.json": {
+			"bytes": 1400,
+			"sha256": "5f89b373d04d5dd54fc421993e84cfd502cdae2b61aa1423131fc5ee8059fc07"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/deep-one-fishman-neutral--image/generated_image_url.png": {
+			"bytes": 1031353,
+			"sha256": "79442a4702ecf4de9472bc6267413e72203312b074d9b2e36a82a7534a62d3b0"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/deep-one-fishman-neutral--image/task.json": {
+			"bytes": 2173,
+			"sha256": "8503734373a48f3f873ffb757f88de09b817a36a414cc4362301252cbf72b17e"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/deep-one-fishman-neutral--model/model_url.glb": {
+			"bytes": 4177100,
+			"sha256": "0aca680fa98082b089a31afc9cc4615f88186162632fa4b9ef8f5164b7dcb7e7"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/deep-one-fishman-neutral--model/rendered_image_url.webp": {
+			"bytes": 79398,
+			"sha256": "b763e93d3e9f41947624af271eb66ddf46e4c78cb9a491eda8b2d76f82a76e46"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/deep-one-fishman-neutral--model/task.json": {
+			"bytes": 2614,
+			"sha256": "5e9b29ea72f3d979be8498d597d1865002c1395e063791ef90203f51db277f5f"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/deep-one-fishman-neutral--rig-biped/model_url.glb": {
+			"bytes": 4610612,
+			"sha256": "4ff01211b1e72d27a5ca1de2716d860ae991ea19671c508ead0def151e637ffc"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/deep-one-fishman-neutral--rig-biped/rendered_image_url.webp": {
+			"bytes": 79300,
+			"sha256": "28473173b174c131b2173d8778635537e6088135331e7ba504d0515f46806838"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/deep-one-fishman-neutral--rig-biped/task.json": {
+			"bytes": 2211,
+			"sha256": "f6883b00b611cc4dc3b0f4de8e8e01dd228fa0353c58e8e1938ed0b8b6f83b73"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/deep-one-fishman-neutral--rig-check/task.json": {
+			"bytes": 400,
+			"sha256": "a3986e2a2dfc06d532a6409da4b5439e815d360fea93a8963a790819e187e77c"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/demon-imp-neutral--anim-0/model_url.glb": {
+			"bytes": 4554140,
+			"sha256": "34045fe453bcb3a128d0b7c1541060f9eb518fffd0c955688b6cb4cec9fbcd6b"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/demon-imp-neutral--anim-0/task.json": {
+			"bytes": 1484,
+			"sha256": "8fde9626062c233b5489d47cafefa4dc468d4c723cfffaf55b9534b42e141ed7"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/demon-imp-neutral--anim-1/model_url.glb": {
+			"bytes": 3564404,
+			"sha256": "524253fe23fbce27992acbfd2fdd8ad26d19e2ae23e57c11d3871baebad78c13"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/demon-imp-neutral--anim-1/task.json": {
+			"bytes": 1400,
+			"sha256": "bdb46aa1e92c26e40e70b8ea5fb3c871ccc43cb50250a7f2c2ddae4ec3e7eefc"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/demon-imp-neutral--image/generated_image_url.png": {
+			"bytes": 869067,
+			"sha256": "0b759e0a5f016c8ef3b14ac4938e315acfa204856b53f72521979c9fb6a2518d"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/demon-imp-neutral--image/task.json": {
+			"bytes": 2166,
+			"sha256": "63c6317c5cda70d374a61ff391008c582f3dc480c3e4eb8841abf4e26d8d7a71"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/demon-imp-neutral--model/model_url.glb": {
+			"bytes": 3042744,
+			"sha256": "9a3817044765d817b403e540f7fa6b23de835631c6747853b3715439a8dc95ff"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/demon-imp-neutral--model/rendered_image_url.webp": {
+			"bytes": 81384,
+			"sha256": "a90e08449a31a32621b16dc25e7155faec5cf29ffd99134b35ca733a1a8149ed"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/demon-imp-neutral--model/task.json": {
+			"bytes": 2614,
+			"sha256": "9e2242d032e22e8d72c4687671f0c0af98102c14a35c0548de196b0e9bb367ca"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/demon-imp-neutral--rig-biped/model_url.glb": {
+			"bytes": 3440732,
+			"sha256": "0355c50b26a1182ac39f9be724d050e9f58b330bc69a9c9f287aa3f7ac1bebb7"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/demon-imp-neutral--rig-biped/rendered_image_url.webp": {
+			"bytes": 81608,
+			"sha256": "53771c38af6f08892b7421827ab48f5f4d76e64b1a95f6d39023ed853eed6131"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/demon-imp-neutral--rig-biped/task.json": {
+			"bytes": 2211,
+			"sha256": "360336de0a07dda475454db25c8d5b0b634071ee20ed14e60807268c94888115"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/demon-imp-neutral--rig-check/task.json": {
+			"bytes": 400,
+			"sha256": "c8711e0a59aa4e193786defadb396234cc5b5bc3f9922f0107c703630922844c"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/dragon-whelp-neutral--anim-0/model_url.glb": {
+			"bytes": 4972304,
+			"sha256": "5fe31fa09a1c950a10a0857bcb138119e00fef984e8ec334c185b10a5402864a"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/dragon-whelp-neutral--anim-0/task.json": {
+			"bytes": 1410,
+			"sha256": "bcf8c723c5b612d6f9a119e8eff815e3664d82dc9b0a018686163ea44230a40f"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/dragon-whelp-neutral--image/generated_image_url.png": {
+			"bytes": 1044706,
+			"sha256": "efaa27eacc6fe2e71ff4a4e1e7c408f9286e56d0c57765f71a0a64033c929a4e"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/dragon-whelp-neutral--image/task.json": {
+			"bytes": 1801,
+			"sha256": "0a5762553ccebee40264807874b3f03bc58af1fed44c2413a75bbb52801bcdba"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/dragon-whelp-neutral--model/model_url.glb": {
+			"bytes": 4607320,
+			"sha256": "061533c90f842f8ea4770abc0061bce6aef10fd5c81afc26ceb0a32ca7c30951"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/dragon-whelp-neutral--model/rendered_image_url.webp": {
+			"bytes": 140576,
+			"sha256": "8e2000d1c8dad0d685adf156533e2342f7af43543d30a0d4841ed1c08c14748b"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/dragon-whelp-neutral--model/task.json": {
+			"bytes": 2614,
+			"sha256": "9586a089e825142a8a7bc7fa630f2a63c67b2349d39a9ded70d40a498e8d2806"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/dragon-whelp-neutral--rig-check/task.json": {
+			"bytes": 404,
+			"sha256": "52c0eca8b32b1a90f4baae6e65a3b731a077e49bdcd575d710360f19c8b1c1d4"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/dragon-whelp-neutral--rig-quadruped/model_url.glb": {
+			"bytes": 4947316,
+			"sha256": "87991eec916d3b3b87996621ace857659ba152fb6af0ba83e1d688efa2033077"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/dragon-whelp-neutral--rig-quadruped/rendered_image_url.webp": {
+			"bytes": 140764,
+			"sha256": "3e51ba85f90aa5877081c4a66cb2ce5de30e014098cff6177b65d7c7c50fe541"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/dragon-whelp-neutral--rig-quadruped/task.json": {
+			"bytes": 2193,
+			"sha256": "bc21a405698a191f749a4dfbb166adc5f86da56c91db36fe0525e76a29e43a0d"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/e-hard-leather-light-armor-boots--model/model_url.glb": {
+			"bytes": 2991972,
+			"sha256": "48c1b092093ea7ca85db1da34bbc2bc24c49397cbd4d5b3116ee9eb6c4565361"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/e-hard-leather-light-armor-boots--model/rendered_image_url.webp": {
+			"bytes": 165896,
+			"sha256": "f33f050924891ee521f448a4aaba22d5aa0f1ba1cd2f97e429535849947708f8"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/e-hard-leather-light-armor-boots--model/task.json": {
+			"bytes": 2615,
+			"sha256": "2676ce087dad33e1ba4532f466de71f90e965a9930938f583e24cc4f5060af0e"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/e-hard-leather-light-armor-head--model/model_url.glb": {
+			"bytes": 3300144,
+			"sha256": "7f61ea44c92f8d1726effa06ee38e7812564a8a4051e0b4d4273cbab8215adad"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/e-hard-leather-light-armor-head--model/rendered_image_url.webp": {
+			"bytes": 149388,
+			"sha256": "6bccb8d81d4a0f123f5f45c813cdd1712edd0e9a8550d0ef1aad566c7ff88116"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/e-hard-leather-light-armor-head--model/task.json": {
+			"bytes": 2615,
+			"sha256": "ffbf065ab17dc4245873a46a0bf1c90ed77def8ba0f1f113f1d78b734183341f"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/e-hard-leather-light-armor-legs--model/model_url.glb": {
+			"bytes": 2844580,
+			"sha256": "f8f27e83aa5510d898e4f52f15a63ec11b46ca67be6886b749e0d71735e9123b"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/e-hard-leather-light-armor-legs--model/rendered_image_url.webp": {
+			"bytes": 221486,
+			"sha256": "4ad55a47920cc58968c70204fa27e865301671a58185dcb8dfc7475729003614"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/e-hard-leather-light-armor-legs--model/task.json": {
+			"bytes": 2615,
+			"sha256": "8a49a5d06104ab768fccaee0ad71cd25ee4185a5c95ee73e23fd32b15d75cd6d"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/e-hard-leather-light-armor-torso--model/model_url.glb": {
+			"bytes": 3204352,
+			"sha256": "865d02b7651f73212f3798bdd6290d3d58078289bcc2d812da2cdd8c0c0fecd6"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/e-hard-leather-light-armor-torso--model/rendered_image_url.webp": {
+			"bytes": 225194,
+			"sha256": "f7a04f995d2ff6b0a9b0c9c0174261caf86350280087e649ef8b02e01a52e9d6"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/e-hard-leather-light-armor-torso--model/task.json": {
+			"bytes": 2615,
+			"sha256": "ae6adadb8106b67a6783f987bd9cb22a7bec8f858b3f43965ac733427a7384e3"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/e-iron-axe--model/model_url.glb": {
+			"bytes": 5024372,
+			"sha256": "9a543c32430de16657dac8fac8642a132faab5bd3ee2c5d00157c65caed5b169"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/e-iron-axe--model/rendered_image_url.webp": {
+			"bytes": 49474,
+			"sha256": "183995a945c457dddb5b26e2c6a9b60cfa40f0031851bb1ff929df6dc9e2245c"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/e-iron-axe--model/task.json": {
+			"bytes": 2615,
+			"sha256": "6eae2e21f81922c9fd6cf6f8ed8be5680fe286b122bc15e12dd6825ec60556fc"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/e-iron-dagger--model/model_url.glb": {
+			"bytes": 4688668,
+			"sha256": "0f34387ea4040b3943d087846d834dd7536794fabfc69034884d36305b1283c9"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/e-iron-dagger--model/rendered_image_url.webp": {
+			"bytes": 41222,
+			"sha256": "da4d8d8bdbbbfa71fac7021f9588d8a51bc8cc9c85608908d642064b3af94017"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/e-iron-dagger--model/task.json": {
+			"bytes": 2615,
+			"sha256": "62aa673dce8d5fcc1accaf88cd5517dd8674b508d3466791e40db50cc411dbe0"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/e-iron-heavy-armor-boots--model/model_url.glb": {
+			"bytes": 3489464,
+			"sha256": "acb852df2f6f3b8c32590f0309d90488ccad86bc9283c0c3f1452fcf5b368b8d"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/e-iron-heavy-armor-boots--model/rendered_image_url.webp": {
+			"bytes": 116846,
+			"sha256": "13692e0b33de55265c8b1259a41eb7491653d0a4fb999bb3c05c0bdc98abaa81"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/e-iron-heavy-armor-boots--model/task.json": {
+			"bytes": 2615,
+			"sha256": "2bbb096b9fb3bf4c213dbb7808139887e6327f18f3b599facfde6fe12486c58c"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/e-iron-heavy-armor-legs--model/model_url.glb": {
+			"bytes": 3811976,
+			"sha256": "07567f7b9008cbcc39914d52061c2d4e8593bef7d8216573da7cd61de96758ae"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/e-iron-heavy-armor-legs--model/rendered_image_url.webp": {
+			"bytes": 127136,
+			"sha256": "7fae43b04ebb96ca7e811eb8d3f15d833c3b7649b73f85c817f122e2ac6894c3"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/e-iron-heavy-armor-legs--model/task.json": {
+			"bytes": 2615,
+			"sha256": "2d22f93c2d2bc40735c666aaaac8d8a51cbd18bb2b7c210c61cfbcf4bb623692"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/e-iron-heavy-armor-torso--model/model_url.glb": {
+			"bytes": 4437276,
+			"sha256": "49d35a8ee61259d458aad9a31fedea3ce2754f0ae72ee0eb38eb674b2e22d719"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/e-iron-heavy-armor-torso--model/rendered_image_url.webp": {
+			"bytes": 159680,
+			"sha256": "60bf295483a7909583fa85686d9421d0ef438a8d1cc355ab63cdb64f3c097599"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/e-iron-heavy-armor-torso--model/task.json": {
+			"bytes": 2615,
+			"sha256": "f121bd0037cf199da2904f4f960c81e4010d1bd7b67073bfad9d47e5ff121ae0"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/e-iron-mace--model/model_url.glb": {
+			"bytes": 4238652,
+			"sha256": "73ef44824d957c41d5cd02780485af08880b45d417905982460f73be8882092e"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/e-iron-mace--model/rendered_image_url.webp": {
+			"bytes": 41854,
+			"sha256": "c016b88b78a2e2939228c75f6bd0417f2f72de06d20c8def2ad4afe33dd913ed"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/e-iron-mace--model/task.json": {
+			"bytes": 2615,
+			"sha256": "ac96959912413f004efdc65c6cb5865f37ba65b7146f087b7a877c96631126c5"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/e-iron-spear--model/model_url.glb": {
+			"bytes": 4555552,
+			"sha256": "fb1fb886abeaca0a0f510f4e965b7c06fb211a5bd1687ba6ffef7543b7d1bce0"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/e-iron-spear--model/rendered_image_url.webp": {
+			"bytes": 31510,
+			"sha256": "73ae8acc27f0ae07549541ae60d94ae4b28537eef0256219b5b32e7cc6c453ae"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/e-iron-spear--model/task.json": {
+			"bytes": 2615,
+			"sha256": "aabc280ede6fd8e36fa17530254a233dff3bd9c7271e94b961a2e0603fa7a19e"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/e-wool-robes-boots--model/model_url.glb": {
+			"bytes": 3000476,
+			"sha256": "1f3bf5120ce37257e33de6a4ea62edacfc27e34d44eda641161dfbf854a41d03"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/e-wool-robes-boots--model/rendered_image_url.webp": {
+			"bytes": 156572,
+			"sha256": "819105669e31f7ce8b55d5e58e6d7b72c3da118e613d7a10b42ce142da560322"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/e-wool-robes-boots--model/task.json": {
+			"bytes": 2615,
+			"sha256": "cb2c0963367e46b75592b64cebe7bb5d035f9f200397fca603548798d9369a28"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/e-wool-robes-head--model/model_url.glb": {
+			"bytes": 3476224,
+			"sha256": "92a2e9932b23c4b5740aec00c92473bc5d7e009fd4edb70711c5ec85ed5403d7"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/e-wool-robes-head--model/rendered_image_url.webp": {
+			"bytes": 172282,
+			"sha256": "0720d9f26021da2c152a3365486313d3efb4bcaa19adf194abb62892c2a34dc7"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/e-wool-robes-head--model/task.json": {
+			"bytes": 2615,
+			"sha256": "353ef734ea4327b6692be90d320706b059ab87ab924aa0956521aafacef995d0"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/e-wool-robes-legs--model/model_url.glb": {
+			"bytes": 3277352,
+			"sha256": "672cf5059743bcb6917ffc051d2d244eb1f67b2ca873dffa91ad16c6ee2189d6"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/e-wool-robes-legs--model/rendered_image_url.webp": {
+			"bytes": 136058,
+			"sha256": "8a661c995af9bb1a70a8f97cf8633e5e3ec1d564182edb2612acfda09d6608d5"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/e-wool-robes-legs--model/task.json": {
+			"bytes": 2615,
+			"sha256": "f64730667e4572895d88c762da7fbfa5a315e7edb76b9d1b420d029cb83ebc58"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/e-wool-robes-torso--model/model_url.glb": {
+			"bytes": 3482276,
+			"sha256": "4b240b270afdca84c680bdb8b315ac7702c9a6a8e97a61660f07de9c8834a2de"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/e-wool-robes-torso--model/rendered_image_url.webp": {
+			"bytes": 142724,
+			"sha256": "6364b1c92a91e81043320f4de5fbafbab3ab06b438956d37dc2e878b2a4edf73"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/e-wool-robes-torso--model/task.json": {
+			"bytes": 2615,
+			"sha256": "6c1d7ef7747d76efe8c2e2c5e81074d9044aa7212534bd7ec65471f768055ef3"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/e-yew-bow--model/model_url.glb": {
+			"bytes": 4344536,
+			"sha256": "f2fd24419b59b3de0af2f0741431a9b441353f3691f9a5648c1f4ca3a007ad17"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/e-yew-bow--model/rendered_image_url.webp": {
+			"bytes": 41422,
+			"sha256": "ab6cf30ce0556ad109af270412ef9635b01367633d83d9dda3c7264c3dd38ada"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/e-yew-bow--model/task.json": {
+			"bytes": 2615,
+			"sha256": "a16d90bc6d9dbf5def53077af17b07d52d14ae13128d366794d3faf007c07960"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/e-yew-staff--model/model_url.glb": {
+			"bytes": 4841608,
+			"sha256": "e6fdc2566b586b79fa36589e844f4e4c5974dff7113cfed6bf019089ff2bb844"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/e-yew-staff--model/rendered_image_url.webp": {
+			"bytes": 46912,
+			"sha256": "6d6e96bed4ad7aead5a2f85a30c28abf0f9284325bd993926a9df8aca87c73de"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/e-yew-staff--model/task.json": {
+			"bytes": 2615,
+			"sha256": "12b1fb83c307a0cff23fc86ddc416df5d1fef9e9779825c16d4b80c774391b8b"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/elemental-wisp-neutral--image/generated_image_url.png": {
+			"bytes": 865266,
+			"sha256": "1df907de2d959e1abd8de3d70eac7df4053d189ef3da7dc87ac30f69998e72f1"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/elemental-wisp-neutral--image/task.json": {
+			"bytes": 1627,
+			"sha256": "dd195f43dada94a49b07039df729a09bbb345dc2f5a467efbf37d1f908f8b277"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/elemental-wisp-neutral--model/model_url.glb": {
+			"bytes": 3542648,
+			"sha256": "082a38a28fa83b004505231ea9b46de56d410604df5bb019c6aecb7e0fcc48d3"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/elemental-wisp-neutral--model/rendered_image_url.webp": {
+			"bytes": 50766,
+			"sha256": "36f55d96cace301fe3d39ab991a44f25eee6cb3e6977c6c50ef0cdc8ee1b19be"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/elemental-wisp-neutral--model/task.json": {
+			"bytes": 2614,
+			"sha256": "246516c0a34d18f032b2a9070c351151037d7c435ef365c85abce5cebff5151a"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/elemental-wisp-neutral--rig-check/task.json": {
+			"bytes": 402,
+			"sha256": "43ae30fbb91e89b5f2bd4a68588ab5d2a564386738b516ad925db5e5092a79af"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/elemental-wisp-neutral--rig-others/model_url.glb": {
+			"bytes": 3782992,
+			"sha256": "3ebacfc0f6d64ff6743bed431c8f54c5c916d461ce937b1e55ce1d585bcac41b"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/elemental-wisp-neutral--rig-others/rendered_image_url.webp": {
+			"bytes": 50496,
+			"sha256": "8319226aa8a96f396d2f209f334287ade7603f572cf5bad2802c6f1ab65310fc"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/elemental-wisp-neutral--rig-others/task.json": {
+			"bytes": 2190,
+			"sha256": "26a448c1abcb46d839b805c247b9e80dd391cbe2f117e8fbb25f9f60889e9cd3"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/f-ash-bow--model/model_url.glb": {
+			"bytes": 4450468,
+			"sha256": "9a2b81c4b22dc5685dab28f10439ea69bfd761440be0ab146a7cf70f89216766"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/f-ash-bow--model/rendered_image_url.webp": {
+			"bytes": 39368,
+			"sha256": "cdb7b5a561ec9ed8d6471489b53a46c9259af04e4e89d2f5d1599896cc85550a"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/f-ash-bow--model/task.json": {
+			"bytes": 2615,
+			"sha256": "f045681842c37ca1f3a568a16a24d00a850cff2e362544fd12f02f7eda1c726c"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/f-ash-staff--model/model_url.glb": {
+			"bytes": 4691772,
+			"sha256": "d0e5e0642aa3a19ce99e3b2d64e8cfd0d12d70d6dd2a5c6cd6c07c8bdaa45f13"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/f-ash-staff--model/rendered_image_url.webp": {
+			"bytes": 40560,
+			"sha256": "8d5c7c6ad798b70cc10752e73eb925f9e72334b88a18ea51cb894959739dbbfd"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/f-ash-staff--model/task.json": {
+			"bytes": 2615,
+			"sha256": "678a529de3a39c59da2e48569ebbdd04be4ebc48303f25ed69f4885a682420fd"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/f-bronze-axe--model/model_url.glb": {
+			"bytes": 4563660,
+			"sha256": "6838432f8a387c23a156d074546035c7f0df7b5301eb7fa5997fa15a6ff4539f"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/f-bronze-axe--model/rendered_image_url.webp": {
+			"bytes": 55178,
+			"sha256": "ed4e471797b4ea884278c65019bd1dfa995ed048c1a9b811bdbdc745a8861d7a"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/f-bronze-axe--model/task.json": {
+			"bytes": 2615,
+			"sha256": "b4f2b67ba08f75c6262adac0f77cb53c88a10a72c1200caf1a6069b0f3a6548a"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/f-bronze-dagger--model/model_url.glb": {
+			"bytes": 4899020,
+			"sha256": "03a99795ce6f92ed32a70d47e58fceea3f74c92ba3cce5197ec7b5ed3a62216a"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/f-bronze-dagger--model/rendered_image_url.webp": {
+			"bytes": 57224,
+			"sha256": "7aa65565206dfe9672910ff27bdca246b842023261c9981efbc9cd597a99fb01"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/f-bronze-dagger--model/task.json": {
+			"bytes": 2615,
+			"sha256": "09ea1964783976cc777b9affee81d19fa2e9ead25ab1d0885c7f00cd0a3a78c9"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/f-bronze-heavy-armor-boots--model/model_url.glb": {
+			"bytes": 3314776,
+			"sha256": "194ef6ba27a5ec1b6001d5d40354dc5ea678ae4ded0a9b1454c841f6cb8063bf"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/f-bronze-heavy-armor-boots--model/rendered_image_url.webp": {
+			"bytes": 146940,
+			"sha256": "480f3fb107ee147a9eb6f833825a79813fc9cfd206c169f051533ae6ed698018"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/f-bronze-heavy-armor-boots--model/task.json": {
+			"bytes": 2615,
+			"sha256": "aad58e5bf67cfddabf350f4b7a7be225d75a4d831b8d95431f6b1a86f711255c"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/f-bronze-heavy-armor-head--model/model_url.glb": {
+			"bytes": 3562524,
+			"sha256": "96c90b31af32cdcf4e7224eed392aada6ec15b060f266377812471050a770096"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/f-bronze-heavy-armor-head--model/rendered_image_url.webp": {
+			"bytes": 162870,
+			"sha256": "27ac562c4b5cfaf1c67e6ea8687e8e9ee750bbea7b50504b1c3fec2488ff820b"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/f-bronze-heavy-armor-head--model/task.json": {
+			"bytes": 2615,
+			"sha256": "0226e9e9eb0244fe26cd7b4dd2b134a8b614479f96dfc17a30a2f1def4edd2dc"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/f-bronze-heavy-armor-legs--model/model_url.glb": {
+			"bytes": 3324004,
+			"sha256": "9546a7d4216e81606bf1f92c21a3ffe3c04ccf3a2e98f7a4d7f523ec8ac9406b"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/f-bronze-heavy-armor-legs--model/rendered_image_url.webp": {
+			"bytes": 181076,
+			"sha256": "5d683f7510c6c2cec973aac241550c0c5eb9ac9182029179d05661c60c59a2e2"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/f-bronze-heavy-armor-legs--model/task.json": {
+			"bytes": 2615,
+			"sha256": "79f2eebe82c71df8d99f6ce8dedfee47d44e179815bcec97a1f1e874bbc1a714"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/f-bronze-heavy-armor-torso--model/model_url.glb": {
+			"bytes": 3696704,
+			"sha256": "37097405474417ff3a3d9344325f5d3ada3403476b91956e23c3c8fd1215d537"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/f-bronze-heavy-armor-torso--model/rendered_image_url.webp": {
+			"bytes": 204506,
+			"sha256": "2d4aa7992158b9ca4462b40fedfae33a40936fa89005dce6078e1d1768fdd36f"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/f-bronze-heavy-armor-torso--model/task.json": {
+			"bytes": 2615,
+			"sha256": "664b1acfe663426957a4b705e10585139738e5458c8836b9fdf4b5d6e96a93bf"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/f-bronze-mace--model/model_url.glb": {
+			"bytes": 4349260,
+			"sha256": "477a3fb8a478c7f3030386e30feea7aa5f637c382c5eb7dc1de011e6cb885358"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/f-bronze-mace--model/rendered_image_url.webp": {
+			"bytes": 48834,
+			"sha256": "094451a72070fdacf3046b48adf3322a625896dfa62b8bfc5082f83207deaf1b"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/f-bronze-mace--model/task.json": {
+			"bytes": 2615,
+			"sha256": "aec160a35ea58484327e0b1aa818f923262857faf535a87ba89ba3137b88b576"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/f-bronze-shield--model/model_url.glb": {
+			"bytes": 3869380,
+			"sha256": "e6a758da621491373fb1bfd4a6c9942730ecfa5e3a13fd5967efdf2d05203956"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/f-bronze-shield--model/rendered_image_url.webp": {
+			"bytes": 162436,
+			"sha256": "79c684ba9ec71f6d6e4bf8fb42c6d8240edce92ad2ae6862cc16cde81ed68714"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/f-bronze-shield--model/task.json": {
+			"bytes": 2615,
+			"sha256": "5985bf831c690376a41173df7f13983bb7c7762645378e6e802687062864ca17"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/f-bronze-spear--model/model_url.glb": {
+			"bytes": 3908668,
+			"sha256": "e6bfe7cf7f9cf9830a793756d523f8232b2e59a9930232c6b99b599910232bdd"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/f-bronze-spear--model/rendered_image_url.webp": {
+			"bytes": 32866,
+			"sha256": "6cc70098325dac50e49116b2e7d094dc2d7cb7847a66d1410fe1f0bd7857e468"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/f-bronze-spear--model/task.json": {
+			"bytes": 2615,
+			"sha256": "3e8c2f37693739dfb68df718b91ad2d021dd47d014148aa83a7a7d8ff02ee99b"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/f-bronze-sword--model/model_url.glb": {
+			"bytes": 4512464,
+			"sha256": "cbcdee9abbfdad287cc5c15c0c3007861c5955bca6dcf03be923db23c9d3ac0d"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/f-bronze-sword--model/rendered_image_url.webp": {
+			"bytes": 45020,
+			"sha256": "8b7a86cee98059e68bbad3c03d1965e250a0ebb7d84abd7e07d2834687d48ecf"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/f-bronze-sword--model/task.json": {
+			"bytes": 2615,
+			"sha256": "0c935c7ea39fd6d4a96c72897ef739c5ec19e114a1ceea4e46261c484ba59307"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/f-coarse-hide-light-armor-boots--model/model_url.glb": {
+			"bytes": 2989656,
+			"sha256": "98c9b4640716ebba5beb45f220b26a8dca85a3acfbaadf5bcd62c8bb5b68ef71"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/f-coarse-hide-light-armor-boots--model/rendered_image_url.webp": {
+			"bytes": 190566,
+			"sha256": "e8334cacccd22341e3c6e4b0a1d70666743bf86cbf360ff800551b43d0de04e2"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/f-coarse-hide-light-armor-boots--model/task.json": {
+			"bytes": 2615,
+			"sha256": "93bda79cd75d55b8053df143c5edad7f82dfa29f0d705b8962148e7614b80d2c"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/f-coarse-hide-light-armor-head--model/model_url.glb": {
+			"bytes": 4353260,
+			"sha256": "bdb498eaa5076b4390d1599a4fe9f9763d7490c2c0038cd7c34d0773a961d704"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/f-coarse-hide-light-armor-head--model/rendered_image_url.webp": {
+			"bytes": 172226,
+			"sha256": "1291645573757bfc3237f9d965c017b13fca8a066ec079a2a7740731030a3fc6"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/f-coarse-hide-light-armor-head--model/task.json": {
+			"bytes": 2615,
+			"sha256": "2f08b42eeb4ccb217f71fb934ec5d65ebd8fe42ec85b6e76c400ae5e50edfd2e"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/f-coarse-hide-light-armor-legs--model/model_url.glb": {
+			"bytes": 2864384,
+			"sha256": "d5099aed2ca33f470db0bb684e36dd69e9069926bb7741d629239c39639c97f1"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/f-coarse-hide-light-armor-legs--model/rendered_image_url.webp": {
+			"bytes": 223876,
+			"sha256": "270a67439f431255e29e6c417ec9b3ebb6538b701daea134497757ced5d78cf2"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/f-coarse-hide-light-armor-legs--model/task.json": {
+			"bytes": 2615,
+			"sha256": "317db451a5d4d35f6d7dda645c963cf74d9aec6f3774caccdff8a1726008e307"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/f-coarse-hide-light-armor-torso--model/model_url.glb": {
+			"bytes": 3721584,
+			"sha256": "47748205695c91333cc70929a1f0728f7dc08eb80bf7bcbf7f802a09e6373adb"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/f-coarse-hide-light-armor-torso--model/rendered_image_url.webp": {
+			"bytes": 213776,
+			"sha256": "639b193c899f1d7a67e43feeef08b18ff69cb8f1f4f2f3c70335188d26be7a60"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/f-coarse-hide-light-armor-torso--model/task.json": {
+			"bytes": 2615,
+			"sha256": "3e50296fd334cbf06c598e6dded915bfdee4b5939ad031e5b30636404385bc65"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/f-hemp-weave-robes-boots--model/model_url.glb": {
+			"bytes": 3308468,
+			"sha256": "f4fab69470f65f0abcc5ed0565aceec24cfd11fc27070540bb9c6f1db67a90de"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/f-hemp-weave-robes-boots--model/rendered_image_url.webp": {
+			"bytes": 140016,
+			"sha256": "b0f6344c81560c5a75e275308e6d8e1b0df110030c2d577461a89d97426cdb6b"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/f-hemp-weave-robes-boots--model/task.json": {
+			"bytes": 2615,
+			"sha256": "8290f5e77657b9b5f653a2e3d47162b4686b7fa5e9acdda91eaae7d5ca234094"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/f-hemp-weave-robes-head--model/model_url.glb": {
+			"bytes": 4513028,
+			"sha256": "3eedd8344e1ead9b05e0cc2a1cfae404dde19ac4325a51788507158501456b51"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/f-hemp-weave-robes-head--model/rendered_image_url.webp": {
+			"bytes": 235792,
+			"sha256": "147c0b2efce68072f1bf85925360d7459f6cfb9068eae9ae704d6f3fa2f4f963"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/f-hemp-weave-robes-head--model/task.json": {
+			"bytes": 2615,
+			"sha256": "8fddab71c8ee77e5ef459cfed54d83f0f0132c4bdf22d7d11a55ee9103b64c98"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/f-hemp-weave-robes-legs--model/model_url.glb": {
+			"bytes": 4428748,
+			"sha256": "4750a1ea983b0163964ac83570d8d47c5dfc67aceaff08354119ffabeb912f57"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/f-hemp-weave-robes-legs--model/rendered_image_url.webp": {
+			"bytes": 152560,
+			"sha256": "16c26edf9d6f35053c6c7519c4bff2b0d8b2385d77b59891ef690ef253f09324"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/f-hemp-weave-robes-legs--model/task.json": {
+			"bytes": 2615,
+			"sha256": "5a7a0aadc588bb58b0bc335e37cbf80c03aea2e540149b79db466cfa126d6d73"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/f-hemp-weave-robes-torso--model/model_url.glb": {
+			"bytes": 4188836,
+			"sha256": "385ea32069a20764c27960d278821d9e04a820b40cd9c435d838baee68846196"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/f-hemp-weave-robes-torso--model/rendered_image_url.webp": {
+			"bytes": 188128,
+			"sha256": "78542a64d63d78f3bf3234db96c9a3a70ee9b82eae11146a5a2b91235fba6482"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/f-hemp-weave-robes-torso--model/task.json": {
+			"bytes": 2615,
+			"sha256": "afb959aceeec2fc85724c414e7d4168ed5149c00f0c8cc147ae0551361c3ea95"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/fungalfolk-sporeling-neutral--anim-0/model_url.glb": {
+			"bytes": 5531252,
+			"sha256": "2f9d8b76ebc108d31ba6d5526c84d80ed341ade7eba60fb6062a3fc54add31e5"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/fungalfolk-sporeling-neutral--anim-0/task.json": {
+			"bytes": 1484,
+			"sha256": "71e3a8aaffdd8d7aebabd369286dfc804b17182bfcc0eaaad5dd0022288cad18"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/fungalfolk-sporeling-neutral--anim-1/model_url.glb": {
+			"bytes": 4540296,
+			"sha256": "a6003fd3c1c2bbbc8bafac639c3da98385c60b1ebf30d8fb198735160083f5d2"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/fungalfolk-sporeling-neutral--anim-1/task.json": {
+			"bytes": 1400,
+			"sha256": "eb71d4bfc85622405befdb9099823b861100e3f4326ca3e99f04e2549903ae39"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/fungalfolk-sporeling-neutral--image/generated_image_url.png": {
+			"bytes": 1011323,
+			"sha256": "fb5141a1564e41e492f4a505e2541fea0dbe6b1d75de77ec1f951e588c4965e3"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/fungalfolk-sporeling-neutral--image/task.json": {
+			"bytes": 2177,
+			"sha256": "8d9dba4683c608b5292c762150ebf3199c4de7b863a059a7b539580ebce5eb00"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/fungalfolk-sporeling-neutral--model/model_url.glb": {
+			"bytes": 4079176,
+			"sha256": "c4424b08352d60f828c98b19e7c81a4c003651a105250067b013361ac54a0508"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/fungalfolk-sporeling-neutral--model/rendered_image_url.webp": {
+			"bytes": 134082,
+			"sha256": "2531669230d2e6f4ee61dd7ed19b9642a992215f293030a642bf85760c5e948d"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/fungalfolk-sporeling-neutral--model/task.json": {
+			"bytes": 2614,
+			"sha256": "19985f7ab177a65bca8142c55183b277c973cd0d2a72606c715cef5dfe9955f2"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/fungalfolk-sporeling-neutral--rig-biped/model_url.glb": {
+			"bytes": 4414744,
+			"sha256": "31a620833c59c07cefeafce015c30470d512b44483e7e2b18bc7d668952fb6b2"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/fungalfolk-sporeling-neutral--rig-biped/rendered_image_url.webp": {
+			"bytes": 133684,
+			"sha256": "0960382a0117665c4992c20907f4acc15cf4be4cd291fef2db8050b7892320f4"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/fungalfolk-sporeling-neutral--rig-biped/task.json": {
+			"bytes": 2211,
+			"sha256": "f62ae41f6c7c11bab03271389d9dbdb5353565bfac7531151b7e37750fab5299"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/fungalfolk-sporeling-neutral--rig-check/task.json": {
+			"bytes": 400,
+			"sha256": "3abbd5d628428dfa64af02a9bf7b6b18552aa08874041626ed278a746c38b28a"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/gargoyle-grotesque-neutral--anim-0/model_url.glb": {
+			"bytes": 5330676,
+			"sha256": "2a1e944695453a9ee682129ed53ecfbb7415ed7a65ff12c8d865aebdd921f21a"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/gargoyle-grotesque-neutral--anim-0/task.json": {
+			"bytes": 1484,
+			"sha256": "2184b3ba0f9bb143546ec140d1aa073436b4ee15bba8d75522668adb896afa0f"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/gargoyle-grotesque-neutral--anim-1/model_url.glb": {
+			"bytes": 4340968,
+			"sha256": "1f63f1956c9b8661df7a7db0ded873ba06bb797d231c893378e251afff38310a"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/gargoyle-grotesque-neutral--anim-1/task.json": {
+			"bytes": 1400,
+			"sha256": "3cfbc781c256424ff4873c654ab454353d9425758e66e0890b2099944f2c8070"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/gargoyle-grotesque-neutral--image/generated_image_url.png": {
+			"bytes": 885505,
+			"sha256": "e53c810f4c4735fb573afeffdd961818f9315036fbdb3f145dff58e7a774ed7d"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/gargoyle-grotesque-neutral--image/task.json": {
+			"bytes": 2175,
+			"sha256": "5fe549fa8c9bc3c9462802824f0c70224e94bce05bca6097c4b8d72c49c88bda"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/gargoyle-grotesque-neutral--model/model_url.glb": {
+			"bytes": 3915892,
+			"sha256": "b315f0673d15fc20560b74decd697754a45b122a4d7534494df88bc664962b12"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/gargoyle-grotesque-neutral--model/rendered_image_url.webp": {
+			"bytes": 92926,
+			"sha256": "b4839f8efcdd35a268f086a71f82c03ace0b029c9c53c2165451303ebb1688fa"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/gargoyle-grotesque-neutral--model/task.json": {
+			"bytes": 2614,
+			"sha256": "df48a6b59c49f5242ced62befb3b64719f624e4cc69101d5d5692c6e28923a15"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/gargoyle-grotesque-neutral--rig-biped/model_url.glb": {
+			"bytes": 4215684,
+			"sha256": "a866466225c9a297b6890d3ac593325890c623fe33fc8343d7bf1566c3916b6c"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/gargoyle-grotesque-neutral--rig-biped/rendered_image_url.webp": {
+			"bytes": 92362,
+			"sha256": "5a0d0f816447aa58ddfca76112b0501a831a2219a033c2e4c8d12573f0f9b456"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/gargoyle-grotesque-neutral--rig-biped/task.json": {
+			"bytes": 2211,
+			"sha256": "01c61bd41185c598c97043a010b797fc25bde29c2496b4ceb821e8138fb74907"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/gargoyle-grotesque-neutral--rig-check/task.json": {
+			"bytes": 400,
+			"sha256": "572e1cd5d714d1a55cdcefee22cfbc59225b61535204630b19a73aedb4046b8e"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/giant-brute-neutral--anim-0/model_url.glb": {
+			"bytes": 5667384,
+			"sha256": "1d98e2f1c75b17d6e3b0e3e0e94f87f8f9b231398c0daf8b570b0bcf5e51748f"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/giant-brute-neutral--anim-0/task.json": {
+			"bytes": 1484,
+			"sha256": "570d41ef9552c365dd2aacf237f664e7cfc50675bf6afe32a3606b08e22b8286"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/giant-brute-neutral--anim-1/model_url.glb": {
+			"bytes": 4677492,
+			"sha256": "1e1db468476d6ff1bb3ed502b61e7737944dc08b64ecd978100bab9f7d6f4c78"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/giant-brute-neutral--anim-1/task.json": {
+			"bytes": 1400,
+			"sha256": "e838eb05cf6bede99034a775e030c8769aa1092b2fff4f5eb171d356132daaac"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/giant-brute-neutral--image/generated_image_url.png": {
+			"bytes": 949449,
+			"sha256": "382e233e8381ced2c1976968b0103bafb53377ac90b860b9736abc6b3d043998"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/giant-brute-neutral--image/task.json": {
+			"bytes": 2168,
+			"sha256": "1e3fd2db1dfd5953b09c924eac71ff2a6c83bbc06130c45d2d63843e7668ab79"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/giant-brute-neutral--model/model_url.glb": {
+			"bytes": 4095396,
+			"sha256": "1424ee421b96225e89b3eb7aac5a5c928efdbfb633bc1a60d53e0cf144bd8f1d"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/giant-brute-neutral--model/rendered_image_url.webp": {
+			"bytes": 101840,
+			"sha256": "6e47f05f02ae952ad9dd78ab70e87e362ccd463f3b01b68782b20f89e53a5fd6"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/giant-brute-neutral--model/task.json": {
+			"bytes": 2614,
+			"sha256": "648490dcc683c51f6fcb88bf8ebef08a819fbfaf39aeb8eb49a8c3b491603350"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/giant-brute-neutral--rig-biped/model_url.glb": {
+			"bytes": 4553196,
+			"sha256": "54e2df8234b6bae264d80b218cd5957e2713915976ca110113b3a12d39c6fa71"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/giant-brute-neutral--rig-biped/rendered_image_url.webp": {
+			"bytes": 102216,
+			"sha256": "47cdeb834075608c728d8fca52705bf14a2dfdb753b942361cfa9f00f4e5ce93"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/giant-brute-neutral--rig-biped/task.json": {
+			"bytes": 2211,
+			"sha256": "50018692a121f41969439ef56c8ba00ab0f53ec34a766fd9baa58d52de5958ae"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/giant-brute-neutral--rig-check/task.json": {
+			"bytes": 400,
+			"sha256": "e7976896cc11235e4b9d8587d95507a80ba3caab670adfff0ae48ab2b6348e2e"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/goblin-runt-neutral--anim-0/model_url.glb": {
+			"bytes": 5610364,
+			"sha256": "97575dcd17c734e1269e309173fdb4fc100df4e0d180ad65c59d33089fb1c730"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/goblin-runt-neutral--anim-0/task.json": {
+			"bytes": 1484,
+			"sha256": "607678c46f171a9eaad5ccb1768f2db8ecca652a0e5846655fe0bfb476f96a0c"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/goblin-runt-neutral--anim-1/model_url.glb": {
+			"bytes": 4618728,
+			"sha256": "bc3fd294404a0eb614cc23dee344bac67ce8b019f96bc9f08fe00348b334e47e"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/goblin-runt-neutral--anim-1/task.json": {
+			"bytes": 1400,
+			"sha256": "ddba7e48fa0065c7c765aadc2905052abf07922b2722f42608d847375fcc4cb2"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/goblin-runt-neutral--image/generated_image_url.png": {
+			"bytes": 928645,
+			"sha256": "ec4b92e42635f1861a2ae37b2386982178efb2363f7a075e1e9739111e206b66"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/goblin-runt-neutral--image/task.json": {
+			"bytes": 2168,
+			"sha256": "2a9c705b74c2d7757bb82766b750d00a9fedc92fad5e7a59127f7a37a17b8cbe"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/goblin-runt-neutral--model/model_url.glb": {
+			"bytes": 4049248,
+			"sha256": "41cb1bdd81f0d663698e2101cc5d5471e03ef63dfe60485783929042845f02a4"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/goblin-runt-neutral--model/rendered_image_url.webp": {
+			"bytes": 90982,
+			"sha256": "68e50e3d14ab2a961ada1c51b6a63422eae04e2eb429ddbe41f355c50fe2848a"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/goblin-runt-neutral--model/task.json": {
+			"bytes": 2614,
+			"sha256": "045965992ed2e4413fd81454bfb67d57cc5ba7f83a633990c4b6c6fa1d01f881"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/goblin-runt-neutral--rig-biped/model_url.glb": {
+			"bytes": 4494756,
+			"sha256": "ca3d5f2f7dadd3ff1999d310449c893648c166ef45d0867be98e984f16ece5e7"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/goblin-runt-neutral--rig-biped/rendered_image_url.webp": {
+			"bytes": 91022,
+			"sha256": "ef9c96161d41ba533875ceac9f26144db31df9b41195fdda3bdc4c2734dfb433"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/goblin-runt-neutral--rig-biped/task.json": {
+			"bytes": 2211,
+			"sha256": "5dbfcccf43f64632acf0baf9c64fec184663efc27ba2a81e8fd509980e5fa60e"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/goblin-runt-neutral--rig-check/task.json": {
+			"bytes": 400,
+			"sha256": "df788b6b87364b62c3e41e8952d1c437f787d6f606cd7beac9dc5103b232569f"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/golem-neutral--anim-0/model_url.glb": {
+			"bytes": 5564432,
+			"sha256": "59380b92a14aceabb14f17e5404a56318b2e5c06d16768353b166b6d422de6dd"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/golem-neutral--anim-0/task.json": {
+			"bytes": 1484,
+			"sha256": "410ad37428052e8dd01f19723d98545480e270330360ef3901f8a718b06259b6"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/golem-neutral--anim-1/model_url.glb": {
+			"bytes": 4574372,
+			"sha256": "b8583263544413c370945a303f8fac4791f3a5a02b268fa24f8519d333ca57aa"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/golem-neutral--anim-1/task.json": {
+			"bytes": 1400,
+			"sha256": "7e74fc306819881e2faeb5ae63e098a9468a3bbbc88a0385128996e716f8ebbe"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/golem-neutral--image/generated_image_url.png": {
+			"bytes": 1041260,
+			"sha256": "b97b0b5ae2d22aedb8ed4b88791b26532d599fc4db5dbd5ca9fa35bb4d5e0cf8"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/golem-neutral--image/task.json": {
+			"bytes": 2155,
+			"sha256": "78b6a94ae329537ad7c2d912170a9100f41a46a28ccbb260f714c59da56fd671"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/golem-neutral--model/model_url.glb": {
+			"bytes": 4150672,
+			"sha256": "226b1f25ba52d5676c8e821265c3f31f60ad4bbea062a71fb6f55278bc49206d"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/golem-neutral--model/rendered_image_url.webp": {
+			"bytes": 126540,
+			"sha256": "ca14707683cb6700867d7dd40ae090fb3a14a4a0a522c923ceb453057349c3f9"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/golem-neutral--model/task.json": {
+			"bytes": 2614,
+			"sha256": "e0d4a8d5293e6a708bb115d70c859683282b37f02415824e5081f5c113514897"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/golem-neutral--rig-biped/model_url.glb": {
+			"bytes": 4450476,
+			"sha256": "95d85d2cd68bfe0018a82184f43a3c19f2af67e35cb8d67f36880bbd035d3d0b"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/golem-neutral--rig-biped/rendered_image_url.webp": {
+			"bytes": 126674,
+			"sha256": "b49cbe09f86c7118d039c13c081dde7cd8b5a8d4ee75597fa56c12f663cffb36"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/golem-neutral--rig-biped/task.json": {
+			"bytes": 2211,
+			"sha256": "f906e453673c8e2c8082f2026a323d40f15cc8c70d2aee5a2bae6ffdccc2706b"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/golem-neutral--rig-check/task.json": {
+			"bytes": 400,
+			"sha256": "c98685a8ed1df2298876869d4e32016056e021b3b5dc33f7d8e5222a10478ff2"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/golem-neutral--rig-others/model_url.glb": {
+			"bytes": 4434888,
+			"sha256": "4c48a81edf9e9e59eea51d671b3b42c88d6062c39993d57040f0d4c519db94da"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/golem-neutral--rig-others/rendered_image_url.webp": {
+			"bytes": 126688,
+			"sha256": "154ce3d6ad82314a137b46bc4a72c78ea63143cbd05b422cdde83f01678129b2"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/golem-neutral--rig-others/task.json": {
+			"bytes": 2190,
+			"sha256": "99e20a1502794e795d0735696bbd60603b8a84035ab51ae07b1ca6dfc68e9a6f"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/great-cat-wildcat-neutral--anim-0/model_url.glb": {
+			"bytes": 5107748,
+			"sha256": "aa9cd49b54cc6b32fc45fe6ac062362008a5e36ed7cc0066e8fafb9631831adb"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/great-cat-wildcat-neutral--anim-0/task.json": {
+			"bytes": 1410,
+			"sha256": "1747991c2990c53684ee98fabc721690165dd37526babac8eace58bfa3c5a93c"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/great-cat-wildcat-neutral--image/generated_image_url.png": {
+			"bytes": 1033792,
+			"sha256": "586edfc7b5d56968025cab2b83bb1b836916c922b3ab419ff91ea36218bc0568"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/great-cat-wildcat-neutral--image/task.json": {
+			"bytes": 1796,
+			"sha256": "718ff98ea0f1d073e0f6d09378b85feb3c93ae8af075c1367a96ee07393dc32d"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/great-cat-wildcat-neutral--model/model_url.glb": {
+			"bytes": 4782628,
+			"sha256": "d64592fc96128a12c37ba717483d0ec444e1bf5c140c030a9460cd785589540f"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/great-cat-wildcat-neutral--model/rendered_image_url.webp": {
+			"bytes": 110388,
+			"sha256": "a4e4a5ad273e9204bd39b06fe73776aa439417c199dbba499d44f6c64965a072"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/great-cat-wildcat-neutral--model/task.json": {
+			"bytes": 2614,
+			"sha256": "128bd63fd015e20f34323b816f60ce249577c7e2d40b8c075f92db2dec61d8c4"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/great-cat-wildcat-neutral--rig-check/task.json": {
+			"bytes": 404,
+			"sha256": "962eaaa5951d34941cb9a6cfea0132485ff836ca40e47fb17d12b7a705724ebb"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/great-cat-wildcat-neutral--rig-quadruped/model_url.glb": {
+			"bytes": 5076536,
+			"sha256": "893da2034047cb3f7560b9a5773743e8968c676d07b99b1ba5a7dea0519102d5"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/great-cat-wildcat-neutral--rig-quadruped/rendered_image_url.webp": {
+			"bytes": 110762,
+			"sha256": "27c8428d96b12ac5466327461fa5a9c2034ebca80a194012e4094d3bbbd2abc5"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/great-cat-wildcat-neutral--rig-quadruped/task.json": {
+			"bytes": 2193,
+			"sha256": "4498cd25211b1d7fba24abbad50219931e25c4f8a2c38c0fc70099360aa27e8f"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/harpy-screecher-neutral--anim-0/model_url.glb": {
+			"bytes": 5912900,
+			"sha256": "48d88089e4ca90e9fecfe5d1a0290d2264684cecee6ae9a178febb5653b7ee5c"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/harpy-screecher-neutral--anim-0/task.json": {
+			"bytes": 1484,
+			"sha256": "fba1d65013c2805ba9d2f6940d87291efb037d8266642f3d79244674e655fd93"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/harpy-screecher-neutral--anim-1/model_url.glb": {
+			"bytes": 4924712,
+			"sha256": "0e9e4020a88166b151272883af35f2baea71e8d49e1fb8103f64395a08d3627e"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/harpy-screecher-neutral--anim-1/task.json": {
+			"bytes": 1400,
+			"sha256": "71ad892cc4885efeaffc064cadd0b25ae9d41362b878a6898908aaf7f403b9fa"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/harpy-screecher-neutral--image/generated_image_url.png": {
+			"bytes": 906896,
+			"sha256": "3270c418ee52c13c8f23e1ffe347d37fc7fdd85f5b7afe88f7e080523c1452db"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/harpy-screecher-neutral--image/task.json": {
+			"bytes": 2172,
+			"sha256": "69a8d66228f758546f1d60845f20d146df080ba1e30c543265bed860963c0ec2"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/harpy-screecher-neutral--model/model_url.glb": {
+			"bytes": 4376664,
+			"sha256": "96da737c73174d63f65c70110792b90071978f7b6cb50d219f783bf152e2c611"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/harpy-screecher-neutral--model/rendered_image_url.webp": {
+			"bytes": 70350,
+			"sha256": "6c1bb3cb4a526bd04a2958200cf12276e512697fda5c0aa12511314e9db65887"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/harpy-screecher-neutral--model/task.json": {
+			"bytes": 2614,
+			"sha256": "ec55440572ddd104115fed486f5637d20e2472097f2d3305105c02ea0e064125"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/harpy-screecher-neutral--rig-biped/model_url.glb": {
+			"bytes": 4799876,
+			"sha256": "29a38feeddcb6d3415919ce47cb5c76a869cb9de6ff20de7dbb7a8815a0aceaf"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/harpy-screecher-neutral--rig-biped/rendered_image_url.webp": {
+			"bytes": 70052,
+			"sha256": "639d208a74863b4cea4a13c55f9fc124b404f9610bd896bc8d18d875c0b0700e"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/harpy-screecher-neutral--rig-biped/task.json": {
+			"bytes": 2211,
+			"sha256": "928c0b717bb6d426630d92b097751fa4fb36eddd978dec6a0faa03bf795d87a6"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/harpy-screecher-neutral--rig-check/task.json": {
+			"bytes": 400,
+			"sha256": "b9a7f4e1884a824f112a0792aac07e70e0738e183f4a272cd9c5cdd02c15fac5"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/hawk-neutral--image/generated_image_url.png": {
+			"bytes": 897680,
+			"sha256": "a3c8983d291f33a7480f3fa7e6b7fb47d1e4ee62b992d8b548535c4d2f3c94ee"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/hawk-neutral--image/task.json": {
+			"bytes": 1735,
+			"sha256": "2ce9ea0d09eb94872c13a3d360c43c52275559ebb354edba05b267924db4dba2"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/hawk-neutral--model/model_url.glb": {
+			"bytes": 4855008,
+			"sha256": "4c5f3fc12ea006748d554f2dce11518c6625987373947e961c260fa6400ee2c2"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/hawk-neutral--model/rendered_image_url.webp": {
+			"bytes": 62788,
+			"sha256": "1e5bf234a18db5f726e21e70dfed5e90ab0918003bdab0ff878e411eba67e024"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/hawk-neutral--model/task.json": {
+			"bytes": 2614,
+			"sha256": "0dbc7631e87d982991c83e1f71c1c1e2d1eae6a2baf50eea1803fa644a9e8f64"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/hawk-neutral--rig-avian/model_url.glb": {
+			"bytes": 5128840,
+			"sha256": "239acdd59e778098fe712dab58871fac83433336f3ec2508579cc53894afd835"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/hawk-neutral--rig-avian/rendered_image_url.webp": {
+			"bytes": 58372,
+			"sha256": "fe58eee34b55a20fcf5562a6f159327e24d22bb9763cb1eb3aaf4cf04f32e20a"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/hawk-neutral--rig-avian/task.json": {
+			"bytes": 2189,
+			"sha256": "acea8a89afda976a1267b122042a4d1a35e1998b743a55da539ca376b5cca1ff"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/hawk-neutral--rig-check/task.json": {
+			"bytes": 400,
+			"sha256": "4ffceb684eda2fa5ce7c0d91cf1784c31f6fd8029d9dffa70bc81a4355279a82"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/hawk-original--model/model_url.glb": {
+			"bytes": 4860784,
+			"sha256": "fdaecb7457cde907ff259bdf563ea67b5c480ed98c3cf71e429fe28dcd1c7fdd"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/hawk-original--model/rendered_image_url.webp": {
+			"bytes": 132334,
+			"sha256": "aafd29723328278e4c02bc283758cbad815134299d302d6c165fa7b2f0802a99"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/hawk-original--model/task.json": {
+			"bytes": 2616,
+			"sha256": "ce182163a3ef57018018e07f136f79f1c193fa1577a5bc2fd1d4a96b2e834dc5"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/hawk-original--rig-check/task.json": {
+			"bytes": 401,
+			"sha256": "b55fbae4e082f003e5fe4bda4004e6f3e983dc904751c3d16cd3432c7b780480"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/helmet--model/model_url.glb": {
+			"bytes": 3767076,
+			"sha256": "ab34224f6239a400f57ea0422c42cf404c570d31c55edbc48fe6d5fd4849f1eb"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/helmet--model/rendered_image_url.webp": {
+			"bytes": 145310,
+			"sha256": "e1d49cedab3b2e7e944f617e3b79631892cf44044d73d8b858efca6f72069b44"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/helmet--model/task.json": {
+			"bytes": 2615,
+			"sha256": "c2feccd3e22daab6d8bee1d330c16eca2070add9b438025889c43a5eaa09bf6e"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/iana-joro-neutral--anim-0/model_url.glb": {
+			"bytes": 5136560,
+			"sha256": "a36ef0549d65afdb10a59cd585e5fbccdb32b2203e18caf09a8e8a16f20a6e82"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/iana-joro-neutral--anim-0/task.json": {
+			"bytes": 1484,
+			"sha256": "d05af0c34366ea50cb7cf19e502e458196ef3512906c62d51bf36a64aac9d8e4"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/iana-joro-neutral--anim-1/model_url.glb": {
+			"bytes": 4145904,
+			"sha256": "21341bf971aaa25bfa841a801d0404878e5828eaa145fe6c165393102a3920a2"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/iana-joro-neutral--anim-1/task.json": {
+			"bytes": 1400,
+			"sha256": "da12002cf97b9e56ea7470bffad79cc2d66d12cdbd1baf9e739bdee628397c2a"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/iana-joro-neutral--image/generated_image_url.png": {
+			"bytes": 904599,
+			"sha256": "8fc0d27adec80f75e139325a301dc1977321b968a30edd146e6784c9648bb743"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/iana-joro-neutral--image/task.json": {
+			"bytes": 2364,
+			"sha256": "10daaad2d633f56f7b39dca6332bf86eeceddf39a7af2b72935fa6e425a2aef4"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/iana-joro-neutral--model/model_url.glb": {
+			"bytes": 3686400,
+			"sha256": "0c1c7a589eb59ccf5752fe9d9ce6082682c512b63e472eb222edad1911846c03"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/iana-joro-neutral--model/rendered_image_url.webp": {
+			"bytes": 83042,
+			"sha256": "3a32214586a8fc6f12fd9a342ca1315a98623429e32bb3c7692b9dc7a7b03feb"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/iana-joro-neutral--model/task.json": {
+			"bytes": 2614,
+			"sha256": "c31e9664eea527190cddb237c57e564efbc5cd9df5a298936c07642e900119f0"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/iana-joro-neutral--rig-biped/model_url.glb": {
+			"bytes": 4020900,
+			"sha256": "44febdef8b6bdb0388616588721693d2160cb491c225431f3102719833ec0f26"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/iana-joro-neutral--rig-biped/rendered_image_url.webp": {
+			"bytes": 83594,
+			"sha256": "8c9b76b9d47be1166936cadca941b6fe302574b835a6e49c6070d7e98b55bc96"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/iana-joro-neutral--rig-biped/task.json": {
+			"bytes": 2211,
+			"sha256": "d4d1b853da4b98d9a211689517dd0040197ca42bf206a872c7ea88aad6a4ba5c"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/iana-joro-neutral--rig-check/task.json": {
+			"bytes": 400,
+			"sha256": "7f3c089a34fe86daf10f8e0c76982c74f050938dbe0832fa33da707e1e807350"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/insectoid-worker-neutral--anim-0/model_url.glb": {
+			"bytes": 4471900,
+			"sha256": "1cfb64754b61d9efb96c68061193337935aca4249e3ebefb090d71c1b3221e34"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/insectoid-worker-neutral--anim-0/task.json": {
+			"bytes": 1408,
+			"sha256": "730a997dd4d3c28daedbafea5f142cdbd1cbddb06c19bb839b67e5e7f83ffa7f"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/insectoid-worker-neutral--image/generated_image_url.png": {
+			"bytes": 397018,
+			"sha256": "459230dfbda16b8e1edc1a439a141d406b102623edd6074f418da89936090e9d"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/insectoid-worker-neutral--image/task.json": {
+			"bytes": 1729,
+			"sha256": "953e2e2d437b536a9bffbf9551f1357eadcc183d70aa2fdfd8bc9783185b75d8"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/insectoid-worker-neutral--model/model_url.glb": {
+			"bytes": 4024240,
+			"sha256": "e9f130ee3a8d5352b5615d098e24bb24c3e0e12075580252fc6eaba7ecd1b284"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/insectoid-worker-neutral--model/rendered_image_url.webp": {
+			"bytes": 162500,
+			"sha256": "11c95524fd36e9fcb4adb4fd769fc86d2fc9e041aaf53ed86fffb3457c09667c"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/insectoid-worker-neutral--model/task.json": {
+			"bytes": 2614,
+			"sha256": "7409b81dfdd7722b2787402e12f0230e980de5d10ef9980fc200c6bfaf3b0eb3"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/insectoid-worker-neutral--rig-check/task.json": {
+			"bytes": 402,
+			"sha256": "331f5bc7a47d2a8440e8bf42db2bdc1d22a3680183b759fa5af55392c3053127"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/insectoid-worker-neutral--rig-hexapod/model_url.glb": {
+			"bytes": 4457252,
+			"sha256": "9fc81d7dbf472b2a27a60cd0250e929107b259bd09d22d62eb9711bc41e6f49a"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/insectoid-worker-neutral--rig-hexapod/rendered_image_url.webp": {
+			"bytes": 162822,
+			"sha256": "1dafa8a2f6c4cf738bf6863041e062ece5820291025612b4dc4481512bbbbf9d"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/insectoid-worker-neutral--rig-hexapod/task.json": {
+			"bytes": 2191,
+			"sha256": "60a2982da00136fbc771ea312f26c949e3fee2bb7b20745620b49417d5cc156c"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/kelan-neutral--anim-0/model_url.glb": {
+			"bytes": 4870332,
+			"sha256": "32161cdd86e5e5530fad4748e86ee5ca6f8b994c331899b29905219f8752d2b7"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/kelan-neutral--anim-0/task.json": {
+			"bytes": 1484,
+			"sha256": "19364906d70f2a417425c0525281197c72ca5dd808cad52c0308f82744266ce8"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/kelan-neutral--anim-1/model_url.glb": {
+			"bytes": 3879440,
+			"sha256": "f0b8793ad95f7c160dad2157095408187a520a9532bd66ad566c24543feb03d0"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/kelan-neutral--anim-1/task.json": {
+			"bytes": 1400,
+			"sha256": "132b64c9c8c40d6f55ceecbe8faeaf4dde776cd262fe99987b7424ca7af7855a"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/kelan-neutral--image/generated_image_url.png": {
+			"bytes": 1014762,
+			"sha256": "ef0c7251e5815d55008357da509f7df6f921f38dc6d178dfaf0bf7d872d70c4e"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/kelan-neutral--image/task.json": {
+			"bytes": 2255,
+			"sha256": "3907faf0c87e4fd7e3b9b94a35aae1c53d45bf06d43f4210311f8c298397662a"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/kelan-neutral--model/model_url.glb": {
+			"bytes": 3322408,
+			"sha256": "01b4b8c24c0c9edebaaad30440632ad1a4691cf34b2376ae9dc32974782da54a"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/kelan-neutral--model/rendered_image_url.webp": {
+			"bytes": 111310,
+			"sha256": "af975a9204620d82b11936212411f45e3f781a30d633fce76f234866ff4a4787"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/kelan-neutral--model/task.json": {
+			"bytes": 2614,
+			"sha256": "d46c0624aeca441e7407396e1881e68d00fb6b3377b3f6800d368c804438c2d5"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/kelan-neutral--rig-biped/model_url.glb": {
+			"bytes": 3753372,
+			"sha256": "82a2b1b90b6d806d24b8bcd158f757d00f9c57054785f61fd8ed07d835a4e541"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/kelan-neutral--rig-biped/rendered_image_url.webp": {
+			"bytes": 111294,
+			"sha256": "b6845a97de454ce0c5fa12f7fd50397420db8cd029bd5cce7fe2f0e6857c305e"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/kelan-neutral--rig-biped/task.json": {
+			"bytes": 2211,
+			"sha256": "78da8820e5260fd01ad069600023bf46c4cd6527d6d9232acc2bdb87145852c2"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/kelan-neutral--rig-check/task.json": {
+			"bytes": 400,
+			"sha256": "233479586d7cea1438947cb3e4dd363b8034228ddb9e42346dcca6cf887b37d3"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/lania-eshan-neutral--anim-0/model_url.glb": {
+			"bytes": 5000480,
+			"sha256": "4ccac45557e5efacb58e19d93e9af6f666bcf807f8da2d79e5a09301e7f88104"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/lania-eshan-neutral--anim-0/task.json": {
+			"bytes": 1484,
+			"sha256": "c80e3a61b07f3bbbb1f65f67bf751304caaf9efae1fe8c720d43ef27c2e0c06a"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/lania-eshan-neutral--anim-1/model_url.glb": {
+			"bytes": 4009312,
+			"sha256": "edb8dc427c5fc9395509da1014894a8e748f8efbc073f53062281e1d068f87ae"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/lania-eshan-neutral--anim-1/task.json": {
+			"bytes": 1400,
+			"sha256": "79c85031ea88d96362a330339bf3a60683d18809fcbe7400fa49a60308592402"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/lania-eshan-neutral--image/generated_image_url.png": {
+			"bytes": 998574,
+			"sha256": "0ac9203eea98f387fba7747b2554d9c545f4404071474c8cbe599dbf7c8f5326"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/lania-eshan-neutral--image/task.json": {
+			"bytes": 2403,
+			"sha256": "5bf07375138b4007afc2f816b1f22bbe6af939168b1acc08bd0202e36098f33c"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/lania-eshan-neutral--model/model_url.glb": {
+			"bytes": 3519960,
+			"sha256": "bfb4f67e2015fbacdd1ec58c766a6530ed298906eab0afd124c8ced9f09e55b3"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/lania-eshan-neutral--model/rendered_image_url.webp": {
+			"bytes": 108510,
+			"sha256": "42eec081f138765166ea92358a7cf4686416b08035e61bf235a90d93e92025d8"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/lania-eshan-neutral--model/task.json": {
+			"bytes": 2614,
+			"sha256": "1ebe8eb33cb7662030a428a6c76830cfa31f883ec2fd6fe5aa8b31db26cc9edb"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/lania-eshan-neutral--rig-biped/model_url.glb": {
+			"bytes": 3885264,
+			"sha256": "fdba3d000b43a2e9b985fa06c3bbc0a15867d335d240b6b28a8340bf444104ef"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/lania-eshan-neutral--rig-biped/rendered_image_url.webp": {
+			"bytes": 108404,
+			"sha256": "575a181c8f5dea64a3888cc3ff66f39c3692c6f962b01f030b54fceb1fff90b9"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/lania-eshan-neutral--rig-biped/task.json": {
+			"bytes": 2211,
+			"sha256": "04aaf21bcbce71729e137ff0ae4ea85cce2a7a4bfb75b6e74a6957226b74e5c4"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/lania-eshan-neutral--rig-check/task.json": {
+			"bytes": 400,
+			"sha256": "64e2136176f2d7a29ec2981933db6b58019bf4d49debe96e60782c448e118780"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/lizardfolk-scout-neutral--anim-0/model_url.glb": {
+			"bytes": 5859064,
+			"sha256": "2b7dd6383befd0cf75fb96da195e1a759185d3ea79ed17227dfe0f52065388d0"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/lizardfolk-scout-neutral--anim-0/task.json": {
+			"bytes": 1484,
+			"sha256": "f8472340bd03af3470c2e9b485e994a25df5d6c973649c188c7cbc0776d5acd7"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/lizardfolk-scout-neutral--anim-1/model_url.glb": {
+			"bytes": 4868872,
+			"sha256": "4052330580d58df68b6337263d30bde5abdda4913586c5e33a1b80689d5480ea"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/lizardfolk-scout-neutral--anim-1/task.json": {
+			"bytes": 1400,
+			"sha256": "4785ee7de4bc30a5857af52ae118e72cf66d225c1072db54f016bf4fa39415d3"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/lizardfolk-scout-neutral--image/generated_image_url.png": {
+			"bytes": 959621,
+			"sha256": "573d7eecea3698acdb09a7085715f2b8dce659cd2565befc286c5051063dd4e9"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/lizardfolk-scout-neutral--image/task.json": {
+			"bytes": 2173,
+			"sha256": "6051d06d61aedfd7a809d41c2cd1dbbb1ec191e1b42019a74e05eca430e24bdc"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/lizardfolk-scout-neutral--model/model_url.glb": {
+			"bytes": 4423444,
+			"sha256": "900922eb41b2521e83ee34f126d9a2ca8b399a5e50dea654323729fe7275cbc5"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/lizardfolk-scout-neutral--model/rendered_image_url.webp": {
+			"bytes": 88444,
+			"sha256": "1c0a009490740f8bcfe7f9aa7da967a900469008154ba8d906462b18f4687c52"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/lizardfolk-scout-neutral--model/task.json": {
+			"bytes": 2614,
+			"sha256": "a8adbed385f5ece08aec95266e53d63a9edfd95790ad4517256cdda9dd7bf48d"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/lizardfolk-scout-neutral--rig-biped/model_url.glb": {
+			"bytes": 4744368,
+			"sha256": "1b8924f50feeb85701e3164c0f4529b5a789a582b73e28b33da00ae0cecee5a7"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/lizardfolk-scout-neutral--rig-biped/rendered_image_url.webp": {
+			"bytes": 88538,
+			"sha256": "d3733006945591ed2a61efb685955659e75434fe5952b631ecd6421c80f16e96"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/lizardfolk-scout-neutral--rig-biped/task.json": {
+			"bytes": 2211,
+			"sha256": "d716c973a73e2828094e399d1072525744a7da1bbc5eb0cd54adb225601739e9"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/lizardfolk-scout-neutral--rig-check/task.json": {
+			"bytes": 400,
+			"sha256": "d9436a3ce53c3ba508274e1227788abcbe79a04e88709fb888f265e71f2a5f95"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/minotaur-bull-kin-neutral--anim-0/model_url.glb": {
+			"bytes": 5391600,
+			"sha256": "bbae985e3a2e7cbbe832063728018e79ec09f982f8c4bd88007b65d912e2d7bb"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/minotaur-bull-kin-neutral--anim-0/task.json": {
+			"bytes": 1484,
+			"sha256": "0465f7ef5ce93435da3c0eb91530cc26a9faa9c4319cec5201f3cf975ef701f1"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/minotaur-bull-kin-neutral--anim-1/model_url.glb": {
+			"bytes": 4400644,
+			"sha256": "9ecfc7f72a18dece9af61d4e55f5b87ddc78254a04667e8065be2a170878edce"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/minotaur-bull-kin-neutral--anim-1/task.json": {
+			"bytes": 1400,
+			"sha256": "ace8e8bcedf38fd8c18fa3067eabba2f7f6da653c4b1408ba6296f268f409a42"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/minotaur-bull-kin-neutral--image/generated_image_url.png": {
+			"bytes": 914019,
+			"sha256": "8d0de00e38b26ee2c77a98bbd4b7f8128a43cee9c7209a9aa24c1a08795f7d77"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/minotaur-bull-kin-neutral--image/task.json": {
+			"bytes": 2174,
+			"sha256": "ad60bfeed08efbe7de2a6561b22f8cab3a2ba8dab8bd069ffd03c20d6b268f7f"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/minotaur-bull-kin-neutral--model/model_url.glb": {
+			"bytes": 3814904,
+			"sha256": "614d173de4a7ab24c7011fa9d79faffd30d2f4b45c2c5bf0414ddb5be88e73e3"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/minotaur-bull-kin-neutral--model/rendered_image_url.webp": {
+			"bytes": 94738,
+			"sha256": "fd57f3eabb33be54279625fec0adb5e211f9b9ac08353737df8e13394ba49d84"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/minotaur-bull-kin-neutral--model/task.json": {
+			"bytes": 2614,
+			"sha256": "2e2c9223a351ed05e2174ecb6770180ac84f925790216377188240382c59f2c5"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/minotaur-bull-kin-neutral--rig-biped/model_url.glb": {
+			"bytes": 4276612,
+			"sha256": "97f9fb0779725a69060324e1dfc2aa67703e4c36d0cfdc3d3c10cecacae96ba6"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/minotaur-bull-kin-neutral--rig-biped/rendered_image_url.webp": {
+			"bytes": 94828,
+			"sha256": "41f2752a18dd595d232bc7dc3effcdedc10db8f79de60a81f4604830b88ffb51"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/minotaur-bull-kin-neutral--rig-biped/task.json": {
+			"bytes": 2211,
+			"sha256": "92046a37868637615ba1f7e8c8a6c3a630268f1236a8ffcbcb7254f2eee979a8"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/minotaur-bull-kin-neutral--rig-check/task.json": {
+			"bytes": 400,
+			"sha256": "b418b985a6ef289bd93980e054463a4e62087ce2e56e24465ecffcecc19e218c"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/mummy-husk-neutral--anim-0/model_url.glb": {
+			"bytes": 5730768,
+			"sha256": "e18df1cf185ecbf16246fcd4e4089c9c4d242c279f5a37fb7493c7da90e5b0c6"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/mummy-husk-neutral--anim-0/task.json": {
+			"bytes": 1484,
+			"sha256": "2b25695ec27cce737b6254e11a76c7f6bb88b7b03c972b689ccf8a1c1ced87ba"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/mummy-husk-neutral--anim-1/model_url.glb": {
+			"bytes": 4739692,
+			"sha256": "9a4507274b358a0cda387dafbd2e3f80c084f05095297ed14bba212cf70324fd"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/mummy-husk-neutral--anim-1/task.json": {
+			"bytes": 1400,
+			"sha256": "f210e238f8473aff85d47547ef42ddf4f5fc203c6e72e44a054c20f6a4374fa8"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/mummy-husk-neutral--image/generated_image_url.png": {
+			"bytes": 1000830,
+			"sha256": "1a34580c1e1481857b150ee3cb8af6db8c2b5ec9380db8e4e9d14e48a71ae5d3"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/mummy-husk-neutral--image/task.json": {
+			"bytes": 2167,
+			"sha256": "290592834f873b7fadd92e931c0022ebf07157b52af14dee0924c70d5d4aa0bc"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/mummy-husk-neutral--model/model_url.glb": {
+			"bytes": 4204596,
+			"sha256": "3b26763e4f0352f51c333477f7fc606204602b829dcc0b5429ca2d3aafb6ea65"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/mummy-husk-neutral--model/rendered_image_url.webp": {
+			"bytes": 92414,
+			"sha256": "2b964c1c1c34a00d410b0441c8f1e7a7aaa007f5744e74e8e10837e135296aae"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/mummy-husk-neutral--model/task.json": {
+			"bytes": 2614,
+			"sha256": "86ac7e7bea0e69586442551cf4e606792326b242ab54955627bbc8c132bfd9b5"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/mummy-husk-neutral--rig-biped/model_url.glb": {
+			"bytes": 4616656,
+			"sha256": "a70bcd61f82de1be736aa913bf49a2aada04372ab71573a424b157ae17a40a36"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/mummy-husk-neutral--rig-biped/rendered_image_url.webp": {
+			"bytes": 92676,
+			"sha256": "1f3d142af924334d31690a37b38604cbfe324b9f5acbcd8a4ab894110b84ba5e"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/mummy-husk-neutral--rig-biped/task.json": {
+			"bytes": 2211,
+			"sha256": "cda1521e7da2bfb73b7a93b90e2abe9665295694796b4690fcc23f4e12336464"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/mummy-husk-neutral--rig-check/task.json": {
+			"bytes": 400,
+			"sha256": "b68718dd4fb47881b29d6d7af8375c0ff582ecddec4fa071837afbf297bc4e3d"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/oran-keshi-neutral--anim-0/model_url.glb": {
+			"bytes": 5096104,
+			"sha256": "edd10efc273fb4d910b5bbeb3d0ff033c28b39bed144bde73669666c53701ac4"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/oran-keshi-neutral--anim-0/task.json": {
+			"bytes": 1484,
+			"sha256": "d561e4f029f73f41060a85304c3781c0cd4002a513145701abc4ed8dc262ba6b"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/oran-keshi-neutral--anim-1/model_url.glb": {
+			"bytes": 4104604,
+			"sha256": "0a7f98f213b1650650d75ae54b026279ffefb21eef5284366b4ae44bac213a55"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/oran-keshi-neutral--anim-1/task.json": {
+			"bytes": 1400,
+			"sha256": "f903085c678e7c9b27206b1d8d2139a6800929e2fe60483d68be268b4db215a2"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/oran-keshi-neutral--image/generated_image_url.png": {
+			"bytes": 281987,
+			"sha256": "34eb2d3bb8b2188fe908e5d23ac7c09e6f80cf9808856eacce6363c79898d7ae"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/oran-keshi-neutral--image/task.json": {
+			"bytes": 2369,
+			"sha256": "b06301ae94954640b746fb22d67e37a6521832e3667f22fc81e3ad45dbadca54"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/oran-keshi-neutral--model/model_url.glb": {
+			"bytes": 3580220,
+			"sha256": "49b2332e3aedd1d542846063803947432edf07ea76452feaac0974c35b1f1db4"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/oran-keshi-neutral--model/rendered_image_url.webp": {
+			"bytes": 99784,
+			"sha256": "198e87a843748df9ce40158d5a1702e49e602929ecd471b83b39d3d965e82ee4"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/oran-keshi-neutral--model/task.json": {
+			"bytes": 2614,
+			"sha256": "e4d9101e2321cd0becfd76273cfd5cfa5de88e4de62a8db5d61fab6e7e7398b8"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/oran-keshi-neutral--rig-biped/model_url.glb": {
+			"bytes": 3979676,
+			"sha256": "692d61649bbc38355819b4fb74c929af98ef7d48686d57f8006270f4fa476293"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/oran-keshi-neutral--rig-biped/rendered_image_url.webp": {
+			"bytes": 100224,
+			"sha256": "d8004a3905e4af5aeb428859c88690779b72427a1db85c92b52b5b133f3d483c"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/oran-keshi-neutral--rig-biped/task.json": {
+			"bytes": 2211,
+			"sha256": "dbded81892d3118355b3a02380b566309a36ffaa305ef0aa8425929d982bc1ca"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/oran-keshi-neutral--rig-check/task.json": {
+			"bytes": 400,
+			"sha256": "888c48af0ccc2960483312227579ad3e199581d8710c856a07f248934499b046"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/orc-grunt-neutral--anim-0/model_url.glb": {
+			"bytes": 5499252,
+			"sha256": "19539f8c9172528b02dbcfc21043e2e8236362b41dd0c7675d1d3947c527e52d"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/orc-grunt-neutral--anim-0/task.json": {
+			"bytes": 1484,
+			"sha256": "925e1a7dbc16a0b491069972724a25654e6de122191ef620c232b5717bc003ab"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/orc-grunt-neutral--anim-1/model_url.glb": {
+			"bytes": 4509468,
+			"sha256": "bb17fa1c1d3b24a2afdcf9080eca464308663a74a99b873e465d176b843c955e"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/orc-grunt-neutral--anim-1/task.json": {
+			"bytes": 1400,
+			"sha256": "f4f13ec5e6a4e45667b975171624edea1877343d6689b92d672f31135e63cd62"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/orc-grunt-neutral--image/generated_image_url.png": {
+			"bytes": 949061,
+			"sha256": "ee5c0c3895dc5dc0afb37eb6b417beb08ac36c8502617d2fa7340b008569afd8"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/orc-grunt-neutral--image/task.json": {
+			"bytes": 2166,
+			"sha256": "95dde87a8262363f025281420cf9f566eb307661515e1403cad2d3f6befa3345"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/orc-grunt-neutral--model/model_url.glb": {
+			"bytes": 3933028,
+			"sha256": "3b2e1d550af721b45eb8decbcc96d324a6581bb66b70c61945a9cf89cf92a929"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/orc-grunt-neutral--model/rendered_image_url.webp": {
+			"bytes": 91914,
+			"sha256": "8f3608c88f64382335513c821f9b8cebb2149ee9a38a54b7d34c00a148f57fa4"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/orc-grunt-neutral--model/task.json": {
+			"bytes": 2614,
+			"sha256": "edec691fae4377761472ba6f941ffbbfc6514f5ddb18180a33fdd68f14c0114e"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/orc-grunt-neutral--rig-biped/model_url.glb": {
+			"bytes": 4384816,
+			"sha256": "50f25395435e6192edf4752c57e662473044bbb10b284f68ce9ff8218a92f4a3"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/orc-grunt-neutral--rig-biped/rendered_image_url.webp": {
+			"bytes": 91980,
+			"sha256": "954a492dfe4c2fdb66060a1a313a57b98dfbe45f4fcef241107ed2d420d2f178"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/orc-grunt-neutral--rig-biped/task.json": {
+			"bytes": 2211,
+			"sha256": "078db136756d8a6dcb01637793bd88fe1fcc48a4b653f224829e10d99d15bce2"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/orc-grunt-neutral--rig-check/task.json": {
+			"bytes": 400,
+			"sha256": "eb4fa51fdc2cae3f6be7c60d6551905c89e6d84ee2e796c4cbfe07a387bb21b3"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/rao-falin-neutral--anim-0/model_url.glb": {
+			"bytes": 4908444,
+			"sha256": "f7d010d2a609efb33f6e0cbdee9c16fc158d1a5ec885f2b75a5f779e0615b600"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/rao-falin-neutral--anim-0/task.json": {
+			"bytes": 1484,
+			"sha256": "e88898a8e654ec917b0975b3a8930018be4a8476114ea11bc46f22afb52d38c5"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/rao-falin-neutral--anim-1/model_url.glb": {
+			"bytes": 3918796,
+			"sha256": "7a39aaab44b65986a5efa58988e488cc4256c3433e6e1e11f22a58371fc931cf"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/rao-falin-neutral--anim-1/task.json": {
+			"bytes": 1400,
+			"sha256": "883a09ac64689d22ea0f215b68f11b64007b4c582621d62fed4d5c8697f43e81"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/rao-falin-neutral--image/generated_image_url.png": {
+			"bytes": 974550,
+			"sha256": "a1165d73c617ea179b2b6caf4648284e35c0e68f2eef2b296f886966ee0e66bc"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/rao-falin-neutral--image/task.json": {
+			"bytes": 2389,
+			"sha256": "2318be33dd3411f32ecd9162727c2450335d2e3f6cb49d3a1fe588d20c59ac8e"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/rao-falin-neutral--model/model_url.glb": {
+			"bytes": 3475272,
+			"sha256": "e80d580925e608c2432e577925dfea68adac40d0454969766fd3977c3c20d146"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/rao-falin-neutral--model/rendered_image_url.webp": {
+			"bytes": 91020,
+			"sha256": "7b2bb9995e51f829395d4f42a4d758b0579477612465f9d854509dc4cc3ec23e"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/rao-falin-neutral--model/task.json": {
+			"bytes": 2614,
+			"sha256": "1f1fa7785cd4596c7a6f582753ad4afe59c68ec071e8c8ee458e505d756a6ba4"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/rao-falin-neutral--rig-biped/model_url.glb": {
+			"bytes": 3794336,
+			"sha256": "707d7a8093b1b4c9b15d51d0c91238c10d1d479cf1bcc854f9283470c054f801"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/rao-falin-neutral--rig-biped/rendered_image_url.webp": {
+			"bytes": 91018,
+			"sha256": "919dfe6c5ce91d9528c0915be14cc45f4af482465088a88874606a060ea1ec36"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/rao-falin-neutral--rig-biped/task.json": {
+			"bytes": 2211,
+			"sha256": "8a4b58de5e1b7ad69370b59fb82dc9e660d16f2688f1a1e17e0588709bd810ae"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/rao-falin-neutral--rig-check/task.json": {
+			"bytes": 400,
+			"sha256": "afb38b00c2f12bdfbb522aa0f59403183282a1fa751c25c391ab8c78964fe3ee"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/raptor-night-owl-neutral--image/generated_image_url.png": {
+			"bytes": 976180,
+			"sha256": "3feec2a200375c35c2dab4c5d5d35e5e74a8ea4acae1205113d187f490246375"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/raptor-night-owl-neutral--image/task.json": {
+			"bytes": 1756,
+			"sha256": "da7fdab7ade6a7eff308e58ed8919bd15cb512fe42faed266942a4896e32d18d"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/raptor-night-owl-neutral--model/model_url.glb": {
+			"bytes": 5115492,
+			"sha256": "3154dcb32ffcf6388e185b820eda0a0b020c75eddbaa82dd8a271a1296b0a3fb"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/raptor-night-owl-neutral--model/rendered_image_url.webp": {
+			"bytes": 121512,
+			"sha256": "26f20be0f2d993d619d86a75a93170592a0defdce98f7686c84dbd1363acebce"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/raptor-night-owl-neutral--model/task.json": {
+			"bytes": 2614,
+			"sha256": "74748bae762bd74903bb8db3afc7e35512d35409dfcce9ad8366af93dd2a6b3f"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/raptor-night-owl-neutral--rig-avian/model_url.glb": {
+			"bytes": 5448592,
+			"sha256": "81ac646a74017f406ec77c0c95ace78b174877370f3d1fe08686f100498b0acd"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/raptor-night-owl-neutral--rig-avian/rendered_image_url.webp": {
+			"bytes": 121350,
+			"sha256": "bdecbefc0949d573aff682611dd014eeca6c45175e986baeab9d832ccfe01896"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/raptor-night-owl-neutral--rig-avian/task.json": {
+			"bytes": 2189,
+			"sha256": "52d0b553f00d05d6ae32f6dd7d724e411a73f09284d056b71e3ae966e3424884"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/raptor-night-owl-neutral--rig-check/task.json": {
+			"bytes": 400,
+			"sha256": "d75a42f0acee17929d7a0a288b4005d85ef6fd4f1ab121e5aa7258d7148d45fa"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/rotwalker-shambler-neutral--anim-0/model_url.glb": {
+			"bytes": 6370468,
+			"sha256": "5256ee3a5a8e6e82a6ebe8667fba7433bd3fd403a722ea7d2753d58b4c81b80e"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/rotwalker-shambler-neutral--anim-0/task.json": {
+			"bytes": 1484,
+			"sha256": "792669d313087f5e79568d3fbe09b7c4035b6e429e5cbd582c7ac9863a2360ad"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/rotwalker-shambler-neutral--anim-1/model_url.glb": {
+			"bytes": 5379432,
+			"sha256": "6284332679703d74767c384335f6ae343d73c10ca45a7ea7c8ee99f7f49accda"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/rotwalker-shambler-neutral--anim-1/task.json": {
+			"bytes": 1400,
+			"sha256": "b4fdcd33f68841c3128e1ae02491aa66c294e7798e4f06e21c7da5f5a8bd1b7b"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/rotwalker-shambler-neutral--image/generated_image_url.png": {
+			"bytes": 384179,
+			"sha256": "a8bdd28aa868ac4d147f4a17dc61a82fede14e248400057f8787a53fb98230d3"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/rotwalker-shambler-neutral--image/task.json": {
+			"bytes": 2175,
+			"sha256": "0fbadbf6b7708d811371c4c3db2a0069f4e0b4d7cc51030c45ec2f6b87b24f55"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/rotwalker-shambler-neutral--model/model_url.glb": {
+			"bytes": 4787380,
+			"sha256": "8e5d086c1b3261ced174ac8aed42d8ba5f41ccf3c109e86662312323c3cd528a"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/rotwalker-shambler-neutral--model/rendered_image_url.webp": {
+			"bytes": 95770,
+			"sha256": "87a7541326536b28343505738ab9141da1a70296a7330eb0cf9d5a4cc8c4f331"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/rotwalker-shambler-neutral--model/task.json": {
+			"bytes": 2614,
+			"sha256": "4d1a859419769fa69be0fcac05088ecb2aeab54669cfcc148559fa32da102ec3"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/rotwalker-shambler-neutral--rig-biped/model_url.glb": {
+			"bytes": 5254856,
+			"sha256": "1212b9e49d5ae8039a0ee85afc1bbb452fdcb33311dc68ffbb0b3c2a63152711"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/rotwalker-shambler-neutral--rig-biped/rendered_image_url.webp": {
+			"bytes": 99794,
+			"sha256": "efb7aa9c59551b3257021e177c33cf9fb5e411851067f7bbdef39e91c6aa7007"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/rotwalker-shambler-neutral--rig-biped/task.json": {
+			"bytes": 2211,
+			"sha256": "cdfcb9dc0fe7c509a9850311b9bf0567fb0172fdeeab24f7d150685bc6f0c13f"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/rotwalker-shambler-neutral--rig-check/task.json": {
+			"bytes": 400,
+			"sha256": "1a2248991fe16fd9c1066fb65312d6e531557581a10094f4b8836c752de74c44"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/senia-lorel-neutral--anim-0/model_url.glb": {
+			"bytes": 5371724,
+			"sha256": "8f8f6405deb3004a23719efa6be9da6da7772dbab506530026aa6a9576e13be0"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/senia-lorel-neutral--anim-0/task.json": {
+			"bytes": 1484,
+			"sha256": "cc93606fdc2b9d75d0be5e8e9e76fabfa160e27ce8f7136d037cdc198b864eb7"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/senia-lorel-neutral--anim-1/model_url.glb": {
+			"bytes": 4379652,
+			"sha256": "dc7cc9a7334354a5c5b04d078563f20390315c888d6c6cc260e1b1cb37122d89"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/senia-lorel-neutral--anim-1/task.json": {
+			"bytes": 1400,
+			"sha256": "4bb7e383339bea9ed4d8903a5bbdd97c5d1ec802e981797709f30bf95142d9ee"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/senia-lorel-neutral--image/generated_image_url.png": {
+			"bytes": 325468,
+			"sha256": "fdf3e8c8c0d39777cc51d75d63b4ef5a9ab27c8bc5ba2b0d04d63d4ddcb2ff6a"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/senia-lorel-neutral--image/task.json": {
+			"bytes": 2381,
+			"sha256": "3f301cb323aada81d0be964a60a68b39ca8e23d4ea0e00578bc73f4c653dd369"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/senia-lorel-neutral--model/model_url.glb": {
+			"bytes": 3838512,
+			"sha256": "066aa2d7a7154518bcfbcae64e78d09f8cf5fa4c7484ffa14ee193f487c514c3"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/senia-lorel-neutral--model/rendered_image_url.webp": {
+			"bytes": 104116,
+			"sha256": "b4a5e3e5f79b8a1b16a2c54d8f8803085dc8fead133cd01cabf38758d9345296"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/senia-lorel-neutral--model/task.json": {
+			"bytes": 2614,
+			"sha256": "dda6a5d04477d4e02020aa31eb94fe9af925f5c124c87b92693853f2f1c2beb4"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/senia-lorel-neutral--rig-biped/model_url.glb": {
+			"bytes": 4254752,
+			"sha256": "c80e330bd063c0273996288d1ae041837ccdfdfad591ec90be53dba995427c83"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/senia-lorel-neutral--rig-biped/rendered_image_url.webp": {
+			"bytes": 103900,
+			"sha256": "97ba72edbda4430db5eb07731a350ddc425c5e487b1605394fb65d95624fd8e1"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/senia-lorel-neutral--rig-biped/task.json": {
+			"bytes": 2211,
+			"sha256": "3c6dfc1a1597dc5c835bb80f536d73569c0a1844a333586c488b10f1b929cb18"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/senia-lorel-neutral--rig-check/task.json": {
+			"bytes": 400,
+			"sha256": "2e75f8ea70eda28c138fda48e71f60df78b20f4055cfaedbb1c77bc21ddc0233"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/serpent-adder-neutral--anim-0/model_url.glb": {
+			"bytes": 5882988,
+			"sha256": "9f39e306270f26341917923d51e8cbd6222bf8779a7c604210db6b36ac22ef33"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/serpent-adder-neutral--anim-0/task.json": {
+			"bytes": 1412,
+			"sha256": "7fdf30d6036b54f53f6f4f8084256075b0c4e5d0310bff81e2dfaeb5aa3a31f1"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/serpent-adder-neutral--image/generated_image_url.png": {
+			"bytes": 1038527,
+			"sha256": "cbac2f18d541fb2b75f54a21345550d338df8f274088198a9024eaa8ed042401"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/serpent-adder-neutral--image/task.json": {
+			"bytes": 1718,
+			"sha256": "2087ecd67f61482e175bf34fdc2611425ce928d786d6049fc9a79f76aa7be4eb"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/serpent-adder-neutral--model/model_url.glb": {
+			"bytes": 5591472,
+			"sha256": "3cf8feb02afc3063921371f36a8fc8bcda7b0cd3cb8adaf5d3672c7581bace79"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/serpent-adder-neutral--model/rendered_image_url.webp": {
+			"bytes": 149656,
+			"sha256": "8cfb3183d03a61c54be4a48a5c78d59219e188ccf1f5ba170ed7bf01c5b89f2d"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/serpent-adder-neutral--model/task.json": {
+			"bytes": 2614,
+			"sha256": "74cc7aea4c4a735b6ca2369ea8f1515281b3a1de7a5cb9740dfb539ba2ab478f"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/serpent-adder-neutral--rig-check/task.json": {
+			"bytes": 401,
+			"sha256": "bb5841bd06f6e762123592ad2d7cc63c90d0943894f97c94fe760e3919281d13"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/serpent-adder-neutral--rig-serpentine/model_url.glb": {
+			"bytes": 5879564,
+			"sha256": "800e740cc245596c89d705d53f054f8ec8a3ca6abced6044641b9211d05b4d93"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/serpent-adder-neutral--rig-serpentine/rendered_image_url.webp": {
+			"bytes": 149634,
+			"sha256": "31fd0b5ea76c1c96017017959124d507523d7c654a03cda7418cabc2c42ae4a8"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/serpent-adder-neutral--rig-serpentine/task.json": {
+			"bytes": 2194,
+			"sha256": "e88069455aebb10763657f5a327746300077e95b5b1a5ab53f07bc964d04f259"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/shield--model/model_url.glb": {
+			"bytes": 3812748,
+			"sha256": "e8e98c3edf8927b2b78c92974faaeb3b4fb77227fa3b612ba2171626d20ea16e"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/shield--model/rendered_image_url.webp": {
+			"bytes": 208180,
+			"sha256": "64593c84957bad31ba3a3c8a75649277a0a93486c6dde086196f91eb1000e9f9"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/shield--model/task.json": {
+			"bytes": 2615,
+			"sha256": "815ed51a0dfa622c49c4610ac90bfe71c07d1095151f68be2379ec98857d927f"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/skeleton-rattler-neutral--anim-0/model_url.glb": {
+			"bytes": 5373316,
+			"sha256": "28790ad8f419db4a1f2b4d005acf3543381d83c0c2c1ae7f0fda2c89ee2928cd"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/skeleton-rattler-neutral--anim-0/task.json": {
+			"bytes": 1484,
+			"sha256": "566f199cb9b48903489f2ef5e015ec61bd80aa6bf5dd0f5e5df9057d77030c14"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/skeleton-rattler-neutral--anim-1/model_url.glb": {
+			"bytes": 4381092,
+			"sha256": "f94c9cd575048806925ad566ade51e47b2a5803b792e239a73ba2b33a107a7b6"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/skeleton-rattler-neutral--anim-1/task.json": {
+			"bytes": 1400,
+			"sha256": "2d4451befa76406aacba91d33b12fbd2ab98ab079771655e8a0b114671ffa846"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/skeleton-rattler-neutral--image/generated_image_url.png": {
+			"bytes": 923488,
+			"sha256": "42ae1a320ad9747c0b64352eeb680f9ccbb7390d0cd264fd550f079a7a84c18b"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/skeleton-rattler-neutral--image/task.json": {
+			"bytes": 2173,
+			"sha256": "c105bb2044151ce06527417c56e50f2292b9e57edc55604392efb967df896715"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/skeleton-rattler-neutral--model/model_url.glb": {
+			"bytes": 3768672,
+			"sha256": "f5eb72fd78632d0736e80157ba06de73dd2fa2fa3877d599a5615efad0d0c33f"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/skeleton-rattler-neutral--model/rendered_image_url.webp": {
+			"bytes": 73584,
+			"sha256": "731fc77ce9dfb39b32556fd02b125b655c7e6d16a6bc309479d5d3cec269993b"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/skeleton-rattler-neutral--model/task.json": {
+			"bytes": 2614,
+			"sha256": "3c111ea16060a5a341d575934c5513c7b46b0a3d76d93b35b1a72a29dd2b676c"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/skeleton-rattler-neutral--rig-biped/model_url.glb": {
+			"bytes": 4257248,
+			"sha256": "2bc261fa81e2e3cc4318b0586869389540ff5bd4de2910aaad7078a0d1ef8445"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/skeleton-rattler-neutral--rig-biped/rendered_image_url.webp": {
+			"bytes": 73680,
+			"sha256": "6f9ccb78990e0eb29c1e02c176842eb9aa5af19dd65b8653e40c2fc0585d7d54"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/skeleton-rattler-neutral--rig-biped/task.json": {
+			"bytes": 2211,
+			"sha256": "55ad59efad2c3b88fd4b580e85c1e6514339790deaabbb8e8546d0eab1d3b366"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/skeleton-rattler-neutral--rig-check/task.json": {
+			"bytes": 400,
+			"sha256": "e74b20cd06a37943c13b63fcee439508ed2481be1781d9be2c05b9a5b3521f4d"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/slime-blob-neutral--image/generated_image_url.png": {
+			"bytes": 381452,
+			"sha256": "c8687b5d1ba48b8f15439eb9b52c70270355f425c121f90600874b1e5e4a00fc"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/slime-blob-neutral--image/task.json": {
+			"bytes": 1623,
+			"sha256": "29e4352268e2b40b51cfee7b5378e0f29e87793fb1c91cab19767ccf92c1f84f"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/slime-blob-neutral--model/model_url.glb": {
+			"bytes": 4052820,
+			"sha256": "982a75091c0841bd37df042c27deb303d3823ce0c5428a3cd092c561a91d80bd"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/slime-blob-neutral--model/rendered_image_url.webp": {
+			"bytes": 182434,
+			"sha256": "4c54ad58f08c7e10bab215a9e56702e2164b61d84cb16a8e1aadd12caa8c1029"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/slime-blob-neutral--model/task.json": {
+			"bytes": 2614,
+			"sha256": "eb9137b9fb91267f0ca412f4b12b630e56952ceb6ab50925ce94d48b97bc23c3"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/slime-blob-neutral--rig-check/task.json": {
+			"bytes": 402,
+			"sha256": "9680a5c6ddfe536f654559ac8d8a5b63957121538f9c49b8db125ec1ed73521d"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/slime-blob-neutral--rig-others/model_url.glb": {
+			"bytes": 4413832,
+			"sha256": "938ca2e7a772f74835773f51b6a6854a145ff62db2b34436ce95140e083ea7ff"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/slime-blob-neutral--rig-others/rendered_image_url.webp": {
+			"bytes": 182384,
+			"sha256": "e7f1a11e8bb6604197dc7e93b8e6639070eff50a930ecb70325c8a5ec2670b07"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/slime-blob-neutral--rig-others/task.json": {
+			"bytes": 2190,
+			"sha256": "e84812577cf5a0ac2ded35f51f231f424d19bf03ec6b87d84d145060f6364f8c"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/sword--model/model_url.glb": {
+			"bytes": 4754584,
+			"sha256": "76264e964027d446deeea75eee636ce3565eb413f2a7425ae86758e7c8d3abfc"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/sword--model/rendered_image_url.webp": {
+			"bytes": 30686,
+			"sha256": "0d74ae503a061b277187abe70b87b6752fa177b8a6511323fb5ba5a50988df00"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/sword--model/task.json": {
+			"bytes": 2615,
+			"sha256": "8c671ec0f2612b93ca96e4eea017dbf07b8061741616e1f652f0aeebbd91097a"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/sword--rig-check/task.json": {
+			"bytes": 401,
+			"sha256": "4f1bb88111dcfe3ce7c5c9079a680b211683f7f50984499fd3b9c14e7e02f896"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/talar-morai-neutral--anim-0/model_url.glb": {
+			"bytes": 5240332,
+			"sha256": "4f5fc0f33ab51aa5d15289bdf6a40d2b5b42476a5b0ab6c584eb994ac4c318fb"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/talar-morai-neutral--anim-0/task.json": {
+			"bytes": 1484,
+			"sha256": "e348c323b1eac82375b349852f868a510c9227cb8f3b650a45884c0cbb977404"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/talar-morai-neutral--anim-1/model_url.glb": {
+			"bytes": 4250272,
+			"sha256": "261e859f9cedbd7e517efe82dd1c5783f812da53bdd4eab1dcd5f51d04d590cc"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/talar-morai-neutral--anim-1/task.json": {
+			"bytes": 1400,
+			"sha256": "5dcc54f422d1d7887aaf5682c1934d06c8c47b38b68d6a153cd33440e3fa13e5"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/talar-morai-neutral--image/generated_image_url.png": {
+			"bytes": 291238,
+			"sha256": "6dbf6ac366218145af6889d402131a110d019c7778b1eced2b7e3b283de6ffff"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/talar-morai-neutral--image/task.json": {
+			"bytes": 2380,
+			"sha256": "a64d72aad8dd77c3ad2ed20ca1a96dd0af58b4acd3466bb043cc8d4281101c8f"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/talar-morai-neutral--model/model_url.glb": {
+			"bytes": 3636496,
+			"sha256": "e42ad0f903b80cfec83332afc34029b1fc5f9880a2f46f69d11741e45630ffcd"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/talar-morai-neutral--model/rendered_image_url.webp": {
+			"bytes": 91246,
+			"sha256": "0200a934286797b64bd79bdedbb821167807fed6da7fd39930afd8208b70e9cb"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/talar-morai-neutral--model/task.json": {
+			"bytes": 2614,
+			"sha256": "8d136c55c168c982d50635aedbd4d14cc95528bb176dd71862d44df82957ac51"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/talar-morai-neutral--rig-biped/model_url.glb": {
+			"bytes": 4125764,
+			"sha256": "8b4a1c378080fadbe35a8095da0045537c83ba78d74995f7530dddf6c7442562"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/talar-morai-neutral--rig-biped/rendered_image_url.webp": {
+			"bytes": 91274,
+			"sha256": "bdda45aa52c7e402aa2dfc39136cefa51e2d44cbdb874b2d7aef515a4d2dfc2e"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/talar-morai-neutral--rig-biped/task.json": {
+			"bytes": 2211,
+			"sha256": "3eb97638f1124c50fcffe13cdd76cbc2a91d1cbb2be2ed80876250c64457634c"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/talar-morai-neutral--rig-check/task.json": {
+			"bytes": 400,
+			"sha256": "a0f905bc2ba335447af2a2bb7f8832eacaa8019be664a519fb57d2b63bca4cf1"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/troll-scrag-neutral--anim-0/model_url.glb": {
+			"bytes": 6015812,
+			"sha256": "d1a755b8f4a4c947f84020afe6d40d468b49928768e8e071f009d2dd8c0e515c"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/troll-scrag-neutral--anim-0/task.json": {
+			"bytes": 1484,
+			"sha256": "63e9d833c3cbae0f3ff78548ab2840e54cb7e487fbbccbf43e726aa4e6826469"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/troll-scrag-neutral--anim-1/model_url.glb": {
+			"bytes": 5025376,
+			"sha256": "5d2119423cec9e6f6a7087e3b747f2c92b01d6ec04e1402b3c504617da5ccb81"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/troll-scrag-neutral--anim-1/task.json": {
+			"bytes": 1400,
+			"sha256": "f96c292c67cf0e4e645060f418fee6961679f4a9cb83873b9152d1d55df5ef57"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/troll-scrag-neutral--image/generated_image_url.png": {
+			"bytes": 277804,
+			"sha256": "9913e4a74d28f60740b2e3f2d078a34ec511cb5827bd23be4e42ed171c2a9464"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/troll-scrag-neutral--image/task.json": {
+			"bytes": 2168,
+			"sha256": "9d6eba93b419bae29bfe14412f6f325b02c8d1c942caadc6bfa1d828860bd47c"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/troll-scrag-neutral--model/model_url.glb": {
+			"bytes": 4483500,
+			"sha256": "a4b9ffe71a4d6f3668b6d805ddce92882d9e2adbd965b45bef0a74b045ef6acd"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/troll-scrag-neutral--model/rendered_image_url.webp": {
+			"bytes": 98328,
+			"sha256": "396d5b2a61eb30a05d8ecc55eb1a7b22e807ce04756b9bf8e050aa16ff3e5a0f"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/troll-scrag-neutral--model/task.json": {
+			"bytes": 2614,
+			"sha256": "ccd725c4e6e323d136169452b1e9e0888ba7122164eee189dec3c64416d08757"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/troll-scrag-neutral--rig-biped/model_url.glb": {
+			"bytes": 4900420,
+			"sha256": "f8065457d0267640db2e7f96fcffebe4f8681caefe4d6c1f2571ec3f4908f6d5"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/troll-scrag-neutral--rig-biped/rendered_image_url.webp": {
+			"bytes": 98666,
+			"sha256": "f1c519674f03a4f70d50ed4eef125fb801b74997839d26f8acc25f4452f6e7f7"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/troll-scrag-neutral--rig-biped/task.json": {
+			"bytes": 2211,
+			"sha256": "01bd924304f6a5578b9210107a5068190876259993f5039612789101f030042f"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/troll-scrag-neutral--rig-check/task.json": {
+			"bytes": 400,
+			"sha256": "cf082e4c82a5289019326cda21f4210e6d9f20c0ce5630b337265749551082a1"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/wenyn-neutral--anim-0/model_url.glb": {
+			"bytes": 5344768,
+			"sha256": "8e1d888c901dab31150bfd82ebb0e546f4232015638acfb05a61d7979fdc2b36"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/wenyn-neutral--anim-0/task.json": {
+			"bytes": 1484,
+			"sha256": "c63d827536d18ecdcb572833769983bd1d5ec048081a4b1b35ec54536e9b238a"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/wenyn-neutral--anim-1/model_url.glb": {
+			"bytes": 4354588,
+			"sha256": "8b5c08b23d2995c255e05d7fb35b916e168eaa88824b206ff5e407ba1f44ab8f"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/wenyn-neutral--anim-1/task.json": {
+			"bytes": 1400,
+			"sha256": "9f4c438b63e244dd9efff83126a35332ec8ae83f99fdde8040f7a4390b7bdcd1"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/wenyn-neutral--image/generated_image_url.png": {
+			"bytes": 1015976,
+			"sha256": "f2cd9b6cc502c0995b66b56b8bf024c305333a7051287aed61f4b27c77164c08"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/wenyn-neutral--image/task.json": {
+			"bytes": 2207,
+			"sha256": "13785b0b840a0053b11cbfbc11987ba2affa9ec5180c15b97a3efb51b31b87bb"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/wenyn-neutral--model/model_url.glb": {
+			"bytes": 3829180,
+			"sha256": "ba63a26c70f6113b11273c57247c9b2dfec9c160e50ffc86bcf640a9b9452cc2"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/wenyn-neutral--model/rendered_image_url.webp": {
+			"bytes": 102810,
+			"sha256": "3e60f738332fee42c4c4a3ebc386aea26af1dd3218e904b15c5955081180b00d"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/wenyn-neutral--model/task.json": {
+			"bytes": 2614,
+			"sha256": "df526c8ab2c262fc0af660837bbe49a11142e537003a961df071482fb5381811"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/wenyn-neutral--rig-biped/model_url.glb": {
+			"bytes": 4230084,
+			"sha256": "5b0744f1b7572c20b85ad894d26f16082c0ae13fefc916300f9ed1e6170b3d0f"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/wenyn-neutral--rig-biped/rendered_image_url.webp": {
+			"bytes": 102744,
+			"sha256": "bf684be34fab6192baf9065772bc0012ff1508d3185bf2c547dec987315a781a"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/wenyn-neutral--rig-biped/task.json": {
+			"bytes": 2211,
+			"sha256": "ecfcea60b7b10cf722a9a808ed3f0bfc0aa8e5f4261d6198d3c6a9a4bbba5501"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/wenyn-neutral--rig-check/task.json": {
+			"bytes": 400,
+			"sha256": "a6e61e4d954fc2ed4052e9d13978fb6925787dd8e6ae396c2d8d79bda2b53526"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/werebeast-afflicted-neutral--anim-0/model_url.glb": {
+			"bytes": 5531336,
+			"sha256": "67c64b0c70536165049f1af2efafad994ee315ca3949362845aaa2606d6d8b2b"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/werebeast-afflicted-neutral--anim-0/task.json": {
+			"bytes": 1484,
+			"sha256": "916902ec93f40f4bfc558e3db7aefdc1ed6b2955d6938dbc6df124cd6dce0244"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/werebeast-afflicted-neutral--anim-1/model_url.glb": {
+			"bytes": 4540284,
+			"sha256": "73cf6cd2d9bcfcdc15e385d4f496cd8040c48598602dd48bb39e042c94a5017b"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/werebeast-afflicted-neutral--anim-1/task.json": {
+			"bytes": 1400,
+			"sha256": "ea82e9b45d6c372c25fb928a89fa4077adf1d6d4ee5249cf053102e8b7fd066c"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/werebeast-afflicted-neutral--image/generated_image_url.png": {
+			"bytes": 947553,
+			"sha256": "fd5ef151394a816574170692a6eabdee217eafed7f0ca0e6921cc414f6b0f317"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/werebeast-afflicted-neutral--image/task.json": {
+			"bytes": 2176,
+			"sha256": "2644946b1b4eeb4c8db6f6064b2760496c56a11ca7fb265201d9e66b12d0811d"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/werebeast-afflicted-neutral--model/model_url.glb": {
+			"bytes": 3982384,
+			"sha256": "cbf038366ca4e314a093b9966cbcd589760a096dba0872a390779f5920cefc69"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/werebeast-afflicted-neutral--model/rendered_image_url.webp": {
+			"bytes": 80266,
+			"sha256": "f5aaebdf2a559331c34e5a5b2c0666ebe109606cb6ccce15a1a56c799d5750c3"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/werebeast-afflicted-neutral--model/task.json": {
+			"bytes": 2614,
+			"sha256": "143b838e2454358614750a349b75b0322a8f1bac9393e3a9b85119b4db010df4"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/werebeast-afflicted-neutral--rig-biped/model_url.glb": {
+			"bytes": 4415608,
+			"sha256": "47aeb494b386f3aac6c0995585d0312dbece144e97c88d55120d7ca0ae973008"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/werebeast-afflicted-neutral--rig-biped/rendered_image_url.webp": {
+			"bytes": 80188,
+			"sha256": "f63e3109b468ea820858c7a67ea21444e838736ae5e19c7a0ee913a9c2b30c6f"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/werebeast-afflicted-neutral--rig-biped/task.json": {
+			"bytes": 2211,
+			"sha256": "78bbdd745de88aaad18074ae98d67c7bd39021aa5f8361027445c80a3d3d7451"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/werebeast-afflicted-neutral--rig-check/task.json": {
+			"bytes": 400,
+			"sha256": "62bc2ede61ac901cc567145a44868992e7087603992dc6f111dc41d3877faa41"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/wolf-neutral--anim-0/model_url.glb": {
+			"bytes": 4864404,
+			"sha256": "5340cb62b4b427f0814a27b03b362957e616bf92702c2ee17bad0ac62dbef0ee"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/wolf-neutral--anim-0/task.json": {
+			"bytes": 1410,
+			"sha256": "076146649fc52fd65134b13ba4f5db950ae6de586e03275c740af277dc9356e3"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/wolf-neutral--image/generated_image_url.png": {
+			"bytes": 1091794,
+			"sha256": "46d4c0bae87ac058ffa89cc4bdbaec9ee14c6a2342d5fbf390722a40e87b69c3"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/wolf-neutral--image/task.json": {
+			"bytes": 1721,
+			"sha256": "2e43c4b963d96b885207032e746f7e1c18d403b994ddfff16994937521a81b6e"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/wolf-neutral--model/model_url.glb": {
+			"bytes": 4462544,
+			"sha256": "6a42ee6646ba641bcc909e204c7032354b5e91ff3ff8c0b779b2b627cf85a76f"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/wolf-neutral--model/rendered_image_url.webp": {
+			"bytes": 107890,
+			"sha256": "12d0dd4ed58f3535c888732c09caf2af05b612d5d29d2ce874d4b69c26d41e7d"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/wolf-neutral--model/task.json": {
+			"bytes": 2614,
+			"sha256": "ea874baecd9740735855b53ac3cf5752463b600421a3a1c1e414f957ddee749a"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/wolf-neutral--rig-check/task.json": {
+			"bytes": 404,
+			"sha256": "de2284bb731a8bef0d1ea9a37121c09e39a4789103577da707276c5d2c72b9d0"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/wolf-neutral--rig-quadruped/model_url.glb": {
+			"bytes": 4828148,
+			"sha256": "e7d98b31ec7d33bb41b7388260a0d7340ab241670381d86ab0e6965b1278a850"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/wolf-neutral--rig-quadruped/rendered_image_url.webp": {
+			"bytes": 107516,
+			"sha256": "81ac5201e08f66be98aabf1ff3e45e07772a3cde4c05468d8bb0e854824d8afd"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/wolf-neutral--rig-quadruped/task.json": {
+			"bytes": 2193,
+			"sha256": "7f73515ed1d6b7173694fd574c49041d60fb7c8800869387e19d6cf89a3a89f2"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/wolf-original--model/model_url.glb": {
+			"bytes": 4871020,
+			"sha256": "5b2eaa92abf6ba22373e74eed97e6d7db92f2133ba3ce5bd95a36140512f26a5"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/wolf-original--model/rendered_image_url.webp": {
+			"bytes": 136132,
+			"sha256": "48bb15f4f266cb710ba7e297c0e0df0e86d20297899d155c9e9d00c139f0e2af"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/wolf-original--model/task.json": {
+			"bytes": 2616,
+			"sha256": "7341c8834c43b1d7baddefee4d9ce3f2170c7e73fe9e6d8a2184a9c3f264d9f0"
+		},
+		"experiments/image-to-3d/work/hosted/tripo/wolf-original--rig-check/task.json": {
+			"bytes": 405,
+			"sha256": "88059d234508adee116cfc111a2458b6346eab09ca807ff1b265d0a0a008b149"
+		},
+		"experiments/image-to-3d/work/sample/aear-soro__source.png": {
+			"bytes": 2387571,
+			"sha256": "adfa8a493dad23e56672fbf5ebf1eeab051d84714667a566e910b833841cfb37"
+		},
+		"experiments/image-to-3d/work/sample/arachnid-crawler__source.png": {
+			"bytes": 2432764,
+			"sha256": "bf47238eb5af44049309e931520c9dab4e63c5cfc32cb1ae178ea3a8e450e123"
+		},
+		"experiments/image-to-3d/work/sample/armor__doll.png": {
+			"bytes": 1183543,
+			"sha256": "d99f3f7eda224bb617d73a8000e05749cdbe978edd531f73eb47e81fede92668"
+		},
+		"experiments/image-to-3d/work/sample/armor__pieces.png": {
+			"bytes": 3156424,
+			"sha256": "73880eb813750988b685a1e1c1674947224b216d0d3021a72b52892258ff25df"
+		},
+		"experiments/image-to-3d/work/sample/asha__source.png": {
+			"bytes": 2068937,
+			"sha256": "7fdbb28577e762debf61f5d1db265b86295dbdf0f308e686f95fed6e27c7bf42"
+		},
+		"experiments/image-to-3d/work/sample/bear-scrub-bear__source.png": {
+			"bytes": 2366717,
+			"sha256": "d8260767d6196f78e252f9488443a1d7c773e4faf6dedd3ca29c56604a475e60"
+		},
+		"experiments/image-to-3d/work/sample/boar-bristle-hog__source.png": {
+			"bytes": 2565932,
+			"sha256": "9769ab7298a8bc837d8751d7620a78ac3b1c9defb34ce59f2f08d4f8e9b86cbd"
+		},
+		"experiments/image-to-3d/work/sample/burrower-soil-grub__source.png": {
+			"bytes": 2653902,
+			"sha256": "fad836b09545805527d907000036df32c3be00ba4aac6c7059a1ad5977567aba"
+		},
+		"experiments/image-to-3d/work/sample/crocodilian-mire-caiman__source.png": {
+			"bytes": 2666383,
+			"sha256": "8b024b33dccb290349bb498dd6ed6f018762b5e607efa1136ada39112de3c5a0"
+		},
+		"experiments/image-to-3d/work/sample/d-beast-scale-light-armor-boots__source.png": {
+			"bytes": 1341129,
+			"sha256": "71d6d795d509c58913554552820f7c3e598df40dcaba59c0fad6a71a06207de2"
+		},
+		"experiments/image-to-3d/work/sample/d-beast-scale-light-armor-head__source.png": {
+			"bytes": 1293013,
+			"sha256": "b8d6cf1b472ae3271dce24684c479673d5ff3a874451daa3910809b705b4d2e5"
+		},
+		"experiments/image-to-3d/work/sample/d-beast-scale-light-armor-legs__source.png": {
+			"bytes": 1260148,
+			"sha256": "8583dc1ae6ef7e41c78ce5af1d42c863d0169f56a3b33930d35b88b42ec11500"
+		},
+		"experiments/image-to-3d/work/sample/d-beast-scale-light-armor-torso__source.png": {
+			"bytes": 1365657,
+			"sha256": "a92afa3cc3e3091f4511d8ce3932db10d74c175a2783484f0c65eda4fbfff9ee"
+		},
+		"experiments/image-to-3d/work/sample/d-ironwood-bow__source.png": {
+			"bytes": 1098701,
+			"sha256": "1da21190bbc96460bc8de7fcf024b88fd6606dc8761efed4bcbd9d5bc4603264"
+		},
+		"experiments/image-to-3d/work/sample/d-ironwood-staff__source.png": {
+			"bytes": 1163038,
+			"sha256": "f83f155756074ae082dd765f64b9b43f0b02f0525120c3ae46cb75e9b28ed66e"
+		},
+		"experiments/image-to-3d/work/sample/d-layered-silk-robes-boots__source.png": {
+			"bytes": 1245182,
+			"sha256": "fb1c3d0456c68f59063d8d8819140a1fe74901155d00c0dbe88ad4e311e79f19"
+		},
+		"experiments/image-to-3d/work/sample/d-layered-silk-robes-head__source.png": {
+			"bytes": 1425454,
+			"sha256": "f61cbba2a0943f284acb06f90d402bfe4e5ba344baf66282e799b6cbddba64ed"
+		},
+		"experiments/image-to-3d/work/sample/d-layered-silk-robes-legs__source.png": {
+			"bytes": 1298206,
+			"sha256": "32350bd9101b252d3652862603ce33c17652f461e5d8b494755bdeed6712797d"
+		},
+		"experiments/image-to-3d/work/sample/d-layered-silk-robes-torso__source.png": {
+			"bytes": 1358407,
+			"sha256": "69ed6d20f9804725860033c513571e4442c8760c8e3909025b0e739e423676a7"
+		},
+		"experiments/image-to-3d/work/sample/d-steel-axe__source.png": {
+			"bytes": 1174252,
+			"sha256": "659ce21fe73fd5483beae17cbba8cca6896d9150224c4f290c6ea627bd8734d8"
+		},
+		"experiments/image-to-3d/work/sample/d-steel-dagger__source.png": {
+			"bytes": 1114308,
+			"sha256": "076618953cd1766c4f1e762d64fe95b6f221791cc5ca2804d4ab258c9bed2968"
+		},
+		"experiments/image-to-3d/work/sample/d-steel-heavy-armor-boots__source.png": {
+			"bytes": 1220033,
+			"sha256": "ed6edefbc1c5570b00688e8233d1531e3a9711631c63319ef56f0591f2a2451c"
+		},
+		"experiments/image-to-3d/work/sample/d-steel-heavy-armor-head__source.png": {
+			"bytes": 1369267,
+			"sha256": "ab6194171d08e976e80d3e6439001f92516757150f34cd72c55c7cedeff54b2e"
+		},
+		"experiments/image-to-3d/work/sample/d-steel-heavy-armor-legs__source.png": {
+			"bytes": 1274259,
+			"sha256": "b180d1e06cc3292cb3314a1b4880a7f68a64dc6f8aa55e09515ab491cdbffca1"
+		},
+		"experiments/image-to-3d/work/sample/d-steel-heavy-armor-torso__source.png": {
+			"bytes": 1431508,
+			"sha256": "f85b28fb0c44b80379af37838200d6c33c96b14e6deca15da755484285f2853a"
+		},
+		"experiments/image-to-3d/work/sample/d-steel-mace__source.png": {
+			"bytes": 1109588,
+			"sha256": "af7de500e6334f2a07aa387b040a55264da7833af408a0cee9acbbd73e5e229b"
+		},
+		"experiments/image-to-3d/work/sample/d-steel-shield__source.png": {
+			"bytes": 1443622,
+			"sha256": "df86905242b65905ec0b43e364b70a08eb452b97cad8fb83bb55b5c5aaf52949"
+		},
+		"experiments/image-to-3d/work/sample/d-steel-spear__source.png": {
+			"bytes": 1010545,
+			"sha256": "c5001760411cad07065489b80456d35220baad6e3891b47db4a2786085963443"
+		},
+		"experiments/image-to-3d/work/sample/d-steel-sword__source.png": {
+			"bytes": 1134582,
+			"sha256": "fde1a7a4fb51276c3798435e4b5df2e798ef6189e7eeec0360aecf2dc83133b4"
+		},
+		"experiments/image-to-3d/work/sample/deep-one-fishman__source.png": {
+			"bytes": 2429699,
+			"sha256": "e83b719a623dd1264474044b29386a0f2b29fa64560a0cefbffae778b282b493"
+		},
+		"experiments/image-to-3d/work/sample/demon-imp__source.png": {
+			"bytes": 2140758,
+			"sha256": "a8c4e74635e7fc45bca6c673ad5a88d54cafdc2ba5c53b00b374587d536bbc70"
+		},
+		"experiments/image-to-3d/work/sample/dragon-whelp__source.png": {
+			"bytes": 2295626,
+			"sha256": "342dea2b81f641f08f1e0f8dcb6c192bcd21032bf98b37d6344156ed0ac014d1"
+		},
+		"experiments/image-to-3d/work/sample/e-hard-leather-light-armor-boots__source.png": {
+			"bytes": 1376875,
+			"sha256": "3de5899a5f4f5a5239de2920c1b88ca2e39b12c75a0f3a37fe4f4929f7b3bb9f"
+		},
+		"experiments/image-to-3d/work/sample/e-hard-leather-light-armor-head__source.png": {
+			"bytes": 1273956,
+			"sha256": "3fc672d0a69cc86682ffe51ed3357dc4e0afcec0d2b879a00d178c6e69f00220"
+		},
+		"experiments/image-to-3d/work/sample/e-hard-leather-light-armor-legs__source.png": {
+			"bytes": 1347009,
+			"sha256": "c7348a1445194910a1698045b97782a014853381e5fdf8832a07590284e9aa21"
+		},
+		"experiments/image-to-3d/work/sample/e-hard-leather-light-armor-torso__source.png": {
+			"bytes": 1394489,
+			"sha256": "86626550b2100b8b1ea24d2d7b96582deed47f11d2b170ba5da5f2fa194474c6"
+		},
+		"experiments/image-to-3d/work/sample/e-iron-axe__source.png": {
+			"bytes": 1202153,
+			"sha256": "1183fa52dfc4c52485be2b617e3a4b5e7bd94ffd4abec79f8d1d15bddeb79b5c"
+		},
+		"experiments/image-to-3d/work/sample/e-iron-dagger__source.png": {
+			"bytes": 1143292,
+			"sha256": "00f00cb1fb769bad3344fed9883f727e24f2d6d6e26a8037f20867b74e575c14"
+		},
+		"experiments/image-to-3d/work/sample/e-iron-heavy-armor-boots__source.png": {
+			"bytes": 1379244,
+			"sha256": "a07d453077106a74d3e81c0ffa46b5c1f28590a9140774736ed2450ae7e526c8"
+		},
+		"experiments/image-to-3d/work/sample/e-iron-heavy-armor-legs__source.png": {
+			"bytes": 1327563,
+			"sha256": "6d1d16813c8c6e2048dc3f7e6009173f7ff025f79496982a21de3f8f02f1faa7"
+		},
+		"experiments/image-to-3d/work/sample/e-iron-heavy-armor-torso__source.png": {
+			"bytes": 1474795,
+			"sha256": "951ae6e140e6f1f7aecd3e9c5a2de7c9eb8ae69d30153c4753a1feb99dc49ac3"
+		},
+		"experiments/image-to-3d/work/sample/e-iron-mace__source.png": {
+			"bytes": 1151561,
+			"sha256": "2601b30c5f287d75848e7b5de5fed197acaf8444878e06953dc548e2a331b158"
+		},
+		"experiments/image-to-3d/work/sample/e-iron-spear__source.png": {
+			"bytes": 1071729,
+			"sha256": "52c7d474f7edd225a22bda8fd4040826483a5f37d66c31b6e8bfa1fc95fdbd7d"
+		},
+		"experiments/image-to-3d/work/sample/e-wool-robes-boots__source.png": {
+			"bytes": 1244546,
+			"sha256": "aad9acf2fdec667de3b8b768a12e926b42f9d9ccb52031cdd9b40ae6bd6f49f6"
+		},
+		"experiments/image-to-3d/work/sample/e-wool-robes-head__source.png": {
+			"bytes": 1367428,
+			"sha256": "963ed8c9c1a28b72eaa9beba54b788cf94084675cfc7f1d65b23294fc2718469"
+		},
+		"experiments/image-to-3d/work/sample/e-wool-robes-legs__source.png": {
+			"bytes": 1307295,
+			"sha256": "8bc49993b21f92341ad2bd5c71550f60b034b7fbb0fefd429eec85bb6d4e2613"
+		},
+		"experiments/image-to-3d/work/sample/e-wool-robes-torso__source.png": {
+			"bytes": 1380955,
+			"sha256": "09e3463fa52011567093b44638d39ce31cc1346e1dbfe9b5b1272608edb57634"
+		},
+		"experiments/image-to-3d/work/sample/e-yew-bow__source.png": {
+			"bytes": 1178132,
+			"sha256": "8b755dd0527ac27462cfb69048ae4c0f3a2b05fecd07bd53c1de9e7bcf9086d3"
+		},
+		"experiments/image-to-3d/work/sample/e-yew-staff__source.png": {
+			"bytes": 1122025,
+			"sha256": "18be7288d239739af0753af41e82bd322825092f93eeda653509c03bb999a2c1"
+		},
+		"experiments/image-to-3d/work/sample/elemental-wisp__source.png": {
+			"bytes": 1820973,
+			"sha256": "24b409dc2c3abff99e0e81f76a33024e25638fc9f09d47c711b7304603fe1497"
+		},
+		"experiments/image-to-3d/work/sample/f-ash-bow__source.png": {
+			"bytes": 1107103,
+			"sha256": "c90906384c42354b7d384d5a2adac998545682451a222c87adaa3fae685745c5"
+		},
+		"experiments/image-to-3d/work/sample/f-ash-staff__source.png": {
+			"bytes": 1100338,
+			"sha256": "048e03134582f590eb82f5ad6109293d1cf1134a19b79cf9a9d4f56c45c8ee5c"
+		},
+		"experiments/image-to-3d/work/sample/f-bronze-axe__source.png": {
+			"bytes": 1171820,
+			"sha256": "d6b8788d24fe0b4a3193ce7ec20e24045d1ce57abcfaf588e057434460881ac6"
+		},
+		"experiments/image-to-3d/work/sample/f-bronze-dagger__source.png": {
+			"bytes": 1161089,
+			"sha256": "978b9ef04a3c471b6c0eab93703da109354545b0e11be8bb4b3c0ddc5647a462"
+		},
+		"experiments/image-to-3d/work/sample/f-bronze-heavy-armor-boots__source.png": {
+			"bytes": 1351651,
+			"sha256": "10f7d9eacb6257025db807287bd4c5ad03f8c6c50adb39c1db07137ba8381760"
+		},
+		"experiments/image-to-3d/work/sample/f-bronze-heavy-armor-head__source.png": {
+			"bytes": 1419166,
+			"sha256": "d7bedfe88e9ea35b7aaee2d9c87c85b43a02531c83441d8f7d0b2fdc5ca9f945"
+		},
+		"experiments/image-to-3d/work/sample/f-bronze-heavy-armor-legs__source.png": {
+			"bytes": 1290483,
+			"sha256": "3e5c7d07da5409e088dbd2322251c36412ab2ad90dd80889938fabb270b4b49c"
+		},
+		"experiments/image-to-3d/work/sample/f-bronze-heavy-armor-torso__source.png": {
+			"bytes": 1385058,
+			"sha256": "9122d9abe8ccece74f46d2ae99d851089cf044fe66fff797da5583e5206a7d65"
+		},
+		"experiments/image-to-3d/work/sample/f-bronze-mace__source.png": {
+			"bytes": 1112324,
+			"sha256": "2228f2dbb17baf0b98d92a4a1e56ae7e59187a92888bfb2f007624c3c0d152dc"
+		},
+		"experiments/image-to-3d/work/sample/f-bronze-shield__source.png": {
+			"bytes": 1317482,
+			"sha256": "e0ce4062ca4d4c43645c837bc7ae21f6fabfb7731b91dd5fa4a215c0c304f483"
+		},
+		"experiments/image-to-3d/work/sample/f-bronze-spear__source.png": {
+			"bytes": 1047415,
+			"sha256": "e88ff07364bc0a7f9f8c672f77fb1fe126a5cdf1f7433168680a2d6d8da7974f"
+		},
+		"experiments/image-to-3d/work/sample/f-bronze-sword__source.png": {
+			"bytes": 1144621,
+			"sha256": "0909c93ddfbb4bbb0870505f0e786cf03f1c39ad0a59e4210ae3d3d814051af9"
+		},
+		"experiments/image-to-3d/work/sample/f-coarse-hide-light-armor-boots__source.png": {
+			"bytes": 1363883,
+			"sha256": "d66e0634afe2c9dbccbe0fa07f012f677e55952346940f230efd756310064651"
+		},
+		"experiments/image-to-3d/work/sample/f-coarse-hide-light-armor-head__source.png": {
+			"bytes": 1354500,
+			"sha256": "406d526343f1482773c2b83dd410dc247bb1eb7e2a46de997bfb18e592dc83e4"
+		},
+		"experiments/image-to-3d/work/sample/f-coarse-hide-light-armor-legs__source.png": {
+			"bytes": 1334930,
+			"sha256": "39550e5d4745b602a1fdefeb1593dfa80ef5dbfa6dbaa1477d08b99e5b67d227"
+		},
+		"experiments/image-to-3d/work/sample/f-coarse-hide-light-armor-torso__source.png": {
+			"bytes": 1423822,
+			"sha256": "c8179f75c41c201c4647d2944293488385501e96ccb77ef37cffc460d29bac47"
+		},
+		"experiments/image-to-3d/work/sample/f-hemp-weave-robes-boots__source.png": {
+			"bytes": 1271809,
+			"sha256": "e86d64da18bd52295a492beaef879bf963a1dde4d68ca3246925bd6436f47847"
+		},
+		"experiments/image-to-3d/work/sample/f-hemp-weave-robes-head__source.png": {
+			"bytes": 1530518,
+			"sha256": "284b5b4ad7d292415c3e8fc163c5e2d2b6f8fc6c89158d28c30e00404a533bf5"
+		},
+		"experiments/image-to-3d/work/sample/f-hemp-weave-robes-legs__source.png": {
+			"bytes": 1468452,
+			"sha256": "e0b7c964bfaa25d6cafaccce897bef03bda4926ba44358de33c5465509944e34"
+		},
+		"experiments/image-to-3d/work/sample/f-hemp-weave-robes-torso__source.png": {
+			"bytes": 1471899,
+			"sha256": "e13f378b67e9263ebbe20473552ae2e29c85c55fbe94d517503019cd99d86166"
+		},
+		"experiments/image-to-3d/work/sample/fungalfolk-sporeling__source.png": {
+			"bytes": 1943689,
+			"sha256": "fb4dfa25a2d123f85440e9a60d1b0419507e0b22522734ddb52bf771dde31c2d"
+		},
+		"experiments/image-to-3d/work/sample/gargoyle-grotesque__source.png": {
+			"bytes": 2561701,
+			"sha256": "23e2d1ba6187bc0426a5f4504a22b447a66bbcfa3c3178aa7fd71b6e6a8a1747"
+		},
+		"experiments/image-to-3d/work/sample/giant-brute__source.png": {
+			"bytes": 2580649,
+			"sha256": "4bd1df82c4d94471145ae047c6aa540a6e93091174dee9f48285524231a8ff8f"
+		},
+		"experiments/image-to-3d/work/sample/goblin-runt__source.png": {
+			"bytes": 2445794,
+			"sha256": "a15725684ad2a7426587e7c1a19065a48128cb091f3e2675e938787e75804c01"
+		},
+		"experiments/image-to-3d/work/sample/golem__source.png": {
+			"bytes": 2184222,
+			"sha256": "bdf9c5f5ff5590290a7cec728101658dc66b4db79fd57488446c16ebf6c9ea00"
+		},
+		"experiments/image-to-3d/work/sample/great-cat-wildcat__source.png": {
+			"bytes": 2403497,
+			"sha256": "d55e63b27e39eacb804a719de67c4cc701c54ba8bed6280f5c63da1ad5b0ad0d"
+		},
+		"experiments/image-to-3d/work/sample/harpy-screecher__source.png": {
+			"bytes": 2170672,
+			"sha256": "4758be028ad88acf51dfe45593e0f829b3c11a72fa8b62a09ee00bd92d303b32"
+		},
+		"experiments/image-to-3d/work/sample/hawk__source.png": {
+			"bytes": 2394143,
+			"sha256": "4ad88f131332340baa0659752aa0bdf1dff07886915b49d153f696a408d3e702"
+		},
+		"experiments/image-to-3d/work/sample/helmet__source.png": {
+			"bytes": 1422623,
+			"sha256": "977c856c806c4b46dc6f59ea2930489954ace904c48a27b00d51c3ffd7bd9546"
+		},
+		"experiments/image-to-3d/work/sample/iana-joro__source.png": {
+			"bytes": 2273817,
+			"sha256": "13d02fb56da0706efe8c6671ee397620b38347dd9d4f19324d7b00a16295bda3"
+		},
+		"experiments/image-to-3d/work/sample/insectoid-worker__source.png": {
+			"bytes": 2238697,
+			"sha256": "813e277796d7ab2bd9cea17d202c92d98bb0b7a3bab1ba63806f4b85d6266a3d"
+		},
+		"experiments/image-to-3d/work/sample/kelan__source.png": {
+			"bytes": 2361384,
+			"sha256": "298990a32096c3a3ea2bf4f075a5e58b718ddd1127765715a80669b660b3516b"
+		},
+		"experiments/image-to-3d/work/sample/lania-eshan__source.png": {
+			"bytes": 2252606,
+			"sha256": "2af48d4f1f85786c72aeccb3f3834b58657a47803c8853664ea8ef6873f2b42e"
+		},
+		"experiments/image-to-3d/work/sample/lizardfolk-scout__source.png": {
+			"bytes": 2567088,
+			"sha256": "2c0ec9e9e36b825ae24770c0e7c36bc59ff9851fc174c4ac709908b2eea44c45"
+		},
+		"experiments/image-to-3d/work/sample/minotaur-bull-kin__source.png": {
+			"bytes": 2124979,
+			"sha256": "a196c87b486934bd5aa43fae0cbdf8989e73f81772f710c618ae791f31cd3a52"
+		},
+		"experiments/image-to-3d/work/sample/mummy-husk__source.png": {
+			"bytes": 2499419,
+			"sha256": "2c7a5795f2d2f898362527a3fbdff34f43da8b51a5afc71604d2f2c26009723e"
+		},
+		"experiments/image-to-3d/work/sample/oran-keshi__source.png": {
+			"bytes": 2448867,
+			"sha256": "739f97d921d290a1c96ef865eca4a10de3348b5f576b6499dc2b75424863d8b0"
+		},
+		"experiments/image-to-3d/work/sample/orc-grunt__source.png": {
+			"bytes": 2360312,
+			"sha256": "d5355c5c09123c8881c0c93d3f95e68381cb7282dfe5487f03ca37d99a8b85ea"
+		},
+		"experiments/image-to-3d/work/sample/rao-falin__source.png": {
+			"bytes": 2151211,
+			"sha256": "e631268a00627cb053f2cadd151e75435df27790786b0e75b8389fa36cc961e1"
+		},
+		"experiments/image-to-3d/work/sample/raptor-night-owl__source.png": {
+			"bytes": 2472795,
+			"sha256": "80cd4e7983d4793d221aacefe663cb73fdcc77a1b89f0554929081d91a5b2f62"
+		},
+		"experiments/image-to-3d/work/sample/rotwalker-shambler__source.png": {
+			"bytes": 2505391,
+			"sha256": "da874738c79daa5b3994e0fbc10e133ca83b1589182c92be09bb7ed5f027a75a"
+		},
+		"experiments/image-to-3d/work/sample/senia-lorel__source.png": {
+			"bytes": 2369510,
+			"sha256": "edd344c5bcf7209720d85fb424c81f4202d6145004b275f5afa335434e6fe7e3"
+		},
+		"experiments/image-to-3d/work/sample/serpent-adder__source.png": {
+			"bytes": 2654600,
+			"sha256": "30dd68c6f3c66af95948e31c43df59893c5a17f836725b096e1e41990fc36e00"
+		},
+		"experiments/image-to-3d/work/sample/shield__source.png": {
+			"bytes": 1466383,
+			"sha256": "5d1aaeb6e0b8df4f944babf521fb5dbe27a404e3b2909ad5ad0cf8cde0bcef03"
+		},
+		"experiments/image-to-3d/work/sample/skeleton-rattler__source.png": {
+			"bytes": 2257421,
+			"sha256": "0375d8a3236713bd39559379f863ff7647a197ef0ee272bc6bc14a16bab056e1"
+		},
+		"experiments/image-to-3d/work/sample/slime-blob__source.png": {
+			"bytes": 2250661,
+			"sha256": "15c9dc026ae3a3a52a6669be498a0f6ae9629ed6df28f78d3b4eaed592748d3c"
+		},
+		"experiments/image-to-3d/work/sample/sword__source.png": {
+			"bytes": 1150040,
+			"sha256": "32593524680eaa8d8af69762c66030195b3594464c85c8d1ab705a3432e4a848"
+		},
+		"experiments/image-to-3d/work/sample/talar-morai__source.png": {
+			"bytes": 2328809,
+			"sha256": "4db95767f1743d2edaabcf09552bc5e93b57d16a617258894241207b4e10e2bb"
+		},
+		"experiments/image-to-3d/work/sample/troll-scrag__source.png": {
+			"bytes": 2272126,
+			"sha256": "14c49dc6246300acf6f427295e81b5110e0c178fbac41218d03b6991d443a7fd"
+		},
+		"experiments/image-to-3d/work/sample/wenyn__source.png": {
+			"bytes": 2309018,
+			"sha256": "f26b9ace83a94c9eeb968e93bdf9f0b97f89778e2affe503113c352358f5aa25"
+		},
+		"experiments/image-to-3d/work/sample/werebeast-afflicted__source.png": {
+			"bytes": 2065356,
+			"sha256": "fd872467d188c135f8e10907d55fe875937868d26b67c00917a8c0c7db699e4e"
+		},
+		"experiments/image-to-3d/work/sample/wolf__source.png": {
+			"bytes": 2449879,
+			"sha256": "8f0965370db82ea8b7c3debb87024d1c2a14728ae8796d1e43b7b55fbc48abbd"
+		},
+		"experiments/image-to-3d/work/sources/boar-bristle-hog/clean-gray.png": {
+			"bytes": 851907,
+			"sha256": "55f09c82cab681a72a6305fc1c66db60a9daccc2bf60143535d7eaece05c6266"
+		},
+		"experiments/image-to-3d/work/sources/boar-bristle-hog/clean.png": {
+			"bytes": 999230,
+			"sha256": "0b90cbf4dcbd6f213ab2f4d1d219fbae652a958668585c94e50e1b41928bd5fa"
+		},
+		"experiments/image-to-3d/work/sources/boar-bristle-hog/cutout.png": {
+			"bytes": 1181460,
+			"sha256": "a459bd511655019bf72650795e072973dcf9630c8bb8977d0ff37288cda8c536"
+		},
+		"experiments/image-to-3d/work/sources/boar-bristle-hog/original.png": {
+			"bytes": 2565932,
+			"sha256": "9769ab7298a8bc837d8751d7620a78ac3b1c9defb34ce59f2f08d4f8e9b86cbd"
+		},
+		"experiments/image-to-3d/work/sources/goblin-raider/clean-gray.png": {
+			"bytes": 889773,
+			"sha256": "619faa15fb894b30cc3a15773956e1c58de626b3a514740346a96988353b7eb7"
+		},
+		"experiments/image-to-3d/work/sources/goblin-raider/clean.png": {
+			"bytes": 1046732,
+			"sha256": "3b387522600811f1e22955bd233b55a15306c06eee501172a099771d1e6e5df4"
+		},
+		"experiments/image-to-3d/work/sources/goblin-raider/cutout.png": {
+			"bytes": 1848234,
+			"sha256": "5e51d33cef6cf66a232a5193071d903334767bc8cf46ad09d39c351e0f6c7135"
+		},
+		"experiments/image-to-3d/work/sources/goblin-raider/original.png": {
+			"bytes": 2728155,
+			"sha256": "84caf3aca1dc328c936a3489e8f8fbbcfe18e1f8765de0961c7f31a696813c9f"
+		},
+		"experiments/image-to-3d/work/sources/goblin-runt/clean-gray.png": {
+			"bytes": 553762,
+			"sha256": "82d28dfeef8db0e3b3838490719d2e6710c18ef8979b32112f4c5ab2426d03a1"
+		},
+		"experiments/image-to-3d/work/sources/goblin-runt/clean.png": {
+			"bytes": 664365,
+			"sha256": "12cda6f6d0bb906c152280564984caf82afe24de94b2a2558a6fef603063cc62"
+		},
+		"experiments/image-to-3d/work/sources/goblin-runt/cutout.png": {
+			"bytes": 892299,
+			"sha256": "649a87306ff04683c3ddcdc694fccb78efe06bdcc6571f391a5d3d3e4904970b"
+		},
+		"experiments/image-to-3d/work/sources/goblin-runt/original.png": {
+			"bytes": 2445794,
+			"sha256": "a15725684ad2a7426587e7c1a19065a48128cb091f3e2675e938787e75804c01"
+		},
+		"experiments/image-to-3d/work/sources/golem-clay-figure/clean-gray.png": {
+			"bytes": 810714,
+			"sha256": "354c41bc957ec48979f36a19ddd3773a62928779167c04ae5eff5ab9cf870205"
+		},
+		"experiments/image-to-3d/work/sources/golem-clay-figure/clean.png": {
+			"bytes": 950213,
+			"sha256": "4d8a3bbb38640b3cfcba0a9458f795304227df69e714ea3ce2a2dfe9dadc9bc1"
+		},
+		"experiments/image-to-3d/work/sources/golem-clay-figure/cutout.png": {
+			"bytes": 1213550,
+			"sha256": "362dda3365de2a487d39ed6334a7bb00cb51395e36bed7e40fdec7d812b0a4a2"
+		},
+		"experiments/image-to-3d/work/sources/golem-clay-figure/original.png": {
+			"bytes": 2184222,
+			"sha256": "bdf9c5f5ff5590290a7cec728101658dc66b4db79fd57488446c16ebf6c9ea00"
+		},
+		"experiments/image-to-3d/work/sources/iron-shield/clean-gray.png": {
+			"bytes": 1178661,
+			"sha256": "c07d080c45fed30e9ead1ee805d8e49dc37eb5e39766380a998353a9d06691e0"
+		},
+		"experiments/image-to-3d/work/sources/iron-shield/clean.png": {
+			"bytes": 1333514,
+			"sha256": "73885c3497b243013d967870f105d5935107dd756b904aef88622f48084aaced"
+		},
+		"experiments/image-to-3d/work/sources/iron-shield/cutout.png": {
+			"bytes": 851067,
+			"sha256": "561b677189758821a3a78047f5dcc58a02c028b3ba9a022abfb3082505eaa494"
+		},
+		"experiments/image-to-3d/work/sources/iron-shield/original.png": {
+			"bytes": 1466383,
+			"sha256": "5d1aaeb6e0b8df4f944babf521fb5dbe27a404e3b2909ad5ad0cf8cde0bcef03"
+		}
+	}
+}

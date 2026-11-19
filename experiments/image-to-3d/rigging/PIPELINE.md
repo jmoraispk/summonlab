@@ -23,6 +23,9 @@ the experiment that established all this is `REPORT-rigging.md`.
    `results/qa-<name>.md` and overview sheets in `previews/sample/`.
 8. **Review:** look at every flagged subject, mark reviewed fixes in `rigging/subjects.json` (for example
    `removeIslands`), and record what you learned below.
+9. **Back up:** `~/.local/opt/image-to-3d/tools-venv/bin/python rigging/scripts/sync_r2.py backup 3d`
+   copies new Tripo outputs and sources to the private R2 bucket and proves each copy by its hash; commit
+   the updated `rigging/storage/masters-3d.json`. Only new files upload.
 
 ## Settings per step
 
@@ -131,6 +134,11 @@ and clips run in parallel.
     clip is about 75 KB (65 bones with fingers) and a v1.0 combat clip about 33 KB (23 bones), so a full
     11-clip set is about 0.8 MB per character. One clip on many bodies copies rotations but ignores
     proportions (arm length, shoulder width, girth, height), so feet can slide and fists miss the grip.
+29. **A backup counts only once it is read back.** Keys carry the file's SHA-256, so nothing is
+    overwritten, re-runs skip what is there, and every object is downloaded and hashed before it enters
+    the manifest. For LFS files that hash is the LFS object ID (2,262 of 2,262 matched), so the manifest
+    lines up with git's LFS pointers. 3,091 files (6.0 GB) went up and were read back in about three
+    minutes (~40 MB/s from this machine).
 
 ## Backlog (next experiments)
 
@@ -146,8 +154,8 @@ and clips run in parallel.
 - Fitting wearable armor (cuirass, legs, boots, robes) to the shared skeleton.
 - Spider and insect: try `others` rigs or hand-placed leg weights; a leg-aware ragdoll (thin capsules,
   stiffer limits) for many-legged bodies.
-- Storage: Cloudflare R2 buckets and `sync_r2.py` (needs owner-created keys; setup and the GitHub-to-R2
-  phases in `notes/r2-migration.md`).
+- Storage, phase 2: serve runtime GLBs, clips and the catalog from the public bucket once
+  `assets.<domain>` is active (`notes/r2-migration.md`); phase 1, the private backup, is done.
 - Scenes: Hearth-01 kit test (~20 pieces, ~1,000 credits; `notes/storage-and-scenes.md`).
 - Owner: send `notes/tripo-license-question.md` to Tripo.
 
@@ -165,3 +173,5 @@ and clips run in parallel.
   forward and fit the head; procedural fist for sword grips.
 - 2026-11-18: two R2 buckets accepted (public runtime, private masters); runtime clips stored per character
   without the mesh; shared clips recorded as a shortcut, clips per skeleton deferred.
+- 2026-11-18: R2 set up by the owner; `sync_r2.py` backed up the 3D masters (829 files, 1.18 GB) and every
+  LFS file (2,262 files, 4.82 GB) to the private bucket, all read back and verified.

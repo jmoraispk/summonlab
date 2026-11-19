@@ -55,12 +55,16 @@ egress, and 3D assets are download-heavy. Check current prices before committing
 The full steps (account, domain, buckets, CORS, caching, token, keys) are in `r2-migration.md`, which also
 covers moving the repository's Git LFS art and site images off GitHub.
 
-### What I build once the keys exist
+### Built
 
-- `rigging/scripts/sync_r2.py`: uploads with content hashes, skips what is already there, never deletes.
+- `rigging/scripts/sync_r2.py` (2026-11-18): uploads with content hashes, skips what is already there,
+  never overwrites or deletes, and re-downloads every object to check its hash. Manifests in
+  `rigging/storage/masters-<set>.json` are the index.
 - Layout:
-  - masters bucket: `raw/tripo/<step>/…` (every Tripo output, immutable) and `raw/sources/<id>.png`.
-  - public bucket: `runtime/<kind>/<id>/<sha12>.glb` (optimized, hashed names, cacheable forever) and
+  - masters bucket: the repository path with the first 12 hex digits of the file's SHA-256 before the
+    extension, for example `experiments/image-to-3d/work/hosted/tripo/<step>/model_url.<sha12>.glb` and
+    `assets/.../normal.<sha12>.png`. For LFS files that hash is the LFS object ID.
+  - public bucket (next): `runtime/<kind>/<id>/<sha12>.glb` (optimized, hashed names, cacheable forever) and
     `catalog/<batch>.json` (id → runtime URL, triangles, bytes, clips, QA result).
 - The catalog JSON is also committed, so the website and game read one small file and fetch GLBs from R2.
 - Later, optional: move `apps/web/static/runtime` images and the LFS art to the same bucket.
