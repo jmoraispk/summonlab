@@ -74,6 +74,11 @@ $('weapon').onchange = () => setWeapon($('weapon').value);
 $('region').onchange = () => E.showRegion(ch, masks, $('region').value || null);
 $('kill').onclick = () => kill();
 $('entry').onchange = () => load($('entry').value);
+// Embedded at summonlab.ai/rigging: answer the host page's hello with the entry on screen.
+window.addEventListener('message', (event) => {
+	if (event.source === window.parent && event.data?.type === 'rig-bench-hello' && $('entry').value)
+		window.parent.postMessage({ type: 'rig-bench-entry', entry: $('entry').value }, '*');
+});
 
 async function load(id) {
 	window.__ready = false;

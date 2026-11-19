@@ -1,15 +1,15 @@
 {
 	"bucket": "summonlab-assets",
 	"keyRule": "static files at their URL path; repository art at its repository path",
-	"updated": "2026-11-19T13:32:53Z",
+	"updated": "2026-11-19T13:49:04Z",
 	"files": {
 		"bench/rigging/engine.js": {
 			"bytes": 68796,
 			"sha256": "9287bc0f9dd4188ecfe15aedfa544afbdf4e81218fb0efb15ad01d0c4e8f042f"
 		},
 		"bench/rigging/index.html": {
-			"bytes": 10276,
-			"sha256": "6479782f888bb7810e87e82f7f008ae43c6a35362328a92d01f576e6062557f3"
+			"bytes": 10607,
+			"sha256": "9090d1f9a901a1903301b698be3e6d33ee9737de9f890aedc162f46cbb12134a"
 		},
 		"bench/rigging/manifest.json": {
 			"bytes": 60963,
