@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { assetUrl } from '$lib/asset-url';
 	import { onMount, tick } from 'svelte';
 
 	import type { CityIntroduction, CitySummonHero, CitySummonIntent } from '$lib/city';
@@ -165,7 +166,7 @@
 				<div class="roster">
 					{#each introduction.summonedHeroes as hero (hero.heroId)}
 						<article>
-							<img src={hero.rosterArt?.publicPath ?? hero.summonArt.publicPath} alt="" />
+							<img src={assetUrl(hero.rosterArt?.publicPath ?? hero.summonArt.publicPath)} alt="" />
 							<div><strong>{hero.name}</strong><small>{hero.role}</small></div>
 							{#if hero.firstReply}
 								<span class="answered">Answered</span>

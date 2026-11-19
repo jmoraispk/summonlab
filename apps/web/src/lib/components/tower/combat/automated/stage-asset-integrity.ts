@@ -2,6 +2,7 @@ import type { ExplorationEncounterRequest } from '@summonlab/contracts';
 import { sha256Hex as browserSafeSha256Hex } from '@summonlab/engine/hash';
 
 import type { StageAssetBinding, StageAssetLoader } from './stage-lifecycle';
+import { assetUrl } from '$lib/asset-url';
 
 export type VerifiedStageAsset = Readonly<{
 	source: string;
@@ -18,7 +19,7 @@ type AssetFetchResponse = Readonly<{
 export type StageAssetFetch = (source: string) => Promise<AssetFetchResponse>;
 
 function browserAssetFetch(source: string): Promise<AssetFetchResponse> {
-	return globalThis.fetch(source);
+	return globalThis.fetch(assetUrl(source));
 }
 
 export async function sha256Hex(bytes: ArrayBuffer): Promise<string> {

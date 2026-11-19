@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { repositoryArtLink } from '$lib/asset-url';
 	import { resolve } from '$app/paths';
 	import MonsterArtwork from './MonsterArtwork.svelte';
 	import type { MonsterArtworkImage } from './monster-artwork';
@@ -32,7 +33,7 @@
 		}))
 	);
 	const statusLabel = (value: string) => value.replaceAll('-', ' ');
-	const sourceUrl = (path: string) => `https://github.com/jmoraispk/summonlab/blob/main/${path}`;
+	const sourceUrl = (path: string) => repositoryArtLink(path);
 </script>
 
 <section class="matrix" aria-labelledby="monster-matrix-heading">

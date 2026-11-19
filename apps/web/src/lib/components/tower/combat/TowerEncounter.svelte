@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { assetUrl } from '$lib/asset-url';
 	import type {
 		ExplorationCombatReceipt,
 		ExplorationCombatRejection,
@@ -81,7 +82,10 @@
 				onReplayVerified={(next) => (replayVerification = next)}
 			/>
 		{:else}
-			<div class="briefing">
+			<div
+				class="briefing"
+				style:--briefing-art={`url('${assetUrl('/runtime/combat/realtime-study-v1/ruined-threshold-environment-v1.png')}')`}
+			>
 				<p>Automated encounter · {positionTileId}</p>
 				<h1 id="encounter-title">Opposition in {floorName}</h1>
 				<p class="summary">
@@ -171,7 +175,7 @@
 		padding: clamp(2rem, 6vw, 6rem);
 		background:
 			linear-gradient(#07101a88, #12100ecc),
-			url('/runtime/combat/realtime-study-v1/ruined-threshold-environment-v1.png') center / cover;
+			var(--briefing-art) center / cover;
 	}
 	p {
 		color: #d99b55;

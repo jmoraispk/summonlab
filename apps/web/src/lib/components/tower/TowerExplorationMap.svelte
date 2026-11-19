@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { assetUrl } from '$lib/asset-url';
 	import { tick } from 'svelte';
 	import type { ExplorationTravelResult } from '@summonlab/contracts';
 
@@ -129,7 +130,7 @@
 					{#each party as resident, index (resident.heroId)}
 						{#if resident.combatArt}
 							<img
-								src={resident.combatArt.publicPath}
+								src={assetUrl(resident.combatArt.publicPath)}
 								alt={resident.name}
 								data-testid="tower-party-member"
 								style={`--party-offset:${(index - (party.length - 1) / 2) * 20}%`}

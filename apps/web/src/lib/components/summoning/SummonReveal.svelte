@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { assetUrl } from '$lib/asset-url';
 	import { onDestroy } from 'svelte';
 
 	import type { CitySummonHero } from '$lib/city';
@@ -73,7 +74,7 @@
 	</div>
 	<div class:known={phase === 'identity' || phase === 'complete'} class="hero-art">
 		<img
-			src={hero.summonArt.publicPath}
+			src={assetUrl(hero.summonArt.publicPath)}
 			width={hero.summonArt.width}
 			height={hero.summonArt.height}
 			alt={phase === 'identity' || phase === 'complete' ? `${hero.name}, newly summoned` : ''}

@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { repositoryArtUrl } from '$lib/asset-url';
 	import { tick } from 'svelte';
 	import type { MonsterArtworkImage } from './monster-artwork';
 
@@ -31,9 +32,7 @@
 	let sourceFailed = $state(false);
 	let loaded = $state(false);
 	let dismissStart: { x: number; y: number } | undefined;
-	const original = $derived(
-		`https://media.githubusercontent.com/media/jmoraispk/summonlab/main/${current.sourcePath}`
-	);
+	const original = $derived(repositoryArtUrl(current.sourcePath));
 
 	function isEmptyArea(event: MouseEvent | PointerEvent) {
 		const target = event.target;

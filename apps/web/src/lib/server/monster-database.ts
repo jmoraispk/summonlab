@@ -1,6 +1,7 @@
 import visualIndexJson from '../../../../../docs/wiki/creatures/monsters/visual-index.json';
 import runtimeCatalogJson from '../../../../../assets/enemies/runtime/monster-wiki-v1/catalog.json';
 import { base } from '$app/paths';
+import { assetUrl } from '$lib/asset-url';
 
 export type MonsterTier = 'T1' | 'T2' | 'T3' | 'T4' | 'T5';
 export type MonsterAffinity = 'normal' | 'fire' | 'earth' | 'wind' | 'water';
@@ -507,7 +508,7 @@ function buildRuntimeVisuals(): {
 			}
 			return {
 				...variant,
-				thumbnailPath: `${base}${runtime.runtime.publicUrl}`,
+				thumbnailPath: assetUrl(runtime.runtime.publicUrl, `${base}${runtime.runtime.publicUrl}`),
 				sourcePath: runtime.sourcePath,
 				sourceHash: runtime.sourceSha256,
 				derivativeHash: runtime.runtime.sha256,

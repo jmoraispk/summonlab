@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { assetUrl } from '$lib/asset-url';
 	import HeroArtPlaceholder from '$lib/components/HeroArtPlaceholder.svelte';
 	import type { CityResident } from '$lib/city';
 
@@ -20,7 +21,7 @@
 				<div class="portrait">
 					{#if resident.portrait}
 						<img
-							src={resident.portrait.publicPath}
+							src={assetUrl(resident.portrait.publicPath)}
 							width={resident.portrait.width}
 							height={resident.portrait.height}
 							alt={`${resident.name} portrait`}

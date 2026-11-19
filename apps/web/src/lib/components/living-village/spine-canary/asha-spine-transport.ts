@@ -1,3 +1,5 @@
+import { assetUrl } from '$lib/asset-url';
+
 export const ASHA_SPINE_TRANSPORT_ASSETS = {
 	data: '/runtime/exploration/spine-canary-v1/asha/asha-transport-v1.json',
 	atlas: '/runtime/exploration/spine-canary-v1/asha/asha-transport-v1.atlas'
@@ -28,11 +30,11 @@ const loadedAssetApis = new WeakSet<object>();
 export async function loadAshaSpineTransport(assets: TransportAssetsApi): Promise<void> {
 	assets.add({
 		alias: ASHA_SPINE_TRANSPORT_ALIASES.data,
-		src: ASHA_SPINE_TRANSPORT_ASSETS.data
+		src: assetUrl(ASHA_SPINE_TRANSPORT_ASSETS.data)
 	});
 	assets.add({
 		alias: ASHA_SPINE_TRANSPORT_ALIASES.atlas,
-		src: ASHA_SPINE_TRANSPORT_ASSETS.atlas
+		src: assetUrl(ASHA_SPINE_TRANSPORT_ASSETS.atlas)
 	});
 	await assets.load([ASHA_SPINE_TRANSPORT_ALIASES.data, ASHA_SPINE_TRANSPORT_ALIASES.atlas]);
 	loadedAssetApis.add(assets);

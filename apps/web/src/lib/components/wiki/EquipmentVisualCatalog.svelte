@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { repositoryArtLink } from '$lib/asset-url';
 	import { tick } from 'svelte';
 	import type { EquipmentWikiRecord } from '$lib/server/equipment-wiki-catalog';
 
@@ -204,9 +205,8 @@
 									{/each}
 								</div>
 							{/if}
-							<a
-								class="source-link"
-								href={`https://github.com/jmoraispk/summonlab/blob/main/${record.sourcePath}`}
+							<!-- eslint-disable-next-line svelte/no-navigation-without-resolve -- external original file -->
+							<a class="source-link" href={repositoryArtLink(record.sourcePath)}
 								>Original approved PNG ↗</a
 							>
 						</div>
