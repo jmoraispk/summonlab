@@ -64,7 +64,8 @@ covers moving the repository's Git LFS art and site images off GitHub.
   - masters bucket: the repository path with the first 12 hex digits of the file's SHA-256 before the
     extension, for example `experiments/image-to-3d/work/hosted/tripo/<step>/model_url.<sha12>.glb` and
     `assets/.../normal.<sha12>.png`. For LFS files that hash is the LFS object ID.
-  - public bucket (next): `runtime/<kind>/<id>/<sha12>.glb` (optimized, hashed names, cacheable forever) and
+  - public bucket: `runtime/`, `wiki-media/`, `hero-archive/` at their URL paths and `assets/…` art at its
+    repository path (2026-11-18); next for 3D: `runtime/<kind>/<id>/<sha12>.glb` (optimized, hashed names, cacheable forever) and
     `catalog/<batch>.json` (id → runtime URL, triangles, bytes, clips, QA result).
 - The catalog JSON is also committed, so the website and game read one small file and fetch GLBs from R2.
 - Later, optional: move `apps/web/static/runtime` images and the LFS art to the same bucket.

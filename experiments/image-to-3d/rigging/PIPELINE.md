@@ -154,8 +154,8 @@ and clips run in parallel.
 - Fitting wearable armor (cuirass, legs, boots, robes) to the shared skeleton.
 - Spider and insect: try `others` rigs or hand-placed leg weights; a leg-aware ragdoll (thin capsules,
   stiffer limits) for many-legged bodies.
-- Storage, phase 2: serve runtime GLBs, clips and the catalog from the public bucket once
-  `assets.<domain>` is active (`notes/r2-migration.md`); phase 1, the private backup, is done.
+- Storage, phase 2: the site's images are in the public bucket and branch `claude/r2-asset-urls` reads
+  them; next, runtime GLBs, clips and the 3D catalog (`notes/r2-migration.md`).
 - Scenes: Hearth-01 kit test (~20 pieces, ~1,000 credits; `notes/storage-and-scenes.md`).
 - Owner: send `notes/tripo-license-question.md` to Tripo.
 
@@ -175,3 +175,5 @@ and clips run in parallel.
   without the mesh; shared clips recorded as a shortcut, clips per skeleton deferred.
 - 2026-11-18: R2 set up by the owner; `sync_r2.py` backed up the 3D masters (829 files, 1.18 GB) and every
   LFS file (2,262 files, 4.82 GB) to the private bucket, all read back and verified.
+- 2026-11-18: public bucket filled (3,086 site images and 2,244 catalog-named LFS originals, verified);
+  `sync_r2.py publish`; the site's asset-URL switch is on branch `claude/r2-asset-urls`.

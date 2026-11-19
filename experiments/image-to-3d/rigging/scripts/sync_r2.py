@@ -3,6 +3,7 @@
   python rigging/scripts/sync_r2.py backup 3d [--dry-run] [--workers 16]
   python rigging/scripts/sync_r2.py backup lfs [--dry-run]
   python rigging/scripts/sync_r2.py verify 3d|lfs
+  python rigging/scripts/sync_r2.py publish static|art [--dry-run]
 
 Run with the tools env (`~/.local/opt/image-to-3d/tools-venv/bin/python`, which has boto3).
 
@@ -11,7 +12,13 @@ Sets:
        sources}, rigging/ledger.jsonl): this machine holds the only copy.
   lfs  every file Git LFS tracks at the current checkout (`git lfs ls-files`).
 
-Both go to the private masters bucket (R2_MASTERS_BUCKET). Keys mirror the repository path with the
+Publish sets (public bucket R2_BUCKET, the files the website loads when built with VITE_ASSET_BASE):
+  static  apps/web/static/{runtime,wiki-media,hero-archive}, keyed by their URL path (`runtime/…`).
+  art     every LFS file that a JSON catalog or manifest in the repository names (wiki originals),
+          keyed by repository path (`assets/…`). Copied server-side from the masters bucket.
+The public bucket mirrors the current tree: a changed file replaces its key, and nothing is deleted.
+
+Both backup sets go to the private masters bucket (R2_MASTERS_BUCKET). Keys mirror the repository path with the
 first 12 hex digits of the file's SHA-256 before the extension, for example
 `assets/heroes/.../summon.3f2a9c1b7d4e.png`. A changed file therefore gets a new key: nothing is ever
 overwritten or deleted. Objects already in the bucket are skipped, and every object in the set is
@@ -85,6 +92,50 @@ def files_lfs() -> list[Path]:
 
 
 SETS = {"3d": files_3d, "lfs": files_lfs}
+STATIC = REPO / "apps" / "web" / "static"
+STATIC_DIRS = ("runtime", "wiki-media", "hero-archive")
+HASHED = __import__("re").compile(r"\.[0-9a-f]{12}\.[A-Za-z0-9]+$")
+
+
+def files_static() -> list[Path]:
+    return [p for d in STATIC_DIRS for p in (STATIC / d).rglob("*") if p.is_file()]
+
+
+def files_art() -> list[Path]:
+    """LFS files named by any JSON catalog or manifest in the repository (what wiki links open)."""
+    lfs = set(subprocess.check_output(["git", "lfs", "ls-files", "-n"], cwd=REPO, text=True).splitlines())
+    tracked = subprocess.check_output(["git", "ls-files", "*.json"], cwd=REPO, text=True).splitlines()
+    named: set[str] = set()
+
+    def walk(o):
+        if isinstance(o, dict):
+            for v in o.values():
+                walk(v)
+        elif isinstance(o, list):
+            for v in o:
+                walk(v)
+        elif isinstance(o, str) and o in lfs:
+            named.add(o)
+
+    for rel in tracked:
+        if rel.startswith(("experiments/", "node_modules/")) or rel.endswith("pnpm-lock.json"):
+            continue
+        try:
+            walk(json.loads((REPO / rel).read_text()))
+        except (ValueError, UnicodeDecodeError, OSError):
+            continue
+    return [REPO / n for n in sorted(named)]
+
+
+PUBLISH = {"static": files_static, "art": files_art}
+
+
+def public_key(name: str, path: Path) -> str:
+    return path.relative_to(STATIC).as_posix() if name == "static" else path.relative_to(REPO).as_posix()
+
+
+def cache_control(key: str) -> str:
+    return "public, max-age=31536000, immutable" if HASHED.search(key) else "public, max-age=3600"
 
 
 def sha256(path: Path) -> str:
@@ -211,12 +262,13 @@ def verify(s3, bucket: str, entries: list[dict], workers: int) -> list[str]:
     return errors
 
 
-def write_manifest(name: str, bucket: str, entries: list[dict], failed: set[str]) -> Path:
+def write_manifest(name: str, bucket: str, entries: list[dict], failed: set[str], prefix: str = "masters",
+                   rule: str = "repository path with the first 12 hex digits of its SHA-256 before the extension") -> Path:
     STORAGE.mkdir(exist_ok=True)
-    out = STORAGE / f"masters-{name}.json"
+    out = STORAGE / f"{prefix}-{name}.json"
     doc = {
         "bucket": bucket,
-        "keyRule": "repository path with the first 12 hex digits of its SHA-256 before the extension",
+        "keyRule": rule,
         "updated": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
         "files": {e["path"]: {"bytes": e["bytes"], "sha256": e["sha256"]} for e in entries if e["path"] not in failed},
     }
@@ -224,15 +276,104 @@ def write_manifest(name: str, bucket: str, entries: list[dict], failed: set[str]
     return out
 
 
+def publish(a, vals: dict) -> None:
+    bucket = vals.get("R2_BUCKET")
+    if not bucket:
+        raise SystemExit(f"R2_BUCKET missing in {KEYS}")
+    t0 = time.time()
+    paths = PUBLISH[a.set]()
+
+    def one(path: Path) -> dict:
+        md5, sha = hashlib.md5(), hashlib.sha256()
+        with path.open("rb") as f:
+            while block := f.read(CHUNK):
+                md5.update(block)
+                sha.update(block)
+        return {"path": path.relative_to(REPO).as_posix(), "key": public_key(a.set, path),
+                "bytes": path.stat().st_size, "sha256": sha.hexdigest(), "md5": md5.hexdigest()}
+
+    with ThreadPoolExecutor(a.workers) as pool:
+        entries = sorted(pool.map(one, paths), key=lambda e: e["key"])
+    pointers = [e["path"] for e in entries if e["bytes"] < 200 and (REPO / e["path"]).read_bytes().startswith(LFS_POINTER)]
+    if pointers:
+        raise SystemExit(f"{len(pointers)} LFS pointer(s) not downloaded locally, e.g. {pointers[0]}; run `git lfs pull`")
+    print(f"publish {a.set}: {len(entries)} files, {human(sum(e['bytes'] for e in entries))} "
+          f"(hashed in {time.time() - t0:.0f}s)", flush=True)
+
+    s3 = client(vals, a.workers)
+    etags: dict[str, str] = {}
+    token = None
+    while True:
+        kw = {"Bucket": bucket, "MaxKeys": 1000, **({"ContinuationToken": token} if token else {})}
+        page = s3.list_objects_v2(**kw)
+        for o in page.get("Contents", []):
+            etags[o["Key"]] = o["ETag"].strip('"')
+        if not page.get("IsTruncated"):
+            break
+        token = page["NextContinuationToken"]
+    todo = [e for e in entries if etags.get(e["key"]) != e["md5"]]
+    print(f"bucket {bucket}: {len(etags)} objects; {len(todo)} to publish "
+          f"({human(sum(e['bytes'] for e in todo))}), {len(entries) - len(todo)} unchanged", flush=True)
+    if a.dry_run:
+        for e in todo[:5]:
+            print(f"  would publish {e['key']} ({human(e['bytes'])}, {cache_control(e['key'])})")
+        return
+
+    masters = vals.get("R2_MASTERS_BUCKET")
+    backed = {}
+    if masters and (STORAGE / "masters-lfs.json").exists():
+        backed = json.loads((STORAGE / "masters-lfs.json").read_text())["files"]
+    cfg = TransferConfig(multipart_threshold=64 * 2**20, multipart_chunksize=16 * 2**20, max_concurrency=4)
+    prog = Progress("publish", len(todo), sum(e["bytes"] for e in todo))
+    errors = []
+
+    def put(e: dict):
+        ctype = TYPES.get(Path(e["key"]).suffix.lower()) or mimetypes.guess_type(e["key"])[0] or "application/octet-stream"
+        extra = {"ContentType": ctype, "CacheControl": cache_control(e["key"]), "Metadata": {"sha256": e["sha256"]}}
+        b = backed.get(e["path"])
+        if b and b["sha256"] == e["sha256"]:
+            s3.copy_object(Bucket=bucket, Key=e["key"], CopySource={"Bucket": masters, "Key": key_for(e["path"], e["sha256"])},
+                           MetadataDirective="REPLACE", **extra)
+        else:
+            s3.upload_file(str(REPO / e["path"]), bucket, e["key"], Config=cfg, ExtraArgs=extra)
+        prog.add(e["bytes"])
+
+    with ThreadPoolExecutor(a.workers) as pool:
+        futs = {pool.submit(put, e): e for e in todo}
+        for f in as_completed(futs):
+            if f.exception():
+                errors.append(f"{futs[f]['path']}: {type(f.exception()).__name__}: {str(f.exception())[:160]}")
+    failed = {err.split(":", 1)[0] for err in errors}
+    errors += verify(s3, bucket, [e for e in entries if e["path"] not in failed], a.workers)
+    failed = {err.split(":", 1)[0] for err in errors}
+    out = write_manifest(a.set, bucket, [{**e, "path": e["key"]} for e in entries],
+                         {next(x["key"] for x in entries if x["path"] == p) for p in failed}, prefix="public",
+                         rule="static files at their URL path; repository art at its repository path")
+    print(f"verified {len(entries) - len(failed)}/{len(entries)} files in {time.time() - t0:.0f}s; "
+          f"manifest {out.relative_to(REPO)}", flush=True)
+    if errors:
+        print(f"{len(errors)} problem(s):")
+        for err in errors[:20]:
+            print(f"  {err}")
+        sys.exit(1)
+
+
 def main() -> None:
     ap = argparse.ArgumentParser()
-    ap.add_argument("action", choices=["backup", "verify"])
-    ap.add_argument("set", choices=sorted(SETS))
+    ap.add_argument("action", choices=["backup", "verify", "publish"])
+    ap.add_argument("set", choices=sorted(SETS) + sorted(PUBLISH))
     ap.add_argument("--dry-run", action="store_true")
     ap.add_argument("--workers", type=int, default=16)
     a = ap.parse_args()
 
     vals = env()
+    if a.action == "publish":
+        if a.set not in PUBLISH:
+            raise SystemExit(f"publish takes one of {sorted(PUBLISH)}")
+        publish(a, vals)
+        return
+    if a.set not in SETS:
+        raise SystemExit(f"{a.action} takes one of {sorted(SETS)}")
     bucket = vals["R2_MASTERS_BUCKET"]
     t0 = time.time()
     entries = inventory(a.set, a.workers)

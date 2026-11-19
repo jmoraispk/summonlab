@@ -32,3 +32,4 @@ Durable owner answers, so later turns do not rediscover them.
 | 2026-11-18 | Playing one clip on many characters is a shortcut; clips per skeleton are the target. Runtime stores each character's clips without the mesh. | accepted; per-skeleton clips deferred while shared clips look fine |
 | 2026-11-18 | Move most of what GitHub stores and serves (Git LFS art, site runtime images) to R2. | proposed: nearly all binary art can move; setup steps and phases in `notes/r2-migration.md` |
 | 2026-11-18 | Back up the 3D files and the 2D LFS art to the private bucket (option "3D and 2D art"). | done: 3,091 files, 6.0 GB, all read back and verified; GitHub unchanged |
+| 2026-11-18 | Point the website at the bucket instead of the repository and GitHub. | done on branch `claude/r2-asset-urls` (off until `VITE_ASSET_BASE` is set in Vercel); site images and catalog art published and verified |

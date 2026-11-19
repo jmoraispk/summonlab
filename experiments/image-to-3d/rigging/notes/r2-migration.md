@@ -126,10 +126,18 @@ Cloudflare serves the same records, the site keeps working throughout.
 1. **Back up (copy only). Done 2026-11-18:** `sync_r2.py` uploaded 829 3D files (1.18 GB) and 2,262 LFS
    files (4.82 GB) to `summonlab-masters` and read every one back to check its hash; manifests in
    `rigging/storage/`. GitHub is unchanged. Re-run `sync_r2.py backup 3d` after each batch.
-2. **Serve from R2.** Upload what the site loads to `summonlab-assets`. One `assetUrl()` helper reading
-   `PUBLIC_ASSET_BASE` goes where asset URLs are built: 10 `/runtime/…` references in `apps/web` code, 16
-   in the content packages (the rest are tests), and the `media.githubusercontent.com` URL in the monster
-   viewer. With the variable unset, the app serves the local `static/` copy as today.
+2. **Serve from R2. Uploaded and coded 2026-11-18; switched on when the domain is live.**
+   `sync_r2.py publish static` mirrored `apps/web/static/{runtime,wiki-media,hero-archive}` (3,086 files,
+   174 MB) and `publish art` the 2,244 LFS files that repository catalogs name (4.8 GB, copied
+   server-side from the masters bucket) to `summonlab-assets`, all read back and verified. Branch
+   `claude/r2-asset-urls` adds `apps/web/src/lib/asset-url.ts`: built with `VITE_ASSET_BASE`, every
+   image the site shows or loads (about 25 places) and the monster viewer's full-size art come from the
+   bucket; unset, nothing changes. Contracts validate content paths as `/runtime/…`, so records keep
+   their paths and the base is added only where a file is fetched or shown. A local stand-in for the
+   bucket loaded every image on the home page and the hero, monster, skill and equipment wiki pages
+   (586 requests, none to the site or GitHub, no failures). Still on GitHub: the hero archive's 736
+   "original" links (files from earlier commits, not in the current tree). To switch on: connect
+   `assets.<domain>`, confirm CORS, set `VITE_ASSET_BASE` in Vercel, redeploy.
 3. **Stop GitHub downloads.** CI checks out without LFS; the asset validators verify manifests (presence,
    hash, size), and the few checks that need pixels fetch from R2 with an Actions cache. The wiki workflow
    fetches from R2 instead of `git lfs pull`.
