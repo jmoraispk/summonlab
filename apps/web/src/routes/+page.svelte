@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { assetUrl } from '$lib/asset-url';
 	import { resolve } from '$app/paths';
 	import playerVisualManifest from '../../static/runtime/player/manifest.json';
 
@@ -20,10 +21,10 @@
 
 <main data-testid="campaign-title">
 	<picture class="gateway-art" aria-hidden="true">
-		<source media="(max-width: 650px)" srcset={titlePhone.publicPath} />
+		<source media="(max-width: 650px)" srcset={assetUrl(titlePhone.publicPath)} />
 		<img
 			class="key-art"
-			src={titleDesktop.publicPath}
+			src={assetUrl(titleDesktop.publicPath)}
 			width={titleDesktop.width}
 			height={titleDesktop.height}
 			fetchpriority="high"

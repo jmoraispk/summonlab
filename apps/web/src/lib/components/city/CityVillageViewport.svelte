@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { assetUrl } from '$lib/asset-url';
 	import { resolve } from '$app/paths';
 	import { onMount } from 'svelte';
 
@@ -294,12 +295,12 @@
 						<source
 							media="(max-width: 600px)"
 							type="image/avif"
-							srcset={phoneEnvironment.publicPath}
+							srcset={assetUrl(phoneEnvironment.publicPath)}
 						/>
 					{/if}
 					<img
 						class="environment"
-						src={view.scene.runtime.publicPath}
+						src={assetUrl(view.scene.runtime.publicPath)}
 						alt="Hearth Village with a rear Portal, Summoning Circle and Residence to the left, and Training Grounds and Forge to the right"
 						width={view.scene.runtime.width}
 						height={view.scene.runtime.height}
@@ -363,7 +364,7 @@
 								onclick={() => selectHero(resident)}
 							>
 								<img
-									src={resident.sceneArt.publicPath}
+									src={assetUrl(resident.sceneArt.publicPath)}
 									alt=""
 									width={resident.sceneArt.width}
 									height={resident.sceneArt.height}
@@ -405,7 +406,7 @@
 					<header>
 						{#if selectedHero.portrait}
 							<img
-								src={selectedHero.portrait.publicPath}
+								src={assetUrl(selectedHero.portrait.publicPath)}
 								alt=""
 								width={selectedHero.portrait.width}
 								height={selectedHero.portrait.height}

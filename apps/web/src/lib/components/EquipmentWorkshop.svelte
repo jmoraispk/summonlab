@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { assetUrl } from '$lib/asset-url';
 	import { onDestroy } from 'svelte';
 
 	import type { EquipmentWorkshopProjection } from '$lib/server/equipment-runtime';
@@ -250,7 +251,7 @@
 								onclick={() => chooseDefinition(definition.definitionId)}
 							>
 								<img
-									src={definition.card.publicPath}
+									src={assetUrl(definition.card.publicPath)}
 									width={definition.card.width}
 									height={definition.card.height}
 									loading="lazy"
@@ -284,7 +285,9 @@
 				<figure class="assay-plate" data-testid="equipment-assay">
 					<div class="assay-image">
 						<img
-							src={selectedInspection?.detail.publicPath ?? selectedDefinition.card.publicPath}
+							src={assetUrl(
+								selectedInspection?.detail.publicPath ?? selectedDefinition.card.publicPath
+							)}
 							width={selectedInspection?.detail.width ?? selectedDefinition.card.width}
 							height={selectedInspection?.detail.height ?? selectedDefinition.card.height}
 							decoding="async"
@@ -382,7 +385,7 @@
 				{#each projection.inventory as item (item.itemId)}
 					<article data-testid="equipment-inventory-item">
 						<img
-							src={item.card.publicPath}
+							src={assetUrl(item.card.publicPath)}
 							width={item.card.width}
 							height={item.card.height}
 							loading="lazy"

@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { assetUrl } from '$lib/asset-url';
 	import { base } from '$app/paths';
 	import { resolve } from '$app/paths';
 
@@ -59,7 +60,12 @@
 				onclick={() => toggleDomain(domain.id)}
 			>
 				<span class="domain-node-image">
-					<img src={`${base}${domain.image}`} alt="" width="900" height="900" />
+					<img
+						src={assetUrl(domain.image, `${base}${domain.image}`)}
+						alt=""
+						width="900"
+						height="900"
+					/>
 				</span>
 				<strong>{domain.name}</strong>
 				<small>{domain.families.length} families</small>

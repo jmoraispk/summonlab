@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { assetUrl } from '$lib/asset-url';
 	import { base, resolve } from '$app/paths';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
@@ -104,7 +105,7 @@
 					rel="noreferrer"
 					aria-label={`Open ${hero.displayName} original portrait`}
 					><img
-						src={`${base}${hero.thumbnail}`}
+						src={assetUrl(hero.thumbnail, `${base}${hero.thumbnail}`)}
 						alt={`${hero.displayName} portrait`}
 						width={hero.width}
 						height={hero.height}

@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { assetUrl } from '$lib/asset-url';
 	import { onMount, tick } from 'svelte';
 
 	import type { CitySummonHero } from '$lib/city';
@@ -47,7 +48,7 @@
 		</button>
 		<div class="portrait">
 			<img
-				src={hero.summonArt.publicPath}
+				src={assetUrl(hero.summonArt.publicPath)}
 				width={hero.summonArt.width}
 				height={hero.summonArt.height}
 				alt={`${hero.name} summon portrait`}

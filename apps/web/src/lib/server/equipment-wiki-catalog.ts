@@ -5,6 +5,7 @@ import materialRaw from '../../../../../assets/equipment/approved/material-equip
 import greatswordRaw from '../../../../../assets/equipment/approved/two-handed-greatsword-v1/manifest.json?raw';
 import runtimeRaw from '../../../static/runtime/equipment-v1/manifest.json?raw';
 import galleryRaw from '../../../static/wiki-media/equipment-gallery-v1/manifest.json?raw';
+import { assetUrl } from '$lib/asset-url';
 
 export interface EquipmentWikiRecord {
 	readonly assetKey: string;
@@ -206,7 +207,7 @@ export function buildEquipmentWikiCatalog(
 			sourcePath: source.approved.path,
 			sourceContentHash: source.approved.sha256,
 			image: Object.freeze({
-				publicPath: `${base}${derived.publicPath}`,
+				publicPath: assetUrl(derived.publicPath, `${base}${derived.publicPath}`),
 				width: derived.width,
 				height: derived.height,
 				contentHash: derived.contentHash

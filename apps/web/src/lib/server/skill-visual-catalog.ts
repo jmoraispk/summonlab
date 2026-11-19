@@ -8,6 +8,7 @@ import canonicalAssetsSource from '../../../../../assets/wiki/skills/icon-produc
 import canonicalAssetsRaw from '../../../../../assets/wiki/skills/icon-production-v2/asset-manifest.json?raw';
 import runtimeManifestSource from '../../../static/wiki-media/skills/visual-catalog-v2/manifest.json';
 import runtimeManifestRaw from '../../../static/wiki-media/skills/visual-catalog-v2/manifest.json?raw';
+import { assetUrl } from '$lib/asset-url';
 
 const CATALOG_PATH = 'assets/wiki/skills/icon-production-v2/catalog.json';
 const ASSET_MANIFEST_PATH = 'assets/wiki/skills/icon-production-v2/asset-manifest.json';
@@ -265,7 +266,7 @@ export function buildSkillVisualCatalog(
 			primaryVisualParent: parent
 				? { targetId: parentId!, name: string(parent.name, 'parent name') }
 				: null,
-			image: { publicPath: `${base}${publicPath}`, width: 512, height: 512 },
+			image: { publicPath: assetUrl(publicPath, `${base}${publicPath}`), width: 512, height: 512 },
 			provenance: { status: 'approved', sourcePath, runtimePath: file }
 		};
 		Object.freeze(output.labels);

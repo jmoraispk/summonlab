@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { assetUrl } from '$lib/asset-url';
 	import type { CityResident } from '$lib/city';
 
 	let {
@@ -26,7 +27,7 @@
 	<div class="identity">
 		{#if resident.portrait}
 			<img
-				src={resident.portrait.publicPath}
+				src={assetUrl(resident.portrait.publicPath)}
 				alt=""
 				width={resident.portrait.width}
 				height={resident.portrait.height}

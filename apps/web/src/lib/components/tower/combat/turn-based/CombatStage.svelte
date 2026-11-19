@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { assetUrl } from '$lib/asset-url';
 	import { onMount } from 'svelte';
 	import type { Application, Container, Graphics, Sprite } from 'pixi.js';
 	import {
@@ -42,7 +43,7 @@
 	let renderSnapshot: ((snapshot: CombatPlaybackSnapshot) => void) | undefined;
 	let unloadArt: (() => void) | undefined;
 
-	const ART_ROOT = '/runtime/combat/observatory-art-pilot-v1';
+	const ART_ROOT = assetUrl('/runtime/combat/observatory-art-pilot-v1');
 	const OBSERVATORY_BOARD_CORNERS = Object.freeze({
 		topLeft: { x: 72, y: 102 },
 		topRight: { x: 628, y: 102 },
