@@ -27,6 +27,18 @@ for (const record of monsters.records) {
 	await mkdir(dirname(join(assets, path)), { recursive: true });
 	await cp(join(root, record.runtime.path), join(assets, path));
 }
+const archive = JSON.parse(
+	await readFile(join(root, 'docs/readme-gallery/hero-archive.json'), 'utf8')
+);
+for (const hero of archive.heroes) {
+	// The hero archive links the originals it still has (see source.keptPath); publish them here too.
+	const kept = hero.source.keptPath;
+	if (!kept) continue;
+	if (!kept.startsWith('/runtime/') || kept.includes('..'))
+		throw new Error('Invalid hero archive original path');
+	await mkdir(dirname(join(assets, kept)), { recursive: true });
+	await cp(join(root, 'apps/web/static', kept), join(assets, kept));
+}
 await writeFile(join(assets, '.nojekyll'), '');
 console.log(
 	'Prepared wiki routes and gallery assets; game routes and server endpoints are excluded.'

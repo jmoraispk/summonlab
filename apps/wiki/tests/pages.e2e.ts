@@ -8,6 +8,8 @@ for (const width of [1440, 390]) {
 			if (response.status() === 404 && response.url().startsWith('http://127.0.0.1:5189'))
 				missing.push(response.url());
 		});
+		// With both the bucket and GitHub unreachable, the viewer falls back to the local preview.
+		await page.route('https://assets.summonlab.ai/**', (route) => route.abort());
 		await page.route('https://media.githubusercontent.com/**', (route) => route.abort());
 		await page.goto('/summonlab/wiki/creatures/monsters/', { waitUntil: 'networkidle' });
 		const opener = page.getByRole('button', { name: 'Enlarge Brute, Normal affinity' });
@@ -73,4 +75,32 @@ test('opens legacy redirects directly on static hosting', async ({ page }) => {
 	await expect(page.getByRole('heading', { name: 'Affinities', exact: true })).toBeVisible();
 	await page.goto('/summonlab/wiki/creatures/monsters/gray-wolf/', { waitUntil: 'networkidle' });
 	await expect(page).toHaveURL(/\/summonlab\/wiki\/creatures\/monsters\/wolf-gray-wolf\/$/);
+});
+
+test('opens monster originals from the bucket, then GitHub, then the preview', async ({ page }) => {
+	// Answer both hosts locally with a 1×1 PNG, so the test never downloads from Git LFS.
+	const png = Buffer.from(
+		'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=',
+		'base64'
+	);
+	let bucketUp = true;
+	await page.route('https://assets.summonlab.ai/**', (route) =>
+		bucketUp ? route.fulfill({ contentType: 'image/png', body: png }) : route.abort()
+	);
+	await page.route('https://media.githubusercontent.com/**', (route) =>
+		route.fulfill({ contentType: 'image/png', body: png })
+	);
+	await page.goto('/summonlab/wiki/creatures/monsters/', { waitUntil: 'networkidle' });
+	await page.getByRole('button', { name: 'Enlarge Brute, Normal affinity' }).click();
+	await expect(page.getByRole('dialog').getByRole('img')).toHaveAttribute(
+		'src',
+		/^https:\/\/assets\.summonlab\.ai\/assets\//
+	);
+	bucketUp = false;
+	await page.getByRole('button', { name: 'Next image', exact: true }).click();
+	await expect(page.getByRole('dialog', { name: 'Hill Giant, Normal affinity' })).toBeVisible();
+	await expect(page.getByRole('dialog').getByRole('img')).toHaveAttribute(
+		'src',
+		/^https:\/\/media\.githubusercontent\.com\/media\/jmoraispk\/summonlab\/main\/assets\//
+	);
 });

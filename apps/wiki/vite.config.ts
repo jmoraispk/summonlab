@@ -25,7 +25,12 @@ const legacyRoutes = visualIndex.legacyRoutes.map(
 );
 
 export default defineConfig({
-	define: { 'import.meta.env.VITE_WIKI_STATIC': JSON.stringify('true') },
+	define: {
+		'import.meta.env.VITE_WIKI_STATIC': JSON.stringify('true'),
+		// Git LFS art opens from the public bucket, with GitHub as the fallback; files this build copies
+		// into its own static folder are served from GitHub Pages.
+		'import.meta.env.VITE_ART_BASE': JSON.stringify('https://assets.summonlab.ai')
+	},
 	plugins: [
 		sveltekit({
 			adapter: adapter({ strict: true }),
