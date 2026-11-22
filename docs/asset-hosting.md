@@ -22,8 +22,8 @@ GitHub. The switch is one build-time variable; without it, the site behaves exac
 
 1. Connect the custom domain to the `summonlab-assets` bucket in Cloudflare and confirm its CORS policy
    allows `GET` and `HEAD` from any origin (the combat stage fetches and hashes its art).
-2. Publish the files: `sync_r2.py publish static` and `sync_r2.py publish art`
-   (`experiments/image-to-3d/rigging/scripts/`, on the image-to-3D experiment branch until it merges).
+2. Publish the files: `sync_r2.py publish static` and `sync_r2.py publish art` (`tools/r2/`; the plan
+   and its record are in `tools/r2/r2-migration.md`).
    Each run uploads only changed files and reads every object back to check its hash.
 3. Set `VITE_ASSET_BASE` in the Vercel project (Production and Preview) and redeploy.
 
