@@ -42,7 +42,8 @@
 		</p>
 		<p class="note">
 			Collection labels preserve each image’s status. Historical portraits do not expand the
-			playable roster.
+			playable roster. Full-size originals were kept for the approved roster and the combat
+			prototypes; the candidates and studies survive only as these previews.
 		</p>
 	</header>
 
@@ -97,25 +98,39 @@
 	{@render pagination()}
 	<div class="portraits">
 		{#each results.heroes as hero (hero.heroId)}
+			{@const original = hero.originalPath
+				? assetUrl(hero.originalPath, `${base}${hero.originalPath}`)
+				: null}
 			<article>
-				<a
-					class="portrait"
-					href={hero.originalUrl}
-					target="_blank"
-					rel="noreferrer"
-					aria-label={`Open ${hero.displayName} original portrait`}
-					><img
+				{#snippet thumbnail()}<img
 						src={assetUrl(hero.thumbnail, `${base}${hero.thumbnail}`)}
 						alt={`${hero.displayName} portrait`}
 						width={hero.width}
 						height={hero.height}
 						loading="lazy"
-					/></a
-				>
+					/>{/snippet}
+				{#if original}
+					<!-- eslint-disable svelte/no-navigation-without-resolve -- a full-size image file, not an app route -->
+					<a
+						class="portrait"
+						href={original}
+						target="_blank"
+						rel="noreferrer"
+						aria-label={`Open ${hero.displayName} original portrait`}>{@render thumbnail()}</a
+					>
+					<!-- eslint-enable svelte/no-navigation-without-resolve -->
+				{:else}
+					<div class="portrait">{@render thumbnail()}</div>
+				{/if}
 				<div class="caption">
 					<p class:approved={hero.collection === 'approved'} class="status">{hero.status}</p>
 					<h2>{hero.displayName}</h2>
-					<a href={hero.originalUrl} target="_blank" rel="noreferrer">View original ↗</a>
+					{#if original}
+						<!-- eslint-disable-next-line svelte/no-navigation-without-resolve -- a full-size image file, not an app route -->
+						<a href={original} target="_blank" rel="noreferrer">View original ↗</a>
+					{:else}
+						<span class="no-original">Original not kept</span>
+					{/if}
 				</div>
 			</article>
 		{/each}
@@ -308,10 +323,14 @@
 			serif;
 		overflow-wrap: anywhere;
 	}
-	.caption > a {
+	.caption > a,
+	.caption > .no-original {
 		font:
 			0.7rem ui-monospace,
 			monospace;
+	}
+	.caption > .no-original {
+		color: #aaa08e;
 	}
 	.empty {
 		padding: 3rem 0;

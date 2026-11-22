@@ -3,7 +3,8 @@ export type HeroArchiveEntry = {
 	displayName: string;
 	collection: string;
 	status: string;
-	originalUrl: string;
+	/** Root-relative path of the full-size original, or null when only the thumbnail survives. */
+	originalPath: string | null;
 	thumbnail: string;
 	width: number;
 	height: number;
@@ -59,7 +60,7 @@ export function searchHeroArchive(index: HeroArchiveEntry[], params: URLSearchPa
 			displayName: hero.displayName,
 			collection: hero.collection,
 			status: hero.status,
-			originalUrl: hero.originalUrl,
+			originalPath: hero.originalPath,
 			thumbnail: hero.thumbnail,
 			width: hero.width,
 			height: hero.height

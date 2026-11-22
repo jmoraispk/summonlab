@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { searchHeroArchive } from './hero-archive';
+import { getHeroArchiveData, searchHeroArchive } from './hero-archive';
 import { load } from '../../routes/wiki/heroes/+page.server';
 
 describe('public hero archive', () => {
@@ -45,10 +45,23 @@ describe('public hero archive', () => {
 		expect(searchHeroArchive(new URLSearchParams('page=NaN&collection=invalid')).total).toBe(736);
 	});
 
+	it('links only originals the site still serves, never GitHub', () => {
+		const { index } = getHeroArchiveData();
+		const kept = index.filter((hero) => hero.originalPath !== null);
+		expect(kept).toHaveLength(203);
+		expect(kept.every((hero) => hero.originalPath?.startsWith('/runtime/'))).toBe(true);
+		expect(
+			index
+				.filter((hero) => hero.collection === 'candidates' || hero.collection === 'studies')
+				.every((hero) => hero.originalPath === null)
+		).toBe(true);
+		expect(JSON.stringify(index)).not.toContain('githubusercontent');
+	});
+
 	it('sends only visible card data to clients, with current approved image bindings', () => {
 		const page = searchHeroArchive(new URLSearchParams('collection=approved'));
 		expect(
-			page.heroes.every((hero) => hero.originalUrl.includes('/runtime/summonable-heroes-v1/'))
+			page.heroes.every((hero) => hero.originalPath?.startsWith('/runtime/summonable-heroes-v1/'))
 		).toBe(true);
 		expect(JSON.stringify(page)).not.toContain('identitySignature');
 		expect(JSON.stringify(page)).not.toContain('sha256');

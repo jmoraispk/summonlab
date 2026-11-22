@@ -6,7 +6,9 @@ const index: HeroArchiveEntry[] = archive.heroes.map((hero) => ({
 	displayName: hero.displayName,
 	collection: hero.collection,
 	status: hero.status,
-	originalUrl: hero.source.imageUrl,
+	// Only originals whose bytes are still in the site's static files are linked; the commits that held
+	// the historical candidates and studies are gone from GitHub, so those keep only their thumbnails.
+	originalPath: ('keptPath' in hero.source ? hero.source.keptPath : undefined) ?? null,
 	thumbnail: hero.thumbnail.path,
 	width: hero.thumbnail.width,
 	height: hero.thumbnail.height,
