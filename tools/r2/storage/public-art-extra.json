@@ -1,0 +1,55 @@
+{
+	"bucket": "summonlab-assets",
+	"keyRule": "repository art at its repository path",
+	"updated": "2026-11-22T21:18:33Z",
+	"files": {
+		"assets/equipment/experiments/rank-first-calibration-2026-09-02/bronze-dagger-individual-v1.png": {
+			"bytes": 1759356,
+			"sha256": "47022bbdf47bb370b1a84156190f8a7bab75c1f999c7b126fc3e8e7dcd47ec08"
+		},
+		"assets/equipment/experiments/rank-first-calibration-2026-09-02/sunsteel-dagger-individual-v1.png": {
+			"bytes": 1812180,
+			"sha256": "8c5c69fc6a02b6eaa71bb6cfa679fb19f3c12b775ca85722cb282350a5e97cd1"
+		},
+		"assets/heroes/visuals/realtime-combat-study-v1/animation-canary-v1/iron-guardian/iron-guardian-motion-sheet-source-v3.png": {
+			"bytes": 2230363,
+			"sha256": "b22c5390f290abf4ff3cca9540c713eb30d1045ed4f1c9573389a8d223df99d9"
+		},
+		"assets/heroes/visuals/realtime-combat-study-v1/animation-canary-v1/iron-guardian/iron-guardian-motion-sheet-source-v4.png": {
+			"bytes": 2108379,
+			"sha256": "0a751496ecd72743dba97051231f5c34fb67e7dbab0637df0a6e0531399481dc"
+		},
+		"assets/heroes/visuals/realtime-combat-study-v1/animation-canary-v1/iron-guardian/iron-guardian-motion-sheet-source-v5.png": {
+			"bytes": 1990961,
+			"sha256": "1a90869dca78d735c0815e174945c2da929bcdfce6abd78800b1c1e01e7723a1"
+		},
+		"assets/heroes/visuals/realtime-combat-study-v1/animation-canary-v1/iron-guardian/iron-guardian-run-strip-raw-v5.png": {
+			"bytes": 1190458,
+			"sha256": "5be7f46d9cabf927984233f18606263404de2d8dd0317cf7d15397eb26f457ea"
+		},
+		"assets/heroes/visuals/realtime-combat-study-v1/animation-canary-v1/iron-guardian/iron-guardian-run-strip-source-v4.png": {
+			"bytes": 1661248,
+			"sha256": "a7d82acca4a132d2f8a5fc399e7c8dddc7c7844f0e98a99bf692901752f04b80"
+		},
+		"assets/heroes/visuals/realtime-combat-study-v1/animation-canary-v1/iron-guardian/iron-guardian-run-strip-source-v5.png": {
+			"bytes": 703465,
+			"sha256": "e46d9226ac550d513e913d9022bf660b479eb496f7ed243dcec497d9f8d82d50"
+		},
+		"assets/heroes/visuals/realtime-combat-study-v1/animation-canary-v1/moss-archer/moss-archer-idle-strip-raw-v4.png": {
+			"bytes": 1478062,
+			"sha256": "4ed227dd1ebfb949763b403e412a4d0abee84db410cbfbe9922afbb17333d2f2"
+		},
+		"assets/heroes/visuals/realtime-combat-study-v1/animation-canary-v1/moss-archer/moss-archer-idle-strip-source-v4.png": {
+			"bytes": 530170,
+			"sha256": "9a611a21ca1460b96f31f7b65344eaf5d99e28f9d3ad87052f90ad24c5d25721"
+		},
+		"assets/heroes/visuals/realtime-combat-study-v1/animation-canary-v1/moss-archer/moss-archer-motion-sheet-source-v2.png": {
+			"bytes": 1959535,
+			"sha256": "97cab854e83a8b90d1f0e23556338300d5c06b19521b4f572e1451f0ed3021ed"
+		},
+		"assets/heroes/visuals/realtime-combat-study-v1/animation-canary-v1/moss-archer/moss-archer-motion-sheet-source-v4.png": {
+			"bytes": 1703788,
+			"sha256": "4702897f8295c0a9ae5be1ef473b6eda868170d5b4de550aacdeffea0026423d"
+		}
+	}
+}
