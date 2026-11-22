@@ -3,6 +3,13 @@ import path from 'node:path';
 import { base } from '$app/paths';
 
 import catalog from '../../../../../docs/wiki/catalog.json';
+import publicArt from '../../../../../tools/r2/storage/public-art.json';
+import publicArtExtra from '../../../../../tools/r2/storage/public-art-extra.json';
+import { repositoryArtLink } from '$lib/asset-url';
+
+// Git LFS art that the public asset bucket holds at its repository path. Links to these open the bucket's
+// copy (when the site is built with VITE_ASSET_BASE) instead of GitHub, which would serve them from LFS.
+const bucketArt = new Set([...Object.keys(publicArt.files), ...Object.keys(publicArtExtra.files)]);
 
 const wikiSources = import.meta.glob('../../../../../docs/wiki/**/*.md', {
 	eager: true,
@@ -211,6 +218,8 @@ function resolveTarget(target: string, sourcePath: string): string {
 
 	const assetUrl = assetsByPath.get(repositoryPath);
 	if (assetUrl) return assetUrl;
+
+	if (bucketArt.has(repositoryPath)) return repositoryArtLink(repositoryPath);
 
 	if (/^(?:\.agents|apps|assets|docs|packages|skills|tools)\//.test(repositoryPath)) {
 		return `https://github.com/jmoraispk/summonlab/blob/main/${repositoryPath}${suffix}`;
