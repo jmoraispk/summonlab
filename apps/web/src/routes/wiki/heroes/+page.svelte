@@ -42,8 +42,7 @@
 		</p>
 		<p class="note">
 			Collection labels preserve each image’s status. Historical portraits do not expand the
-			playable roster. Full-size originals were kept for the approved roster and the combat
-			prototypes; the candidates and studies survive only as these previews.
+			playable roster.
 		</p>
 	</header>
 
@@ -125,12 +124,6 @@
 				<div class="caption">
 					<p class:approved={hero.collection === 'approved'} class="status">{hero.status}</p>
 					<h2>{hero.displayName}</h2>
-					{#if original}
-						<!-- eslint-disable-next-line svelte/no-navigation-without-resolve -- a full-size image file, not an app route -->
-						<a href={original} target="_blank" rel="noreferrer">View original ↗</a>
-					{:else}
-						<span class="no-original">Original not kept</span>
-					{/if}
 				</div>
 			</article>
 		{/each}
@@ -322,15 +315,6 @@
 			1.35rem/1.2 Georgia,
 			serif;
 		overflow-wrap: anywhere;
-	}
-	.caption > a,
-	.caption > .no-original {
-		font:
-			0.7rem ui-monospace,
-			monospace;
-	}
-	.caption > .no-original {
-		color: #aaa08e;
 	}
 	.empty {
 		padding: 3rem 0;
