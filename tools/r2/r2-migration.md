@@ -26,6 +26,8 @@ Git LFS.
 
 ## Target split
 
+Superseded on 2026-11-22: one public bucket per project and no private masters bucket (see Decisions).
+
 | Location                      | Holds                                                                                                                                                          | Size now |
 | ----------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- |
 | Git                           | code, docs, JSON manifests (path → SHA-256, bytes, bucket key), batch plans, QA results, small preview and evidence images, `apps/web/static/ui`, `robots.txt` | small    |
@@ -83,7 +85,7 @@ Git LFS.
    R2_ACCESS_KEY_ID=...
    R2_SECRET_ACCESS_KEY=...
    R2_BUCKET=summonlab-assets
-   R2_MASTERS_BUCKET=summonlab-masters
+   R2_MASTERS_BUCKET=summonlab-masters   # unused since 2026-11-22; the bucket is empty
    R2_PUBLIC_BASE=https://assets.<your-domain>
    ```
 
@@ -166,10 +168,11 @@ Cloudflare serves the same records, the site keeps working throughout.
 Durable owner answers about storage, kept from the image-to-3D experiment's decision log when that
 experiment moved to Systemlog (2026-11-21).
 
-| Date       | Decision                                                                                                         | Status                                                                                                                   |
-| ---------- | ---------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
-| 2026-11-18 | Two R2 buckets: public `summonlab-assets` (runtime files and catalog) and private `summonlab-masters` (masters). | accepted                                                                                                                 |
-| 2026-11-18 | Move most of what GitHub stores and serves (Git LFS art, site runtime images) to R2.                             | proposed: phases above                                                                                                   |
-| 2026-11-18 | Back up the 3D files and the 2D LFS art to the private bucket.                                                   | done: 3,091 files, 6.0 GB, all read back and verified; GitHub unchanged                                                  |
-| 2026-11-19 | Switch the live site to the bucket (`VITE_ASSET_BASE` set in Vercel by the owner).                               | done: jmoraispk/summonlab#1 merged; live pages load every image from the bucket (547 requests, no failures)              |
-| 2026-11-21 | Move the rig bench and the 3D work to Systemlog; remove the /rigging page.                                       | done: this folder keeps the website's images and the LFS art; the bench's files stay under `bench/` in the public bucket |
+| Date       | Decision                                                                                                                                              | Status                                                                                                                                                                                                                                                                                                                                                                     |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-11-18 | Two R2 buckets: public `summonlab-assets` (runtime files and catalog) and private `summonlab-masters` (masters).                                      | accepted                                                                                                                                                                                                                                                                                                                                                                   |
+| 2026-11-18 | Move most of what GitHub stores and serves (Git LFS art, site runtime images) to R2.                                                                  | proposed: phases above                                                                                                                                                                                                                                                                                                                                                     |
+| 2026-11-18 | Back up the 3D files and the 2D LFS art to the private bucket.                                                                                        | done: 3,091 files, 6.0 GB, all read back and verified; GitHub unchanged                                                                                                                                                                                                                                                                                                    |
+| 2026-11-19 | Switch the live site to the bucket (`VITE_ASSET_BASE` set in Vercel by the owner).                                                                    | done: jmoraispk/summonlab#1 merged; live pages load every image from the bucket (547 requests, no failures)                                                                                                                                                                                                                                                                |
+| 2026-11-21 | Move the rig bench and the 3D work to Systemlog; remove the /rigging page.                                                                            | done: this folder keeps the website's images and the LFS art; the bench's files stay under `bench/` in the public bucket                                                                                                                                                                                                                                                   |
+| 2026-11-22 | One public bucket per project; no private masters bucket. The owner does not need separate backup originals, and Git LFS keeps the art's second copy. | done: the 2,244 LFS images the catalogs name were already public (identical bytes); the 12 others were copied to `summonlab-assets` (`storage/public-art-extra.json`), leaving out 6 owner weapon-inspiration references, which stay in Git LFS. Systemlog's 1,310 files moved to its own bucket. `summonlab-masters` was emptied; `sync_r2.py` keeps only `publish static | art`. |
