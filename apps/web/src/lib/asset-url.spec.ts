@@ -57,3 +57,25 @@ describe('asset URLs with a bucket', () => {
 		}
 	});
 });
+
+describe('repository art from the bucket alone (the GitHub Pages wiki)', () => {
+	it('opens Git LFS art from the bucket and keeps static files local', async () => {
+		vi.resetModules();
+		vi.stubEnv('VITE_ASSET_BASE', '');
+		vi.stubEnv('VITE_ART_BASE', 'https://assets.example.test/');
+		const urls = await import('./asset-url');
+		expect(urls.assetBucketConfigured).toBe(false);
+		expect(urls.assetUrl('/runtime/a.webp', '/summonlab/runtime/a.webp')).toBe(
+			'/summonlab/runtime/a.webp'
+		);
+		expect(urls.repositoryArtUrl('assets/enemies/x/normal.png')).toBe(
+			'https://assets.example.test/assets/enemies/x/normal.png'
+		);
+		expect(urls.repositoryArtLink('assets/enemies/x/normal.png')).toBe(
+			'https://assets.example.test/assets/enemies/x/normal.png'
+		);
+		expect(urls.repositoryArtFallbackUrl('/assets/enemies/x/normal.png')).toBe(
+			'https://media.githubusercontent.com/media/jmoraispk/summonlab/main/assets/enemies/x/normal.png'
+		);
+	});
+});

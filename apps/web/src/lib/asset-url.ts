@@ -8,8 +8,14 @@
  *
  * Content records keep their root-relative paths (contracts validate them as `/runtime/…`); apply
  * these helpers only where a file is fetched or shown.
+ *
+ * `VITE_ART_BASE` sets the bucket for repository art alone and defaults to `VITE_ASSET_BASE`. The
+ * GitHub Pages wiki uses it: it serves the static files it copies into its own build, and opens Git LFS
+ * art from the bucket, with GitHub as the fallback, instead of from GitHub.
  */
-const ASSET_BASE = String(import.meta.env.VITE_ASSET_BASE ?? '').replace(/\/+$/u, '');
+const trimBase = (value: unknown) => String(value ?? '').replace(/\/+$/u, '');
+const ASSET_BASE = trimBase(import.meta.env.VITE_ASSET_BASE);
+const ART_BASE = trimBase(import.meta.env.VITE_ART_BASE) || ASSET_BASE;
 const REPOSITORY = 'jmoraispk/summonlab';
 
 export const assetBucketConfigured = ASSET_BASE !== '';
@@ -23,18 +29,19 @@ export function assetUrl(path: string, local: string = path): string {
 	return `${ASSET_BASE}${path}`;
 }
 
+/** GitHub's copy of repository art kept in Git LFS: the fallback when the bucket cannot serve it. */
+export function repositoryArtFallbackUrl(repositoryPath: string): string {
+	return `https://media.githubusercontent.com/media/${REPOSITORY}/main/${repositoryPath.replace(/^\/+/u, '')}`;
+}
+
 /** The full-size file for repository art kept in Git LFS, e.g. `assets/enemies/…/normal.png`. */
 export function repositoryArtUrl(repositoryPath: string): string {
 	const path = repositoryPath.replace(/^\/+/u, '');
-	return ASSET_BASE
-		? `${ASSET_BASE}/${path}`
-		: `https://media.githubusercontent.com/media/${REPOSITORY}/main/${path}`;
+	return ART_BASE ? `${ART_BASE}/${path}` : repositoryArtFallbackUrl(path);
 }
 
 /** Where an "original file" link points: the bucket's copy, or the file's page on GitHub. */
 export function repositoryArtLink(repositoryPath: string): string {
 	const path = repositoryPath.replace(/^\/+/u, '');
-	return ASSET_BASE
-		? `${ASSET_BASE}/${path}`
-		: `https://github.com/${REPOSITORY}/blob/main/${path}`;
+	return ART_BASE ? `${ART_BASE}/${path}` : `https://github.com/${REPOSITORY}/blob/main/${path}`;
 }

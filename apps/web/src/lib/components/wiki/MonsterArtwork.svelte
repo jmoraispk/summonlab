@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { repositoryArtUrl } from '$lib/asset-url';
+	import { repositoryArtFallbackUrl, repositoryArtUrl } from '$lib/asset-url';
 	import { tick } from 'svelte';
 	import type { MonsterArtworkImage } from './monster-artwork';
 
@@ -29,10 +29,18 @@
 	let imageIndex = $state(0);
 	const images = $derived(gallery?.length ? gallery : [{ src, sourcePath, alt }]);
 	const current = $derived(images[imageIndex] ?? { src, sourcePath, alt });
-	let sourceFailed = $state(false);
 	let loaded = $state(false);
 	let dismissStart: { x: number; y: number } | undefined;
-	const original = $derived(repositoryArtUrl(current.sourcePath));
+	// The original from the bucket, then GitHub's Git LFS copy, then the smaller preview.
+	const sources = $derived([
+		...new Set([
+			repositoryArtUrl(current.sourcePath),
+			repositoryArtFallbackUrl(current.sourcePath),
+			current.src
+		])
+	]);
+	let attempt = $state(0);
+	const sourceFailed = $derived(attempt >= sources.length - 1);
 
 	function isEmptyArea(event: MouseEvent | PointerEvent) {
 		const target = event.target;
@@ -79,7 +87,7 @@
 		);
 		opened = true;
 		zoom = 1;
-		sourceFailed = false;
+		attempt = 0;
 		loaded = false;
 		await tick();
 		dialog.showModal();
@@ -90,7 +98,7 @@
 		if (next < 0 || next >= images.length) return;
 		imageIndex = next;
 		zoom = 1;
-		sourceFailed = false;
+		attempt = 0;
 		loaded = false;
 		await tick();
 		viewport?.scrollTo(0, 0);
@@ -176,12 +184,14 @@
 			>
 				{#key current.sourcePath}
 					<img
-						src={sourceFailed ? current.src : original}
+						src={sources[attempt]}
 						alt={current.alt}
 						style:width={`${zoom * 100}%`}
 						style:height={`${zoom * 100}%`}
 						onload={() => (loaded = true)}
-						onerror={() => (sourceFailed = true)}
+						onerror={() => {
+							if (attempt < sources.length - 1) attempt += 1;
+						}}
 					/>
 				{/key}
 			</div>
