@@ -107,7 +107,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/adar-belo/summon.11ed98e890d2.webp",
         "sha256": "11ed98e890d2bbf7cecd7f6a83425ab3ba948e01c9a88f50e63f9d17f0ed146a",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/adar-belo/summon.11ed98e890d2.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/adar-belo/summon.11ed98e890d2.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -913,7 +914,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/aean-morun/summon.e722dde919e6.webp",
         "sha256": "e722dde919e6f4dae10187d8002010ebd8b7ed709a7a9c84858ccf57fc7d7551",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/aean-morun/summon.e722dde919e6.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/aean-morun/summon.e722dde919e6.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -1014,7 +1016,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/aear-soro/summon.166b800dc912.webp",
         "sha256": "166b800dc9126c0b10cc3ee464293eb51dd127f955ebe2f4438df5a395b4f507",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/aear-soro/summon.166b800dc912.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/aear-soro/summon.166b800dc912.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -1303,7 +1306,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/aei-quoran/summon.463cbb2e51d2.webp",
         "sha256": "463cbb2e51d20b18ef5a6bc3227c6ecad4b4327b14f5ba7a05f146d616569b37",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/aei-quoran/summon.463cbb2e51d2.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/aei-quoran/summon.463cbb2e51d2.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -1498,7 +1502,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/aeo-keshen/summon.f24bc5ecab40.webp",
         "sha256": "f24bc5ecab404714d712cf1e220f8d99d83d8eb3b6dd4cbd52fde3100ef257d0",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/aeo-keshen/summon.f24bc5ecab40.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/aeo-keshen/summon.f24bc5ecab40.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -1740,7 +1745,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/aeyn-amara/summon.e7393333bbc6.webp",
         "sha256": "e7393333bbc6ca8d24dc7beb0f5abf6a93598391b98f665d4e599795fa43806b",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/aeyn-amara/summon.e7393333bbc6.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/aeyn-amara/summon.e7393333bbc6.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -1816,7 +1822,8 @@
         "path": "apps/web/static/runtime/combat/realtime-study-v1/hero-saffron-braid-ready-v1.png",
         "gitLfs": false,
         "sha256": "9f6704c825a642c1664cc34573a2e2264a9d3d2f0cf85c5f65ee6c09f4bb5a2b",
-        "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/combat/realtime-study-v1/hero-saffron-braid-ready-v1.png"
+        "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/combat/realtime-study-v1/hero-saffron-braid-ready-v1.png",
+        "keptPath": "/runtime/combat/realtime-study-v1/hero-saffron-braid-ready-v1.png"
       },
       "provenancePath": "assets/heroes/visuals/realtime-combat-study-v1/PROVENANCE.md",
       "thumbnail": {
@@ -1905,7 +1912,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/belan-falin/summon.3373009a5fbb.webp",
         "sha256": "3373009a5fbb593b9145fcee3d0353d7e416001c9621a999158f5c6c4914b6a3",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/belan-falin/summon.3373009a5fbb.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/belan-falin/summon.3373009a5fbb.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -2006,7 +2014,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/belar-amarek/summon.3f3daddd2400.webp",
         "sha256": "3f3daddd240074ffddb6e434066493794b05fc8d49ae096c5a308e6a32eb56ff",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/belar-amarek/summon.3f3daddd2400.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/belar-amarek/summon.3f3daddd2400.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -2060,7 +2069,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/belar-corin/summon.e4986383ab6a.webp",
         "sha256": "e4986383ab6ac27447d386d79cfcc462d8006e543100c841e1de6eb4dcac3512",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/belar-corin/summon.e4986383ab6a.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/belar-corin/summon.e4986383ab6a.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -2255,7 +2265,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/belia-corin/summon.77fc8f45129b.webp",
         "sha256": "77fc8f45129b2c91c4a93b968a347d285f34cf22797e36b08e529ee549476026",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/belia-corin/summon.77fc8f45129b.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/belia-corin/summon.77fc8f45129b.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -2356,7 +2367,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/belin-quori/summon.ebe0e8afd84d.webp",
         "sha256": "ebe0e8afd84dd1e637d29929dcc4deafd6c216bac2a5d470ee2f7b5da1b74b4b",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/belin-quori/summon.ebe0e8afd84d.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/belin-quori/summon.ebe0e8afd84d.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -2410,7 +2422,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/belis-eshan/summon.eabd5a4c87fe.webp",
         "sha256": "eabd5a4c87fe53d4212f89ec8ca58480e530ff5c1a01e287e7c38b705223c251",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/belis-eshan/summon.eabd5a4c87fe.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/belis-eshan/summon.eabd5a4c87fe.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -2464,7 +2477,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/belis-nethai/summon.57f47e3eee4b.webp",
         "sha256": "57f47e3eee4b4a421decf8456f595153468d00298578c8e39beaf979ced7ec28",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/belis-nethai/summon.57f47e3eee4b.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/belis-nethai/summon.57f47e3eee4b.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -2659,7 +2673,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/belu-uleno/summon.8e6032f6013d.webp",
         "sha256": "8e6032f6013d3a952237b61f563f9e42155ab449fac213888e20605c2494c80f",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/belu-uleno/summon.8e6032f6013d.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/belu-uleno/summon.8e6032f6013d.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -2713,7 +2728,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/belyn-reshor/summon.b88b7ab602bd.webp",
         "sha256": "b88b7ab602bd3d7915234c28054a6895b7c8b6d7257fc66bfac428d72434b156",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/belyn-reshor/summon.b88b7ab602bd.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/belyn-reshor/summon.b88b7ab602bd.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -2767,7 +2783,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/belyn-tava/summon.e958bf67964e.webp",
         "sha256": "e958bf67964e3af950ab2c78add9bf531900fb8fad15e5df6eb76c9acf824cc6",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/belyn-tava/summon.e958bf67964e.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/belyn-tava/summon.e958bf67964e.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -3056,7 +3073,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/brinen-joro/summon.a5e78f7f04dc.webp",
         "sha256": "a5e78f7f04dcdce78a71f783ecfa81dec54b1496b1095590aa1e851ae7863d02",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/brinen-joro/summon.a5e78f7f04dc.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/brinen-joro/summon.a5e78f7f04dc.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -3110,7 +3128,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/brinen-lori/summon.faefe5192077.webp",
         "sha256": "faefe5192077212e1600080cca5ca86c79d3421bcdca30e7ee00caeee5d7bdb6",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/brinen-lori/summon.faefe5192077.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/brinen-lori/summon.faefe5192077.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -3399,7 +3418,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/brinis-drenin/summon.6491cbfbff71.webp",
         "sha256": "6491cbfbff7128f57ca26029408d81ddd257a996d0edd9f094b25a320d24d938",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/brinis-drenin/summon.6491cbfbff71.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/brinis-drenin/summon.6491cbfbff71.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -3453,7 +3473,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/brinis-morek/summon.7ce3cebcb150.webp",
         "sha256": "7ce3cebcb150432d9503c3cf7e2f755e844e011f4e2cd24f4f65075ecc6c6006",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/brinis-morek/summon.7ce3cebcb150.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/brinis-morek/summon.7ce3cebcb150.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -3507,7 +3528,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/brinis-tavel/summon.9043d68d1abb.webp",
         "sha256": "9043d68d1abb6b1603e19825d943e1dac38117d5951e532259d5496b2b42fc1a",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/brinis-tavel/summon.9043d68d1abb.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/brinis-tavel/summon.9043d68d1abb.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -4097,7 +4119,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/cala-uleni/summon.00b037db0328.webp",
         "sha256": "00b037db03284c5e75e84362c94c8e9eae90471dc7d1709954e72041db234d30",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/cala-uleni/summon.00b037db0328.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/cala-uleni/summon.00b037db0328.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -4856,7 +4879,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/calis-kesho/summon.74d2e5faccbe.webp",
         "sha256": "74d2e5faccbe6746616c0415f0719dfbdcdd9823a646fda16a1cfd89665ebe6c",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/calis-kesho/summon.74d2e5faccbe.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/calis-kesho/summon.74d2e5faccbe.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -5051,7 +5075,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/calon-vesha/summon.4000c94a5a47.webp",
         "sha256": "4000c94a5a47223eaabacf6068b37e40c9f7021f3f07ea1d99945ecd15485cfe",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/calon-vesha/summon.4000c94a5a47.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/calon-vesha/summon.4000c94a5a47.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -5973,7 +5998,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/coro-reshi/summon.ea32f8526864.webp",
         "sha256": "ea32f852686483243e34409d9ccccebd3337cf840baa9b8ba8057db3b2dffe73",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/coro-reshi/summon.ea32f8526864.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/coro-reshi/summon.ea32f8526864.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -6121,7 +6147,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/coron-loran/summon.64566681921c.webp",
         "sha256": "64566681921c33c76eb6f746d0d3ba01da44dde017365fde3e903c9efc1c8990",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/coron-loran/summon.64566681921c.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/coron-loran/summon.64566681921c.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -6222,7 +6249,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/coryn-pellor/summon.2b7917a69383.webp",
         "sha256": "2b7917a6938306a6ee3630cd29e0e8e48704b1729ff974f079a03e4b4076db40",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/coryn-pellor/summon.2b7917a69383.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/coryn-pellor/summon.2b7917a69383.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -6464,7 +6492,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/daiel-sorek/summon.5b69b0113ae0.webp",
         "sha256": "5b69b0113ae057978945b5376d07ba8391fe5718fc9dbd43dff4cb9426f966cd",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/daiel-sorek/summon.5b69b0113ae0.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/daiel-sorek/summon.5b69b0113ae0.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -6706,7 +6735,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/daiis-wyror/summon.1cdfd914ed09.webp",
         "sha256": "1cdfd914ed097f8ad7b40e2d0867909c506d2dbf2862dabb1f31cda34a64495e",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/daiis-wyror/summon.1cdfd914ed09.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/daiis-wyror/summon.1cdfd914ed09.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -6760,7 +6790,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/daiis-zhara/summon.1547552c1932.webp",
         "sha256": "1547552c1932ee181956ee8f2cf452a7175dd09a16e5d5f177c613d9521b9361",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/daiis-zhara/summon.1547552c1932.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/daiis-zhara/summon.1547552c1932.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -7096,7 +7127,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/daiyn-drenek/summon.2b058e2981b9.webp",
         "sha256": "2b058e2981b9d6ae8afb0a14e6be9e3d8bc60b36b86e4ebd5117ed1c75551f6d",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/daiyn-drenek/summon.2b058e2981b9.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/daiyn-drenek/summon.2b058e2981b9.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -7498,7 +7530,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/deli-pellin/summon.2a856479f6f7.webp",
         "sha256": "2a856479f6f77a2bc85bb1e2cc22da27114b0629e38edc4d4baf9b9692e7fa22",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/deli-pellin/summon.2a856479f6f7.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/deli-pellin/summon.2a856479f6f7.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -7787,7 +7820,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/delon-ulenan/summon.f5afb604c88c.webp",
         "sha256": "f5afb604c88c263becd9b8c9f6556e91ab0561c28513671b45134bdd429cb2e4",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/delon-ulenan/summon.f5afb604c88c.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/delon-ulenan/summon.f5afb604c88c.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -7841,7 +7875,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/delu-iverel/summon.343c4a73a77a.webp",
         "sha256": "343c4a73a77a6ca014478df2e06483ee7f0804a370a41740be07a9e1b72b43f3",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/delu-iverel/summon.343c4a73a77a.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/delu-iverel/summon.343c4a73a77a.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -8083,7 +8118,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/delyn-nethai/summon.625bdf7817fa.webp",
         "sha256": "625bdf7817fa1f1567d4d040cf04ab28e524eeff73aa023637c47aeed2bd9839",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/delyn-nethai/summon.625bdf7817fa.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/delyn-nethai/summon.625bdf7817fa.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -8137,7 +8173,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/delyn-quorai/summon.b2a2c848b55e.webp",
         "sha256": "b2a2c848b55e32c6b4e8754c4eb81ef7a3e4c680b60486c269631fc28dfb8079",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/delyn-quorai/summon.b2a2c848b55e.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/delyn-quorai/summon.b2a2c848b55e.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -8307,7 +8344,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/eiran-tavar/summon.a6de34e15b2b.webp",
         "sha256": "a6de34e15b2b74247ae55e2098dc8a8c13e4e05c4a2a2b9dd2bcfc549daedb55",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/eiran-tavar/summon.a6de34e15b2b.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/eiran-tavar/summon.a6de34e15b2b.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -8408,7 +8446,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/eirel-belen/summon.54f1b0fac229.webp",
         "sha256": "54f1b0fac22990bbfe2c6e7ee76e065d8b92c92b22ae7bf0c844d45e656950d2",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/eirel-belen/summon.54f1b0fac229.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/eirel-belen/summon.54f1b0fac229.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -8462,7 +8501,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/eirel-halor/summon.a84a95bf4f51.webp",
         "sha256": "a84a95bf4f5103f4b4bef62e669425149066dcbd8d4c4c5d80b9e88ad1757de4",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/eirel-halor/summon.a84a95bf4f51.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/eirel-halor/summon.a84a95bf4f51.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -8563,7 +8603,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/eiria-wyren/summon.8356d9d90c0f.webp",
         "sha256": "8356d9d90c0fa52ef6d194124975e70280bb38d79ae9ff8491d0bb5858354179",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/eiria-wyren/summon.8356d9d90c0f.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/eiria-wyren/summon.8356d9d90c0f.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -8617,7 +8658,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/eiris-nethar/summon.73ef2312d821.webp",
         "sha256": "73ef2312d821ce0cb8f909b65934a972bdb460bbfe0aba485b16b598149dcf43",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/eiris-nethar/summon.73ef2312d821.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/eiris-nethar/summon.73ef2312d821.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -8765,7 +8807,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/eiror-keshai/summon.41dc59cadefa.webp",
         "sha256": "41dc59cadefa6d5941c6aa57f12ad43d7be2670d26dcc8c218b7197460ad2348",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/eiror-keshai/summon.41dc59cadefa.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/eiror-keshai/summon.41dc59cadefa.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -8819,7 +8862,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/eiru-greleth/summon.495dc4ffb27a.webp",
         "sha256": "495dc4ffb27aa6b5ab419b2955596f133b9f9c3cbf3864b330ed2eb9a9d34fb2",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/eiru-greleth/summon.495dc4ffb27a.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/eiru-greleth/summon.495dc4ffb27a.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -9293,7 +9337,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/elin-orin/summon.bd6ebbac0a41.webp",
         "sha256": "bd6ebbac0a41a7daea094c1007c6c37392024a73f5f343f26054199ce88d1eff",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/elin-orin/summon.bd6ebbac0a41.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/elin-orin/summon.bd6ebbac0a41.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -9416,7 +9461,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/elis-falo/summon.6f287d7da1f6.webp",
         "sha256": "6f287d7da1f61838e7bf94fdeb2107af8e7ed876cbd7d350781188a22e5e2503",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/elis-falo/summon.6f287d7da1f6.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/elis-falo/summon.6f287d7da1f6.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -9611,7 +9657,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/elor-mori/summon.b8207fb5d5bc.webp",
         "sha256": "b8207fb5d5bcee133703419291730ea176614a6946da71a9058ac8873fbac01c",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/elor-mori/summon.b8207fb5d5bc.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/elor-mori/summon.b8207fb5d5bc.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -9665,7 +9712,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/elor-tavin/summon.d97ec7e32ef6.webp",
         "sha256": "d97ec7e32ef6388ef22435c2c0ccf9d8657ecdd1117b1af9d7b9bfc4e3d0aeac",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/elor-tavin/summon.d97ec7e32ef6.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/elor-tavin/summon.d97ec7e32ef6.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -9976,7 +10024,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/fenar-lorar/summon.6a6cee72fc96.webp",
         "sha256": "6a6cee72fc96b9c49bc7c5a2256f5b1822daa3aeadd47babfb8d584e7a572a2e",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/fenar-lorar/summon.6a6cee72fc96.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/fenar-lorar/summon.6a6cee72fc96.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -10500,7 +10549,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/fenon-ulenar/summon.516f54d346e4.webp",
         "sha256": "516f54d346e470f12411c52475fc0695812119f344b744b3e3c3b3fdcaf370a9",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/fenon-ulenar/summon.516f54d346e4.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/fenon-ulenar/summon.516f54d346e4.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -10648,7 +10698,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/fenu-kesho/summon.d8ae7390dfda.webp",
         "sha256": "d8ae7390dfda3a592c9405f33d8316aa7960a3b2138947236ab0f5272fa87b95",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/fenu-kesho/summon.d8ae7390dfda.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/fenu-kesho/summon.d8ae7390dfda.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -10702,7 +10753,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/gala-fali/summon.d09ba0a616f5.webp",
         "sha256": "d09ba0a616f51ab0f37512ab73cf8c056107f311121b5cd774a5208f702a68cd",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/gala-fali/summon.d09ba0a616f5.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/gala-fali/summon.d09ba0a616f5.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -10756,7 +10808,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/gala-zhareth/summon.d0c11a4e7601.webp",
         "sha256": "d0c11a4e7601cc5eaaaa53ae0d8577afc0bf811245b2f701ba2e4baf8dcf86b2",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/gala-zhareth/summon.d0c11a4e7601.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/gala-zhareth/summon.d0c11a4e7601.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -10810,7 +10863,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/galar-cori/summon.06bc1f16cd6c.webp",
         "sha256": "06bc1f16cd6cf8c08a2488e15e62b594f96c76621f5f6c601ef244e9516c4d50",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/galar-cori/summon.06bc1f16cd6c.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/galar-cori/summon.06bc1f16cd6c.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -10864,7 +10918,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/galar-drena/summon.32c18d72115a.webp",
         "sha256": "32c18d72115ac8b235400e06fa2bae2a0d38a7a02f9d29cfa220796aaedac269",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/galar-drena/summon.32c18d72115a.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/galar-drena/summon.32c18d72115a.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -11106,7 +11161,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/galel-quoren/summon.e8a04297008f.webp",
         "sha256": "e8a04297008f90191349362e157de59717fca7ff8ef0a5695938d33fda91c3af",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/galel-quoren/summon.e8a04297008f.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/galel-quoren/summon.e8a04297008f.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -11276,7 +11332,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/galen-nethel/summon.2a416a934913.webp",
         "sha256": "2a416a934913547978deb4c859011accdfb788903166f6a28e131fadefefc8a9",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/galen-nethel/summon.2a416a934913.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/galen-nethel/summon.2a416a934913.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -11471,7 +11528,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/galin-quoreth/summon.b839f7984d01.webp",
         "sha256": "b839f7984d01509299f20e6fdb88c7451df2fb0f3443e722a2e86c66a794cfca",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/galin-quoreth/summon.b839f7984d01.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/galin-quoreth/summon.b839f7984d01.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -11713,7 +11771,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/galon-keshar/summon.6243e7e6faa3.webp",
         "sha256": "6243e7e6faa36cdef70cfe57a14c4d91229c199aab1be33bebfc2dc3cbe67045",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/galon-keshar/summon.6243e7e6faa3.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/galon-keshar/summon.6243e7e6faa3.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -11814,7 +11873,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/galu-wyreth/summon.6d550ce76ee0.webp",
         "sha256": "6d550ce76ee0f984f2b87eefcca0f8e3333ff1393820f62a7b54015eb322f933",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/galu-wyreth/summon.6d550ce76ee0.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/galu-wyreth/summon.6d550ce76ee0.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -12338,7 +12398,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/halia-ulenar/summon.c246228d253c.webp",
         "sha256": "c246228d253cadf2dcc653d28e68577be8e50c30e7193bc479250662fdddc8a9",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/halia-ulenar/summon.c246228d253c.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/halia-ulenar/summon.c246228d253c.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -12439,7 +12500,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/halon-esha/summon.35b4f1daf24d.webp",
         "sha256": "35b4f1daf24de2bc2fe177bf0c07f7541c978a56a8faf091ae72d5e63b5b08d2",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/halon-esha/summon.35b4f1daf24d.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/halon-esha/summon.35b4f1daf24d.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -12587,7 +12649,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/halyn-iveren/summon.6e05684ee95f.webp",
         "sha256": "6e05684ee95f8913b51f0e5551b6b8f1cbcb9ee6def72e4f94b75614a39753ab",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/halyn-iveren/summon.6e05684ee95f.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/halyn-iveren/summon.6e05684ee95f.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -12641,7 +12704,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/halyn-joren/summon.bbf6bbb86bde.webp",
         "sha256": "bbf6bbb86bde8bb5b319e9319c0d4e5601c3f0bbf32f3abe9715ce06411f139e",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/halyn-joren/summon.bbf6bbb86bde.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/halyn-joren/summon.bbf6bbb86bde.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -12858,7 +12922,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/iana-joro/summon.837ed3ccac2b.webp",
         "sha256": "837ed3ccac2b28b642792c3adf7bd43588ffa5fe31ae25e90f723fa9ae73c91a",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/iana-joro/summon.837ed3ccac2b.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/iana-joro/summon.837ed3ccac2b.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -13006,7 +13071,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/ianel-joreth/summon.10aa1f352285.webp",
         "sha256": "10aa1f3522856d53a0973f62a8cb3652ff73df60b757f33a8075fd5b0d1d4e66",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/ianel-joreth/summon.10aa1f352285.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/ianel-joreth/summon.10aa1f352285.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -13154,7 +13220,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/iani-morel/summon.bf0efdd56056.webp",
         "sha256": "bf0efdd56056b6e93cfa483a769d3c912c4783140d1fe83c2a38742046c28505",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/iani-morel/summon.bf0efdd56056.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/iani-morel/summon.bf0efdd56056.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -13255,7 +13322,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/ianin-nethai/summon.6360d634bfed.webp",
         "sha256": "6360d634bfed373e982695e6b4b17080e725c82616cffd207972135ec2de89c3",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/ianin-nethai/summon.6360d634bfed.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/ianin-nethai/summon.6360d634bfed.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -13497,7 +13565,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/iano-morel/summon.62ea2662af5f.webp",
         "sha256": "62ea2662af5fcbda068bcad3755d865445fa658c55b62b93554b65332446816f",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/iano-morel/summon.62ea2662af5f.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/iano-morel/summon.62ea2662af5f.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -13551,7 +13620,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/ianor-nethel/summon.ca741e137a76.webp",
         "sha256": "ca741e137a76c97140f2e3d812b76864b47f2b2e2b8cd9089cd6fec2d2760770",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/ianor-nethel/summon.ca741e137a76.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/ianor-nethel/summon.ca741e137a76.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -13746,7 +13816,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/ianu-lora/summon.8bc43b14a6ad.webp",
         "sha256": "8bc43b14a6ad107892d5ac407f022f6dd5d7af95a4648101458ae3944d28f816",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/ianu-lora/summon.8bc43b14a6ad.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/ianu-lora/summon.8bc43b14a6ad.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -14173,7 +14244,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/isis-moren/summon.158b9d9f6886.webp",
         "sha256": "158b9d9f6886f7ae454937fddb74ba6f90dd00eb7bb84f1d6f77b0f9f845a449",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/isis-moren/summon.158b9d9f6886.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/isis-moren/summon.158b9d9f6886.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -14321,7 +14393,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/isu-eshin/summon.f15fa5114bf9.webp",
         "sha256": "f15fa5114bf9b2e5ed6b3fe828e984e96b0b9192ba4001cbf9879d8297a6c047",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/isu-eshin/summon.f15fa5114bf9.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/isu-eshin/summon.f15fa5114bf9.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -14375,7 +14448,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/isu-ivereth/summon.12d8ddd4e373.webp",
         "sha256": "12d8ddd4e37336c5965c1b2be9875c60e963478e3a2f7c8b663a96e48c3a5f2e",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/isu-ivereth/summon.12d8ddd4e373.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/isu-ivereth/summon.12d8ddd4e373.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -14476,7 +14550,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/isyn-ulenan/summon.49ccfa53b9ec.webp",
         "sha256": "49ccfa53b9ec4d4796028e247d1e5142b2540cb997c0118ec00ef72d00df119f",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/isyn-ulenan/summon.49ccfa53b9ec.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/isyn-ulenan/summon.49ccfa53b9ec.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -14715,7 +14790,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/jorar-ulenan/summon.1464ca21d9af.webp",
         "sha256": "1464ca21d9afc80afc1a8ff0b5f6b8a9714f85020be9c22b57c0213832d0bedc",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/jorar-ulenan/summon.1464ca21d9af.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/jorar-ulenan/summon.1464ca21d9af.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -14816,7 +14892,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/jorel-kesho/summon.e127beb728a3.webp",
         "sha256": "e127beb728a31ff47b80e4adb843160e9675fcce3ec07aa8926d7aad75c928e6",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/jorel-kesho/summon.e127beb728a3.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/jorel-kesho/summon.e127beb728a3.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -15149,7 +15226,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/joris-belan/summon.1ec9766260b4.webp",
         "sha256": "1ec9766260b40acda172e6ee9ca0e973e3ae26ba9327c3c7f51743289fec885a",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/joris-belan/summon.1ec9766260b4.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/joris-belan/summon.1ec9766260b4.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -15391,7 +15469,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/joris-wyri/summon.0a61ca5e73c5.webp",
         "sha256": "0a61ca5e73c54292ec0c47608ca23aee574beafeadd6e0e0c2248329f34833f7",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/joris-wyri/summon.0a61ca5e73c5.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/joris-wyri/summon.0a61ca5e73c5.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -15539,7 +15618,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/joror-pelleth/summon.2f1f4c16ceda.webp",
         "sha256": "2f1f4c16cedaf730bfa303c4f219e156ab4ae6e26d68126ffbbd7d6e31d3dd31",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/joror-pelleth/summon.2f1f4c16ceda.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/joror-pelleth/summon.2f1f4c16ceda.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -15593,7 +15673,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/joru-jorel/summon.3a64865a29c5.webp",
         "sha256": "3a64865a29c576ee362fab0404180be654940db384e926855f1804aaa3831703",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/joru-jorel/summon.3a64865a29c5.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/joru-jorel/summon.3a64865a29c5.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -15976,7 +16057,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/kaan-resheth/summon.3c2756c971a9.webp",
         "sha256": "3c2756c971a97138faedf88e7c0ff1706b3a3ed13bff3eafbd4ba0eae7706971",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/kaan-resheth/summon.3c2756c971a9.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/kaan-resheth/summon.3c2756c971a9.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -16030,7 +16112,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/kaar-beli/summon.d4b475adb9c7.webp",
         "sha256": "d4b475adb9c7767bd0b59c8e67698aaf5f20f81b7eb2ce6b2bdad1db194957ac",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/kaar-beli/summon.d4b475adb9c7.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/kaar-beli/summon.d4b475adb9c7.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -16319,7 +16402,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/kaia-orin/summon.f3ce358bb585.webp",
         "sha256": "f3ce358bb585d5d155cbccb60afa247d10fb1e73186f25d365213b4cc0ecbb37",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/kaia-orin/summon.f3ce358bb585.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/kaia-orin/summon.f3ce358bb585.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -16467,7 +16551,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/kaon-zharor/summon.191933ca4a88.webp",
         "sha256": "191933ca4a880cc5cbbe245d09b99fb50521cf13294f5909a4ec0815aa71c8ba",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/kaon-zharor/summon.191933ca4a88.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/kaon-zharor/summon.191933ca4a88.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -16615,7 +16700,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/kau-iverar/summon.1cfc6798f76e.webp",
         "sha256": "1cfc6798f76e26a1c520dbcde31ec651afde6246bb9357960214f13ec6922d27",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/kau-iverar/summon.1cfc6798f76e.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/kau-iverar/summon.1cfc6798f76e.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -16782,7 +16868,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/kayn-quoro/summon.81784f41b3c9.webp",
         "sha256": "81784f41b3c97a2a8b37f0c9727b65cb71d65365ed510cc6b3c5c8bf99820fe6",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/kayn-quoro/summon.81784f41b3c9.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/kayn-quoro/summon.81784f41b3c9.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -16836,7 +16923,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/kelan-grelan/summon.917e48b17ac7.webp",
         "sha256": "917e48b17ac7f73de809081ce14b345deee7a9c96a414f577afbfe070fb1af09",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/kelan-grelan/summon.917e48b17ac7.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/kelan-grelan/summon.917e48b17ac7.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -16937,7 +17025,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/kelar-veshar/summon.b5085ba821fc.webp",
         "sha256": "b5085ba821fc72c0b0bad383f83f4b11a5ae3cc7d4c7593cee3839fc1bceaf2c",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/kelar-veshar/summon.b5085ba821fc.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/kelar-veshar/summon.b5085ba821fc.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -17132,7 +17221,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/keli-orel/summon.9023562c2778.webp",
         "sha256": "9023562c277820a582dbf9aa62a7d449d27459810a8dd9a5bd3993837059d045",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/keli-orel/summon.9023562c2778.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/keli-orel/summon.9023562c2778.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -17233,7 +17323,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/kelia-pella/summon.83185e3239a6.webp",
         "sha256": "83185e3239a6c7a70a6f7a937593702eafa2c382a64575c14872fc43f85d4e60",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/kelia-pella/summon.83185e3239a6.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/kelia-pella/summon.83185e3239a6.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -17287,7 +17378,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/kelia-zharek/summon.7be7feb32f83.webp",
         "sha256": "7be7feb32f8356ec2f5169b38bb10ad45758f876f09982758edee4ffadcdc409",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/kelia-zharek/summon.7be7feb32f83.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/kelia-zharek/summon.7be7feb32f83.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -17435,7 +17527,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/kelon-kesha/summon.e26a6a34664d.webp",
         "sha256": "e26a6a34664d220340cff868932f030331c77f1da325cbd0327b88943a1a19db",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/kelon-kesha/summon.e26a6a34664d.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/kelon-kesha/summon.e26a6a34664d.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -17583,7 +17676,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/kelu-grelun/summon.a0edb4970f37.webp",
         "sha256": "a0edb4970f3728fd9a2ba1537a450a1dc7cd4b7a9fba3511dcfb5fdee4d54f9e",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/kelu-grelun/summon.a0edb4970f37.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/kelu-grelun/summon.a0edb4970f37.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -17869,7 +17963,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/lana-grelor/summon.ecbd91639693.webp",
         "sha256": "ecbd916396933194ae27082f995b5cff5a5a6d3642a2f3113d4f73d54ae5938e",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/lana-grelor/summon.ecbd91639693.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/lana-grelor/summon.ecbd91639693.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -18111,7 +18206,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/lanen-quoren/summon.e4e684aeee3f.webp",
         "sha256": "e4e684aeee3fe4228e600c14b496f398bd428a5346ceeccd3c4f8a87af5169b1",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/lanen-quoren/summon.e4e684aeee3f.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/lanen-quoren/summon.e4e684aeee3f.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -18212,7 +18308,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/lani-nethun/summon.9caaeb96908d.webp",
         "sha256": "9caaeb96908d80f1ff299d8a63c05d0473b8d54b14b995c245f0380a67b73819",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/lani-nethun/summon.9caaeb96908d.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/lani-nethun/summon.9caaeb96908d.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -18266,7 +18363,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/lania-eshan/summon.5e2679f9300f.webp",
         "sha256": "5e2679f9300fe6fb88b02dad67162726cdcfc2da78d377ce867ab7eb61a3747d",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/lania-eshan/summon.5e2679f9300f.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/lania-eshan/summon.5e2679f9300f.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -18508,7 +18606,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/lanon-grelan/summon.abd3bd198972.webp",
         "sha256": "abd3bd1989727c65da18e11d07104174f53d647dd5c027892a715c0416f2fe6d",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/lanon-grelan/summon.abd3bd198972.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/lanon-grelan/summon.abd3bd198972.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -18813,7 +18912,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/lora-eshun/summon.e8e3ab870e0f.webp",
         "sha256": "e8e3ab870e0f9151570862cf066718e98edea71248ba10122b1c9ec8951d62be",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/lora-eshun/summon.e8e3ab870e0f.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/lora-eshun/summon.e8e3ab870e0f.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -18867,7 +18967,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/loran-halai/summon.bfc0a268862f.webp",
         "sha256": "bfc0a268862fb4caa09af6a02c36b942addeaa9616bc299ba08776008fb72800",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/loran-halai/summon.bfc0a268862f.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/loran-halai/summon.bfc0a268862f.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -18921,7 +19022,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/lorar-amaren/summon.56966a6cefb7.webp",
         "sha256": "56966a6cefb70b4febae83eb94b18e2258a98aeeee20f8e989f7d6184d9f751f",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/lorar-amaren/summon.56966a6cefb7.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/lorar-amaren/summon.56966a6cefb7.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -19257,7 +19359,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/lori-eshor/summon.9e669064457e.webp",
         "sha256": "9e669064457ec4cee99396af0af4570cab862abb83ed7ae97a736dfaa0fcfe68",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/lori-eshor/summon.9e669064457e.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/lori-eshor/summon.9e669064457e.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -19405,7 +19508,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/lorin-amareth/summon.353efdb68b4f.webp",
         "sha256": "353efdb68b4fdbe873a656bebf4ccf1898e2d8ed3ba0b287c3d7f565cf995c46",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/lorin-amareth/summon.353efdb68b4f.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/lorin-amareth/summon.353efdb68b4f.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -19694,7 +19798,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/loro-esha/summon.f48bf499555a.webp",
         "sha256": "f48bf499555a2d0b6acf0d4faf53f89800f4d0fe4b232138446fcdf0c1a3a318",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/loro-esha/summon.f48bf499555a.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/loro-esha/summon.f48bf499555a.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -19795,7 +19900,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/loron-corai/summon.a7bbd0230a80.webp",
         "sha256": "a7bbd0230a801af7b4020e0a595036bcc9220f1bf466e8987dc47fa3adba0a6d",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/loron-corai/summon.a7bbd0230a80.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/loron-corai/summon.a7bbd0230a80.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -19849,7 +19955,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/loror-falar/summon.0e0c08a80634.webp",
         "sha256": "0e0c08a80634e583f9914e9ba0eb745d382430f8d5115e1baa83764754417a73",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/loror-falar/summon.0e0c08a80634.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/loror-falar/summon.0e0c08a80634.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -19903,7 +20010,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/loror-pellai/summon.11ce05975089.webp",
         "sha256": "11ce059750896cc25efc4d888f76fc29960bb18548c94371964007502666595e",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/loror-pellai/summon.11ce05975089.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/loror-pellai/summon.11ce05975089.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -20139,7 +20247,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/meia-lori/summon.bae44ffb6062.webp",
         "sha256": "bae44ffb60624bed9d0fa51e9e7840a090440cf1e613a0735b081813007fdf46",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/meia-lori/summon.bae44ffb6062.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/meia-lori/summon.bae44ffb6062.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -20193,7 +20302,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/meian-belin/summon.559bc828a4b8.webp",
         "sha256": "559bc828a4b87aa3a8d4ba51cb4bf2c6e1b7ba3d87a6c4591ed9387bede0543c",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/meian-belin/summon.559bc828a4b8.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/meian-belin/summon.559bc828a4b8.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -20294,7 +20404,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/meian-ulenan/summon.1393c1d9bce4.webp",
         "sha256": "1393c1d9bce4a4be8d1e640960418ec8c518251dd8001aa86d0f8fc2cd69c6a3",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/meian-ulenan/summon.1393c1d9bce4.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/meian-ulenan/summon.1393c1d9bce4.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -20489,7 +20600,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/meii-falek/summon.1fc5653f636a.webp",
         "sha256": "1fc5653f636a1bc60d4d4d33650ececfad6ad0a35b7a29f4013d2e5471fb41e3",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/meii-falek/summon.1fc5653f636a.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/meii-falek/summon.1fc5653f636a.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -20637,7 +20749,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/meiia-falel/summon.1ce4e8bf601e.webp",
         "sha256": "1ce4e8bf601e618a275d012121cec23579b10f6d761d836c2b96c8a0157562f2",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/meiia-falel/summon.1ce4e8bf601e.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/meiia-falel/summon.1ce4e8bf601e.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -20691,7 +20804,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/meiin-loran/summon.16ae051219df.webp",
         "sha256": "16ae051219dfff85995e329f24864398222e1adf26140cf52b773b03c560eacf",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/meiin-loran/summon.16ae051219df.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/meiin-loran/summon.16ae051219df.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -20745,7 +20859,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/meiin-orar/summon.d0af8ef9c9b3.webp",
         "sha256": "d0af8ef9c9b3475a76acac142fc35f8d9143b939d8342dd16cc13d09770c7ef0",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/meiin-orar/summon.d0af8ef9c9b3.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/meiin-orar/summon.d0af8ef9c9b3.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -20940,7 +21055,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/meiis-eshel/summon.0e91d31d95ff.webp",
         "sha256": "0e91d31d95fff758b760b752dcc12cea5ad7f1094754da30d1f72839e4137d5b",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/meiis-eshel/summon.0e91d31d95ff.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/meiis-eshel/summon.0e91d31d95ff.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -21041,7 +21157,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/meio-ivereth/summon.68361afbf114.webp",
         "sha256": "68361afbf114506a3aed1083cd4eb569d87ff483b11c875a593d097d00562a2c",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/meio-ivereth/summon.68361afbf114.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/meio-ivereth/summon.68361afbf114.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -21352,7 +21469,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/nelan-mora/summon.58927db381c4.webp",
         "sha256": "58927db381c480171a13ae84c622d8145ab8c6e58dce1efe07f80ab1d35a480a",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/nelan-mora/summon.58927db381c4.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/nelan-mora/summon.58927db381c4.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -21406,7 +21524,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/nelia-soran/summon.5d42e5772eb6.webp",
         "sha256": "5d42e5772eb6b43724c62f0f57625459ca9fdefd70093abca2eefd877444cac4",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/nelia-soran/summon.5d42e5772eb6.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/nelia-soran/summon.5d42e5772eb6.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -21460,7 +21579,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/nelin-uleni/summon.43e7dc20f3b5.webp",
         "sha256": "43e7dc20f3b56bcd078cc72ba0e0c1549417782f1da824d3e1bd624448f1df61",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/nelin-uleni/summon.43e7dc20f3b5.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/nelin-uleni/summon.43e7dc20f3b5.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -21655,7 +21775,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/nelu-nethor/summon.b26dbef9395b.webp",
         "sha256": "b26dbef9395b2823f66ac6dcc090f4f543b327f50f4a39fe2be5c8f6c09c5b05",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/nelu-nethor/summon.b26dbef9395b.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/nelu-nethor/summon.b26dbef9395b.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -21869,7 +21990,8 @@
         "path": "apps/web/static/runtime/combat/realtime-study-v1/hero-moss-archer-ready-v1.png",
         "gitLfs": false,
         "sha256": "9c94401448f51dc6521c7aae3d00fa15e47bc4b27c452b666023f1d5fcd5bb36",
-        "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/combat/realtime-study-v1/hero-moss-archer-ready-v1.png"
+        "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/combat/realtime-study-v1/hero-moss-archer-ready-v1.png",
+        "keptPath": "/runtime/combat/realtime-study-v1/hero-moss-archer-ready-v1.png"
       },
       "provenancePath": "assets/heroes/visuals/realtime-combat-study-v1/PROVENANCE.md",
       "thumbnail": {
@@ -22005,7 +22127,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/oran-halar/summon.65f69f954688.webp",
         "sha256": "65f69f954688f5db67106101399a887bdcb2048a351bb734a1875127501b98b4",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/oran-halar/summon.65f69f954688.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/oran-halar/summon.65f69f954688.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -22059,7 +22182,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/oran-keshi/summon.a80ffdd4fcb5.webp",
         "sha256": "a80ffdd4fcb590c78c63bf18b2f1452cbd0c9dea112429723799fa6ac111f8c8",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/oran-keshi/summon.a80ffdd4fcb5.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/oran-keshi/summon.a80ffdd4fcb5.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -22113,7 +22237,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/orar-quoreth/summon.6a181c1d4894.webp",
         "sha256": "6a181c1d4894b9147c18a30dc6c18fdd56633e11368d000b85499bdab7abf31c",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/orar-quoreth/summon.6a181c1d4894.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/orar-quoreth/summon.6a181c1d4894.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -22283,7 +22408,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/oren-sorin/summon.6233321998e5.webp",
         "sha256": "6233321998e53482a559e4c32925c36b997559ce560a16f8ab6037b2b74fb624",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/oren-sorin/summon.6233321998e5.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/oren-sorin/summon.6233321998e5.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -22337,7 +22463,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/oren-tavan/summon.1392d4fa3658.webp",
         "sha256": "1392d4fa36589153f1ff3f3b3c4a79fa5b7cf25fb96a5a83c9b357bf7cea07a6",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/oren-tavan/summon.1392d4fa3658.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/oren-tavan/summon.1392d4fa3658.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -22438,7 +22565,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/ori-loran/summon.36e350872ed6.webp",
         "sha256": "36e350872ed6abad3436c780bd0f94c9335d750cf7ffc4d1f6070df1bc99c279",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/ori-loran/summon.36e350872ed6.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/ori-loran/summon.36e350872ed6.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -22539,7 +22667,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/ori-wyren/summon.a4faa3d3cbaf.webp",
         "sha256": "a4faa3d3cbafcf390989bc4cc008bb9e03e0c593bbe64e580c9f3f1ceefd4bb5",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/ori-wyren/summon.a4faa3d3cbaf.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/ori-wyren/summon.a4faa3d3cbaf.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -22781,7 +22910,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/oris-esheth/summon.c59f5445b6d5.webp",
         "sha256": "c59f5445b6d59d637e7fa559c83f41fd130ea4cd54ee4b6d6623a2dae4ef28f1",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/oris-esheth/summon.c59f5445b6d5.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/oris-esheth/summon.c59f5445b6d5.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -22882,7 +23012,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/oris-quorar/summon.b07c9d193892.webp",
         "sha256": "b07c9d193892a4c9dca57afb3dde86757794ddd32e28d65b33a693ffb0369b3e",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/oris-quorar/summon.b07c9d193892.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/oris-quorar/summon.b07c9d193892.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -23124,7 +23255,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/oru-eshen/summon.8b4922571703.webp",
         "sha256": "8b492257170385d10906b7e1b95840b0966b41c4d9fc5dec8904e72b26d5a4f2",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/oru-eshen/summon.8b4922571703.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/oru-eshen/summon.8b4922571703.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -23178,7 +23310,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/oryn-lorek/summon.1a4f0df023e2.webp",
         "sha256": "1a4f0df023e2c62d2e592c66a07ac4ca95e360fedff40022e22107c4baff6c6b",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/oryn-lorek/summon.1a4f0df023e2.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/oryn-lorek/summon.1a4f0df023e2.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -23232,7 +23365,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/oryn-resha/summon.789218eb799e.webp",
         "sha256": "789218eb799ebad64bf9ba9ce96e2e0d5f4fc64cd7c0c3ad65bddb93c32f3ff4",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/oryn-resha/summon.789218eb799e.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/oryn-resha/summon.789218eb799e.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -23286,7 +23420,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/oryn-reshin/summon.0ca3cf5a4190.webp",
         "sha256": "0ca3cf5a41908a18f6f4b7888753972f48a62aac0e85979a4b2e60d8f65d9547",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/oryn-reshin/summon.0ca3cf5a4190.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/oryn-reshin/summon.0ca3cf5a4190.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -23409,7 +23544,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/pera-coren/summon.4a8469c27b12.webp",
         "sha256": "4a8469c27b1253d563ca607c0bc5d82acb6da190b75f53ff46af0ec094fc5ef7",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/pera-coren/summon.4a8469c27b12.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/pera-coren/summon.4a8469c27b12.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -23510,7 +23646,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/peren-falel/summon.17b8255fdc5b.webp",
         "sha256": "17b8255fdc5b89d4c1c974bfb967c88ad49a91be17edc8f9387b14d065a9a8c4",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/peren-falel/summon.17b8255fdc5b.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/peren-falel/summon.17b8255fdc5b.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -23611,7 +23748,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/peri-belin/summon.71370f977511.webp",
         "sha256": "71370f97751111b2493fc89e3f46d755d27dd0990d3b0a131d74bc8e1e28da41",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/peri-belin/summon.71370f977511.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/peri-belin/summon.71370f977511.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -23712,7 +23850,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/peria-halo/summon.dca538d455d7.webp",
         "sha256": "dca538d455d7e9c2425c42fffabf02b03c132ebcb9c72dbde7248b62fcef414b",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/peria-halo/summon.dca538d455d7.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/peria-halo/summon.dca538d455d7.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -24283,7 +24422,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/quinar-reshar/summon.81d482ae4982.webp",
         "sha256": "81d482ae49820852c53b2654b6cd7542abca6a9b12de2ecb2b549bc1814a4e21",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/quinar-reshar/summon.81d482ae4982.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/quinar-reshar/summon.81d482ae4982.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -24525,7 +24665,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/quini-halel/summon.05720bb92076.webp",
         "sha256": "05720bb9207642014b6d0eb98a933030a03f42158e5c4fb7fe7a2a60bea169a9",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/quini-halel/summon.05720bb92076.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/quini-halel/summon.05720bb92076.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -24626,7 +24767,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/quinia-eshar/summon.531cb107061b.webp",
         "sha256": "531cb107061b5f2188e418917ab94158bc0cdbe5981e86aba3ea827cafd8f444",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/quinia-eshar/summon.531cb107061b.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/quinia-eshar/summon.531cb107061b.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -24774,7 +24916,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/quinis-tavar/summon.46a462af09db.webp",
         "sha256": "46a462af09dba6cd7e15ea55d2c088c90194c82a47930b57ca86e8ecc69d2659",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/quinis-tavar/summon.46a462af09db.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/quinis-tavar/summon.46a462af09db.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -24969,7 +25112,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/quinon-veshel/summon.e09d7ef1ec21.webp",
         "sha256": "e09d7ef1ec21cec8339cfcb0b020805a3ddf965597c39a419eec9cc035074d62",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/quinon-veshel/summon.e09d7ef1ec21.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/quinon-veshel/summon.e09d7ef1ec21.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -25023,7 +25167,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/quinor-pelleth/summon.ead32c99c5fb.webp",
         "sha256": "ead32c99c5fb0cdc4ee7781e0cea853bba31bc5a4fd254ae0fc558673e8c4e75",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/quinor-pelleth/summon.ead32c99c5fb.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/quinor-pelleth/summon.ead32c99c5fb.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -25312,7 +25457,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/raa-belan/summon.8f683484b82b.webp",
         "sha256": "8f683484b82b9bdf8b7f74b39d6be0197416c13c32abeca35d7e180721a7f336",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/raa-belan/summon.8f683484b82b.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/raa-belan/summon.8f683484b82b.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -25366,7 +25512,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/raa-belek/summon.2e643e32b4dc.webp",
         "sha256": "2e643e32b4dcdfa82783aa9b9f24ebd9e5345b57f188d135f5cea9f39def6830",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/raa-belek/summon.2e643e32b4dc.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/raa-belek/summon.2e643e32b4dc.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -25514,7 +25661,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/raan-joro/summon.f4a7fb06a226.webp",
         "sha256": "f4a7fb06a2262ce5ab87486e70fc08d3262db37c9150d27ae4198a315ae8e646",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/raan-joro/summon.f4a7fb06a226.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/raan-joro/summon.f4a7fb06a226.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -25568,7 +25716,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/raan-ori/summon.d4205b647507.webp",
         "sha256": "d4205b647507a009c9fa474d2eaa62033dc92aee8dca9acefa3800381b8c62c1",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/raan-ori/summon.d4205b647507.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/raan-ori/summon.d4205b647507.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -25716,7 +25865,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/raar-keshai/summon.5e91d3a9b674.webp",
         "sha256": "5e91d3a9b674cd4a3de656d477935888e351e48b91e2071d1e28a021470df847",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/raar-keshai/summon.5e91d3a9b674.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/raar-keshai/summon.5e91d3a9b674.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -25770,7 +25920,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/raar-wyren/summon.cda5d91f373d.webp",
         "sha256": "cda5d91f373d1b7c023f27542657f1905b8f95482ed26298c52ffca9a1879c26",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/raar-wyren/summon.cda5d91f373d.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/raar-wyren/summon.cda5d91f373d.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -25918,7 +26069,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/rael-quoran/summon.985cffa4bf83.webp",
         "sha256": "985cffa4bf83e6a15f0ece8a62bdea7f74534c5a5508cbc5d1ae1dea1707ceeb",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/rael-quoran/summon.985cffa4bf83.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/rael-quoran/summon.985cffa4bf83.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -25972,7 +26124,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/raen-loran/summon.32a6ebfa7d3f.webp",
         "sha256": "32a6ebfa7d3f024966cb8c6f7a4ff8c8771d41243311577df8dc60dd756d7a20",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/raen-loran/summon.32a6ebfa7d3f.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/raen-loran/summon.32a6ebfa7d3f.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -26026,7 +26179,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/raen-moran/summon.203a9f35a2e4.webp",
         "sha256": "203a9f35a2e409d674ec2fe957cf0c050745e6b921e0e31fb5d280682e678938",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/raen-moran/summon.203a9f35a2e4.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/raen-moran/summon.203a9f35a2e4.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -26362,7 +26516,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/rain-ulenen/summon.0fb6d04f8121.webp",
         "sha256": "0fb6d04f812125dae569321fcfc24004bf17ecfded531365a0b0ab93950bcf14",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/rain-ulenen/summon.0fb6d04f8121.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/rain-ulenen/summon.0fb6d04f8121.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -26463,7 +26618,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/rao-esheth/summon.1e75d36fb3a3.webp",
         "sha256": "1e75d36fb3a3fa0d8b747d2f74a3eff82d0e3b378b4edbe9559492d3bada2c40",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/rao-esheth/summon.1e75d36fb3a3.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/rao-esheth/summon.1e75d36fb3a3.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -26517,7 +26673,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/rao-falin/summon.ca89bb53a8d3.webp",
         "sha256": "ca89bb53a8d3f0a598cf7d58ea3171467e20734fb01a1f2f80763c965d44d8e2",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/rao-falin/summon.ca89bb53a8d3.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/rao-falin/summon.ca89bb53a8d3.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -27101,7 +27258,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/senel-hala/summon.f8333569925a.webp",
         "sha256": "f8333569925a4406f1067d8cf6c47a2792be100995b4f867a5358d05e68a6389",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/senel-hala/summon.f8333569925a.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/senel-hala/summon.f8333569925a.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -27155,7 +27313,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/seni-iveran/summon.1c5fb2b354bd.webp",
         "sha256": "1c5fb2b354bd73004b70e7bbe21b69471f11031d725a46fbcc9e7b9463cc24cb",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/seni-iveran/summon.1c5fb2b354bd.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/seni-iveran/summon.1c5fb2b354bd.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -27209,7 +27368,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/seni-veshen/summon.4ef6012886f8.webp",
         "sha256": "4ef6012886f825e14553b741f0c1255f530576fb344866d6924f6c2978b456db",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/seni-veshen/summon.4ef6012886f8.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/seni-veshen/summon.4ef6012886f8.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -27263,7 +27423,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/senia-lorel/summon.7e03bfdf78e6.webp",
         "sha256": "7e03bfdf78e6dee3b1273b5b36bd9cfbbb5c7dbd63c53521d6267a833b3538f5",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/senia-lorel/summon.7e03bfdf78e6.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/senia-lorel/summon.7e03bfdf78e6.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -27364,7 +27525,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/senis-soro/summon.b85031b361f4.webp",
         "sha256": "b85031b361f4ba50cc7e42e8577dcd7cb2173a86252fe344ae1d183fb8779489",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/senis-soro/summon.b85031b361f4.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/senis-soro/summon.b85031b361f4.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -27581,7 +27743,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/senon-wyrai/summon.f4e96c21faa5.webp",
         "sha256": "f4e96c21faa560f7b7d8f1c49bc9d861acbf6357edf9a42ed0617402403f8f01",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/senon-wyrai/summon.f4e96c21faa5.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/senon-wyrai/summon.f4e96c21faa5.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -27635,7 +27798,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/senor-falar/summon.cb722abc582f.webp",
         "sha256": "cb722abc582fc881b9fca1bfd0837d5ac51e37f45d209e7db1c64c4797faa28b",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/senor-falar/summon.cb722abc582f.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/senor-falar/summon.cb722abc582f.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -27736,7 +27900,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/senyn-zharan/summon.66a077f30c22.webp",
         "sha256": "66a077f30c224126c50c74122609adf611de7b2451c852ffead36648e01a2120",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/senyn-zharan/summon.66a077f30c22.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/senyn-zharan/summon.66a077f30c22.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -27928,7 +28093,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/talar-morai/summon.8773a094ac54.webp",
         "sha256": "8773a094ac54eb4002f3ccc971cc1e768ced30335de6a7def87070c0a911f0d8",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/talar-morai/summon.8773a094ac54.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/talar-morai/summon.8773a094ac54.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -28029,7 +28195,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/talel-tavai/summon.8ea8c3825b26.webp",
         "sha256": "8ea8c3825b267bf35665c9359fc0733c702ae7b7cafd1db3a8ade02aaba775e0",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/talel-tavai/summon.8ea8c3825b26.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/talel-tavai/summon.8ea8c3825b26.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -28412,7 +28579,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/talin-halan/summon.ef3dda0bf075.webp",
         "sha256": "ef3dda0bf075b500f54e88f1ef98bd097a93f0e06846cae8cd801a7bffa0223d",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/talin-halan/summon.ef3dda0bf075.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/talin-halan/summon.ef3dda0bf075.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -28466,7 +28634,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/talin-mora/summon.810a8c24201c.webp",
         "sha256": "810a8c24201c3f75d7b354ce0076172d2788a639f2d68e7f2ca86c45a7cb3c0d",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/talin-mora/summon.810a8c24201c.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/talin-mora/summon.810a8c24201c.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -28567,7 +28736,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/talis-drenai/summon.939e96492d74.webp",
         "sha256": "939e96492d743d9aa5c476bd3f43e0fbd05e64c39f7f4a7079d423f4b7f299a3",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/talis-drenai/summon.939e96492d74.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/talis-drenai/summon.939e96492d74.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -28809,7 +28979,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/talon-corin/summon.94b664261d9d.webp",
         "sha256": "94b664261d9d888fb2aefefc4166f6bd40270e4109d1f7367bb6425600917dc3",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/talon-corin/summon.94b664261d9d.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/talon-corin/summon.94b664261d9d.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -29048,7 +29219,8 @@
         "path": "apps/web/static/runtime/combat/realtime-study-v1/hero-iron-guardian-ready-v1.png",
         "gitLfs": false,
         "sha256": "66b7017812f2bd218a221d5f19b26b861951350293e6b7692bc055d0c46ec114",
-        "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/combat/realtime-study-v1/hero-iron-guardian-ready-v1.png"
+        "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/combat/realtime-study-v1/hero-iron-guardian-ready-v1.png",
+        "keptPath": "/runtime/combat/realtime-study-v1/hero-iron-guardian-ready-v1.png"
       },
       "provenancePath": "assets/heroes/visuals/realtime-combat-study-v1/PROVENANCE.md",
       "thumbnail": {
@@ -29234,7 +29406,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/ular-dreneth/summon.727a1cd7b7b3.webp",
         "sha256": "727a1cd7b7b319d0b62f99353e3db0b35afa75aebc087ce361ec69de68589795",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/ular-dreneth/summon.727a1cd7b7b3.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/ular-dreneth/summon.727a1cd7b7b3.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -29570,7 +29743,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/ulin-mori/summon.e4789ebe27be.webp",
         "sha256": "e4789ebe27befc2aafa79f93f72690d92156eeaced13c6d0481b5fc4c9d3b5c8",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/ulin-mori/summon.e4789ebe27be.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/ulin-mori/summon.e4789ebe27be.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -29671,7 +29845,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/ulin-tavor/summon.b0dc7a081488.webp",
         "sha256": "b0dc7a08148870017764b540b8f4c34022eb7e3c7f6b489b887c9fd56fc00e7d",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/ulin-tavor/summon.b0dc7a081488.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/ulin-tavor/summon.b0dc7a081488.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -29866,7 +30041,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/ulon-morun/summon.c5810870e338.webp",
         "sha256": "c5810870e338cc6e725a42fa46ca864d13d5e3089cf2fd588ad32c4d03ca32fd",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/ulon-morun/summon.c5810870e338.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/ulon-morun/summon.c5810870e338.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -30155,7 +30331,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/ulor-zharel/summon.f2a3fec0ffb2.webp",
         "sha256": "f2a3fec0ffb2fb205cb28bcaa8d9dc574ff9ef39e06ac329b5181c248a585da5",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/ulor-zharel/summon.f2a3fec0ffb2.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/ulor-zharel/summon.f2a3fec0ffb2.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -30538,7 +30715,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/vali-pellan/summon.24d831887ffb.webp",
         "sha256": "24d831887ffb152453a08c742e5d8aee080c40205460b8c2075181406ef2c6de",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/vali-pellan/summon.24d831887ffb.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/vali-pellan/summon.24d831887ffb.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -30639,7 +30817,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/valo-grelen/summon.e41139288819.webp",
         "sha256": "e41139288819ab06d33567cedf5182278d63f4a8e8938c83635d93e33af14928",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/valo-grelen/summon.e41139288819.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/valo-grelen/summon.e41139288819.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -30787,7 +30966,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/valor-soren/summon.eeb4c08a2d22.webp",
         "sha256": "eeb4c08a2d223f397b78c9894e188800f4532a6e9267c293cee690bafc0d79c0",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/valor-soren/summon.eeb4c08a2d22.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/valor-soren/summon.eeb4c08a2d22.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -31029,7 +31209,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/wena-nethan/summon.83ffe37afc83.webp",
         "sha256": "83ffe37afc838c8e900f042ab22c5fafc1fc6e730aad5d6d68c15f2082fd9831",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/wena-nethan/summon.83ffe37afc83.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/wena-nethan/summon.83ffe37afc83.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -31318,7 +31499,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/wenen-tavan/summon.58755fc6ce58.webp",
         "sha256": "58755fc6ce5802384b4a5d3f93e68f86028aedd323f1739a4c7f0df46d6905b3",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/wenen-tavan/summon.58755fc6ce58.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/wenen-tavan/summon.58755fc6ce58.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -31654,7 +31836,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/wenon-wyrek/summon.7b1d84cb9512.webp",
         "sha256": "7b1d84cb951263171936a7cd2c90497ea22b04692e9ae87ff84f8ea71bac1d86",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/wenon-wyrek/summon.7b1d84cb9512.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/wenon-wyrek/summon.7b1d84cb9512.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -31708,7 +31891,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/wenyn-amarun/summon.b7dd10294aa8.webp",
         "sha256": "b7dd10294aa8f0cbbe7a1c9fb6c2ff648aa48c929939e9535646821f35acf346",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/wenyn-amarun/summon.b7dd10294aa8.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/wenyn-amarun/summon.b7dd10294aa8.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -31903,7 +32087,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/yasan-belek/summon.e1bf3684867d.webp",
         "sha256": "e1bf3684867dbc69ce2804c10dd9aced3b436bbdc52d903403a8cf144dc73f06",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/yasan-belek/summon.e1bf3684867d.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/yasan-belek/summon.e1bf3684867d.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -31957,7 +32142,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/yasan-tavor/summon.e3ed0b18ce06.webp",
         "sha256": "e3ed0b18ce06423faf80cc4ca9287374e6f14b9e57bad0d5a6b4dccd03bf90b3",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/yasan-tavor/summon.e3ed0b18ce06.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/yasan-tavor/summon.e3ed0b18ce06.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -32152,7 +32338,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/yasia-falor/summon.3f764e793a41.webp",
         "sha256": "3f764e793a41750451dd24d06a7d8cc1dea91eb15129d2e31334b1c60a4be155",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/yasia-falor/summon.3f764e793a41.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/yasia-falor/summon.3f764e793a41.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -32441,7 +32628,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/yasis-jorun/summon.3fca2028ed87.webp",
         "sha256": "3fca2028ed8788014ef6a8f657a6d288856b27c6f6c6f2dff27cfd959bbfb413",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/yasis-jorun/summon.3fca2028ed87.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/yasis-jorun/summon.3fca2028ed87.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -32542,7 +32730,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/yasis-wyran/summon.0fa88f2d1b70.webp",
         "sha256": "0fa88f2d1b7079004a2edfba2fd9a0ed341e955c954926e0e2d34050e1f2ec1b",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/yasis-wyran/summon.0fa88f2d1b70.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/yasis-wyran/summon.0fa88f2d1b70.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -32596,7 +32785,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/yaso-dreno/summon.7ac986a9c0e7.webp",
         "sha256": "7ac986a9c0e7599cc96d91aa3d5ebd5de7efa49eb4d0046a1f5aec66eb1c8ea3",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/yaso-dreno/summon.7ac986a9c0e7.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/yaso-dreno/summon.7ac986a9c0e7.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -32650,7 +32840,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/yason-falel/summon.3e17556da1e1.webp",
         "sha256": "3e17556da1e12ae62281b0f4d49a0bb840e339ff7b328871c11ba5c337c8e6da",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/yason-falel/summon.3e17556da1e1.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/yason-falel/summon.3e17556da1e1.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -32845,7 +33036,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/yasu-dreneth/summon.5dfe472d159e.webp",
         "sha256": "5dfe472d159e37933c500c777c11e7d1f4801c9682badbabfcbc771927a22b2f",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/yasu-dreneth/summon.5dfe472d159e.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/yasu-dreneth/summon.5dfe472d159e.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -33015,7 +33207,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/zelan-bela/summon.2ca51f8d2c2c.webp",
         "sha256": "2ca51f8d2c2c833860aa1398622c309351a339f6bd738c452d915d431d690561",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/zelan-bela/summon.2ca51f8d2c2c.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/zelan-bela/summon.2ca51f8d2c2c.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -33069,7 +33262,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/zelan-grelai/summon.e00794777d7e.webp",
         "sha256": "e00794777d7e7b22c270784b37f2292329da3528240a934065c80796ee2e086a",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/zelan-grelai/summon.e00794777d7e.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/zelan-grelai/summon.e00794777d7e.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -33123,7 +33317,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/zelan-grelin/summon.c1f89e662a88.webp",
         "sha256": "c1f89e662a8891181f9b2ee1b848f97d61d26fa3c2f409342cc351bccdcf3d44",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/zelan-grelin/summon.c1f89e662a88.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/zelan-grelin/summon.c1f89e662a88.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -33177,7 +33372,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/zelan-jorel/summon.5a5807705916.webp",
         "sha256": "5a58077059167a3473ae9dd1afc169bf71e3cff7779a019a6c6f7b5bde136af6",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/zelan-jorel/summon.5a5807705916.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/zelan-jorel/summon.5a5807705916.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -33278,7 +33474,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/zelar-beli/summon.20b8c66a1d75.webp",
         "sha256": "20b8c66a1d75c1a16ecae8eecf62cda64ee325d4be373ad8b5524537c4bb435e",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/zelar-beli/summon.20b8c66a1d75.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/zelar-beli/summon.20b8c66a1d75.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -33426,7 +33623,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/zelen-greleth/summon.0929b4c6c951.webp",
         "sha256": "0929b4c6c9516ea8f82ada5cf1d96d099ac4b4eda332423ff99786086d2386d1",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/zelen-greleth/summon.0929b4c6c951.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/zelen-greleth/summon.0929b4c6c951.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -33527,7 +33725,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/zeli-orel/summon.297598cdd893.webp",
         "sha256": "297598cdd893d5a484d5959818a27103ed63b114f64589a421fa5bc6d623a8c3",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/zeli-orel/summon.297598cdd893.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/zeli-orel/summon.297598cdd893.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -33675,7 +33874,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/zelia-oran/summon.a02ecc7b3e09.webp",
         "sha256": "a02ecc7b3e0901742a6cd390a198d18c6384e979f3da2204d1867c2795adc82c",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/zelia-oran/summon.a02ecc7b3e09.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/zelia-oran/summon.a02ecc7b3e09.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -33823,7 +34023,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/zelin-orel/summon.813c635579ee.webp",
         "sha256": "813c635579ee07aaf33c425939c453c9a9e6394b83015d93d47d4920808dbe85",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/zelin-orel/summon.813c635579ee.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/zelin-orel/summon.813c635579ee.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -33971,7 +34172,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/zelis-sorai/summon.1db2cbabcaa2.webp",
         "sha256": "1db2cbabcaa23549276708301c3b2721c8cea10385c8f9e8f6a8356416fe8abb",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/zelis-sorai/summon.1db2cbabcaa2.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/zelis-sorai/summon.1db2cbabcaa2.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",
@@ -34354,7 +34556,8 @@
         "path": "apps/web/static/runtime/summonable-heroes-v1/zelyn-eshun/summon.0b6e0ec9dfbf.webp",
         "sha256": "0b6e0ec9dfbfb9552779919d8c5233fde340330690b1dd988544da5c34ac84c5",
         "imageUrl": "https://raw.githubusercontent.com/jmoraispk/summonlab/634d48644ec41d2a8ff3c9f839b8fec2b2830617/apps/web/static/runtime/summonable-heroes-v1/zelyn-eshun/summon.0b6e0ec9dfbf.webp",
-        "gitLfs": false
+        "gitLfs": false,
+        "keptPath": "/runtime/summonable-heroes-v1/zelyn-eshun/summon.0b6e0ec9dfbf.webp"
       },
       "historicalPortrait": {
         "sourceCommit": "ae01c4f5578d260335442534f11fda8b2a0ba615",

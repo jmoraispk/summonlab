@@ -97,25 +97,33 @@
 	{@render pagination()}
 	<div class="portraits">
 		{#each results.heroes as hero (hero.heroId)}
+			{@const original = hero.originalPath
+				? assetUrl(hero.originalPath, `${base}${hero.originalPath}`)
+				: null}
 			<article>
-				<a
-					class="portrait"
-					href={hero.originalUrl}
-					target="_blank"
-					rel="noreferrer"
-					aria-label={`Open ${hero.displayName} original portrait`}
-					><img
+				{#snippet thumbnail()}<img
 						src={assetUrl(hero.thumbnail, `${base}${hero.thumbnail}`)}
 						alt={`${hero.displayName} portrait`}
 						width={hero.width}
 						height={hero.height}
 						loading="lazy"
-					/></a
-				>
+					/>{/snippet}
+				{#if original}
+					<!-- eslint-disable svelte/no-navigation-without-resolve -- a full-size image file, not an app route -->
+					<a
+						class="portrait"
+						href={original}
+						target="_blank"
+						rel="noreferrer"
+						aria-label={`Open ${hero.displayName} original portrait`}>{@render thumbnail()}</a
+					>
+					<!-- eslint-enable svelte/no-navigation-without-resolve -->
+				{:else}
+					<div class="portrait">{@render thumbnail()}</div>
+				{/if}
 				<div class="caption">
 					<p class:approved={hero.collection === 'approved'} class="status">{hero.status}</p>
 					<h2>{hero.displayName}</h2>
-					<a href={hero.originalUrl} target="_blank" rel="noreferrer">View original ↗</a>
 				</div>
 			</article>
 		{/each}
@@ -307,11 +315,6 @@
 			1.35rem/1.2 Georgia,
 			serif;
 		overflow-wrap: anywhere;
-	}
-	.caption > a {
-		font:
-			0.7rem ui-monospace,
-			monospace;
 	}
 	.empty {
 		padding: 3rem 0;
